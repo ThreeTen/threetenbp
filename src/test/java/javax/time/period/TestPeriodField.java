@@ -41,7 +41,7 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 
 import org.testng.annotations.Test;
 
@@ -54,8 +54,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodField {
 
-    private static final PeriodRule DAYS = ISOChronology.periodDays();
-    private static final PeriodRule MONTHS = ISOChronology.periodMonths();
+    private static final PeriodUnit DAYS = ISOChronology.periodDays();
+    private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
@@ -76,7 +76,7 @@ public class TestPeriodField {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_of_nullRule() {
+    public void test_factory_of_null() {
         PeriodField.of(1, null);
     }
 
@@ -146,12 +146,12 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
-    // getRule()
+    // getUnit()
     //-----------------------------------------------------------------------
-    public void test_getRule() {
-        assertEquals(PeriodField.of(0, DAYS).getRule(), DAYS);
-        assertEquals(PeriodField.of(1, DAYS).getRule(), DAYS);
-        assertEquals(PeriodField.of(-1, DAYS).getRule(), DAYS);
+    public void test_getUnit() {
+        assertEquals(PeriodField.of(0, DAYS).getUnit(), DAYS);
+        assertEquals(PeriodField.of(1, DAYS).getUnit(), DAYS);
+        assertEquals(PeriodField.of(-1, DAYS).getUnit(), DAYS);
     }
 
     //-----------------------------------------------------------------------

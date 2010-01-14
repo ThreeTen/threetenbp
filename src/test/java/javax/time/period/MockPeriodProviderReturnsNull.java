@@ -33,7 +33,7 @@ package javax.time.period;
 
 import java.util.Set;
 
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 
 /**
  * Mock PeriodProvider that returns null.
@@ -42,11 +42,11 @@ import javax.time.calendar.PeriodRule;
  */
 public class MockPeriodProviderReturnsNull implements PeriodProvider {
 
-    public Set<PeriodRule> periodRules() {
+    public Set<PeriodUnit> periodRules() {
         return null;
     }
 
-    public long periodAmount(PeriodRule rule) {
+    public long periodAmount(PeriodUnit unit) {
         return 0;
     }
 

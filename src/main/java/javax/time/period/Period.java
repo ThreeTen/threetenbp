@@ -40,7 +40,7 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.format.CalendricalParseException;
 
 /**
@@ -108,9 +108,9 @@ public final class Period
      */
     private final long nanos;
     /**
-     * The cached set of rules.
+     * The cached set of units.
      */
-    private transient volatile Set<PeriodRule> rules;
+    private transient volatile Set<PeriodUnit> units;
     /**
      * The cached toString value.
      */
@@ -118,7 +118,7 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Period</code> from a provider of periods.
+     * Obtains a <code>Period</code> from a provider of periods.
      * <p>
      * In addition to calling {@link PeriodProvider#toPeriod()} this method
      * also checks the validity of the result of the provider.
@@ -134,7 +134,7 @@ public final class Period
         }
         int years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0;
         long nanos = 0;
-        for (PeriodRule rule : periodProvider.periodRules()) {
+        for (PeriodUnit rule : periodProvider.periodRules()) {
             long amount = periodProvider.periodAmount(rule);
             if (rule.equals(ISOChronology.periodYears())) {
                 years = MathUtils.safeToInt(amount);
@@ -158,7 +158,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from amounts from years to seconds.
+     * Obtains a <code>Period</code> from amounts from years to seconds.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -176,7 +176,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from amounts from years to nanoseconds.
+     * Obtains a <code>Period</code> from amounts from years to nanoseconds.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -195,7 +195,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from years, months and days.
+     * Obtains a <code>Period</code> from years, months and days.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -209,7 +209,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from years, months and days.
+     * Obtains a <code>Period</code> from years, months and days.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -224,7 +224,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from hours, minutes and seconds.
+     * Obtains a <code>Period</code> from hours, minutes and seconds.
      *
      * @param hours  the amount of hours, may be negative
      * @param minutes  the amount of minutes, may be negative
@@ -240,7 +240,7 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Period</code> from a number of years.
+     * Obtains a <code>Period</code> from a number of years.
      *
      * @param years  the amount of years, may be negative
      * @return the <code>Period</code> instance, never null
@@ -253,7 +253,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from a number of months.
+     * Obtains a <code>Period</code> from a number of months.
      *
      * @param months  the amount of months, may be negative
      * @return the <code>Period</code> instance, never null
@@ -266,7 +266,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from a number of days.
+     * Obtains a <code>Period</code> from a number of days.
      *
      * @param days  the amount of days, may be negative
      * @return the <code>Period</code> instance, never null
@@ -279,7 +279,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from a number of hours.
+     * Obtains a <code>Period</code> from a number of hours.
      *
      * @param hours  the amount of hours, may be negative
      * @return the <code>Period</code> instance, never null
@@ -292,7 +292,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from a number of minutes.
+     * Obtains a <code>Period</code> from a number of minutes.
      *
      * @param minutes  the amount of minutes, may be negative
      * @return the <code>Period</code> instance, never null
@@ -305,7 +305,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from a number of seconds.
+     * Obtains a <code>Period</code> from a number of seconds.
      *
      * @param seconds  the amount of seconds, may be negative
      * @return the <code>Period</code> instance, never null
@@ -318,7 +318,7 @@ public final class Period
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from a number of nanoseconds.
+     * Obtains a <code>Period</code> from a number of nanoseconds.
      *
      * @param nanos  the amount of nanos, may be negative
      * @return the <code>Period</code> instance, never null
@@ -332,7 +332,7 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Period</code> from a string formatted as <code>PnYnMnDTnHnMn.nS</code>.
+     * Obtains a <code>Period</code> from a string formatted as <code>PnYnMnDTnHnMn.nS</code>.
      * <p>
      * This will parse the string produced by <code>toString()</code> which is
      * a subset of the ISO8601 period format <code>PnYnMnDTnHnMn.nS</code>.
@@ -400,10 +400,10 @@ public final class Period
      *
      * @return the period rule as an unmodifiable set, never null
      */
-    public Set<PeriodRule> periodRules() {
-        Set<PeriodRule> set = rules;
+    public Set<PeriodUnit> periodRules() {
+        Set<PeriodUnit> set = units;
         if (set == null) {
-            set = new HashSet<PeriodRule>();
+            set = new HashSet<PeriodUnit>();
             if (years != 0) {
                 set.add(ISOChronology.periodYears());
             }
@@ -425,7 +425,7 @@ public final class Period
             if (nanos != 0) {
                 set.add(ISOChronology.periodNanos());
             }
-            rules = set = Collections.unmodifiableSet(set);
+            units = set = Collections.unmodifiableSet(set);
         }
         return set;
     }
@@ -438,7 +438,7 @@ public final class Period
      * @param rule  the rule to get, not null
      * @return the amount of time stored in this period for the rule
      */
-    public long periodAmount(PeriodRule rule) {
+    public long periodAmount(PeriodUnit rule) {
         PeriodFields.checkNotNull(rule, "PeriodRule must not be null");
         if (rule.equals(ISOChronology.periodYears())) {
             return years;

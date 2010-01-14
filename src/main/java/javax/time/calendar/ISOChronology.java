@@ -648,9 +648,9 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the period rule for eras.
+     * Gets the period unit for eras.
      * <p>
-     * The period rule defines the concept of a period of a eras.
+     * The period unit defines the concept of a period of a eras.
      * An era, based on a simple before/after point on the time-line, is infinite
      * in length. For this rule, an era has an estimated duration of 2,000,000,000 years.
      * <p>
@@ -659,70 +659,70 @@ public final class ISOChronology extends Chronology implements Serializable {
      * <p>
      * See {@link #eraRule()} for the main date-time field.
      *
-     * @return the period rule for eras, never null
+     * @return the period unit for eras, never null
      */
-    public static PeriodRule periodEras() {
+    public static PeriodUnit periodEras() {
         return ERAS;
     }
 
     /**
-     * Gets the period rule for millenia of 1000 years.
+     * Gets the period unit for millenia of 1000 years.
      * <p>
-     * The period rule defines the concept of a period of a century.
+     * The period unit defines the concept of a period of a century.
      * <p>
      * The equivalent period and estimated duration are equal to 10 centuries.
      *
-     * @return the period rule for millenia, never null
+     * @return the period unit for millenia, never null
      */
-    public static PeriodRule periodMillenia() {
+    public static PeriodUnit periodMillenia() {
         return MILLENIA;
     }
 
     /**
-     * Gets the period rule for centuries of 100 years.
+     * Gets the period unit for centuries of 100 years.
      * <p>
-     * The period rule defines the concept of a period of a century.
+     * The period unit defines the concept of a period of a century.
      * <p>
      * The equivalent period and estimated duration are equal to 10 decades.
      *
-     * @return the period rule for centuries, never null
+     * @return the period unit for centuries, never null
      */
-    public static PeriodRule periodCenturies() {
+    public static PeriodUnit periodCenturies() {
         return CENTURIES;
     }
 
     /**
-     * Gets the period rule for decades of 10 years.
+     * Gets the period unit for decades of 10 years.
      * <p>
-     * The period rule defines the concept of a period of a decade.
+     * The period unit defines the concept of a period of a decade.
      * <p>
      * The equivalent period and estimated duration are equal to 10 years.
      *
-     * @return the period rule for decades, never null
+     * @return the period unit for decades, never null
      */
-    public static PeriodRule periodDecades() {
+    public static PeriodUnit periodDecades() {
         return DECADES;
     }
 
     /**
-     * Gets the period rule for years of 12 months.
+     * Gets the period unit for years of 12 months.
      * <p>
-     * The period rule defines the concept of a period of a year.
+     * The period unit defines the concept of a period of a year.
      * <p>
      * The equivalent period and estimated duration are equal to 4 quarters.
      * <p>
      * See {@link #yearRule()} for the main date-time field.
      *
-     * @return the period rule for years, never null
+     * @return the period unit for years, never null
      */
-    public static PeriodRule periodYears() {
+    public static PeriodUnit periodYears() {
         return YEARS;
     }
 
     /**
-     * Gets the period rule for week-based-years.
+     * Gets the period unit for week-based-years.
      * <p>
-     * The period rule defines the concept of a period of a week-based-year.
+     * The period unit defines the concept of a period of a week-based-year.
      * This is typically 52 weeks, and occasionally 53 weeks.
      * <p>
      * This is a basic unit and has no equivalent period.
@@ -730,63 +730,63 @@ public final class ISOChronology extends Chronology implements Serializable {
      * <p>
      * See {@link #weekBasedYearRule()} for the main date-time field.
      *
-     * @return the period rule for week-based-years, never null
+     * @return the period unit for week-based-years, never null
      */
-    public static PeriodRule periodWeekBasedYears() {
+    public static PeriodUnit periodWeekBasedYears() {
         return WEEK_BASED_YEARS;
     }
 
     /**
-     * Gets the period rule for quarters of 3 months.
+     * Gets the period unit for quarters of 3 months.
      * <p>
-     * The period rule defines the concept of a period of a quarter.
+     * The period unit defines the concept of a period of a quarter.
      * <p>
      * The equivalent period and estimated duration are equal to 3 months.
      * <p>
      * See {@link #quarterOfYearRule()} for the main date-time field.
      *
-     * @return the period rule for quarters, never null
+     * @return the period unit for quarters, never null
      */
-    public static PeriodRule periodQuarters() {
+    public static PeriodUnit periodQuarters() {
         return QUARTERS;
     }
 
     /**
-     * Gets the period rule for months.
+     * Gets the period unit for months.
      * <p>
-     * The period rule defines the concept of a period of a month.
+     * The period unit defines the concept of a period of a month.
      * <p>
      * This is a basic unit and has no equivalent period.
      * The estimated duration is equal to one-twelfth of a year based on 365.2425 days.
      * <p>
      * See {@link #monthOfYearRule()} for the main date-time field.
      *
-     * @return the period rule for months, never null
+     * @return the period unit for months, never null
      */
-    public static PeriodRule periodMonths() {
+    public static PeriodUnit periodMonths() {
         return MONTHS;
     }
 
     /**
-     * Gets the period rule for weeks of 7 days.
+     * Gets the period unit for weeks of 7 days.
      * <p>
-     * The period rule defines the concept of a period of a week.
+     * The period unit defines the concept of a period of a week.
      * <p>
      * The equivalent period and estimated duration are equal to 7 days.
      * <p>
      * See {@link #weekOfWeekBasedYearRule()} and {@link #weekOfYearRule()} for
      * the main date-time fields.
      *
-     * @return the period rule for weeks, never null
+     * @return the period unit for weeks, never null
      */
-    public static PeriodRule periodWeeks() {
+    public static PeriodUnit periodWeeks() {
         return WEEKS;
     }
 
     /**
-     * Gets the period rule for days.
+     * Gets the period unit for days.
      * <p>
-     * The period rule defines the concept of a period of a day.
+     * The period unit defines the concept of a period of a day.
      * This is typically equal to 24 hours, but may vary due to time zone changes.
      * <p>
      * This is a basic unit and has no equivalent period.
@@ -794,113 +794,113 @@ public final class ISOChronology extends Chronology implements Serializable {
      * <p>
      * See {@link #dayOfMonthRule()} for the main date-time field.
      *
-     * @return the period rule for days, never null
+     * @return the period unit for days, never null
      */
-    public static PeriodRule periodDays() {
+    public static PeriodUnit periodDays() {
         return DAYS;
     }
 
     /**
-     * Gets the period rule for twelve hours, as used by AM/PM.
+     * Gets the period unit for twelve hours, as used by AM/PM.
      * <p>
-     * The period rule defines the concept of a period of twelve hours.
+     * The period unit defines the concept of a period of twelve hours.
      * <p>
      * The equivalent period and estimated duration are equal to 12 hours.
      * <p>
      * See {@link #amPmOfDayRule()} for the main date-time field.
      *
-     * @return the period rule for twelve hours, never null
+     * @return the period unit for twelve hours, never null
      */
-    public static PeriodRule periodTwelveHours() {
+    public static PeriodUnit periodTwelveHours() {
         return TWELVE_HOURS;
     }
 
     /**
-     * Gets the period rule for hours of 60 minutes.
+     * Gets the period unit for hours of 60 minutes.
      * <p>
-     * The period rule defines the concept of a period of a hour.
+     * The period unit defines the concept of a period of a hour.
      * <p>
      * The equivalent period and estimated duration are equal to 60 minutes.
      * <p>
      * See {@link #hourOfDayRule()} for the main date-time field.
      *
-     * @return the period rule for hours, never null
+     * @return the period unit for hours, never null
      */
-    public static PeriodRule periodHours() {
+    public static PeriodUnit periodHours() {
         return HOURS;
     }
 
     /**
-     * Gets the period rule for minutes of 60 seconds.
+     * Gets the period unit for minutes of 60 seconds.
      * <p>
-     * The period rule defines the concept of a period of a minute.
+     * The period unit defines the concept of a period of a minute.
      * <p>
      * The equivalent period and estimated duration are equal to 60 seconds.
      * <p>
      * See {@link #minuteOfHourRule()} for the main date-time field.
      *
-     * @return the period rule for minutes, never null
+     * @return the period unit for minutes, never null
      */
-    public static PeriodRule periodMinutes() {
+    public static PeriodUnit periodMinutes() {
         return MINUTES;
     }
 
     /**
-     * Gets the period rule for seconds.
+     * Gets the period unit for seconds.
      * <p>
-     * The period rule defines the concept of a period of a second.
+     * The period unit defines the concept of a period of a second.
      * <p>
      * The equivalent period and estimated duration are equal to 1000 milliseconds.
      * <p>
      * See {@link #secondOfMinuteRule()} for the main date-time field.
      *
-     * @return the period rule for seconds, never null
+     * @return the period unit for seconds, never null
      */
-    public static PeriodRule periodSeconds() {
+    public static PeriodUnit periodSeconds() {
         return SECONDS;
     }
 
     /**
-     * Gets the period rule for milliseconds.
+     * Gets the period unit for milliseconds.
      * <p>
-     * The period rule defines the concept of a period of a millisecond.
+     * The period unit defines the concept of a period of a millisecond.
      * <p>
      * The equivalent period and estimated duration are equal to 1000 microseconds.
      * <p>
      * See {@link #milliOfSecondRule()} for the main date-time field.
      *
-     * @return the period rule for milliseconds, never null
+     * @return the period unit for milliseconds, never null
      */
-    public static PeriodRule periodMillis() {
+    public static PeriodUnit periodMillis() {
         return MILLIS;
     }
 
     /**
-     * Gets the period rule for microseconds.
+     * Gets the period unit for microseconds.
      * <p>
-     * The period rule defines the concept of a period of a microsecond.
+     * The period unit defines the concept of a period of a microsecond.
      * <p>
      * The equivalent period and estimated duration are equal to 1000 nanoseconds.
      *
-     * @return the period rule for microseconds, never null
+     * @return the period unit for microseconds, never null
      */
-    public static PeriodRule periodMicros() {
+    public static PeriodUnit periodMicros() {
         return MICROS;
     }
 
     /**
-     * Gets the period rule for nanoseconds.
+     * Gets the period unit for nanoseconds.
      * <p>
-     * The period rule defines the concept of a period of a nanosecond.
+     * The period unit defines the concept of a period of a nanosecond.
      * <p>
      * This is a basic unit and has no equivalent period.
      * The estimated duration is 1 nanosecond.
      * <p>
      * See {@link #nanoOfSecondRule()} for the main date-time field.
      *
-     * @return the period rule for nanoseconds, never null
+     * @return the period unit for nanoseconds, never null
      */
-    public static PeriodRule periodNanos() {
+    public static PeriodUnit periodNanos() {
         return NANOS;
     }
 
@@ -1851,90 +1851,90 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Period rule for nanoseconds.
+     * Period unit for nanoseconds.
      */
-    private static final PeriodRule NANOS = new PeriodRule(ISOChronology.INSTANCE, "Nanos",
+    private static final PeriodUnit NANOS = new PeriodUnit(ISOChronology.INSTANCE, "Nanos",
                 null, Duration.nanos(1));
     /**
-     * Period rule for microseconds.
+     * Period unit for microseconds.
      */
-    private static final PeriodRule MICROS = new PeriodRule(ISOChronology.INSTANCE, "Micros",
+    private static final PeriodUnit MICROS = new PeriodUnit(ISOChronology.INSTANCE, "Micros",
                 PeriodFields.of(1000, NANOS), Duration.nanos(1000));
     /**
-     * Period rule for milliseconds.
+     * Period unit for milliseconds.
      */
-    private static final PeriodRule MILLIS = new PeriodRule(ISOChronology.INSTANCE, "Millis",
+    private static final PeriodUnit MILLIS = new PeriodUnit(ISOChronology.INSTANCE, "Millis",
                 PeriodFields.of(1000, MICROS), Duration.millis(1));
     /**
-     * Period rule for seconds.
+     * Period unit for seconds.
      */
-    private static final PeriodRule SECONDS = new PeriodRule(ISOChronology.INSTANCE, "Seconds",
+    private static final PeriodUnit SECONDS = new PeriodUnit(ISOChronology.INSTANCE, "Seconds",
                 PeriodFields.of(1000, MILLIS), Duration.seconds(1));
     /**
-     * Period rule for minutes.
+     * Period unit for minutes.
      */
-    private static final PeriodRule MINUTES = new PeriodRule(ISOChronology.INSTANCE, "Minutes",
+    private static final PeriodUnit MINUTES = new PeriodUnit(ISOChronology.INSTANCE, "Minutes",
                 PeriodFields.of(60, SECONDS), Duration.seconds(60));
     /**
-     * Period rule for hours.
+     * Period unit for hours.
      */
-    private static final PeriodRule HOURS = new PeriodRule(ISOChronology.INSTANCE, "Hours",
+    private static final PeriodUnit HOURS = new PeriodUnit(ISOChronology.INSTANCE, "Hours",
                 PeriodFields.of(60, MINUTES), Duration.seconds(60 * 60));
     /**
-     * Period rule for half days.
+     * Period unit for half days.
      */
-    private static final PeriodRule TWELVE_HOURS = new PeriodRule(ISOChronology.INSTANCE, "TwelveHours",
+    private static final PeriodUnit TWELVE_HOURS = new PeriodUnit(ISOChronology.INSTANCE, "TwelveHours",
                 PeriodFields.of(12, HOURS), Duration.seconds(12 * 60 * 60));
 
     /**
-     * Period rule for days.
+     * Period unit for days.
      */
-    private static final PeriodRule DAYS = new PeriodRule(ISOChronology.INSTANCE, "Days",
+    private static final PeriodUnit DAYS = new PeriodUnit(ISOChronology.INSTANCE, "Days",
                 null, Duration.seconds(86400));
     /**
-     * Period rule for weeks.
+     * Period unit for weeks.
      */
-    private static final PeriodRule WEEKS = new PeriodRule(ISOChronology.INSTANCE, "Weeks",
+    private static final PeriodUnit WEEKS = new PeriodUnit(ISOChronology.INSTANCE, "Weeks",
                 PeriodFields.of(7, DAYS), Duration.seconds(7L * 86400L));
     /**
-     * Period rule for months.
+     * Period unit for months.
      */
-    private static final PeriodRule MONTHS = new PeriodRule(ISOChronology.INSTANCE, "Months",
+    private static final PeriodUnit MONTHS = new PeriodUnit(ISOChronology.INSTANCE, "Months",
                 null, Duration.seconds(31556952L / 12L));
     /**
-     * Period rule for quarters.
+     * Period unit for quarters.
      */
-    private static final PeriodRule QUARTERS = new PeriodRule(ISOChronology.INSTANCE, "Quarters",
+    private static final PeriodUnit QUARTERS = new PeriodUnit(ISOChronology.INSTANCE, "Quarters",
                 PeriodFields.of(3, MONTHS), Duration.seconds(31556952L / 4));
     /**
-     * Period rule for week-based-years.
+     * Period unit for week-based-years.
      */
-    private static final PeriodRule WEEK_BASED_YEARS = new PeriodRule(ISOChronology.INSTANCE, "WeekBasedYears",
+    private static final PeriodUnit WEEK_BASED_YEARS = new PeriodUnit(ISOChronology.INSTANCE, "WeekBasedYears",
                 null, Duration.seconds(364L * 86400L + 43200L));  // 364.5 days
     /**
-     * Period rule for years.
+     * Period unit for years.
      */
-    private static final PeriodRule YEARS = new PeriodRule(ISOChronology.INSTANCE, "Years",
+    private static final PeriodUnit YEARS = new PeriodUnit(ISOChronology.INSTANCE, "Years",
                 PeriodFields.of(4, QUARTERS), Duration.seconds(31556952L));  // 365.2425 days
     /**
-     * Period rule for decades.
+     * Period unit for decades.
      */
-    private static final PeriodRule DECADES = new PeriodRule(ISOChronology.INSTANCE, "Decades",
+    private static final PeriodUnit DECADES = new PeriodUnit(ISOChronology.INSTANCE, "Decades",
                 PeriodFields.of(10, YEARS), Duration.seconds(10L * 31556952L));
     /**
-     * Period rule for centuries.
+     * Period unit for centuries.
      */
-    private static final PeriodRule CENTURIES = new PeriodRule(ISOChronology.INSTANCE, "Centuries",
+    private static final PeriodUnit CENTURIES = new PeriodUnit(ISOChronology.INSTANCE, "Centuries",
                 PeriodFields.of(10, DECADES), Duration.seconds(100L * 31556952L));
     /**
-     * Period rule for millenia.
+     * Period unit for millenia.
      */
-    private static final PeriodRule MILLENIA = new PeriodRule(ISOChronology.INSTANCE, "Millenia",
+    private static final PeriodUnit MILLENIA = new PeriodUnit(ISOChronology.INSTANCE, "Millenia",
                 PeriodFields.of(10, CENTURIES), Duration.seconds(1000L * 31556952L));
     /**
-     * Period rule for eras.
+     * Period unit for eras.
      */
-    private static final PeriodRule ERAS = new PeriodRule(ISOChronology.INSTANCE, "Eras",
+    private static final PeriodUnit ERAS = new PeriodUnit(ISOChronology.INSTANCE, "Eras",
                 null, Duration.seconds(31556952L * 2000000000L));
 
 }

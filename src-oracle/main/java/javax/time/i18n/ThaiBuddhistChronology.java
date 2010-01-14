@@ -14,7 +14,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -184,70 +184,70 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the period rule for eras.
+     * Gets the period unit for eras.
      * <p>
-     * The period rule defines the concept of a period of an era.
-     * This is equivalent to the ISO eras period rule.
+     * The period unit defines the concept of a period of an era.
+     * This is equivalent to the ISO eras period unit.
      * <p>
      * See {@link #eraRule()} for the main date-time field.
      *
-     * @return the period rule for eras, never null
+     * @return the period unit for eras, never null
      */
-    public static PeriodRule periodEras() {
+    public static PeriodUnit periodEras() {
         return ISOChronology.periodEras();
     }
 
     /**
-     * Gets the period rule for years.
+     * Gets the period unit for years.
      * <p>
-     * The period rule defines the concept of a period of a year.
-     * This is equivalent to the ISO years period rule.
+     * The period unit defines the concept of a period of a year.
+     * This is equivalent to the ISO years period unit.
      * <p>
      * See {@link #yearOfEraRule()} for the main date-time field.
      *
-     * @return the period rule for years, never null
+     * @return the period unit for years, never null
      */
-    public static PeriodRule periodYears() {
+    public static PeriodUnit periodYears() {
         return ISOChronology.periodYears();
     }
 
     /**
-     * Gets the period rule for months.
+     * Gets the period unit for months.
      * <p>
-     * The period rule defines the concept of a period of a month.
-     * This is equivalent to the ISO months period rule.
+     * The period unit defines the concept of a period of a month.
+     * This is equivalent to the ISO months period unit.
      * <p>
      * See {@link #monthOfYearRule()} for the main date-time field.
      *
-     * @return the period rule for months, never null
+     * @return the period unit for months, never null
      */
-    public static PeriodRule periodMonths() {
+    public static PeriodUnit periodMonths() {
         return ISOChronology.periodMonths();
     }
 
     /**
-     * Gets the period rule for weeks.
+     * Gets the period unit for weeks.
      * <p>
-     * The period rule defines the concept of a period of a week.
-     * This is equivalent to the ISO weeks period rule.
+     * The period unit defines the concept of a period of a week.
+     * This is equivalent to the ISO weeks period unit.
      *
-     * @return the period rule for weeks, never null
+     * @return the period unit for weeks, never null
      */
-    public static PeriodRule periodWeeks() {
+    public static PeriodUnit periodWeeks() {
         return ISOChronology.periodWeeks();
     }
 
     /**
-     * Gets the period rule for days.
+     * Gets the period unit for days.
      * <p>
-     * The period rule defines the concept of a period of a day.
-     * This is equivalent to the ISO days period rule.
+     * The period unit defines the concept of a period of a day.
+     * This is equivalent to the ISO days period unit.
      * <p>
      * See {@link #dayOfMonthRule()} for the main date-time field.
      *
-     * @return the period rule for days, never null
+     * @return the period unit for days, never null
      */
-    public static PeriodRule periodDays() {
+    public static PeriodUnit periodDays() {
         return ISOChronology.periodDays();
     }
 

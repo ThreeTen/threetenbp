@@ -33,10 +33,10 @@ package javax.time.period;
 
 import java.util.Set;
 
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 
 /**
- * Provides access to a period of time, such as '2 years and 5 months'.
+ * Provides access to a period of time, such as '2 Years and 5 Months'.
  * <p>
  * PeriodProvider is a simple interface that provides uniform access to
  * any object that can provide access to a period.
@@ -55,27 +55,27 @@ public interface PeriodProvider {
     // Map<PeriodRule, Long>
 
     /**
-     * Gets the complete set of rules which have amounts stored.
+     * Gets the complete set of units which have amounts stored.
      * <p>
-     * The amount stored for a rule may be zero.
+     * The amount stored for a unit may be zero.
      * <p>
      * Implementations must ensure that this method is thread-safe, and that
      * the returned set is either unmodifiable or independent from the implementation.
      *
-     * @return the set of rules for which an amount is stored in this period
+     * @return the set of units for which an amount is stored in this period
      */
-    Set<PeriodRule> periodRules();
+    Set<PeriodUnit> periodRules();
 
     /**
-     * Gets the amount of time stored for the specified rule.
+     * Gets the amount of time stored for the specified unit.
      * <p>
-     * Zero is returned if no amount is stored for the rule.
+     * Zero is returned if no amount is stored for the unit.
      * <p>
      * Implementations must ensure that this method is thread-safe.
      *
-     * @param rule  the rule to get, not null
-     * @return the amount of time stored in this period for the rule
+     * @param unit  the unit to get, not null
+     * @return the amount of time stored in this period for the unit
      */
-    long periodAmount(PeriodRule rule);
+    long periodAmount(PeriodUnit unit);
 
 }

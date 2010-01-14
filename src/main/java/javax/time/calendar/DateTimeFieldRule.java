@@ -96,8 +96,8 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
             Class<T> reifiedClass,
             Chronology chronology,
             String name,
-            PeriodRule periodUnit,
-            PeriodRule periodRange,
+            PeriodUnit periodUnit,
+            PeriodUnit periodRange,
             int minimumValue,
             int maximumValue) {
         this(reifiedClass, chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
@@ -119,8 +119,8 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
             Class<T> reifiedClass,
             Chronology chronology,
             String name,
-            PeriodRule periodUnit,
-            PeriodRule periodRange,
+            PeriodUnit periodUnit,
+            PeriodUnit periodRange,
             int minimumValue,
             int maximumValue,
             boolean hasText) {

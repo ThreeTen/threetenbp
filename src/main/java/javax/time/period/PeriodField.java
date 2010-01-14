@@ -37,16 +37,16 @@ import java.util.Set;
 
 import javax.time.Duration;
 import javax.time.MathUtils;
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 
 /**
- * A period of time measured using a single period rule, such as '3 days' or '65 seconds'.
+ * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.
  * <p>
  * <code>PeriodField</code> is an immutable period that stores an amount of human-scale
- * time for a number of rules. For example, humans typically measure periods of time
- * in years, months, days, hours, minutes and seconds. These concepts are defined by
- * period rules in the chronology classes, and this class allows an amount to be specified
- * for one of the rules, such as '3 days' or '65 seconds'.
+ * time for a single unit. For example, humans typically measure periods of time
+ * in units of years, months, days, hours, minutes and seconds. These concepts are
+ * defined by instances of {@link PeriodUnit} in the chronology classes. This class
+ * allows an amount to be specified for one of the units, such as '3 Days' or '65 Seconds'.
  * <p>
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
@@ -71,58 +71,58 @@ public final class PeriodField
      */
     private final long amount;
     /**
-     * The rule defining the period.
+     * The unit the period is measured in.
      */
-    private final PeriodRule rule;
+    private final PeriodUnit unit;
 
     /**
-     * Obtains a period field from an amount and rule.
+     * Obtains a <code>PeriodField</code> from an amount and unit.
      * <p>
-     * The parameters represent the two parts of a phrase like '6 days'.
+     * The parameters represent the two parts of a phrase like '6 Days'.
      *
-     * @param amount  the amount of the period
-     * @param rule  the rule that the period is measured in, validated not null
+     * @param amount  the amount of the period, measured in terms of the unit, may be negative
+     * @param unit  the unit that the period is measured in, not null
      */
-    public static PeriodField of(long amount, PeriodRule rule) {
-        PeriodFields.checkNotNull(rule, "PeriodRule must not be null");
-        return new PeriodField(amount, rule);
+    public static PeriodField of(long amount, PeriodUnit unit) {
+        PeriodFields.checkNotNull(unit, "PeriodRule must not be null");
+        return new PeriodField(amount, unit);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param amount  the amount of the period
-     * @param rule  the rule that the period is measured in, not null
+     * @param amount  the amount of the period, measured in terms of the unit, may be negative
+     * @param unit  the unit that the period is measured in, validated not null
      */
-    private PeriodField(long amount, PeriodRule rule) {
+    private PeriodField(long amount, PeriodUnit unit) {
         super();
         this.amount = amount;
-        this.rule = rule;
+        this.unit = unit;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the single rule as a <code>Set</code> defining the what the period
-     * field represents.
+     * Gets the single unit as a <code>Set</code> defining the what the period
+     * represents.
      *
-     * @return the period rule as an unmodifiable set of size 1, never null
+     * @return the unit as an unmodifiable set of size 1, never null
      */
-    public Set<PeriodRule> periodRules() {
-        return Collections.singleton(rule);
+    public Set<PeriodUnit> periodRules() {
+        return Collections.singleton(unit);
     }
 
     /**
-     * Gets the amount of time stored for the specified rule.
+     * Gets the amount of time stored for the specified unit.
      * <p>
-     * Zero is returned if no amount is stored for the rule.
+     * Zero is returned if no amount is stored for the unit.
      *
-     * @param rule  the rule to get, not null
-     * @return the amount of time stored in this period for the rule
+     * @param unit  the unit to get, not null
+     * @return the amount of time stored in this period for the unit
      */
-    public long periodAmount(PeriodRule rule) {
-        PeriodFields.checkNotNull(rule, "PeriodRule must not be null");
-        if (this.rule.equals(rule)) {
+    public long periodAmount(PeriodUnit unit) {
+        PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
+        if (this.unit.equals(unit)) {
             return amount;
         }
         return 0;
@@ -164,7 +164,7 @@ public final class PeriodField
     /**
      * Gets the amount of this period.
      * <p>
-     * For example, in the period '5 days', the amount is '5'.
+     * For example, in the period '5 Days', the amount is '5'.
      *
      * @return the amount of time of this period, may be negative
      */
@@ -175,7 +175,7 @@ public final class PeriodField
     /**
      * Gets the amount of this period, converted to an <code>int</code>.
      * <p>
-     * For example, in the period '5 days', the amount is '5'.
+     * For example, in the period '5 Days', the amount is '5'.
      *
      * @return the amount of time of this period, may be negative
      */
@@ -184,71 +184,77 @@ public final class PeriodField
     }
 
     /**
-     * Gets the rule of this period.
+     * Gets the unit of this period.
      * <p>
-     * For example, in the period '5 days', the rule is 'days'.
+     * For example, in the period '5 Days', the unit is 'Days'.
      *
-     * @return the period rule, never null
+     * @return the period unit, never null
      */
-    public PeriodRule getRule() {
-        return rule;
+    public PeriodUnit getUnit() {
+        return unit;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this field with a different amount of time.
+     * Returns a copy of this period with a different amount of time.
+     * <p>
+     * Calling this method returns a new period with the same unit but different amount.
+     * For example, it could be used to change '3 Days' to '5 Days'.
      *
-     * @param amount  the amount of time to set in the returned period field, may be negative
-     * @return a new period field, never null
+     * @param amount  the amount of time to set in the returned period, may be negative
+     * @return a new period with the specified amount, never null
      */
     public PeriodField withAmount(long amount) {
         if (amount == this.amount) {
             return this;
         }
-        return new PeriodField(amount, rule);
+        return new PeriodField(amount, unit);
     }
 
     /**
-     * Returns a copy of this field with a different rule defining what the period represents.
+     * Returns a copy of this period with a different unit.
+     * <p>
+     * Calling this method returns a new period with the same amount but different unit.
+     * For example, it could be used to change '3 Days' to '3 Months'.
      *
-     * @param rule  the rule to set in the returned period field, may be negative
-     * @return a new period field, never null
+     * @param unit  the unit to set in the returned period, may be negative
+     * @return a new period with the specified rule, never null
      */
-    public PeriodField withRule(PeriodRule rule) {
-        PeriodFields.checkNotNull(rule, "PeriodRule must not be null");
-        if (rule.equals(this.rule)) {
+    public PeriodField withRule(PeriodUnit unit) {
+        PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
+        if (unit.equals(this.unit)) {
             return this;
         }
-        return new PeriodField(amount, rule);
+        return new PeriodField(amount, unit);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this field with the specified period added.
+     * Returns a copy of this period with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the period to add, may be negative
-     * @return the new period field plus the specified amount of time, never null
-     * @throws IllegalArgumetException if the specified field has a different rule
-     * @throws ArithmeticException if the result overflows a <code>long</code>
+     * @param period  the period to add, may be negative
+     * @return the new period with the specified period added, never null
+     * @throws IllegalArgumetException if the specified period has a different unit
+     * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField plus(PeriodField field) {
-        PeriodFields.checkNotNull(field, "PeriodField must not be null");
-        if (field.getRule().equals(rule) == false) {
-            throw new IllegalArgumentException("Cannot add periods, rules differ");
+    public PeriodField plus(PeriodField period) {
+        PeriodFields.checkNotNull(period, "PeriodField must not be null");
+        if (period.getUnit().equals(unit) == false) {
+            throw new IllegalArgumentException("Cannot add periods, units differ");
         }
-        return plus(field.getAmount());
+        return plus(period.getAmount());
     }
 
     /**
-     * Returns a copy of this field with the specified period added.
+     * Returns a copy of this period with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the period to add, may be negative
-     * @return the new period field plus the specified amount of time, never null
-     * @throws ArithmeticException if the result overflows a <code>long</code>
+     * @param amount  the period to add, measured in the unit of the period, may be negative
+     * @return the new period with the specified amount added, never null
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField plus(long amount) {
         if (amount == 0) {
@@ -259,31 +265,31 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this field with the specified period subtracted.
+     * Returns a copy of this period with the specified period subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the period to subtract, may be negative
-     * @return the new period minus the specified amount of time, never null
-     * @throws IllegalArgumetException if the specified field has a different rule
-     * @throws ArithmeticException if the result overflows a <code>long</code>
+     * @param period  the period to subtract, may be negative
+     * @return the new period with the specified period subtracted, never null
+     * @throws IllegalArgumetException if the specified has a different unit
+     * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField minus(PeriodField field) {
-        PeriodFields.checkNotNull(field, "PeriodField must not be null");
-        if (field.getRule().equals(rule) == false) {
-            throw new IllegalArgumentException("Cannot add periods, rules differ");
+    public PeriodField minus(PeriodField period) {
+        PeriodFields.checkNotNull(period, "PeriodField must not be null");
+        if (period.getUnit().equals(unit) == false) {
+            throw new IllegalArgumentException("Cannot add periods, units differ");
         }
-        return minus(field.getAmount());
+        return minus(period.getAmount());
     }
 
     /**
-     * Returns a copy of this field with the specified period subtracted.
+     * Returns a copy of this period with the specified period subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the period to subtract, may be negative
-     * @return the new period minus the specified amount of time, never null
-     * @throws ArithmeticException if the result overflows a <code>long</code>
+     * @param amount  the period to subtract, measured in the unit of the period, may be negative
+     * @return the new period with the specified amount subtracted, never null
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField minus(long amount) {
         if (amount == 0) {
@@ -294,13 +300,13 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this field with the amount multiplied by the specified scalar.
+     * Returns a copy of this period with the amount multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param scalar  the amount to multiply by, may be negative
+     * @param scalar  the value to multiply by, may be negative
      * @return the new period multiplied by the specified scalar, never null
-     * @throws ArithmeticException if the result overflows a <code>long</code>
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField multipliedBy(long scalar) {
         if (scalar == 1) {
@@ -310,12 +316,12 @@ public final class PeriodField
     }
 
     /**
-     * Returns a copy of this field with the amount divided by the specified divisor.
+     * Returns a copy of this period with the amount divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param divisor  the amount to divide by, may be negative
+     * @param divisor  the value to divide by, may be negative
      * @return the new period divided by the specified divisor, never null
      * @throws ArithmeticException if the divisor is zero
      */
@@ -328,9 +334,9 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the amount negated.
+     * Returns a copy of this period with the amount negated.
      *
-     * @return the new period with the negated amount, never null
+     * @return the new period with the amount negated, never null
      * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
      */
     public PeriodField negated() {
@@ -338,9 +344,11 @@ public final class PeriodField
     }
 
     /**
-     * Returns a new instance with the amount negated.
+     * Returns a new instance with the absolute amount.
+     * <p>
+     * The returned period will always have a positive amount.
      *
-     * @return the new period with abs positive amount, never null
+     * @return the new period with absolute amount, never null
      * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
      */
     public PeriodField abs() {
@@ -354,29 +362,29 @@ public final class PeriodField
     /**
      * Converts this period to an estimated duration.
      * <p>
-     * Each {@link PeriodRule} contains an estimated duration for that rule.
+     * Each {@link PeriodUnit} contains an estimated duration for that unit.
      * This method uses that estimate to calculate an estimated duration for
-     * this period field.
+     * this period.
      *
      * @return the estimated duration of this period, may be negative
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toEstimatedDuration() {
-        return rule.getEstimatedDuration().multipliedBy(amount);
+        return unit.getEstimatedDuration().multipliedBy(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this period field to another.
+     * Compares this period to another.
      * <p>
-     * The comparison orders first by the rule, then by the amount.
+     * The comparison orders first by the unit, then by the amount.
      *
      * @param otherPeriod  the other period to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherPeriod is null
      */
     public int compareTo(PeriodField otherPeriod) {
-        int cmp = rule.compareTo(otherPeriod.rule);
+        int cmp = unit.compareTo(otherPeriod.unit);
         if (cmp != 0) {
             return cmp;
         }
@@ -387,10 +395,10 @@ public final class PeriodField
     /**
      * Checks if this instance equal to the object specified.
      * <p>
-     * Two <code>PeriodField</code> instances are equal if the rule and amount are equal.
+     * Two <code>PeriodField</code> instances are equal if the unit and amount are equal.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this amount of time is the same as that specified
+     * @return true if this period is the same as that specified
      */
     @Override
     public boolean equals(Object obj) {
@@ -400,30 +408,30 @@ public final class PeriodField
         if (obj instanceof PeriodField) {
             PeriodField other = (PeriodField) obj;
             return this.amount == other.amount &&
-                    this.rule.equals(other.rule);
+                    this.unit.equals(other.unit);
         }
         return false;
     }
 
     /**
-     * Returns the hash code for this period field.
+     * Returns the hash code for this period.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return rule.hashCode() ^ (int)( amount ^ (amount >>> 32));
+        return unit.hashCode() ^ (int)( amount ^ (amount >>> 32));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the amount of time, such as '6 Days'.
+     * Returns a string representation of the period, such as '6 Days'.
      *
-     * @return a descriptive representation of the period field, not null
+     * @return a descriptive representation of the period, not null
      */
     @Override
     public String toString() {
-        return amount + " " + rule.getName();
+        return amount + " " + unit.getName();
     }
 
 }

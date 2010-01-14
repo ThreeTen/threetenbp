@@ -37,54 +37,61 @@ import javax.time.Duration;
 import javax.time.period.PeriodFields;
 
 /**
- * The rule defining how a single calendrical period operates.
+ * A unit of time for measuring a period, such as 'Days' or 'Minutes'.
  * <p>
- * Period rules represent the basic elements which are used to build calendar systems.
- * Examples include days, years and hours.
+ * <code>PeriodUnit</code> is an immutable definition of a unit of human-scale time.
+ * For example, humans typically measure periods of time in units of years, months,
+ * days, hours, minutes and seconds. These concepts are defined by instances of
+ * this class defined in the chronology classes.
  * <p>
- * PeriodRule is immutable and thread-safe.
+ * Units are either basic or derived. A derived unit can be converted accurately to
+ * another smaller unit. A basic unit is fundamental, and has no smaller representation.
+ * For example years are a derived unit consisting of 12 months, where a month is
+ * a basic unit.
+ * <p>
+ * PeriodUnit is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public final class PeriodRule
-        implements Comparable<PeriodRule>, Serializable {
+public final class PeriodUnit
+        implements Comparable<PeriodUnit>, Serializable {
     // TODO: serialization
 
     /** The serialization version. */
     private static final long serialVersionUID = 1L;
 
     /**
-     * The chronology of the rule, not null.
+     * The chronology of the unit, not null.
      */
     private final Chronology chronology;
     /**
-     * The id of the rule, not null.
+     * The id of the unit, not null.
      */
     private final String id;
     /**
-     * The name of the rule, not null.
+     * The name of the unit, not null.
      */
     private final String name;
     /**
-     * The alternate period equivalent to this.
+     * The period equivalent to this unit.
      */
-    private final PeriodFields alternatePeriod;
+    private final PeriodFields equivalentPeriod;
     /**
-     * The estimated duration of the rule, not null.
+     * The estimated duration of the unit, not null.
      */
     private final Duration estimatedDuration;
 
     /**
-     * Constructor used to create a base rule that cannot be derived.
+     * Constructor used to create a base unit that cannot be derived.
      * <p>
-     * A base rule cannot be derived from any smaller duration rule.
+     * A base unit cannot be derived from any smaller unit.
      * For example, an ISO month period cannot be derived from any other smaller period.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param estimatedDuration  the estimated duration of one unit of this period, not null
      */
-    public PeriodRule(
+    public PeriodUnit(
             Chronology chronology,
             String name,
             Duration estimatedDuration) {
@@ -104,25 +111,27 @@ public final class PeriodRule
         this.chronology = chronology;
         this.id = chronology.getName() + '.' + name;
         this.name = name;
-        this.alternatePeriod = null;
+        this.equivalentPeriod = null;
         this.estimatedDuration = estimatedDuration;
     }
 
     /**
-     * Constructor used to create a derived rule.
+     * Constructor used to create a derived unit.
      * <p>
-     * A derived rule is created as a multiple of a smaller duration rule.
+     * A derived unit is created as a multiple of a smaller unit.
      * For example, an ISO year period can be derived as 12 ISO month periods.
+     * <p>
+     * The estimated duration is calculated using {@link PeriodFields#toEstimatedDuration()}.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
-     * @param alternatePeriod  the alternate period equal to this, not null
+     * @param equivalentPeriod  the period this is derived from, not null
      * @throws ArithmeticException if the estimated duration is too large
      */
-    public PeriodRule(
+    public PeriodUnit(
             Chronology chronology,
             String name,
-            PeriodFields alternatePeriod) {
+            PeriodFields equivalentPeriod) {
         // avoid possible circular references by using inline NPE checks
         if (chronology == null) {
             throw new NullPointerException("Chronology must not be null");
@@ -130,17 +139,17 @@ public final class PeriodRule
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
-        if (alternatePeriod == null) {
-            throw new NullPointerException("Alternate period must not be null");
+        if (equivalentPeriod == null) {
+            throw new NullPointerException("Equivalent period must not be null");
         }
-        if (alternatePeriod.isPositive() == false || alternatePeriod.isZero()) {
-            throw new IllegalArgumentException("Alternate period must be positive and non-zero");
+        if (equivalentPeriod.isPositive() == false || equivalentPeriod.isZero()) {
+            throw new IllegalArgumentException("Equivalent period must be positive and non-zero");
         }
         this.chronology = chronology;
         this.id = chronology.getName() + '.' + name;
         this.name = name;
-        this.alternatePeriod = alternatePeriod;
-        this.estimatedDuration = alternatePeriod.toEstimatedDuration();
+        this.equivalentPeriod = equivalentPeriod;
+        this.estimatedDuration = equivalentPeriod.toEstimatedDuration();
     }
 
     /**
@@ -148,51 +157,51 @@ public final class PeriodRule
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
-     * @param alternatePeriod  the alternate period equal to this, null if no equivalent
+     * @param equivalentPeriod  the period this is derived from, null if no equivalent
      * @param estimatedDuration  the estimated duration of one unit of this period, not null
      */
-    PeriodRule(
+    PeriodUnit(
             Chronology chronology,
             String name,
-            PeriodFields alternatePeriod,
+            PeriodFields equivalentPeriod,
             Duration estimatedDuration) {
         // input known to be valid, don't call this by reflection!
         this.chronology = chronology;
         this.id = chronology.getName() + '.' + name;
         this.name = name;
-        this.alternatePeriod = alternatePeriod;
+        this.equivalentPeriod = equivalentPeriod;
         this.estimatedDuration = estimatedDuration;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology of the rule.
+     * Gets the chronology of the unit.
      *
-     * @return the chronology of the rule, never null
+     * @return the chronology of the unit, never null
      */
     public Chronology getChronology() {
         return chronology;
     }
 
     /**
-     * Gets the ID of the rule.
+     * Gets the ID of the unit.
      * <p>
      * The ID is of the form 'ChronologyName.RuleName'.
      * No two fields should have the same id.
      *
-     * @return the id of the rule, never null
+     * @return the id of the unit, never null
      */
     public String getID() {
         return id;
     }
 
     /**
-     * Gets the name of the rule.
+     * Gets the name of the unit.
      * <p>
      * Implementations should use the name that best represents themselves.
-     * Most rules will have a plural name, such as 'Years' or 'Minutes'.
+     * Most units will have a plural name, such as 'Years' or 'Minutes'.
      *
-     * @return the name of the rule, never null
+     * @return the name of the unit, never null
      */
     public String getName() {
         return name;
@@ -200,21 +209,21 @@ public final class PeriodRule
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the alternate period that this field can be expressed as.
+     * Gets the period that is equivalent to this unit.
      * <p>
-     * Most period rules are related to other rules.
+     * Most period units are related to other units.
      * For example, an hour might be represented as 60 minutes.
-     * Thus, if this is the hour rule, then this method would return 60 minutes.
+     * Thus, if this is the hour unit, then this method would return 60 minutes.
      *
      * @return the alternate period, null if none
      */
-    public PeriodFields getAlternatePeriod() {
-        return alternatePeriod;
+    public PeriodFields getEquivalentPeriod() {
+        return equivalentPeriod;
     }
 
     /**
      * Gets an estimate of the duration of the unit in seconds.
-     * This is used for comparing period rules.
+     * This is used for comparing units.
      *
      * @return the estimate of the duration in seconds, never null
      */
@@ -224,37 +233,37 @@ public final class PeriodRule
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this <code>PeriodRule</code> to another.
+     * Compares this unit to another.
      * <p>
-     * The comparison is based on the estimated duration.
+     * The comparison is based on the {@link #getEstimatedDuration() estimated duration}.
      *
      * @param other  the other type to compare to, not null
      * @return the comparator result, negative if less, positive if greater, zero if equal
      * @throws NullPointerException if other is null
      */
-    public int compareTo(PeriodRule other) {
+    public int compareTo(PeriodUnit other) {
         return getEstimatedDuration().compareTo(other.getEstimatedDuration());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares two rules based on their ID.
+     * Compares two units based on their ID.
      *
-     * @return true if the rules are the same
+     * @return true if the units are the same
      */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return id.equals(((PeriodRule) obj).id);
+        return id.equals(((PeriodUnit) obj).id);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a hash code based on the ID.
      *
-     * @return a description of the rule
+     * @return a description of the unit
      */
     @Override
     public int hashCode() {
@@ -263,9 +272,9 @@ public final class PeriodRule
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the rule.
+     * Returns a string representation of the unit.
      *
-     * @return a description of the rule, never null
+     * @return a description of the unit, never null
      */
     @Override
     public String toString() {

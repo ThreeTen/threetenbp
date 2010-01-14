@@ -41,7 +41,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 
 /**
  * The Coptic calendar system.
@@ -225,58 +225,58 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the period rule for years.
+     * Gets the period unit for years.
      * <p>
-     * The period rule defines the concept of a period of a year.
+     * The period unit defines the concept of a period of a year.
      * This has an estimated duration equal to 365.25 days.
      * <p>
      * See {@link #yearRule()} for the main date-time field.
      *
-     * @return the period rule for years, never null
+     * @return the period unit for years, never null
      */
-    public static PeriodRule periodYears() {
+    public static PeriodUnit periodYears() {
         // TODO: should be JulianYears? Depends on add method
         return YEARS;
     }
 
     /**
-     * Gets the period rule for months.
+     * Gets the period unit for months.
      * <p>
-     * The period rule defines the concept of a period of a month.
+     * The period unit defines the concept of a period of a month.
      * Coptic months are typically 30 days long, except for the 13th month which is
      * 5 or 6 days long. The rule uses an estimated duration of 29.5 days.
      * <p>
      * See {@link #monthOfYearRule()} for the main date-time field.
      *
-     * @return the period rule for months, never null
+     * @return the period unit for months, never null
      */
-    public static PeriodRule periodMonths() {
+    public static PeriodUnit periodMonths() {
         return MONTHS;
     }
 
     /**
-     * Gets the period rule for weeks.
+     * Gets the period unit for weeks.
      * <p>
-     * The period rule defines the concept of a period of a week.
-     * This is equivalent to the ISO weeks period rule.
+     * The period unit defines the concept of a period of a week.
+     * This is equivalent to the ISO weeks period unit.
      *
-     * @return the period rule for weeks, never null
+     * @return the period unit for weeks, never null
      */
-    public static PeriodRule periodWeeks() {
+    public static PeriodUnit periodWeeks() {
         return ISOChronology.periodWeeks();
     }
 
     /**
-     * Gets the period rule for days.
+     * Gets the period unit for days.
      * <p>
-     * The period rule defines the concept of a period of a day.
-     * This is equivalent to the ISO days period rule.
+     * The period unit defines the concept of a period of a day.
+     * This is equivalent to the ISO days period unit.
      * <p>
      * See {@link #dayOfMonthRule()} for the main date-time field.
      *
-     * @return the period rule for days, never null
+     * @return the period unit for days, never null
      */
-    public static PeriodRule periodDays() {
+    public static PeriodUnit periodDays() {
         return ISOChronology.periodDays();
     }
 
@@ -461,12 +461,12 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Period rule for years.
+     * Period unit for years.
      */
-    private static final PeriodRule YEARS = new PeriodRule(CopticChronology.INSTANCE, "CopticYears", Duration.seconds(31557600L));  // 365.25 days
+    private static final PeriodUnit YEARS = new PeriodUnit(CopticChronology.INSTANCE, "CopticYears", Duration.seconds(31557600L));  // 365.25 days
     /**
-     * Period rule for months.
+     * Period unit for months.
      */
-    private static final PeriodRule MONTHS = new PeriodRule(CopticChronology.INSTANCE, "CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
+    private static final PeriodUnit MONTHS = new PeriodUnit(CopticChronology.INSTANCE, "CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
 
 }

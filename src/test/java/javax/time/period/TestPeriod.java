@@ -47,7 +47,7 @@ import java.util.HashMap;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
-import javax.time.calendar.PeriodRule;
+import javax.time.calendar.PeriodUnit;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -132,7 +132,7 @@ public class TestPeriod {
         assertSame(Period.hoursMinutesSeconds(0, 0, 0), Period.ZERO);
         assertSame(Period.of(0, 0, 0, 0, 0, 0), Period.ZERO);
         assertSame(Period.of(0, 0, 0, 0, 0, 0, 0), Period.ZERO);
-        assertSame(Period.from(PeriodFields.of(new HashMap<PeriodRule, Integer>())), Period.ZERO);
+        assertSame(Period.from(PeriodFields.of(new HashMap<PeriodUnit, Integer>())), Period.ZERO);
     }
 
     //-----------------------------------------------------------------------

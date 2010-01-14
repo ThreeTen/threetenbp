@@ -72,9 +72,9 @@ public abstract class CalendricalRule<T>
     /** The name of the rule, not null. */
     private final String name;
     /** The period unit, not null. */
-    private final PeriodRule periodUnit;
+    private final PeriodUnit periodUnit;
     /** The period range, not null. */
-    private final PeriodRule periodRange;
+    private final PeriodUnit periodRange;
 
     /**
      * Constructor used to create a rule.
@@ -89,8 +89,8 @@ public abstract class CalendricalRule<T>
             Class<T> reifiedClass,
             Chronology chronology,
             String name,
-            PeriodRule periodUnit,
-            PeriodRule periodRange) {
+            PeriodUnit periodUnit,
+            PeriodUnit periodRange) {
         // avoid possible circular references by using inline NPE checks
         if (reifiedClass == null) {
             throw new NullPointerException("Reified class must not be null");
@@ -153,9 +153,9 @@ public abstract class CalendricalRule<T>
      * <p>
      * In the phrase 'hour of day', the unit is the hour.
      *
-     * @return the rule for the unit period, null if the rule isn't based on a period
+     * @return the unit defining the rule unit, null if this rule isn't based on a period
      */
-    public PeriodRule getPeriodUnit() {
+    public PeriodUnit getPeriodUnit() {
         return periodUnit;
     }
 
@@ -164,9 +164,10 @@ public abstract class CalendricalRule<T>
      * <p>
      * In the phrase 'hour of day', the range is the day.
      *
-     * @return the rule for the range period, null if unbounded
+     * @return the unit defining the rule range, null if unbounded,
+     *  or if this rule isn't based on a period
      */
-    public PeriodRule getPeriodRange() {
+    public PeriodUnit getPeriodRange() {
         return periodRange;
     }
 
