@@ -43,6 +43,7 @@
     <path id="test.path">
         <path refid="main.path" />
         <pathelement location="${build.test}" />
+        <pathelement location="src/main/resources"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
         </fileset>
@@ -124,6 +125,14 @@
         </testng>
     </target>
 
+    <target name="testScales" depends="compile-tests" description="run the tests">
+        <taskdef resource="testngtasks" classpathref="test.path" />
+        <testng classpathref="test.path" outputDir="${build.test}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
+            <jvmarg value="-Xmx512M" />
+            <classfileset dir="${build.test}" includes="javax/time/scales/Test*.class" excludes="java/util/*" />
+        </testng>
+    </target>
+
     <target name="coverage" depends="compile-tests" description="test coverage">
         <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
         <mkdir dir="${coverage}" />
@@ -159,6 +168,7 @@
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarCoreName}">
           <fileset dir="${core.classes}"/>
+          <fileset dir="src/main/resources"/>
         </jar>
     </target>
 

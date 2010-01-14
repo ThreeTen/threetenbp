@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.calendar.CalendarConversionException;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
+import javax.time.scales.TimeScaleInstantFormat;
 
 /**
  * An instantaneous point on the time-line that is defined relative to a time-scale.
@@ -65,6 +66,24 @@ public final class TimeScaleInstant
     // TODO: Consider BigDecimal
     // TODO: Check for potential overflows
 
+    public enum Validity {
+        /** The instant is definitely part of the time line.
+         */
+        valid,
+        /** The TAI instant corresponding to this instant is ambiguous.
+         * For example 2008-12-31T23:59:59.5 is ambiguous on some time scales that ignore
+         * the leap second.
+         */
+        ambiguous,
+        /** The instant may be part of the time line.
+         * Future leap seconds are known only a few months in advance.
+         */
+        possible,
+        /** The instant did not exist.
+         */
+        invalid
+    }
+
     /**
      * Constant for nanos per second.
      */
@@ -85,7 +104,10 @@ public final class TimeScaleInstant
     private final long epochSeconds;
     /**
      * The number of nanoseconds, later along the time-line, from the seconds field.
-     * This is always positive, and never exceeds 999,999,999.
+     * This is always positive. During a leap second the value will
+     * be in the range 1000000000 .. 1999999999, while during regular seconds the range
+     * is 0 .. 999999999. This representation assumes that double leap seconds do not occur;
+     * fortunately none have yet occurred and they are unlikely in the near future.
      */
     private final int nanoOfSecond;
 
@@ -151,6 +173,55 @@ public final class TimeScaleInstant
         }
         return new TimeScaleInstant(timeScale, epochSeconds, nanoOfSecond);
     }
+
+    /**
+     * Obtains an instance of <code>TimeScaleInstant</code> in the specified
+     * time-scale using seconds from the epoch of the scale, leapSecond, and nanosecond fraction of second.
+     * <p>
+     * Primitive fractions of seconds can be unintuitive.
+     * For positive values, they work as expected: <code>instant(0L, 1)</code>
+     * represents one nanosecond after the epoch.
+     * For negative values, they can be confusing: <code>instant(-1L, 999999999)</code>
+     * represents one nanosecond before the epoch.
+     * It can be thought of as minus one second plus 999,999,999 nanoseconds.
+     * As a result, it can be easier to use a negative fraction:
+     * <code>instant(0L, -1)</code> - which does represent one nanosecond before
+     * the epoch.
+     * Thus, the <code>nanoOfSecond</code> parameter is a positive or negative
+     * adjustment to the <code>epochSeconds</code> parameter along the time-line.
+     * For discontinuous time scales this does not verify that the instant really existed (or will exist). That can be determined
+     * using the getValidity() method.
+     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param leapSecond either zero if not a leap second, otherwise 1.
+     * @param nanoOfSecond  the nanoseconds within the second, -999,999,999 to 999,999,999
+     * @return the created instant, never null
+     * @throws IllegalArgumentException if nanoOfSecond is out of range, leapSecond is out of range
+     * or a leap second is specified for a time scale which does not support leap seconds.
+     */
+    public static TimeScaleInstant seconds(TimeScale timeScale, long epochSeconds, int leapSecond, int nanoOfSecond) {
+        // TODO: does this need to move to TimeScale ?
+
+        if (nanoOfSecond >= NANOS_PER_SECOND) {
+            throw new IllegalArgumentException("Nanosecond fraction must not be more than 999,999,999 but was " + nanoOfSecond);
+        }
+        if (nanoOfSecond < 0) {
+            nanoOfSecond += NANOS_PER_SECOND;
+            if (nanoOfSecond <= 0) {
+                throw new IllegalArgumentException("Nanosecond fraction must not be less than -999,999,999 but was " + nanoOfSecond);
+            }
+            epochSeconds = MathUtils.safeDecrement(epochSeconds);
+        }
+        if (leapSecond != 0) {
+            if (leapSecond < 0 || leapSecond > 1) {
+                throw new IllegalArgumentException("Leap second must be zero or 1");
+            }
+            if (!timeScale.supportsLeapSecond())
+                throw new IllegalArgumentException("Time scale does not support leap seconds");
+            nanoOfSecond += NANOS_PER_SECOND;
+        }
+        return new TimeScaleInstant(timeScale, epochSeconds, nanoOfSecond);
+    }
+
 
 //    /**
 //     * Factory method to create an instance of Instant using seconds from the
@@ -256,11 +327,18 @@ public final class TimeScaleInstant
      * Gets the number of seconds from the epoch defined by the time-scale.
      * <p>
      * Instants on the time-line after the epoch are positive, earlier are negative.
-     *
+     * In the case of true UTC this does not include leap seconds.
      * @return the seconds from the epoch
      */
     public long getEpochSeconds() {
         return epochSeconds;
+    }
+
+    /** leap second after epochSeconds.
+     * @return 1 during a leap second, otherwise 0.
+     */
+    public int getLeapSecond() {
+        return nanoOfSecond < NANOS_PER_SECOND ? 0 : 1;
     }
 
     /**
@@ -270,9 +348,17 @@ public final class TimeScaleInstant
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
     public int getNanoOfSecond() {
-        return nanoOfSecond;
+        return nanoOfSecond < NANOS_PER_SECOND ? nanoOfSecond : nanoOfSecond - NANOS_PER_SECOND;
     }
 
+    /** Test validity of this instant.
+     * Some values described by an Instant may not exist. This method tests if the instant
+     * definitely existed (or will exist), or may exist, or definitely will not (or never) existed.
+     * @return
+     */
+    public Validity getValidity() {
+        return timeScale.getValidity(this);
+    }
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this Instant with the specified duration added.
@@ -469,7 +555,7 @@ public final class TimeScaleInstant
         // perhaps "3156351758secs + 3278527ns + 1leapsec TrueUTC"
         // must contain entire state of TimeScaleInstant
         // TODO: optimize and handle big instants
-        return OffsetDateTime.fromInstant(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
+        return TimeScaleInstantFormat.getInstance().format(this);
     }
 
 }

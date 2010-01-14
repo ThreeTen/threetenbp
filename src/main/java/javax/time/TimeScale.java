@@ -56,11 +56,25 @@ import javax.time.calendar.CalendarConversionException;
  * @author Stephen Colebourne
  */
 public interface TimeScale {
+
     // implementations should be a single enum
     // need methods to convert from one scale to another
     // duration between ?
     // plus(Duration) ?
     // isCompleteTimeLine() ?
+    
+    /** Does the instant exist.
+     * 
+     * @param instant
+     * @return
+     */
+    TimeScaleInstant.Validity getValidity(TimeScaleInstant instant);
+
+    /** Does the time scale support leap seconds.
+     *
+     * @return
+     */
+    boolean supportsLeapSecond();
 
     /**
      * Converts a scaled instant to a standard instant.
@@ -88,6 +102,20 @@ public interface TimeScale {
      * @throws CalendarConversionException if the conversion cannot be performed
      */
     TimeScaleInstant toTimeScaleInstant(InstantProvider instantProvider);
+
+    /** Convert an instant to TAI.
+     *
+     * @param src instant on this time scale
+     * @return
+     */
+    TimeScaleInstant toTAI(TimeScaleInstant src);
+
+    /** Convert instant to this time scale.
+     *
+     * @param src instant on another time scale.
+     * @return
+     */
+    TimeScaleInstant toTimeScaleInstant(TimeScaleInstant src);
 
     /**
      * Gets the internal name of the time-scale.

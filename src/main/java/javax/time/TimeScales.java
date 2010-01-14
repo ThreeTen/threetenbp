@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import javax.time.scales.TAI;
+import javax.time.scales.TrueUTC;
+import javax.time.scales.UTC;
+
 /**
  * Provides common implementations of <code>TimeScale</code>.
  * <p>
@@ -54,29 +58,22 @@ public final class TimeScales {
      * @return the TAI time-scale, never null
      */
     public static TimeScale tai() {
-        return Impl.TAI;
+        return TAI.INSTANCE;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Enum implementing the scales.
+    /** UTC without leap seconds.
+     * UTC as most commonly implemented in computer systems.
+     * @return
      */
-    private static enum Impl implements TimeScale {
-        /** TAI. */
-        TAI {
-            /** {@inheritDoc} */
-            public Instant toInstant(TimeScaleInstant tsInstant) {
-                return null;  // TODO
-            }
-            /** {@inheritDoc} */
-            public TimeScaleInstant toTimeScaleInstant(InstantProvider instantProvider) {
-                return null;  // TODO
-            }
-            /** {@inheritDoc} */
-            public String getName() {
-                return "TAI";
-            }
-        },
+    public static TimeScale utc() {
+        return UTC.INSTANCE;
     }
 
+    /** True UTC with leap seconds.
+     * UTC with support for leap seconds.
+     * @return
+     */
+    public static TimeScale trueUTC() {
+        return TrueUTC.INSTANCE;
+    }
 }

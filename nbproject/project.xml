@@ -147,19 +147,19 @@
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/test/java</package-root>
-                <classpath mode="compile">lib/test/testng-5.1-jdk15.jar;build/main/core</classpath>
+                <classpath mode="compile">build/main/core;lib/test/testng-5.8-jdk15.jar</classpath>
                 <built-to>build/test</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-openjdk/test/java</package-root>
-                <classpath mode="compile">lib/test/testng-5.1-jdk15.jar;build/main/ojdk;build/main/core;build/test</classpath>
+                <classpath mode="compile">build/main/ojdk;build/main/core;build/test;lib/test/testng-5.8-jdk15.jar</classpath>
                 <built-to>build/test</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-oracle/test/java</package-root>
-                <classpath mode="compile">lib/test/testng-5.1-jdk15.jar;build/main/oracle;build/main/core</classpath>
+                <classpath mode="compile">build/main/oracle;build/main/core;lib/test/testng-5.8-jdk15.jar</classpath>
                 <built-to>build/test</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
