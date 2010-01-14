@@ -13,6 +13,11 @@
                     <location>src/main/java</location>
                 </source-folder>
                 <source-folder>
+                    <label>src-extra\main\java</label>
+                    <type>java</type>
+                    <location>src-extra/main/java</location>
+                </source-folder>
+                <source-folder>
                     <label>src-openjdk\main\java</label>
                     <type>java</type>
                     <location>src-openjdk/main/java</location>
@@ -26,6 +31,11 @@
                     <label>src\test\java</label>
                     <type>java</type>
                     <location>src/test/java</location>
+                </source-folder>
+                <source-folder>
+                    <label>src-extra\test\java</label>
+                    <type>java</type>
+                    <location>src-extra/test/java</location>
                 </source-folder>
                 <source-folder>
                     <label>src-openjdk\test\java</label>
@@ -93,6 +103,10 @@
                         <location>src/main/java</location>
                     </source-folder>
                     <source-folder style="packages">
+                        <label>src-extra\main\java</label>
+                        <location>src-extra/main/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
                         <label>src-openjdk\main\java</label>
                         <location>src-openjdk/main/java</location>
                     </source-folder>
@@ -103,6 +117,10 @@
                     <source-folder style="packages">
                         <label>src\test\java</label>
                         <location>src/test/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src-extra\test\java</label>
+                        <location>src-extra/test/java</location>
                     </source-folder>
                     <source-folder style="packages">
                         <label>src-openjdk\test\java</label>
@@ -134,6 +152,13 @@
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
+                <package-root>src-extra/main/java</package-root>
+                <classpath mode="compile">build/main/core</classpath>
+                <!--built-to>build/main/extra</built-to-->
+                <javadoc-built-to>build/javadoc</javadoc-built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>src-openjdk/main/java</package-root>
                 <classpath mode="compile">build/main/core</classpath>
                 <built-to>build/main/ojdk</built-to>
@@ -152,15 +177,21 @@
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
+                <package-root>src-extra/test/java</package-root>
+                <classpath mode="compile">build/main/core;build/test;lib/test/testng-5.8-jdk15.jar</classpath>
+                <!--built-to>build/test</built-to-->
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
                 <package-root>src-openjdk/test/java</package-root>
                 <classpath mode="compile">build/main/ojdk;build/main/core;build/test;lib/test/testng-5.8-jdk15.jar</classpath>
-                <built-to>build/test</built-to>
+                <!--built-to>build/test</built-to-->
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src-oracle/test/java</package-root>
                 <classpath mode="compile">build/main/oracle;build/main/core;lib/test/testng-5.8-jdk15.jar</classpath>
-                <built-to>build/test</built-to>
+                <!--built-to>build/test</built-to-->
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
