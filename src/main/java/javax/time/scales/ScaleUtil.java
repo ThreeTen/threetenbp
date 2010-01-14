@@ -99,24 +99,13 @@ public class ScaleUtil {
     static Validity checkEarlyValidity(TimeScaleInstant instant) {
         EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromUTC(instant.getEpochSeconds());
         // gaps/overlap occur within the last second so quickly reject other cases
-        if (instant.getEpochSeconds() < e.getEndEpochSeconds()-1) {
+        int gap = e.getUTCGapNanoseconds();
+        if (gap == 0 || instant.getEpochSeconds() < e.getEndEpochSeconds()-1) {
             return Validity.valid;
         }
-        // get TAI-UTC at start of next period
-        long nextDelta = e.getNext() == null ? 10*ScaleUtil.NANOS_PER_SECOND :
-            e.getNext().getUTCDeltaNanoseconds(e.getNext().getStartEpochSeconds(), 0);
-        long endDelta = e.getUTCDeltaNanoseconds(e.getEndEpochSeconds(), 0);
-        if (endDelta == nextDelta) {
-            // smooth transition
+        if (instant.getNanoOfSecond() < NANOS_PER_SECOND-Math.abs(gap))
             return Validity.valid;
-        }
-        // have a jump either forward or backward
-        if (nextDelta < endDelta) {
-            return e.getUTCDeltaNanoseconds(instant.getEpochSeconds(), instant.getNanoOfSecond()) > nextDelta ?
-                Validity.invalid : Validity.valid;
-        }
-        // approximation here, must check accuracy
-        return instant.getNanoOfSecond() + (nextDelta-endDelta) > ScaleUtil.NANOS_PER_SECOND ? Validity.ambiguous : Validity.valid;
+        return gap < 0 ? Validity.invalid : Validity.ambiguous;
     }
 
     public static int julianDayNumber(int year, int month, int day) {
