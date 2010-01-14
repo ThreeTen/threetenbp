@@ -34,10 +34,10 @@
     </macrodef>
 
     <path id="main.path">
-        <pathelement location="${core.classes}" />
-        <pathelement location="${extra.classes}" />
-        <pathelement location="${oracle.classes}" />
-        <pathelement location="${ojdk.classes}" />
+        <pathelement location="${core.main.classes}" />
+        <pathelement location="${extra.main.classes}" />
+        <pathelement location="${oracle.main.classes}" />
+        <pathelement location="${ojdk.main.classes}" />
         <fileset dir="lib/main">
             <include name="**/*.jar" />
         </fileset>
@@ -45,7 +45,10 @@
 
     <path id="test.path">
         <path refid="main.path" />
-        <pathelement location="${build.test}" />
+        <pathelement location="${core.test.classes}" />
+        <pathelement location="${extra.test.classes}" />
+        <pathelement location="${oracle.test.classes}" />
+        <pathelement location="${ojdk.test.classes}" />
         <pathelement location="src/main/resources"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
@@ -81,31 +84,31 @@
     </target>
 
     <target name="compileCore" depends="init">
-        <mkdir  dir="${core.classes}"/>
-        <javac srcdir="${core.main}" destdir="${core.classes}" debug="true">
+        <mkdir  dir="${core.main.classes}"/>
+        <javac srcdir="${core.main}" destdir="${core.main.classes}" debug="true">
             <classpath refid="main.path"/>
         </javac>
     </target>
 
     <target name="compileExtra" depends="compileCore">
-        <mkdir  dir="${extra.classes}"/>
-        <javac srcdir="${extra.main}" destdir="${extra.classes}">
-            <classpath location="${core.classes}"/>
+        <mkdir  dir="${extra.main.classes}"/>
+        <javac srcdir="${extra.main}" destdir="${extra.main.classes}">
+            <classpath location="${core.main.classes}"/>
             <classpath refid="main.path"/>            
         </javac>
     </target>
 
     <target name="compileOpenJDK" depends="compileCore">
-        <mkdir  dir="${ojdk.classes}"/>
-        <javac srcdir="${ojdk.main}" destdir="${ojdk.classes}" nowarn="true">
+        <mkdir  dir="${ojdk.main.classes}"/>
+        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true">
             <classpath refid="main.path"/>
         </javac>
     </target>
 
     <target name="compileOracle" depends="compileCore">
-        <mkdir dir="${oracle.classes}"/>
-        <javac  srcdir="${oracle.main}" destdir="${oracle.classes}">
-            <classpath location="${core.classes}"/>
+        <mkdir dir="${oracle.main.classes}"/>
+        <javac  srcdir="${oracle.main}" destdir="${oracle.main.classes}">
+            <classpath location="${core.main.classes}"/>
             <classpath refid="main.path"/>
         </javac>
     </target>
@@ -122,28 +125,43 @@
                overview="${core.main}/javax/time/overview.html" />
     </target>
 
-    <target name="compile-tests" depends="compileCore" description="compile the tests">
-        <mkdir dir="${build.test}" />
-        <javac srcdir="${core.test}" destdir="${build.test}" classpathref="test.path" />
+    <target name="compile-core-tests" depends="compileCore">
+        <mkdir dir="${core.test.classes}" />
+        <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" />
     </target>
 
-    <target name="test" depends="compile-tests" description="run the tests">
+    <target name="compile-extra-tests" depends="compileExtra,compile-core-tests">
+        <mkdir dir="${extra.test.classes}" />
+        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path" />
+    </target>
+
+    <target name="test-core" depends="compile-core-tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
-        <testng classpathref="test.path" outputDir="${build.test}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
+        <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
-            <classfileset dir="${build.test}" includes="**/Test*.class" excludes="java/util/*" />
+            <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
 
-    <target name="testScales" depends="compile-tests" description="run the tests">
+    <target name="test-extra" depends="compile-extra-tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
-        <testng classpathref="test.path" outputDir="${build.test}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
+        <testng classpathref="test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
-            <classfileset dir="${build.test}" includes="javax/time/scales/Test*.class" excludes="java/util/*" />
+            <classfileset dir="${extra.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
 
-    <target name="coverage" depends="compile-tests" description="test coverage">
+    <target name="testScales" depends="compile-core-tests" description="run the scales tests">
+        <taskdef resource="testngtasks" classpathref="test.path" />
+        <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
+            <jvmarg value="-Xmx512M" />
+            <classfileset dir="${core.test.classes}" includes="javax/time/scales/Test*.class" excludes="java/util/*" />
+        </testng>
+    </target>
+
+    <target name="test" depends="test-core,test-extra" description="run tests" />
+
+    <target name="coverage" depends="compile-core-tests" description="test coverage">
         <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
         <mkdir dir="${coverage}" />
            <emmajava libclasspathref="emma.lib"
@@ -162,7 +180,7 @@
         <mkdir dir="${dist}" />        
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarOracleName}">
-          <fileset dir="${oracle.classes}"/>
+          <fileset dir="${oracle.main.classes}"/>
         </jar>
     </target>
 
@@ -170,7 +188,7 @@
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarOpenJDKName}">
-          <fileset dir="${ojdk.classes}"/>
+          <fileset dir="${ojdk.main.classes}"/>
         </jar>
     </target>
 
@@ -178,7 +196,7 @@
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarExtraName}">
-          <fileset dir="${extra.classes}"/>
+          <fileset dir="${extra.main.classes}"/>
         </jar>
     </target>
 
@@ -186,7 +204,7 @@
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarCoreName}">
-          <fileset dir="${core.classes}"/>
+          <fileset dir="${core.main.classes}"/>
           <fileset dir="src/main/resources"/>
         </jar>
     </target>
@@ -195,10 +213,10 @@
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarAllName}">
-          <fileset dir="${ojdk.classes}"/>
-          <fileset dir="${oracle.classes}"/>
-          <fileset dir="${extra.classes}"/>
-          <fileset dir="${core.classes}"/>
+          <fileset dir="${ojdk.main.classes}"/>
+          <fileset dir="${oracle.main.classes}"/>
+          <fileset dir="${extra.main.classes}"/>
+          <fileset dir="${core.main.classes}"/>
         </jar>
     </target>
 
@@ -227,7 +245,7 @@
         <zip destfile="${distFileName}" basedir="${dist}" />
     </target>
 
-    <target name="testExamples" depends="compile-tests" description="outputs some examples to system out">
+    <target name="testExamples" depends="compile-core-tests" description="outputs some examples to system out">
         <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
     </target>
 </project>
