@@ -63,6 +63,24 @@ public interface TimeScale {
     // duration between ?
     // plus(Duration) ?
     // isCompleteTimeLine() ?
+
+    /** Add duration to an instant.
+     * @return result of sum on the same time scale as the supplied instant.
+     */
+    TimeScaleInstant add(TimeScaleInstant t, Duration d);
+
+    /** Subtract duration from an instant.
+     * @return result of subtraction on the same time scale as the supplied instant
+     */
+    TimeScaleInstant subtract(TimeScaleInstant t, Duration d);
+
+    /** Compute duration between two instants on this time scale.
+     * If the two instants are not on this time scale they will be converted.
+     * @param a first instant
+     * @param b second instant
+     * @return duration measured on this time scale
+     */
+    Duration durationBetween(TimeScaleInstant a, TimeScaleInstant b);
     
     /** Does the instant exist.
      * Time scales which are not continuous give rise to periods which do not correspond to a genuine instant (invalid),

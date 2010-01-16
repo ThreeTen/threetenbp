@@ -32,6 +32,7 @@
 package javax.time.scales;
 
 import java.io.Serializable;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
@@ -61,6 +62,100 @@ public class TrueUTC implements TimeScale, Serializable {
 
     private Object readResolve() {
         return INSTANCE;
+    }
+
+    public TimeScaleInstant add(TimeScaleInstant t, Duration d) {
+        if (t.getTimeScale() != this)
+            return t.getTimeScale().add(t, d);
+        long seconds = d.getSeconds();
+        int nanos = d.getNanosAdjustment();
+        if (seconds == 0 && nanos == 0) {
+            return t;
+        }
+        seconds = MathUtils.safeAdd(t.getEpochSeconds(), seconds);
+        if (t.getLeapSecond() != 0)
+            seconds = MathUtils.safeIncrement(seconds);
+        nanos += t.getNanoOfSecond();
+        if (nanos >= ScaleUtil.NANOS_PER_SECOND) {
+            nanos -= ScaleUtil.NANOS_PER_SECOND;
+            seconds = MathUtils.safeDecrement(seconds);
+        }
+        if (seconds < ScaleUtil.START_TAI && t.getEpochSeconds() < ScaleUtil.START_TAI) {
+            // no adjustments required in this interval
+            return TimeScaleInstant.seconds(this, seconds, nanos);
+        }
+        return adjustResult(t, seconds, nanos);
+    }
+
+    private TimeScaleInstant adjustResult(TimeScaleInstant t, long resultEpochSeconds, int resultNanoOfSecond) {
+        LeapSeconds.Entry et = t.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ?
+            LeapSeconds.list().get(0) :
+            LeapSeconds.list().entryFromUTC(t.getEpochSeconds());
+        resultEpochSeconds += et.getDeltaSeconds(); // now in TAI
+        LeapSeconds.Entry e = resultEpochSeconds <= ScaleUtil.TAI_START_LEAP_SECONDS ?
+            LeapSeconds.list().get(0) :
+            LeapSeconds.list().entryFromTAI(resultEpochSeconds, resultNanoOfSecond);
+        // convert result back to UTC
+        resultEpochSeconds -= e.getDeltaSeconds();
+        int leapSecond;
+        if (e.getNext() != null && resultEpochSeconds >= e.getNext().getStartEpochSeconds()) {
+            resultEpochSeconds--;
+            leapSecond = 1;
+        }
+        else {
+            leapSecond = 0;
+            if (resultEpochSeconds < ScaleUtil.START_LEAP_SECONDS && resultEpochSeconds > ScaleUtil.START_TAI) {
+                return ScaleUtil.adjustUTCAroundGaps(t, resultEpochSeconds, resultNanoOfSecond);
+            }
+        }
+        return TimeScaleInstant.seconds(this, resultEpochSeconds, leapSecond, resultNanoOfSecond);
+    }
+
+    public TimeScaleInstant subtract(TimeScaleInstant t, Duration d) {
+        if (t.getTimeScale() != this) {
+            return t.getTimeScale().subtract(t, d);
+        }
+        long seconds = d.getSeconds();
+        int nanos = d.getNanosAdjustment();
+        if (seconds == 0 && nanos == 0) {
+            return t;
+        }
+        seconds = MathUtils.safeSubtract(t.getEpochSeconds(), seconds);
+        if (t.getLeapSecond() != 0) {
+            seconds = MathUtils.safeIncrement(seconds);
+        }
+        nanos = t.getNanoOfSecond() - nanos;
+        if (nanos < 0) {
+            nanos += ScaleUtil.NANOS_PER_SECOND;
+            seconds = MathUtils.safeDecrement(seconds);
+        }
+        if (seconds < ScaleUtil.START_TAI && t.getEpochSeconds() < ScaleUtil.START_TAI) {
+            return TimeScaleInstant.seconds(t.getTimeScale(), seconds, nanos);
+        }
+        return adjustResult(t, seconds, nanos);
+    }
+
+    private int differenceAdjust(TimeScaleInstant t) {
+        return (t.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ? 10 :
+            LeapSeconds.list().entryFromUTC(t.getEpochSeconds()).getDeltaSeconds()) + t.getLeapSecond();
+    }
+
+    public Duration durationBetween(TimeScaleInstant start, TimeScaleInstant end) {
+        if (start.getTimeScale() != this)
+            start = toTimeScaleInstant(start);
+        if (end.getTimeScale() != this)
+            end = toTimeScaleInstant(end);
+        long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
+        int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
+        if (nanos < 0) {
+            nanos += ScaleUtil.NANOS_PER_SECOND;
+            secs = MathUtils.safeDecrement(secs);
+        }
+        int adjust = differenceAdjust(end)- differenceAdjust(start);
+        if (adjust != 0) {
+            secs = MathUtils.safeAdd(secs, adjust);
+        }
+        return Duration.seconds(secs, nanos);
     }
 
     /** Check validity of TrueUTC instants.

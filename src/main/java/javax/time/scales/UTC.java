@@ -33,6 +33,7 @@
 package javax.time.scales;
 
 import java.io.Serializable;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
@@ -59,6 +60,52 @@ public class UTC implements TimeScale, Serializable {
 
     private Object readResolve() {
         return INSTANCE;
+    }
+
+    public TimeScaleInstant add(TimeScaleInstant t, Duration d) {
+        if (t.getTimeScale() != this)
+            return t.getTimeScale().add(t, d);
+        long seconds = d.getSeconds();
+        int nanos = d.getNanosAdjustment();
+        if (seconds == 0 && nanos == 0)
+            return t;
+        seconds = MathUtils.safeAdd(t.getEpochSeconds(), seconds);
+        nanos += t.getNanoOfSecond();
+        if (nanos >= ScaleUtil.NANOS_PER_SECOND) {
+            nanos -= ScaleUtil.NANOS_PER_SECOND;
+            seconds = MathUtils.safeIncrement(seconds);
+        }
+        if (seconds < ScaleUtil.START_LEAP_SECONDS && seconds > ScaleUtil.START_TAI) {
+            return ScaleUtil.adjustUTCAroundGaps(t, seconds, nanos);
+        }
+        return TimeScaleInstant.seconds(this, seconds, nanos);
+    }
+
+    public TimeScaleInstant subtract(TimeScaleInstant t, Duration d) {
+        if (t.getTimeScale() != this)
+            return t.getTimeScale().subtract(t, d);
+        long seconds = d.getSeconds();
+        int nanos = d.getNanosAdjustment();
+        if (seconds == 0 && nanos == 0)
+            return t;
+        seconds = MathUtils.safeSubtract(t.getEpochSeconds(), seconds);
+        nanos = t.getNanoOfSecond() - nanos;
+        if (nanos < 0) {
+            nanos += ScaleUtil.NANOS_PER_SECOND;
+            seconds = MathUtils.safeDecrement(seconds);
+        }
+        if (seconds < ScaleUtil.START_LEAP_SECONDS && seconds > ScaleUtil.START_TAI) {
+            return ScaleUtil.adjustUTCAroundGaps(t, seconds, nanos);
+        }
+        return TimeScaleInstant.seconds(this, seconds, nanos);
+    }
+
+    public Duration durationBetween(TimeScaleInstant a, TimeScaleInstant b) {
+        if (a.getTimeScale() != this)
+            a = toTimeScaleInstant(a);
+        if (b.getTimeScale() != this)
+            b = toTimeScaleInstant(b);
+        return ScaleUtil.durationBetween(a, b);
     }
 
     /** Check validity of UTC instants.

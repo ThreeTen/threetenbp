@@ -32,6 +32,7 @@
 
 package javax.time.scales;
 
+import javax.time.Duration;
 import javax.time.TimeScaleInstant;
 import javax.time.TimeScales;
 import org.testng.annotations.Test;
@@ -109,5 +110,42 @@ public class TestUTC {
     private void checkValidity(long epochSeconds, int nanoOfSecond, TimeScaleInstant.Validity validity) {
         TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.utc(), epochSeconds, nanoOfSecond);
         assertEquals(t.getValidity(), validity);
+    }
+
+    @Test public void testCalculation() {
+        assertEquals(instant(date(2008, 12, 31)+time(23,59,59)).plus(Duration.seconds(1)),
+           instant(date(2009, 1, 1)));
+        assertEquals(instant(date(2009, 1, 1)).minus(Duration.seconds(1)), instant(date(2008, 12, 31)+time(23,59,59)));
+        assertEquals(TimeScales.utc().durationBetween(
+               instant(date(2008, 12, 31)+time(23,59,59)),
+               instant(date(2009, 1, 1))),
+           Duration.seconds(1));
+        assertEquals(TimeScales.utc().durationBetween(
+               instant(date(2008, 12, 31)+time(23,59)),
+               instant(date(2009, 1, 1)+60)),
+           Duration.seconds(120));
+        assertEquals(TimeScales.utc().durationBetween(
+               instant(date(2008, 12, 31)+time(23,59)),
+               instant(date(2008, 12, 31)+time(23,59,59),0)),
+           Duration.seconds(59));
+
+        // check behaviour around gap in time scale
+        assertTrue(instant(date(1968,2,1)).minus(Duration.millis(10)).getValidity() == TimeScaleInstant.Validity.valid);
+        assertEquals(instant(date(1968,1,31)+time(23,59,59)).plus(Duration.millis(990)), instant(date(1968,2,1)));
+
+        TimeScaleInstant t0 = instant(date(1968,1,1));
+        TimeScaleInstant t1= instant(date(1969,1,1));
+        Duration dUTC = TimeScales.utc().durationBetween(t0, t1);
+        Duration dTAI = TimeScales.tai().durationBetween(t0, t1);
+        System.out.println("Duration between "+t0+" and "+t1+" is "+dUTC+"[utc], "+dTAI+"[TAI]");
+        System.out.println("Difference is "+dTAI.minus(dUTC));
+    }
+
+    private static TimeScaleInstant instant(long epochSeconds) {
+        return TimeScaleInstant.seconds(TimeScales.utc(), epochSeconds);
+    }
+
+    private static TimeScaleInstant instant(long epochSeconds, int nanoOfSecond) {
+        return TimeScaleInstant.seconds(TimeScales.utc(), epochSeconds, nanoOfSecond);
     }
 }

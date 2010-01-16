@@ -368,23 +368,7 @@ public final class TimeScaleInstant
      * @throws ArithmeticException if the result exceeds the storage capacity
      */
     public TimeScaleInstant plus(Duration duration) {
-        // TODO: Move implementation to TimeScale?
-        
-        long secsToAdd = duration.getSeconds();
-        int nanosToAdd = duration.getNanosAdjustment();
-        if (secsToAdd == 0 && nanosToAdd == 0) {
-            return this;
-        }
-
-        long secs = MathUtils.safeAdd(epochSeconds, secsToAdd);
-        int nos = nanoOfSecond + nanosToAdd;
-
-        if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secs = MathUtils.safeIncrement(secs);
-        }
-
-        return new TimeScaleInstant(timeScale, secs, nos);
+        return timeScale.add(this, duration);
     }
 
     //-----------------------------------------------------------------------
@@ -398,24 +382,7 @@ public final class TimeScaleInstant
      * @throws ArithmeticException if the result exceeds the storage capacity
      */
     public TimeScaleInstant minus(Duration duration) {
-//        Instant.checkNotNull(duration, "Duration must not be null");
-//        return plus(duration.negated());
-        
-        // TODO: Move implementation to TimeScale?
-        // treat as plus(duration.negated()) ?
-        
-        long secsToSubtract = duration.getSeconds();
-        int nanosToSubtract = duration.getNanosAdjustment();
-        if (secsToSubtract == 0 && nanosToSubtract == 0) {
-            return this;
-        }
-        long secs = MathUtils.safeSubtract(epochSeconds, secsToSubtract);
-        int nos = nanoOfSecond - nanosToSubtract;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = MathUtils.safeDecrement(secs);
-        }
-        return new TimeScaleInstant(timeScale, secs, nos);
+        return timeScale.subtract(this, duration);
     }
 
     //-----------------------------------------------------------------------

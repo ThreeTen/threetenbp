@@ -31,6 +31,7 @@
  */
 package javax.time.scales;
 
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.TimeScaleInstant;
 import javax.time.TimeScales;
@@ -127,5 +128,30 @@ public class TestTAI {
         Instant t = ts.toInstant();
         assertEquals(t.getEpochSeconds(), expectedEpochSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+    @Test public void testCalculation() {
+        assertEquals(instant(date(2008, 12, 31)+time(23,59,59)).plus(Duration.seconds(1)),
+           instant(date(2009, 1, 1)));
+        assertEquals(instant(date(2009, 1, 1)).minus(Duration.seconds(1)), instant(date(2008, 12, 31)+time(23,59,59)));
+        assertEquals(TimeScales.tai().durationBetween(
+               instant(date(2008, 12, 31)+time(23,59,59)),
+               instant(date(2009, 1, 1))),
+           Duration.seconds(1));
+        assertEquals(TimeScales.tai().durationBetween(
+               instant(date(2008, 12, 31)+time(23,59)),
+               instant(date(2009, 1, 1)+60)),
+           Duration.seconds(120));
+        assertEquals(TimeScales.tai().durationBetween(
+               instant(date(2008, 12, 31)+time(23,59)),
+               instant(date(2008, 12, 31)+time(23,59,59),0)),
+           Duration.seconds(59));
+    }
+
+    private static TimeScaleInstant instant(long epochSeconds) {
+        return TimeScaleInstant.seconds(TimeScales.tai(), epochSeconds);
+    }
+
+    private static TimeScaleInstant instant(long epochSeconds, int nanoOfSecond) {
+        return TimeScaleInstant.seconds(TimeScales.tai(), epochSeconds, nanoOfSecond);
     }
 }

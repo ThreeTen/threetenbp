@@ -96,6 +96,34 @@ public class UTC_TAI<P extends UTCPeriod> extends AbstractList<P>{
         return entries[right-1];
     }
 
+    public P entryFromTAI(long epochSeconds, int nanoOfSecond) {
+        int left = 0;
+        int right = entries.length;
+        // entries[-1].startEpochSeconds equiv to -infinite
+        // entries[entries.length] equivalent to +infinite
+        // invariant:
+        // entries[left-1].startEpochSeconds <= utcEpochSeconds
+        // entries[right] > utcEpochSeconds
+        while (left < right) {
+            int m = left +((right-left)>>1);
+            TimeScaleInstant ts = entries[m].getStartTAI();
+            int z;
+            if (epochSeconds < ts.getEpochSeconds())
+                z = -1;
+            else if (epochSeconds > ts.getEpochSeconds())
+                z = 1;
+            else
+                z = nanoOfSecond - ts.getNanoOfSecond();
+            if (z < 0)
+                right = m;
+            else
+                left = m+1;
+        }
+        if (right == 0)
+            throw new IllegalArgumentException("Value below lower bound");
+        return entries[right-1];
+    }
+
     @Override
     public P get(int index) {
         return entries[index];

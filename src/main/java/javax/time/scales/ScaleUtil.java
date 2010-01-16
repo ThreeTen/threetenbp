@@ -32,6 +32,7 @@
 
 package javax.time.scales;
 
+import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.TimeScaleInstant;
 import javax.time.TimeScaleInstant.Validity;
@@ -52,8 +53,37 @@ public class ScaleUtil {
      From this date UTC seconds are SI seconds and the value of TAI-UTC is always an integer
      */
     public static final long START_LEAP_SECONDS = epochSeconds(1972, 1, 1);
+    /** Start of leap seconds in TAI.*/
+    public static final long TAI_START_LEAP_SECONDS = START_LEAP_SECONDS+10;
 
     private ScaleUtil() {
+    }
+
+    /** adjust result of addition/subtraction around gaps .*/
+    static TimeScaleInstant adjustUTCAroundGaps(TimeScaleInstant t, long resultEpochSeconds, int resultNanoOfSecond) {
+        EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromUTC(resultEpochSeconds);
+        if (resultEpochSeconds+1 == e.getEndEpochSeconds() && resultNanoOfSecond-e.getUTCGapNanoseconds() > ScaleUtil.NANOS_PER_SECOND) {
+            // result is within invalid interval
+            int z;
+            if (t.getEpochSeconds() < resultEpochSeconds)
+                z = -1;
+            else if (t.getEpochSeconds() > resultEpochSeconds)
+                z = 1;
+            else
+                z = t.getNanoOfSecond() - resultNanoOfSecond;
+            // if the result is greater than the initial value, add some more to get to the end of the gap
+            // if the result is less than the initial value, take of some more to reach the beginning of the gap
+            if (z <= 0) {
+                // advance to end of gap
+                resultEpochSeconds++;
+                resultNanoOfSecond = 0;
+            }
+            else {
+                // go back to beginning of gap
+                resultNanoOfSecond = ScaleUtil.NANOS_PER_SECOND + e.getUTCGapNanoseconds();
+            }
+        }
+        return TimeScaleInstant.seconds(t.getTimeScale(), resultEpochSeconds, 0, resultNanoOfSecond);
     }
 
     static TimeScaleInstant tai(long utcEpochSeconds, int nanoOfSecond) {
@@ -103,9 +133,53 @@ public class ScaleUtil {
         if (gap == 0 || instant.getEpochSeconds() < e.getEndEpochSeconds()-1) {
             return Validity.valid;
         }
-        if (instant.getNanoOfSecond() < NANOS_PER_SECOND-Math.abs(gap))
+        if (instant.getNanoOfSecond() <= NANOS_PER_SECOND-Math.abs(gap))
             return Validity.valid;
         return gap < 0 ? Validity.invalid : Validity.ambiguous;
+    }
+
+    public static TimeScaleInstant simpleAdd(TimeScaleInstant t, Duration d) {
+        if (t.getTimeScale().supportsLeapSecond())
+            throw new UnsupportedOperationException("simpleAdd does not support timescales with leap seconds");
+        long seconds = d.getSeconds();
+        int nanos = d.getNanosAdjustment();
+        if (seconds == 0 && nanos == 0)
+            return t;
+        seconds = MathUtils.safeAdd(t.getEpochSeconds(), seconds);
+        nanos += t.getNanoOfSecond();
+        if (nanos >= NANOS_PER_SECOND) {
+            nanos -= NANOS_PER_SECOND;
+            seconds = MathUtils.safeIncrement(seconds);
+        }
+        return TimeScaleInstant.seconds(t.getTimeScale(), seconds, nanos);
+    }
+
+    public static TimeScaleInstant simpleSubtract(TimeScaleInstant t, Duration d) {
+        if (t.getTimeScale().supportsLeapSecond())
+            throw new UnsupportedOperationException("simpleAdd does not support timescales with leap seconds");
+        long seconds = d.getSeconds();
+        int nanos = d.getNanosAdjustment();
+        if (seconds == 0 && nanos == 0)
+            return t;
+        seconds = MathUtils.safeSubtract(t.getEpochSeconds(), seconds);
+        nanos = t.getNanoOfSecond() - nanos;
+        if (nanos < 0) {
+            nanos += NANOS_PER_SECOND;
+            seconds = MathUtils.safeDecrement(seconds);
+        }
+        return TimeScaleInstant.seconds(t.getTimeScale(), seconds, nanos);
+    }
+
+    public static Duration durationBetween(TimeScaleInstant start, TimeScaleInstant end) {
+        if (start.getTimeScale() != end.getTimeScale())
+            throw new IllegalArgumentException("Start and end must be on the same time scale");
+        long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
+        int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
+        if (nanos < 0) {
+            nanos += NANOS_PER_SECOND;
+            secs = MathUtils.safeDecrement(secs);
+        }
+        return Duration.seconds(secs, nanos);
     }
 
     public static int julianDayNumber(int year, int month, int day) {

@@ -34,6 +34,7 @@ package javax.time.scales;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
@@ -59,6 +60,22 @@ public class TAI implements TimeScale, Serializable {
     private Object readResolve()
     		throws ObjectStreamException {
         return INSTANCE;
+    }
+
+    public TimeScaleInstant add(TimeScaleInstant t, Duration d) {
+        return t.getTimeScale() == this ? ScaleUtil.simpleAdd(t, d) : t.getTimeScale().add(t, d);
+    }
+
+    public TimeScaleInstant subtract(TimeScaleInstant t, Duration d) {
+        return t.getTimeScale() == this ? ScaleUtil.simpleSubtract(t, d) : t.getTimeScale().subtract(t, d);
+    }
+
+    public Duration durationBetween(TimeScaleInstant a, TimeScaleInstant b) {
+        if (a.getTimeScale() != this)
+            a = a.getTimeScale().toTAI(a);
+        if (b.getTimeScale() != this)
+            b = b.getTimeScale().toTAI(b);
+        return ScaleUtil.durationBetween(a, b);
     }
 
     public Instant toInstant(TimeScaleInstant tsInstant) {
