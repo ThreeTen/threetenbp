@@ -25,4 +25,5 @@
 2006-1-1 33s
 2009-1-1 34s
 # The following line indicates the next possible date for a leap second
-?2010-7-1
+# reference Bulletin C (39), 2010-1-14
+?2011-1-1
