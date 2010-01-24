@@ -54,8 +54,8 @@ import javax.time.CalendricalException;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  * 
- * @param <T> the underlying type representing the data, typically a subclass of
- *  <code>Number</code> or <code>Enum</code>, must be immutable
+ * @param <T> the underlying type representing the data, typically a <code>Calendrical</code>,
+ *  <code>Number</code> or <code>Enum</code>, must be immutable, should be comparable
  */
 public abstract class CalendricalRule<T>
         implements Comparable<CalendricalRule<T>>, Comparator<Calendrical>, Serializable {
@@ -151,7 +151,8 @@ public abstract class CalendricalRule<T>
     /**
      * Gets the period unit, which the element which alters within the range.
      * <p>
-     * In the phrase 'hour of day', the unit is the hour.
+     * In the phrase 'hour of day', the unit is 'Hours'.
+     * For a date, this will return 'Days'.
      *
      * @return the unit defining the rule unit, null if this rule isn't based on a period
      */
@@ -162,7 +163,8 @@ public abstract class CalendricalRule<T>
     /**
      * Gets the period range, which the field is bound by.
      * <p>
-     * In the phrase 'hour of day', the range is the day.
+     * In the phrase 'hour of day', the range unit is 'Days'.
+     * For an unbounded field or date, this will return <code>null</code>.
      *
      * @return the unit defining the rule range, null if unbounded,
      *  or if this rule isn't based on a period
@@ -436,6 +438,7 @@ public abstract class CalendricalRule<T>
      */
     @SuppressWarnings("unchecked")
     public int compare(Calendrical cal1, Calendrical cal2) {
+        // TODO: why be nice to null here?
         Comparable value1 = (Comparable) cal1.get(this);
         Object value2 = cal2.get(this);
         if (value1 == null && value2 == null) {
