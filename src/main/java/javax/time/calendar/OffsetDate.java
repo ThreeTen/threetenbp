@@ -515,12 +515,13 @@ public final class OffsetDate
      * Returns a copy of this OffsetDate with the specified period added.
      * <p>
      * This adds the amount in years, months and days from the specified period to this date.
-     * Any time amounts, such as hours, minutes or seconds are ignored.
+     * If the period contains time amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the provider contains time period units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(PeriodProvider periodProvider) {
@@ -667,12 +668,13 @@ public final class OffsetDate
      * Returns a copy of this OffsetDate with the specified period subtracted.
      * <p>
      * This subtracts the amount in years, months and days from the specified period from this date.
-     * Any time amounts, such as hours, minutes or seconds are ignored.
+     * If the period contains time amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the provider contains time period units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minus(PeriodProvider periodProvider) {

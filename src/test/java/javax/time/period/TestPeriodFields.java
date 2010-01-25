@@ -46,7 +46,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 
-import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodUnit;
@@ -335,9 +334,8 @@ public class TestPeriodFields {
         fixtureP2Y5D.getAmount((PeriodUnit) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
     public void test_getAmount_notPresent() {
-        fixtureP2Y5D.getAmount(MONTHS);
+        assertEquals(fixtureP2Y5D.getAmount(MONTHS), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -354,9 +352,8 @@ public class TestPeriodFields {
         fixtureP2Y5D.getAmountInt((PeriodUnit) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
     public void test_getAmountInt_notPresent() {
-        fixtureP2Y5D.getAmountInt(MONTHS);
+        assertEquals(fixtureP2Y5D.getAmountInt(MONTHS), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)

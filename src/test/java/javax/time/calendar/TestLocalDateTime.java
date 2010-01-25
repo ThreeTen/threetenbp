@@ -47,7 +47,6 @@ import javax.time.CalendricalException;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -64,12 +63,7 @@ public class TestLocalDateTime {
     private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
     private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
 
-    private LocalDateTime TEST_2007_07_15_12_30_40_987654321;
-
-    @BeforeMethod
-    public void setUp() {
-        TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
-    }
+    private LocalDateTime TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
 
     //-----------------------------------------------------------------------
     private void check(LocalDateTime dateTime, int y, int m, int d, int h, int mi, int s, int n) {

@@ -32,8 +32,12 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.time.Duration;
+import javax.time.period.PeriodField;
 import javax.time.period.PeriodFields;
 
 /**
@@ -73,25 +77,27 @@ public final class PeriodUnit
      */
     private final String name;
     /**
-     * The period equivalent to this unit.
-     */
-    private final PeriodFields equivalentPeriod;
-    /**
      * The estimated duration of the unit, not null.
      */
     private final Duration estimatedDuration;
+    /**
+     * The periods equivalent to this unit.
+     */
+    private final List<PeriodField> equivalentPeriods;
 
     /**
-     * Constructor used to create a base unit that cannot be derived.
+     * Factory to create a base unit that cannot be derived.
      * <p>
      * A base unit cannot be derived from any smaller unit.
      * For example, an ISO month period cannot be derived from any other smaller period.
+     * <p>
+     * This method is typically only used when writing a {@link Chronology}.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param estimatedDuration  the estimated duration of one unit of this period, not null
      */
-    public PeriodUnit(
+    public static PeriodUnit basic(
             Chronology chronology,
             String name,
             Duration estimatedDuration) {
@@ -106,32 +112,31 @@ public final class PeriodUnit
             throw new NullPointerException("Estimated duration must not be null");
         }
         if (estimatedDuration.isNegative() || estimatedDuration.isZero()) {
-            throw new IllegalArgumentException("Alternate period must be positive and non-zero");
+            throw new IllegalArgumentException("Alternate period must not be negative or zero");
         }
-        this.chronology = chronology;
-        this.id = chronology.getName() + '.' + name;
-        this.name = name;
-        this.equivalentPeriod = null;
-        this.estimatedDuration = estimatedDuration;
+        return new PeriodUnit(chronology, name, null, estimatedDuration);
     }
 
     /**
-     * Constructor used to create a derived unit.
+     * Factory to create a unit that is derived from another smaller unit.
      * <p>
      * A derived unit is created as a multiple of a smaller unit.
      * For example, an ISO year period can be derived as 12 ISO month periods.
      * <p>
      * The estimated duration is calculated using {@link PeriodFields#toEstimatedDuration()}.
+     * <p>
+     * This method is typically only used when writing a {@link Chronology}.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param equivalentPeriod  the period this is derived from, not null
+     * @throws ArithmeticException if the equivalent period calculation overflows
      * @throws ArithmeticException if the estimated duration is too large
      */
-    public PeriodUnit(
+    public static PeriodUnit derived(
             Chronology chronology,
             String name,
-            PeriodFields equivalentPeriod) {
+            PeriodField equivalentPeriod) {
         // avoid possible circular references by using inline NPE checks
         if (chronology == null) {
             throw new NullPointerException("Chronology must not be null");
@@ -142,14 +147,10 @@ public final class PeriodUnit
         if (equivalentPeriod == null) {
             throw new NullPointerException("Equivalent period must not be null");
         }
-        if (equivalentPeriod.isPositive() == false || equivalentPeriod.isZero()) {
-            throw new IllegalArgumentException("Equivalent period must be positive and non-zero");
+        if (equivalentPeriod.isNegative() || equivalentPeriod.isZero()) {
+            throw new IllegalArgumentException("Equivalent period must not be negative or zero");
         }
-        this.chronology = chronology;
-        this.id = chronology.getName() + '.' + name;
-        this.name = name;
-        this.equivalentPeriod = equivalentPeriod;
-        this.estimatedDuration = equivalentPeriod.toEstimatedDuration();
+        return new PeriodUnit(chronology, name, equivalentPeriod, equivalentPeriod.toEstimatedDuration());
     }
 
     /**
@@ -159,19 +160,50 @@ public final class PeriodUnit
      * @param name  the name of the type, not null
      * @param equivalentPeriod  the period this is derived from, null if no equivalent
      * @param estimatedDuration  the estimated duration of one unit of this period, not null
+     * @throws ArithmeticException if the equivalent period calculation overflows
      */
     PeriodUnit(
             Chronology chronology,
             String name,
-            PeriodFields equivalentPeriod,
+            PeriodField equivalentPeriod,
             Duration estimatedDuration) {
         // input known to be valid, don't call this by reflection!
         this.chronology = chronology;
         this.id = chronology.getName() + '.' + name;
         this.name = name;
-        this.equivalentPeriod = equivalentPeriod;
         this.estimatedDuration = estimatedDuration;
+        
+        List<PeriodField> equivalents = new ArrayList<PeriodField>();
+        if (equivalentPeriod != null) {
+            equivalents.add(equivalentPeriod);
+            long multiplier = equivalentPeriod.getAmount();
+            List<PeriodField> baseEquivalents = equivalentPeriod.getUnit().getEquivalentPeriods();
+            for (int i = 0; i < baseEquivalents.size(); i++) {
+                equivalents.add(baseEquivalents.get(i).multipliedBy(multiplier));
+            }
+        }
+        this.equivalentPeriods = Collections.unmodifiableList(equivalents);
     }
+
+//    private void writeObject(ObjectOutputStream out) throws IOException {
+//        out.defaultWriteObject();
+//        out.writeObject(chronology);
+//        out.writeUTF(name);
+//        out.writeLong(estimatedDuration.getSeconds());
+//        out.writeInt(estimatedDuration.getNanosAdjustment());
+//        out.writeLong(equivalentPeriods.size() == 0 ? 0 : equivalentPeriods.get(0).getAmount());
+//        out.writeObject(equivalentPeriods.size() == 0 ? null : equivalentPeriods.get(0).getUnit());
+//    }
+//
+//    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+//        in.defaultReadObject();
+//        Chronology chrono = (Chronology) in.readObject();
+//        String name = in.readUTF();
+//        Duration dur = Duration.seconds(in.readLong(), in.readInt());
+//        long amount = in.readLong();
+//        PeriodUnit unit = (PeriodUnit) in.readObject();
+//        PeriodField equivalent = (amount == 0 ? null : PeriodField.of(amount, unit));
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -209,21 +241,55 @@ public final class PeriodUnit
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the period that is equivalent to this unit.
+     * Gets the periods that are equivalent to this unit.
      * <p>
-     * Most period units are related to other units.
-     * For example, an hour might be represented as 60 minutes.
-     * Thus, if this is the hour unit, then this method would return 60 minutes.
+     * Most units are related to other units.
+     * For example, an hour might be represented as 60 minutes or 3600 seconds.
+     * Thus, if this is the 'Hour' unit, then this method would return a list
+     * including both '60 Minutes', '3600 Seconds' and any other equivalent periods.
+     * <p>
+     * The list will be unmodifiable and sorted, from largest unit to smallest.
      *
-     * @return the alternate period, null if none
+     * @return the equivalent periods, may be empty, never null
      */
-    public PeriodFields getEquivalentPeriod() {
-        return equivalentPeriod;
+    public List<PeriodField> getEquivalentPeriods() {
+        return equivalentPeriods;
     }
 
     /**
+     * Gets the period in the specified unit that is equivalent to this unit.
+     * <p>
+     * Most units are related to other units.
+     * For example, an hour might be represented as 60 minutes or 3600 seconds.
+     * Thus, if this is the 'Hour' unit and the 'Seconds' unit is requested,
+     * then this method would return '3600 Seconds'.
+     * <p>
+     * If the unit specified is this unit, then a period of 1 of this unit is returned.
+     *
+     * @param requiredUnit  the required unit, not null
+     * @return the equivalent period, null if no equivalent in that unit
+     */
+    public PeriodField getEquivalentPeriod(PeriodUnit requiredUnit) {
+        for (PeriodField equivalent : equivalentPeriods) {
+            if (equivalent.getUnit().equals(requiredUnit)) {
+                return equivalent;
+            }
+        }
+        if (requiredUnit.equals(this)) {
+            return PeriodField.of(1, this);  // cannot be cached in constructor, as would be unsafe publication
+        }
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets an estimate of the duration of the unit in seconds.
-     * This is used for comparing units.
+     * <p>
+     * Each unit has a duration which is a reasonable estimate.
+     * For those units which can be derived ultimately from nanoseconds, the
+     * estimated duration will be accurate. For other units, it will be an estimate.
+     * <p>
+     * One key use for the estimated duration is to implement {@link Comparable}.
      *
      * @return the estimate of the duration in seconds, never null
      */
@@ -235,39 +301,58 @@ public final class PeriodUnit
     /**
      * Compares this unit to another.
      * <p>
-     * The comparison is based on the {@link #getEstimatedDuration() estimated duration}.
+     * The comparison is based primarily on the {@link #getEstimatedDuration() estimated duration}.
+     * If that is equal, the name and then the first equivalent period are checked.
      *
      * @param other  the other type to compare to, not null
      * @return the comparator result, negative if less, positive if greater, zero if equal
      * @throws NullPointerException if other is null
      */
     public int compareTo(PeriodUnit other) {
-        return getEstimatedDuration().compareTo(other.getEstimatedDuration());
+        int cmp = estimatedDuration.compareTo(other.estimatedDuration);
+        if (cmp == 0) {
+            cmp = name.compareTo(other.name);
+            if (cmp == 0) {
+                cmp = (equivalentPeriods.size() - other.equivalentPeriods.size());
+                if (cmp == 0 && equivalentPeriods.size() > 0) {
+                    cmp = (equivalentPeriods.get(0).compareTo(other.equivalentPeriods.get(0)));
+                }
+            }
+        }
+        return cmp;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares two units based on their ID.
+     * Compares two units based on the name, estimated duration and equivalent period.
      *
      * @return true if the units are the same
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        return id.equals(((PeriodUnit) obj).id);
+        if (obj instanceof PeriodUnit) {
+            PeriodUnit other = (PeriodUnit) obj;
+            return name.equals(other.name) &&
+                    estimatedDuration.equals(other.estimatedDuration) &&
+                    equivalentPeriods.size() == other.equivalentPeriods.size() &&
+                    (equivalentPeriods.size() == 0 || equivalentPeriods.get(0).equals(other.equivalentPeriods.get(0)));
+        }
+        return false;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a hash code based on the ID.
+     * Returns a hash code based on the name, estimated duration and equivalent period.
      *
-     * @return a description of the unit
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return id.hashCode();
+        // TODO: use transient field when serialization fixed
+        return name.hashCode() ^ estimatedDuration.hashCode() ^ equivalentPeriods.hashCode();
     }
 
     //-----------------------------------------------------------------------

@@ -34,8 +34,10 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -880,9 +882,14 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(PeriodProvider periodProvider) {
-        LocalDate date = this.date.plus(periodProvider);
-        LocalTime.Overflow overflow = this.time.plusWithOverflow(periodProvider);
-        return with(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
+        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        // TODO: correct algorithm
+        LocalDate date = this.date.plusYears(period.getYears())
+                .plusMonths(period.getMonths()).plusDays(period.getDays());
+        Overflow overflow = this.time.plusWithOverflow(
+                period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos());
+        LocalDateTime result = overflow.toLocalDateTime(date);
+        return (result.equals(this) ? this : result);
     }
 
     //-----------------------------------------------------------------------
@@ -1081,7 +1088,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusNanos(long nanos) {
-        LocalTime.Overflow overflow = time.plusNanosWithOverflow(nanos);
+        LocalTime.Overflow overflow = time.plusWithOverflow(0, 0, 0, nanos);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());
     }
@@ -1099,9 +1106,14 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minus(PeriodProvider periodProvider) {
-        LocalDate date = this.date.minus(periodProvider);
-        LocalTime.Overflow overflow = this.time.minusWithOverflow(periodProvider);
-        return with(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
+        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        // TODO: correct algorithm
+        LocalDate date = this.date.minusYears(period.getYears())
+                .minusMonths(period.getMonths()).minusDays(period.getDays());
+        Overflow overflow = this.time.minusWithOverflow(
+                period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos());
+        LocalDateTime result = overflow.toLocalDateTime(date);
+        return (result.equals(this) ? this : result);
     }
 
     //-----------------------------------------------------------------------
@@ -1300,7 +1312,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusNanos(long nanos) {
-        LocalTime.Overflow overflow = time.minusNanosWithOverflow(nanos);
+        LocalTime.Overflow overflow = time.minusWithOverflow(0, 0, 0, nanos);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());
     }

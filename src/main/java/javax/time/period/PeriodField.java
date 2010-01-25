@@ -32,9 +32,9 @@
 package javax.time.period;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Set;
+import java.util.Arrays;
 
+import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.PeriodUnit;
@@ -99,33 +99,6 @@ public final class PeriodField
         super();
         this.amount = amount;
         this.unit = unit;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the single unit as a <code>Set</code> defining the what the period
-     * represents.
-     *
-     * @return the unit as an unmodifiable set of size 1, never null
-     */
-    public Set<PeriodUnit> periodRules() {
-        return Collections.singleton(unit);
-    }
-
-    /**
-     * Gets the amount of time stored for the specified unit.
-     * <p>
-     * Zero is returned if no amount is stored for the unit.
-     *
-     * @param unit  the unit to get, not null
-     * @return the amount of time stored in this period for the unit
-     */
-    public long periodAmount(PeriodUnit unit) {
-        PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
-        if (this.unit.equals(unit)) {
-            return amount;
-        }
-        return 0;
     }
 
     //-----------------------------------------------------------------------
@@ -360,6 +333,56 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this period to the specified unit.
+     * <p>
+     * This converts this period to one measured in the specified unit.
+     * This uses {@link PeriodUnit#getEquivalentPeriod(PeriodUnit)} to lookup
+     * the equivalent period for the unit.
+     * <p>
+     * For example, '3 Hours' could be converted to '180 Minutes' assuming the
+     * 'Hours' unit has an equivalent of '60 Minutes'.
+     *
+     * @return the equivalent period, null if no equivalent period
+     * @throws CalendricalException if this period cannot be converted to the specified unit
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public PeriodField toEquivalentPeriod(PeriodUnit requiredUnit) {
+        PeriodField equivalent = unit.getEquivalentPeriod(requiredUnit);
+        if (equivalent != null) {
+            return equivalent.multipliedBy(amount);
+        }
+        throw new CalendricalException("Unable to convert '" + this + "' to " + requiredUnit );
+    }
+
+    /**
+     * Converts this period to one of the units specified.
+     * <p>
+     * This will attempt to convert this period to each of the specified units
+     * in turn. It is recommended to specify the units from largest to smallest.
+     * If this period is already one of the specified units, then <code>this</code>
+     * is returned.
+     * <p>
+     * For example, '3 Hours' can normally be converted to both minutes and seconds.
+     * If the units array contains both 'Minutes' and 'Seconds', then the result will
+     * be measured in whichever is first in the array.
+     *
+     * @param requiredUnits  the required unit array, not altered, not null
+     * @return the converted period, never null
+     * @throws CalendricalException if this period cannot be converted to any of the units
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public PeriodField toEquivalentPeriod(PeriodUnit... requiredUnits) {
+        for (PeriodUnit requiredUnit : requiredUnits) {
+            PeriodField equivalent = unit.getEquivalentPeriod(requiredUnit);
+            if (equivalent != null) {
+                return equivalent.multipliedBy(amount);
+            }
+        }
+        throw new CalendricalException("Unable to convert '" + this + "' to any requested unit: " + Arrays.toString(requiredUnits));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this period to an estimated duration.
      * <p>
      * Each {@link PeriodUnit} contains an estimated duration for that unit.
@@ -371,6 +394,19 @@ public final class PeriodField
      */
     public Duration toEstimatedDuration() {
         return unit.getEstimatedDuration().multipliedBy(amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this period to a <code>PeriodFields</code>.
+     * <p>
+     * The returned <code>PeriodFields</code> will always contain the unit even
+     * if the amount is zero.
+     *
+     * @return the equivalent period, never null
+     */
+    public PeriodFields toPeriodFields() {
+        return PeriodFields.of(this);
     }
 
     //-----------------------------------------------------------------------

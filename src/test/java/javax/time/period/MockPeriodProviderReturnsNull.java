@@ -31,10 +31,6 @@
  */
 package javax.time.period;
 
-import java.util.Set;
-
-import javax.time.calendar.PeriodUnit;
-
 /**
  * Mock PeriodProvider that returns null.
  *
@@ -42,12 +38,8 @@ import javax.time.calendar.PeriodUnit;
  */
 public class MockPeriodProviderReturnsNull implements PeriodProvider {
 
-    public Set<PeriodUnit> periodRules() {
+    public PeriodFields toPeriodFields() {
         return null;
-    }
-
-    public long periodAmount(PeriodUnit unit) {
-        return 0;
     }
 
 }

@@ -39,6 +39,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodUnit;
@@ -54,8 +55,13 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodField {
 
-    private static final PeriodUnit DAYS = ISOChronology.periodDays();
+    private static final PeriodUnit YEARS = ISOChronology.periodYears();
+    private static final PeriodUnit QUARTERS = ISOChronology.periodQuarters();
     private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
+    private static final PeriodUnit DAYS = ISOChronology.periodDays();
+    private static final PeriodUnit HOURS = ISOChronology.periodHours();
+    private static final PeriodUnit MINUTES = ISOChronology.periodMinutes();
+    private static final PeriodUnit SECONDS = ISOChronology.periodSeconds();
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
@@ -377,12 +383,131 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
+    // toEquivalentPeriod(PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_toEquivalentPeriod_unit() {
+        PeriodField test = PeriodField.of(5, YEARS).toEquivalentPeriod(QUARTERS);
+        assertEquals(test, PeriodField.of(5 * 4, QUARTERS));
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_toEquivalentPeriod_unit_tooBig() {
+        PeriodField.of(Long.MAX_VALUE / 12 + 12, YEARS).toEquivalentPeriod(MONTHS);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toEquivalentPeriod_unit_noConversion() {
+        try {
+            PeriodField.of(5, YEARS).toEquivalentPeriod(DAYS);
+        } catch (CalendricalException ex) {
+            assertEquals("Unable to convert '5 Years' to ISO.Days", ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toEquivalentPeriod_null() {
+        PeriodField.of(5, YEARS).toEquivalentPeriod((PeriodUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // toEquivalentPeriod(PeriodUnit...)
+    //-----------------------------------------------------------------------
+    public void test_toEquivalentPeriod_units_yearsToYears() {
+        PeriodField test = PeriodField.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[] {YEARS});
+        assertEquals(test, PeriodField.of(5, YEARS));
+    }
+
+    public void test_toEquivalentPeriod_units_yearsToMonths() {
+        PeriodField test = PeriodField.of(5, YEARS).toEquivalentPeriod(MONTHS);
+        assertEquals(test, PeriodField.of(5 * 12, MONTHS));
+    }
+
+    public void test_toEquivalentPeriod_units_yearsToYearsMonthsOrDays() {
+        PeriodField test = PeriodField.of(5, YEARS).toEquivalentPeriod(YEARS, MONTHS, DAYS);
+        assertEquals(test, PeriodField.of(5, YEARS));
+    }
+
+    public void test_toEquivalentPeriod_units_yearsToMonthsOrDays() {
+        PeriodField test = PeriodField.of(5, YEARS).toEquivalentPeriod(MONTHS, DAYS);
+        assertEquals(test, PeriodField.of(5 * 12, MONTHS));
+    }
+
+    public void test_toEquivalentPeriod_units_yearsToDaysOrMonths() {
+        PeriodField test = PeriodField.of(5, YEARS).toEquivalentPeriod(DAYS, MONTHS);
+        assertEquals(test, PeriodField.of(5 * 12, MONTHS));
+    }
+
+    public void test_toEquivalentPeriod_units_hoursToMinutesOrSeconds() {
+        PeriodField test = PeriodField.of(5, HOURS).toEquivalentPeriod(MINUTES, SECONDS);
+        assertEquals(test, PeriodField.of(5 * 60, MINUTES));
+    }
+
+    public void test_toEquivalentPeriod_units_hoursToSecondsOrMinutes() {
+        PeriodField test = PeriodField.of(5, HOURS).toEquivalentPeriod(SECONDS, MINUTES);
+        assertEquals(test, PeriodField.of(5 * 60 * 60, SECONDS));
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_toEquivalentPeriod_units_tooBig() {
+        PeriodField.of(Long.MAX_VALUE / 12 + 12, YEARS).toEquivalentPeriod(MONTHS);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toEquivalentPeriod_units_noUnits() {
+        try {
+            PeriodField.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[0]);
+        } catch (CalendricalException ex) {
+            assertEquals("Unable to convert '5 Years' to any requested unit: []", ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toEquivalentPeriod_units_noConversionOneUnit() {
+        try {
+            PeriodField.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[] {DAYS});
+        } catch (CalendricalException ex) {
+            assertEquals("Unable to convert '5 Years' to any requested unit: [ISO.Days]", ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toEquivalentPeriod_units_noConversionTwoUnits() {
+        try {
+            PeriodField.of(5, YEARS).toEquivalentPeriod(DAYS, HOURS);
+        } catch (CalendricalException ex) {
+            assertEquals("Unable to convert '5 Years' to any requested unit: [ISO.Days, ISO.Hours]", ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toEquivalentPeriod_units_null() {
+        PeriodField.of(5, YEARS).toEquivalentPeriod((PeriodUnit[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toEquivalentPeriod_units_arrayContainsNull() {
+        PeriodField.of(5, YEARS).toEquivalentPeriod(null, YEARS);
+    }
+
+    //-----------------------------------------------------------------------
     // toEstimatedDuration()
     //-----------------------------------------------------------------------
     public void test_toEstimatedDuration() {
         Duration test = PeriodField.of(5, DAYS).toEstimatedDuration();
         Duration fiveDays = ISOChronology.periodDays().getEstimatedDuration().multipliedBy(5);
         assertEquals(test, fiveDays);
+    }
+
+    //-----------------------------------------------------------------------
+    // toPeriodFields()
+    //-----------------------------------------------------------------------
+    public void test_toPeriodFields() {
+        PeriodFields test = PeriodField.of(5, DAYS).toPeriodFields();
+        assertEquals(test, PeriodFields.of(5, DAYS));
     }
 
     //-----------------------------------------------------------------------

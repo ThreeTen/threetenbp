@@ -598,16 +598,21 @@ public final class LocalDate
      * Returns a copy of this LocalDate with the specified period added.
      * <p>
      * This adds the amount in years, months and days from the specified period to this date.
-     * Any time amounts, such as hours, minutes or seconds are ignored.
+     * If the period contains time amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a new updated LocalDate, never null
+     * @throws CalendricalException if the provider contains time period units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
+        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        if ((period.getHours() | period.getMinutes() | period.getSeconds() | period.getNanos()) != 0) {
+            throw new CalendricalException("Unable to add to date as the period contains time units");
+        }
+        // TODO: calculate in one go - 31st Mar plus P1M-1D should be 30th Apr
         return plusYears(period.getYears()).plusMonths(period.getMonths()).plusDays(period.getDays());
     }
 
@@ -782,16 +787,21 @@ public final class LocalDate
      * Returns a copy of this LocalDate with the specified period subtracted.
      * <p>
      * This subtracts the amount in years, months and days from the specified period from this date.
-     * Any time amounts, such as hours, minutes or seconds are ignored.
+     * If the period contains time amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a new updated LocalDate, never null
+     * @throws CalendricalException if the provider contains time period units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
+        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        if ((period.getHours() | period.getMinutes() | period.getSeconds() | period.getNanos()) != 0) {
+            throw new CalendricalException("Unable to subtract from date as the period contains time units");
+        }
+        // TODO: calculate in one go
         return minusYears(period.getYears()).minusMonths(period.getMonths()).minusDays(period.getDays());
     }
 

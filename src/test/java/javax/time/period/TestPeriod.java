@@ -132,7 +132,7 @@ public class TestPeriod {
         assertSame(Period.hoursMinutesSeconds(0, 0, 0), Period.ZERO);
         assertSame(Period.of(0, 0, 0, 0, 0, 0), Period.ZERO);
         assertSame(Period.of(0, 0, 0, 0, 0, 0, 0), Period.ZERO);
-        assertSame(Period.from(PeriodFields.of(new HashMap<PeriodUnit, Integer>())), Period.ZERO);
+        assertSame(Period.from(PeriodFields.ZERO), Period.ZERO);
     }
 
     //-----------------------------------------------------------------------

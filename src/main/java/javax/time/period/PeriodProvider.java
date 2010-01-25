@@ -31,10 +31,6 @@
  */
 package javax.time.period;
 
-import java.util.Set;
-
-import javax.time.calendar.PeriodUnit;
-
 /**
  * Provides access to a period of time, such as '2 Years and 5 Months'.
  * <p>
@@ -42,6 +38,16 @@ import javax.time.calendar.PeriodUnit;
  * any object that can provide access to a period.
  * <p>
  * The implementation of <code>PeriodProvider</code> may be mutable.
+ * The result of {@link #toPeriodFields()}, however, is immutable.
+ * <p>
+ * When implementing an API that accepts a <code>PeriodProvider</code> as a parameter,
+ * it is important to convert the input to a <code>PeriodFields</code> once and once only.
+ * It is recommended that this is done at the top of the method before other processing.
+ * This is necessary to handle the case where the implementation of the provider is
+ * mutable and changes in value between two calls to <code>toPeriodFields()</code>.
+ * <p>
+ * The recommended way to convert a DateProvider to a LocalDate is using
+ * {@link PeriodFields#from(PeriodProvider)} as this method provides additional null checking.
  * <p>
  * PeriodProvider makes no guarantees about the thread-safety or
  * immutability of implementations.
@@ -49,33 +55,21 @@ import javax.time.calendar.PeriodUnit;
  * @author Stephen Colebourne
  */
 public interface PeriodProvider {
-    // TODO: alternate representation, for better thread safety?
-    // PeriodFields
-    // Set<PeriodField>
-    // Map<PeriodRule, Long>
 
     /**
-     * Gets the complete set of units which have amounts stored.
+     * Returns an instance of <code>PeriodFields</code> initialized from the
+     * state of this object.
      * <p>
-     * The amount stored for a unit may be zero.
+     * This method will take the period represented by this object and return
+     * an equivalent {@link PeriodFields}.
+     * The amount stored for a unit in the result may be zero.
+     * If this object is already a <code>PeriodFields</code> then it is simply returned.
      * <p>
-     * Implementations must ensure that this method is thread-safe, and that
-     * the returned set is either unmodifiable or independent from the implementation.
+     * Implementations must ensure that this method provides a thread-safe consistent
+     * result. An immutable implementation will naturally provide this guarantee.
      *
-     * @return the set of units for which an amount is stored in this period
+     * @return the period equivalent to this one, never null
      */
-    Set<PeriodUnit> periodRules();
-
-    /**
-     * Gets the amount of time stored for the specified unit.
-     * <p>
-     * Zero is returned if no amount is stored for the unit.
-     * <p>
-     * Implementations must ensure that this method is thread-safe.
-     *
-     * @param unit  the unit to get, not null
-     * @return the amount of time stored in this period for the unit
-     */
-    long periodAmount(PeriodUnit unit);
+    PeriodFields toPeriodFields();
 
 }

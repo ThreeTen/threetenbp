@@ -32,9 +32,7 @@
 package javax.time.period;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.TreeMap;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
@@ -45,14 +43,14 @@ import javax.time.calendar.format.CalendricalParseException;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
- * minute, second and nanosecond rules, such as '3 months, 4 days and 7 hours'.
+ * minute, second and nanosecond units, such as '3 Months, 4 Days and 7 Hours'.
  * <p>
  * A period is a human-scale description of an amount of time.
  * This class represents the 7 standard definitions from {@link ISOChronology}.
- * The period rules used are years, months, days, hours, minutes, seconds and
- * nanoseconds.
+ * The period units used are 'Years', 'Months', 'Days', 'Hours', 'Minutes',
+ * 'Seconds' and 'Nanoseconds'.
  * <p>
- * The <code>ISOChronology</code> defines a relationship between some of the rules:
+ * The <code>ISOChronology</code> defines a relationship between some of the units:
  * <ul>
  * <li>12 months in a year</li>
  * <li>24 hours in a day (ignoring time zones)</li>
@@ -78,6 +76,13 @@ public final class Period
      * The serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * The ISO period units, trusted to not be altered.
+     */
+    private static final PeriodUnit[] UNITS = new PeriodUnit[] {
+        ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays(),
+        ISOChronology.periodHours(), ISOChronology.periodMinutes(), ISOChronology.periodSeconds(), ISOChronology.periodNanos(),
+    };
 
     /**
      * The number of years.
@@ -108,9 +113,9 @@ public final class Period
      */
     private final long nanos;
     /**
-     * The cached set of units.
+     * The cached PeriodFields.
      */
-    private transient volatile Set<PeriodUnit> units;
+    private transient volatile PeriodFields periodFields;
     /**
      * The cached toString value.
      */
@@ -120,40 +125,30 @@ public final class Period
     /**
      * Obtains a <code>Period</code> from a provider of periods.
      * <p>
-     * In addition to calling {@link PeriodProvider#toPeriod()} this method
-     * also checks the validity of the result of the provider.
+     * A <code>Period</code> supports 7 units, ISO years, months, days, hours,
+     * minutes, seconds and nanoseconds. Any period that contains amounts in
+     * these units, or in units that can be converted to these units will be
+     * accepted. If the provider contains any other unit, an exception is thrown.
      *
      * @param periodProvider  a provider of period information, not null
      * @return the <code>Period</code> instance, never null
-     * @throws IllegalArgumentException if any provided rule isn't one of the 7 supported
+     * @throws CalendricalException if the provided period cannot be converted to the supported units
      * @throws ArithmeticException if any provided amount, except nanos, exceeds an <code>int</code>
      */
     public static Period from(PeriodProvider periodProvider) {
-        if (periodProvider == null) {
-            throw new NullPointerException("PeriodProvider must not be null");
+        PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        if (periodProvider instanceof Period) {
+            return (Period) periodProvider;
         }
-        int years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0;
-        long nanos = 0;
-        for (PeriodUnit rule : periodProvider.periodRules()) {
-            long amount = periodProvider.periodAmount(rule);
-            if (rule.equals(ISOChronology.periodYears())) {
-                years = MathUtils.safeToInt(amount);
-            } else if (rule.equals(ISOChronology.periodMonths())) {
-                months = MathUtils.safeToInt(amount);
-            } else if (rule.equals(ISOChronology.periodDays())) {
-                days = MathUtils.safeToInt(amount);
-            } else if (rule.equals(ISOChronology.periodHours())) {
-                hours = MathUtils.safeToInt(amount);
-            } else if (rule.equals(ISOChronology.periodMinutes())) {
-                minutes = MathUtils.safeToInt(amount);
-            } else if (rule.equals(ISOChronology.periodSeconds())) {
-                seconds = MathUtils.safeToInt(amount);
-            } else if (rule.equals(ISOChronology.periodNanos())) {
-                nanos = amount;
-            } else {
-                throw new IllegalArgumentException("PeriodProvider contains invalid rule for a Period: " + rule.getName());
-            }
-        }
+        PeriodFields periodFields = PeriodFields.from(periodProvider);
+        periodFields = periodFields.getEquivalentPeriod(UNITS);
+        int years = periodFields.getAmountInt(ISOChronology.periodYears());
+        int months = periodFields.getAmountInt(ISOChronology.periodMonths());
+        int days = periodFields.getAmountInt(ISOChronology.periodDays());
+        int hours = periodFields.getAmountInt(ISOChronology.periodHours());
+        int minutes = periodFields.getAmountInt(ISOChronology.periodMinutes());
+        int seconds = periodFields.getAmountInt(ISOChronology.periodSeconds());
+        long nanos = periodFields.getAmount(ISOChronology.periodNanos());
         return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
@@ -390,78 +385,6 @@ public final class Period
             return ZERO;
         }
         return this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the complete set of rules which have amounts stored.
-     * <p>
-     * This method only returns the non-zero rules.
-     *
-     * @return the period rule as an unmodifiable set, never null
-     */
-    public Set<PeriodUnit> periodRules() {
-        Set<PeriodUnit> set = units;
-        if (set == null) {
-            set = new HashSet<PeriodUnit>();
-            if (years != 0) {
-                set.add(ISOChronology.periodYears());
-            }
-            if (months != 0) {
-                set.add(ISOChronology.periodMonths());
-            }
-            if (days != 0) {
-                set.add(ISOChronology.periodDays());
-            }
-            if (hours != 0) {
-                set.add(ISOChronology.periodHours());
-            }
-            if (minutes != 0) {
-                set.add(ISOChronology.periodMinutes());
-            }
-            if (seconds != 0) {
-                set.add(ISOChronology.periodSeconds());
-            }
-            if (nanos != 0) {
-                set.add(ISOChronology.periodNanos());
-            }
-            units = set = Collections.unmodifiableSet(set);
-        }
-        return set;
-    }
-
-    /**
-     * Gets the amount of time stored for the specified rule.
-     * <p>
-     * Zero is returned if no amount is stored for the rule.
-     *
-     * @param rule  the rule to get, not null
-     * @return the amount of time stored in this period for the rule
-     */
-    public long periodAmount(PeriodUnit rule) {
-        PeriodFields.checkNotNull(rule, "PeriodRule must not be null");
-        if (rule.equals(ISOChronology.periodYears())) {
-            return years;
-        }
-        if (rule.equals(ISOChronology.periodMonths())) {
-            return months;
-        }
-        if (rule.equals(ISOChronology.periodDays())) {
-            return days;
-        }
-        if (rule.equals(ISOChronology.periodHours())) {
-            return hours;
-        }
-        if (rule.equals(ISOChronology.periodMinutes())) {
-            return minutes;
-        }
-        if (rule.equals(ISOChronology.periodSeconds())) {
-            return seconds;
-        }
-        if (rule.equals(ISOChronology.periodNanos())) {
-            return nanos;
-        }
-        return 0;
     }
 
     //-----------------------------------------------------------------------
@@ -1366,6 +1289,43 @@ public final class Period
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Converts this period to a <code>PeriodFields</code>.
+     * <p>
+     * The returned <code>PeriodFields</code> will only contain the non-zero amounts.
+     *
+     * @return the equivalent period, never null
+     */
+    public PeriodFields toPeriodFields() {
+        PeriodFields fields = periodFields;
+        if (fields == null) {
+            TreeMap<PeriodUnit, PeriodField> map = new TreeMap<PeriodUnit, PeriodField>();
+            if (years != 0) {
+                map.put(ISOChronology.periodYears(), PeriodField.of(years, ISOChronology.periodYears()));
+            }
+            if (months != 0) {
+                map.put(ISOChronology.periodMonths(), PeriodField.of(months, ISOChronology.periodMonths()));
+            }
+            if (days != 0) {
+                map.put(ISOChronology.periodDays(), PeriodField.of(days, ISOChronology.periodDays()));
+            }
+            if (hours != 0) {
+                map.put(ISOChronology.periodHours(), PeriodField.of(hours, ISOChronology.periodHours()));
+            }
+            if (minutes != 0) {
+                map.put(ISOChronology.periodMinutes(), PeriodField.of(minutes, ISOChronology.periodMinutes()));
+            }
+            if (seconds != 0) {
+                map.put(ISOChronology.periodSeconds(), PeriodField.of(seconds, ISOChronology.periodSeconds()));
+            }
+            if (nanos != 0) {
+                map.put(ISOChronology.periodNanos(), PeriodField.of(nanos, ISOChronology.periodNanos()));
+            }
+            periodFields = fields = PeriodFields.create(map);
+        }
+        return fields;
+    }
+
     /**
      * Converts this object to a <code>Duration</code> using the hours, minutes,
      * seconds and nanoseconds fields.

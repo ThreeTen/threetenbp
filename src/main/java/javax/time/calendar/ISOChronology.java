@@ -44,7 +44,7 @@ import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.period.Period;
-import javax.time.period.PeriodFields;
+import javax.time.period.PeriodField;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
@@ -1859,32 +1859,32 @@ public final class ISOChronology extends Chronology implements Serializable {
      * Period unit for microseconds.
      */
     private static final PeriodUnit MICROS = new PeriodUnit(ISOChronology.INSTANCE, "Micros",
-                PeriodFields.of(1000, NANOS), Duration.nanos(1000));
+                PeriodField.of(1000, NANOS), Duration.nanos(1000));
     /**
      * Period unit for milliseconds.
      */
     private static final PeriodUnit MILLIS = new PeriodUnit(ISOChronology.INSTANCE, "Millis",
-                PeriodFields.of(1000, MICROS), Duration.millis(1));
+                PeriodField.of(1000, MICROS), Duration.millis(1));
     /**
      * Period unit for seconds.
      */
     private static final PeriodUnit SECONDS = new PeriodUnit(ISOChronology.INSTANCE, "Seconds",
-                PeriodFields.of(1000, MILLIS), Duration.seconds(1));
+                PeriodField.of(1000, MILLIS), Duration.seconds(1));
     /**
      * Period unit for minutes.
      */
     private static final PeriodUnit MINUTES = new PeriodUnit(ISOChronology.INSTANCE, "Minutes",
-                PeriodFields.of(60, SECONDS), Duration.seconds(60));
+                PeriodField.of(60, SECONDS), Duration.seconds(60));
     /**
      * Period unit for hours.
      */
     private static final PeriodUnit HOURS = new PeriodUnit(ISOChronology.INSTANCE, "Hours",
-                PeriodFields.of(60, MINUTES), Duration.seconds(60 * 60));
+                PeriodField.of(60, MINUTES), Duration.seconds(60 * 60));
     /**
      * Period unit for half days.
      */
     private static final PeriodUnit TWELVE_HOURS = new PeriodUnit(ISOChronology.INSTANCE, "TwelveHours",
-                PeriodFields.of(12, HOURS), Duration.seconds(12 * 60 * 60));
+                PeriodField.of(12, HOURS), Duration.seconds(12 * 60 * 60));
 
     /**
      * Period unit for days.
@@ -1895,7 +1895,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * Period unit for weeks.
      */
     private static final PeriodUnit WEEKS = new PeriodUnit(ISOChronology.INSTANCE, "Weeks",
-                PeriodFields.of(7, DAYS), Duration.seconds(7L * 86400L));
+                PeriodField.of(7, DAYS), Duration.seconds(7L * 86400L));
     /**
      * Period unit for months.
      */
@@ -1905,7 +1905,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * Period unit for quarters.
      */
     private static final PeriodUnit QUARTERS = new PeriodUnit(ISOChronology.INSTANCE, "Quarters",
-                PeriodFields.of(3, MONTHS), Duration.seconds(31556952L / 4));
+                PeriodField.of(3, MONTHS), Duration.seconds(31556952L / 4));
     /**
      * Period unit for week-based-years.
      */
@@ -1915,22 +1915,22 @@ public final class ISOChronology extends Chronology implements Serializable {
      * Period unit for years.
      */
     private static final PeriodUnit YEARS = new PeriodUnit(ISOChronology.INSTANCE, "Years",
-                PeriodFields.of(4, QUARTERS), Duration.seconds(31556952L));  // 365.2425 days
+                PeriodField.of(4, QUARTERS), Duration.seconds(31556952L));  // 365.2425 days
     /**
      * Period unit for decades.
      */
     private static final PeriodUnit DECADES = new PeriodUnit(ISOChronology.INSTANCE, "Decades",
-                PeriodFields.of(10, YEARS), Duration.seconds(10L * 31556952L));
+                PeriodField.of(10, YEARS), Duration.seconds(10L * 31556952L));
     /**
      * Period unit for centuries.
      */
     private static final PeriodUnit CENTURIES = new PeriodUnit(ISOChronology.INSTANCE, "Centuries",
-                PeriodFields.of(10, DECADES), Duration.seconds(100L * 31556952L));
+                PeriodField.of(10, DECADES), Duration.seconds(100L * 31556952L));
     /**
      * Period unit for millenia.
      */
     private static final PeriodUnit MILLENIA = new PeriodUnit(ISOChronology.INSTANCE, "Millenia",
-                PeriodFields.of(10, CENTURIES), Duration.seconds(1000L * 31556952L));
+                PeriodField.of(10, CENTURIES), Duration.seconds(1000L * 31556952L));
     /**
      * Period unit for eras.
      */

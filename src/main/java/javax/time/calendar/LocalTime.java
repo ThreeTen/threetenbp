@@ -60,10 +60,6 @@ public final class LocalTime
         implements Calendrical, TimeProvider, CalendricalMatcher, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
-     * Constants for the local time of each hour.
-     */
-    public static final LocalTime[] HOURS = new LocalTime[24];
-    /**
      * Constant for the local time of midnight, 00:00.
      */
     public static final LocalTime MIDNIGHT;
@@ -71,6 +67,10 @@ public final class LocalTime
      * Constant for the local time of midday, 12:00.
      */
     public static final LocalTime MIDDAY;
+    /**
+     * Constants for the local time of each hour.
+     */
+    private static final LocalTime[] HOURS = new LocalTime[24];
     static {
         for (int i = 0; i < HOURS.length; i++) {
             HOURS[i] = new LocalTime(i, 0, 0, 0);
@@ -536,20 +536,24 @@ public final class LocalTime
      * Returns a copy of this LocalTime with the specified period added.
      * <p>
      * This adds the amount in hours, minutes and seconds from the specified period to this time.
-     * Any date amounts, such as years, months or days are ignored.
+     * If the period contains date amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a new updated LocalTime, never null
+     * @throws CalendricalException if the provider contains date period units
      */
     public LocalTime plus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
-        // safe from overflow
-        long totalNanos = period.getHours() * NANOS_PER_HOUR +
-                period.getMinutes() * NANOS_PER_MINUTE +
-                period.getSeconds() * NANOS_PER_SECOND;
-        return plusNanos(totalNanos).plusNanos(period.getNanos());
+        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        if ((period.getYears() | period.getMonths() | period.getDays()) != 0) {
+            throw new CalendricalException("Unable to add to date as the period contains date units");
+        }
+        long totNanos = period.getNanos() % NANOS_PER_DAY +                    //   max  86400000000000
+                (period.getSeconds() % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
+                (period.getMinutes() % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
+                (period.getHours() % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
+        return plusNanos(totNanos);
     }
 
     //-----------------------------------------------------------------------
@@ -569,7 +573,7 @@ public final class LocalTime
             return this;
         }
         int newHour = ((hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
-        return withHourOfDay(newHour);
+        return create(newHour, minute, second, nano);
     }
 
     /**
@@ -594,7 +598,7 @@ public final class LocalTime
         }
         int newHour = newMofd / MINUTES_PER_HOUR;
         int newMinute = newMofd % MINUTES_PER_HOUR;
-        return of(newHour, newMinute, second, nano);
+        return create(newHour, newMinute, second, nano);
     }
 
     /**
@@ -621,7 +625,7 @@ public final class LocalTime
         int newHour = newSofd / SECONDS_PER_HOUR;
         int newMinute = (newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
         int newSecond = newSofd % SECONDS_PER_MINUTE;
-        return of(newHour, newMinute, newSecond, nano);
+        return create(newHour, newMinute, newSecond, nano);
     }
 
     /**
@@ -648,7 +652,68 @@ public final class LocalTime
         int newMinute = (int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR);
         int newSecond = (int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_MINUTE);
         int newNano = (int) (newNofd % NANOS_PER_SECOND);
-        return of(newHour, newMinute, newSecond, newNano);
+        return create(newHour, newMinute, newSecond, newNano);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this LocalTime with the specified period added,
+     * returning the new time with any overflow in days.
+     * <p>
+     * This method returns an {@link Overflow} instance with the result of the
+     * addition and any overflow in days.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to add, may be negative
+     * @param minutes the minutes to add, may be negative
+     * @param seconds the seconds to add, may be negative
+     * @param nanos the nanos to add, may be negative
+     * @return an Overflow instance with the resulting time and overflow, never null
+     */
+    public Overflow plusWithOverflow(int hours, int minutes, int seconds, long nanos) {
+        return plusWithOverflow(hours, minutes, seconds, nanos, 1);
+    }
+
+    /**
+     * Returns a copy of this LocalTime with the specified period added,
+     * returning the new time with any overflow in days.
+     * <p>
+     * This method returns an {@link Overflow} instance with the result of the
+     * addition and any overflow in days.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to add, may be negative
+     * @param minutes the minutes to add, may be negative
+     * @param seconds the seconds to add, may be negative
+     * @param nanos the nanos to add, may be negative
+     * @return an Overflow instance with the resulting time and overflow, never null
+     */
+    private Overflow plusWithOverflow(int hours, int minutes, int seconds, long nanos, int sign) {
+        // 9223372036854775808 long, 2147483648 int
+        int totDays = (int) (nanos / NANOS_PER_DAY) +      //   max   106751
+                seconds / SECONDS_PER_DAY +                //   max    24855
+                minutes / MINUTES_PER_DAY +                //   max  1491308
+                hours / HOURS_PER_DAY;                     //   max 89478485
+        totDays *= sign;                                   // total 91101399
+        long totNanos = nanos % NANOS_PER_DAY +                    //   max  86400000000000
+                (seconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
+                (minutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
+                (hours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
+        if (totNanos == 0) {
+            return new Overflow(this, totDays);
+        }
+        long thisNanos = toNanoOfDay();                            //   max  86400000000000
+        totNanos = totNanos * sign + thisNanos;                    // total 432000000000000
+        totDays += (int) (totNanos / NANOS_PER_DAY);
+        totNanos = totNanos % NANOS_PER_DAY;
+        if (totNanos < 0) {
+            totDays--;
+            totNanos += NANOS_PER_DAY;
+        }
+        LocalTime newTime = (totNanos == thisNanos ? this : fromNanoOfDay(totNanos));
+        return new Overflow(newTime, totDays);
     }
 
     //-----------------------------------------------------------------------
@@ -656,20 +721,24 @@ public final class LocalTime
      * Returns a copy of this LocalTime with the specified period subtracted.
      * <p>
      * This subtracts the amount in hours, minutes and seconds from the specified period from this time.
-     * Any date amounts, such as years, months or days are ignored.
+     * If the period contains date amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a new updated LocalTime, never null
+     * @throws CalendricalException if the provider contains date period units
      */
     public LocalTime minus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
-        // safe from overflow
-        long totalNanos = period.getHours() * NANOS_PER_HOUR +
-                period.getMinutes() * NANOS_PER_MINUTE +
-                period.getSeconds() * NANOS_PER_SECOND;
-        return minusNanos(totalNanos).minusNanos(period.getNanos());
+        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        if ((period.getYears() | period.getMonths() | period.getDays()) != 0) {
+            throw new CalendricalException("Unable to add to date as the period contains date units");
+        }
+        long totNanos = period.getNanos() % NANOS_PER_DAY +                    //   max  86400000000000
+                (period.getSeconds() % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
+                (period.getMinutes() % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
+                (period.getHours() % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
+        return minusNanos(totNanos);
     }
 
     //-----------------------------------------------------------------------
@@ -689,7 +758,7 @@ public final class LocalTime
             return this;
         }
         int newHour = (-(hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
-        return withHourOfDay(newHour);
+        return create(newHour, minute, second, nano);
     }
 
     /**
@@ -714,7 +783,7 @@ public final class LocalTime
         }
         int newHour = newMofd / MINUTES_PER_HOUR;
         int newMinute = newMofd % MINUTES_PER_HOUR;
-        return of(newHour, newMinute, second, nano);
+        return create(newHour, newMinute, second, nano);
     }
 
     /**
@@ -741,7 +810,7 @@ public final class LocalTime
         int newHour = newSofd / SECONDS_PER_HOUR;
         int newMinute = (newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
         int newSecond = newSofd % SECONDS_PER_MINUTE;
-        return of(newHour, newMinute, newSecond, nano);
+        return create(newHour, newMinute, newSecond, nano);
     }
 
     /**
@@ -768,7 +837,27 @@ public final class LocalTime
         int newMinute = (int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR);
         int newSecond = (int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_MINUTE);
         int newNano = (int) (newNofd % NANOS_PER_SECOND);
-        return of(newHour, newMinute, newSecond, newNano);
+        return create(newHour, newMinute, newSecond, newNano);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this LocalTime with the specified period subtracted,
+     * returning the new time with any overflow in days.
+     * <p>
+     * This method returns an {@link Overflow} instance with the result of the
+     * subtraction and any overflow in days.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to subtract, may be negative
+     * @param minutes the minutes to subtract, may be negative
+     * @param seconds the seconds to subtract, may be negative
+     * @param nanos the nanos to subtract, may be negative
+     * @return an Overflow instance with the resulting time and overflow, never null
+     */
+    public Overflow minusWithOverflow(int hours, int minutes, int seconds, long nanos) {
+        return plusWithOverflow(hours, minutes, seconds, nanos, -1);
     }
 
     //-----------------------------------------------------------------------
@@ -848,6 +937,21 @@ public final class LocalTime
      */
     public LocalTime toLocalTime() {
         return this;
+    }
+
+    /**
+     * Returns this time wrapped as an days-overflow.
+     * <p>
+     * This method will generally only be needed by those writing low-level date
+     * and time code that handles days-overflow. An overflow happens when adding
+     * or subtracting to a time and the result overflows the range of a time.
+     * The number of days later (or earlier) of the result is recorded in the overflow.
+     *
+     * @param daysOverflow  the number of days to store
+     * @return the days-overflow, never null
+     */
+    public Overflow toOverflow(int daysOverflow) {
+        return new Overflow(this, daysOverflow);
     }
 
     //-----------------------------------------------------------------------
@@ -1004,181 +1108,6 @@ public final class LocalTime
             }
         }
         return buf.toString();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Adds the specified period to create a new LocalTime returning any
-     * overflow in days.
-     * <p>
-     * This adds the amount in hours, minutes and seconds from the specified period to this time.
-     * Any date amounts, such as years, months or days are ignored.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * addition and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return an Overflow instance with the resulting time and overflow, never null
-     */
-    Overflow plusWithOverflow(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
-        // safe from overflow
-        long totalNanos = period.getHours() * NANOS_PER_HOUR +
-                period.getMinutes() * NANOS_PER_MINUTE +
-                period.getSeconds() * NANOS_PER_SECOND;
-        Overflow overflow = plusNanosWithOverflow(totalNanos);
-        if (period.getNanos() == 0) {
-            return overflow;
-        }
-        Overflow overflow2 = overflow.getResultTime().plusNanosWithOverflow(period.getNanos());
-        return new Overflow(overflow2.getResultTime(), overflow.getOverflowDays() + overflow2.getOverflowDays());
-    }
-
-    /**
-     * Returns a copy of this LocalTime with the specified period added,
-     * returning the new time with any overflow in days.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * addition and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @param minutes the minutes to add, may be negative
-     * @param seconds the seconds to add, may be negative
-     * @param nanos the nanos to add, may be negative
-     * @return an Overflow instance with the resulting time and overflow, never null
-     */
-    public Overflow plusWithOverflow(int hours, int minutes, int seconds, int nanos) {
-        // safe from overflow
-        long totalNanos = hours * NANOS_PER_HOUR + minutes * NANOS_PER_MINUTE +
-                seconds * NANOS_PER_SECOND + nanos;
-        return plusNanosWithOverflow(totalNanos);
-    }
-
-    /**
-     * Returns a copy of this LocalTime with the specified period in nanos added,
-     * returning any overflow in days.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * addition and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos the nanos to add, may be negative
-     * @return an Overflow instance with the resulting time and overflow, never null
-     */
-    public Overflow plusNanosWithOverflow(long nanos) {
-        if (nanos == 0) {
-            return new Overflow(this, 0);
-        }
-        long thisNanos = toNanoOfDay();
-        long nanosSum = MathUtils.safeAdd(thisNanos, nanos);
-        int days = (int) (nanosSum / NANOS_PER_DAY);
-        long newNanos = nanosSum % NANOS_PER_DAY;
-        if (newNanos < 0) {
-            days--;
-            newNanos += NANOS_PER_DAY;
-        }
-        LocalTime newTime = newNanos == thisNanos ? this : fromNanoOfDay(newNanos);
-        return new Overflow(newTime, days);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Subtracts the specified period to create a new LocalTime returning any
-     * overflow in days.
-     * <p>
-     * This subtracts the amount in hours, minutes and seconds from the specified period from this time.
-     * Any date amounts, such as years, months or days are ignored.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * subtraction and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to subtract, not null
-     * @return an Overflow instance with the resulting time and overflow, never null
-     */
-    Overflow minusWithOverflow(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
-        // safe from overflow
-        long totalNanos = period.getHours() * NANOS_PER_HOUR +
-                period.getMinutes() * NANOS_PER_MINUTE +
-                period.getSeconds() * NANOS_PER_SECOND;
-        Overflow overflow = minusNanosWithOverflow(totalNanos);
-        if (period.getNanos() == 0) {
-            return overflow;
-        }
-        Overflow overflow2 = overflow.getResultTime().minusNanosWithOverflow(period.getNanos());
-        return new Overflow(overflow2.getResultTime(), overflow.getOverflowDays() + overflow2.getOverflowDays());
-    }
-
-    /**
-     * Returns a copy of this LocalTime with the specified period subtracted,
-     * returning the new time with any overflow in days.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * subtraction and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to subtract, may be negative
-     * @param minutes the minutes to subtract, may be negative
-     * @param seconds the seconds to subtract, may be negative
-     * @param nanos the nanos to subtract, may be negative
-     * @return an Overflow instance with the resulting time and overflow, never null
-     */
-    public Overflow minusWithOverflow(int hours, int minutes, int seconds, int nanos) {
-        // safe from overflow
-        long totalNanos = hours * NANOS_PER_HOUR + minutes * NANOS_PER_MINUTE +
-                seconds * NANOS_PER_SECOND + nanos;
-        return minusNanosWithOverflow(totalNanos);
-    }
-
-    /**
-     * Returns a copy of this LocalTime with the specified period in nanos subtracted,
-     * returning any overflow in days.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * addition and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos the nanos to subtract, may be negative
-     * @return a new updated Overflow, never null
-     */
-    public Overflow minusNanosWithOverflow(long nanos) {
-        if (nanos == 0) {
-            return new Overflow(this, 0);
-        }
-        long thisNanos = toNanoOfDay();
-        long nanosSum = MathUtils.safeSubtract(thisNanos, nanos);
-        int days = (int) (nanosSum / NANOS_PER_DAY);
-        long newNanos = nanosSum % NANOS_PER_DAY;
-        if (newNanos < 0) {
-            days--;
-            newNanos += NANOS_PER_DAY;
-        }
-        LocalTime newTime = newNanos == thisNanos ? this : fromNanoOfDay(newNanos);
-        return new Overflow(newTime, days);
-    }
-
-    /**
-     * Returns this time wrapped as an days-overflow.
-     * <p>
-     * This method will generally only be needed by those writing low-level date
-     * and time code that handles days-overflow. An overflow happens when adding
-     * or subtracting to a time and the result overflows the range of a time.
-     * The number of days later (or earlier) of the result is recorded in the overflow.
-     *
-     * @param daysOverflow  the number of days to store
-     * @return the days-overflow, never null
-     */
-    public Overflow toOverflow(int daysOverflow) {
-        return new Overflow(this, daysOverflow);
     }
 
     //-----------------------------------------------------------------------

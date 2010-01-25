@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.format.CalendricalParseException;
@@ -414,12 +415,13 @@ public final class OffsetTime
      * Returns a copy of this OffsetTime with the specified period added.
      * <p>
      * This adds the amount in hours, minutes and seconds from the specified period to this time.
-     * Any date amounts, such as years, months or days are ignored.
+     * If the period contains date amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a new updated OffsetTime, never null
+     * @throws CalendricalException if the provider contains date period units
      */
     public OffsetTime plus(PeriodProvider periodProvider) {
         LocalTime newTime = time.plus(periodProvider);
@@ -484,12 +486,13 @@ public final class OffsetTime
      * Returns a copy of this OffsetTime with the specified period subtracted.
      * <p>
      * This subtracts the amount in hours, minutes and seconds from the specified period to this time.
-     * Any date amounts, such as years, months or days are ignored.
+     * If the period contains date amounts then an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a new updated OffsetTime, never null
+     * @throws CalendricalException if the provider contains date period units
      */
     public OffsetTime minus(PeriodProvider periodProvider) {
         LocalTime newTime = time.minus(periodProvider);

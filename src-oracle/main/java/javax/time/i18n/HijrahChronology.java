@@ -16,6 +16,7 @@ import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.period.PeriodField;
 
 /**
  * The Hijrah calendar system.
@@ -585,12 +586,12 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Period unit for eras.
+     * Period unit for months.
      */
-    private static final PeriodUnit YEARS = new PeriodUnit(HijrahChronology.INSTANCE, "HijrahYears", Duration.seconds(30617280L));  // 354.36.... days
+    private static final PeriodUnit MONTHS = PeriodUnit.basic(HijrahChronology.INSTANCE, "HijrahMonths", Duration.seconds(2551440L));  // 29.5305... days
     /**
-     * Period unit for eras.
+     * Period unit for years.
      */
-    private static final PeriodUnit MONTHS = new PeriodUnit(HijrahChronology.INSTANCE, "HijrahMonths", Duration.seconds(2551440L));  // 29.5305... days
+    private static final PeriodUnit YEARS = PeriodUnit.derived(HijrahChronology.INSTANCE, "HijrahYears", PeriodField.of(12, MONTHS));  // 354.36.... days
 
 }

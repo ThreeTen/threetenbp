@@ -463,10 +463,10 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Period unit for years.
      */
-    private static final PeriodUnit YEARS = new PeriodUnit(CopticChronology.INSTANCE, "CopticYears", Duration.seconds(31557600L));  // 365.25 days
+    private static final PeriodUnit YEARS = PeriodUnit.basic(CopticChronology.INSTANCE, "CopticYears", Duration.seconds(31557600L));  // 365.25 days
     /**
      * Period unit for months.
      */
-    private static final PeriodUnit MONTHS = new PeriodUnit(CopticChronology.INSTANCE, "CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
+    private static final PeriodUnit MONTHS = PeriodUnit.basic(CopticChronology.INSTANCE, "CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
 
 }

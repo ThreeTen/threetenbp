@@ -35,14 +35,12 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
-import javax.time.MathUtils;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -97,12 +95,62 @@ public final class PeriodFields
      * @param amount  the amount of create with, may be negative
      * @param unit  the period unit, not null
      * @return the <code>PeriodFields</code> instance, never null
-     * @throws NullPointerException if the period unit is null
      */
     public static PeriodFields of(long amount, PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         internalMap.put(unit, PeriodField.of(amount, unit));
+        return create(internalMap);
+    }
+
+    /**
+     * Obtains a <code>PeriodFields</code> from a single-unit period.
+     *
+     * @param period  the single-unit period, not null
+     * @return the <code>PeriodFields</code> instance, never null
+     */
+    public static PeriodFields of(PeriodField period) {
+        checkNotNull(period, "PeriodField must not be null");
+        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
+        internalMap.put(period.getUnit(), period);
+        return create(internalMap);
+    }
+
+    /**
+     * Obtains a <code>PeriodFields</code> from an array of single-unit periods.
+     *
+     * @param periods  the array of single-unit periods, not null
+     * @return the <code>PeriodFields</code> instance, never null
+     * @throws IllegalArgumentException if the period is null
+     */
+    public static PeriodFields of(PeriodField... periods) {
+        checkNotNull(periods, "PeriodField array must not be null");
+        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
+        for (PeriodField period : periods) {
+            checkNotNull(period, "PeriodField array must not contain null");
+            if (internalMap.put(period.getUnit(), period) != null) {
+                throw new IllegalArgumentException("PeriodField array contains the same unit twice");
+            }
+        }
+        return create(internalMap);
+    }
+
+    /**
+     * Obtains a <code>PeriodFields</code> from an array of single-unit periods.
+     *
+     * @param periods  the array of single-unit periods, not null
+     * @return the <code>PeriodFields</code> instance, never null
+     * @throws IllegalArgumentException if the period is null
+     */
+    public static PeriodFields of(Iterable<PeriodField> periods) {
+        checkNotNull(periods, "Iterable must not be null");
+        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
+        for (PeriodField period : periods) {
+            checkNotNull(period, "Iterable must not contain null");
+            if (internalMap.put(period.getUnit(), period) != null) {
+                throw new IllegalArgumentException("Iterable contains the same unit twice");
+            }
+        }
         return create(internalMap);
     }
 
@@ -140,24 +188,13 @@ public final class PeriodFields
      *
      * @param periodProvider  the provider to create from, not null
      * @return the <code>PeriodFields</code> instance, never null
-     * @throws NullPointerException if the period provider is null
+     * @throws NullPointerException if the period provider is null or returns null
      */
     public static PeriodFields from(PeriodProvider periodProvider) {
         checkNotNull(periodProvider, "PeriodProvider must not be null");
-        if (periodProvider instanceof PeriodFields) {
-            return (PeriodFields) periodProvider;
-        }
-        TreeMap<PeriodUnit, PeriodField> map = createMap();
-        if (periodProvider instanceof PeriodField) {
-            PeriodField providedField = (PeriodField) periodProvider;
-            map.put(providedField.getUnit(), providedField);
-        } else {
-            for (PeriodUnit unit : periodProvider.periodRules()) {
-                long amount = periodProvider.periodAmount(unit);
-                map.put(unit, PeriodField.of(amount, unit));
-            }
-        }
-        return create(map);
+        PeriodFields result = periodProvider.toPeriodFields();
+        checkNotNull(result, "PeriodProvider implementation must not return null");
+        return result;
     }
 
     /**
@@ -170,27 +207,20 @@ public final class PeriodFields
      *
      * @param periodProviders  the providers to total, not null
      * @return the <code>PeriodFields</code> instance, never null
-     * @throws NullPointerException if the period provider is null
+     * @throws NullPointerException if any period provider is null or returns null
      */
     public static PeriodFields total(PeriodProvider... periodProviders) {
         checkNotNull(periodProviders, "PeriodProvider[] must not be null");
-        if (periodProviders.length == 1 && periodProviders[0] instanceof PeriodFields) {
-            return (PeriodFields) periodProviders[0];
+        if (periodProviders.length == 1) {
+            return from(periodProviders[0]);
         }
         TreeMap<PeriodUnit, PeriodField> map = createMap();
         for (PeriodProvider periodProvider : periodProviders) {
-            if (periodProvider instanceof PeriodField) {
-                PeriodField providedField = (PeriodField) periodProvider;
-                PeriodField field = map.get(providedField.getUnit());
-                field = (field != null ? field.plus(providedField.getAmount()) : providedField);
-                map.put(providedField.getUnit(), field);
-            } else {
-                for (PeriodUnit unit : periodProvider.periodRules()) {
-                    long amount = periodProvider.periodAmount(unit);
-                    PeriodField field = map.get(unit);
-                    field = (field != null ? field.plus(amount) : PeriodField.of(amount, unit));
-                    map.put(unit, field);
-                }
+            PeriodFields periods = from(periodProvider);
+            for (PeriodField period : periods.unitFieldMap.values()) {
+                PeriodField old = map.get(period.getUnit());
+                period = (old != null ? old.plus(period) : period);
+                map.put(period.getUnit(), period);
             }
         }
         return create(map);
@@ -213,7 +243,7 @@ public final class PeriodFields
      * @param periodMap  the unit-amount map, not null, assigned not cloned
      * @return the created period, never null
      */
-    private static PeriodFields create(TreeMap<PeriodUnit, PeriodField> periodMap) {
+    static PeriodFields create(TreeMap<PeriodUnit, PeriodField> periodMap) {
         if (periodMap.isEmpty()) {
             return ZERO;
         }
@@ -254,38 +284,6 @@ public final class PeriodFields
             return ZERO;
         }
         return this;
-    }
-
-    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the complete set of fields.
-//     *
-//     * @return the period unit as an unmodifiable set, never null
-//     */
-//    public PeriodField[] periodFields() {
-//        return unitFieldMap.values().toArray(new PeriodField[unitFieldMap.size()]);
-//    }
-    /**
-     * Gets the complete set of units which have amounts stored.
-     *
-     * @return the period unit as an unmodifiable set, never null
-     */
-    public Set<PeriodUnit> periodRules() {
-        return Collections.unmodifiableSet(unitFieldMap.keySet());
-    }
-
-    /**
-     * Gets the amount stored for the specified unit.
-     * <p>
-     * Zero is returned if no amount is stored for the unit.
-     *
-     * @param unit  the unit to get, not null
-     * @return the amount of time stored in this period for the unit
-     */
-    public long periodAmount(PeriodUnit unit) {
-        PeriodFields.checkNotNull(unit, "PeriodRule must not be null");
-        PeriodField field = unitFieldMap.get(unit);
-        return (field != null ? field.getAmount() : 0);
     }
 
     //-----------------------------------------------------------------------
@@ -375,16 +373,16 @@ public final class PeriodFields
      * Gets the amount of this period for the specified unit.
      * <p>
      * This method allows the amount to be queried by unit, like a map.
-     * If the unit is not found then an exception is thrown.
+     * If the unit is not found then zero is returned.
      *
      * @param unit  the unit to query, not null
-     * @return the period amount
+     * @return the period amount, 0 if no period stored for the unit
      * @throws CalendricalException if there is no amount for the unit
      */
     public long getAmount(PeriodUnit unit) {
         PeriodField field = get(unit);
         if (field == null) {
-            throw new CalendricalException("No amount for unit: " + unit);
+            return 0;
         }
         return field.getAmount();
     }
@@ -394,15 +392,19 @@ public final class PeriodFields
      * to an <code>int</code>.
      * <p>
      * This method allows the amount to be queried by unit, like a map.
-     * If the unit is not found then an exception is thrown.
+     * If the unit is not found then zero is returned.
      *
      * @param unit  the unit to query, not null
-     * @return the period amount
+     * @return the period amount, 0 if no period stored for the unit
      * @throws CalendricalException if there is no amount for the unit
      * @throws ArithmeticException if the amount is too large to be returned in an int
      */
     public int getAmountInt(PeriodUnit unit) {
-        return MathUtils.safeToInt(getAmount(unit));
+        PeriodField field = get(unit);
+        if (field == null) {
+            return 0;
+        }
+        return field.getAmountInt();
     }
 
 //    //-----------------------------------------------------------------------
@@ -577,11 +579,11 @@ public final class PeriodFields
             return (PeriodFields) periodProvider;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        for (PeriodUnit unit : periodProvider.periodRules()) {
-            long amount = periodProvider.periodAmount(unit);
-            PeriodField old = copy.get(unit);
-            PeriodField field = (old != null ? old.plus(amount) : PeriodField.of(amount, unit));
-            copy.put(unit, field);
+        PeriodFields periods = from(periodProvider);
+        for (PeriodField period : periods.unitFieldMap.values()) {
+            PeriodField old = copy.get(period.getUnit());
+            period = (old != null ? old.plus(period) : period);
+            copy.put(period.getUnit(), period);
         }
         return create(copy);
     }
@@ -633,11 +635,11 @@ public final class PeriodFields
             return (PeriodFields) periodProvider;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        for (PeriodUnit unit : periodProvider.periodRules()) {
-            long amount = periodProvider.periodAmount(unit);
-            PeriodField old = copy.get(unit);
-            PeriodField field = (old != null ? old.minus(amount) : PeriodField.of(amount, unit).negated());
-            copy.put(unit, field);
+        PeriodFields periods = from(periodProvider);
+        for (PeriodField period : periods.unitFieldMap.values()) {
+            PeriodField old = copy.get(period.getUnit());
+            period = (old != null ? old.minus(period) : period.negated());
+            copy.put(period.getUnit(), period);
         }
         return create(copy);
     }
@@ -675,7 +677,7 @@ public final class PeriodFields
      * @return a new period multiplied by the scalar, never null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields multipliedBy(int scalar) {
+    public PeriodFields multipliedBy(long scalar) {
         if (scalar == 1 || isZero()) {
             return this;
         }
@@ -694,7 +696,7 @@ public final class PeriodFields
      * @return a new period instance with the amount divided by the divisor, never null
      * @throws ArithmeticException if dividing by zero
      */
-    public PeriodFields dividedBy(int divisor) {
+    public PeriodFields dividedBy(long divisor) {
         if (divisor == 0) {
             throw new ArithmeticException("Cannot divide by zero");
         }
@@ -730,6 +732,45 @@ public final class PeriodFields
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Converts this period to one containing only the units specified.
+     * <p>
+     * This will attempt to convert this period to each of the specified units
+     * in turn. It is recommended to specify the units from largest to smallest.
+     * If this period is already one of the specified units, then <code>this</code>
+     * is returned.
+     * <p>
+     * For example, '3 Hours' can normally be converted to both minutes and seconds.
+     * If the units array contains both 'Minutes' and 'Seconds', then the result will
+     * be measured in whichever is first in the array.
+     *
+     * @param units  the required unit array, not altered, not null
+     * @return the converted period, never null
+     * @throws CalendricalException if the period cannot be converted to any of the units
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public PeriodFields getEquivalentPeriod(PeriodUnit... units) {
+        TreeMap<PeriodUnit, PeriodField> map = createMap();
+        for (PeriodField period : unitFieldMap.values()) {
+            period = period.toEquivalentPeriod(units);
+            PeriodField old = map.get(period.getUnit());
+            period = (old != null ? old.plus(period) : period);
+            map.put(period.getUnit(), period);
+        }
+        return (map.equals(unitFieldMap) ? this : create(map));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this period to a <code>PeriodFields</code>, trivially
+     * returning <code>this</code>.
+     *
+     * @return <code>this</code>, never null
+     */
+    public PeriodFields toPeriodFields() {
+        return this;
+    }
+
     /**
      * Converts this object to a map of units to amounts.
      * <p>
