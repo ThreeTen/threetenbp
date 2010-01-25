@@ -480,7 +480,8 @@ public final class LocalTime
         if (hourOfDay == hour) {
             return this;
         }
-        return of(hourOfDay, minute, second, nano);
+        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        return create(hourOfDay, minute, second, nano);
     }
 
     /**
@@ -496,7 +497,8 @@ public final class LocalTime
         if (minuteOfHour == minute) {
             return this;
         }
-        return of(hour, minuteOfHour, second, nano);
+        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
+        return create(hour, minuteOfHour, second, nano);
     }
 
     /**
@@ -512,7 +514,8 @@ public final class LocalTime
         if (secondOfMinute == second) {
             return this;
         }
-        return of(hour, minute, secondOfMinute, nano);
+        ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
+        return create(hour, minute, secondOfMinute, nano);
     }
 
     /**
@@ -528,7 +531,8 @@ public final class LocalTime
         if (nanoOfSecond == nano) {
             return this;
         }
-        return of(hour, minute, second, nanoOfSecond);
+        ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
+        return create(hour, minute, second, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
