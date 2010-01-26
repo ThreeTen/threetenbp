@@ -36,24 +36,6 @@ import static org.testng.Assert.*;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateResolver;
-import javax.time.calendar.DateResolvers;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthDay;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.Year;
-import javax.time.calendar.YearMonth;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -687,6 +669,49 @@ public class TestYear {
             test.atMonthDay(MonthDay.of(6, 31));
         } catch (InvalidCalendarFieldException ex) {
             assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // atDay(int)
+    //-----------------------------------------------------------------------
+    public void test_atDay_notLeapYear() {
+        Year test = Year.of(2007);
+        LocalDate expected = LocalDate.of(2007, 1, 1);
+        for (int i = 1; i <= 365; i++) {
+            assertEquals(test.atDay(i), expected);
+            expected = expected.plusDays(1);
+        }
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_atDay_notLeapYear_day366() {
+        Year test = Year.of(2007);
+        try {
+            test.atDay(366);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISOChronology.dayOfYearRule());
+            throw ex;
+        }
+    }
+
+    public void test_atDay_leapYear() {
+        Year test = Year.of(2008);
+        LocalDate expected = LocalDate.of(2008, 1, 1);
+        for (int i = 1; i <= 366; i++) {
+            assertEquals(test.atDay(i), expected);
+            expected = expected.plusDays(1);
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atDay_day0() {
+        Year test = Year.of(2007);
+        try {
+            test.atDay(0);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISOChronology.dayOfYearRule());
             throw ex;
         }
     }

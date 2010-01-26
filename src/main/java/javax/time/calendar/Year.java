@@ -533,6 +533,29 @@ public final class Year
         return LocalDate.of(year, monthDay.getMonthOfYear(), monthDay.getDayOfMonth());
     }
 
+    /**
+     * Returns a date formed from this year at the specified day of year.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified day -
+     * to form an instance of <code>LocalDate</code>.
+     * <pre>
+     * LocalDate date = year.atDay(dayOfYear);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfYear  the dayOfYear to use, not null
+     * @return the local date formed from this year and the specified date of year, never null
+     * @throws InvalidCalendarFieldException if the day of year is 366 and this is not a leap year
+     */
+    public LocalDate atDay(int dayOfYear) {
+        ISOChronology.dayOfYearRule().checkValue(dayOfYear);
+        if (dayOfYear == 366 && !isLeap()) {
+            throw new InvalidCalendarFieldException("Day of year 366 is invalid for year " + year, ISOChronology.dayOfYearRule());
+        }
+        return LocalDate.of(year, 1, 1).plusDays(dayOfYear - 1);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this year to another year.

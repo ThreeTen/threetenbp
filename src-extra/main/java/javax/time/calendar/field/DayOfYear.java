@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -290,7 +290,7 @@ public final class DayOfYear
         if (year == null) {
             throw new NullPointerException("Year must not be null");
         }
-        return atYear(year.getValue());
+        return year.atDay(dayOfYear);
     }
 
     /**
@@ -306,11 +306,7 @@ public final class DayOfYear
      * @throws InvalidCalendarFieldException if the day does not occur in the year
      */
     public LocalDate atYear(int year) {
-        boolean leap = ISOChronology.isLeapYear(year);
-        if (dayOfYear == 366 && leap == false) {
-            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, rule());
-        }
-        return LocalDate.of(year, 1, 1).plusDays(dayOfYear - 1);
+        return atYear(Year.of(year));
     }
 
     //-----------------------------------------------------------------------
