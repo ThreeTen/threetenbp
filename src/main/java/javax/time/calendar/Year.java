@@ -534,7 +534,7 @@ public final class Year
     }
 
     /**
-     * Returns a date formed from this year at the specified day of year.
+     * Returns a date formed from this year at the specified day-of-year.
      * <p>
      * This merges the two objects - <code>this</code> and the specified day -
      * to form an instance of <code>LocalDate</code>.
@@ -544,7 +544,7 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the dayOfYear to use, not null
+     * @param dayOfYear  the day-of-year to use, not null
      * @return the local date formed from this year and the specified date of year, never null
      * @throws InvalidCalendarFieldException if the day of year is 366 and this is not a leap year
      */
