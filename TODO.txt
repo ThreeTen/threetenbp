@@ -49,9 +49,10 @@ Date/Time classes
 - factories from Calendrical... ?
 - getChronology()
 - getMonthOfYear() -> getMonth(), etc?
-- Year.atDayOfYear()
 - LocalDate.atTime(int...), also OffsetDate
 - getAmPm()
+- ZonedDateTime plusDurationSeconds() etc
+- LocalDate.plus(PeriodProvider) needs correct algorithm
 
 Rules
 - parse() ?
@@ -110,6 +111,7 @@ Possible items
 - ModJulDays rule - BigDecimal
 - IntValue interface, implemented by Number/Integer
 - public factory for LocalDate.fromDayOfYear(year, doy)
+- Optimise LocalDateTime plus/minus times by having a local plus(int,int,int,long,sign,LocalDate) method
 
 
 DONE
@@ -128,4 +130,5 @@ DONE
 - parse optional needs to store and drop back Calendrical properly
 - withDayOfYear() tests and everywhere
 - toDays() etc, if we keep those classes
+- Year.atDay()
 
