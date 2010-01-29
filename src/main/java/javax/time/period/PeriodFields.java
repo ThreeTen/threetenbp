@@ -749,7 +749,7 @@ public final class PeriodFields
      * @throws CalendricalException if the period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields getEquivalentPeriod(PeriodUnit... units) {
+    public PeriodFields toEquivalentPeriod(PeriodUnit... units) {
         TreeMap<PeriodUnit, PeriodField> map = createMap();
         for (PeriodField period : unitFieldMap.values()) {
             period = period.toEquivalentPeriod(units);

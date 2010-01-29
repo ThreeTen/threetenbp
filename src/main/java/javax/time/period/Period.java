@@ -141,7 +141,7 @@ public final class Period
             return (Period) periodProvider;
         }
         PeriodFields periodFields = PeriodFields.from(periodProvider);
-        periodFields = periodFields.getEquivalentPeriod(UNITS);
+        periodFields = periodFields.toEquivalentPeriod(UNITS);
         int years = periodFields.getAmountInt(ISOChronology.periodYears());
         int months = periodFields.getAmountInt(ISOChronology.periodMonths());
         int days = periodFields.getAmountInt(ISOChronology.periodDays());
