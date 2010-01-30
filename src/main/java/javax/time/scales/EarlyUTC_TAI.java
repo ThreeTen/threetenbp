@@ -163,11 +163,13 @@ public class EarlyUTC_TAI {
 
         /** TAI-UTC at a UTC instant.
          */
+        @Override
         public long getUTCDeltaNanoseconds(long utcEpochSeconds, int nanoOfSecond) {
             return deltaNanoseconds + Math.round(utcRate*((utcEpochSeconds-originEpochSeconds)+1e-9*nanoOfSecond));
         }
 
         /** TAI-UTC at a TAI instant.*/
+        @Override
         public long getTAIDeltaNanoseconds(long taiEpochSeconds, int nanoOfSecond) {
             return deltaNanoseconds + Math.round(taiRate*((taiEpochSeconds-originEpochSeconds) + 1e-9*(nanoOfSecond-deltaNanoseconds)));
         }

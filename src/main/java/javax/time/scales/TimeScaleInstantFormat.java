@@ -164,6 +164,7 @@ public class TimeScaleInstantFormat extends Format {
         }
     }
 
+    @Override
     public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
         if (obj instanceof TimeScaleInstant)
             return format((TimeScaleInstant)obj, toAppendTo, pos);
@@ -190,6 +191,7 @@ public class TimeScaleInstantFormat extends Format {
         return toAppendTo;
     }
 
+    @Override
     public Object parseObject(String source, ParsePosition pos) {
         throw new UnsupportedOperationException("Not implemented");
     }
