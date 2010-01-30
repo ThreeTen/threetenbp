@@ -96,7 +96,7 @@ public final class PeriodField
      * @param unit  the unit that the period is measured in, validated not null
      */
     private PeriodField(long amount, PeriodUnit unit) {
-        super();
+        // input pre-validated
         this.amount = amount;
         this.unit = unit;
     }
@@ -215,7 +215,7 @@ public final class PeriodField
     public PeriodField plus(PeriodField period) {
         PeriodFields.checkNotNull(period, "PeriodField must not be null");
         if (period.getUnit().equals(unit) == false) {
-            throw new IllegalArgumentException("Cannot add periods, units differ");
+            throw new IllegalArgumentException("Cannot add '" + period + "' to '" + this + "' as the units differ");
         }
         return plus(period.getAmount());
     }
@@ -230,9 +230,6 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField plus(long amount) {
-        if (amount == 0) {
-            return this;
-        }
         return withAmount(MathUtils.safeAdd(this.amount, amount));
     }
 
@@ -250,7 +247,7 @@ public final class PeriodField
     public PeriodField minus(PeriodField period) {
         PeriodFields.checkNotNull(period, "PeriodField must not be null");
         if (period.getUnit().equals(unit) == false) {
-            throw new IllegalArgumentException("Cannot add periods, units differ");
+            throw new IllegalArgumentException("Cannot subtract '" + period + "' from '" + this + "' as the units differ");
         }
         return minus(period.getAmount());
     }
@@ -265,9 +262,6 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField minus(long amount) {
-        if (amount == 0) {
-            return this;
-        }
         return withAmount(MathUtils.safeSubtract(this.amount, amount));
     }
 
@@ -282,10 +276,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField multipliedBy(long scalar) {
-        if (scalar == 1) {
-            return this;
-        }
-        return withAmount(MathUtils.safeMultiply(this.amount, scalar));
+        return withAmount(MathUtils.safeMultiply(amount, scalar));
     }
 
     /**
@@ -299,10 +290,7 @@ public final class PeriodField
      * @throws ArithmeticException if the divisor is zero
      */
     public PeriodField dividedBy(long divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return withAmount(getAmount() / divisor);
+        return withAmount(amount / divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -313,7 +301,7 @@ public final class PeriodField
      * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
      */
     public PeriodField negated() {
-        return withAmount(MathUtils.safeNegate(getAmount()));
+        return withAmount(MathUtils.safeNegate(amount));
     }
 
     /**
