@@ -1422,6 +1422,7 @@ public final class Period
      */
     @Override
     public String toString() {
+        // TODO: toString doesn't match state nanos/secs
         String str = string;
         if (str == null) {
             if (this == ZERO) {
