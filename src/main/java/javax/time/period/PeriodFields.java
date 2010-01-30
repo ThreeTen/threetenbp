@@ -118,10 +118,12 @@ public final class PeriodFields
 
     /**
      * Obtains a <code>PeriodFields</code> from an array of single-unit periods.
+     * <p>
+     * The period fields must all have different units.
      *
      * @param periods  the array of single-unit periods, not null
      * @return the <code>PeriodFields</code> instance, never null
-     * @throws IllegalArgumentException if the period is null
+     * @throws IllegalArgumentException if the same period unit occurs twice
      */
     public static PeriodFields of(PeriodField... periods) {
         checkNotNull(periods, "PeriodField array must not be null");
@@ -135,24 +137,24 @@ public final class PeriodFields
         return create(internalMap);
     }
 
-    /**
-     * Obtains a <code>PeriodFields</code> from an array of single-unit periods.
-     *
-     * @param periods  the array of single-unit periods, not null
-     * @return the <code>PeriodFields</code> instance, never null
-     * @throws IllegalArgumentException if the period is null
-     */
-    public static PeriodFields of(Iterable<PeriodField> periods) {
-        checkNotNull(periods, "Iterable must not be null");
-        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
-        for (PeriodField period : periods) {
-            checkNotNull(period, "Iterable must not contain null");
-            if (internalMap.put(period.getUnit(), period) != null) {
-                throw new IllegalArgumentException("Iterable contains the same unit twice");
-            }
-        }
-        return create(internalMap);
-    }
+//    /**
+//     * Obtains a <code>PeriodFields</code> from an array of single-unit periods.
+//     *
+//     * @param periods  the array of single-unit periods, not null
+//     * @return the <code>PeriodFields</code> instance, never null
+//     * @throws IllegalArgumentException if the same period unit occurs twice
+//     */
+//    public static PeriodFields of(Iterable<PeriodField> periods) {
+//        checkNotNull(periods, "Iterable must not be null");
+//        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
+//        for (PeriodField period : periods) {
+//            checkNotNull(period, "Iterable must not contain null");
+//            if (internalMap.put(period.getUnit(), period) != null) {
+//                throw new IllegalArgumentException("Iterable contains the same unit twice");
+//            }
+//        }
+//        return create(internalMap);
+//    }
 
     /**
      * Obtains a <code>PeriodFields</code> from a set of unit-amount pairs.
@@ -743,6 +745,10 @@ public final class PeriodFields
      * For example, '3 Hours' can normally be converted to both minutes and seconds.
      * If the units array contains both 'Minutes' and 'Seconds', then the result will
      * be measured in whichever is first in the array.
+     * <p>
+     * A total of a compound period can also be obtained.
+     * For example, '3 Hours, 34 Minutes' can be totalled to minutes by passing the
+     * single unit of minutes, resulting in '214 Minutes'.
      *
      * @param units  the required unit array, not altered, not null
      * @return the converted period, never null
