@@ -400,7 +400,7 @@ public class TestPeriodField {
         try {
             PeriodField.of(5, YEARS).toEquivalentPeriod(DAYS);
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to ISO.Days", ex.getMessage());
+            assertEquals("Unable to convert '5 Years' to Days", ex.getMessage());
             throw ex;
         }
     }
@@ -468,7 +468,7 @@ public class TestPeriodField {
         try {
             PeriodField.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[] {DAYS});
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: [ISO.Days]", ex.getMessage());
+            assertEquals("Unable to convert '5 Years' to any requested unit: [Days]", ex.getMessage());
             throw ex;
         }
     }
@@ -478,7 +478,7 @@ public class TestPeriodField {
         try {
             PeriodField.of(5, YEARS).toEquivalentPeriod(DAYS, HOURS);
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: [ISO.Days, ISO.Hours]", ex.getMessage());
+            assertEquals("Unable to convert '5 Years' to any requested unit: [Days, Hours]", ex.getMessage());
             throw ex;
         }
     }

@@ -532,6 +532,6 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Period unit for eras.
      */
-    private static final PeriodUnit ERAS = PeriodUnit.basic(JapaneseChronology.INSTANCE, "JapaneseEras", Duration.seconds(31556952L * 40L));
+    private static final PeriodUnit ERAS = PeriodUnit.basic("JapaneseEras", Duration.seconds(31556952L * 40L));
 
 }

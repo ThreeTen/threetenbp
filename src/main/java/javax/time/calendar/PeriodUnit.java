@@ -65,14 +65,6 @@ public final class PeriodUnit
     private static final long serialVersionUID = 1L;
 
     /**
-     * The chronology of the unit, not null.
-     */
-    private final Chronology chronology;
-    /**
-     * The id of the unit, not null.
-     */
-    private final String id;
-    /**
      * The name of the unit, not null.
      */
     private final String name;
@@ -97,14 +89,8 @@ public final class PeriodUnit
      * @param name  the name of the type, not null
      * @param estimatedDuration  the estimated duration of one unit of this period, not null
      */
-    public static PeriodUnit basic(
-            Chronology chronology,
-            String name,
-            Duration estimatedDuration) {
+    public static PeriodUnit basic(String name, Duration estimatedDuration) {
         // avoid possible circular references by using inline NPE checks
-        if (chronology == null) {
-            throw new NullPointerException("Chronology must not be null");
-        }
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
@@ -114,7 +100,7 @@ public final class PeriodUnit
         if (estimatedDuration.isNegative() || estimatedDuration.isZero()) {
             throw new IllegalArgumentException("Alternate period must not be negative or zero");
         }
-        return new PeriodUnit(chronology, name, null, estimatedDuration);
+        return new PeriodUnit(name, null, estimatedDuration);
     }
 
     /**
@@ -133,14 +119,8 @@ public final class PeriodUnit
      * @throws ArithmeticException if the equivalent period calculation overflows
      * @throws ArithmeticException if the estimated duration is too large
      */
-    public static PeriodUnit derived(
-            Chronology chronology,
-            String name,
-            PeriodField equivalentPeriod) {
+    public static PeriodUnit derived(String name, PeriodField equivalentPeriod) {
         // avoid possible circular references by using inline NPE checks
-        if (chronology == null) {
-            throw new NullPointerException("Chronology must not be null");
-        }
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
@@ -150,26 +130,22 @@ public final class PeriodUnit
         if (equivalentPeriod.isNegative() || equivalentPeriod.isZero()) {
             throw new IllegalArgumentException("Equivalent period must not be negative or zero");
         }
-        return new PeriodUnit(chronology, name, equivalentPeriod, equivalentPeriod.toEstimatedDuration());
+        return new PeriodUnit(name, equivalentPeriod, equivalentPeriod.toEstimatedDuration());
     }
 
     /**
      * Package private constructor used for to enhance system startup performance.
      *
-     * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param equivalentPeriod  the period this is derived from, null if no equivalent
      * @param estimatedDuration  the estimated duration of one unit of this period, not null
      * @throws ArithmeticException if the equivalent period calculation overflows
      */
     PeriodUnit(
-            Chronology chronology,
             String name,
             PeriodField equivalentPeriod,
             Duration estimatedDuration) {
         // input known to be valid, don't call this by reflection!
-        this.chronology = chronology;
-        this.id = chronology.getName() + '.' + name;
         this.name = name;
         this.estimatedDuration = estimatedDuration;
         
@@ -207,31 +183,11 @@ public final class PeriodUnit
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology of the unit.
-     *
-     * @return the chronology of the unit, never null
-     */
-    public Chronology getChronology() {
-        return chronology;
-    }
-
-    /**
-     * Gets the ID of the unit.
-     * <p>
-     * The ID is of the form 'ChronologyName.RuleName'.
-     * No two fields should have the same id.
-     *
-     * @return the id of the unit, never null
-     */
-    public String getID() {
-        return id;
-    }
-
-    /**
-     * Gets the name of the unit.
+     * Gets the name of the unit, used as an identifier for the unit.
      * <p>
      * Implementations should use the name that best represents themselves.
      * Most units will have a plural name, such as 'Years' or 'Minutes'.
+     * The name is not localized.
      *
      * @return the name of the unit, never null
      */
@@ -358,12 +314,14 @@ public final class PeriodUnit
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the unit.
+     * <p>
+     * The string representation is the same as the name.
      *
-     * @return a description of the unit, never null
+     * @return the unit name, never null
      */
     @Override
     public String toString() {
-        return id;
+        return name;
     }
 
 }

@@ -272,12 +272,12 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-    // millenia
+    // millennia
     //-----------------------------------------------------------------------
-    public void test_millenia() {
-        PeriodUnit rule = ISOChronology.periodMillenia();
-        assertSame(ISOChronology.periodMillenia(), rule);
-        assertEquals(rule.getName(), "Millenia");
+    public void test_millennia() {
+        PeriodUnit rule = ISOChronology.periodMillennia();
+        assertSame(ISOChronology.periodMillennia(), rule);
+        assertEquals(rule.getName(), "Millennia");
         assertEquals(rule.getEquivalentPeriods().size(), 5);
         assertEquals(rule.getEquivalentPeriods().get(0), PeriodField.of(10, ISOChronology.periodCenturies()));
         assertEquals(rule.getEquivalentPeriods().get(1), PeriodField.of(100, ISOChronology.periodDecades()));
@@ -504,7 +504,7 @@ public class TestISOChronology {
         list.add(ISOChronology.periodYears());
         list.add(ISOChronology.periodDecades());
         list.add(ISOChronology.periodCenturies());
-        list.add(ISOChronology.periodMillenia());
+        list.add(ISOChronology.periodMillennia());
         list.add(ISOChronology.periodEras());
         
         List<PeriodUnit> test = new ArrayList<PeriodUnit>(list);
