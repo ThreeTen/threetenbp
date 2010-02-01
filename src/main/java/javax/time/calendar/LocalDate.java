@@ -1025,6 +1025,60 @@ public final class LocalDate
     }
 
     /**
+     * Returns a local date-time formed from this date at the specified time.
+     * <p>
+     * This merges the three values - <code>this</code> and the specified time -
+     * to form an instance of <code>LocalDateTime</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour-of-day to use, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
+     * @return the local date-time formed from this date and the specified time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     */
+    public LocalDateTime atTime(int hourOfDay, int minuteOfHour) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour));
+    }
+
+    /**
+     * Returns a local date-time formed from this date at the specified time.
+     * <p>
+     * This merges the four values - <code>this</code> and the specified time -
+     * to form an instance of <code>LocalDateTime</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour-of-day to use, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @return the local date-time formed from this date and the specified time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     */
+    public LocalDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfHour) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfHour));
+    }
+
+    /**
+     * Returns a local date-time formed from this date at the specified time.
+     * <p>
+     * This merges the five values - <code>this</code> and the specified time -
+     * to form an instance of <code>LocalDateTime</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour-of-day to use, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @return the local date-time formed from this date and the specified time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     */
+    public LocalDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfHour, int nanoOfSecond) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfHour, nanoOfSecond));
+    }
+
+    /**
      * Returns a local date-time formed from this date at the time of midnight.
      * <p>
      * This merges the two objects - <code>this</code> and {@link LocalTime#MIDNIGHT} -

@@ -1676,15 +1676,138 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     // atTime()
     //-----------------------------------------------------------------------
-    public void test_atTime() {
+    public void test_atTime_LocalTime() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         assertEquals(t.atTime(LocalTime.of(11, 30)), LocalDateTime.of(2008, 6, 30, 11, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_atTime_nullLocalTime() {
+    public void test_atTime_LocalTime_null() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         t.atTime((LocalTime) null);
+    }
+
+    public void test_atTime_int_int() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        assertEquals(t.atTime(11, 30), LocalDateTime.of(2008, 6, 30, 11, 30));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_hourTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(-1, 30);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_hourTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(24, 30);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_minuteTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_minuteTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 60);
+    }
+
+    public void test_atTime_int_int_int() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        assertEquals(t.atTime(11, 30, 40), LocalDateTime.of(2008, 6, 30, 11, 30, 40));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_hourTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(-1, 30, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_hourTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(24, 30, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_minuteTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, -1, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_minuteTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 60, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_secondTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 30, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_secondTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 30, 60);
+    }
+
+    public void test_atTime_int_int_int_int() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        assertEquals(t.atTime(11, 30, 40, 50), LocalDateTime.of(2008, 6, 30, 11, 30, 40, 50));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_hourTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(-1, 30, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_hourTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(24, 30, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_minuteTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, -1, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_minuteTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 60, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_secondTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 30, -1, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_secondTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 30, 60, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_nanoTooSmall() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 30, 40, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_nanoTooBig() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime(11, 30, 40, 1000000000);
     }
 
     //-----------------------------------------------------------------------
