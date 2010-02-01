@@ -716,6 +716,17 @@ public class TestYear {
         }
     }
 
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atDay_day367() {
+        Year test = Year.of(2007);
+        try {
+            test.atDay(367);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISOChronology.dayOfYearRule());
+            throw ex;
+        }
+    }
+
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
