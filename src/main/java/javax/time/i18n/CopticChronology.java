@@ -463,10 +463,35 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Period unit for years.
      */
-    private static final PeriodUnit YEARS = PeriodUnit.basic("CopticYears", Duration.seconds(31557600L));  // 365.25 days
+    // TODO: Is a year = 13 months for this definition?
+    private static final PeriodUnit YEARS = new Years();
+    /**
+     * Unit class for years.
+     */
+    private static final class Years extends PeriodUnit {
+        private static final long serialVersionUID = 1L;
+        private Years() {
+            super("CopticYears", Duration.seconds(31557600L));  // 365.25 days
+        }
+        private Object readResolve() {
+            return YEARS;
+        }
+    }
     /**
      * Period unit for months.
      */
-    private static final PeriodUnit MONTHS = PeriodUnit.basic("CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
+    private static final PeriodUnit MONTHS = new Months();
+    /**
+     * Unit class for months.
+     */
+    private static final class Months extends PeriodUnit {
+        private static final long serialVersionUID = 1L;
+        private Months() {
+            super("CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
+        }
+        private Object readResolve() {
+            return MONTHS;
+        }
+    }
 
 }

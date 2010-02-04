@@ -586,12 +586,36 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Period unit for months.
+     * Period unit for years.
      */
-    private static final PeriodUnit MONTHS = PeriodUnit.basic("HijrahMonths", Duration.seconds(2551440L));  // 29.5305... days
+    private static final PeriodUnit MONTHS = new Months();
+    /**
+     * Unit class for years.
+     */
+    private static final class Months extends PeriodUnit {
+        private static final long serialVersionUID = 1L;
+        private Months() {
+            super("HijrahMonths", Duration.seconds(2551440L));  // 29.5305... days
+        }
+        private Object readResolve() {
+            return MONTHS;
+        }
+    }
     /**
      * Period unit for years.
      */
-    private static final PeriodUnit YEARS = PeriodUnit.derived("HijrahYears", PeriodField.of(12, MONTHS));  // 354.36.... days
+    private static final PeriodUnit YEARS = new Years();
+    /**
+     * Unit class for years.
+     */
+    private static final class Years extends PeriodUnit {
+        private static final long serialVersionUID = 1L;
+        private Years() {
+            super("HijrahYears", PeriodField.of(12, MONTHS));  // 354.36.... days
+        }
+        private Object readResolve() {
+            return YEARS;
+        }
+    }
 
 }
