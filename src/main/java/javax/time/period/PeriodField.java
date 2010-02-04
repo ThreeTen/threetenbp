@@ -84,7 +84,7 @@ public final class PeriodField
      * @param unit  the unit that the period is measured in, not null
      */
     public static PeriodField of(long amount, PeriodUnit unit) {
-        PeriodFields.checkNotNull(unit, "PeriodRule must not be null");
+        PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
         return new PeriodField(amount, unit);
     }
 
