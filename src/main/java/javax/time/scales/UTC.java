@@ -66,7 +66,7 @@ public class UTC implements TimeScale, Serializable {
         if (t.getTimeScale() != this)
             return t.getTimeScale().add(t, d);
         long seconds = d.getSeconds();
-        int nanos = d.getNanosAdjustment();
+        int nanos = d.getNanosInSecond();
         if (seconds == 0 && nanos == 0)
             return t;
         seconds = MathUtils.safeAdd(t.getEpochSeconds(), seconds);
@@ -85,7 +85,7 @@ public class UTC implements TimeScale, Serializable {
         if (t.getTimeScale() != this)
             return t.getTimeScale().subtract(t, d);
         long seconds = d.getSeconds();
-        int nanos = d.getNanosAdjustment();
+        int nanos = d.getNanosInSecond();
         if (seconds == 0 && nanos == 0)
             return t;
         seconds = MathUtils.safeSubtract(t.getEpochSeconds(), seconds);
