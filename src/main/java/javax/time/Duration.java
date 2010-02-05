@@ -32,6 +32,7 @@
 package javax.time;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import javax.time.calendar.format.CalendricalParseException;
@@ -43,15 +44,25 @@ import javax.time.calendar.format.CalendricalParseException;
  * known as instants, along a single time-line. This class represents the
  * duration between two of those instants.
  * <p>
- * Each instant is theoretically an instantaneous event, however for practicality
- * a precision of nanoseconds has been chosen. As a result, the duration class also
- * has a maximum precision of nanoseconds.
+ * A physical instant is an instantaneous event.
+ * However, for practicality the API and this class uses a precision of nanoseconds.
+ * <p>
+ * A physical duration could be of infinite length.
+ * However, for practicality the API and this class limits the length to the
+ * number of seconds that can be held in a <code>long</code>.
+ * <p>
+ * The nanosecond part is stored as an amount between 0 and 999,999,999 that
+ * is added to the length of the duration in seconds. For example, the negative
+ * duration of <code>PT-0.1S</code> is represented as -1 second and 900,000,000 nanoseconds.
+ * <p>
+ * In strict scientific terms, the unit of "seconds" only has a precise meaning
+ * when applied to an instant. This is because it is the instant that defines the
+ * time scale used, not the duration. For example, the simplified UTC time scale
+ * used by {@link Instant} ignore leap seconds, which alters the effective length
+ * of a second. By comparison, the TAI time scale follows the international scientific
+ * definition of a second exactly. For most applications, this subtlety will be irrelevant.
  * <p>
  * Duration is immutable and thread-safe.
- * <p>
- * NOTE: Since the number of nanoseconds is represented by a positive integer,
- * negative durations such as <code>PT-0.1S</code> are represented as -1 second
- * and 900,000,000 nanoseconds.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -63,21 +74,17 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public static final Duration ZERO = new Duration(0, 0);
     /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
+    /**
      * BigInteger constant for a billion.
      */
     private static final BigInteger BILLION = BigInteger.valueOf(1000000000);
-//    /**
-//     * BigInteger constant for a million.
-//     */
-//    private static final BigInteger MILLION = BigInteger.valueOf(1000000);
     /**
      * Constant for nanos per second.
      */
     private static final int NANOS_PER_SECOND = 1000000000;
-    /**
-     * Serialization version id.
-     */
-    private static final long serialVersionUID = -835275378278L;
 
     /**
      * The number of seconds in the duration.
@@ -87,7 +94,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The number of nanoseconds in the duration, expressed as a fraction of the
      * number of seconds. This is always positive, and never exceeds 999,999,999.
      */
-    private final int nanoAdjustment;
+    private final int nanos;
 
     //-----------------------------------------------------------------------
     /**
@@ -108,9 +115,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * and an adjustment in nanoseconds.
      * <p>
      * This methods allows an arbitrary number of nanoseconds to be passed in.
-     * If the nanoseconds is not in the range 0 to 999,999,999 then both the
-     * seconds and nanoseconds will be adjusted to fit.
-     * Thus, the following are equivalent:
+     * The factory will alter the values of the second and nanosecond in order
+     * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
+     * For example, the following will result in the exactly the same duration:
      * <pre>
      *  Duration.duration(3, 1);
      *  Duration.duration(4, -999999999);
@@ -160,9 +167,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * and an adjustment in nanoseconds.
      * <p>
      * This methods allows an arbitrary number of nanoseconds to be passed in.
-     * If the nanoseconds is not in the range 0 to 999,999,999 then both the
-     * milliseconds and nanoseconds will be adjusted to fit.
-     * Thus, the following are equivalent:
+     * The factory will alter the values of the millisecond and nanosecond in order
+     * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
+     * For example, the following will result in the exactly the same duration:
      * <pre>
      *  Duration.duration(3, 1);
      *  Duration.duration(4, -999999);
@@ -191,6 +198,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>Duration</code> from a number of nanoseconds.
+     * <p>
+     * This factory will split the supplied nanosecond amount to ensure that the
+     * stored nanosecond is in the range 0 to 999,999,999.
      *
      * @param nanos  the number of nanoseconds
      * @return the created Duration, never null
@@ -210,6 +220,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     /**
      * Obtains an instance of <code>Duration</code> from a number of nanoseconds.
+     * <p>
+     * This factory will split the supplied nanosecond amount to ensure that the
+     * stored nanosecond is in the range 0 to 999,999,999.
      *
      * @param nanos  the number of nanoseconds, not null
      * @return the created Duration, never null
@@ -231,8 +244,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Obtains an instance of <code>Duration</code> from a number of standard length minutes.
      * <p>
-     * This factory uses the standard definition of a minute.
-     * Specifically, this means that there are 60 seconds in a minute.
+     * This factory uses the standard definition of a minute, where each
+     * minute is 60 seconds.
      *
      * @param minutes  the number of minutes
      * @return the created Duration, never null
@@ -248,8 +261,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Obtains an instance of <code>Duration</code> from a number of standard length hours.
      * <p>
-     * This factory uses the standard definition of an hour.
-     * Specifically, this means that there are 3600 seconds in an hour.
+     * This factory uses the standard definition of an hour, where each
+     * hour is 3600 seconds.
      *
      * @param hours  the number of hours
      * @return the created Duration, never null
@@ -265,9 +278,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Obtains an instance of <code>Duration</code> from a number of standard length days.
      * <p>
-     * This factory uses the standard definition of a day.
-     * Specifically, this means that there are 86400 seconds in a day,
-     * which implies a 24 hour day.
+     * This factory uses the standard definition of a day, where each
+     * day is 86400 seconds which implies a 24 hour day.
      *
      * @param days  the number of days
      * @return the created Duration, never null
@@ -403,12 +415,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Constructs an instance of Duration using seconds and nanoseconds.
      *
      * @param seconds  the length of the duration in seconds
-     * @param nanoAdjustment  the nanosecond adjustment within the second, from 0 to 999,999,999
+     * @param nanos  the nanoseconds within the second, from 0 to 999,999,999
      */
-    private Duration(long seconds, int nanoAdjustment) {
+    private Duration(long seconds, int nanos) {
         super();
         this.seconds = seconds;
-        this.nanoAdjustment = nanoAdjustment;
+        this.nanos = nanos;
     }
 
     /**
@@ -417,7 +429,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the resolved instance
      */
     private Object readResolve() {
-        if (seconds == 0 && nanoAdjustment == 0) {
+        if (seconds == 0 && nanos == 0) {
             return ZERO;
         }
         return this;
@@ -430,17 +442,28 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return true if this duration is zero length
      */
     public boolean isZero() {
-        return seconds == 0 && nanoAdjustment == 0;
+        return (seconds | nanos) == 0;
     }
 
     /**
-     * Checks if this duration is positive, including zero.
+     * Checks if this duration is positive, excluding zero.
+     * <p>
+     * Periods are allowed to be negative, so this method checks if this period is positive.
+     *
+     * @return true if this duration is positive and not zero
+     */
+    public boolean isPositive() {
+        return seconds >= 0 && ((seconds | nanos) != 0);
+    }
+
+    /**
+     * Checks if this duration is positive or zero.
      * <p>
      * Periods are allowed to be negative, so this method checks if this period is positive.
      *
      * @return true if this duration is positive or zero
      */
-    public boolean isPositive() {
+    public boolean isPositiveOrZero() {
         return seconds >= 0;
     }
 
@@ -449,10 +472,21 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * <p>
      * Periods are allowed to be negative, so this method checks if this period is negative.
      *
-     * @return true if this duration is negative
+     * @return true if this duration is negative and not zero
      */
     public boolean isNegative() {
         return seconds < 0;
+    }
+
+    /**
+     * Checks if this duration is negative or zero.
+     * <p>
+     * Periods are allowed to be negative, so this method checks if this period is negative.
+     *
+     * @return true if this duration is negative or zero
+     */
+    public boolean isNegativeOrZero() {
+        return seconds < 0 || ((seconds | nanos) == 0);
     }
 
     //-----------------------------------------------------------------------
@@ -484,10 +518,10 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * of the value returned from {@link #getSeconds()}. A duration of
      * -1 nanosecond is stored as -1 seconds plus 999,999,999 nanoseconds.
      *
-     * @return the nanosecond adjustment to the second, from 0 to 999,999,999
+     * @return the nanoseconds within the second, from 0 to 999,999,999
      */
-    public int getNanosAdjustment() {
-        return nanoAdjustment;
+    public int getNanosInSecond() {
+        return nanos;
     }
 
     //-----------------------------------------------------------------------
@@ -502,12 +536,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public Duration plus(Duration duration) {
         long secsToAdd = duration.seconds;
-        int nanosToAdd = duration.nanoAdjustment;
+        int nanosToAdd = duration.nanos;
         if (secsToAdd == 0 && nanosToAdd == 0) {
             return this;
         }
         long secs = MathUtils.safeAdd(seconds, secsToAdd);
-        int nos = nanoAdjustment + nanosToAdd;  // safe
+        int nos = nanos + nanosToAdd;  // safe
         if (nos >= NANOS_PER_SECOND) {
             nos -= NANOS_PER_SECOND;
             secs = MathUtils.safeIncrement(secs);
@@ -530,7 +564,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             return this;
         }
         long secs = MathUtils.safeAdd(seconds, secondsToAdd);
-        return create(secs, nanoAdjustment);
+        return create(secs, nanos);
     }
 
     /**
@@ -550,7 +584,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         // add: 0 to 999,000,000, subtract: 0 to -999,000,000
         int nos = ((int) (millisToAdd % 1000)) * 1000000;
         // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
-        nos += nanoAdjustment;
+        nos += nanos;
         if (nos < 0) {
             nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
             secondsToAdd--;
@@ -578,7 +612,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         // add: 0 to 999,999,999, subtract: 0 to -999,999,999
         int nos = (int) (nanosToAdd % NANOS_PER_SECOND);
         // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
-        nos += nanoAdjustment;
+        nos += nanos;
         if (nos < 0) {
             nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
             secondsToAdd--;
@@ -601,12 +635,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public Duration minus(Duration duration) {
         long secsToSubtract = duration.seconds;
-        int nanosToSubtract = duration.nanoAdjustment;
+        int nanosToSubtract = duration.nanos;
         if (secsToSubtract == 0 && nanosToSubtract == 0) {
             return this;
         }
         long secs = MathUtils.safeSubtract(seconds, secsToSubtract);
-        int nos = nanoAdjustment - nanosToSubtract;  // safe
+        int nos = nanos - nanosToSubtract;  // safe
         if (nos < 0) {
             nos += NANOS_PER_SECOND;
             secs = MathUtils.safeDecrement(secs);
@@ -629,7 +663,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             return this;
         }
         long secs = MathUtils.safeSubtract(seconds, secondsToSubtract);
-        return create(secs, nanoAdjustment);
+        return create(secs, nanos);
     }
 
     /**
@@ -647,7 +681,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         }
         long secondsToSubtract = millisToSubtract / 1000;
         int nos = ((int) (millisToSubtract % 1000)) * 1000000;
-        nos = nanoAdjustment - nos;
+        nos = nanos - nos;
         if (nos < 0) {
             nos += NANOS_PER_SECOND;
             secondsToSubtract++;
@@ -673,7 +707,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         }
         long secondsToSubtract = nanosToSubtract / NANOS_PER_SECOND;
         int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);
-        nos = nanoAdjustment - nos;
+        nos = nanos - nos;
         if (nos < 0) {
             nos += NANOS_PER_SECOND;
             secondsToSubtract++;
@@ -701,7 +735,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (multiplicand == 1) {
             return this;
         }
-        BigInteger nanos = toNanosBigInteger();
+        BigInteger nanos = toNanos();
         nanos = nanos.multiply(BigInteger.valueOf(multiplicand));
         BigInteger[] divRem = nanos.divideAndRemainder(BILLION);
         if (divRem[0].bitLength() > 63) {
@@ -727,7 +761,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (divisor == 1) {
             return this;
         }
-        BigInteger nanos = toNanosBigInteger();
+        BigInteger nanos = toNanos();
         nanos = nanos.divide(BigInteger.valueOf(divisor));
         BigInteger[] divRem = nanos.divideAndRemainder(BILLION);
         return seconds(divRem[0].longValue(), divRem[1].intValue());
@@ -746,7 +780,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanoAdjustment, otherDuration.nanoAdjustment);
+        return MathUtils.safeCompare(nanos, otherDuration.nanos);
     }
 
     /**
@@ -785,31 +819,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public long toMillis() {
         long millis = MathUtils.safeMultiply(seconds, 1000);
-        millis = MathUtils.safeAdd(millis, nanoAdjustment / 1000000);
-        return millis;
-    }
-
-//    /**
-//     * Returns the length of this duration in milliseconds expressed as a <code>BigInteger</code>.
-//     *
-//     * @return the length of the duration in milliseconds
-//     */
-//    public BigInteger toMillisBigInteger() {
-//        return toNanosBigInteger().divide(MILLION);
-//    }
-
-    /**
-     * Returns the length of this duration in nanoseconds.
-     * <p>
-     * If the duration is too large to fit in a long nanoseconds, then an
-     * exception is thrown.
-     *
-     * @return the length of the duration in nanoseconds
-     * @throws ArithmeticException if the length exceeds the capacity of a long
-     */
-    public long toNanos() {
-        long millis = MathUtils.safeMultiply(seconds, 1000000000);
-        millis = MathUtils.safeAdd(millis, nanoAdjustment);
+        millis = MathUtils.safeAdd(millis, nanos / 1000000);
         return millis;
     }
 
@@ -818,8 +828,32 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @return the length of the duration in nanoseconds
      */
-    public BigInteger toNanosBigInteger() {
-        return BigInteger.valueOf(seconds).multiply(BILLION).add(BigInteger.valueOf(nanoAdjustment));
+    public BigInteger toNanos() {
+        return BigInteger.valueOf(seconds).multiply(BILLION).add(BigInteger.valueOf(nanos));
+    }
+
+    /**
+     * Returns the length of this duration in nanoseconds expressed as a <code>long</code>.
+     * <p>
+     * If the duration is too large to fit in a long nanoseconds, then an
+     * exception is thrown.
+     *
+     * @return the length of the duration in nanoseconds
+     * @throws ArithmeticException if the length exceeds the capacity of a long
+     */
+    public long toNanosLong() {
+        long millis = MathUtils.safeMultiply(seconds, 1000000000);
+        millis = MathUtils.safeAdd(millis, nanos);
+        return millis;
+    }
+
+    /**
+     * Returns the length of this duration in seconds expressed as a <code>BigDecimal</code>.
+     *
+     * @return the length of the duration in seconds, with a scale of 9
+     */
+    public BigDecimal toSeconds() {
+        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
     }
 
     //-----------------------------------------------------------------------
@@ -837,7 +871,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (otherDuration instanceof Duration) {
             Duration other = (Duration) otherDuration;
             return this.seconds == other.seconds &&
-                   this.nanoAdjustment == other.nanoAdjustment;
+                   this.nanos == other.nanos;
         }
         return false;
     }
@@ -849,7 +883,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     @Override
     public int hashCode() {
-        return ((int) (seconds ^ (seconds >>> 32))) + (51 * nanoAdjustment);
+        return ((int) (seconds ^ (seconds >>> 32))) + (51 * nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -866,7 +900,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder(24);
         buf.append("PT");
-        if (seconds < 0 && nanoAdjustment > 0) {
+        if (seconds < 0 && nanos > 0) {
             if (seconds == -1) {
                 buf.append("-0");
             } else {
@@ -875,12 +909,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
         } else {
             buf.append(seconds);
         }
-        if (nanoAdjustment > 0) {
+        if (nanos > 0) {
             int pos = buf.length();
             if (seconds < 0) {
-                buf.append(2 * NANOS_PER_SECOND - nanoAdjustment);
+                buf.append(2 * NANOS_PER_SECOND - nanos);
             } else {
-                buf.append(nanoAdjustment + NANOS_PER_SECOND);
+                buf.append(nanos + NANOS_PER_SECOND);
             }
             while (buf.charAt(buf.length() - 1) == '0') {
                 buf.setLength(buf.length() - 1);
