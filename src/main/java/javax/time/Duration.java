@@ -744,7 +744,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this Duration to another.
+     * Compares this duration to another.
      *
      * @param otherDuration  the other duration to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -759,24 +759,24 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Is this Duration longer than the specified one.
+     * Is this duration greater than the specified one.
      *
      * @param otherDuration  the other duration to compare to, not null
-     * @return true if this duration is longer than the specified duration
+     * @return true if this duration is greater than the specified duration
      * @throws NullPointerException if otherDuration is null
      */
-    public boolean isLongerThan(Duration otherDuration) {
+    public boolean isGreaterThan(Duration otherDuration) {
         return compareTo(otherDuration) > 0;
     }
 
     /**
-     * Is this Duration shorter than the specified one.
+     * Is this duration less than the specified one.
      *
      * @param otherDuration  the other duration to compare to, not null
-     * @return true if this duration is shorter than the specified duration
+     * @return true if this duration is less than the specified duration
      * @throws NullPointerException if otherDuration is null
      */
-    public boolean isShorterThan(Duration otherDuration) {
+    public boolean isLessThan(Duration otherDuration) {
         return compareTo(otherDuration) < 0;
     }
 

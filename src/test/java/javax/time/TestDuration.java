@@ -1991,18 +1991,18 @@ public class TestDuration {
                 Duration b = durations[j];
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1, a + " <=> " + b);
-                    assertEquals(a.isShorterThan(b), true, a + " <=> " + b);
-                    assertEquals(a.isLongerThan(b), false, a + " <=> " + b);
+                    assertEquals(a.isLessThan(b), true, a + " <=> " + b);
+                    assertEquals(a.isGreaterThan(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else if (i > j) {
                     assertEquals(a.compareTo(b), 1, a + " <=> " + b);
-                    assertEquals(a.isShorterThan(b), false, a + " <=> " + b);
-                    assertEquals(a.isLongerThan(b), true, a + " <=> " + b);
+                    assertEquals(a.isLessThan(b), false, a + " <=> " + b);
+                    assertEquals(a.isGreaterThan(b), true, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else {
                     assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isShorterThan(b), false, a + " <=> " + b);
-                    assertEquals(a.isLongerThan(b), false, a + " <=> " + b);
+                    assertEquals(a.isLessThan(b), false, a + " <=> " + b);
+                    assertEquals(a.isGreaterThan(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), true, a + " <=> " + b);
                 }
             }
@@ -2018,13 +2018,13 @@ public class TestDuration {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isLessThan_ObjectNull() {
         Duration a = Duration.seconds(0L, 0);
-        a.isShorterThan(null);
+        a.isLessThan(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isGreaterThan_ObjectNull() {
         Duration a = Duration.seconds(0L, 0);
-        a.isLongerThan(null);
+        a.isGreaterThan(null);
     }
 
     @Test(expectedExceptions=ClassCastException.class)
