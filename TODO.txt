@@ -36,7 +36,6 @@ MathUtils
 Duration
 
 Instant
-- review in line with changes to Duration
 - parse factory
 
 Time scales
@@ -49,7 +48,7 @@ Date/Time classes
 - factories from Calendrical... ?
 - getChronology()
 - getMonthOfYear() -> getMonth(), etc?
-- LocalDate.atTime(int...), also OffsetDate
+- OffsetDate.atTime(int...)
 - getAmPm()
 - ZonedDateTime plusDurationSeconds() etc
 - LocalDate.plus(PeriodProvider) needs correct algorithm
@@ -83,7 +82,10 @@ Time zones
 
 Periods
 - construct fields without period units (what does this mean?)
-- formatting (defer? but need parse factory)
+- formatting (defer?)
+- PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
+- PeriodFields.normalize(Unit...)
+- PeriodFields.total(Unit)
 
 Matchers/Adjusters
 - DateTimeAdjuster
@@ -100,6 +102,8 @@ General
 - get chrono by name
 - OffsetDateTime.fromEpochSeconds()
 - serialization formats
+- evaluate hash codes
+- check overflows
 
 Possible items
 - Rename DateProvider to LocalDateProvider?
@@ -131,4 +135,6 @@ DONE
 - withDayOfYear() tests and everywhere
 - toDays() etc, if we keep those classes
 - Year.atDay()
+- LocalDate.atTime(int...)
+- review in line with changes to Duration
 

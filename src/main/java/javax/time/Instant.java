@@ -75,8 +75,6 @@ import javax.time.calendar.ZoneOffset;
  */
 public final class Instant
         implements InstantProvider, Comparable<Instant>, Serializable {
-    // TODO: Evaluate hashcode
-    // TODO: Check for potential overflows
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
