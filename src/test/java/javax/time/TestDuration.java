@@ -200,69 +200,6 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    // millis(long,long)
-    //-----------------------------------------------------------------------
-    @DataProvider(name="MillisDurationWithNanos")
-    Object[][] provider_factory_millis_long_long() {
-        return new Object[][] {
-            {0, 0, 0, 0},
-            {1, 0, 0, 1000000},
-            {2, 0, 0, 2000000},
-            {999, 0, 0, 999000000},
-            {1000, 0, 1, 0},
-            {1001, 0, 1, 1000000},
-            {-1, 0, -1, 999000000},
-            {-2, 0, -1, 998000000},
-            {-999, 0, -1, 1000000},
-            {-1000, 0, -1, 0},
-            {-1001, 0, -2, 999000000},
-            {0, 1, 0, 1},
-            {1, 1, 0, 1000001},
-            {999, 1, 0, 999000001},
-            {1000, 1, 1, 1},
-            {1001, 1, 1, 1000001},
-            {-1, 1, -1, 999000001},
-            {-2, 1, -1, 998000001},
-            {-999, 1, -1, 1000001},
-            {-1000, 1, -1, 1},
-            {-1001, 1, -2, 999000001},
-            {0, 999999, 0, 999999},
-            {1, 999999, 0, 1999999},
-            {999, 999999, 0, 999999999},
-            {1000, 999999, 1, 999999},
-            {1001, 999999, 1, 1999999},
-            {-1, 999999, -1, 999999999},
-            {-2, 999999, -1, 998999999},
-            {-999, 999999, -1, 1999999},
-            {-1000, 999999, -1, 999999},
-            {-1001, 999999, -2, 999999999},
-            
-            {1, -1, 0, 1000000 - 1},
-            {1000, -1, 0, 1000000000 - 1},
-            {2000, -1, 1, 1000000000 - 1},
-            {3, 1, 0, 3000001},
-            {4, -999999, 0, 3000001},
-            {2, 1000001, 0, 3000001},
-        };
-    }
-
-    @Test(dataProvider="MillisDurationWithNanos")
-    public void factory_millis_long_long(long millis, int nanos, long expectedSeconds, int expectedNanoOfSecond) {
-        Duration test = Duration.millis(millis, nanos);
-        assertEquals(test.getSeconds(), expectedSeconds);
-        assertEquals(test.getNanosInSecond(), expectedNanoOfSecond);
-    }
-
-    public void factory_millis_long_long_nanosNegativeAdjusted() {
-        long nanos = ((Long.MAX_VALUE % 1000) * 1000000) + (Long.MAX_VALUE % 1000000000);
-        long secs = (Long.MAX_VALUE / 1000) + (Long.MAX_VALUE / 1000000000) + nanos / 1000000000;
-        nanos = nanos % 1000000000;
-        Duration test = Duration.millis(Long.MAX_VALUE, Long.MAX_VALUE);
-        assertEquals(test.getSeconds(), secs);
-        assertEquals(test.getNanosInSecond(), nanos);
-    }
-
-    //-----------------------------------------------------------------------
     // nanos()
     //-----------------------------------------------------------------------
     public void factory_nanos_nanos() {

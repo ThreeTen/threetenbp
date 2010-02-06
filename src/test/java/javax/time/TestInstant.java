@@ -222,60 +222,6 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="MillisInstantWithNanos")
-    Object[][] provider_factory_millisInstant_long_int() {
-        return new Object[][] {
-            {0, 0, 0, 0},
-            {1, 0, 0, 1000000},
-            {2, 0, 0, 2000000},
-            {999, 0, 0, 999000000},
-            {1000, 0, 1, 0},
-            {1001, 0, 1, 1000000},
-            {-1, 0, -1, 999000000},
-            {-2, 0, -1, 998000000},
-            {-999, 0, -1, 1000000},
-            {-1000, 0, -1, 0},
-            {-1001, 0, -2, 999000000},
-            {0, 1, 0, 1},
-            {1, 1, 0, 1000001},
-            {999, 1, 0, 999000001},
-            {1000, 1, 1, 1},
-            {1001, 1, 1, 1000001},
-            {-1, 1, -1, 999000001},
-            {-2, 1, -1, 998000001},
-            {-999, 1, -1, 1000001},
-            {-1000, 1, -1, 1},
-            {-1001, 1, -2, 999000001},
-            {0, 999999, 0, 999999},
-            {1, 999999, 0, 1999999},
-            {999, 999999, 0, 999999999},
-            {1000, 999999, 1, 999999},
-            {1001, 999999, 1, 1999999},
-            {-1, 999999, -1, 999999999},
-            {-2, 999999, -1, 998999999},
-            {-999, 999999, -1, 1999999},
-            {-1000, 999999, -1, 999999},
-            {-1001, 999999, -2, 999999999},
-        };
-    }
-
-    @Test(dataProvider="MillisInstantWithNanos")
-    public void factory_millisInstant_long_int(long millis, int nanos, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.millis(millis, nanos);
-        assertEquals(t.getEpochSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
-    }
-
-    public void factory_millis_long_long_nanosNegativeAdjusted() {
-        long nanos = ((Long.MAX_VALUE % 1000) * 1000000) + (Long.MAX_VALUE % 1000000000);
-        long secs = (Long.MAX_VALUE / 1000) + (Long.MAX_VALUE / 1000000000) + nanos / 1000000000;
-        nanos = nanos % 1000000000;
-        Instant test = Instant.millis(Long.MAX_VALUE, Long.MAX_VALUE);
-        assertEquals(test.getEpochSeconds(), secs);
-        assertEquals(test.getNanoOfSecond(), nanos);
-    }
-
-    //-----------------------------------------------------------------------
     // nanos()
     //-----------------------------------------------------------------------
     public void factory_nanos_nanos() {

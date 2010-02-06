@@ -161,36 +161,6 @@ public final class Duration implements Comparable<Duration>, Serializable {
         return create(secs, mos * 1000000);
     }
 
-    /**
-     * Obtains an instance of <code>Duration</code> from a number of milliseconds
-     * and an adjustment in nanoseconds.
-     * <p>
-     * This methods allows an arbitrary number of nanoseconds to be passed in.
-     * The factory will alter the values of the millisecond and nanosecond in order
-     * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
-     * For example, the following will result in the exactly the same duration:
-     * <pre>
-     *  Duration.duration(3, 1);
-     *  Duration.duration(4, -999999);
-     *  Duration.duration(2, 1000001);
-     * </pre>
-     *
-     * @param millis  the number of milliseconds
-     * @param nanoAdjustment  the nanosecond adjustment to the number of milliseconds, positive or negative
-     * @return the created Duration, never null
-     */
-    public static Duration millis(long millis, long nanoAdjustment) {
-        long secs = (millis / 1000) + (nanoAdjustment / NANOS_PER_SECOND);
-        long nanos = ((millis % 1000) * 1000000) + (nanoAdjustment % NANOS_PER_SECOND);
-        secs += nanos / NANOS_PER_SECOND;
-        int nos = (int) (nanos % NANOS_PER_SECOND);
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs--;
-        }
-        return create(secs, nos);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>Duration</code> from a number of nanoseconds.
