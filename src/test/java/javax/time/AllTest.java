@@ -99,6 +99,11 @@ import javax.time.period.TestPeriodField;
 import javax.time.period.TestPeriodFields;
 import javax.time.period.TestPeriodParser;
 import javax.time.period.TestPeriodUnit;
+import javax.time.scales.TestEarlyUTC_TAI;
+import javax.time.scales.TestLeapSeconds;
+import javax.time.scales.TestTAI;
+import javax.time.scales.TestTrueUTC;
+import javax.time.scales.TestUTC;
 
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
@@ -197,6 +202,12 @@ public class AllTest {
             TestPeriodField.class,
             TestPeriodFields.class,
             TestPeriodUnit.class,
+            // scales
+            TestEarlyUTC_TAI.class,
+            TestLeapSeconds.class,
+            TestTAI.class,
+            TestTrueUTC.class,
+            TestUTC.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));

@@ -32,17 +32,17 @@
 package javax.time.scales;
 
 import java.util.AbstractList;
-import javax.time.TimeScaleInstant;
 
 /**
+ * List of UTC mappings.
  *
  * @author Mark Thornton
  */
 public class UTC_TAI<P extends UTCPeriod> extends AbstractList<P>{
+    /** The entries in the list. */
     private P[] entries;
-    
-    UTC_TAI(P[] entries)
-    {
+
+    UTC_TAI(P[] entries) {
         this.entries = entries;
         P p = null;
         for (int i=0; i<entries.length; i++) {
@@ -63,13 +63,15 @@ public class UTC_TAI<P extends UTCPeriod> extends AbstractList<P>{
         // entries[right] > utcEpochSeconds
         while (left < right) {
             int m = left +((right-left)>>1);
-            if (utcEpochSeconds < entries[m].getStartEpochSeconds())
+            if (utcEpochSeconds < entries[m].getStartEpochSeconds()) {
                 right = m;
-            else
+            } else {
                 left = m+1;
+            }
         }
-        if (right == 0)
+        if (right == 0) {
             throw new IllegalArgumentException("Value below lower bound");
+        }
         return entries[right-1];
     }
 
@@ -86,13 +88,15 @@ public class UTC_TAI<P extends UTCPeriod> extends AbstractList<P>{
         // entries[right] > utcEpochSeconds
         while (left < right) {
             int m = left +((right-left)>>1);
-            if (t.compareTo(entries[m].getStartTAI()) < 0)
+            if (t.compareTo(entries[m].getStartTAI()) < 0) {
                 right = m;
-            else
+            } else {
                 left = m+1;
+            }
         }
-        if (right == 0)
+        if (right == 0) {
             throw new IllegalArgumentException("Value below lower bound");
+        }
         return entries[right-1];
     }
 
@@ -108,19 +112,22 @@ public class UTC_TAI<P extends UTCPeriod> extends AbstractList<P>{
             int m = left +((right-left)>>1);
             TimeScaleInstant ts = entries[m].getStartTAI();
             int z;
-            if (epochSeconds < ts.getEpochSeconds())
+            if (epochSeconds < ts.getEpochSeconds()) {
                 z = -1;
-            else if (epochSeconds > ts.getEpochSeconds())
+            } else if (epochSeconds > ts.getEpochSeconds()) {
                 z = 1;
-            else
+            } else {
                 z = nanoOfSecond - ts.getNanoOfSecond();
-            if (z < 0)
+            }
+            if (z < 0) {
                 right = m;
-            else
+            } else {
                 left = m+1;
+            }
         }
-        if (right == 0)
+        if (right == 0) {
             throw new IllegalArgumentException("Value below lower bound");
+        }
         return entries[right-1];
     }
 
@@ -133,4 +140,5 @@ public class UTC_TAI<P extends UTCPeriod> extends AbstractList<P>{
     public int size() {
         return entries.length;
     }
+
 }

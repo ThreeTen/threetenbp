@@ -34,10 +34,10 @@ package javax.time.scales;
 
 import javax.time.Duration;
 import javax.time.MathUtils;
-import javax.time.TimeScaleInstant;
-import javax.time.TimeScaleInstant.Validity;
+import javax.time.scales.TimeScaleInstant.Validity;
 
-/** Common utility methods for TimeScale's.
+/**
+ * Common utility methods for TimeScale's.
  *
  * @author Mark Thornton
  */
@@ -59,26 +59,41 @@ public class ScaleUtil {
     private ScaleUtil() {
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     /** adjust result of addition/subtraction around gaps .*/
     static TimeScaleInstant adjustUTCAroundGaps(TimeScaleInstant t, long resultEpochSeconds, int resultNanoOfSecond) {
         EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromUTC(resultEpochSeconds);
         if (resultEpochSeconds+1 == e.getEndEpochSeconds() && resultNanoOfSecond-e.getUTCGapNanoseconds() > ScaleUtil.NANOS_PER_SECOND) {
             // result is within invalid interval
             int z;
-            if (t.getEpochSeconds() < resultEpochSeconds)
+            if (t.getEpochSeconds() < resultEpochSeconds) {
                 z = -1;
-            else if (t.getEpochSeconds() > resultEpochSeconds)
+            } else if (t.getEpochSeconds() > resultEpochSeconds) {
                 z = 1;
-            else
+            } else {
                 z = t.getNanoOfSecond() - resultNanoOfSecond;
+            }
             // if the result is greater than the initial value, add some more to get to the end of the gap
             // if the result is less than the initial value, take of some more to reach the beginning of the gap
             if (z <= 0) {
                 // advance to end of gap
                 resultEpochSeconds++;
                 resultNanoOfSecond = 0;
-            }
-            else {
+            } else {
                 // go back to beginning of gap
                 resultNanoOfSecond = ScaleUtil.NANOS_PER_SECOND + e.getUTCGapNanoseconds();
             }
@@ -131,11 +146,12 @@ public class ScaleUtil {
         // gaps/overlap occur within the last second so quickly reject other cases
         int gap = e.getUTCGapNanoseconds();
         if (gap == 0 || instant.getEpochSeconds() < e.getEndEpochSeconds()-1) {
-            return Validity.valid;
+            return Validity.VALID;
         }
-        if (instant.getNanoOfSecond() <= NANOS_PER_SECOND-Math.abs(gap))
-            return Validity.valid;
-        return gap < 0 ? Validity.invalid : Validity.ambiguous;
+        if (instant.getNanoOfSecond() <= NANOS_PER_SECOND-Math.abs(gap)) {
+            return Validity.VALID;
+        }
+        return gap < 0 ? Validity.INVALID : Validity.AMBIGUOUS;
     }
 
     public static TimeScaleInstant simpleAdd(TimeScaleInstant t, Duration d) {
@@ -143,8 +159,9 @@ public class ScaleUtil {
             throw new UnsupportedOperationException("simpleAdd does not support timescales with leap seconds");
         long seconds = d.getSeconds();
         int nanos = d.getNanosInSecond();
-        if (seconds == 0 && nanos == 0)
+        if (seconds == 0 && nanos == 0) {
             return t;
+        }
         seconds = MathUtils.safeAdd(t.getEpochSeconds(), seconds);
         nanos += t.getNanoOfSecond();
         if (nanos >= NANOS_PER_SECOND) {
@@ -159,8 +176,9 @@ public class ScaleUtil {
             throw new UnsupportedOperationException("simpleAdd does not support timescales with leap seconds");
         long seconds = d.getSeconds();
         int nanos = d.getNanosInSecond();
-        if (seconds == 0 && nanos == 0)
+        if (seconds == 0 && nanos == 0) {
             return t;
+        }
         seconds = MathUtils.safeSubtract(t.getEpochSeconds(), seconds);
         nanos = t.getNanoOfSecond() - nanos;
         if (nanos < 0) {
@@ -196,4 +214,5 @@ public class ScaleUtil {
     public static long epochSeconds(int year, int month, int day) {
         return SECONDS_PER_DAY*(modifiedJulianDay(year, month, day) - MJD_EPOCH);
     }
+
 }

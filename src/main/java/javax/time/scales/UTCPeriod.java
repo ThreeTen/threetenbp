@@ -31,13 +31,13 @@
  */
 package javax.time.scales;
 
-import javax.time.TimeScaleInstant;
 
-/** Period of UTC history.
- * Within a period the relationship between UTC and TAI is linear (and
- * since 1972 a constant delta).
+/**
+ * Period of UTC history.
+ * Within a period the relationship between UTC and TAI is linear (and since 1972
+ * a constant delta).
+ *
  * @author Mark Thornton
- * @param <P>
  */
 public abstract class UTCPeriod {
     private static final int NANOS_PER_SECOND = 1000000000;
@@ -51,7 +51,8 @@ public abstract class UTCPeriod {
         startEpochSeconds = ScaleUtil.epochSeconds(year, month, day);
     }
 
-    /** Next period.
+    /**
+     * Next period.
      *
      * @return next period or null if none
      */
@@ -59,25 +60,28 @@ public abstract class UTCPeriod {
         return next;
     }
 
-    /** previous period.
+    /**
+     * Previous period.
      * 
-     * @return previous period or null if none.
+     * @return previous period or null if none
      */
     public UTCPeriod getPrevious() {
         return previous;
     }
 
-    /** Start of period in simple UTC epoch seconds.
+    /**
+     * Start of period in simple UTC epoch seconds.
      * 
-     * @return seconds since 1970-01-01 without leap seconds.
+     * @return seconds since 1970-01-01 without leap seconds
      */
     public long getStartEpochSeconds() {
         return startEpochSeconds;
     }
 
-    /** Start instant on TAI time scale.
+    /**
+     * Start instant on TAI time scale.
      *
-     * @return
+     * @return the start TAI
      */
     public TimeScaleInstant getStartTAI() {
         return startTAI;
@@ -92,7 +96,8 @@ public abstract class UTCPeriod {
         startTAI = TimeScaleInstant.seconds(TAI.INSTANCE, startEpochSeconds+delta/NANOS_PER_SECOND, (int)(delta%NANOS_PER_SECOND));
     }
 
-    /** TAI-UTC at UTC instant.
+    /**
+     * TAI-UTC at UTC instant.
      *
      * @param utcEpochSeconds
      * @param nanoOfSecond
@@ -100,11 +105,13 @@ public abstract class UTCPeriod {
      */
     public abstract long getUTCDeltaNanoseconds(long utcEpochSeconds, int nanoOfSecond);
 
-    /** TAI-UTC at TAI instant.
+    /**
+     * TAI-UTC at TAI instant.
      *
      * @param taiEpochSeconds
      * @param nanoOfSecond
      * @return
      */
     public abstract long getTAIDeltaNanoseconds(long taiEpochSeconds, int nanoOfSecond);
+
 }

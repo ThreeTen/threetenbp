@@ -31,7 +31,6 @@
  */
 package javax.time.scales;
 
-import javax.time.TimeScaleInstant;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -127,7 +126,7 @@ public class TestEarlyUTC_TAI {
 
     /** Test search by TAI instant. */
     @Test public void testSearchTAI() {
-        TimeScaleInstant tEnd = TAI.START_LEAPSECONDS;
+        TimeScaleInstant tEnd = TAI.START_LEAP_SECONDS;
         int n = EarlyUTC_TAI.list().size();
         for (int i=n; --i >= 0;) {
             EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().get(i);

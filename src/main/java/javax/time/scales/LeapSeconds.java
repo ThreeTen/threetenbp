@@ -39,9 +39,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.time.CalendricalException;
 
-/** Table of known Leap Seconds
+/**
+ * Table of known Leap Seconds
  * This is the history of TAI-UTC since 1972-01-01.
  * @see <a href="http://hpiers.obspm.fr/eoppc/bul/bulc/UTC-TAI.history">UTC-TAI History</a>
+ *
  * @author Mark Thornton
  */
 public class LeapSeconds {
@@ -162,8 +164,7 @@ public class LeapSeconds {
             entries.toArray(entryArray);
             LeapSeconds.list = new UTC_TAI<Entry>(entryArray);
             in.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new CalendricalException("Exception reading LeapSeconds.txt", e);
         }
     }

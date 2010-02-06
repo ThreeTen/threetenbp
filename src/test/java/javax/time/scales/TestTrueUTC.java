@@ -32,8 +32,6 @@
 package javax.time.scales;
 
 import javax.time.Duration;
-import javax.time.TimeScaleInstant;
-import javax.time.TimeScales;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static javax.time.scales.Util.*;
@@ -76,8 +74,8 @@ public class TestTrueUTC {
     }
 
     private void cvtToTAI(long epochSeconds, int leapSecond, int nanoOfSecond, long taiEpochSeconds, int taiNanoOfSecond) {
-        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.trueUTC(), epochSeconds, leapSecond, nanoOfSecond);
-        TimeScaleInstant ts = TimeScales.utc().toTAI(t);
+        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.trueUtc(), epochSeconds, leapSecond, nanoOfSecond);
+        TimeScaleInstant ts = TimeScales.simplifiedUtc().toTAI(t);
         assertEquals(ts.getEpochSeconds(), taiEpochSeconds);
         assertEquals(ts.getNanoOfSecond(), taiNanoOfSecond);
     }
@@ -88,35 +86,35 @@ public class TestTrueUTC {
 
     private void cvtFromTAI(long taiEpochSeconds, int taiNanoOfSecond, long expectedEpochSeconds, int expectedLeapSecond, int expectedNanoOfSecond) {
         TimeScaleInstant ts = TimeScaleInstant.seconds(TimeScales.tai(), taiEpochSeconds, taiNanoOfSecond);
-        TimeScaleInstant t = TimeScales.trueUTC().toTimeScaleInstant(ts);
+        TimeScaleInstant t = TimeScales.trueUtc().toTimeScaleInstant(ts);
         assertEquals(t.getEpochSeconds(), expectedEpochSeconds);
         assertEquals(t.getLeapSecond(), expectedLeapSecond);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     @Test public void testTrueUTCString() {
-        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.trueUTC(), date(2008, 12, 31)+time(23,59,59), 1, 0);
+        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.trueUtc(), date(2008, 12, 31)+time(23,59,59), 1, 0);
         assertEquals(t.toString(), "2008-12-31T23:59:60[TrueUTC]");
     }
 
     @Test public void testTrueUtcValidity() {
-        checkValidity(date(2008,12,31)+time(23,59,59), millis(500), TimeScaleInstant.Validity.valid);
-        checkValidity(date(2008,12,31)+time(23,59,59), 1, millis(500), TimeScaleInstant.Validity.valid);
-        checkValidity(date(2008,12,31)+time(23,59,59), 0, TimeScaleInstant.Validity.valid);
-        checkValidity(date(2008,12,31)+time(23,59,58), 0, TimeScaleInstant.Validity.valid);
-        checkValidity(date(2009,1,1), 0, TimeScaleInstant.Validity.valid);
-        checkValidity(date(2009,12,31)+time(23,59,59), 1, 0, TimeScaleInstant.Validity.invalid);
-        checkValidity(date(2050,12,31)+time(23,59,59), 1, 0, TimeScaleInstant.Validity.possible);
+        checkValidity(date(2008,12,31)+time(23,59,59), millis(500), TimeScaleInstant.Validity.VALID);
+        checkValidity(date(2008,12,31)+time(23,59,59), 1, millis(500), TimeScaleInstant.Validity.VALID);
+        checkValidity(date(2008,12,31)+time(23,59,59), 0, TimeScaleInstant.Validity.VALID);
+        checkValidity(date(2008,12,31)+time(23,59,58), 0, TimeScaleInstant.Validity.VALID);
+        checkValidity(date(2009,1,1), 0, TimeScaleInstant.Validity.VALID);
+        checkValidity(date(2009,12,31)+time(23,59,59), 1, 0, TimeScaleInstant.Validity.INVALID);
+        checkValidity(date(2050,12,31)+time(23,59,59), 1, 0, TimeScaleInstant.Validity.POSSIBLE);
 
         // check an invalid interval
-        checkValidity(date(1968,1,31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.valid);
-        checkValidity(date(1968,1,31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.invalid);
-        checkValidity(date(1968,2,1), 0, TimeScaleInstant.Validity.valid);
+        checkValidity(date(1968,1,31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.VALID);
+        checkValidity(date(1968,1,31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.INVALID);
+        checkValidity(date(1968,2,1), 0, TimeScaleInstant.Validity.VALID);
 
         // check an ambiguous interval
-        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.valid);
-        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.ambiguous);
-        checkValidity(date(1965, 9, 1), 0, TimeScaleInstant.Validity.valid);
+        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.VALID);
+        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.AMBIGUOUS);
+        checkValidity(date(1965, 9, 1), 0, TimeScaleInstant.Validity.VALID);
     }
 
     private void checkValidity(long epochSeconds, int nanoOfSecond, TimeScaleInstant.Validity validity) {
@@ -124,7 +122,7 @@ public class TestTrueUTC {
     }
 
     private void checkValidity(long epochSeconds, int leapSecond, int nanoOfSecond, TimeScaleInstant.Validity validity) {
-        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.trueUTC(), epochSeconds, leapSecond, nanoOfSecond);
+        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.trueUtc(), epochSeconds, leapSecond, nanoOfSecond);
         assertEquals(t.getValidity(), validity);
     }
 
@@ -135,42 +133,42 @@ public class TestTrueUTC {
            instant(date(2009, 1, 1)));
         assertEquals(instant(date(2009, 1, 1)).minus(Duration.seconds(1)), leapInstant(date(2008, 12, 31)+time(23,59,59), 0));
         assertEquals(instant(date(2009, 1, 1)).minus(Duration.seconds(2)), instant(date(2008, 12, 31)+time(23,59,59)));
-        assertEquals(TimeScales.trueUTC().durationBetween(
+        assertEquals(TimeScales.trueUtc().durationBetween(
                leapInstant(date(2008, 12, 31)+time(23,59,59), 0),
                instant(date(2009, 1, 1))),
            Duration.seconds(1));
-        assertEquals(TimeScales.trueUTC().durationBetween(
+        assertEquals(TimeScales.trueUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59,59)),
                instant(date(2009, 1, 1))),
            Duration.seconds(2));
-        assertEquals(TimeScales.trueUTC().durationBetween(
+        assertEquals(TimeScales.trueUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2009, 1, 1)+60)),
            Duration.seconds(121));
-        assertEquals(TimeScales.trueUTC().durationBetween(
+        assertEquals(TimeScales.trueUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                leapInstant(date(2008, 12, 31)+time(23,59,59),0)),
            Duration.seconds(60));
-        assertEquals(TimeScales.trueUTC().durationBetween(
+        assertEquals(TimeScales.trueUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2008, 12, 31)+time(23,59,59),0)),
            Duration.seconds(59));
 
         // check behaviour around gap in time scale
         System.out.println(instant(date(1968,2,1)).minus(Duration.millis(10)));
-        assertTrue(instant(date(1968,2,1)).minus(Duration.millis(10)).getValidity() == TimeScaleInstant.Validity.valid);
+        assertTrue(instant(date(1968,2,1)).minus(Duration.millis(10)).getValidity() == TimeScaleInstant.Validity.VALID);
         assertEquals(instant(date(1968,1,31)+time(23,59,59)).plus(Duration.millis(990)), instant(date(1968,2,1)));
     }
 
     private static TimeScaleInstant instant(long epochSeconds) {
-        return TimeScaleInstant.seconds(TimeScales.trueUTC(), epochSeconds);
+        return TimeScaleInstant.seconds(TimeScales.trueUtc(), epochSeconds);
     }
 
     private static TimeScaleInstant instant(long epochSeconds, int nanoOfSecond) {
-        return TimeScaleInstant.seconds(TimeScales.trueUTC(), epochSeconds, nanoOfSecond);
+        return TimeScaleInstant.seconds(TimeScales.trueUtc(), epochSeconds, nanoOfSecond);
     }
 
     private static TimeScaleInstant leapInstant(long epochSeconds, int nanoOfSecond) {
-        return TimeScaleInstant.seconds(TimeScales.trueUTC(), epochSeconds, 1, nanoOfSecond);
+        return TimeScaleInstant.seconds(TimeScales.trueUtc(), epochSeconds, 1, nanoOfSecond);
     }
 }

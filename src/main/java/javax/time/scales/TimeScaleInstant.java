@@ -29,12 +29,14 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.scales;
 
 import java.io.Serializable;
 
-import javax.time.calendar.CalendarConversionException;
-import javax.time.scales.TimeScaleInstantFormat;
+import javax.time.Duration;
+import javax.time.Instant;
+import javax.time.InstantProvider;
+import javax.time.MathUtils;
 
 /**
  * An instantaneous point on the time-line that is defined relative to a time-scale.
@@ -45,7 +47,7 @@ import javax.time.scales.TimeScaleInstantFormat;
  * <p>
  * This class is an alternative representation of an instant on the time-line for
  * those cases where leap-seconds and similar have to be dealt with. One example is
- * where an external time-source supplies data with leap seconds and this must be
+ * where an external time-source supplies data with leap-seconds and this must be
  * correctly handled.
  * <p>
  * The handling is dealt with by the {@link TimeScale} interface, which defines
@@ -63,23 +65,32 @@ public final class TimeScaleInstant
         implements InstantProvider, Comparable<TimeScaleInstant>, Serializable {
     // TODO: Consider BigDecimal
     // TODO: Check for potential overflows
+    // TODO: Handle double leap-seconds
 
+    /**
+     * Enumeration of the various possible states of the time-line, specifically
+     * with respect to leap-seconds.
+     */
     public enum Validity {
-        /** The instant is definitely part of the time line.
+        /**
+         * The instant is definitely part of the time line.
          */
-        valid,
-        /** The TAI instant corresponding to this instant is ambiguous.
+        VALID,
+        /**
+         * The TAI instant corresponding to this instant is ambiguous.
          * For example 2008-12-31T23:59:59.5 is ambiguous on some time scales that ignore
-         * the leap second.
+         * the leap-second.
          */
-        ambiguous,
-        /** The instant may be part of the time line.
-         * Future leap seconds are known only a few months in advance.
+        AMBIGUOUS,
+        /**
+         * The instant may be part of the time line.
+         * Future leap-seconds are known only a few months in advance.
          */
-        possible,
-        /** The instant did not exist.
+        POSSIBLE,
+        /**
+         * The instant did not exist.
          */
-        invalid
+        INVALID
     }
 
     /**
@@ -93,7 +104,7 @@ public final class TimeScaleInstant
 
     /**
      * The time-scale that defines the epoch and counting mechanism.
-     * The scale also defines whether and when leap seconds occur.
+     * The scale also defines whether and when leap-seconds occur.
      */
     private final TimeScale timeScale;
     /**
@@ -102,9 +113,9 @@ public final class TimeScaleInstant
     private final long epochSeconds;
     /**
      * The number of nanoseconds, later along the time-line, from the seconds field.
-     * This is always positive. During a leap second the value will
+     * This is always positive. During a leap-second the value will
      * be in the range 1000000000 .. 1999999999, while during regular seconds the range
-     * is 0 .. 999999999. This representation assumes that double leap seconds do not occur;
+     * is 0 .. 999999999. This representation assumes that double leap-seconds do not occur;
      * fortunately none have yet occurred and they are unlikely in the near future.
      */
     private final int nanoOfSecond;
@@ -116,11 +127,11 @@ public final class TimeScaleInstant
      *
      * @param timeScale  the time-scale to use, not null
      * @param instantProvider  a provider of instant information, not null
-     * @return the created instant, never null
+     * @return a {@code TimeScaleInstant}, never null
      */
     public static TimeScaleInstant from(TimeScale timeScale, InstantProvider instantProvider) {
-        Instant.checkNotNull(timeScale, "TimeScale must not be null");
-        Instant.checkNotNull(instantProvider, "InstantProvider must not be null");
+        ScaleUtil.checkNotNull(timeScale, "TimeScale must not be null");
+        ScaleUtil.checkNotNull(instantProvider, "InstantProvider must not be null");
         return timeScale.toTimeScaleInstant(instantProvider);
     }
 
@@ -129,7 +140,7 @@ public final class TimeScaleInstant
      * time-scale using seconds from the epoch of the scale.
      *
      * @param epochSeconds  the number of seconds from the epoch of the time-scale
-     * @return the created instant, never null
+     * @return a {@code TimeScaleInstant}, never null
      */
     public static TimeScaleInstant seconds(TimeScale timeScale, long epochSeconds) {
         return new TimeScaleInstant(timeScale, epochSeconds, 0);
@@ -153,7 +164,7 @@ public final class TimeScaleInstant
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanoseconds within the second, -999,999,999 to 999,999,999
-     * @return the created instant, never null
+     * @return a {@code TimeScaleInstant}, never null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public static TimeScaleInstant seconds(TimeScale timeScale, long epochSeconds, int nanoOfSecond) {
@@ -187,14 +198,15 @@ public final class TimeScaleInstant
      * the epoch.
      * Thus, the {@code nanoOfSecond} parameter is a positive or negative
      * adjustment to the {@code epochSeconds} parameter along the time-line.
-     * For discontinuous time scales this does not verify that the instant really existed (or will exist). That can be determined
-     * using the getValidity() method.
+     * For discontinuous time scales this does not verify that the instant really existed (or will exist).
+     * That can be determined using the getValidity() method.
+     * 
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @param leapSecond either zero if not a leap second, otherwise 1.
+     * @param leapSecond either zero if not a leap-second, otherwise 1.
      * @param nanoOfSecond  the nanoseconds within the second, -999,999,999 to 999,999,999
-     * @return the created instant, never null
+     * @return a {@code TimeScaleInstant}, never null
      * @throws IllegalArgumentException if nanoOfSecond is out of range, leapSecond is out of range
-     * or a leap second is specified for a time scale which does not support leap seconds.
+     *  or a leap-second is specified for a time scale which does not support leap-seconds.
      */
     public static TimeScaleInstant seconds(TimeScale timeScale, long epochSeconds, int leapSecond, int nanoOfSecond) {
         // TODO: does this need to move to TimeScale ?
@@ -214,7 +226,7 @@ public final class TimeScaleInstant
                 throw new IllegalArgumentException("Leap second must be zero or 1");
             }
             if (!timeScale.supportsLeapSecond())
-                throw new IllegalArgumentException("Time scale does not support leap seconds");
+                throw new IllegalArgumentException("Time scale does not support leap-seconds");
             nanoOfSecond += NANOS_PER_SECOND;
         }
         return new TimeScaleInstant(timeScale, epochSeconds, nanoOfSecond);
@@ -321,19 +333,26 @@ public final class TimeScaleInstant
         return timeScale;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the number of seconds from the epoch defined by the time-scale.
      * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
-     * In the case of true UTC this does not include leap seconds.
+     * The total state of the instant is accessed via three methods - 
+     * {@code getEpochSeconds}, {@code getLeapSecond} and {@code getNanosOfSecond}.
+     *
      * @return the seconds from the epoch
      */
     public long getEpochSeconds() {
         return epochSeconds;
     }
 
-    /** leap second after epochSeconds.
-     * @return 1 during a leap second, otherwise 0.
+    /**
+     * Leap second after the epoch second.
+     * <p>
+     * The total state of the instant is accessed via three methods - 
+     * {@code getEpochSeconds}, {@code getLeapSecond} and {@code getNanosOfSecond}.
+     *
+     * @return 1 during a leap-second, otherwise 0.
      */
     public int getLeapSecond() {
         return nanoOfSecond < NANOS_PER_SECOND ? 0 : 1;
@@ -342,6 +361,9 @@ public final class TimeScaleInstant
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
      * of the second returned by {@link #getEpochSeconds()}.
+     * <p>
+     * The total state of the instant is accessed via three methods - 
+     * {@code getEpochSeconds}, {@code getLeapSecond} and {@code getNanosOfSecond}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
@@ -349,23 +371,29 @@ public final class TimeScaleInstant
         return nanoOfSecond < NANOS_PER_SECOND ? nanoOfSecond : nanoOfSecond - NANOS_PER_SECOND;
     }
 
-    /** Test validity of this instant.
-     * Some values described by an Instant may not exist. This method tests if the instant
-     * definitely existed (or will exist), or may exist, or definitely will not (or never) existed.
-     * @return
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the validity of this instant.
+     * <p>
+     * Some values described by a {@code TimeScaleInstant} may not exist.
+     * This method tests if the instant definitely existed (or will exist), may exist,
+     * or definitely never existed (or will never).
+     *
+     * @return the enumerated type describing the validity, never null
      */
     public Validity getValidity() {
         return timeScale.getValidity(this);
     }
+
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified duration added.
+     * Returns a copy of this {@code TimeScaleInstant} with the specified duration added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @return a {@code TimeScaleInstant} with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public TimeScaleInstant plus(Duration duration) {
         return timeScale.add(this, duration);
@@ -373,44 +401,19 @@ public final class TimeScaleInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified duration subtracted.
+     * Returns a copy of this {@code TimeScaleInstant} with the specified duration subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @return a {@code TimeScaleInstant} with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public TimeScaleInstant minus(Duration duration) {
         return timeScale.subtract(this, duration);
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this instant to the number of milliseconds from the epoch
-     * of 1970-01-01T00:00:00Z.
-     * <p>
-     * {@code Instant} uses a precision of nanoseconds.
-     * The conversion will drop any excess precision information as though the
-     * amount in nanoseconds was subject to integer division by one million.
-     * <p>
-     * {@code Instant} can store points on the time-line further in the
-     * future and further in the past than can be represented by a millisecond
-     * value. In this scenario, this constructor will throw an exception.
-     *
-     * @return the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
-     * @throws CalendarConversionException if the instant is too large or too
-     *  small to represent as epoch milliseconds
-     */
-    public long toEpochMillis() {
-        try {
-            long millis = MathUtils.safeMultiply(epochSeconds, 1000);
-            return millis + nanoOfSecond / 1000000;
-        } catch (ArithmeticException ex) {
-            throw new CalendarConversionException("The Instant cannot be represented as epoch milliseconds");
-        }
-    }
-
     /**
      * Converts this instant to an {@code Instant}, which may lose
      * leap-second information.
@@ -420,7 +423,7 @@ public final class TimeScaleInstant
      * the conversion may lose information, and the exact means of conversion is
      * part of the time-scale's definition.
      *
-     * @return an instant representing a point on the time-line close to this instant, never null
+     * @return an {@code Instant} representing a point on the time-line close to this instant, never null
      */
     public Instant toInstant() {
         return timeScale.toInstant(this);
@@ -428,13 +431,12 @@ public final class TimeScaleInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this instant to another based on the absolute time-line.
+     * Compares this {@code TimeScaleInstant} to another based on the absolute time-line.
      * <p>
      * This will normalize both instants to the same time-line before comparison.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if otherInstant is null
      */
     public int compareTo(TimeScaleInstant otherInstant) {
         if (timeScale.equals(otherInstant.timeScale)) {
@@ -450,22 +452,20 @@ public final class TimeScaleInstant
     }
 
     /**
-     * Is this instant after the specified one.
+     * Checks if this {@code TimeScaleInstant} is after the specified one.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return true if this instant is after the specified instant
-     * @throws NullPointerException if otherInstant is null
      */
     public boolean isAfter(TimeScaleInstant otherInstant) {
         return compareTo(otherInstant) > 0;
     }
 
     /**
-     * Is this instant before the specified one.
+     * Checks if this {@code TimeScaleInstant} is before the specified one.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return true if this instant is before the specified instant
-     * @throws NullPointerException if otherInstant is null
      */
     public boolean isBefore(TimeScaleInstant otherInstant) {
         return compareTo(otherInstant) < 0;
@@ -473,7 +473,7 @@ public final class TimeScaleInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instant equal to that specified taking into account the time-scale.
+     * Is this {@code TimeScaleInstant} equal to that specified taking into account the time-scale.
      * <p>
      * Two instants will only be equal if they represent the same time-point
      * and both have the same time-scale.
@@ -496,7 +496,7 @@ public final class TimeScaleInstant
     }
 
     /**
-     * A hash code for this Instant.
+     * A hash code for this {@code TimeScaleInstant}.
      *
      * @return a suitable hash code
      */
@@ -508,7 +508,7 @@ public final class TimeScaleInstant
 
     //-----------------------------------------------------------------------
     /**
-     * A string representation of this Instant using ISO-8601 representation.
+     * A string representation of this {@code TimeScaleInstant} using ISO-8601 representation.
      * <p>
      * The format of the returned string will be {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
      *

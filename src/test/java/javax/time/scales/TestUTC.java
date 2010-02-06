@@ -33,8 +33,6 @@
 package javax.time.scales;
 
 import javax.time.Duration;
-import javax.time.TimeScaleInstant;
-import javax.time.TimeScales;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static javax.time.scales.Util.*;
@@ -76,39 +74,39 @@ public class TestUTC {
     }
 
     private void cvtToTAI(long epochSeconds, int nanoOfSecond, long taiEpochSeconds, int taiNanoOfSecond) {
-        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.utc(), epochSeconds, nanoOfSecond);
-        TimeScaleInstant ts = TimeScales.utc().toTAI(t);
+        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.simplifiedUtc(), epochSeconds, nanoOfSecond);
+        TimeScaleInstant ts = TimeScales.simplifiedUtc().toTAI(t);
         assertEquals(ts.getEpochSeconds(), taiEpochSeconds);
         assertEquals(ts.getNanoOfSecond(), taiNanoOfSecond);
     }
 
     private void cvtFromTAI(long taiEpochSeconds, int taiNanoOfSecond, long expectedEpochSeconds, int expectedNanoOfSecond) {
         TimeScaleInstant ts = TimeScaleInstant.seconds(TimeScales.tai(), taiEpochSeconds, taiNanoOfSecond);
-        TimeScaleInstant t = TimeScales.utc().toTimeScaleInstant(ts);
+        TimeScaleInstant t = TimeScales.simplifiedUtc().toTimeScaleInstant(ts);
         assertEquals(t.getEpochSeconds(), expectedEpochSeconds);
         assertEquals(t.getLeapSecond(), 0);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     @Test public void testUtcValidity() {
-        checkValidity(date(2008,12,31)+time(23,59,59), millis(500), TimeScaleInstant.Validity.ambiguous);
-        checkValidity(date(2008,12,31)+time(23,59,59), 0, TimeScaleInstant.Validity.ambiguous);
-        checkValidity(date(2008,12,31)+time(23,59,58), 0, TimeScaleInstant.Validity.valid);
-        checkValidity(date(2009,1,1), 0, TimeScaleInstant.Validity.valid);
+        checkValidity(date(2008,12,31)+time(23,59,59), millis(500), TimeScaleInstant.Validity.AMBIGUOUS);
+        checkValidity(date(2008,12,31)+time(23,59,59), 0, TimeScaleInstant.Validity.AMBIGUOUS);
+        checkValidity(date(2008,12,31)+time(23,59,58), 0, TimeScaleInstant.Validity.VALID);
+        checkValidity(date(2009,1,1), 0, TimeScaleInstant.Validity.VALID);
         
         // check an invalid interval
-        checkValidity(date(1968,1,31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.valid);
-        checkValidity(date(1968,1,31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.invalid);
-        checkValidity(date(1968,2,1), 0, TimeScaleInstant.Validity.valid);
+        checkValidity(date(1968,1,31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.VALID);
+        checkValidity(date(1968,1,31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.INVALID);
+        checkValidity(date(1968,2,1), 0, TimeScaleInstant.Validity.VALID);
 
         // check an ambiguous interval
-        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.valid);
-        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.ambiguous);
-        checkValidity(date(1965, 9, 1), 0, TimeScaleInstant.Validity.valid);
+        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(890), TimeScaleInstant.Validity.VALID);
+        checkValidity(date(1965, 8, 31)+time(23,59,59), millis(910), TimeScaleInstant.Validity.AMBIGUOUS);
+        checkValidity(date(1965, 9, 1), 0, TimeScaleInstant.Validity.VALID);
     }
 
     private void checkValidity(long epochSeconds, int nanoOfSecond, TimeScaleInstant.Validity validity) {
-        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.utc(), epochSeconds, nanoOfSecond);
+        TimeScaleInstant t = TimeScaleInstant.seconds(TimeScales.simplifiedUtc(), epochSeconds, nanoOfSecond);
         assertEquals(t.getValidity(), validity);
     }
 
@@ -116,36 +114,36 @@ public class TestUTC {
         assertEquals(instant(date(2008, 12, 31)+time(23,59,59)).plus(Duration.seconds(1)),
            instant(date(2009, 1, 1)));
         assertEquals(instant(date(2009, 1, 1)).minus(Duration.seconds(1)), instant(date(2008, 12, 31)+time(23,59,59)));
-        assertEquals(TimeScales.utc().durationBetween(
+        assertEquals(TimeScales.simplifiedUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59,59)),
                instant(date(2009, 1, 1))),
            Duration.seconds(1));
-        assertEquals(TimeScales.utc().durationBetween(
+        assertEquals(TimeScales.simplifiedUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2009, 1, 1)+60)),
            Duration.seconds(120));
-        assertEquals(TimeScales.utc().durationBetween(
+        assertEquals(TimeScales.simplifiedUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2008, 12, 31)+time(23,59,59),0)),
            Duration.seconds(59));
 
         // check behaviour around gap in time scale
-        assertTrue(instant(date(1968,2,1)).minus(Duration.millis(10)).getValidity() == TimeScaleInstant.Validity.valid);
+        assertTrue(instant(date(1968,2,1)).minus(Duration.millis(10)).getValidity() == TimeScaleInstant.Validity.VALID);
         assertEquals(instant(date(1968,1,31)+time(23,59,59)).plus(Duration.millis(990)), instant(date(1968,2,1)));
 
         TimeScaleInstant t0 = instant(date(1968,1,1));
         TimeScaleInstant t1= instant(date(1969,1,1));
-        Duration dUTC = TimeScales.utc().durationBetween(t0, t1);
+        Duration dUTC = TimeScales.simplifiedUtc().durationBetween(t0, t1);
         Duration dTAI = TimeScales.tai().durationBetween(t0, t1);
         System.out.println("Duration between "+t0+" and "+t1+" is "+dUTC+"[utc], "+dTAI+"[TAI]");
         System.out.println("Difference is "+dTAI.minus(dUTC));
     }
 
     private static TimeScaleInstant instant(long epochSeconds) {
-        return TimeScaleInstant.seconds(TimeScales.utc(), epochSeconds);
+        return TimeScaleInstant.seconds(TimeScales.simplifiedUtc(), epochSeconds);
     }
 
     private static TimeScaleInstant instant(long epochSeconds, int nanoOfSecond) {
-        return TimeScaleInstant.seconds(TimeScales.utc(), epochSeconds, nanoOfSecond);
+        return TimeScaleInstant.seconds(TimeScales.simplifiedUtc(), epochSeconds, nanoOfSecond);
     }
 }

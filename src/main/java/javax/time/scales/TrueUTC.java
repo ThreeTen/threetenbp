@@ -36,223 +36,138 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
-import javax.time.TimeScale;
-import javax.time.TimeScaleInstant;
-import javax.time.TimeScaleInstant.Validity;
+import javax.time.scales.TimeScaleInstant.Validity;
 
-/** Universal Coordinated Time (UTC) with leap seconds.
- * Unlike many software implementations of UTC, this TimeScale
- * fully supports leap seconds. It also correctly implements
- * the relationship between TAI and UTC between 1961 and 1972 where
- * the UTC second did not correspond to an SI second and there were
+/**
+ * The Universal Coordinated Time (UTC) time-scale, with leap seconds.
+ * <p>
+ * The true UTC time-scale differs from the TAI time-scale by an integral
+ * number of seconds (although see below for a historical note).
+ * These "leap seconds" are introduced to ensure that the instant represented
+ * by UTC stays in line with the earths rotational changes.
+ * <p>
+ * Unlike many software implementations of UTC, this time-scale fully supports leap seconds.
+ * It correctly implements the relationship between TAI and UTC between 1961 and 1972
+ * where the UTC second did not correspond to an SI second and there were
  * a number of small discontinuities (of 50ms or 100ms). This has been further
  * extended back to 1958 where UT and TAI where equal. In the period 1958 to
  * 1961 adjustments where not coordinated internationally, hence there is no
  * single definitive record of the relationship between TAI and UT.
+ *
  * @author Mark Thornton
  */
-public class TrueUTC implements TimeScale, Serializable {
-    private static final long serialVersionUID = 1;
-    public static final String NAME = "TrueUTC";
-    public static final TrueUTC INSTANCE = new TrueUTC();
+class TrueUTC implements TimeScale, Serializable {
 
+    /**
+     * Singleton instance.
+     */
+    static final TrueUTC INSTANCE = new TrueUTC();
+    /**
+     * Name of the singleton, used by other classes to avoid class-loading.
+     */
+    static final String NAME = "TrueUTC";
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Private constructor.
+     */
     private TrueUTC() {
-
     }
 
+    /**
+     * Resolves singleton.
+     *
+     * @return the resolved singleton, never null
+     */
     private Object readResolve() {
         return INSTANCE;
     }
 
-    public TimeScaleInstant add(TimeScaleInstant t, Duration d) {
-        if (t.getTimeScale() != this)
-            return t.getTimeScale().add(t, d);
-        long seconds = d.getSeconds();
-        int nanos = d.getNanosInSecond();
-        if (seconds == 0 && nanos == 0) {
-            return t;
-        }
-        seconds = MathUtils.safeAdd(t.getEpochSeconds(), seconds);
-        if (t.getLeapSecond() != 0)
-            seconds = MathUtils.safeIncrement(seconds);
-        nanos += t.getNanoOfSecond();
-        if (nanos >= ScaleUtil.NANOS_PER_SECOND) {
-            nanos -= ScaleUtil.NANOS_PER_SECOND;
-            seconds = MathUtils.safeDecrement(seconds);
-        }
-        if (seconds < ScaleUtil.START_TAI && t.getEpochSeconds() < ScaleUtil.START_TAI) {
-            // no adjustments required in this interval
-            return TimeScaleInstant.seconds(this, seconds, nanos);
-        }
-        return adjustResult(t, seconds, nanos);
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public String getName() {
+        return NAME;
     }
 
-    private TimeScaleInstant adjustResult(TimeScaleInstant t, long resultEpochSeconds, int resultNanoOfSecond) {
-        LeapSeconds.Entry et = t.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ?
-            LeapSeconds.list().get(0) :
-            LeapSeconds.list().entryFromUTC(t.getEpochSeconds());
-        resultEpochSeconds += et.getDeltaSeconds(); // now in TAI
-        LeapSeconds.Entry e = resultEpochSeconds <= ScaleUtil.TAI_START_LEAP_SECONDS ?
-            LeapSeconds.list().get(0) :
-            LeapSeconds.list().entryFromTAI(resultEpochSeconds, resultNanoOfSecond);
-        // convert result back to UTC
-        resultEpochSeconds -= e.getDeltaSeconds();
-        int leapSecond;
-        if (e.getNext() != null && resultEpochSeconds >= e.getNext().getStartEpochSeconds()) {
-            resultEpochSeconds--;
-            leapSecond = 1;
-        }
-        else {
-            leapSecond = 0;
-            if (resultEpochSeconds < ScaleUtil.START_LEAP_SECONDS && resultEpochSeconds > ScaleUtil.START_TAI) {
-                return ScaleUtil.adjustUTCAroundGaps(t, resultEpochSeconds, resultNanoOfSecond);
-            }
-        }
-        return TimeScaleInstant.seconds(this, resultEpochSeconds, leapSecond, resultNanoOfSecond);
-    }
-
-    public TimeScaleInstant subtract(TimeScaleInstant t, Duration d) {
-        if (t.getTimeScale() != this) {
-            return t.getTimeScale().subtract(t, d);
-        }
-        long seconds = d.getSeconds();
-        int nanos = d.getNanosInSecond();
-        if (seconds == 0 && nanos == 0) {
-            return t;
-        }
-        seconds = MathUtils.safeSubtract(t.getEpochSeconds(), seconds);
-        if (t.getLeapSecond() != 0) {
-            seconds = MathUtils.safeIncrement(seconds);
-        }
-        nanos = t.getNanoOfSecond() - nanos;
-        if (nanos < 0) {
-            nanos += ScaleUtil.NANOS_PER_SECOND;
-            seconds = MathUtils.safeDecrement(seconds);
-        }
-        if (seconds < ScaleUtil.START_TAI && t.getEpochSeconds() < ScaleUtil.START_TAI) {
-            return TimeScaleInstant.seconds(t.getTimeScale(), seconds, nanos);
-        }
-        return adjustResult(t, seconds, nanos);
-    }
-
-    private int differenceAdjust(TimeScaleInstant t) {
-        return (t.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ? 10 :
-            LeapSeconds.list().entryFromUTC(t.getEpochSeconds()).getDeltaSeconds()) + t.getLeapSecond();
-    }
-
-    public Duration durationBetween(TimeScaleInstant start, TimeScaleInstant end) {
-        if (start.getTimeScale() != this)
-            start = toTimeScaleInstant(start);
-        if (end.getTimeScale() != this)
-            end = toTimeScaleInstant(end);
-        long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
-        int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
-        if (nanos < 0) {
-            nanos += ScaleUtil.NANOS_PER_SECOND;
-            secs = MathUtils.safeDecrement(secs);
-        }
-        int adjust = differenceAdjust(end)- differenceAdjust(start);
-        if (adjust != 0) {
-            secs = MathUtils.safeAdd(secs, adjust);
-        }
-        return Duration.seconds(secs, nanos);
-    }
-
-    /** Check validity of TrueUTC instants.
-     *
-     * @param instant instant to verify
-     * @return
-     */
-    public Validity getValidity(TimeScaleInstant instant) {
-        if (instant.getTimeScale() != this) {
-            return instant.getTimeScale().getValidity(instant);
-        }
-        if (instant.getLeapSecond() != 0) {
-            return instant.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ? Validity.invalid :
-                checkLeapSecondValidity(instant);
-        }
-        return instant.getEpochSeconds() < ScaleUtil.START_LEAP_SECONDS && instant.getEpochSeconds() > ScaleUtil.START_TAI ?
-            ScaleUtil.checkEarlyValidity(instant) : Validity.valid;
-    }
-
-    private Validity checkLeapSecondValidity(TimeScaleInstant instant) {
-        if (instant.getEpochSeconds() >= LeapSeconds.getNextPossibleLeap()) {
-            // should verify that leap is at end of June or December
-            return Validity.possible;
-        }
-        LeapSeconds.Entry e = LeapSeconds.list().entryFromUTC(instant.getEpochSeconds());
-        return (e.getNext() != null && instant.getEpochSeconds() == e.getNext().getStartEpochSeconds()-1) ?
-            Validity.valid : Validity.invalid;
-    }
-
+    /** {@inheritDoc} */
     public boolean supportsLeapSecond() {
         return true;
     }
 
-    public Instant toInstant(TimeScaleInstant tsInstant) {
-        if (tsInstant.getTimeScale() != this) {
-            return tsInstant.getTimeScale().toInstant(tsInstant);
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public Instant toInstant(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().toInstant(tsi);
         }
         // just lose the leap second (if any)
-        return Instant.seconds(tsInstant.getEpochSeconds(), tsInstant.getNanoOfSecond());
+        return Instant.seconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
     }
 
-    public TimeScaleInstant toTimeScaleInstant(InstantProvider instantProvider) {
-        Instant t = instantProvider.toInstant();
+    /** {@inheritDoc} */
+    public TimeScaleInstant toTAI(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().toTAI(tsi);
+        }
+        return ScaleUtil.tai(tsi.getEpochSeconds(), tsi.getLeapSecond(), tsi.getNanoOfSecond());
+    }
+
+    /** {@inheritDoc} */
+    public TimeScaleInstant toTimeScaleInstant(InstantProvider provider) {
+        Instant t = Instant.instant(provider);
         return TimeScaleInstant.seconds(this, t.getEpochSeconds(), t.getNanoOfSecond());
     }
 
-    public TimeScaleInstant toTAI(TimeScaleInstant src) {
-        return src.getTimeScale() == this ? ScaleUtil.tai(src.getEpochSeconds(), src.getLeapSecond(), src.getNanoOfSecond()) :
-            src.getTimeScale().toTAI(src);
-    }
-
-    public TimeScaleInstant toTimeScaleInstant(TimeScaleInstant src) {
-        if (src.getTimeScale() == this) {
-            return src;
+    /** {@inheritDoc} */
+    public TimeScaleInstant toTimeScaleInstant(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() == this) {
+            return tsi;
         }
-        String name = src.getTimeScale().getName();
-        // The following tests do not cause the classes to be loaded
-        // The idea is to allow conversions between UTC and TrueUTC without loading TAI.
-        // The use of == is also valid as the constants are interned by the JVM
+        String name = tsi.getTimeScale().getName();
+        // the following tests do not cause the classes to be loaded
+        // the idea is to allow conversions between UTC and TrueUTC without loading TAI.
+        // the use of == is also valid as the constants are interned by the JVM
         if (name == UTC.NAME) {
-            return TimeScaleInstant.seconds(this, src.getEpochSeconds(), src.getNanoOfSecond());
+            return TimeScaleInstant.seconds(this, tsi.getEpochSeconds(), tsi.getNanoOfSecond());
         }
         if (name != TAI.NAME) {
-            src = src.getTimeScale().toTAI(src);
+            tsi = tsi.getTimeScale().toTAI(tsi);
         }
-        return fromTAI(src);
+        return fromTAI(tsi);
     }
 
-    private TimeScaleInstant fromTAI(TimeScaleInstant src) {
-        if (src.compareTo(TAI.START_LEAPSECONDS) >= 0) {
-            return fromModernTAI(src);
+    private TimeScaleInstant fromTAI(TimeScaleInstant tsi) {
+        if (tsi.compareTo(TAI.START_LEAP_SECONDS) >= 0) {
+            return fromModernTAI(tsi);
         }
-        if (src.compareTo(TAI.START_TAI) > 0) {
-            return fromEarlyTAI(src);
+        if (tsi.compareTo(TAI.START_TAI) > 0) {
+            return fromEarlyTAI(tsi);
         }
         // ancient, identical to TAI
-        return TimeScaleInstant.seconds(this, src.getEpochSeconds(), src.getNanoOfSecond());
+        return TimeScaleInstant.seconds(this, tsi.getEpochSeconds(), tsi.getNanoOfSecond());
     }
 
-    private TimeScaleInstant fromModernTAI(TimeScaleInstant tsInstant) {
-        LeapSeconds.Entry e = LeapSeconds.list().entryFromTAI(tsInstant);
-        long s = tsInstant.getEpochSeconds() - e.getDeltaSeconds();
+    private TimeScaleInstant fromModernTAI(TimeScaleInstant tsi) {
+        LeapSeconds.Entry e = LeapSeconds.list().entryFromTAI(tsi);
+        long s = tsi.getEpochSeconds() - e.getDeltaSeconds();
         int leapSecond;
         if (e.getNext() != null && s >= e.getNext().getStartEpochSeconds()) {
             leapSecond = 1 + (int)(s-e.getNext().getStartEpochSeconds());
             s -= leapSecond;
-        }
-        else {
+        } else {
             leapSecond = 0;
         }
-        return TimeScaleInstant.seconds(this, s, leapSecond, tsInstant.getNanoOfSecond());
+        return TimeScaleInstant.seconds(this, s, leapSecond, tsi.getNanoOfSecond());
     }
 
-    private TimeScaleInstant fromEarlyTAI(TimeScaleInstant tsInstant) {
-        EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromTAI(tsInstant);
-        long nanos = tsInstant.getNanoOfSecond() - e.getTAIDeltaNanoseconds(tsInstant.getEpochSeconds(), tsInstant.getNanoOfSecond());
-        long s = MathUtils.safeAdd(tsInstant.getEpochSeconds(), nanos/ScaleUtil.NANOS_PER_SECOND);
+    private TimeScaleInstant fromEarlyTAI(TimeScaleInstant tsi) {
+        EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromTAI(tsi);
+        long nanos = tsi.getNanoOfSecond() - e.getTAIDeltaNanoseconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
+        long s = MathUtils.safeAdd(tsi.getEpochSeconds(), nanos/ScaleUtil.NANOS_PER_SECOND);
         nanos = nanos % ScaleUtil.NANOS_PER_SECOND;
         if (nanos < 0) {
             s--;
@@ -269,8 +184,131 @@ public class TrueUTC implements TimeScale, Serializable {
         return TimeScaleInstant.seconds(this, s, (int)nanos);
     }
 
-    public String getName() {
-        return NAME;
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public Validity getValidity(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().getValidity(tsi);
+        }
+        if (tsi.getLeapSecond() != 0) {
+            return tsi.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ? Validity.INVALID :
+                checkLeapSecondValidity(tsi);
+        }
+        return tsi.getEpochSeconds() < ScaleUtil.START_LEAP_SECONDS && tsi.getEpochSeconds() > ScaleUtil.START_TAI ?
+            ScaleUtil.checkEarlyValidity(tsi) : Validity.VALID;
+    }
+
+    private Validity checkLeapSecondValidity(TimeScaleInstant tsi) {
+        if (tsi.getEpochSeconds() >= LeapSeconds.getNextPossibleLeap()) {
+            // should verify that leap is at end of June or December
+            return Validity.POSSIBLE;
+        }
+        LeapSeconds.Entry e = LeapSeconds.list().entryFromUTC(tsi.getEpochSeconds());
+        return (e.getNext() != null && tsi.getEpochSeconds() == e.getNext().getStartEpochSeconds()-1) ?
+            Validity.VALID : Validity.INVALID;
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public TimeScaleInstant add(TimeScaleInstant tsi, Duration dur) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().add(tsi, dur);
+        }
+        long seconds = dur.getSeconds();
+        int nanos = dur.getNanosInSecond();
+        if (seconds == 0 && nanos == 0) {
+            return tsi;
+        }
+        seconds = MathUtils.safeAdd(tsi.getEpochSeconds(), seconds);
+        if (tsi.getLeapSecond() != 0) {
+            seconds = MathUtils.safeIncrement(seconds);
+        }
+        nanos += tsi.getNanoOfSecond();
+        if (nanos >= ScaleUtil.NANOS_PER_SECOND) {
+            nanos -= ScaleUtil.NANOS_PER_SECOND;
+            seconds = MathUtils.safeDecrement(seconds);
+        }
+        if (seconds < ScaleUtil.START_TAI && tsi.getEpochSeconds() < ScaleUtil.START_TAI) {
+            // no adjustments required in this interval
+            return TimeScaleInstant.seconds(this, seconds, nanos);
+        }
+        return adjustResult(tsi, seconds, nanos);
+    }
+
+    private TimeScaleInstant adjustResult(TimeScaleInstant tsi, long resultEpochSeconds, int resultNanoOfSecond) {
+        LeapSeconds.Entry et = tsi.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ?
+            LeapSeconds.list().get(0) :
+            LeapSeconds.list().entryFromUTC(tsi.getEpochSeconds());
+        resultEpochSeconds += et.getDeltaSeconds(); // now in TAI
+        LeapSeconds.Entry e = resultEpochSeconds <= ScaleUtil.TAI_START_LEAP_SECONDS ?
+            LeapSeconds.list().get(0) :
+            LeapSeconds.list().entryFromTAI(resultEpochSeconds, resultNanoOfSecond);
+        // convert result back to UTC
+        resultEpochSeconds -= e.getDeltaSeconds();
+        int leapSecond;
+        if (e.getNext() != null && resultEpochSeconds >= e.getNext().getStartEpochSeconds()) {
+            resultEpochSeconds--;
+            leapSecond = 1;
+        } else {
+            leapSecond = 0;
+            if (resultEpochSeconds < ScaleUtil.START_LEAP_SECONDS && resultEpochSeconds > ScaleUtil.START_TAI) {
+                return ScaleUtil.adjustUTCAroundGaps(tsi, resultEpochSeconds, resultNanoOfSecond);
+            }
+        }
+        return TimeScaleInstant.seconds(this, resultEpochSeconds, leapSecond, resultNanoOfSecond);
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public TimeScaleInstant subtract(TimeScaleInstant tsi, Duration dur) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().subtract(tsi, dur);
+        }
+        long seconds = dur.getSeconds();
+        int nanos = dur.getNanosInSecond();
+        if (seconds == 0 && nanos == 0) {
+            return tsi;
+        }
+        seconds = MathUtils.safeSubtract(tsi.getEpochSeconds(), seconds);
+        if (tsi.getLeapSecond() != 0) {
+            seconds = MathUtils.safeIncrement(seconds);
+        }
+        nanos = tsi.getNanoOfSecond() - nanos;
+        if (nanos < 0) {
+            nanos += ScaleUtil.NANOS_PER_SECOND;
+            seconds = MathUtils.safeDecrement(seconds);
+        }
+        if (seconds < ScaleUtil.START_TAI && tsi.getEpochSeconds() < ScaleUtil.START_TAI) {
+            return TimeScaleInstant.seconds(tsi.getTimeScale(), seconds, nanos);
+        }
+        return adjustResult(tsi, seconds, nanos);
+    }
+
+    private int differenceAdjust(TimeScaleInstant tsi) {
+        return (tsi.getEpochSeconds() <= ScaleUtil.START_LEAP_SECONDS ? 10 :
+            LeapSeconds.list().entryFromUTC(tsi.getEpochSeconds()).getDeltaSeconds()) + tsi.getLeapSecond();
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public Duration durationBetween(TimeScaleInstant start, TimeScaleInstant end) {
+        if (start.getTimeScale() != this) {
+            start = toTimeScaleInstant(start);
+        }
+        if (end.getTimeScale() != this) {
+            end = toTimeScaleInstant(end);
+        }
+        long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
+        int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
+        if (nanos < 0) {
+            nanos += ScaleUtil.NANOS_PER_SECOND;
+            secs = MathUtils.safeDecrement(secs);
+        }
+        int adjust = differenceAdjust(end)- differenceAdjust(start);
+        if (adjust != 0) {
+            secs = MathUtils.safeAdd(secs, adjust);
+        }
+        return Duration.seconds(secs, nanos);
     }
 
 }

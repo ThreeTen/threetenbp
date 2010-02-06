@@ -29,19 +29,22 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.scales;
 
+import javax.time.Duration;
+import javax.time.Instant;
+import javax.time.InstantProvider;
 import javax.time.calendar.CalendarConversionException;
 
 /**
- * A time-scale that defines the meaning of the count of time.
+ * A time-scale that defines how an instant relates to the time-line.
  * <p>
  * Most of the Java Time Framework works on the assumption that the time-line is
  * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
  * Sadly, the real-life time-line is not this simple.
  * <p>
  * This interface defines a time-scale that is used to represent different ways
- * of counting time from the standard idealised version used by {@link Instant}.
+ * of counting time from the standard idealized version used by {@link Instant}.
  * <p>
  * The interface is usually used internally from the {@link TimeScaleInstant} class.
  * Standard time-scale implementations are provided in {@link TimeScales}.
@@ -52,45 +55,23 @@ import javax.time.calendar.CalendarConversionException;
  * TimeScale is an interface and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
+ * <p>
+ * It is recommended that implementations are {@code Serializable} where possible.
  *
  * @author Stephen Colebourne
  * @author Mark Thornton
  */
 public interface TimeScale {
 
-    // implementations should be a single enum
-    // need methods to convert from one scale to another
-    // duration between ?
-    // plus(Duration) ?
-    // isCompleteTimeLine() ?
-
-    /** Add duration to an instant.
-     * @return result of sum on the same time scale as the supplied instant.
+    /**
+     * Gets the internal name of the time-scale.
+     * 
+     * @return the name of the time-scale, never null
      */
-    TimeScaleInstant add(TimeScaleInstant t, Duration d);
+    String getName();
 
-    /** Subtract duration from an instant.
-     * @return result of subtraction on the same time scale as the supplied instant
-     */
-    TimeScaleInstant subtract(TimeScaleInstant t, Duration d);
-
-    /** Compute duration between two instants on this time scale.
-     * If the two instants are not on this time scale they will be converted.
-     * @param a first instant
-     * @param b second instant
-     * @return duration measured on this time scale
-     */
-    Duration durationBetween(TimeScaleInstant a, TimeScaleInstant b);
-    
-    /** Does the instant exist.
-     * Time scales which are not continuous give rise to periods which do not correspond to a genuine instant (invalid),
-     * or which have more than one corresponding real instant (ambiguous).
-     * @param instant
-     * @return validity of the instant
-     */
-    TimeScaleInstant.Validity getValidity(TimeScaleInstant instant);
-
-    /** Does the time scale support leap seconds.
+    /**
+     * Does the time scale support leap seconds.
      *
      * @return true if leap seconds are represented in this time scale
      */
@@ -105,43 +86,77 @@ public interface TimeScale {
      * <p>
      * The specified instant must be defined in this time-scale.
      * 
-     * @param tsInstant  the time-scale based instant to convert, not null
+     * @param tsi  the time-scale based instant to convert, not null
      * @return the standard instant, never null
      * @throws IllegalArgumentException if the time-scale isn't this scale
      * @throws CalendarConversionException if the conversion cannot be performed
      */
-    Instant toInstant(TimeScaleInstant tsInstant);
+    Instant toInstant(TimeScaleInstant tsi);
+
+    /**
+     * Convert a scaled instant to TAI.
+     *
+     * @param tsi  the time-scale based instant to convert, not null
+     * @return instant converted to TAI, never null
+     */
+    TimeScaleInstant toTAI(TimeScaleInstant tsi);
 
     /**
      * Converts a standard instant to a scaled instant.
      * <p>
      * The resulting instant will have this time-scale.
      * 
-     * @param instantProvider  the instant provider, not null
+     * @param provider  the instant provider, not null
      * @return the scaled instant, never null
      * @throws CalendarConversionException if the conversion cannot be performed
      */
-    TimeScaleInstant toTimeScaleInstant(InstantProvider instantProvider);
-
-    /** Convert an instant to TAI.
-     *
-     * @param src instant on this time scale
-     * @return instant converted to TAI
-     */
-    TimeScaleInstant toTAI(TimeScaleInstant src);
-
-    /** Convert instant to this time scale.
-     *
-     * @param src instant on another time scale.
-     * @return corresponding instant on this time scale
-     */
-    TimeScaleInstant toTimeScaleInstant(TimeScaleInstant src);
+    TimeScaleInstant toTimeScaleInstant(InstantProvider provider);
 
     /**
-     * Gets the internal name of the time-scale.
-     * 
-     * @return the name of the time-scale, never null
+     * Converts a scaled instant to this time scale.
+     *
+     * @param tsi  the time-scale based instant to convert, not null
+     * @return corresponding instant on this time scale, never null
      */
-    String getName();
+    TimeScaleInstant toTimeScaleInstant(TimeScaleInstant tsi);
+
+    /**
+     * Checks the validity of the specified instant.
+     * Time scales which are not continuous give rise to periods which do not correspond to a
+     * genuine instant (invalid), or which have more than one corresponding real instant (ambiguous).
+     *
+     * @param tsi  the time-scale based instant to check, not null
+     * @return validity of the instant, never null
+     */
+    TimeScaleInstant.Validity getValidity(TimeScaleInstant tsi);
+
+    /**
+     * Adds the duration to the specified instant.
+     *
+     * @param tsi  the time-scale based instant to add to, not null
+     * @param dur  the duration to add, not null
+     * @return a {@code TimeScaleInstant} equal to the instant plus the duration, never null
+     */
+    TimeScaleInstant add(TimeScaleInstant tsi, Duration dur);
+
+    /**
+     * Subtracts the duration from the specified instant.
+     *
+     * @param tsi  the time-scale based instant to subtract from, not null
+     * @param dur  the duration to subtract, not null
+     * @return a {@code TimeScaleInstant} equal to the instant minus the duration, never null
+     */
+    TimeScaleInstant subtract(TimeScaleInstant tsi, Duration dur);
+
+    /**
+     * Calculates the duration between two instants on this time scale.
+     * <p>
+     * If the two instants are not on this time scale they will be converted.
+     *
+     * @param start  the first time-scale based instant, not null
+     * @param end  the second time-scale based instant, not null
+     * @return the duration measured using this time scale, never null
+     */
+    Duration durationBetween(TimeScaleInstant start, TimeScaleInstant end);
 
 }

@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package javax.time.scales;
 
 /*
@@ -57,9 +56,11 @@ package javax.time.scales;
  1968  Feb.  1 - 1972  Jan.  1     4.213 170 0s +        ""
  * */
 
-/** UTC-TAI for 1958 - 1972.
+/**
+ * UTC-TAI for 1958 - 1972.
  * Officially UTC commenced at 1961-01-01T00:00 with UTC-TAI=1.422818s, but we have extended it back to
  * 1958-01-01T00:00 where UTC-TAI=0s.
+ * 
  * @see <a href="http://hpiers.obspm.fr/eoppc/bul/bulc/UTC-TAI.history">UTC-TAI History</a>
  * @author Mark Thornton
  */
@@ -96,14 +97,12 @@ public class EarlyUTC_TAI {
         private int utcGapNanoseconds;
         private int taiGapNanoseconds;
 
-        Entry(int startYear, int startMonth, int deltaMicroseconds)
-        {
+        Entry(int startYear, int startMonth, int deltaMicroseconds) {
             super(startYear, startMonth, 1);
             deltaNanoseconds = 1000L*deltaMicroseconds;
         }
 
-        Entry(int startYear, int startMonth, int deltaMicroseconds, int originMJD, int rateNanoseconds)
-        {
+        Entry(int startYear, int startMonth, int deltaMicroseconds, int originMJD, int rateNanoseconds) {
             this(startYear, startMonth, deltaMicroseconds);
             this.originMJD = originMJD;
             this.rateNanoseconds = rateNanoseconds;

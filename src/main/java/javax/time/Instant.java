@@ -39,6 +39,8 @@ import javax.time.calendar.CalendarConversionException;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.scales.TimeScaleInstant;
+import javax.time.scales.TimeScales;
 
 /**
  * An instantaneous point on the time-line.
@@ -63,7 +65,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * The seconds are measured from the standard Java epoch of 1970-01-01T00:00:00Z.
  * Instants on the time-line after the epoch are positive, earlier are negative.
  * <p>
- * This class uses the {@link TimeScales#utc() simplified UTC} time scale.
+ * This class uses the {@link TimeScales#simplifiedUtc() simplified UTC} time scale.
  * The scale keeps in step with true UTC by simply ignoring leap seconds.
  * This scale has been chosen as the default because it is simple to understand
  * and is what most users of the API expect. If the application needs an accurate
@@ -309,7 +311,7 @@ public final class Instant
     /**
      * Resolves singletons.
      *
-     * @return the resolved instance
+     * @return the resolved instance, never null
      */
     private Object readResolve() {
         return (seconds | nanos) == 0 ? EPOCH : this;

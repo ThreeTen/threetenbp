@@ -29,83 +29,103 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package javax.time.scales;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
+
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
-import javax.time.TimeScale;
-import javax.time.TimeScaleInstant;
-import javax.time.TimeScaleInstant.Validity;
+import javax.time.scales.TimeScaleInstant.Validity;
 
-/** International Atomic Time.
+/**
+ * The International Atomic Time (TAI) time-scale.
+ * <p>
+ * This time-scale is the primary international scientific time-scale and is completely continuous.
  *
  * @author Mark Thornton
  */
-public class TAI implements TimeScale, Serializable {
-    private static final long serialVersionUID = 1;
-    public static final String NAME = "TAI";
-    public static final TAI INSTANCE = new TAI();
-    public static final TimeScaleInstant START_TAI = TimeScaleInstant.seconds(INSTANCE, ScaleUtil.START_TAI, 0);
-    public static final TimeScaleInstant START_LEAPSECONDS = TimeScaleInstant.seconds(INSTANCE, ScaleUtil.START_LEAP_SECONDS+10, 0);
+class TAI implements TimeScale, Serializable {
 
+    /**
+     * Singleton instance.
+     */
+    static final TAI INSTANCE = new TAI();
+    /**
+     * Name of the singleton, used by other classes to avoid class-loading.
+     */
+    static final String NAME = "TAI";
+    /**
+     * The start of TAI.
+     */
+    static final TimeScaleInstant START_TAI = TimeScaleInstant.seconds(INSTANCE, ScaleUtil.START_TAI, 0);
+    /**
+     * The start of leap seconds.
+     */
+    static final TimeScaleInstant START_LEAP_SECONDS = TimeScaleInstant.seconds(INSTANCE, ScaleUtil.START_LEAP_SECONDS + 10, 0);
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Private constructor.
+     */
     private TAI() {
-        // ensure single instance
     }
 
-    private Object readResolve()
-    		throws ObjectStreamException {
+    /**
+     * Resolves singleton.
+     *
+     * @return the resolved singleton, never null
+     */
+    private Object readResolve() {
         return INSTANCE;
     }
 
-    public TimeScaleInstant add(TimeScaleInstant t, Duration d) {
-        return t.getTimeScale() == this ? ScaleUtil.simpleAdd(t, d) : t.getTimeScale().add(t, d);
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public String getName() {
+        return NAME;
     }
 
-    public TimeScaleInstant subtract(TimeScaleInstant t, Duration d) {
-        return t.getTimeScale() == this ? ScaleUtil.simpleSubtract(t, d) : t.getTimeScale().subtract(t, d);
+    /** {@inheritDoc} */
+    public boolean supportsLeapSecond() {
+        return false;
     }
 
-    public Duration durationBetween(TimeScaleInstant a, TimeScaleInstant b) {
-        if (a.getTimeScale() != this)
-            a = a.getTimeScale().toTAI(a);
-        if (b.getTimeScale() != this)
-            b = b.getTimeScale().toTAI(b);
-        return ScaleUtil.durationBetween(a, b);
-    }
-
-    public Instant toInstant(TimeScaleInstant tsInstant) {
-        if (tsInstant.getTimeScale() != this) {
-            return tsInstant.getTimeScale().toInstant(tsInstant);
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public Instant toInstant(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().toInstant(tsi);
         }
-        if (tsInstant.compareTo(START_LEAPSECONDS) >= 0) {
-            return toModernInstant(tsInstant);
+        if (tsi.compareTo(START_LEAP_SECONDS) >= 0) {
+            return toModernInstant(tsi);
         }
-        if (tsInstant.compareTo(START_TAI) > 0) {
-            return toEarlyInstant(tsInstant);
+        if (tsi.compareTo(START_TAI) > 0) {
+            return toEarlyInstant(tsi);
         }
         // finally ancient history
-        return Instant.seconds(tsInstant.getEpochSeconds(), tsInstant.getNanoOfSecond());
+        return Instant.seconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
     }
 
-    private Instant toModernInstant(TimeScaleInstant tsInstant) {
-        LeapSeconds.Entry e = LeapSeconds.list().entryFromTAI(tsInstant);
-        long s = MathUtils.safeSubtract(tsInstant.getEpochSeconds(), e.getDeltaSeconds());
+    private Instant toModernInstant(TimeScaleInstant tsi) {
+        LeapSeconds.Entry e = LeapSeconds.list().entryFromTAI(tsi);
+        long s = MathUtils.safeSubtract(tsi.getEpochSeconds(), e.getDeltaSeconds());
         if (e.getNext() != null && s == e.getNext().getStartEpochSeconds()) {
             // repeat the last second
             s--;
         }
-        return Instant.seconds(s, tsInstant.getNanoOfSecond());
+        return Instant.seconds(s, tsi.getNanoOfSecond());
     }
 
-    private Instant toEarlyInstant(TimeScaleInstant tsInstant) {
-        EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromTAI(tsInstant);
-        long nanos = tsInstant.getNanoOfSecond() - e.getTAIDeltaNanoseconds(tsInstant.getEpochSeconds(), tsInstant.getNanoOfSecond());
-        long s = MathUtils.safeAdd(tsInstant.getEpochSeconds(), nanos/ScaleUtil.NANOS_PER_SECOND);
+    private Instant toEarlyInstant(TimeScaleInstant tsi) {
+        EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromTAI(tsi);
+        long nanos = tsi.getNanoOfSecond() - e.getTAIDeltaNanoseconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
+        long s = MathUtils.safeAdd(tsi.getEpochSeconds(), nanos/ScaleUtil.NANOS_PER_SECOND);
         nanos = nanos % ScaleUtil.NANOS_PER_SECOND;
         if (nanos < 0) {
             s--;    // safe because the range is known
@@ -122,37 +142,64 @@ public class TAI implements TimeScale, Serializable {
         return Instant.seconds(s, (int)nanos);
     }
 
-    public TimeScaleInstant toTimeScaleInstant(InstantProvider instantProvider) {
-        Instant t = instantProvider.toInstant();
+    /** {@inheritDoc} */
+    public TimeScaleInstant toTAI(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().toTAI(tsi);
+        }
+        return tsi;
+    }
+
+    /** {@inheritDoc} */
+    public TimeScaleInstant toTimeScaleInstant(InstantProvider provider) {
+        Instant t = Instant.instant(provider);
         return ScaleUtil.tai(t.getEpochSeconds(), t.getNanoOfSecond());
     }
 
-    public TimeScaleInstant toTAI(TimeScaleInstant src) {
-        if (src.getTimeScale() == this) {
-            return src;
+    /** {@inheritDoc} */
+    public TimeScaleInstant toTimeScaleInstant(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().toTAI(tsi);
         }
-        return src.getTimeScale().toTAI(src);
+        return tsi;
     }
 
-    public TimeScaleInstant toTimeScaleInstant(TimeScaleInstant src) {
-        return src.getTimeScale() == this ? src : src.getTimeScale().toTAI(src);
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public Validity getValidity(TimeScaleInstant tsi) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().getValidity(tsi);
+        }
+        return Validity.VALID;
     }
 
-    public String getName() {
-        return NAME;
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public TimeScaleInstant add(TimeScaleInstant tsi, Duration dur) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().add(tsi, dur);
+        }
+        return ScaleUtil.simpleAdd(tsi, dur);
     }
 
-    /** TAI times are always valid.
-     * The TAI timeline has no discontinuities or ambiguities.
-     * @param instant if the instant is not on the TAI time scale it will be forwarded to its time scale
-     * to evaluate validity
-     * @return valid for TAI
-     */
-    public Validity getValidity(TimeScaleInstant instant) {
-        return instant.getTimeScale() == this ? Validity.valid : instant.getTimeScale().getValidity(instant);
+    /** {@inheritDoc} */
+    public TimeScaleInstant subtract(TimeScaleInstant tsi, Duration dur) {
+        if (tsi.getTimeScale() != this) {
+            return tsi.getTimeScale().subtract(tsi, dur);
+        }
+        return ScaleUtil.simpleSubtract(tsi, dur);
     }
 
-    public boolean supportsLeapSecond() {
-        return false;
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public Duration durationBetween(TimeScaleInstant start, TimeScaleInstant end) {
+        if (start.getTimeScale() != this) {
+            start = start.getTimeScale().toTAI(start);
+        }
+        if (end.getTimeScale() != this) {
+            end = end.getTimeScale().toTAI(end);
+        }
+        return ScaleUtil.durationBetween(start, end);
     }
+
 }

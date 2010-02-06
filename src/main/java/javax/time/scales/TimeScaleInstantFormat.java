@@ -34,28 +34,31 @@ package javax.time.scales;
 import java.text.Format;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
-import javax.time.TimeScaleInstant;
 
-/** Format TimeScaleInstant as ISO8601 String's.
+/**
+ * Format TimeScaleInstant as ISO8601 String's.
  * Currently parsing is not implemented.
+ *
  * @author Mark Thornton
  */
 public class TimeScaleInstantFormat extends Format {
-    private static long SECONDS_PER_DAY = 86400L;
+    // TODO: more modern format?
 
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
+
+    private static long SECONDS_PER_DAY = 86400L;
     private static int DAYS_STANDARD_YEAR =365;
     private static int DAYS_JULIAN_CYCLE = 4*DAYS_STANDARD_YEAR+1;
     private static int DAYS_STANDARD_CENTURY = 25*DAYS_JULIAN_CYCLE-1;
     private static int DAYS_GREGORIAN_CYCLE = 4*DAYS_STANDARD_CENTURY+1;
-
-    /** days from 1600-03-01 to 1970-01-01 */
-    private static int DATE_1600_03_01 = 3*DAYS_STANDARD_CENTURY + (70/4)*DAYS_JULIAN_CYCLE + (70%4)*DAYS_STANDARD_YEAR
-     - (31+28);
-
+    /** Days from 1600-03-01 to 1970-01-01 */
+    private static int DATE_1600_03_01 = 3*DAYS_STANDARD_CENTURY + (70/4)*DAYS_JULIAN_CYCLE +
+                                (70%4)*DAYS_STANDARD_YEAR - (31+28);
     private static final String[] SMALL_NUMBERS;
-
-    static
-    {
+    static {
         SMALL_NUMBERS = new String[62];
         char[] text = new char[2];
         text[0] = '0';
@@ -68,7 +71,6 @@ public class TimeScaleInstantFormat extends Format {
             text[1] = (char)('0'+i%10);
             SMALL_NUMBERS[i] = new String(text);
         }
-
     }
 
     private static TimeScaleInstantFormat INSTANCE = new TimeScaleInstantFormat();
@@ -116,9 +118,9 @@ public class TimeScaleInstantFormat extends Format {
         if (month >= 10) {
             year++;
             month -= 10;
-        }
-        else
+        } else {
             month += 2;
+        }
         if (year < 0) {
             buffer.append('-');
             year = -year;
@@ -166,10 +168,12 @@ public class TimeScaleInstantFormat extends Format {
 
     @Override
     public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-        if (obj instanceof TimeScaleInstant)
+        if (obj instanceof TimeScaleInstant) {
             return format((TimeScaleInstant)obj, toAppendTo, pos);
-        if (obj == null)
+        }
+        if (obj == null) {
             throw new NullPointerException();
+        }
         throw new IllegalArgumentException("Can't format class as an Instant: "+obj.getClass().getName());
     }
 

@@ -33,8 +33,6 @@ package javax.time.scales;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.TimeScaleInstant;
-import javax.time.TimeScales;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static javax.time.scales.Util.*;
