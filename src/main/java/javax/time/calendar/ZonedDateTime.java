@@ -86,7 +86,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
 //    /**
-//     * Obtains an instance of <code>ZonedDateTime</code>.
+//     * Obtains an instance of {@code ZonedDateTime}.
 //     * <p>
 //     * The second and nanosecond fields will be set to zero by this factory method.
 //     *
@@ -106,7 +106,7 @@ public final class ZonedDateTime
 //    }
 //
 //    /**
-//     * Obtains an instance of <code>ZonedDateTime</code>.
+//     * Obtains an instance of {@code ZonedDateTime}.
 //     * <p>
 //     * The nanosecond field will be set to zero by this factory method.
 //     *
@@ -127,7 +127,7 @@ public final class ZonedDateTime
 //    }
 //
 //    /**
-//     * Obtains an instance of <code>ZonedDateTime</code>.
+//     * Obtains an instance of {@code ZonedDateTime}.
 //     *
 //     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
 //     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -151,10 +151,10 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from a local date and time
+     * Obtains an instance of {@code ZonedDateTime} from a local date and time
      * where the date-time must be valid for the time zone.
      * <p>
-     * This factory creates a <code>ZonedDateTime</code> from a date, time and time zone.
+     * This factory creates a {@code ZonedDateTime} from a date, time and time zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
      * then an exception will be thrown.
      *
@@ -169,10 +169,10 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from a local date and time
+     * Obtains an instance of {@code ZonedDateTime} from a local date and time
      * providing a resolver to handle an invalid date-time.
      * <p>
-     * This factory creates a <code>ZonedDateTime</code> from a date, time and time zone.
+     * This factory creates a {@code ZonedDateTime} from a date, time and time zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
      * then the resolver will determine what action to take.
      * See {@link ZoneResolvers} for common resolver implementations.
@@ -190,10 +190,10 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from a local date-time
+     * Obtains an instance of {@code ZonedDateTime} from a local date-time
      * where the date-time must be valid for the time zone.
      * <p>
-     * This factory creates a <code>ZonedDateTime</code> from a date-time and time zone.
+     * This factory creates a {@code ZonedDateTime} from a date-time and time zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
      * then an exception will be thrown.
      *
@@ -207,10 +207,10 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from a local date-time
+     * Obtains an instance of {@code ZonedDateTime} from a local date-time
      * providing a resolver to handle an invalid date-time.
      * <p>
-     * This factory creates a <code>ZonedDateTime</code> from a date-time and time zone.
+     * This factory creates a {@code ZonedDateTime} from a date-time and time zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
      * then the resolver will determine what action to take.
      * See {@link ZoneResolvers} for common resolver implementations.
@@ -227,10 +227,10 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from an <code>OffsetDateTime</code>
+     * Obtains an instance of {@code ZonedDateTime} from an {@code OffsetDateTime}
      * ensuring that the offset provided is valid for the time zone.
      * <p>
-     * This factory creates a <code>ZonedDateTime</code> from an offset date-time and time zone.
+     * This factory creates a {@code ZonedDateTime} from an offset date-time and time zone.
      * If the date-time is invalid for the zone due to a time-line gap then an exception is thrown.
      * Otherwise, the offset is checked against the zone to ensure it is valid.
      * <p>
@@ -239,7 +239,7 @@ public final class ZonedDateTime
      * <p>
      * An alternative to this method is {@link #fromInstant(OffsetDateTime, TimeZone)}.
      * This method will retain the date and time and throw an exception if
-     * the offset is invalid. The <code>fromInstant</code> method will change the
+     * the offset is invalid. The {@code fromInstant} method will change the
      * date and time if necessary to retain the same instant.
      *
      * @param dateTime  the offset date-time to use, not null
@@ -268,9 +268,9 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from an <code>Instant</code>.
+     * Obtains an instance of {@code ZonedDateTime} from an {@code Instant}.
      * <p>
-     * This factory creates a <code>ZonedDateTime</code> from an instant and time zone.
+     * This factory creates a {@code ZonedDateTime} from an instant and time zone.
      * If the instant represents a point on the time-line outside the supported year
      * range then an exception will be thrown.
      * <p>
@@ -290,9 +290,9 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from the instant of an <code>OffsetDateTime</code>.
+     * Obtains an instance of {@code ZonedDateTime} from the instant of an {@code OffsetDateTime}.
      * <p>
-     * This factory creates a <code>ZonedDateTime</code> from an offset date-time and time zone.
+     * This factory creates a {@code ZonedDateTime} from an offset date-time and time zone.
      * This is an optimized implementation of:
      * <pre>
      * ZonedDateTime.fromInstant(offsetDateTime.toInstant(), zone);
@@ -303,8 +303,8 @@ public final class ZonedDateTime
      * If the time zone has a floating version, then this conversion will use the latest time zone rules.
      * <p>
      * An alternative to this method is {@link #of(OffsetDateTime, TimeZone)}.
-     * The <code>fromInstant</code> method will change the date and time if necessary to
-     * retain the same instant. The <code>dateTime</code> method will retain the date and
+     * The {@code fromInstant} method will change the date and time if necessary to
+     * retain the same instant. The {@code dateTime} method will retain the date and
      * time and throw an exception if the offset is invalid.
      *
      * @param dateTime  the offset date-time to use, not null
@@ -325,13 +325,13 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from a text string.
+     * Obtains an instance of {@code ZonedDateTime} from a text string.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}{OffsetID}[{ZoneId}]</code>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}{OffsetID}[{ZoneId}]</code>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}[{ZoneId}]</code>
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}{OffsetID}[{ZoneId}]}
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}{OffsetID}[{ZoneId}]}
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}[{ZoneId}]}
      * </ul>
      * <p>
      * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
@@ -363,7 +363,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ZonedDateTime</code>.
+     * Obtains an instance of {@code ZonedDateTime}.
      *
      * @param dateTime  the date-time, not null
      * @param oldDateTime  the old date-time prior to the calculation, may be null
@@ -408,7 +408,7 @@ public final class ZonedDateTime
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date-time then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -453,7 +453,7 @@ public final class ZonedDateTime
      * valid offsets for the local date-time. Calling this method will return
      * a zoned date-time with the earlier of the two selected.
      * <p>
-     * If this method is called when it is not an overlap, <code>this</code>
+     * If this method is called when it is not an overlap, {@code this}
      * is returned.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -483,7 +483,7 @@ public final class ZonedDateTime
      * valid offsets for the local date-time. Calling this method will return
      * a zoned date-time with the later of the two selected.
      * <p>
-     * If this method is called when it is not an overlap, <code>this</code>
+     * If this method is called when it is not an overlap, {@code this}
      * is returned.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -583,7 +583,7 @@ public final class ZonedDateTime
     /**
      * Calculates the applicable versioned time zone, such as 'Europe/Paris#2009b'.
      * <p>
-     * The time zone stored by this <code>ZonedDateTime</code> can have either a
+     * The time zone stored by this {@code ZonedDateTime} can have either a
      * fixed or a floating version. This method returns the time zone with
      * a version, calculating the best matching version if necessary.
      * <p>
@@ -625,10 +625,10 @@ public final class ZonedDateTime
     /**
      * Gets the year field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the year.
+     * This method returns the primitive {@code int} value for the year.
      * <p>
      * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a <code>Year</code> object which includes information on whether
+     * This returns a {@code Year} object which includes information on whether
      * this is a leap year and its length in days.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -638,14 +638,14 @@ public final class ZonedDateTime
     }
 
     /**
-     * Gets the month-of-year field, which is an enum <code>MonthOfYear</code>.
+     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * Additional information can be obtained from the {@code MonthOfYear}.
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
@@ -658,7 +658,7 @@ public final class ZonedDateTime
     /**
      * Gets the day-of-month field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the day-of-month.
+     * This method returns the primitive {@code int} value for the day-of-month.
      *
      * @return the day-of-month, from 1 to 31
      */
@@ -669,7 +669,7 @@ public final class ZonedDateTime
     /**
      * Gets the day-of-year field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the day-of-year.
+     * This method returns the primitive {@code int} value for the day-of-year.
      *
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
@@ -678,14 +678,14 @@ public final class ZonedDateTime
     }
 
     /**
-     * Gets the day-of-week field, which is an enum <code>DayOfWeek</code>.
+     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
      * <p>
      * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link DayOfWeek#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>DayOfWeek</code>.
+     * Additional information can be obtained from the {@code DayOfWeek}.
      * This includes textual names of the values.
      *
      * @return the day-of-week, never null
@@ -828,7 +828,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a <code>ZonedDateTime</code> based on this date-time with the requested year, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
@@ -846,7 +846,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @return a <code>ZonedDateTime</code> based on this date-time with the requested month, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public ZonedDateTime withMonthOfYear(int monthOfYear) {
@@ -864,7 +864,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a <code>ZonedDateTime</code> based on this date-time with the requested day, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -883,7 +883,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
-     * @return a <code>ZonedDateTime</code> based on this date with the requested day, never null
+     * @return a {@code ZonedDateTime} based on this date with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
@@ -908,7 +908,7 @@ public final class ZonedDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a <code>ZonedDateTime</code> based on this date-time with the requested date, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if the any field value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -1534,7 +1534,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to an <code>Instant</code>.
+     * Converts this date-time to an {@code Instant}.
      *
      * @return an Instant representing the same instant, never null
      */
@@ -1543,7 +1543,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalDate</code>.
+     * Converts this date-time to a {@code LocalDate}.
      *
      * @return a LocalDate representing the date fields of this date-time, never null
      */
@@ -1552,7 +1552,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalTime</code>.
+     * Converts this date-time to a {@code LocalTime}.
      *
      * @return a LocalTime representing the time fields of this date-time, never null
      */
@@ -1561,7 +1561,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalDateTime</code>.
+     * Converts this date-time to a {@code LocalDateTime}.
      *
      * @return a LocalDateTime representing the fields of this date-time, never null
      */
@@ -1570,7 +1570,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a <code>OffsetDate</code>.
+     * Converts this date-time to a {@code OffsetDate}.
      *
      * @return a OffsetDate representing the date fields of this date-time, never null
      */
@@ -1579,7 +1579,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a <code>OffsetTime</code>.
+     * Converts this date-time to a {@code OffsetTime}.
      *
      * @return a OffsetTime representing the time fields of this date-time, never null
      */
@@ -1588,7 +1588,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a <code>OffsetDateTime</code>.
+     * Converts this date-time to a {@code OffsetDateTime}.
      *
      * @return a OffsetDateTime representing the fields of this date-time, never null
      */
@@ -1597,10 +1597,10 @@ public final class ZonedDateTime
     }
 
     /**
-     * Gets the year field as a <code>Year</code>.
+     * Gets the year field as a {@code Year}.
      * <p>
      * This method provides access to an object representing the year field.
-     * <code>Year</code> has methods for querying addition year-based information.
+     * {@code Year} has methods for querying addition year-based information.
      *
      * @return the year, never null
      */
@@ -1618,7 +1618,7 @@ public final class ZonedDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(ZonedDateTime other) {
         int compare = dateTime.compareTo(other.dateTime);
@@ -1633,7 +1633,7 @@ public final class ZonedDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(ZonedDateTime other) {
         return compareTo(other) > 0;  // TODO: make ignore zone
@@ -1644,7 +1644,7 @@ public final class ZonedDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this point is before the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(ZonedDateTime other) {
         return compareTo(other) < 0;  // TODO: make ignore zone
@@ -1684,16 +1684,16 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date-time as a <code>String</code>, such as
+     * Outputs the date-time as a {@code String}, such as
      * '2007-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li><code>yyyy-MM-ddThh:mmZZ'['{ZoneId}']'</code></li>
-     * <li><code>yyyy-MM-ddThh:mm:ssZZ'['{ZoneId}']'</code></li>
-     * <li><code>yyyy-MM-ddThh:mm:ss.SSSZZ'['{ZoneId}']'</code></li>
-     * <li><code>yyyy-MM-ddThh:mm:ss.SSSSSSZZ'['{ZoneId}']'</code></li>
-     * <li><code>yyyy-MM-ddThh:mm:ss.SSSSSSSSSZZ'['{ZoneId}']'</code></li>
+     * <li>{@code yyyy-MM-ddThh:mmZZ'['{ZoneId}']'}</li>
+     * <li>{@code yyyy-MM-ddThh:mm:ssZZ'['{ZoneId}']'}</li>
+     * <li>{@code yyyy-MM-ddThh:mm:ss.SSSZZ'['{ZoneId}']'}</li>
+     * <li>{@code yyyy-MM-ddThh:mm:ss.SSSSSSZZ'['{ZoneId}']'}</li>
+     * <li>{@code yyyy-MM-ddThh:mm:ss.SSSSSSSSSZZ'['{ZoneId}']'}</li>
      * </ul>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
@@ -1707,7 +1707,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for <code>ZonedDateTime</code>.
+     * Gets the rule for {@code ZonedDateTime}.
      *
      * @return the rule for the date-time, never null
      */

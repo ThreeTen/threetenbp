@@ -38,16 +38,16 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * A month-of-year, such as 'July'.
  * <p>
- * <code>MonthOfYear</code> is an enum representing the 12 months of the year -
+ * {@code MonthOfYear} is an enum representing the 12 months of the year -
  * January, February, March, April, May, June, July, August, September, October,
  * November and December.
  * <p>
- * In addition to the textual enum name, each month-of-year has an <code>int</code> value.
- * The <code>int</code> value follows normal usage and the ISO-8601 standard,
+ * In addition to the textual enum name, each month-of-year has an {@code int} value.
+ * The {@code int} value follows normal usage and the ISO-8601 standard,
  * from 1 (January) to 12 (December). It is recommended that applications use the enum
- * rather than the <code>int</code> value to ensure code clarity.
+ * rather than the {@code int} value to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of <code>MonthOfYear</code>.
+ * <b>Do not use ordinal() to obtain the numeric representation of {@code MonthOfYear}.
  * Use getValue() instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
@@ -114,11 +114,11 @@ public enum MonthOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MonthOfYear</code> from an <code>int</code> value.
+     * Obtains an instance of {@code MonthOfYear} from an {@code int} value.
      * <p>
-     * <code>MonthOfYear</code> is an enum representing the 12 months of the year.
-     * This factory allows the enum to be obtained from the <code>int</code> value.
-     * The <code>int</code> value follows the ISO-8601 standard, from 1 (January) to 12 (December).
+     * {@code MonthOfYear} is an enum representing the 12 months of the year.
+     * This factory allows the enum to be obtained from the {@code int} value.
+     * The {@code int} value follows the ISO-8601 standard, from 1 (January) to 12 (December).
      * <p>
      * An exception is thrown if the value is invalid. The exception uses the
      * {@link ISOChronology} month-of-year rule to indicate the failed rule.
@@ -160,7 +160,7 @@ public enum MonthOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month-of-year <code>int</code> value.
+     * Gets the month-of-year {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
      * from 1 (January) to 12 (December).

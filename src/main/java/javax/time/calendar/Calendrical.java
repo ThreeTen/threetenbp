@@ -37,7 +37,7 @@ package javax.time.calendar;
  * All classes that can provide calendrical information should implement this interface.
  * The single method allows a calendrical to be queried to find the value of a rule.
  * A calendrical might be a single field, such as month-of-year or hour-of-day, or a
- * whole object, such as <code>LocalDate</code> or <code>ZoneOffset</code>.
+ * whole object, such as {@code LocalDate} or {@code ZoneOffset}.
  * <p>
  * Calendrical makes no guarantees about the thread-safety or immutability
  * of implementations.
@@ -50,7 +50,7 @@ public interface Calendrical {
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified rule.
-     * If the rule is not supported then <code>null</code> will be returned.
+     * If the rule is not supported then {@code null} will be returned.
      * <p>
      * Where this method returns numeric values, Integer is the preferred type.
      * The values should be within the range of the field wherever possible.

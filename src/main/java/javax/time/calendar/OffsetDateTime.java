@@ -76,7 +76,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month and
+     * Obtains an instance of {@code OffsetDateTime} from year, month and
      * day with the time set to midnight at the start of day.
      * <p>
      * The time fields will be set to zero by this factory method.
@@ -96,7 +96,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month and
+     * Obtains an instance of {@code OffsetDateTime} from year, month and
      * day with the time set to midnight at the start of day.
      * <p>
      * The time fields will be set to zero by this factory method.
@@ -116,7 +116,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from a date with the
+     * Obtains an instance of {@code OffsetDateTime} from a date with the
      * time set to midnight at the start of day.
      * <p>
      * The time fields will be set to zero by this factory method.
@@ -132,7 +132,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
@@ -156,7 +156,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
@@ -181,7 +181,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute, second and nanosecond.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -206,7 +206,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
@@ -230,7 +230,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
@@ -255,7 +255,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute, second and nanosecond.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -280,7 +280,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from a date and time.
+     * Obtains an instance of {@code OffsetDateTime} from a date and time.
      *
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
@@ -293,7 +293,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code>.
+     * Obtains an instance of {@code OffsetDateTime}.
      *
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param offset  the zone offset, not null
@@ -332,13 +332,13 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetDateTime</code> from a text string.
+     * Obtains an instance of {@code OffsetDateTime} from a text string.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}{OffsetID}</code>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}{OffsetID}</code>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}</code>
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}{OffsetID}}
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}{OffsetID}}
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}}
      * </ul>
      * <p>
      * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
@@ -385,7 +385,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Returns a new date-time based on this one, returning <code>this</code> where possible.
+     * Returns a new date-time based on this one, returning {@code this} where possible.
      *
      * @param dateTime  the date-time to create with, not null
      * @param offset  the zone offset to create with, not null
@@ -413,7 +413,7 @@ public final class OffsetDateTime
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date-time then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -507,10 +507,10 @@ public final class OffsetDateTime
     /**
      * Gets the year field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the year.
+     * This method returns the primitive {@code int} value for the year.
      * <p>
      * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a <code>Year</code> object which includes information on whether
+     * This returns a {@code Year} object which includes information on whether
      * this is a leap year and its length in days.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -520,14 +520,14 @@ public final class OffsetDateTime
     }
 
     /**
-     * Gets the month-of-year field, which is an enum <code>MonthOfYear</code>.
+     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * Additional information can be obtained from the {@code MonthOfYear}.
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
@@ -540,7 +540,7 @@ public final class OffsetDateTime
     /**
      * Gets the day-of-month field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the day-of-month.
+     * This method returns the primitive {@code int} value for the day-of-month.
      *
      * @return the day-of-month, from 1 to 31
      */
@@ -551,7 +551,7 @@ public final class OffsetDateTime
     /**
      * Gets the day-of-year field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the day-of-year.
+     * This method returns the primitive {@code int} value for the day-of-year.
      *
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
@@ -560,14 +560,14 @@ public final class OffsetDateTime
     }
 
     /**
-     * Gets the day-of-week field, which is an enum <code>DayOfWeek</code>.
+     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
      * <p>
      * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link DayOfWeek#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>DayOfWeek</code>.
+     * Additional information can be obtained from the {@code DayOfWeek}.
      * This includes textual names of the values.
      *
      * @return the day-of-week, never null
@@ -626,7 +626,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return an <code>OffsetDateTime</code> based on this date-time adjusted as necessary, never null
+     * @return an {@code OffsetDateTime} based on this date-time adjusted as necessary, never null
      * @throws NullPointerException if the adjuster returned null
      */
     public OffsetDateTime with(DateAdjuster adjuster) {
@@ -645,7 +645,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return an <code>OffsetDateTime</code> based on this date-time adjusted as necessary, never null
+     * @return an {@code OffsetDateTime} based on this date-time adjusted as necessary, never null
      * @throws IllegalArgumentException if the adjuster returned null
      */
     public OffsetDateTime with(TimeAdjuster adjuster) {
@@ -655,15 +655,15 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this OffsetDateTime with the year altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
-     * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code withYear(year, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested year, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public OffsetDateTime withYear(int year) {
@@ -672,14 +672,14 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the year altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested year, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public OffsetDateTime withYear(int year, DateResolver dateResolver) {
@@ -688,15 +688,15 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the month-of-year altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
-     * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code withMonthOfYear(monthOfYear, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear) {
@@ -705,14 +705,14 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the month-of-year altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
@@ -721,15 +721,15 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the month-of-year altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
-     * This method does the same as <code>with(monthOfYear, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code with(monthOfYear, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested month, never null
      */
     public OffsetDateTime with(MonthOfYear monthOfYear) {
         return with(dateTime.with(monthOfYear), offset);
@@ -737,14 +737,14 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the month-of-year altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, not null
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested month, never null
      */
     public OffsetDateTime with(MonthOfYear monthOfYear, DateResolver dateResolver) {
         return with(dateTime.with(monthOfYear, dateResolver), offset);
@@ -752,13 +752,13 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the day-of-month altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, an exception is thrown.
+     * If the resulting {@code OffsetDateTime} is invalid, an exception is thrown.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested day, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -768,14 +768,14 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the day-of-month altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code OffsetDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 31
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested day, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      */
     public OffsetDateTime withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
@@ -784,12 +784,12 @@ public final class OffsetDateTime
 
     /**
      * Returns a copy of this OffsetDateTime with the day-of-year altered.
-     * If the resulting <code>OffsetDateTime</code> is invalid, an exception is thrown.
+     * If the resulting {@code OffsetDateTime} is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
-     * @return an <code>OffsetDateTime</code> based on this date with the requested day, never null
+     * @return an {@code OffsetDateTime} based on this date with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
@@ -823,7 +823,7 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested date, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -842,7 +842,7 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return an <code>OffsetDateTime</code> based on this date-time with the requested date, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -1010,7 +1010,7 @@ public final class OffsetDateTime
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1057,7 +1057,7 @@ public final class OffsetDateTime
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1228,7 +1228,7 @@ public final class OffsetDateTime
      * <ol>
      * <li>Subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1275,7 +1275,7 @@ public final class OffsetDateTime
      * <ol>
      * <li>Subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1516,7 +1516,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to an <code>Instant</code>.
+     * Converts this date-time to an {@code Instant}.
      *
      * @return an Instant representing the same instant, never null
      */
@@ -1526,7 +1526,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalDate</code>.
+     * Converts this date-time to a {@code LocalDate}.
      *
      * @return a LocalDate representing the date fields of this date-time, never null
      */
@@ -1535,7 +1535,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalTime</code>.
+     * Converts this date-time to a {@code LocalTime}.
      *
      * @return a LocalTime representing the time fields of this date-time, never null
      */
@@ -1544,7 +1544,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalDateTime</code>.
+     * Converts this date-time to a {@code LocalDateTime}.
      *
      * @return a LocalDateTime representing the fields of this date-time, never null
      */
@@ -1553,7 +1553,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Converts this date-time to an <code>OffsetDate</code>.
+     * Converts this date-time to an {@code OffsetDate}.
      *
      * @return an OffsetDate representing the date and offset, never null
      */
@@ -1562,7 +1562,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Converts this date-time to an <code>OffsetTime</code>.
+     * Converts this date-time to an {@code OffsetTime}.
      *
      * @return an OffsetTime representing the time and offset, never null
      */
@@ -1571,10 +1571,10 @@ public final class OffsetDateTime
     }
 
     /**
-     * Gets the year field as a <code>Year</code>.
+     * Gets the year field as a {@code Year}.
      * <p>
      * This method provides access to an object representing the year field.
-     * <code>Year</code> has methods for querying addition year-based information.
+     * {@code Year} has methods for querying addition year-based information.
      *
      * @return the year, never null
      */
@@ -1603,7 +1603,7 @@ public final class OffsetDateTime
      * Compares this date-time to another date-time based on the instant
      * then local date-time.
      * <p>
-     * This ordering is consistent with <code>equals()</code>.
+     * This ordering is consistent with {@code equals()}.
      * For example, the following is the comparator order:
      * <ol>
      * <li>2008-12-03T10:30+01:00</li>
@@ -1616,11 +1616,11 @@ public final class OffsetDateTime
      * Values #2 and #3 represent the same instant on the time-line.
      * When two values represent the same instant, the local date-time is compared
      * to distinguish them. This step is needed to make the ordering
-     * consistent with <code>equals()</code>.
+     * consistent with {@code equals()}.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(OffsetDateTime other) {
         if (offset.equals(other.offset)) {
@@ -1639,11 +1639,11 @@ public final class OffsetDateTime
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * compares only the instant of the date-time. This is equivalent to using
-     * <code>dateTime1.toInstant().isBefore(dateTime2.toInstant());</code>.
+     * {@code dateTime1.toInstant().isBefore(dateTime2.toInstant());}.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this point is before the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(OffsetDateTime other) {
         long thisEpochSecs = toEpochSeconds();
@@ -1657,11 +1657,11 @@ public final class OffsetDateTime
      * <p>
      * This method differs from the comparison in {@link #compareTo} and {@link #equals}
      * in that it compares only the instant of the date-time. This is equivalent to using
-     * <code>dateTime1.toInstant().equals(dateTime2.toInstant());</code>.
+     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean equalInstant(OffsetDateTime other) {
         return toEpochSeconds() == other.toEpochSeconds() &&
@@ -1673,11 +1673,11 @@ public final class OffsetDateTime
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
      * compares the only the instant of the date-time. This is equivalent to using
-     * <code>dateTime1.toInstant().isAfter(dateTime2.toInstant());</code>.
+     * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(OffsetDateTime other) {
         long thisEpochSecs = toEpochSeconds();
@@ -1722,7 +1722,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date-time as a <code>String</code>, such as
+     * Outputs the date-time as a {@code String}, such as
      * '2007-12-03T10:15:30+01:00'.
      * <p>
      * The output will be one of the following formats:

@@ -35,15 +35,15 @@ package javax.time.calendar;
 /**
  * A quarter-of-year, such as 'Q2'.
  * <p>
- * <code>QuarterOfYear</code> is an enum representing the 4 quarters of the year -
+ * {@code QuarterOfYear} is an enum representing the 4 quarters of the year -
  * Q1, Q2, Q3 and Q4.
  * <p>
- * The calendrical framework requires date-time fields to have an <code>int</code> value.
- * The <code>int</code> value follows the quarter, from 1 (Q1) to 4 (Q4).
- * It is recommended that applications use the enum rather than the <code>int</code> value
+ * The calendrical framework requires date-time fields to have an {@code int} value.
+ * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
+ * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of <code>QuarterOfYear</code>.
+ * <b>Do not use ordinal() to obtain the numeric representation of {@code QuarterOfYear}.
  * Use getValue() instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
@@ -78,11 +78,11 @@ public enum QuarterOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>QuarterOfYear</code> from an <code>int</code> value.
+     * Obtains an instance of {@code QuarterOfYear} from an {@code int} value.
      * <p>
-     * <code>QuarterOfYear</code> is an enum representing the 4 quarters of the year.
-     * This factory allows the enum to be obtained from the <code>int</code> value.
-     * The <code>int</code> value follows the quarter, from 1 (Q1) to 4 (Q4).
+     * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
+     * This factory allows the enum to be obtained from the {@code int} value.
+     * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
      * <p>
      * An exception is thrown if the value is invalid. The exception uses the
      * {@link ISOChronology} quarter-of-year rule to indicate the failed rule.
@@ -108,7 +108,7 @@ public enum QuarterOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the quarter-of-year <code>int</code> value.
+     * Gets the quarter-of-year {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
      * from 1 (Q1) to 4 (Q4).

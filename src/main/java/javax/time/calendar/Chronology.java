@@ -49,7 +49,7 @@ package javax.time.calendar;
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  * Wherever possible subclasses should be singletons with no public constructor.
- * It is recommended that subclasses implement <code>Serializable</code>
+ * It is recommended that subclasses implement {@code Serializable}
  *
  * @author Stephen Colebourne
  */

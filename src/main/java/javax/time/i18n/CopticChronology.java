@@ -61,7 +61,7 @@ import javax.time.calendar.PeriodUnit;
 public final class CopticChronology extends Chronology implements Serializable {
 
     /**
-     * The singleton instance of <code>CopticChronology</code>.
+     * The singleton instance of {@code CopticChronology}.
      */
     public static final CopticChronology INSTANCE = new CopticChronology();
     /**

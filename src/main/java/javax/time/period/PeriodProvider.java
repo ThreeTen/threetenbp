@@ -37,14 +37,14 @@ package javax.time.period;
  * PeriodProvider is a simple interface that provides uniform access to
  * any object that can provide access to a period.
  * <p>
- * The implementation of <code>PeriodProvider</code> may be mutable.
+ * The implementation of {@code PeriodProvider} may be mutable.
  * The result of {@link #toPeriodFields()}, however, is immutable.
  * <p>
- * When implementing an API that accepts a <code>PeriodProvider</code> as a parameter,
- * it is important to convert the input to a <code>PeriodFields</code> once and once only.
+ * When implementing an API that accepts a {@code PeriodProvider} as a parameter,
+ * it is important to convert the input to a {@code PeriodFields} once and once only.
  * It is recommended that this is done at the top of the method before other processing.
  * This is necessary to handle the case where the implementation of the provider is
- * mutable and changes in value between two calls to <code>toPeriodFields()</code>.
+ * mutable and changes in value between two calls to {@code toPeriodFields()}.
  * <p>
  * The recommended way to convert a DateProvider to a LocalDate is using
  * {@link PeriodFields#from(PeriodProvider)} as this method provides additional null checking.
@@ -57,13 +57,13 @@ package javax.time.period;
 public interface PeriodProvider {
 
     /**
-     * Returns an instance of <code>PeriodFields</code> initialized from the
+     * Returns an instance of {@code PeriodFields} initialized from the
      * state of this object.
      * <p>
      * This method will take the period represented by this object and return
      * an equivalent {@link PeriodFields}.
      * The amount stored for a unit in the result may be zero.
-     * If this object is already a <code>PeriodFields</code> then it is simply returned.
+     * If this object is already a {@code PeriodFields} then it is simply returned.
      * <p>
      * Implementations must ensure that this method provides a thread-safe consistent
      * result. An immutable implementation will naturally provide this guarantee.

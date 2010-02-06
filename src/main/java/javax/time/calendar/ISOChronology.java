@@ -62,7 +62,7 @@ import javax.time.period.PeriodField;
 public final class ISOChronology extends Chronology implements Serializable {
 
     /**
-     * The singleton instance of <code>ISOChronology</code>.
+     * The singleton instance of {@code ISOChronology}.
      */
     public static final ISOChronology INSTANCE = new ISOChronology();
     /**

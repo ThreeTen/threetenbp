@@ -42,7 +42,7 @@ import javax.time.period.PeriodField;
 /**
  * A unit of time for measuring a period, such as 'Days' or 'Minutes'.
  * <p>
- * <code>PeriodUnit</code> is an immutable definition of a unit of human-scale time.
+ * {@code PeriodUnit} is an immutable definition of a unit of human-scale time.
  * For example, humans typically measure periods of time in units of years, months,
  * days, hours, minutes and seconds. These concepts are defined by instances of
  * this class defined in the chronology classes.
@@ -57,7 +57,7 @@ import javax.time.period.PeriodField;
  * All instantiable implementations must be final, immutable and thread-safe.
  * <p>
  * The subclass is fully responsible for serialization as all fields in this class are
- * transient. The subclass must use <code>readResolve</code> to replace the deserialized
+ * transient. The subclass must use {@code readResolve} to replace the deserialized
  * class with a valid one created via a constructor.
  *
  * @author Stephen Colebourne

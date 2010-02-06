@@ -50,7 +50,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * The period units used are 'Years', 'Months', 'Days', 'Hours', 'Minutes',
  * 'Seconds' and 'Nanoseconds'.
  * <p>
- * The <code>ISOChronology</code> defines a relationship between some of the units:
+ * The {@code ISOChronology} defines a relationship between some of the units:
  * <ul>
  * <li>12 months in a year</li>
  * <li>24 hours in a day (ignoring time zones)</li>
@@ -123,17 +123,17 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a <code>Period</code> from a provider of periods.
+     * Obtains a {@code Period} from a provider of periods.
      * <p>
-     * A <code>Period</code> supports 7 units, ISO years, months, days, hours,
+     * A {@code Period} supports 7 units, ISO years, months, days, hours,
      * minutes, seconds and nanoseconds. Any period that contains amounts in
      * these units, or in units that can be converted to these units will be
      * accepted. If the provider contains any other unit, an exception is thrown.
      *
      * @param periodProvider  a provider of period information, not null
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, except nanos, exceeds an <code>int</code>
+     * @throws ArithmeticException if any provided amount, except nanos, exceeds an {@code int}
      */
     public static Period from(PeriodProvider periodProvider) {
         PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
@@ -153,7 +153,7 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from amounts from years to seconds.
+     * Obtains a {@code Period} from amounts from years to seconds.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -161,7 +161,7 @@ public final class Period
      * @param hours  the amount of hours, may be negative
      * @param minutes  the amount of minutes, may be negative
      * @param seconds  the amount of seconds, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period of(int years, int months, int days, int hours, int minutes, int seconds) {
         if ((years | months | days | hours | minutes | seconds) == 0) {
@@ -171,7 +171,7 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from amounts from years to nanoseconds.
+     * Obtains a {@code Period} from amounts from years to nanoseconds.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
@@ -180,7 +180,7 @@ public final class Period
      * @param minutes  the amount of minutes, may be negative
      * @param seconds  the amount of seconds, may be negative
      * @param nanos  the amount of nanos, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period of(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
         if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
@@ -190,11 +190,11 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from years, months and days.
+     * Obtains a {@code Period} from years, months and days.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period yearsMonths(int years, int months) {
         if ((years | months) == 0) {
@@ -204,12 +204,12 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from years, months and days.
+     * Obtains a {@code Period} from years, months and days.
      *
      * @param years  the amount of years, may be negative
      * @param months  the amount of months, may be negative
      * @param days  the amount of days, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period yearsMonthsDays(int years, int months, int days) {
         if ((years | months | days) == 0) {
@@ -219,12 +219,12 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from hours, minutes and seconds.
+     * Obtains a {@code Period} from hours, minutes and seconds.
      *
      * @param hours  the amount of hours, may be negative
      * @param minutes  the amount of minutes, may be negative
      * @param seconds  the amount of seconds, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period hoursMinutesSeconds(int hours, int minutes, int seconds) {
         if ((hours | minutes | seconds) == 0) {
@@ -235,10 +235,10 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a <code>Period</code> from a number of years.
+     * Obtains a {@code Period} from a number of years.
      *
      * @param years  the amount of years, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period years(int years) {
         if (years == 0) {
@@ -248,10 +248,10 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from a number of months.
+     * Obtains a {@code Period} from a number of months.
      *
      * @param months  the amount of months, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period months(int months) {
         if (months == 0) {
@@ -261,10 +261,10 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from a number of days.
+     * Obtains a {@code Period} from a number of days.
      *
      * @param days  the amount of days, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period days(int days) {
         if (days == 0) {
@@ -274,10 +274,10 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from a number of hours.
+     * Obtains a {@code Period} from a number of hours.
      *
      * @param hours  the amount of hours, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period hours(int hours) {
         if (hours == 0) {
@@ -287,10 +287,10 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from a number of minutes.
+     * Obtains a {@code Period} from a number of minutes.
      *
      * @param minutes  the amount of minutes, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period minutes(int minutes) {
         if (minutes == 0) {
@@ -300,10 +300,10 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from a number of seconds.
+     * Obtains a {@code Period} from a number of seconds.
      *
      * @param seconds  the amount of seconds, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period seconds(int seconds) {
         if (seconds == 0) {
@@ -313,10 +313,10 @@ public final class Period
     }
 
     /**
-     * Obtains a <code>Period</code> from a number of nanoseconds.
+     * Obtains a {@code Period} from a number of nanoseconds.
      *
      * @param nanos  the amount of nanos, may be negative
-     * @return the <code>Period</code> instance, never null
+     * @return the {@code Period} instance, never null
      */
     public static Period nanos(long nanos) {
         if (nanos == 0) {
@@ -327,15 +327,15 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a <code>Period</code> from a string formatted as <code>PnYnMnDTnHnMn.nS</code>.
+     * Obtains a {@code Period} from a string formatted as {@code PnYnMnDTnHnMn.nS}.
      * <p>
-     * This will parse the string produced by <code>toString()</code> which is
-     * a subset of the ISO8601 period format <code>PnYnMnDTnHnMn.nS</code>.
+     * This will parse the string produced by {@code toString()} which is
+     * a subset of the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * The string consists of a series of numbers with a suffix identifying their meaning.
      * The values, and suffixes, must be in the sequence year, month, day, hour, minute, second.
      * Any of the number/suffix pairs may be omitted providing at least one is present.
-     * If the period is zero, the value is normally represented as <code>PT0S</code>.
+     * If the period is zero, the value is normally represented as {@code PT0S}.
      * The numbers must consist of ASCII digits.
      * Any of the numbers may be negative. Negative zero is not accepted.
      * The number of nanoseconds is expressed as an optional fraction of the seconds.
@@ -475,10 +475,10 @@ public final class Period
 
     /**
      * Gets the amount of nanoseconds of the overall period safely converted
-     * to an <code>int</code>.
+     * to an {@code int}.
      *
      * @return the amount of nanoseconds of the overall period
-     * @throws ArithmeticException if the number of nanoseconds exceeds the capacity of an <code>int</code>
+     * @throws ArithmeticException if the number of nanoseconds exceeds the capacity of an {@code int}
      */
     public int getNanosInt() {
         return MathUtils.safeToInt(nanos);
@@ -645,7 +645,7 @@ public final class Period
      *
      * @param years  the years to add, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusYears(int years) {
         return withYears(MathUtils.safeAdd(this.years, years));
@@ -661,7 +661,7 @@ public final class Period
      *
      * @param months  the months to add, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusMonths(int months) {
         return withMonths(MathUtils.safeAdd(this.months, months));
@@ -677,7 +677,7 @@ public final class Period
      *
      * @param days  the days to add, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusDays(int days) {
         return withDays(MathUtils.safeAdd(this.days, days));
@@ -693,7 +693,7 @@ public final class Period
      *
      * @param hours  the hours to add, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusHours(int hours) {
         return withHours(MathUtils.safeAdd(this.hours, hours));
@@ -709,7 +709,7 @@ public final class Period
      *
      * @param minutes  the minutes to add, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusMinutes(int minutes) {
         return withMinutes(MathUtils.safeAdd(this.minutes, minutes));
@@ -725,7 +725,7 @@ public final class Period
      *
      * @param seconds  the seconds to add, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusSeconds(int seconds) {
         return withSeconds(MathUtils.safeAdd(this.seconds, seconds));
@@ -741,7 +741,7 @@ public final class Period
      *
      * @param nanos  the nanoseconds to add, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of a <code>long</code> is exceeded
+     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public Period plusNanos(long nanos) {
         return withNanos(MathUtils.safeAdd(this.nanos, nanos));
@@ -781,7 +781,7 @@ public final class Period
      *
      * @param years  the years to subtract, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusYears(int years) {
         return withYears(MathUtils.safeSubtract(this.years, years));
@@ -797,7 +797,7 @@ public final class Period
      *
      * @param months  the months to subtract, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusMonths(int months) {
         return withMonths(MathUtils.safeSubtract(this.months, months));
@@ -813,7 +813,7 @@ public final class Period
      *
      * @param days  the days to subtract, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusDays(int days) {
         return withDays(MathUtils.safeSubtract(this.days, days));
@@ -829,7 +829,7 @@ public final class Period
      *
      * @param hours  the hours to subtract, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusHours(int hours) {
         return withHours(MathUtils.safeSubtract(this.hours, hours));
@@ -845,7 +845,7 @@ public final class Period
      *
      * @param minutes  the minutes to subtract, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusMinutes(int minutes) {
         return withMinutes(MathUtils.safeSubtract(this.minutes, minutes));
@@ -861,7 +861,7 @@ public final class Period
      *
      * @param seconds  the seconds to subtract, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of an <code>int</code> is exceeded
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusSeconds(int seconds) {
         return withSeconds(MathUtils.safeSubtract(this.seconds, seconds));
@@ -877,7 +877,7 @@ public final class Period
      *
      * @param nanos  the nanoseconds to subtract, positive or negative
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the capacity of a <code>long</code> is exceeded
+     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public Period minusNanos(long nanos) {
         return withNanos(MathUtils.safeSubtract(this.nanos, nanos));
@@ -1050,7 +1050,7 @@ public final class Period
      * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of years
-     * @throws ArithmeticException if the capacity of a <code>long</code> is exceeded
+     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalYears() {
         return MathUtils.safeAdd((long) years, (long) (months / 12));
@@ -1068,7 +1068,7 @@ public final class Period
      * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of years
-     * @throws ArithmeticException if the capacity of a <code>long</code> is exceeded
+     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalMonths() {
         return MathUtils.safeAdd(MathUtils.safeMultiply((long) years, 12), months);
@@ -1251,7 +1251,7 @@ public final class Period
      * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of nanoseconds
-     * @throws ArithmeticException if the capacity of a <code>long</code> is exceeded
+     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalNanos() {
         if (this == ZERO) {
@@ -1277,7 +1277,7 @@ public final class Period
      * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of nanoseconds
-     * @throws ArithmeticException if the capacity of a <code>long</code> is exceeded
+     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalNanosWith24HourDays() {
         if (this == ZERO) {
@@ -1290,9 +1290,9 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this period to a <code>PeriodFields</code>.
+     * Converts this period to a {@code PeriodFields}.
      * <p>
-     * The returned <code>PeriodFields</code> will only contain the non-zero amounts.
+     * The returned {@code PeriodFields} will only contain the non-zero amounts.
      *
      * @return the equivalent period, never null
      */
@@ -1327,7 +1327,7 @@ public final class Period
     }
 
     /**
-     * Converts this object to a <code>Duration</code> using the hours, minutes,
+     * Converts this object to a {@code Duration} using the hours, minutes,
      * seconds and nanoseconds fields.
      * If years, months or days are present an exception is thrown.
      * <p>
@@ -1339,7 +1339,7 @@ public final class Period
      * </ul>
      * This method is only appropriate to call if these assumptions are met.
      *
-     * @return <code>this</code>, never null
+     * @return {@code this}, never null
      * @throws CalendricalException if the period cannot be converted as it contains years/months/days
      */
     public Duration toDuration() {
@@ -1351,7 +1351,7 @@ public final class Period
     }
 
     /**
-     * Converts this object to a <code>Duration</code> using the days, hours, minutes,
+     * Converts this object to a {@code Duration} using the days, hours, minutes,
      * seconds and nanoseconds fields.
      * If years or months are present an exception is thrown.
      * <p>
@@ -1364,7 +1364,7 @@ public final class Period
      * </ul>
      * This method is only appropriate to call if these assumptions are met.
      *
-     * @return <code>this</code>, never null
+     * @return {@code this}, never null
      * @throws CalendricalException if the period cannot be converted as it contains years/months/days
      */
     public Duration toDurationWith24HourDays() {

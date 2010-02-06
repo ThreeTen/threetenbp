@@ -41,21 +41,21 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
 /**
  * A month-day in the ISO-8601 calendar system, such as '--12-03'.
  * <p>
- * <code>MonthDay</code> is an immutable calendrical that represents the combination
+ * {@code MonthDay} is an immutable calendrical that represents the combination
  * of a year and month. Any field that can be derived from a month and day, such as
  * quarter-of-year, can be obtained.
  * <p>
  * This class does not store or represent a year, time or time zone.
- * Thus, for example, the value "3rd December" can be stored in a <code>MonthDay</code>.
+ * Thus, for example, the value "3rd December" can be stored in a {@code MonthDay}.
  * <p>
- * Since a <code>MonthDay</code> does not possess a year, the leap day of
+ * Since a {@code MonthDay} does not possess a year, the leap day of
  * 29th of February is considered valid.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
  * system, in which todays's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
- * Any application that uses historical dates should consider using <code>HistoricDate</code>.
+ * Any application that uses historical dates should consider using {@code HistoricDate}.
  * <p>
  * MonthDay is immutable and thread-safe.
  *
@@ -90,7 +90,7 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MonthDay</code>.
+     * Obtains an instance of {@code MonthDay}.
      * <p>
      * The day-of-month must be valid for the month within a leap year.
      * Hence, for February, day 29 is valid.
@@ -116,7 +116,7 @@ public final class MonthDay
     }
 
     /**
-     * Obtains an instance of <code>MonthDay</code>.
+     * Obtains an instance of {@code MonthDay}.
      * <p>
      * The day-of-month must be valid for the month within a leap year.
      * Hence, for month 2 (February), day 29 is valid.
@@ -136,7 +136,7 @@ public final class MonthDay
     }
 
     /**
-     * Obtains an instance of <code>MonthDay</code> from a Calendrical.
+     * Obtains an instance of {@code MonthDay} from a Calendrical.
      * <p>
      * This method will create a MonthDay from the Calendrical by extracting the
      * month-of-year and day-of-month fields.
@@ -153,7 +153,7 @@ public final class MonthDay
     }
 
     /**
-     * Obtains an instance of <code>MonthDay</code> from a text string.
+     * Obtains an instance of {@code MonthDay} from a text string.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
@@ -216,7 +216,7 @@ public final class MonthDay
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this month-day then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -234,14 +234,14 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month-of-year field, which is an enum <code>MonthOfYear</code>.
+     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * Additional information can be obtained from the {@code MonthOfYear}.
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
@@ -254,7 +254,7 @@ public final class MonthDay
     /**
      * Gets the day-of-month field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the day-of-month.
+     * This method returns the primitive {@code int} value for the day-of-month.
      *
      * @return the day-of-month, from 1 to 31
      */
@@ -264,7 +264,7 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this <code>MonthDay</code> with the month-of-year altered.
+     * Returns a copy of this {@code MonthDay} with the month-of-year altered.
      * <p>
      * If the day-of-month is invalid for the specified month, the day will
      * be adjusted to the last valid day-of-month.
@@ -272,7 +272,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned month-day, not null
-     * @return a <code>MonthDay</code> based on this one with the requested month, never null
+     * @return a {@code MonthDay} based on this one with the requested month, never null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -285,7 +285,7 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this <code>MonthDay</code> with the month-of-year altered.
+     * Returns a copy of this {@code MonthDay} with the month-of-year altered.
      * <p>
      * If the day-of-month is invalid for the specified month, the day will
      * be adjusted to the last valid day-of-month.
@@ -293,7 +293,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
-     * @return a <code>MonthDay</code> based on this one with the requested month, never null
+     * @return a {@code MonthDay} based on this one with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
@@ -301,7 +301,7 @@ public final class MonthDay
     }
 
     /**
-     * Returns a copy of this <code>MonthDay</code> with the day-of-month altered.
+     * Returns a copy of this {@code MonthDay} with the day-of-month altered.
      * <p>
      * If the day-of-month is invalid for the current month, an exception
      * will be thrown.
@@ -309,7 +309,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the return month-day, from 1 to 31
-     * @return a <code>MonthDay</code> based on this one with the requested day, never null
+     * @return a {@code MonthDay} based on this one with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
@@ -326,7 +326,7 @@ public final class MonthDay
     //-----------------------------------------------------------------------
     /**
      * Rolls the month-of-year, adding the specified number of months to a copy
-     * of this <code>MonthDay</code>.
+     * of this {@code MonthDay}.
      * <p>
      * This method will add the specified number of months to the month-day,
      * rolling from December back to January if necessary.
@@ -337,7 +337,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return a <code>MonthDay</code> based on this one with the month rolled, never null
+     * @return a {@code MonthDay} based on this one with the month rolled, never null
      */
     public MonthDay rollMonthOfYear(int months) {
         return with(month.roll(months));
@@ -345,7 +345,7 @@ public final class MonthDay
 
     /**
      * Rolls the day-of-month, adding the specified number of days to a copy
-     * of this <code>MonthDay</code>.
+     * of this {@code MonthDay}.
      * <p>
      * This method will add the specified number of days to the month-day,
      * rolling from last day-of-month to the first if necessary.
@@ -353,7 +353,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to roll by, positive or negative
-     * @return a <code>MonthDay</code> based on this one with the day rolled, never null
+     * @return a {@code MonthDay} based on this one with the day rolled, never null
      */
     public MonthDay rollDayOfMonth(int days) {
         if (days == 0) {
@@ -432,8 +432,8 @@ public final class MonthDay
     /**
      * Returns a date formed from this month-day at the specified year.
      * <p>
-     * This method merges <code>this</code> and the specified year to form an
-     * instance of <code>LocalDate</code>.
+     * This method merges {@code this} and the specified year to form an
+     * instance of {@code LocalDate}.
      * <pre>
      * LocalDate date = monthDay.atYear(year);
      * </pre>
@@ -454,7 +454,7 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(MonthDay other) {
         int cmp = month.compareTo(other.month);
@@ -469,7 +469,7 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return true if this is after the specified month-day
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(MonthDay other) {
         return compareTo(other) > 0;
@@ -480,7 +480,7 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return true if this point is before the specified month-day
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(MonthDay other) {
         return compareTo(other) < 0;
@@ -517,7 +517,7 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the month-day as a <code>String</code>.
+     * Outputs the month-day as a {@code String}.
      * <p>
      * The output will be in the format '--MM-dd':
      *

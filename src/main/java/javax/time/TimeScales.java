@@ -36,7 +36,7 @@ import javax.time.scales.TrueUTC;
 import javax.time.scales.UTC;
 
 /**
- * Provides common implementations of <code>TimeScale</code>.
+ * Provides common implementations of {@code TimeScale}.
  * <p>
  * TimeScales is a utility class.
  * All time-scales returned are immutable and thread-safe.

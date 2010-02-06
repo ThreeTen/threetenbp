@@ -132,11 +132,11 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the <code>Integer</code> value of this field from the specified calendrical
-     * returning <code>null</code> if the value cannot be returned.
+     * Gets the {@code Integer} value of this field from the specified calendrical
+     * returning {@code null} if the value cannot be returned.
      * <p>
      * This uses {@link #getValue(Calendrical)} to find the value and then
-     * converts it to an <code>Integer</code>.
+     * converts it to an {@code Integer}.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, null if unable to extract the field
@@ -147,11 +147,11 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     }
 
     /**
-     * Gets the <code>int</code> value of this field from the specified calendrical
+     * Gets the {@code int} value of this field from the specified calendrical
      * throwing an exception if the value cannot be returned.
      * <p>
      * This uses {@link #getValue(Calendrical)} to find the value and then
-     * converts it to an <code>int</code> ensuring it isn't <code>null</code>.
+     * converts it to an {@code int} ensuring it isn't {@code null}.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, never null
@@ -169,7 +169,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * Converts the typed value of the rule to the Integer value.
      * <p>
      * This default implementation simply performs a cast.
-     * Where the reified type is not <code>Integer</code>, this method must be overridden.
+     * Where the reified type is not {@code Integer}, this method must be overridden.
      *
      * @param value  the value to convert, not null
      * @return the int value of the field
@@ -182,9 +182,9 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     }
 
     /**
-     * Converts the typed value of the rule to the <code>int</code> equivalent.
+     * Converts the typed value of the rule to the {@code int} equivalent.
      * <p>
-     * This default implementation handles <code>Integer</code> and <code>Enum</code>.
+     * This default implementation handles {@code Integer} and {@code Enum}.
      * When the reified type is another type, this method must be overridden.
      *
      * @param value  the value to convert, not null
@@ -199,12 +199,12 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     }
 
     /**
-     * Converts the <code>int</code> to a typed value of the rule.
+     * Converts the {@code int} to a typed value of the rule.
      * <p>
-     * The <code>int</code> will be checked to ensure that it is within the
+     * The {@code int} will be checked to ensure that it is within the
      * valid range of values for the field.
      * <p>
-     * This default implementation handles <code>Integer</code> and <code>Enum</code>.
+     * This default implementation handles {@code Integer} and {@code Enum}.
      * When the reified type is another type, this method must be overridden.
      *
      * @param value  the value to convert, not null

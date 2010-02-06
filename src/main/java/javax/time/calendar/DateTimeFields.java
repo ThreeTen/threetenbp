@@ -72,9 +72,9 @@ public final class DateTimeFields
     private final TreeMap<DateTimeFieldRule<?>, Integer> fieldValueMap;
 
     /**
-     * Obtains an empty instance of <code>DateTimeFields</code>.
+     * Obtains an empty instance of {@code DateTimeFields}.
      * <p>
-     * This factory simply returns the <code>EMPTY</code> constant.
+     * This factory simply returns the {@code EMPTY} constant.
      *
      * @return an empty fields instance, never null
      */
@@ -83,7 +83,7 @@ public final class DateTimeFields
     }
 
     /**
-     * Obtains an instance of <code>DateTimeFields</code> from a field-value pair.
+     * Obtains an instance of {@code DateTimeFields} from a field-value pair.
      * <p>
      * This factory allows the creation of a fields object with a single field-value pair.
      * The value must be within the valid range for the field.
@@ -103,7 +103,7 @@ public final class DateTimeFields
     }
 
     /**
-     * Obtains an instance of <code>DateTimeFields</code> from two field-value pairs.
+     * Obtains an instance of {@code DateTimeFields} from two field-value pairs.
      * <p>
      * This factory allows the creation of a fields object with two field-value pairs.
      * Each value must be within the valid range for that field.
@@ -131,7 +131,7 @@ public final class DateTimeFields
     }
 
     /**
-     * Obtains an instance of <code>DateTimeFields</code> from a map of field-value pairs.
+     * Obtains an instance of {@code DateTimeFields} from a map of field-value pairs.
      * <p>
      * This factory allows the creation of a fields object from a map of field-value pairs.
      * Each value must be within the valid range for that field.
@@ -236,7 +236,7 @@ public final class DateTimeFields
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this instance then
      * an attempt is made to derive the value.
-     * If that fails, <code>null</code> will be returned.
+     * If that fails, {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -461,7 +461,7 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the fields as a <code>String</code>.
+     * Outputs the fields as a {@code String}.
      * <p>
      * The output will consist of the field-value map in standard map format.
      *

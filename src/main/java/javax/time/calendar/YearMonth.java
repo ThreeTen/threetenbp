@@ -45,18 +45,18 @@ import javax.time.period.PeriodProvider;
 /**
  * A year-month in the ISO-8601 calendar system, such as '2007-12'.
  * <p>
- * <code>YearMonth</code> is an immutable calendrical that represents the combination
+ * {@code YearMonth} is an immutable calendrical that represents the combination
  * of a year and month. Any field that can be derived from a year and month, such as
  * quarter-of-year, can be obtained.
  * <p>
  * This class does not store or represent a day, time or time zone.
- * Thus, for example, the value "October 2007" can be stored in a <code>YearMonth</code>.
+ * Thus, for example, the value "October 2007" can be stored in a {@code YearMonth}.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
  * system, in which todays's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
- * Any application that uses historical dates should consider using <code>HistoricDate</code>.
+ * Any application that uses historical dates should consider using {@code HistoricDate}.
  * <p>
  * YearMonth is immutable and thread-safe.
  *
@@ -90,7 +90,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>YearMonth</code>.
+     * Obtains an instance of {@code YearMonth}.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -104,7 +104,7 @@ public final class YearMonth
     }
 
     /**
-     * Obtains an instance of <code>YearMonth</code>.
+     * Obtains an instance of {@code YearMonth}.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -116,7 +116,7 @@ public final class YearMonth
     }
 
     /**
-     * Obtains an instance of <code>YearMonth</code> from a Calendrical.
+     * Obtains an instance of {@code YearMonth} from a Calendrical.
      * <p>
      * This method will create a YearMonth from the Calendrical by extracting
      * the year and month-of-year fields.
@@ -133,7 +133,7 @@ public final class YearMonth
     }
 
     /**
-     * Obtains an instance of <code>YearMonth</code> from a text string.
+     * Obtains an instance of {@code YearMonth} from a text string.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
@@ -197,7 +197,7 @@ public final class YearMonth
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this year-month then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -217,10 +217,10 @@ public final class YearMonth
     /**
      * Gets the year field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the year.
+     * This method returns the primitive {@code int} value for the year.
      * <p>
      * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a <code>Year</code> object which includes information on whether
+     * This returns a {@code Year} object which includes information on whether
      * this is a leap year and its length in days.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -230,14 +230,14 @@ public final class YearMonth
     }
 
     /**
-     * Gets the month-of-year field, which is an enum <code>MonthOfYear</code>.
+     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * Additional information can be obtained from the {@code MonthOfYear}.
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
@@ -254,7 +254,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned year-month, not null
-     * @return a <code>YearMonth</code> based on this one with the requested year, never null
+     * @return a {@code YearMonth} based on this one with the requested year, never null
      */
     public YearMonth with(Year year) {
         ISOChronology.checkNotNull(year, "Year must not be null");
@@ -267,7 +267,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned year-month, not null
-     * @return a <code>YearMonth</code> based on this one with the requested month, never null
+     * @return a {@code YearMonth} based on this one with the requested month, never null
      */
     public YearMonth with(MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -276,12 +276,12 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this <code>YearMonth</code> with the year altered.
+     * Returns a copy of this {@code YearMonth} with the year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned year-month, from MIN_YEAR to MAX_YEAR
-     * @return a <code>YearMonth</code> based on this one with the requested year, never null
+     * @return a {@code YearMonth} based on this one with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
@@ -290,12 +290,12 @@ public final class YearMonth
     }
 
     /**
-     * Returns a copy of this <code>YearMonth</code> with the month-of-year altered.
+     * Returns a copy of this {@code YearMonth} with the month-of-year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned year-month, from 1 (January) to 12 (December)
-     * @return a <code>YearMonth</code> based on this one with the requested month, never null
+     * @return a {@code YearMonth} based on this one with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
@@ -429,7 +429,7 @@ public final class YearMonth
     //-----------------------------------------------------------------------
     /**
      * Rolls the month-of-year, adding the specified number of months to a copy
-     * of this <code>YearMonth</code>.
+     * of this {@code YearMonth}.
      * <p>
      * This method will add the specified number of months to the month-day,
      * rolling from December back to January if necessary.
@@ -438,7 +438,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return a <code>YearMonth</code> based on this one with the month rolled, never null
+     * @return a {@code YearMonth} based on this one with the month rolled, never null
      */
     public YearMonth rollMonthOfYear(int months) {
         return with(month.roll(months));
@@ -523,8 +523,8 @@ public final class YearMonth
     /**
      * Returns a date formed from this year-month at the specified day-of-month.
      * <p>
-     * This method merges <code>this</code> and the specified day to form an
-     * instance of <code>LocalDate</code>.
+     * This method merges {@code this} and the specified day to form an
+     * instance of {@code LocalDate}.
      * This method can be used as part of a chain to produce a date:
      * <pre>
      * LocalDate date = year.atMonth(month).atDay(day);
@@ -543,10 +543,10 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field as a <code>Year</code>.
+     * Gets the year field as a {@code Year}.
      * <p>
      * This method provides access to an object representing the year field.
-     * <code>Year</code> has methods for querying addition year-based information.
+     * {@code Year} has methods for querying addition year-based information.
      *
      * @return the year, never null
      */
@@ -560,7 +560,7 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(YearMonth other) {
         int cmp = MathUtils.safeCompare(year, other.year);
@@ -575,7 +575,7 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return true if this is after the specified year-month
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(YearMonth other) {
         return compareTo(other) > 0;
@@ -586,7 +586,7 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return true if this point is before the specified year-month
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(YearMonth other) {
         return compareTo(other) < 0;
@@ -623,7 +623,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the year-month as a <code>String</code>.
+     * Outputs the year-month as a {@code String}.
      * <p>
      * The output will be in the format 'yyyy-MM':
      *

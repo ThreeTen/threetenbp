@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 /**
- * Provides common implementations of <code>DateAdjuster</code>.
+ * Provides common implementations of {@code DateAdjuster}.
  * <p>
  * DateAdjusters is a utility class.
  * All adjusters returned are immutable and thread-safe.

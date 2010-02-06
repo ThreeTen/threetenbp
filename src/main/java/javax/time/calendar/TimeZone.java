@@ -67,7 +67,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * Applications will probably choose to use the floating version, as it guarantees
  * usage of the latest rules.
  * <p>
- * In addition to the group/region/version combinations, <code>TimeZone</code>
+ * In addition to the group/region/version combinations, {@code TimeZone}
  * can represent a fixed offset. This has an empty group and version ID.
  * It is not possible to have an invalid instance of a fixed time zone.
  * <p>
@@ -80,10 +80,10 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * By storing the version of the time zone rules data together with the date, it is
  * possible to tell that the rules have changed and to process accordingly.
  * <p>
- * <code>TimeZone</code> merely represents the identifier of the zone.
+ * {@code TimeZone} merely represents the identifier of the zone.
  * The actual rules are provided by {@link ZoneRules}.
  * One difference is that serializing this class only stores the reference to the zone,
- * whereas serializing <code>ZoneRules</code> stores the entire set of rules.
+ * whereas serializing {@code ZoneRules} stores the entire set of rules.
  * <p>
  * After deserialization, or by using the special constructor, it is possible for the
  * time zone to represent a group/region/version combination that is unavailable.
@@ -126,7 +126,7 @@ public final class TimeZone implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>TimeZone</code> using its ID using a map
+     * Obtains an instance of {@code TimeZone} using its ID using a map
      * of aliases to supplement the standard zone IDs.
      * <p>
      * Many users of time zones use short abbreviations, such as PST for
@@ -149,12 +149,12 @@ public final class TimeZone implements Calendrical, Serializable {
     }
 
     /**
-     * Obtains an instance of <code>TimeZone</code> from an identifier.
+     * Obtains an instance of {@code TimeZone} from an identifier.
      * <p>
      * Six forms of identifier are recognized:
      * <ul>
-     * <li><code>{groupID}:{regionID}#{versionID}</code> - full
-     * <li><code>{groupID}:{regionID}</code> - implies the floating version
+     * <li>{@code {groupID}:{regionID}#{versionID}} - full
+     * <li>{@code {groupID}:{regionID}} - implies the floating version
      * <li><code>{regionID}#{versionID} - implies 'TZDB' group and specific version
      * <li><code>{regionID} - implies 'TZDB' group and the floating version
      * <li><code>UTC{offset} - fixed time zone
@@ -222,7 +222,7 @@ public final class TimeZone implements Calendrical, Serializable {
     }
 
     /**
-     * Obtains an instance of <code>TimeZone</code> representing a fixed time zone.
+     * Obtains an instance of {@code TimeZone} representing a fixed time zone.
      * <p>
      * The time zone returned from this factory has a fixed offset for all time.
      * The region ID will return an identifier formed from 'UTC' and the offset.
@@ -376,11 +376,11 @@ public final class TimeZone implements Calendrical, Serializable {
     /**
      * Returns a copy of this time zone with the specified version ID.
      * <p>
-     * For group based time zones, this returns a <code>TimeZone</code> with the
+     * For group based time zones, this returns a {@code TimeZone} with the
      * same group and region, but a floating version.
      * The group and region IDs are not validated.
      * <p>
-     * For fixed time zones, <code>this</code> is returned.
+     * For fixed time zones, {@code this} is returned.
      *
      * @return the new updated time zone, never null
      * @throws CalendricalException if the time zone is fixed
@@ -415,13 +415,13 @@ public final class TimeZone implements Calendrical, Serializable {
     /**
      * Returns a copy of this time zone with the latest available version ID.
      * <p>
-     * For floating group based time zones, <code>this</code> is returned.
+     * For floating group based time zones, {@code this} is returned.
      * <p>
-     * For non-floating group based time zones, this returns a <code>TimeZone</code>
+     * For non-floating group based time zones, this returns a {@code TimeZone}
      * with the same group and region, but the latest version.
      * The group and region IDs are validated in order to calculate the latest version.
      * <p>
-     * For fixed time zones, <code>this</code> is returned.
+     * For fixed time zones, {@code this} is returned.
      *
      * @return the new updated time zone, never null
      * @throws CalendricalException if the version is non-floating and the group or region ID is not found
@@ -441,7 +441,7 @@ public final class TimeZone implements Calendrical, Serializable {
     /**
      * Returns a copy of this time zone with the specified version ID.
      * <p>
-     * For group based time zones, this returns a <code>TimeZone</code>
+     * For group based time zones, this returns a {@code TimeZone}
      * with the same group and region, but the specified version.
      * The group and region IDs are validated to ensure that the version is valid.
      * <p>
@@ -500,10 +500,10 @@ public final class TimeZone implements Calendrical, Serializable {
      * an exception if the time zone is fixed.
      * <p>
      * Callers of this method need to be aware of an unusual scenario.
-     * It is possible to obtain a <code>TimeZone</code> instance even when the
-     * rules are not available. This typically occurs when a <code>TimeZone</code>
+     * It is possible to obtain a {@code TimeZone} instance even when the
+     * rules are not available. This typically occurs when a {@code TimeZone}
      * is loaded from a previously stored version but the rules are not available.
-     * In this case, the <code>TimeZone</code> instance is still valid, as is
+     * In this case, the {@code TimeZone} instance is still valid, as is
      * any associated object, such as {@link ZonedDateTime}. It is impossible to
      * perform any calculations that require the rules however, and this method
      * will throw an exception.
@@ -731,7 +731,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this offset then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -745,7 +745,7 @@ public final class TimeZone implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for <code>DateTimeZone</code>.
+     * Gets the field rule for {@code DateTimeZone}.
      *
      * @return the field rule for the time-zone, never null
      */

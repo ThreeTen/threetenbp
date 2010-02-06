@@ -186,7 +186,7 @@ public final class CalendricalMerger implements Calendrical {
      * This method queries the value of the specified calendrical rule using
      * the merged rule-value map.
      * If the value cannot be returned for the rule from this date then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -203,7 +203,7 @@ public final class CalendricalMerger implements Calendrical {
      * This method queries the value of the specified calendrical rule using
      * the merged rule-value map.
      * If the value cannot be returned for the rule from this date then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned

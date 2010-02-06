@@ -43,7 +43,7 @@ import javax.time.period.Period;
  * <p>
  * A transition between two offsets is normally the result of a daylight savings cutover.
  * The discontinuity is normally a gap in spring and an overlap in autumn.
- * <code>ZoneOffsetTransition</code> models the transition between the two offsets.
+ * {@code ZoneOffsetTransition} models the transition between the two offsets.
  * <p>
  * There are two types of transition - a gap and an overlap.
  * Gaps occur where there are local date-times that simply do not not exist.
@@ -104,7 +104,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * the 'before' offset.
      * <p>
      * This is the date-time where the discontinuity begins, and as such it never
-     * actually occurs. This method is simply <code>getDateTime().toLocalDateTime()</code>
+     * actually occurs. This method is simply {@code getDateTime().toLocalDateTime()}
      * <p>
      * This value expresses the date-time normally used in verbal communications.
      * For example 'the clocks will move forward one hour tonight at 1am'.

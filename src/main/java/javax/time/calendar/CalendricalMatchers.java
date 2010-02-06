@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 /**
- * Provides common implementations of <code>CalendricalMatcher</code>.
+ * Provides common implementations of {@code CalendricalMatcher}.
  * <p>
  * These matchers are useful and common implementations of {@link CalendricalMatcher}.
  * A matcher allows any type of matching to be performed against a calendrical.

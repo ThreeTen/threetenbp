@@ -39,15 +39,15 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.
  * <p>
- * <code>AmPmOfDay</code> is an enum representing the half-day concepts of AM and PM.
+ * {@code AmPmOfDay} is an enum representing the half-day concepts of AM and PM.
  * AM is defined as from 00:00 to 11:59, while PM is defined from 12:00 to 23:59.
  * <p>
- * The calendrical framework requires date-time fields to have an <code>int</code> value.
- * The <code>int</code> value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
- * It is recommended that applications use the enum rather than the <code>int</code> value
+ * The calendrical framework requires date-time fields to have an {@code int} value.
+ * The {@code int} value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
+ * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of <code>AmPmOfDay</code>.
+ * <b>Do not use ordinal() to obtain the numeric representation of {@code AmPmOfDay}.
  * Use getValue() instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
@@ -72,11 +72,11 @@ public enum AmPmOfDay {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>AmPmOfDay</code> from an <code>int</code> value.
+     * Obtains an instance of {@code AmPmOfDay} from an {@code int} value.
      * <p>
-     * <code>AmPmOfDay</code> is an enum representing before and after midday.
-     * This factory allows the enum to be obtained from the <code>int</code> value.
-     * The <code>int</code> value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
+     * {@code AmPmOfDay} is an enum representing before and after midday.
+     * This factory allows the enum to be obtained from the {@code int} value.
+     * The {@code int} value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
      * <p>
      * An exception is thrown if the value is invalid. The exception uses the
      * {@link ISOChronology} AM/PM rule to indicate the failed rule.
@@ -98,7 +98,7 @@ public enum AmPmOfDay {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the AM/PM <code>int</code> value.
+     * Gets the AM/PM {@code int} value.
      * <p>
      * The values are numbered following {@link Calendar}, assigning 0 to AM and 1 to PM.
      *

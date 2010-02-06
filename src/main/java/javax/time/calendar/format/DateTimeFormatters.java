@@ -39,7 +39,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
- * Provides common implementations of <code>DateTimeFormatter</code>.
+ * Provides common implementations of {@code DateTimeFormatter}.
  * <p>
  * DateTimeFormatters is a utility class.
  * All formatters returned are immutable and thread-safe.
@@ -60,7 +60,7 @@ public final class DateTimeFormatters {
      * such as '2007-12-03'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-MM-dd</code>
+     * {@code yyyy-MM-dd}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -89,7 +89,7 @@ public final class DateTimeFormatters {
      * such as '2007-12-03+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-MM-ddZZ</code>
+     * {@code yyyy-MM-ddZZ}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -120,7 +120,7 @@ public final class DateTimeFormatters {
      * or '2007-12-03+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-MM-dd[ZZ['['{ZoneId}']']]</code>
+     * {@code yyyy-MM-dd[ZZ['['{ZoneId}']']]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -155,7 +155,7 @@ public final class DateTimeFormatters {
      * such as '10:15:30'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>HH:mm[:ss[.S]]</code>
+     * {@code HH:mm[:ss[.S]]}
      * <p>
      * The seconds will be printed if present in the Calendrical, thus a LocalTime
      * will always print the seconds.
@@ -189,7 +189,7 @@ public final class DateTimeFormatters {
      * such as '10:15:30+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>HH:mm[:ss[.S]]ZZ</code>
+     * {@code HH:mm[:ss[.S]]ZZ}
      * <p>
      * The seconds will be printed if present in the Calendrical, thus an OffsetTime
      * will always print the seconds.
@@ -222,7 +222,7 @@ public final class DateTimeFormatters {
      * or '10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]</code>
+     * {@code HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]}
      * <p>
      * The seconds will be printed if present in the Calendrical, thus a LocalTime
      * will always print the seconds.
@@ -259,7 +259,7 @@ public final class DateTimeFormatters {
      * such as '2007-12-03T10:15:30'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]]</code>
+     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -292,7 +292,7 @@ public final class DateTimeFormatters {
      * such as '2007-12-03T10:15:30+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ</code>
+     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -326,7 +326,7 @@ public final class DateTimeFormatters {
      * such as '2007-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ[{ZoneId}]</code>
+     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ[{ZoneId}]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -364,7 +364,7 @@ public final class DateTimeFormatters {
      * '2007-12-03T10:15:30+01:00' or '2007-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]</code>
+     * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -402,7 +402,7 @@ public final class DateTimeFormatters {
      * Returns the ISO date formatter that prints/parses a date without an offset.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-DDD</code>
+     * {@code yyyy-DDD}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -435,7 +435,7 @@ public final class DateTimeFormatters {
      * Returns the ISO date formatter that prints/parses a date without an offset.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyy-Www-D</code>
+     * {@code yyyy-Www-D}
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
@@ -470,7 +470,7 @@ public final class DateTimeFormatters {
      * Returns the ISO date formatter that prints/parses a date without an offset.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>yyyyMMdd</code>
+     * {@code yyyyMMdd}
      * <p>
      * The year is limited to printing and parsing 4 digits, as the lack of
      * separators makes it impossible to parse more than 4 digits.

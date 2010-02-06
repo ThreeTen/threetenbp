@@ -55,7 +55,7 @@ import javax.time.calendar.UnsupportedRuleException;
  * Instances of this class may be created from any other object that implements
  * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
  * this class may be passed into the factory method of any other implementation
- * of <code>DateProvider</code>.
+ * of {@code DateProvider}.
  * <p>
  * CopticDate is immutable and thread-safe.
  *
@@ -115,7 +115,7 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>CopticDate</code> from the Coptic year,
+     * Obtains an instance of {@code CopticDate} from the Coptic year,
      * month-of-year and day-of-month.
      *
      * @param copticYear  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -137,7 +137,7 @@ public final class CopticDate
     }
 
     /**
-     * Obtains an instance of <code>CopticDate</code> using the previous valid algorithm.
+     * Obtains an instance of {@code CopticDate} using the previous valid algorithm.
      *
      * @param year  the year to represent
      * @param monthOfYear  the month-of-year to represent
@@ -156,10 +156,10 @@ public final class CopticDate
     }
 
     /**
-     * Obtains an instance of <code>CopticDate</code> from a calendrical.
+     * Obtains an instance of {@code CopticDate} from a calendrical.
      * <p>
      * This can be used extract the date directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
+     * of {@code Calendrical}, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the Coptic date, never null
@@ -170,7 +170,7 @@ public final class CopticDate
     }
 
     /**
-     * Obtains an instance of <code>CopticDate</code> from a number of epoch days.
+     * Obtains an instance of {@code CopticDate} from a number of epoch days.
      *
      * @param epochDays  the epoch days to use, not null
      * @return a CopticDate object, never null
@@ -437,7 +437,7 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to an ISO-8601 calendar system <code>LocalDate</code>.
+     * Converts this date to an ISO-8601 calendar system {@code LocalDate}.
      *
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
@@ -510,7 +510,7 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date as a <code>String</code>, such as '1723-13-01 (Coptic)'.
+     * Outputs the date as a {@code String}, such as '1723-13-01 (Coptic)'.
      * <p>
      * The output will be in the format 'yyyy-MM-dd (Coptic)'.
      *
@@ -538,7 +538,7 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for <code>CopticDate</code>.
+     * Gets the field rule for {@code CopticDate}.
      *
      * @return the field rule for the date, never null
      */

@@ -237,13 +237,13 @@ public final class DateTimeParseContext {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a <code>CalendricalMerger</code> that can be used to interpret
+     * Returns a {@code CalendricalMerger} that can be used to interpret
      * the results of the parse.
      * <p>
      * This method is typically used once parsing is complete to obtain the parsed data.
      * Parsing will typically result in separate fields, such as year, month and day.
      * The returned merger can be used to combine the parsed data into meaningful
-     * objects such as <code>LocalDate</code>, potentially applying complex processing
+     * objects such as {@code LocalDate}, potentially applying complex processing
      * to handle invalid parsed data.
      *
      * @return a new independent merger with the parsed rule-value map, never null

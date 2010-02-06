@@ -64,16 +64,16 @@ public final class DateTimeFormatSymbols {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns an array of all locales for which the <code>getInstance</code>
+     * Returns an array of all locales for which the {@code getInstance}
      * methods of this class can return localized instances. The returned array
      * represents the union of locales supported by the Java runtime and by
      * installed
      * {@link java.text.spi.DateTimeFormatSymbolsProvider DateTimeFormatSymbolsProvider}
-     * implementations. It must contain at least a <code>Locale</code>
+     * implementations. It must contain at least a {@code Locale}
      * instance equal to {@link java.util.Locale#US Locale.US}.
      *
      * @return an array of locales for which localized
-     *         <code>DateTimeFormatSymbols</code> instances are available
+     *         {@code DateTimeFormatSymbols} instances are available
      */
     public static Locale[] getAvailableLocales() {
 //        LocaleServiceProviderPool pool = LocaleServiceProviderPool
@@ -85,30 +85,30 @@ public final class DateTimeFormatSymbols {
     }
 
     /**
-     * Gets the <code>DateFormatSymbols</code> instance for the default
-     * locale. This method provides access to <code>DateFormatSymbols</code>
+     * Gets the {@code DateFormatSymbols} instance for the default
+     * locale. This method provides access to {@code DateFormatSymbols}
      * instances for locales supported by the Java runtime itself as well as for
      * those supported by installed
      * {@link java.text.spi.DateFormatSymbolsProvider DateFormatSymbolsProvider}
      * implementations.
      *
-     * @return a <code>DateTimeFormatSymbols</code> instance.
+     * @return a {@code DateTimeFormatSymbols} instance.
      */
     public static DateTimeFormatSymbols getInstance() {
         return getInstance(Locale.getDefault());
     }
 
     /**
-     * Gets the <code>DateFormatSymbols</code> instance for the specified
-     * locale. This method provides access to <code>DateFormatSymbols</code>
+     * Gets the {@code DateFormatSymbols} instance for the specified
+     * locale. This method provides access to {@code DateFormatSymbols}
      * instances for locales supported by the Java runtime itself as well as for
      * those supported by installed
      * {@link java.text.spi.DateFormatSymbolsProvider DateFormatSymbolsProvider}
      * implementations.
      *
      * @param locale  the given locale, not null
-     * @return a <code>DateTimeFormatSymbols</code> instance
-     * @throws NullPointerException if <code>locale</code> is null
+     * @return a {@code DateTimeFormatSymbols} instance
+     * @throws NullPointerException if {@code locale} is null
      */
     public static DateTimeFormatSymbols getInstance(Locale locale) {
 //        // Check whether a provider can provide an implementation that's closer

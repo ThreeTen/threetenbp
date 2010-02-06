@@ -42,7 +42,7 @@ import javax.time.calendar.PeriodUnit;
 /**
  * A period of time measured using a single unit, such as '3 Days' or '65 Seconds'.
  * <p>
- * <code>PeriodField</code> is an immutable period that stores an amount of human-scale
+ * {@code PeriodField} is an immutable period that stores an amount of human-scale
  * time for a single unit. For example, humans typically measure periods of time
  * in units of years, months, days, hours, minutes and seconds. These concepts are
  * defined by instances of {@link PeriodUnit} in the chronology classes. This class
@@ -51,7 +51,7 @@ import javax.time.calendar.PeriodUnit;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * <code>PeriodField</code> can store rules of any kind which makes it usable with
+ * {@code PeriodField} can store rules of any kind which makes it usable with
  * any calendar system.
  * <p>
  * PeriodField is immutable and thread-safe.
@@ -76,7 +76,7 @@ public final class PeriodField
     private final PeriodUnit unit;
 
     /**
-     * Obtains a <code>PeriodField</code> from an amount and unit.
+     * Obtains a {@code PeriodField} from an amount and unit.
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      *
@@ -147,7 +147,7 @@ public final class PeriodField
     }
 
     /**
-     * Gets the amount of this period, converted to an <code>int</code>.
+     * Gets the amount of this period, converted to an {@code int}.
      * <p>
      * For example, in the period '5 Days', the amount is '5'.
      *
@@ -301,7 +301,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @return the new period with the amount negated, never null
-     * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
+     * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField negated() {
         return withAmount(MathUtils.safeNegate(amount));
@@ -313,7 +313,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @return the new period with absolute amount, never null
-     * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
+     * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField abs() {
         return isNegative() ? negated() : this;
@@ -347,7 +347,7 @@ public final class PeriodField
      * <p>
      * This will attempt to convert this period to each of the specified units
      * in turn. It is recommended to specify the units from largest to smallest.
-     * If this period is already one of the specified units, then <code>this</code>
+     * If this period is already one of the specified units, then {@code this}
      * is returned.
      * <p>
      * For example, '3 Hours' can normally be converted to both minutes and seconds.
@@ -386,9 +386,9 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this period to a <code>PeriodFields</code>.
+     * Converts this period to a {@code PeriodFields}.
      * <p>
-     * The returned <code>PeriodFields</code> will always contain the unit even
+     * The returned {@code PeriodFields} will always contain the unit even
      * if the amount is zero.
      *
      * @return the equivalent period, never null
@@ -419,7 +419,7 @@ public final class PeriodField
     /**
      * Checks if this instance equal to the object specified.
      * <p>
-     * Two <code>PeriodField</code> instances are equal if the unit and amount are equal.
+     * Two {@code PeriodField} instances are equal if the unit and amount are equal.
      *
      * @param obj  the object to check, null returns false
      * @return true if this period is the same as that specified

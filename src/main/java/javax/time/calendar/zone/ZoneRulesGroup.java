@@ -442,7 +442,7 @@ public final class ZoneRulesGroup {
      * Gets the set of available region IDs for this group that are valid for the specified version.
      * <p>
      * The available versions are returned sorted from oldest to newest using
-     * an ordering determined by a <code>String</code> based sort.
+     * an ordering determined by a {@code String} based sort.
      * <p>
      * If the version is not found, an empty list is returned.
      *
@@ -469,7 +469,7 @@ public final class ZoneRulesGroup {
     /**
      * Gets the latest available version of the group's data.
      * <p>
-     * The latest available group is determined by a <code>String</code> based sort
+     * The latest available group is determined by a {@code String} based sort
      * of the versions.
      *
      * @param regionID  the time zone region ID, not null
@@ -486,7 +486,7 @@ public final class ZoneRulesGroup {
      * Gets the set of available time zone versions for this group and the specified region.
      * <p>
      * The available versions are returned sorted from oldest to newest using
-     * an ordering determined by a <code>String</code> based sort.
+     * an ordering determined by a {@code String} based sort.
      *
      * @param regionID  the time zone region ID, not null
      * @return an independent, modifiable list of available versions from oldest to newest, never null

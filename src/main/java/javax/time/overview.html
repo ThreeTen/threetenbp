@@ -35,14 +35,14 @@
 <h3>JSR-310</h3>
 <p>
 JSR-310 defines a new Date and Time API for Java.
-The API describes the two basic forms of time - continuous and human.
+The API describes the two basic forms of time - machine and human.
 </p>
 <p>
-Continuous time is designed for machines, and runs on a single incrementing number.
+Machine time is designed for machines, and is defined by a single incrementing number.
 This is often associated with the result from <code>System.currentTimeMillis()</code>.
 </p>
 <p>
-The main class for representing continuous time is <code>Instant</code>.
+The main class for representing machine time is <code>Instant</code>.
 It uses nanosecond precision and can support a range greater than the age of the universe.
 </p>
 <p>
@@ -60,7 +60,7 @@ The next level of classes add the offset from UTC, such as "+01:00" -
 These still do not contain time zone information, just the offset.
 </p>
 <p>
-The final level adds the time zone, such as "Europe/London" - <code>ZonedDateTime</code>.
+The final level adds the time zone rules, such as "Europe/London" - <code>ZonedDateTime</code>.
 </p>
 <p>
 In combination, these seven classes represent the possible combinations of valid date

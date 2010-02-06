@@ -47,7 +47,7 @@ import javax.time.calendar.PeriodUnit;
  * A period of time measured using a number of different units,
  * such as '3 Months, 4 Days and 7 Hours'.
  * <p>
- * <code>PeriodFields</code> is an immutable period that stores an amount of human-scale
+ * {@code PeriodFields} is an immutable period that stores an amount of human-scale
  * time for a number of units. For example, humans typically measure periods of time
  * in units of years, months, days, hours, minutes and seconds. These concepts are
  * defined by instances of {@link PeriodUnit} in the chronology classes. This class
@@ -61,7 +61,7 @@ import javax.time.calendar.PeriodUnit;
  * However, an empty instance constant exists to represent zero irrespective of unit.
  * The {@link #withZeroesRemoved()} method removes zero values.
  * <p>
- * <code>PeriodFields</code> can store units of any kind which makes it usable with
+ * {@code PeriodFields} can store units of any kind which makes it usable with
  * any calendar system.
  * <p>
  * PeriodFields is immutable and thread-safe.
@@ -88,13 +88,13 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a <code>PeriodFields</code> from an amount and unit.
+     * Obtains a {@code PeriodFields} from an amount and unit.
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      *
      * @param amount  the amount of create with, may be negative
      * @param unit  the period unit, not null
-     * @return the <code>PeriodFields</code> instance, never null
+     * @return the {@code PeriodFields} instance, never null
      */
     public static PeriodFields of(long amount, PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
@@ -104,10 +104,10 @@ public final class PeriodFields
     }
 
     /**
-     * Obtains a <code>PeriodFields</code> from a single-unit period.
+     * Obtains a {@code PeriodFields} from a single-unit period.
      *
      * @param period  the single-unit period, not null
-     * @return the <code>PeriodFields</code> instance, never null
+     * @return the {@code PeriodFields} instance, never null
      */
     public static PeriodFields of(PeriodField period) {
         checkNotNull(period, "PeriodField must not be null");
@@ -117,12 +117,12 @@ public final class PeriodFields
     }
 
     /**
-     * Obtains a <code>PeriodFields</code> from an array of single-unit periods.
+     * Obtains a {@code PeriodFields} from an array of single-unit periods.
      * <p>
      * The period fields must all have different units.
      *
      * @param periods  the array of single-unit periods, not null
-     * @return the <code>PeriodFields</code> instance, never null
+     * @return the {@code PeriodFields} instance, never null
      * @throws IllegalArgumentException if the same period unit occurs twice
      */
     public static PeriodFields of(PeriodField... periods) {
@@ -138,10 +138,10 @@ public final class PeriodFields
     }
 
 //    /**
-//     * Obtains a <code>PeriodFields</code> from an array of single-unit periods.
+//     * Obtains a {@code PeriodFields} from an array of single-unit periods.
 //     *
 //     * @param periods  the array of single-unit periods, not null
-//     * @return the <code>PeriodFields</code> instance, never null
+//     * @return the {@code PeriodFields} instance, never null
 //     * @throws IllegalArgumentException if the same period unit occurs twice
 //     */
 //    public static PeriodFields of(Iterable<PeriodField> periods) {
@@ -157,15 +157,15 @@ public final class PeriodFields
 //    }
 
     /**
-     * Obtains a <code>PeriodFields</code> from a set of unit-amount pairs.
+     * Obtains a {@code PeriodFields} from a set of unit-amount pairs.
      * <p>
      * The amount to store for each unit is obtained by calling {@link Number#longValue()}.
-     * This will lose any decimal places for instances of <code>Double</code> and <code>Float</code>.
-     * It may also silently lose precision for instances of <code>BigInteger</code> or <code>BigDecimal</code>.
+     * This will lose any decimal places for instances of {@code Double} and {@code Float}.
+     * It may also silently lose precision for instances of {@code BigInteger} or {@code BigDecimal}.
      *
      * @param unitAmountMap  a map of periods that will be used to create this
      *  period, not updated by this method, not null, contains no nulls
-     * @return the <code>PeriodFields</code> instance, never null
+     * @return the {@code PeriodFields} instance, never null
      * @throws NullPointerException if the map is null or contains nulls
      */
     public static PeriodFields of(Map<PeriodUnit, ? extends Number> unitAmountMap) {
@@ -184,12 +184,12 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a <code>PeriodFields</code> from a <code>PeriodProvider</code>.
+     * Obtains a {@code PeriodFields} from a {@code PeriodProvider}.
      * <p>
      * This factory returns an instance with all the unit-amount pairs from the provider.
      *
      * @param periodProvider  the provider to create from, not null
-     * @return the <code>PeriodFields</code> instance, never null
+     * @return the {@code PeriodFields} instance, never null
      * @throws NullPointerException if the period provider is null or returns null
      */
     public static PeriodFields from(PeriodProvider periodProvider) {
@@ -200,15 +200,15 @@ public final class PeriodFields
     }
 
     /**
-     * Obtains a <code>PeriodFields</code> by totalling the amounts in a list of
-     * <code>PeriodProvider</code> instances.
+     * Obtains a {@code PeriodFields} by totalling the amounts in a list of
+     * {@code PeriodProvider} instances.
      * <p>
      * This method returns a period with all the unit-amount pairs from the providers
      * totalled. Thus a period of '2 Months and 5 Days' combined with a period of
      * '7 Days and 21 Hours' will yield a result of '2 Months, 12 Days and 21 Hours'.
      *
      * @param periodProviders  the providers to total, not null
-     * @return the <code>PeriodFields</code> instance, never null
+     * @return the {@code PeriodFields} instance, never null
      * @throws NullPointerException if any period provider is null or returns null
      */
     public static PeriodFields total(PeriodProvider... periodProviders) {
@@ -361,7 +361,7 @@ public final class PeriodFields
      * Gets the period for the specified unit.
      * <p>
      * This method allows the period to be queried by unit, like a map.
-     * If the unit is not found then <code>null</code> is returned.
+     * If the unit is not found then {@code null} is returned.
      *
      * @param unit  the unit to query, not null
      * @return the period, null if no period stored for the unit
@@ -391,7 +391,7 @@ public final class PeriodFields
 
     /**
      * Gets the amount of this period for the specified unit converted
-     * to an <code>int</code>.
+     * to an {@code int}.
      * <p>
      * This method allows the amount to be queried by unit, like a map.
      * If the unit is not found then zero is returned.
@@ -429,7 +429,7 @@ public final class PeriodFields
 //     * Gets the amount of the period for the specified unit, returning
 //     * the default value if this period does have an amount for the unit.
 //     * <p>
-//     * The amount is safely converted to an <code>int</code>.
+//     * The amount is safely converted to an {@code int}.
 //     *
 //     * @param unit  the unit to query, not null
 //     * @param defaultValue  the default value to return if the unit is not present
@@ -739,7 +739,7 @@ public final class PeriodFields
      * <p>
      * This will attempt to convert this period to each of the specified units
      * in turn. It is recommended to specify the units from largest to smallest.
-     * If this period is already one of the specified units, then <code>this</code>
+     * If this period is already one of the specified units, then {@code this}
      * is returned.
      * <p>
      * For example, '3 Hours' can normally be converted to both minutes and seconds.
@@ -768,10 +768,10 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this period to a <code>PeriodFields</code>, trivially
-     * returning <code>this</code>.
+     * Converts this period to a {@code PeriodFields}, trivially
+     * returning {@code this}.
      *
-     * @return <code>this</code>, never null
+     * @return {@code this}, never null
      */
     public PeriodFields toPeriodFields() {
         return this;
@@ -816,8 +816,8 @@ public final class PeriodFields
     /**
      * Checks if this instance equal to the object specified.
      * <p>
-     * Two <code>PeriodFields</code> instances are equal if all the contained
-     * <code>PeriodField</code> instances are equal.
+     * Two {@code PeriodFields} instances are equal if all the contained
+     * {@code PeriodField} instances are equal.
      *
      * @param obj  the other period to compare to, null returns false
      * @return true if this instance is equal to the specified period

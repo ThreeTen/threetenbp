@@ -37,7 +37,7 @@ import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendar.zone.ZoneRules;
 
 /**
- * Provides common implementations of <code>ZoneResolver</code>.
+ * Provides common implementations of {@code ZoneResolver}.
  * <p>
  * A {@link ZoneResolver} provides a strategy for handling the gaps and overlaps
  * on the time-line that occur due to changes in the offset from UTC, usually
@@ -208,7 +208,7 @@ public final class ZoneResolvers {
      * If that offset is invalid then the later offset is chosen
      * <p>
      * This resolver is most commonly useful when adding or subtracting time
-     * from a <code>ZonedDateTime</code>.
+     * from a {@code ZonedDateTime}.
      *
      * @return the retain offset resolver, never null
      */
@@ -289,7 +289,7 @@ public final class ZoneResolvers {
     /**
      * Creates a combined resolver, using two different strategies for gap and overlap.
      * <p>
-     * If either argument is <code>null</code> then the {@link #strict()} resolver is used.
+     * If either argument is {@code null} then the {@link #strict()} resolver is used.
      *
      * @param gapResolver  the resolver to use for a gap, null means strict
      * @param overlapResolver  the resolver to use for an overlap, null means strict

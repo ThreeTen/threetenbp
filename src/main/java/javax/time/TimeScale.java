@@ -47,7 +47,7 @@ import javax.time.calendar.CalendarConversionException;
  * Standard time-scale implementations are provided in {@link TimeScales}.
  * <p>
  * As API designers, we hope that that time-scales will be rarely used, and that the
- * 'ideal world' represented by <code>Instant</code> will be sufficient.
+ * "ideal world" represented by {@code Instant} will be sufficient.
  * <p>
  * TimeScale is an interface and must be implemented with care
  * to ensure other classes in the framework operate correctly.

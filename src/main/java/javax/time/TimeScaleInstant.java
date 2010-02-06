@@ -111,7 +111,7 @@ public final class TimeScaleInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>TimeScaleInstant</code> in the specified
+     * Obtains an instance of {@code TimeScaleInstant} in the specified
      * time-scale from a provider of instants.
      *
      * @param timeScale  the time-scale to use, not null
@@ -125,7 +125,7 @@ public final class TimeScaleInstant
     }
 
     /**
-     * Obtains an instance of <code>TimeScaleInstant</code> in the specified
+     * Obtains an instance of {@code TimeScaleInstant} in the specified
      * time-scale using seconds from the epoch of the scale.
      *
      * @param epochSeconds  the number of seconds from the epoch of the time-scale
@@ -136,20 +136,20 @@ public final class TimeScaleInstant
     }
 
     /**
-     * Obtains an instance of <code>TimeScaleInstant</code> in the specified
+     * Obtains an instance of {@code TimeScaleInstant} in the specified
      * time-scale using seconds from the epoch of the scale, and nanosecond fraction of second.
      * <p>
      * Primitive fractions of seconds can be unintuitive.
-     * For positive values, they work as expected: <code>instant(0L, 1)</code>
+     * For positive values, they work as expected: {@code instant(0L, 1)}
      * represents one nanosecond after the epoch.
-     * For negative values, they can be confusing: <code>instant(-1L, 999999999)</code>
+     * For negative values, they can be confusing: {@code instant(-1L, 999999999)}
      * represents one nanosecond before the epoch.
      * It can be thought of as minus one second plus 999,999,999 nanoseconds.
      * As a result, it can be easier to use a negative fraction:
-     * <code>instant(0L, -1)</code> - which does represent one nanosecond before
+     * {@code instant(0L, -1)} - which does represent one nanosecond before
      * the epoch.
-     * Thus, the <code>nanoOfSecond</code> parameter is a positive or negative
-     * adjustment to the <code>epochSeconds</code> parameter along the time-line.
+     * Thus, the {@code nanoOfSecond} parameter is a positive or negative
+     * adjustment to the {@code epochSeconds} parameter along the time-line.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanoseconds within the second, -999,999,999 to 999,999,999
@@ -173,20 +173,20 @@ public final class TimeScaleInstant
     }
 
     /**
-     * Obtains an instance of <code>TimeScaleInstant</code> in the specified
+     * Obtains an instance of {@code TimeScaleInstant} in the specified
      * time-scale using seconds from the epoch of the scale, leapSecond, and nanosecond fraction of second.
      * <p>
      * Primitive fractions of seconds can be unintuitive.
-     * For positive values, they work as expected: <code>instant(0L, 1)</code>
+     * For positive values, they work as expected: {@code instant(0L, 1)}
      * represents one nanosecond after the epoch.
-     * For negative values, they can be confusing: <code>instant(-1L, 999999999)</code>
+     * For negative values, they can be confusing: {@code instant(-1L, 999999999)}
      * represents one nanosecond before the epoch.
      * It can be thought of as minus one second plus 999,999,999 nanoseconds.
      * As a result, it can be easier to use a negative fraction:
-     * <code>instant(0L, -1)</code> - which does represent one nanosecond before
+     * {@code instant(0L, -1)} - which does represent one nanosecond before
      * the epoch.
-     * Thus, the <code>nanoOfSecond</code> parameter is a positive or negative
-     * adjustment to the <code>epochSeconds</code> parameter along the time-line.
+     * Thus, the {@code nanoOfSecond} parameter is a positive or negative
+     * adjustment to the {@code epochSeconds} parameter along the time-line.
      * For discontinuous time scales this does not verify that the instant really existed (or will exist). That can be determined
      * using the getValidity() method.
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
@@ -390,11 +390,11 @@ public final class TimeScaleInstant
      * Converts this instant to the number of milliseconds from the epoch
      * of 1970-01-01T00:00:00Z.
      * <p>
-     * <code>Instant</code> uses a precision of nanoseconds.
+     * {@code Instant} uses a precision of nanoseconds.
      * The conversion will drop any excess precision information as though the
      * amount in nanoseconds was subject to integer division by one million.
      * <p>
-     * <code>Instant</code> can store points on the time-line further in the
+     * {@code Instant} can store points on the time-line further in the
      * future and further in the past than can be represented by a millisecond
      * value. In this scenario, this constructor will throw an exception.
      *
@@ -412,11 +412,11 @@ public final class TimeScaleInstant
     }
 
     /**
-     * Converts this instant to an <code>Instant</code>, which may lose
+     * Converts this instant to an {@code Instant}, which may lose
      * leap-second information.
      * <p>
-     * An instance of <code>TimeScaleInstant</code> can contain information about
-     * leap-seconds which cannot be represented by <code>Instant</code>. As such,
+     * An instance of {@code TimeScaleInstant} can contain information about
+     * leap-seconds which cannot be represented by {@code Instant}. As such,
      * the conversion may lose information, and the exact means of conversion is
      * part of the time-scale's definition.
      *
@@ -510,7 +510,7 @@ public final class TimeScaleInstant
     /**
      * A string representation of this Instant using ISO-8601 representation.
      * <p>
-     * The format of the returned string will be <code>yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ</code>.
+     * The format of the returned string will be {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
      *
      * @return an ISO-8601 representation of this Instant
      */

@@ -54,8 +54,8 @@ import javax.time.CalendricalException;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  * 
- * @param <T> the underlying type representing the data, typically a <code>Calendrical</code>,
- *  <code>Number</code> or <code>Enum</code>, must be immutable, should be comparable
+ * @param <T> the underlying type representing the data, typically a {@code Calendrical},
+ *  {@code Number} or {@code Enum}, must be immutable, should be comparable
  */
 public abstract class CalendricalRule<T>
         implements Comparable<CalendricalRule<T>>, Comparator<Calendrical>, Serializable {
@@ -164,7 +164,7 @@ public abstract class CalendricalRule<T>
      * Gets the period range, which the field is bound by.
      * <p>
      * In the phrase 'hour of day', the range unit is 'Days'.
-     * For an unbounded field or date, this will return <code>null</code>.
+     * For an unbounded field or date, this will return {@code null}.
      *
      * @return the unit defining the rule range, null if unbounded,
      *  or if this rule isn't based on a period
@@ -216,7 +216,7 @@ public abstract class CalendricalRule<T>
     //-----------------------------------------------------------------------
     /**
      * Gets the value of this rule from the specified calendrical returning
-     * <code>null</code> if the value cannot be returned.
+     * {@code null} if the value cannot be returned.
      * <p>
      * This method simply queries the calendrical.
      *
@@ -233,7 +233,7 @@ public abstract class CalendricalRule<T>
      * an exception if the rule cannot be returned.
      * <p>
      * This uses {@link #getValue(Calendrical)} to find the value and then
-     * ensures it isn't <code>null</code>.
+     * ensures it isn't {@code null}.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, never null
@@ -253,13 +253,13 @@ public abstract class CalendricalRule<T>
      * This method is provided for implementations of {@link Calendrical#get}
      * and is rarely called directly by application code. It is used when the
      * calendrical has its own rule, and this method is called on the rule of the
-     * calendrical implementation, not the rule passed into the <code>get</code> method.
+     * calendrical implementation, not the rule passed into the {@code get} method.
      * <pre>
      *   public <T> T get(CalendricalRule<T> rule) {
      *     return IMPLEMENTATION_RULE.deriveValueFor(rule, this, this);
      *   }
      * </pre>
-     * The last parameter in the code snippet above is always <code>this</code>, however
+     * The last parameter in the code snippet above is always {@code this}, however
      * the second parameter may be a different representation, for example in {@link Year#get}.
      * <p>
      * If this rule and the specified rule are the same, then the value is returned.
@@ -407,24 +407,24 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares two <code>Calendrical</code> implementations based on the value
+     * Compares two {@code Calendrical} implementations based on the value
      * of this rule extracted from each calendrical.
      * <p>
      * This implements the {@link Comparator} interface and allows any two
-     * <code>Calendrical</code> implementations to be compared using this rule.
+     * {@code Calendrical} implementations to be compared using this rule.
      * The comparison is based on the result of calling {@link Calendrical#get}
      * on each calendrical, and comparing those values.
      * <p>
      * For example, to sort a list into year order when the list may contain any
-     * mixture of calendricals, such as a <code>LocalDate</code>, <code>YearMonth</code>
-     * and <code>ZonedDateTime</code>:
+     * mixture of calendricals, such as a {@code LocalDate}, {@code YearMonth}
+     * and {@code ZonedDateTime}:
      * <pre>
      *  List<Calendrical> list = ...
      *  Collections.sort(list, ISOChronology.yearRule());
      * </pre>
      * If the value cannot be obtained from a calendrical, then that calendrical
      * will be sorted at the end of the list. Thus, in the example of sorting by
-     * year, if the list contained a <code>LocalTime</code>, then this would be
+     * year, if the list contained a {@code LocalTime}, then this would be
      * sorted at the end of the list.
      * <p>
      * If the underlying type of this rule does not implement {@link Comparable}
@@ -455,7 +455,7 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this <code>CalendricalRule</code> to another.
+     * Compares this {@code CalendricalRule} to another.
      * <p>
      * The comparison is based on the period unit followed by the period range
      * followed by the rule ID.

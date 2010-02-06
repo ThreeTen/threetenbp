@@ -67,7 +67,7 @@ import javax.time.calendar.ZoneOffset;
  * </ul>
  * In addition, any of the elements may be decorated by padding, either with spaces or any other character.
  * <p>
- * Finally, a shorthand pattern, mostly compatible with <code>SimpleDateFormat</code>
+ * Finally, a shorthand pattern, mostly compatible with {@code SimpleDateFormat}
  * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
  *
@@ -153,7 +153,7 @@ public final class DateTimeFormatterBuilder {
      * When used, this method changes the parsing to be case sensitive from this point onwards.
      * As case sensitive is the default, this is normally only needed after calling {@link #parseCaseInsensitive()}.
      * The change will remain in force until the end of the formatter that is eventually
-     * constructed or until <code>parseCaseInsensitive</code> is called.
+     * constructed or until {@code parseCaseInsensitive} is called.
      *
      * @return this, for chaining, never null
      */
@@ -170,7 +170,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * When used, this method changes the parsing to be case insensitive from this point onwards.
      * The change will remain in force until the end of the formatter that is eventually
-     * constructed or until <code>parseCaseSensitive</code> is called.
+     * constructed or until {@code parseCaseSensitive} is called.
      *
      * @return this, for chaining, never null
      */
@@ -189,7 +189,7 @@ public final class DateTimeFormatterBuilder {
      * When used, this method changes the parsing to be strict from this point onwards.
      * As strict is the default, this is normally only needed after calling {@link #parseLenient()}.
      * The change will remain in force until the end of the formatter that is eventually
-     * constructed or until <code>parseLenient</code> is called.
+     * constructed or until {@code parseLenient} is called.
      *
      * @return this, for chaining, never null
      */
@@ -207,7 +207,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * When used, this method changes the parsing to be strict from this point onwards.
      * The change will remain in force until the end of the formatter that is eventually
-     * constructed or until <code>parseStrict</code> is called.
+     * constructed or until {@code parseStrict} is called.
      *
      * @return this, for chaining, never null
      */
@@ -260,12 +260,12 @@ public final class DateTimeFormatterBuilder {
      * variable width one.
      * <p>
      * No action is required to initiate 'adjacent value parsing'.
-     * When a call to <code>appendValue</code> with a variable width is made, the builder
+     * When a call to {@code appendValue} with a variable width is made, the builder
      * enters adjacent value parsing setup mode. If the immediately subsequent method
      * call or calls on the same builder are to this method, then the parser will reserve
      * space so that the fixed width values can be parsed.
      * <p>
-     * For example, consider <code>builder.appendValue(yearRule).appendValue(monthRule, 2);</code>
+     * For example, consider {@code builder.appendValue(yearRule).appendValue(monthRule, 2);}
      * The year is a variable width parse of between 1 and 10 digits.
      * The month is a fixed width parse of 2 digits.
      * Because these were appended to the same builder immediately after one another,
@@ -278,10 +278,10 @@ public final class DateTimeFormatterBuilder {
      * that immediately follow any kind of variable width value.
      * Calling any other append method will end the setup of adjacent value parsing.
      * Thus, in the unlikely event that you need to avoid adjacent value parsing behavior,
-     * simply add the <code>appendValue</code> to another <code>DateTimeFormatterBuilder</code>
+     * simply add the {@code appendValue} to another {@code DateTimeFormatterBuilder}
      * and add that to this builder.
      * <p>
-     * If the four-parameter version of <code>appendValue</code> is called with equal minimum
+     * If the four-parameter version of {@code appendValue} is called with equal minimum
      * and maximum widths and a sign style of not-negative then it delegates to this method.
      *
      * @param rule  the rule of the field to append, not null
@@ -1027,11 +1027,11 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * All elements in the optional section are treated as optional.
      * During printing, the section is only output if data is available in the
-     * <code>Calendrical</code> for all the elements in the section.
+     * {@code Calendrical} for all the elements in the section.
      * During parsing, the whole section may be missing from the parsed string.
      * <p>
      * For example, consider a builder setup as
-     * <code>builder.appendValue(hourRule,2).optionalStart().appendValue(minuteRule,2)</code>.
+     * {@code builder.appendValue(hourRule,2).optionalStart().appendValue(minuteRule,2)}.
      * The optional section ends automatically at the end of the builder.
      * During printing, the minute will only be output if its value can be obtained from the calendrical.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
@@ -1051,23 +1051,23 @@ public final class DateTimeFormatterBuilder {
      * An optional section is started by calling {@link #optionalStart()} and ended
      * using this method (or at the end of the builder).
      * <p>
-     * Calling this method without having previously called <code>optionalStart</code>
+     * Calling this method without having previously called {@code optionalStart}
      * will throw an exception.
-     * Calling this method immediately after calling <code>optionalStart</code> has no effect
+     * Calling this method immediately after calling {@code optionalStart} has no effect
      * on the formatter other than ending the (empty) optional section.
      * <p>
      * All elements in the optional section are treated as optional.
      * During printing, the section is only output if data is available in the
-     * <code>Calendrical</code> for all the elements in the section.
+     * {@code Calendrical} for all the elements in the section.
      * During parsing, the whole section may be missing from the parsed string.
      * <p>
      * For example, consider a builder setup as
-     * <code>builder.appendValue(hourRule,2).optionalStart().appendValue(minuteRule,2).optionalEnd()</code>.
+     * {@code builder.appendValue(hourRule,2).optionalStart().appendValue(minuteRule,2).optionalEnd()}.
      * During printing, the minute will only be output if its value can be obtained from the calendrical.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
      *
      * @return this, for chaining, never null
-     * @throws IllegalStateException if there was no previous call to <code>optionalStart</code>
+     * @throws IllegalStateException if there was no previous call to {@code optionalStart}
      */
     public DateTimeFormatterBuilder optionalEnd() {
         if (active.parent == null) {
@@ -1113,7 +1113,7 @@ public final class DateTimeFormatterBuilder {
      * calling {@link #optionalEnd()} before creating the formatter.
      * <p>
      * This builder can still be used after creating the formatter if desired,
-     * although the state may have been changed by calls to <code>optionalEnd</code>.
+     * although the state may have been changed by calls to {@code optionalEnd}.
      *
      * @return the created formatter, never null
      */
@@ -1128,7 +1128,7 @@ public final class DateTimeFormatterBuilder {
      * calling {@link #optionalEnd()} before creating the formatter.
      * <p>
      * This builder can still be used after creating the formatter if desired,
-     * although the state may have been changed by calls to <code>optionalEnd</code>.
+     * although the state may have been changed by calls to {@code optionalEnd}.
      *
      * @param locale  the locale to use for formatting, not null
      * @return the created formatter, never null

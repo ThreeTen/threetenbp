@@ -75,7 +75,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetTime</code>.
+     * Obtains an instance of {@code OffsetTime}.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
@@ -91,7 +91,7 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetTime</code>.
+     * Obtains an instance of {@code OffsetTime}.
      * <p>
      * The second field will be set to zero by this factory method.
      *
@@ -108,7 +108,7 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetTime</code>.
+     * Obtains an instance of {@code OffsetTime}.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -124,7 +124,7 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetTime</code>.
+     * Obtains an instance of {@code OffsetTime}.
      *
      * @param timeProvider  the time provider to use, not null
      * @param offset  the zone offset, not null
@@ -162,13 +162,13 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetTime</code> from a text string.
+     * Obtains an instance of {@code OffsetTime} from a text string.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
-     * <li><code>{Hour}:{Minute}{OffsetID}</code>
-     * <li><code>{Hour}:{Minute}:{Second}{OffsetID}</code>
-     * <li><code>{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}</code>
+     * <li>{@code {Hour}:{Minute}{OffsetID}}
+     * <li>{@code {Hour}:{Minute}:{Second}{OffsetID}}
+     * <li>{@code {Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}}
      * </ul>
      * <p>
      * The hour has 2 digits with values from 0 to 23.
@@ -221,7 +221,7 @@ public final class OffsetTime
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this time then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -590,7 +590,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this time to a <code>LocalTime</code>.
+     * Converts this time to a {@code LocalTime}.
      *
      * @return a LocalTime with the same time as this instance, never null
      */
@@ -603,7 +603,7 @@ public final class OffsetTime
      * Compares this time to another time based on the UTC equivalent times
      * then local time.
      * <p>
-     * This ordering is consistent with <code>equals()</code>.
+     * This ordering is consistent with {@code equals()}.
      * For example, the following is the comparator order:
      * <ol>
      * <li>10:30+01:00</li>
@@ -616,11 +616,11 @@ public final class OffsetTime
      * Values #2 and #3 represent the same instant on the time-line.
      * When two values represent the same instant, the local time is compared
      * to distinguish them. This step is needed to make the ordering
-     * consistent with <code>equals()</code>.
+     * consistent with {@code equals()}.
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(OffsetTime other) {
         if (offset.equals(other.offset)) {
@@ -640,7 +640,7 @@ public final class OffsetTime
      *
      * @param other  the other time to compare to, not null
      * @return true if this is after the specified time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(OffsetTime other) {
         return compareTo(other) > 0;
@@ -651,7 +651,7 @@ public final class OffsetTime
      *
      * @param other  the other time to compare to, not null
      * @return true if this point is before the specified time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(OffsetTime other) {
         return compareTo(other) < 0;
@@ -690,7 +690,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the time as a <code>String</code>, such as '10:15:30+01:00'.
+     * Outputs the time as a {@code String}, such as '10:15:30+01:00'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
@@ -713,7 +713,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for <code>OffsetTime</code>.
+     * Gets the field rule for {@code OffsetTime}.
      *
      * @return the field rule for the time, never null
      */

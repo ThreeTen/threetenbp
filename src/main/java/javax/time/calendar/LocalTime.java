@@ -123,7 +123,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalTime</code>.
+     * Obtains an instance of {@code LocalTime}.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      * <p>
@@ -144,7 +144,7 @@ public final class LocalTime
     }
 
     /**
-     * Obtains an instance of <code>LocalTime</code>.
+     * Obtains an instance of {@code LocalTime}.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
      * <p>
@@ -167,7 +167,7 @@ public final class LocalTime
     }
 
 //    /**
-//     * Obtains an instance of <code>LocalTime</code>.
+//     * Obtains an instance of {@code LocalTime}.
 //     *
 //     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
 //     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -188,7 +188,7 @@ public final class LocalTime
 //    }
 
     /**
-     * Obtains an instance of <code>LocalTime</code>.
+     * Obtains an instance of {@code LocalTime}.
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
@@ -208,10 +208,10 @@ public final class LocalTime
     }
 
     /**
-     * Obtains an instance of <code>LocalTime</code> from a time provider.
+     * Obtains an instance of {@code LocalTime} from a time provider.
      * <p>
-     * The purpose of this method is to convert a <code>TimeProvider</code>
-     * to a <code>LocalTime</code> in the safest possible way. Specifically,
+     * The purpose of this method is to convert a {@code TimeProvider}
+     * to a {@code LocalTime} in the safest possible way. Specifically,
      * the means checking whether the input parameter is null and
      * whether the result of the provider is null.
      * <p>
@@ -233,7 +233,7 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param secondOfDay  the second-of-day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
+     * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
      */
@@ -251,7 +251,7 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param secondOfDay  the second-of-day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
+     * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the either input value is invalid
@@ -271,7 +271,7 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param nanoOfDay  the nano of day, from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>
+     * @param nanoOfDay  the nano of day, from {@code 0} to {@code 24 * 60 * 60 * 1,000,000,000 - 1}
      * @return the local time, never null
      * @throws CalendricalException if the nanos of day value is invalid
      */
@@ -295,13 +295,13 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalTime</code> from a string.
+     * Obtains an instance of {@code LocalTime} from a string.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
-     * <li><code>{Hour}:{Minute}</code>
-     * <li><code>{Hour}:{Minute}:{Second}</code>
-     * <li><code>{Hour}:{Minute}:{Second}.{NanosecondFraction}</code>
+     * <li>{@code {Hour}:{Minute}}
+     * <li>{@code {Hour}:{Minute}:{Second}}
+     * <li>{@code {Hour}:{Minute}:{Second}.{NanosecondFraction}}
      * </ul>
      * <p>
      * The hour has 2 digits with values from 0 to 23.
@@ -379,7 +379,7 @@ public final class LocalTime
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this time then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -905,8 +905,8 @@ public final class LocalTime
     /**
      * Returns an offset time formed from this time and the specified offset.
      * <p>
-     * This merges the two objects - <code>this</code> and the specified offset -
-     * to form an instance of <code>OffsetTime</code>.
+     * This merges the two objects - {@code this} and the specified offset -
+     * to form an instance of {@code OffsetTime}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -919,7 +919,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
 //    /**
-//     * Converts this time to a <code>DateTimeFields</code> containing the
+//     * Converts this time to a {@code DateTimeFields} containing the
 //     * hour, minute, second and nano fields.
 //     *
 //     * @return the field set, never null
@@ -934,10 +934,10 @@ public final class LocalTime
 //    }
 
     /**
-     * Converts this time to a <code>LocalTime</code>, trivially
-     * returning <code>this</code>.
+     * Converts this time to a {@code LocalTime}, trivially
+     * returning {@code this}.
      *
-     * @return <code>this</code>, never null
+     * @return {@code this}, never null
      */
     public LocalTime toLocalTime() {
         return this;
@@ -961,7 +961,7 @@ public final class LocalTime
     //-----------------------------------------------------------------------
     /**
      * Extracts the time as seconds of day,
-     * from <code>0</code> to <code>24 * 60 * 60 - 1</code>.
+     * from {@code 0} to {@code 24 * 60 * 60 - 1}.
      *
      * @return the second-of-day equivalent to this time
      */
@@ -974,7 +974,7 @@ public final class LocalTime
 
 //    /**
 //     * Extracts the time as millis of day,
-//     * from <code>0</code> to <code>24 * 60 * 60 * 1000 - 1</code>.
+//     * from {@code 0} to {@code 24 * 60 * 60 * 1000 - 1}.
 //     *
 //     * @return the milli of day equivalent to this time
 //     */
@@ -985,7 +985,7 @@ public final class LocalTime
 
     /**
      * Extracts the time as nanos of day,
-     * from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>.
+     * from {@code 0} to {@code 24 * 60 * 60 * 1,000,000,000 - 1}.
      *
      * @return the nano of day equivalent to this time
      */
@@ -1003,7 +1003,7 @@ public final class LocalTime
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(LocalTime other) {
         int cmp = MathUtils.safeCompare(hour, other.hour);
@@ -1024,7 +1024,7 @@ public final class LocalTime
      *
      * @param other  the other time to compare to, not null
      * @return true if this is after the specified time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(LocalTime other) {
         return compareTo(other) > 0;
@@ -1035,7 +1035,7 @@ public final class LocalTime
      *
      * @param other  the other time to compare to, not null
      * @return true if this point is before the specified time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(LocalTime other) {
         return compareTo(other) < 0;
@@ -1074,7 +1074,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the time as a <code>String</code>, such as '10:15'.
+     * Outputs the time as a {@code String}, such as '10:15'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
@@ -1214,7 +1214,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for <code>LocalTime</code>.
+     * Gets the rule for {@code LocalTime}.
      *
      * @return the rule for the time, never null
      */

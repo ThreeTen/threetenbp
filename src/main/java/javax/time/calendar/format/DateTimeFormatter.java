@@ -339,13 +339,13 @@ public final class DateTimeFormatter {
     }
 
     /**
-     * Returns this formatter as a <code>java.text.Format</code> instance.
+     * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
      * The {@link Format} instance will print any {@link Calendrical}
      * and parses to a merged {@link CalendricalMerger}.
      * <p>
-     * The format will throw <code>UnsupportedOperationException</code> and
-     * <code>IndexOutOfBoundsException</code> in line with those thrown by the
+     * The format will throw {@code UnsupportedOperationException} and
+     * {@code IndexOutOfBoundsException} in line with those thrown by the
      * {@link #print(Calendrical, Appendable) print} and
      * {@link #parse(String, ParsePosition) parse} methods.
      * <p>

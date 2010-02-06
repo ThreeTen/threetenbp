@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 /**
- * Provides common implementations of <code>DateResolver</code>.
+ * Provides common implementations of {@code DateResolver}.
  * <p>
  * DateResolvers is a utility class.
  * All resolvers returned are immutable and thread-safe.

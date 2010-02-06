@@ -41,7 +41,7 @@ import javax.time.calendar.CalendricalMerger;
  * field, such as the day-of-month, storing the value in the context.
  * Once the parse is complete, the caller will then convert the context
  * to a {@link CalendricalMerger} to merge the parsed values to create the
- * desired object, such as a <code>LocalDate</code>.
+ * desired object, such as a {@code LocalDate}.
  * <p>
  * The parse position will be updated during the parse. Parsing will start at
  * the specified index and the return value specifies the new parse position

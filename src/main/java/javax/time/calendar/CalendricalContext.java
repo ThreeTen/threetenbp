@@ -180,7 +180,7 @@ public final class CalendricalContext
 //
 //    //-----------------------------------------------------------------------
 //    /**
-//     * Outputs the context as a <code>String</code>.
+//     * Outputs the context as a {@code String}.
 //     *
 //     * @return the string representation, never null
 //     */

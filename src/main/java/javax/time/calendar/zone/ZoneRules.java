@@ -56,7 +56,7 @@ import javax.time.period.Period;
  * are specific to a group, region and version. The same rules may be shared
  * between multiple versions, regions or even groups.
  * <p>
- * Serializing an instance of <code>ZoneRules</code> will store the entire set
+ * Serializing an instance of {@code ZoneRules} will store the entire set
  * of rules. It does not store the group, region or version as they are not
  * part of the state of this object.
  * <p>

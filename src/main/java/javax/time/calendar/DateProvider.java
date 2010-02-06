@@ -39,21 +39,21 @@ import javax.time.CalendricalException;
  * DateProvider is a simple interface that provides uniform access to any
  * object that can provide access to a date in the ISO-8601 calendar system.
  * <p>
- * The implementation of <code>DateProvider</code> may be mutable.
+ * The implementation of {@code DateProvider} may be mutable.
  * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
  * mutable implementation of this interface.
  * The result of {@link #toLocalDate()}, however, is immutable.
  * <p>
  * When implementing an API that accepts a DateProvider as a parameter, it is
- * important to convert the input to a <code>LocalDate</code> once and once only.
+ * important to convert the input to a {@code LocalDate} once and once only.
  * It is recommended that this is done at the top of the method before other processing.
  * This is necessary to handle the case where the implementation of the provider is
- * mutable and changes in value between two calls to <code>toLocalDate()</code>.
+ * mutable and changes in value between two calls to {@code toLocalDate()}.
  * <p>
  * The recommended way to convert a DateProvider to a LocalDate is using
  * {@link LocalDate#of(DateProvider)} as this method provides additional null checking.
  * <p>
- * The implementation of <code>DateProvider</code> may provide more
+ * The implementation of {@code DateProvider} may provide more
  * information than just a local date. For example, {@link OffsetDate},
  * implements this interface and also provides a zone offset.
  * <p>
@@ -66,18 +66,18 @@ import javax.time.CalendricalException;
 public interface DateProvider {
 
     /**
-     * Returns an instance of <code>LocalDate</code> initialized from the
+     * Returns an instance of {@code LocalDate} initialized from the
      * state of this object.
      * <p>
      * This method will take the date represented by this object and return
      * a {@link LocalDate} constructed using the year, month and day. If this
-     * object is already a <code>LocalDate</code> then it is simply returned.
+     * object is already a {@code LocalDate} then it is simply returned.
      * <p>
-     * The result of this method is a <code>LocalDate</code> which represents
+     * The result of this method is a {@code LocalDate} which represents
      * a date in the ISO calendar system. Implementors may perform conversion
      * when implementing this method to convert from alternate calendar systems.
      *
-     * @return the <code>LocalDate</code> equivalent to this object, never null
+     * @return the {@code LocalDate} equivalent to this object, never null
      * @throws CalendricalException if the date cannot be converted
      */
     LocalDate toLocalDate();

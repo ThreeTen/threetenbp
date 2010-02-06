@@ -41,10 +41,10 @@ import javax.time.TimeSource;
  * A clock providing access to the current date and time.
  * <p>
  * The Java Time Framework abstracts the concept of the 'current time' into two interfaces
- * - {@link TimeSource} and <code>Clock</code>.
+ * - {@link TimeSource} and {@code Clock}.
  * The former, this class, provides access to the current instant and
  * is independent of local factors such as time-zone.
- * The latter, <code>Clock</code>, provides access to the current date and
+ * The latter, {@code Clock}, provides access to the current date and
  * time but requires a time-zone.
  * <p>
  * The purpose of this abstraction is to allow alternate time-sources
@@ -52,7 +52,7 @@ import javax.time.TimeSource;
  * the current time rather than a static method. This simplifies testing.
  * <p>
  * Applications should <i>avoid</i> using the static methods on this class.
- * Instead, they should pass a <code>Clock</code> into any method that requires it.
+ * Instead, they should pass a {@code Clock} into any method that requires it.
  * A dependency injection framework is one way to achieve this:
  * <pre>
  * public class MyBean {
@@ -69,23 +69,23 @@ import javax.time.TimeSource;
  * {@link TimeSource#fixed} to be used during testing.
  *
  * <h4>Implementation notes</h4>
- * <code>Clock</code> is designed to be subclassed, however this will rarely be necessary.
- * In most cases, you should subclass <code>TimeSource</code> instead.
+ * {@code Clock} is designed to be subclassed, however this will rarely be necessary.
+ * In most cases, you should subclass {@code TimeSource} instead.
  * <p>
- * A subclass will normally override <code>getSource()</code> and <code>getZone()</code>.
+ * A subclass will normally override {@code getSource()} and {@code getZone()}.
  * This will cause all the other methods to work as they are derived from just these two.
- * Subclasses should implement <code>withSource()</code> and <code>withZone()</code>
+ * Subclasses should implement {@code withSource()} and {@code withZone()}
  * if possible to allow the user to change the time-source and time-zone.
- * The default implementation of these four methods throws an <code>UnsupportedOperationException</code>.
+ * The default implementation of these four methods throws an {@code UnsupportedOperationException}.
  * <p>
  * One reason to subclass this class would be to provide only a hard coded date for testing
- * and not a time or date-time. In this case, the subclass would only override <code>today()</code>.
- * Other methods would thus throw <code>UnsupportedOperationException</code>, which would be fine
+ * and not a time or date-time. In this case, the subclass would only override {@code today()}.
+ * Other methods would thus throw {@code UnsupportedOperationException}, which would be fine
  * for testing but not recommended for production usage.
  * <p>
- * Subclass implementations should implement <code>Serializable</code> wherever possible.
- * They should also implement <code>equals()</code>, <code>hashCode()</code> and
- * <code>toString()</code> based on their state.
+ * Subclass implementations should implement {@code Serializable} wherever possible.
+ * They should also implement {@code equals()}, {@code hashCode()} and
+ * {@code toString()} based on their state.
  * <p>
  * Clock is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
@@ -170,12 +170,12 @@ public abstract class Clock {
     /**
      * Gets the time-source being used to create dates and times.
      * <p>
-     * The standard implementation of <code>Clock</code> uses a time-source to
+     * The standard implementation of {@code Clock} uses a time-source to
      * provide the current instant. This method returns that time-source.
      * <p>
      * Non-standard implementations may choose to use another means to obtain
      * instants, dates and times, thus this method is allowed to throw
-     * <code>UnsupportedOperationException</code>.
+     * {@code UnsupportedOperationException}.
      *
      * @return the time-source being used to obtain instants, never null
      * @throws UnsupportedOperationException if the implementation does not support accessing the time-source
@@ -187,12 +187,12 @@ public abstract class Clock {
     /**
      * Returns a copy of this clock with a different time-source.
      * <p>
-     * The standard implementation of <code>Clock</code> uses a time-source to
+     * The standard implementation of {@code Clock} uses a time-source to
      * provide the current instant. This method allows that time-source to be changed.
      * <p>
      * Non-standard implementations may choose to use another means to obtain
      * instants, dates and times, thus this method is allowed to throw
-     * <code>UnsupportedOperationException</code>.
+     * {@code UnsupportedOperationException}.
      *
      * @param timeSource  the time-source to change to, not null
      * @return the new clock with the altered time-source, never null
@@ -206,12 +206,12 @@ public abstract class Clock {
     /**
      * Gets the time-zone being used to create dates and times.
      * <p>
-     * The standard implementation of <code>Clock</code> uses a time-zone to
+     * The standard implementation of {@code Clock} uses a time-zone to
      * interpret the current instant. This method returns that time-zone.
      * <p>
      * Non-standard implementations may choose to use another means to interpret
      * instants, dates and times, thus this method is allowed to throw
-     * <code>UnsupportedOperationException</code>.
+     * {@code UnsupportedOperationException}.
      *
      * @return the time-zone being used to interpret instants, never null
      * @throws UnsupportedOperationException if the implementation does not support accessing the time-zone
@@ -223,12 +223,12 @@ public abstract class Clock {
     /**
      * Returns a copy of this clock with a different time-zone.
      * <p>
-     * The standard implementation of <code>Clock</code> uses a time-zone to
+     * The standard implementation of {@code Clock} uses a time-zone to
      * interpret the current instant. This method allows that time-zone to be changed.
      * <p>
      * Non-standard implementations may choose to use another means to interpret
      * instants, dates and times, thus this method is allowed to throw
-     * <code>UnsupportedOperationException</code>.
+     * {@code UnsupportedOperationException}.
      *
      * @param zone  the time-zone to change to, not null
      * @return the new clock with the altered time zone, never null
@@ -265,7 +265,7 @@ public abstract class Clock {
      * This returns today's date from the clock.
      * <p>
      * The local date can only be calculated from an instant if the time-zone is known.
-     * As such, the local date is derived by default from <code>offsetDate()</code>.
+     * As such, the local date is derived by default from {@code offsetDate()}.
      *
      * @return the current date, never null
      * @throws CalendricalException if the date cannot be created
@@ -278,7 +278,7 @@ public abstract class Clock {
      * Gets yesterday's date.
      * <p>
      * This returns yesterday's date from the clock.
-     * This is calculated relative to <code>today()</code>.
+     * This is calculated relative to {@code today()}.
      *
      * @return the date yesterday, never null
      * @throws CalendricalException if the date cannot be created
@@ -291,7 +291,7 @@ public abstract class Clock {
      * Gets tomorrow's date.
      * <p>
      * This returns tomorrow's date from the clock.
-     * This is calculated relative to <code>today()</code>.
+     * This is calculated relative to {@code today()}.
      *
      * @return the date tomorrow, never null
      * @throws CalendricalException if the date cannot be created
@@ -304,7 +304,7 @@ public abstract class Clock {
      * Gets the current year-month.
      * <p>
      * This returns the current year-month from the clock.
-     * This is derived from <code>today()</code>.
+     * This is derived from {@code today()}.
      *
      * @return the current year-month, never null
      * @throws CalendricalException if the year cannot be created
@@ -318,7 +318,7 @@ public abstract class Clock {
      * Gets the current year.
      * <p>
      * This returns the current year from the clock.
-     * This is derived from <code>today()</code>.
+     * This is derived from {@code today()}.
      *
      * @return the current year, never null
      * @throws CalendricalException if the year cannot be created
@@ -336,7 +336,7 @@ public abstract class Clock {
      * For example, the {@link #system system clock} has up to millisecond resolution.
      * <p>
      * The local time can only be calculated from an instant if the time-zone is known.
-     * As such, the local time is derived by default from <code>offsetTime()</code>.
+     * As such, the local time is derived by default from {@code offsetTime()}.
      *
      * @return the current time, never null
      * @throws CalendricalException if the time cannot be created
@@ -380,7 +380,7 @@ public abstract class Clock {
      * For example, the {@link #system system clock} has up to millisecond resolution.
      * <p>
      * The local date-time can only be calculated from an instant if the time-zone is known.
-     * As such, the local date-time is derived by default from <code>offsetDateTime()</code>.
+     * As such, the local date-time is derived by default from {@code offsetDateTime()}.
      *
      * @return the current date-time, never null
      * @throws CalendricalException if the date-time cannot be created
@@ -421,7 +421,7 @@ public abstract class Clock {
      * <p>
      * This returns the current offset date from the clock with the correct offset from {@link #getZone()}.
      * <p>
-     * The offset date is derived by default from <code>instant()</code> and <code>getZone()</code>.
+     * The offset date is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current offset date, never null
      * @throws CalendricalException if the date-time cannot be created
@@ -439,7 +439,7 @@ public abstract class Clock {
      * The result is not filtered, and so will have whatever resolution the clock has.
      * For example, the {@link #system system clock} has up to millisecond resolution.
      * <p>
-     * The offset time is derived by default from <code>instant()</code> and <code>getZone()</code>.
+     * The offset time is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current offset time, never null
      * @throws CalendricalException if the time cannot be created
@@ -483,7 +483,7 @@ public abstract class Clock {
      * The result is not filtered, and so will have whatever resolution the clock has.
      * For example, the {@link #system system clock} has up to millisecond resolution.
      * <p>
-     * The offset date-time is derived by default from <code>instant()</code> and <code>getZone()</code>.
+     * The offset date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current offset date-time, never null
      * @throws CalendricalException if the date-time cannot be created
@@ -527,7 +527,7 @@ public abstract class Clock {
      * The result is not filtered, and so will have whatever resolution the clock has.
      * For example, the {@link #system system clock} has up to millisecond resolution.
      * <p>
-     * The zoned date-time is derived by default from <code>instant()</code> and <code>getZone()</code>.
+     * The zoned date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current zoned date-time, never null
      * @throws CalendricalException if the date-time cannot be created

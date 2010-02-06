@@ -34,8 +34,8 @@ package javax.time.period;
 import javax.time.calendar.format.CalendricalParseException;
 
 /**
- * An period parser that creates an instance of <code>Period</code> from a string
- * using the ISO8601 period format <code>PnYnMnDTnHnMn.nS</code>.
+ * An period parser that creates an instance of {@code Period} from a string
+ * using the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
  *
  * @author Darryl West
  * @author Stephen Colebourne
@@ -70,15 +70,15 @@ class PeriodParser {
     }
 
     /**
-     * Obtains an instance of <code>Period</code> from a string.
+     * Obtains an instance of {@code Period} from a string.
      * <p>
-     * This will parse the string produced by <code>toString()</code> which is
-     * a subset of the ISO8601 period format <code>PnYnMnDTnHnMn.nS</code>.
+     * This will parse the string produced by {@code toString()} which is
+     * a subset of the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * The string consists of a series of numbers with a suffix identifying their meaning.
      * The values, and suffixes, must be in the sequence year, month, day, hour, minute, second.
      * Any of the number/suffix pairs may be omitted providing at least one is present.
-     * If the period is zero, the value is normally represented as <code>PT0S</code>.
+     * If the period is zero, the value is normally represented as {@code PT0S}.
      * The numbers must consist of ASCII digits.
      * Any of the numbers may be negative. Negative zero is not accepted.
      * The number of nanoseconds is expressed as an optional fraction of the seconds.

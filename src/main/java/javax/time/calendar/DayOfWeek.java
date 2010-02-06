@@ -38,15 +38,15 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * A day-of-week, such as 'Tuesday'.
  * <p>
- * <code>DayOfWeek</code> is an enum representing the 7 days of the week -
+ * {@code DayOfWeek} is an enum representing the 7 days of the week -
  * Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.
  * <p>
- * The calendrical framework requires date-time fields to have an <code>int</code> value.
- * The <code>int</code> value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
- * It is recommended that applications use the enum rather than the <code>int</code> value
+ * The calendrical framework requires date-time fields to have an {@code int} value.
+ * The {@code int} value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
+ * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of <code>DayOfWeek</code>.
+ * <b>Do not use ordinal() to obtain the numeric representation of {@code DayOfWeek}.
  * Use getValue() instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
@@ -93,11 +93,11 @@ public enum DayOfWeek {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfWeek</code> from an <code>int</code> value.
+     * Obtains an instance of {@code DayOfWeek} from an {@code int} value.
      * <p>
-     * <code>DayOfWeek</code> is an enum representing the 7 days of the week.
-     * This factory allows the enum to be obtained from the <code>int</code> value.
-     * The <code>int</code> value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
+     * {@code DayOfWeek} is an enum representing the 7 days of the week.
+     * This factory allows the enum to be obtained from the {@code int} value.
+     * The {@code int} value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
      * <p>
      * An exception is thrown if the value is invalid. The exception uses the
      * {@link ISOChronology} day-of-week rule to indicate the failed rule.
@@ -129,10 +129,10 @@ public enum DayOfWeek {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the <code>DayOfWeek</code> instance that corresponds to the first
-     * day-of-week for a given <code>locale</code>.
+     * Returns the {@code DayOfWeek} instance that corresponds to the first
+     * day-of-week for a given {@code locale}.
      * <p>
-     * If there is no information for a locale, <code>MONDAY</code> is returned.
+     * If there is no information for a locale, {@code MONDAY} is returned.
      *
      * @param locale the locale to use, not null
      * @return the DayOfWeek singleton, never null
@@ -152,7 +152,7 @@ public enum DayOfWeek {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day-of-week <code>int</code> value.
+     * Gets the day-of-week {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
      * from 1 (Monday) to 7 (Sunday).

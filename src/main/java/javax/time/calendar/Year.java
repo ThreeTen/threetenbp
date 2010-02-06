@@ -41,7 +41,7 @@ import javax.time.period.PeriodProvider;
 /**
  * A year in the ISO-8601 calendar system, such as '2007'.
  * <p>
- * <code>Year</code> is an immutable calendrical that represents a year.
+ * {@code Year} is an immutable calendrical that represents a year.
  * Any field that can be derived from a year can be obtained.
  * <p>
  * <b>Note that years in the ISO chronology only align with years in the
@@ -50,7 +50,7 @@ import javax.time.period.PeriodProvider;
  * As such, historical years must be treated with caution.</b>
  * <p>
  * This class does not store or represent a month, day, time or time zone.
- * Thus, for example, the value "2007" can be stored in a <code>Year</code>.
+ * Thus, for example, the value "2007" can be stored in a {@code Year}.
  * <p>
  * Years represented by this class follow the ISO-8601 standard and use
  * the proleptic numbering system. Year 1 is preceded by year 0, then by year -1.
@@ -59,7 +59,7 @@ import javax.time.period.PeriodProvider;
  * in most of the world. It is equivalent to the proleptic Gregorian calendar
  * system, in which todays's rules for leap years are applied for all time.
  * For most applications written today, the ISO-8601 rules are entirely suitable.
- * Any application that uses historical dates should consider using <code>HistoricDate</code>.
+ * Any application that uses historical dates should consider using {@code HistoricDate}.
  * <p>
  * Year is immutable and thread-safe.
  *
@@ -103,7 +103,7 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Year</code>.
+     * Obtains an instance of {@code Year}.
      * <p>
      * This method accepts a year value from the proleptic ISO calendar system.
      * <p>
@@ -122,10 +122,10 @@ public final class Year
     }
 
     /**
-     * Obtains an instance of <code>Year</code> from a calendrical.
+     * Obtains an instance of {@code Year} from a calendrical.
      * <p>
      * This can be used extract the year value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
+     * of {@code Calendrical}, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the Year instance, never null
@@ -161,7 +161,7 @@ public final class Year
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -410,7 +410,7 @@ public final class Year
 //    }
 //
 //    /**
-//     * Returns a new <code>Year</code> instance with a different year.
+//     * Returns a new {@code Year} instance with a different year.
 //     * <p>
 //     * The year 2AD/CE is represented by 2.<br />
 //     * The year 1AD/CE is represented by 1.<br />
@@ -479,8 +479,8 @@ public final class Year
     /**
      * Returns a year-month formed from this year at the specified month.
      * <p>
-     * This method merges <code>this</code> and the specified month to form an
-     * instance of <code>YearMonth</code>.
+     * This method merges {@code this} and the specified month to form an
+     * instance of {@code YearMonth}.
      * This method can be used as part of a chain to produce a date:
      * <pre>
      * LocalDate date = year.atMonth(month).atDay(day);
@@ -498,8 +498,8 @@ public final class Year
     /**
      * Returns a year-month formed from this year at the specified month.
      * <p>
-     * This method merges <code>this</code> and the specified month to form an
-     * instance of <code>YearMonth</code>.
+     * This method merges {@code this} and the specified month to form an
+     * instance of {@code YearMonth}.
      * This method can be used as part of a chain to produce a date:
      * <pre>
      * LocalDate date = year.atMonth(month).atDay(day);
@@ -517,8 +517,8 @@ public final class Year
     /**
      * Returns a date formed from this year at the specified month-day.
      * <p>
-     * This merges the two objects - <code>this</code> and the specified day -
-     * to form an instance of <code>LocalDate</code>.
+     * This merges the two objects - {@code this} and the specified day -
+     * to form an instance of {@code LocalDate}.
      * <pre>
      * LocalDate date = year.atMonthDay(monthDay);
      * </pre>
@@ -536,8 +536,8 @@ public final class Year
     /**
      * Returns a date formed from this year at the specified day-of-year.
      * <p>
-     * This merges the two objects - <code>this</code> and the specified day -
-     * to form an instance of <code>LocalDate</code>.
+     * This merges the two objects - {@code this} and the specified day -
+     * to form an instance of {@code LocalDate}.
      * <pre>
      * LocalDate date = year.atDay(dayOfYear);
      * </pre>
@@ -562,7 +562,7 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(Year other) {
         return MathUtils.safeCompare(year, other.year);
@@ -573,7 +573,7 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return true if this is after the specified year
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(Year other) {
         return year > other.year;
@@ -584,7 +584,7 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return true if this point is before the specified year
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(Year other) {
         return year < other.year;

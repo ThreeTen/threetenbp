@@ -77,7 +77,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month and
+     * Obtains an instance of {@code LocalDateTime} from year, month and
      * day with the time set to midnight at the start of day.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -97,7 +97,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month and
+     * Obtains an instance of {@code LocalDateTime} from year, month and
      * day with the time set to midnight at the start of day.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -117,7 +117,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from a date with the
+     * Obtains an instance of {@code LocalDateTime} from a date with the
      * time set to midnight at the start of day.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -134,7 +134,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * Obtains an instance of {@code LocalDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -159,7 +159,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * Obtains an instance of {@code LocalDateTime} from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -185,7 +185,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * Obtains an instance of {@code LocalDateTime} from year, month,
      * day, hour, minute, second and nanosecond.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -211,7 +211,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * Obtains an instance of {@code LocalDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -236,7 +236,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * Obtains an instance of {@code LocalDateTime} from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -262,7 +262,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * Obtains an instance of {@code LocalDateTime} from year, month,
      * day, hour, minute, second and nanosecond.
      * <p>
      * The day must be valid for the year and month or an exception will be thrown.
@@ -288,7 +288,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from a date and time.
+     * Obtains an instance of {@code LocalDateTime} from a date and time.
      *
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
@@ -301,10 +301,10 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalTime</code> from a date-time provider.
+     * Obtains an instance of {@code LocalTime} from a date-time provider.
      * <p>
-     * The purpose of this method is to convert a <code>DateTimeProvider</code>
-     * to a <code>LocalDateTime</code> in the safest possible way. Specifically,
+     * The purpose of this method is to convert a {@code DateTimeProvider}
+     * to a {@code LocalDateTime} in the safest possible way. Specifically,
      * the means checking whether the input parameter is null and
      * whether the result of the provider is null.
      *
@@ -320,13 +320,13 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDateTime</code> from a text string.
+     * Obtains an instance of {@code LocalDateTime} from a text string.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}</code>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}</code>
-     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}</code>
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}}
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}}
+     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}}
      * </ul>
      * <p>
      * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
@@ -395,7 +395,7 @@ public final class LocalDateTime
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date-time then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -408,10 +408,10 @@ public final class LocalDateTime
     /**
      * Gets the year field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the year.
+     * This method returns the primitive {@code int} value for the year.
      * <p>
      * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a <code>Year</code> object which includes information on whether
+     * This returns a {@code Year} object which includes information on whether
      * this is a leap year and its length in days.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -421,14 +421,14 @@ public final class LocalDateTime
     }
 
     /**
-     * Gets the month-of-year field, which is an enum <code>MonthOfYear</code>.
+     * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link MonthOfYear#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * Additional information can be obtained from the {@code MonthOfYear}.
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
@@ -441,7 +441,7 @@ public final class LocalDateTime
     /**
      * Gets the day-of-month field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the day-of-month.
+     * This method returns the primitive {@code int} value for the day-of-month.
      *
      * @return the day-of-month, from 1 to 31
      */
@@ -452,7 +452,7 @@ public final class LocalDateTime
     /**
      * Gets the day-of-year field.
      * <p>
-     * This method returns the primitive <code>int</code> value for the day-of-year.
+     * This method returns the primitive {@code int} value for the day-of-year.
      *
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
@@ -461,14 +461,14 @@ public final class LocalDateTime
     }
 
     /**
-     * Gets the day-of-week field, which is an enum <code>DayOfWeek</code>.
+     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
      * <p>
      * This method returns the enum {@link DayOfWeek} for the day-of-week.
-     * This avoids confusion as to what <code>int</code> values mean.
-     * If you need access to the primitive <code>int</code> value then the enum
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
      * provides the {@link DayOfWeek#getValue() int value}.
      * <p>
-     * Additional information can be obtained from the <code>DayOfWeek</code>.
+     * Additional information can be obtained from the {@code DayOfWeek}.
      * This includes textual names of the values.
      *
      * @return the day-of-week, never null
@@ -527,7 +527,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a <code>LocalDateTime</code> based on this date-time adjusted as necessary, never null
+     * @return a {@code LocalDateTime} based on this date-time adjusted as necessary, never null
      * @throws NullPointerException if the adjuster returned null
      */
     public LocalDateTime with(DateAdjuster adjuster) {
@@ -546,7 +546,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a <code>LocalDateTime</code> based on this date-time adjusted as necessary, never null
+     * @return a {@code LocalDateTime} based on this date-time adjusted as necessary, never null
      * @throws IllegalArgumentException if the adjuster returned null
      */
     public LocalDateTime with(TimeAdjuster adjuster) {
@@ -556,15 +556,15 @@ public final class LocalDateTime
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDateTime with the year altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
-     * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code withYear(year, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested year, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDateTime withYear(int year) {
@@ -573,14 +573,14 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the year altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested year, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDateTime withYear(int year, DateResolver dateResolver) {
@@ -589,15 +589,15 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the month-of-year altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
-     * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code withMonthOfYear(monthOfYear, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public LocalDateTime withMonthOfYear(int monthOfYear) {
@@ -606,14 +606,14 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the month-of-year altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public LocalDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
@@ -622,15 +622,15 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the month-of-year altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
-     * This method does the same as <code>with(monthOfYear, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code with(monthOfYear, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
      */
     public LocalDateTime with(MonthOfYear monthOfYear) {
         return with(date.with(monthOfYear), time);
@@ -638,14 +638,14 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the month-of-year altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, not null
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
      */
     public LocalDateTime with(MonthOfYear monthOfYear, DateResolver dateResolver) {
         return with(date.with(monthOfYear, dateResolver), time);
@@ -653,13 +653,13 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the day-of-month altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, an exception is thrown.
+     * If the resulting {@code LocalDateTime} is invalid, an exception is thrown.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested day, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -669,14 +669,14 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the day-of-month altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * If the resulting {@code LocalDateTime} is invalid, it will be resolved using {@code dateResolver}.
      * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 31
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested day, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      */
     public LocalDateTime withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
@@ -685,12 +685,12 @@ public final class LocalDateTime
 
     /**
      * Returns a copy of this LocalDateTime with the day-of-year altered.
-     * If the resulting <code>LocalDateTime</code> is invalid, an exception is thrown.
+     * If the resulting {@code LocalDateTime} is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
-     * @return a <code>LocalDateTime</code> based on this date with the requested day, never null
+     * @return a {@code LocalDateTime} based on this date with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
@@ -710,7 +710,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested date, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -735,7 +735,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a <code>LocalDateTime</code> based on this date-time with the requested date, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -907,7 +907,7 @@ public final class LocalDateTime
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
-     * This method does the same as <code>plusYears(years, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code plusYears(years, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -928,7 +928,7 @@ public final class LocalDateTime
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -957,7 +957,7 @@ public final class LocalDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as <code>plusMonths(months, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code plusMonths(months, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -978,7 +978,7 @@ public final class LocalDateTime
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1131,7 +1131,7 @@ public final class LocalDateTime
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
-     * This method does the same as <code>minusYears(years, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code minusYears(years, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1152,7 +1152,7 @@ public final class LocalDateTime
      * <ol>
      * <li>subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1181,7 +1181,7 @@ public final class LocalDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as <code>minusMonts(months, DateResolvers.previousValid())</code>.
+     * This method does the same as {@code minusMonts(months, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1202,7 +1202,7 @@ public final class LocalDateTime
      * <ol>
      * <li>subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1367,8 +1367,8 @@ public final class LocalDateTime
     /**
      * Returns an offset date-time formed from this date-time and the specified offset.
      * <p>
-     * This merges the two objects - <code>this</code> and the specified offset -
-     * to form an instance of <code>OffsetDateTime</code>.
+     * This merges the two objects - {@code this} and the specified offset -
+     * to form an instance of {@code OffsetDateTime}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1422,7 +1422,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to a <code>LocalDate</code>.
+     * Converts this date-time to a {@code LocalDate}.
      *
      * @return a LocalDate representing the date fields of this date-time, never null
      */
@@ -1431,7 +1431,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalTime</code>.
+     * Converts this date-time to a {@code LocalTime}.
      *
      * @return a LocalTime representing the time fields of this date-time, never null
      */
@@ -1440,20 +1440,20 @@ public final class LocalDateTime
     }
 
     /**
-     * Converts this date-time to a <code>LocalDateTime</code>,
-     * trivially returning <code>this</code>.
+     * Converts this date-time to a {@code LocalDateTime},
+     * trivially returning {@code this}.
      *
-     * @return <code>this</code>, never null
+     * @return {@code this}, never null
      */
     public LocalDateTime toLocalDateTime() {
         return this;
     }
 
     /**
-     * Gets the year field as a <code>Year</code>.
+     * Gets the year field as a {@code Year}.
      * <p>
      * This method provides access to an object representing the year field.
-     * <code>Year</code> has methods for querying addition year-based information.
+     * {@code Year} has methods for querying addition year-based information.
      *
      * @return the year, never null
      */
@@ -1467,7 +1467,7 @@ public final class LocalDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(LocalDateTime other) {
         int cmp = date.compareTo(other.date);
@@ -1482,7 +1482,7 @@ public final class LocalDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(LocalDateTime other) {
         return compareTo(other) > 0;
@@ -1493,7 +1493,7 @@ public final class LocalDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this point is before the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
+     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(LocalDateTime other) {
         return compareTo(other) < 0;
@@ -1530,7 +1530,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date-time as a <code>String</code>, such as
+     * Outputs the date-time as a {@code String}, such as
      * '2007-12-03T10:15:30'.
      * <p>
      * The output will be one of the following formats:
@@ -1553,7 +1553,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for <code>LocalDateTime</code>.
+     * Gets the field rule for {@code LocalDateTime}.
      *
      * @return the field rule for the date-time, never null
      */

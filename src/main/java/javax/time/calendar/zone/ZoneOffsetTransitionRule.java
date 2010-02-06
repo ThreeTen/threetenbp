@@ -78,7 +78,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * If positive, it is the start of the week where the cutover can occur.
      * If negative, it represents the end of the week where cutover can occur.
      * The value is the number of days from the end of the month, such that
-     * <code>-1</code> is the last day of the month, <code>-2</code> is the second
+     * {@code -1} is the last day of the month, {@code -2} is the second
      * to last day, and so on.
      */
     private final int dom;
@@ -170,7 +170,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * If the value is positive, then it represents a normal day-of-month, and is the
      * earliest possible date that the transition can be.
      * If the value is negative, then it represents the number of days back from the
-     * end of the month where <code>-1</code> is the last day of the month.
+     * end of the month where {@code -1} is the last day of the month.
      * In this case, the day identified is the latest possible date that the transition can be.
      *
      * @return the day-of-month indicator, from -31 to 31 excluding 0

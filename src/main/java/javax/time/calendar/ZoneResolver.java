@@ -37,7 +37,7 @@ import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 
 /**
- * Strategy for resolving a <code>LocalDateTime</code> to an <code>OffsetDateTime</code>
+ * Strategy for resolving a {@code LocalDateTime} to an {@code OffsetDateTime}
  * using the rules of the time zone.
  * <p>
  * A time zone provides rules for when and by how much the offset changes for
@@ -121,7 +121,7 @@ public abstract class ZoneResolver {
      * The old date-time is provided if this strategy is called as a result of an
      * adjustment, such as changing a field, addition or subtraction.
      * This parameter will be null if there is no original date-time, such as
-     * during construction of a <code>ZonedDateTime</code>.
+     * during construction of a {@code ZonedDateTime}.
      * <p>
      * After the completion of this method, the result will be validated.
      * <p>
@@ -156,7 +156,7 @@ public abstract class ZoneResolver {
      * <p>
      * Firstly, the discontinuity, which represents the discontinuity in the local
      * time-line that needs to be resolved. This is the result from
-     * <code>zone.getOffsetInfo(newDateTime)</code> and is provided to improve
+     * {@code zone.getOffsetInfo(newDateTime)} and is provided to improve
      * performance.
      * <p>
      * Secondly, the old date-time, which is the original offset date-time that
