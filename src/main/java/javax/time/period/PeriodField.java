@@ -119,6 +119,7 @@ public final class PeriodField
      * @return true if this period is positive or zero
      */
     public boolean isPositive() {
+        // TODO not inc zero
         return amount >= 0;
     }
 
@@ -296,6 +297,8 @@ public final class PeriodField
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with the amount negated.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @return the new period with the amount negated, never null
      * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
@@ -305,18 +308,15 @@ public final class PeriodField
     }
 
     /**
-     * Returns a new instance with the absolute amount.
+     * Returns a copy of this period with a positive amount.
      * <p>
-     * The returned period will always have a positive amount.
+     * This instance is immutable and unaffected by this method call.
      *
      * @return the new period with absolute amount, never null
      * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
      */
     public PeriodField abs() {
-        if (amount >= 0) {
-            return this;
-        }
-        return negated();
+        return isNegative() ? negated() : this;
     }
 
     //-----------------------------------------------------------------------
