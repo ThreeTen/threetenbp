@@ -2719,7 +2719,7 @@ public abstract class Calendar
      *
      * @param instantProvider  the provider of an instant to convert, not null.
      * @exception NullPointerException if <code>instantProvider</code> is null.
-     * @exception CalendarConversionException if the instant is too large to
+     * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Calendar</code>.
      * @see #toInstant()
      * @see #setTimeInMillis(long)
@@ -2727,7 +2727,13 @@ public abstract class Calendar
      */
     public final void setInstant(InstantProvider instantProvider) {
         Instant instant = Instant.instant(instantProvider);
-        setTimeInMillis(instant.toEpochMillisLong());
+        long millis;
+        try {
+            millis = instant.toEpochMillisLong();
+        } catch (ArithmeticException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+        setTimeInMillis(millis);
     }
 
     /**

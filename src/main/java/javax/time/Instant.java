@@ -35,7 +35,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import javax.time.calendar.CalendarConversionException;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.CalendricalParseException;
@@ -591,16 +590,11 @@ public final class Instant
      * was subject to integer division by one million.
      *
      * @return the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
-     * @throws CalendarConversionException if the calculation exceeds the capacity of {@code long}
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code long}
      */
     public long toEpochMillisLong() {
-        try {
-            long millis = MathUtils.safeMultiply(seconds, 1000);
-            return millis + nanos / 1000000;
-        } catch (ArithmeticException ex) {
-            // TODO: is an exception conversion necessary
-            throw new CalendarConversionException("The Instant cannot be represented as epoch milliseconds");
-        }
+        long millis = MathUtils.safeMultiply(seconds, 1000);
+        return millis + nanos / 1000000;
     }
 
     //-----------------------------------------------------------------------

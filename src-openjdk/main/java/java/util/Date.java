@@ -215,13 +215,17 @@ public class Date
      *
      * @param   instantProvider   the provider of an instant to convert, not null.
      * @exception NullPointerException if <code>instantProvider</code> is null.
-     * @exception CalendarConversionException if the instant is too large to
+     * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @since ?
      */
     public Date(InstantProvider instantProvider) {
         Instant instant = Instant.instant(instantProvider);
-        fastTime = instant.toEpochMillisLong();
+        try {
+            fastTime = instant.toEpochMillisLong();
+        } catch (ArithmeticException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     /**
@@ -1401,7 +1405,7 @@ public class Date
      *
      * @param instantProvider  the provider of an instant to convert, not null.
      * @exception NullPointerException if <code>instantProvider</code> is null.
-     * @exception CalendarConversionException if the instant is too large to
+     * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @see #toInstant()
      * @see #setTime(long)
@@ -1409,7 +1413,13 @@ public class Date
      */
     public final void setInstant(InstantProvider instantProvider) {
         Instant instant = Instant.instant(instantProvider);
-        setTime(instant.toEpochMillisLong());
+        long millis;
+        try {
+            millis = instant.toEpochMillisLong();
+        } catch (ArithmeticException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+        setTime(millis);
     }
 
     /**

@@ -1294,12 +1294,12 @@ public class TestInstant {
         assertEquals(Instant.seconds(Long.MIN_VALUE / 1000).toEpochMillisLong(), (Long.MIN_VALUE / 1000) * 1000);
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_toEpochMillisLong_tooBig() {
         Instant.seconds(Long.MAX_VALUE / 1000 + 1).toEpochMillisLong();
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_toEpochMillisLong_tooSmall() {
         Instant.seconds(Long.MIN_VALUE / 1000 - 1).toEpochMillisLong();
     }
