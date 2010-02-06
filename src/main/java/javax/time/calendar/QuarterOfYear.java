@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-
 /**
  * A quarter-of-year, such as 'Q2'.
  * <p>
@@ -43,8 +42,8 @@ package javax.time.calendar;
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of {@code QuarterOfYear}.
- * Use getValue() instead.</b>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code QuarterOfYear}.
+ * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the quarter-of-year
@@ -61,18 +60,22 @@ public enum QuarterOfYear {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
+     * This has the numeric value of {@code 1}
      */
     Q1,
     /**
      * The singleton instance for the second quarter-of-year, from April to June.
+     * This has the numeric value of {@code 2}
      */
     Q2,
     /**
      * The singleton instance for the third quarter-of-year, from July to September.
+     * This has the numeric value of {@code 3}
      */
     Q3,
     /**
      * The singleton instance for the fourth quarter-of-year, from October to December.
+     * This has the numeric value of {@code 4}
      */
     Q4;
 

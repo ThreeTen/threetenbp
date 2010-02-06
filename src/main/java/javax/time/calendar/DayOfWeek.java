@@ -46,8 +46,8 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of {@code DayOfWeek}.
- * Use getValue() instead.</b>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code DayOfWeek}.
+ * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the day-of-week
@@ -64,30 +64,37 @@ public enum DayOfWeek {
 
     /**
      * The singleton instance for the day-of-week of Monday.
+     * This has the numeric value of {@code 1}
      */
     MONDAY,
     /**
      * The singleton instance for the day-of-week of Tuesday.
+     * This has the numeric value of {@code 2}
      */
     TUESDAY,
     /**
      * The singleton instance for the day-of-week of Wednesday.
+     * This has the numeric value of {@code 3}
      */
     WEDNESDAY,
     /**
      * The singleton instance for the day-of-week of Thursday.
+     * This has the numeric value of {@code 4}
      */
     THURSDAY,
     /**
      * The singleton instance for the day-of-week of Friday.
+     * This has the numeric value of {@code 5}
      */
     FRIDAY,
     /**
      * The singleton instance for the day-of-week of Saturday.
+     * This has the numeric value of {@code 6}
      */
     SATURDAY,
     /**
      * The singleton instance for the day-of-week of Sunday.
+     * This has the numeric value of {@code 7}
      */
     SUNDAY;
 
@@ -163,6 +170,7 @@ public enum DayOfWeek {
         return ordinal() + 1;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the short textual representation of this day-of-week, such as 'Mon' or 'Fri'.
      * <p>

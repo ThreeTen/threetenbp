@@ -47,8 +47,8 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of {@code AmPmOfDay}.
- * Use getValue() instead.</b>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code AmPmOfDay}.
+ * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the AM/PM concept.
@@ -63,10 +63,12 @@ public enum AmPmOfDay {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
+     * This has the numeric value of {@code 0}
      */
     AM,
     /**
      * The singleton instance for the afternoon, PM - post meridiem.
+     * This has the numeric value of {@code 1}
      */
     PM;
 
@@ -108,6 +110,7 @@ public enum AmPmOfDay {
         return ordinal();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the short textual representation of this AM/PM, such as 'AM' or 'PM'.
      * <p>

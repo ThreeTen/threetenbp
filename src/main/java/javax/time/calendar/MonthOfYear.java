@@ -47,8 +47,8 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * from 1 (January) to 12 (December). It is recommended that applications use the enum
  * rather than the {@code int} value to ensure code clarity.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of {@code MonthOfYear}.
- * Use getValue() instead.</b>
+ * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code MonthOfYear}.
+ * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
@@ -65,50 +65,62 @@ public enum MonthOfYear {
 
     /**
      * The singleton instance for the month of January.
+     * This has the numeric value of {@code 1}
      */
     JANUARY,
     /**
      * The singleton instance for the month of February.
+     * This has the numeric value of {@code 2}
      */
     FEBRUARY,
     /**
      * The singleton instance for the month of March.
+     * This has the numeric value of {@code 3}
      */
     MARCH,
     /**
      * The singleton instance for the month of April.
+     * This has the numeric value of {@code 4}
      */
     APRIL,
     /**
      * The singleton instance for the month of May.
+     * This has the numeric value of {@code 5}
      */
     MAY,
     /**
      * The singleton instance for the month of June.
+     * This has the numeric value of {@code 6}
      */
     JUNE,
     /**
      * The singleton instance for the month of July.
+     * This has the numeric value of {@code 7}
      */
     JULY,
     /**
      * The singleton instance for the month of August.
+     * This has the numeric value of {@code 8}
      */
     AUGUST,
     /**
      * The singleton instance for the month of September.
+     * This has the numeric value of {@code 9}
      */
     SEPTEMBER,
     /**
      * The singleton instance for the month of October.
+     * This has the numeric value of {@code 10}
      */
     OCTOBER,
     /**
      * The singleton instance for the month of November.
+     * This has the numeric value of {@code 11}
      */
     NOVEMBER,
     /**
      * The singleton instance for the month of December.
+     * This has the numeric value of {@code 12}
      */
     DECEMBER;
 
@@ -171,6 +183,7 @@ public enum MonthOfYear {
         return ordinal() + 1;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the short textual representation of this month-of-year, such as 'Jan' or 'Dec'.
      * <p>
@@ -361,6 +374,10 @@ public enum MonthOfYear {
      * Gets the length of this month in days.
      * <p>
      * This takes a flag to determine whether to return the length for a leap year or not.
+     * <p>
+     * February has 28 days in a standard year and 29 days in a leap year.
+     * April, June, September and November have 30 days.
+     * All other months have 31 days.
      *
      * @param leapYear  true if the length is required for a leap year
      * @return the length of this month in days, from 28 to 31
@@ -381,6 +398,10 @@ public enum MonthOfYear {
 
     /**
      * Gets the minimum length of this month in days.
+     * <p>
+     * February has a minimum length of 28 days.
+     * April, June, September and November have 30 days.
+     * All other months have 31 days.
      *
      * @return the minimum length of this month in days, from 28 to 31
      */
@@ -400,6 +421,10 @@ public enum MonthOfYear {
 
     /**
      * Gets the maximum length of this month in days.
+     * <p>
+     * February has a maximum length of 29 days.
+     * April, June, September and November have 30 days.
+     * All other months have 31 days.
      *
      * @return the maximum length of this month in days, from 29 to 31
      */
@@ -460,6 +485,9 @@ public enum MonthOfYear {
     //-----------------------------------------------------------------------
     /**
      * Gets the quarter that this month falls in.
+     * <p>
+     * January to March are Q1, April to June are Q2, July to September are Q3
+     * and October to December are Q4.
      *
      * @return the quarter-of-year, never null
      */
@@ -477,6 +505,10 @@ public enum MonthOfYear {
 
     /**
      * Gets the index of the month within the quarter.
+     * <p>
+     * January, April, July and October will return 1.
+     * February, May, August and November will return 2.
+     * March, June, September and December will return 3.
      *
      * @return the month of season, from 1 to 3
      */
