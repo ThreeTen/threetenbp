@@ -76,7 +76,7 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDate}.
+     * Obtains an instance of {@code OffsetDate} from a year, month and day.
      *
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month-of-year, not null
@@ -92,7 +92,7 @@ public final class OffsetDate
     }
 
     /**
-     * Obtains an instance of {@code OffsetDate}.
+     * Obtains an instance of {@code OffsetDate} from a year, month and day.
      *
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -108,7 +108,7 @@ public final class OffsetDate
     }
 
     /**
-     * Obtains an instance of {@code OffsetDate}.
+     * Obtains an instance of {@code OffsetDate} from a {@code DateProvider}.
      *
      * @param dateProvider  the date provider to use, not null
      * @param offset  the zone offset, not null
@@ -121,7 +121,7 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts an instant to an offset date.
+     * Obtains an instance of {@code OffsetDate} from an {@code InstantProvider}.
      * <p>
      * This conversion drops the time component of the instant.
      *

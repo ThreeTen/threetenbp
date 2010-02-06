@@ -448,7 +448,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the time altered using the adjuster.
+     * Returns a copy of this {@code LocalTime} with the time altered using the adjuster.
      * <p>
      * Adjusters can be used to alter the time in various ways.
      * A simple adjuster might simply set the one of the fields, such as the hour field.
@@ -457,7 +457,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalDateTime} based on this date-time adjusted as necessary, never null
      */
     public LocalTime with(TimeAdjuster adjuster) {
         LocalTime time = adjuster.adjustTime(this);
@@ -469,12 +469,12 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the hour-of-day value altered.
+     * Returns a copy of this {@code LocalTime} with the hour-of-day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalDateTime} based on this date-time with the adjusted hour, never null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public LocalTime withHourOfDay(int hourOfDay) {
@@ -486,12 +486,12 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the minute-of-hour value altered.
+     * Returns a copy of this {@code LocalTime} with the minute-of-hour value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalDateTime} based on this date-time with the adjusted minute, never null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public LocalTime withMinuteOfHour(int minuteOfHour) {
@@ -503,12 +503,12 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the second-of-minute value altered.
+     * Returns a copy of this {@code LocalTime} with the second-of-minute value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalDateTime} based on this date-time with the adjusted second, never null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public LocalTime withSecondOfMinute(int secondOfMinute) {
@@ -520,12 +520,12 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the nano-of-second value altered.
+     * Returns a copy of this {@code LocalTime} with the nano-of-second value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalDateTime} based on this date-time with the adjusted nanosecond, never null
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public LocalTime withNanoOfSecond(int nanoOfSecond) {
@@ -538,7 +538,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the specified period added.
+     * Returns a copy of this {@code LocalTime} with the specified period added.
      * <p>
      * This adds the amount in hours, minutes and seconds from the specified period to this time.
      * If the period contains date amounts then an exception is thrown.
@@ -546,7 +546,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the period added, never null
      * @throws CalendricalException if the provider contains date period units
      */
     public LocalTime plus(PeriodProvider periodProvider) {
@@ -563,7 +563,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the specified period in hours added.
+     * Returns a copy of this {@code LocalTime} with the specified period in hours added.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -571,7 +571,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the hours added, never null
      */
     public LocalTime plusHours(int hours) {
         if (hours == 0) {
@@ -582,7 +582,7 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in minutes added.
+     * Returns a copy of this {@code LocalTime} with the specified period in minutes added.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -590,7 +590,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the minutes added, never null
      */
     public LocalTime plusMinutes(int minutes) {
         if (minutes == 0) {
@@ -607,7 +607,7 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in seconds added.
+     * Returns a copy of this {@code LocalTime} with the specified period in seconds added.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -615,7 +615,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the seconds added, never null
      */
     public LocalTime plusSeconds(int seconds) {
         if (seconds == 0) {
@@ -634,7 +634,7 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in nanoseconds added.
+     * Returns a copy of this {@code LocalTime} with the specified period in nanoseconds added.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -642,7 +642,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the nanos added, never null
      */
     public LocalTime plusNanos(long nanos) {
         if (nanos == 0) {
@@ -662,7 +662,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the specified period added,
+     * Returns a copy of this {@code LocalTime} with the specified period added,
      * returning the new time with any overflow in days.
      * <p>
      * This method returns an {@link Overflow} instance with the result of the
@@ -674,14 +674,14 @@ public final class LocalTime
      * @param minutes the minutes to add, may be negative
      * @param seconds the seconds to add, may be negative
      * @param nanos the nanos to add, may be negative
-     * @return an Overflow instance with the resulting time and overflow, never null
+     * @return an {@code Overflow} instance with the resulting time and overflow, never null
      */
     public Overflow plusWithOverflow(int hours, int minutes, int seconds, long nanos) {
         return plusWithOverflow(hours, minutes, seconds, nanos, 1);
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period added,
+     * Returns a copy of this {@code LocalTime} with the specified period added,
      * returning the new time with any overflow in days.
      * <p>
      * This method returns an {@link Overflow} instance with the result of the
@@ -693,7 +693,7 @@ public final class LocalTime
      * @param minutes the minutes to add, may be negative
      * @param seconds the seconds to add, may be negative
      * @param nanos the nanos to add, may be negative
-     * @return an Overflow instance with the resulting time and overflow, never null
+     * @return an {@code Overflow} instance with the resulting time and overflow, never null
      */
     private Overflow plusWithOverflow(int hours, int minutes, int seconds, long nanos, int sign) {
         // 9223372036854775808 long, 2147483648 int
@@ -723,7 +723,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the specified period subtracted.
+     * Returns a copy of this {@code LocalTime} with the specified period subtracted.
      * <p>
      * This subtracts the amount in hours, minutes and seconds from the specified period from this time.
      * If the period contains date amounts then an exception is thrown.
@@ -731,7 +731,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the period subtracted, never null
      * @throws CalendricalException if the provider contains date period units
      */
     public LocalTime minus(PeriodProvider periodProvider) {
@@ -748,7 +748,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the specified period in hours subtracted.
+     * Returns a copy of this {@code LocalTime} with the specified period in hours subtracted.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -756,7 +756,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the hours subtracted, never null
      */
     public LocalTime minusHours(int hours) {
         if (hours == 0) {
@@ -767,7 +767,7 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in minutes subtracted.
+     * Returns a copy of this {@code LocalTime} with the specified period in minutes subtracted.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -775,7 +775,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the minutes subtracted, never null
      */
     public LocalTime minusMinutes(int minutes) {
         if (minutes == 0) {
@@ -792,7 +792,7 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in seconds subtracted.
+     * Returns a copy of this {@code LocalTime} with the specified period in seconds subtracted.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -800,7 +800,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the seconds subtracted, never null
      */
     public LocalTime minusSeconds(int seconds) {
         if (seconds == 0) {
@@ -819,7 +819,7 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in nanoseconds subtracted.
+     * Returns a copy of this {@code LocalTime} with the specified period in nanoseconds subtracted.
      * <p>
      * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
@@ -827,7 +827,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a new updated LocalTime, never null
+     * @return a {@code LocalTime} with the nanos subtracted, never null
      */
     public LocalTime minusNanos(long nanos) {
         if (nanos == 0) {
@@ -847,7 +847,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the specified period subtracted,
+     * Returns a copy of this {@code LocalTime} with the specified period subtracted,
      * returning the new time with any overflow in days.
      * <p>
      * This method returns an {@link Overflow} instance with the result of the
@@ -859,7 +859,7 @@ public final class LocalTime
      * @param minutes the minutes to subtract, may be negative
      * @param seconds the seconds to subtract, may be negative
      * @param nanos the nanos to subtract, may be negative
-     * @return an Overflow instance with the resulting time and overflow, never null
+     * @return an {@code Overflow} instance with the resulting time and overflow, never null
      */
     public Overflow minusWithOverflow(int hours, int minutes, int seconds, long nanos) {
         return plusWithOverflow(hours, minutes, seconds, nanos, -1);
@@ -1000,7 +1000,9 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this time to another time.
+     * Compares this {@code LocalTime} to another time.
+     * <p>
+     * The comparison is based on the time-line position of the times within a day.
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -1021,7 +1023,9 @@ public final class LocalTime
     }
 
     /**
-     * Is this time after the specified time.
+     * Checks if this {@code LocalTime} is after the specified time.
+     * <p>
+     * The comparison is based on the time-line position of the time within a day.
      *
      * @param other  the other time to compare to, not null
      * @return true if this is after the specified time
@@ -1032,7 +1036,9 @@ public final class LocalTime
     }
 
     /**
-     * Is this time before the specified time.
+     * Checks if this {@code LocalTime} is before the specified time.
+     * <p>
+     * The comparison is based on the time-line position of the time within a day.
      *
      * @param other  the other time to compare to, not null
      * @return true if this point is before the specified time
@@ -1044,7 +1050,9 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Is this time equal to the specified time.
+     * Checks if this {@code LocalTime} is equal to the specified time.
+     * <p>
+     * The comparison is based on the time-line position of the time within a day.
      *
      * @param other  the other time to compare to, null returns false
      * @return true if this point is equal to the specified time
@@ -1063,7 +1071,7 @@ public final class LocalTime
     }
 
     /**
-     * A hash code for this time.
+     * A hash code for this {@code LocalTime}.
      *
      * @return a suitable hash code
      */
@@ -1075,7 +1083,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the time as a {@code String}, such as '10:15'.
+     * Outputs the {@code LocalTime} as a {@code String}, such as '10:15'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
@@ -1117,11 +1125,11 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * The result of addition to a LocalTime allowing the expression of
+     * The result of addition to a {@code LocalTime} allowing the expression of
      * any overflow in days.
      */
     public static final class Overflow {
-        /** The LocalTime after the addition. */
+        /** The time after the addition. */
         private final LocalTime time;
         /** The overflow in days. */
         private final int days;
@@ -1129,7 +1137,7 @@ public final class LocalTime
         /**
          * Constructor.
          *
-         * @param time  the LocalTime after the addition, not null
+         * @param time  the {@code LocalTime} after the addition, not null
          * @param days  the overflow in days
          */
         private Overflow(LocalTime time, int days) {
@@ -1155,17 +1163,8 @@ public final class LocalTime
             return days;
         }
 
-//        /**
-//         * Fulfils the TimeProvider interface by returning the result time.
-//         *
-//         * @return the result time, never null
-//         */
-//        public LocalTime toLocalTime() {
-//            return time;
-//        }
-
         /**
-         * Creates a LocalDateTime from the specified date and this instance.
+         * Creates a {@code LocalDateTime} from the specified date and this instance.
          *
          * @param date  the date to use, not null
          * @return the combination of the date, time and overflow in days, never null

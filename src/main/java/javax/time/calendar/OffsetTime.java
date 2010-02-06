@@ -124,7 +124,7 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetTime}.
+     * Obtains an instance of {@code OffsetTime} from a {@code TimeProvider}.
      *
      * @param timeProvider  the time provider to use, not null
      * @param offset  the zone offset, not null
@@ -137,7 +137,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts an instant to an offset time.
+     * Obtains an instance of {@code OffsetTime} from an {@code InstantProvider}.
      * <p>
      * The date component of the instant is dropped during the conversion.
      * This means that the conversion can never fail due to the instant being

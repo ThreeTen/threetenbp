@@ -280,7 +280,8 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a date and time.
+     * Obtains an instance of {@code OffsetDateTime} from a {@code DateProvider}
+     * and {@code TimeProvider}.
      *
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
@@ -293,7 +294,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetDateTime}.
+     * Obtains an instance of {@code OffsetDateTime} from a {@code DateTimeProvider}.
      *
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param offset  the zone offset, not null
@@ -306,7 +307,7 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts an instant to an offset date-time.
+     * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}.
      *
      * @param instantProvider  the instant to convert, not null
      * @param offset  the zone offset, not null
