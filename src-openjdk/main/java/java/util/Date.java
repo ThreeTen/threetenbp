@@ -221,7 +221,7 @@ public class Date
      */
     public Date(InstantProvider instantProvider) {
         Instant instant = Instant.instant(instantProvider);
-        fastTime = instant.toEpochMillis();
+        fastTime = instant.toEpochMillisLong();
     }
 
     /**
@@ -1409,7 +1409,7 @@ public class Date
      */
     public final void setInstant(InstantProvider instantProvider) {
         Instant instant = Instant.instant(instantProvider);
-        setTime(instant.toEpochMillis());
+        setTime(instant.toEpochMillisLong());
     }
 
     /**

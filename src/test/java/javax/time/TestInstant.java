@@ -391,128 +391,6 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    public void test_comparisons() {
-        doTest_comparisons_Instant(
-            Instant.seconds(-2L, 0),
-            Instant.seconds(-2L, 999999998),
-            Instant.seconds(-2L, 999999999),
-            Instant.seconds(-1L, 0),
-            Instant.seconds(-1L, 1),
-            Instant.seconds(-1L, 999999998),
-            Instant.seconds(-1L, 999999999),
-            Instant.seconds(0L, 0),
-            Instant.seconds(0L, 1),
-            Instant.seconds(0L, 2),
-            Instant.seconds(0L, 999999999),
-            Instant.seconds(1L, 0),
-            Instant.seconds(2L, 0)
-        );
-    }
-
-    void doTest_comparisons_Instant(Instant... instants) {
-        for (int i = 0; i < instants.length; i++) {
-            Instant a = instants[i];
-            for (int j = 0; j < instants.length; j++) {
-                Instant b = instants[j];
-                if (i < j) {
-                    assertEquals(a.compareTo(b), -1, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
-                } else if (i > j) {
-                    assertEquals(a.compareTo(b), 1, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-                    assertEquals(a.equals(b), false, a + " <=> " + b);
-                } else {
-                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-                    assertEquals(a.equals(b), true, a + " <=> " + b);
-                }
-            }
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_compareTo_ObjectNull() {
-        Instant a = Instant.seconds(0L, 0);
-        a.compareTo(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isBefore_ObjectNull() {
-        Instant a = Instant.seconds(0L, 0);
-        a.isBefore(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isAfter_ObjectNull() {
-        Instant a = Instant.seconds(0L, 0);
-        a.isAfter(null);
-    }
-
-    @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
-    public void compareToNonInstant() {
-       Comparable c = Instant.seconds(0L);
-       c.compareTo(new Object());
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_equals() {
-        Instant test5a = Instant.seconds(5L, 20);
-        Instant test5b = Instant.seconds(5L, 20);
-        Instant test5n = Instant.seconds(5L, 30);
-        Instant test6 = Instant.seconds(6L, 20);
-        
-        assertEquals(test5a.equals(test5a), true);
-        assertEquals(test5a.equals(test5b), true);
-        assertEquals(test5a.equals(test5n), false);
-        assertEquals(test5a.equals(test6), false);
-        
-        assertEquals(test5b.equals(test5a), true);
-        assertEquals(test5b.equals(test5b), true);
-        assertEquals(test5b.equals(test5n), false);
-        assertEquals(test5b.equals(test6), false);
-        
-        assertEquals(test5n.equals(test5a), false);
-        assertEquals(test5n.equals(test5b), false);
-        assertEquals(test5n.equals(test5n), true);
-        assertEquals(test5n.equals(test6), false);
-        
-        assertEquals(test6.equals(test5a), false);
-        assertEquals(test6.equals(test5b), false);
-        assertEquals(test6.equals(test5n), false);
-        assertEquals(test6.equals(test6), true);
-    }
-
-    public void test_equals_null() {
-        Instant test5 = Instant.seconds(5L, 20);
-        assertEquals(test5.equals(null), false);
-    }
-
-    public void test_equals_otherClass() {
-        Instant test5 = Instant.seconds(5L, 20);
-        assertEquals(test5.equals(""), false);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_hashCode() {
-        Instant test5a = Instant.seconds(5L, 20);
-        Instant test5b = Instant.seconds(5L, 20);
-        Instant test5n = Instant.seconds(5L, 30);
-        Instant test6 = Instant.seconds(6L, 20);
-        
-        assertEquals(test5a.hashCode() == test5a.hashCode(), true);
-        assertEquals(test5a.hashCode() == test5b.hashCode(), true);
-        assertEquals(test5b.hashCode() == test5b.hashCode(), true);
-        
-        assertEquals(test5a.hashCode() == test5n.hashCode(), false);
-        assertEquals(test5a.hashCode() == test6.hashCode(), false);
-    }
-
-    //-----------------------------------------------------------------------
     @DataProvider(name="Plus")
     Object[][] provider_plus() {
         return new Object[][] {
@@ -1417,24 +1295,199 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    public void test_toEpochMillis() {
-        assertEquals(Instant.seconds(1L, 1000000).toEpochMillis(), 1001L);
-        assertEquals(Instant.seconds(1L, 2000000).toEpochMillis(), 1002L);
-        assertEquals(Instant.seconds(1L, 567).toEpochMillis(), 1000L);
-        assertEquals(Instant.seconds(Long.MAX_VALUE / 1000).toEpochMillis(), (Long.MAX_VALUE / 1000) * 1000);
-        assertEquals(Instant.seconds(Long.MIN_VALUE / 1000).toEpochMillis(), (Long.MIN_VALUE / 1000) * 1000);
+    // toEpochSeconds()
+    //-----------------------------------------------------------------------
+    public void test_toEpochSeconds() {
+        Instant test = Instant.seconds(321, 123456789);
+        assertEquals(test.toEpochSeconds(), new BigDecimal("321.123456789"));
+    }
+
+    public void test_toEpochSeconds_max() {
+        Instant test = Instant.seconds(Long.MAX_VALUE, 999999999);
+        BigDecimal expected = BigDecimal.valueOf(Long.MAX_VALUE);
+        expected = expected.add(BigDecimal.valueOf(999999999, 9));
+        assertEquals(test.toEpochSeconds(), expected);
+    }
+
+    public void test_toEpochSeconds_min() {
+        Instant test = Instant.seconds(Long.MIN_VALUE, 0);
+        BigDecimal expected = BigDecimal.valueOf(Long.MIN_VALUE);
+        expected = expected.setScale(9);
+        assertEquals(test.toEpochSeconds(), expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toEpochNanos()
+    //-----------------------------------------------------------------------
+    public void test_toEpochNanos() {
+        Instant test = Instant.seconds(321, 123456789);
+        assertEquals(test.toEpochNanos(), BigInteger.valueOf(321123456789L));
+    }
+
+    public void test_toEpochNanos_max() {
+        Instant test = Instant.seconds(Long.MAX_VALUE, 999999999);
+        BigInteger expected = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000))
+                                    .add(BigInteger.valueOf(999999999));
+        assertEquals(test.toEpochNanos(), expected);
+    }
+
+    public void test_toNanos_min() {
+        Instant test = Instant.seconds(Long.MIN_VALUE, 0);
+        BigInteger expected = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
+        assertEquals(test.toEpochNanos(), expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toEpochMillisLong()
+    //-----------------------------------------------------------------------
+    public void test_toEpochMillisLong() {
+        assertEquals(Instant.seconds(1L, 1000000).toEpochMillisLong(), 1001L);
+        assertEquals(Instant.seconds(1L, 2000000).toEpochMillisLong(), 1002L);
+        assertEquals(Instant.seconds(1L, 567).toEpochMillisLong(), 1000L);
+        assertEquals(Instant.seconds(Long.MAX_VALUE / 1000).toEpochMillisLong(), (Long.MAX_VALUE / 1000) * 1000);
+        assertEquals(Instant.seconds(Long.MIN_VALUE / 1000).toEpochMillisLong(), (Long.MIN_VALUE / 1000) * 1000);
     }
 
     @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toEpochMillis_tooBig() {
-        Instant.seconds(Long.MAX_VALUE / 1000 + 1).toEpochMillis();
+    public void test_toEpochMillisLong_tooBig() {
+        Instant.seconds(Long.MAX_VALUE / 1000 + 1).toEpochMillisLong();
     }
 
     @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toEpochMillis_tooSmall() {
-        Instant.seconds(Long.MIN_VALUE / 1000 - 1).toEpochMillis();
+    public void test_toEpochMillisLong_tooSmall() {
+        Instant.seconds(Long.MIN_VALUE / 1000 - 1).toEpochMillisLong();
     }
 
+    //-----------------------------------------------------------------------
+    // compareTo()
+    //-----------------------------------------------------------------------
+    public void test_comparisons() {
+        doTest_comparisons_Instant(
+            Instant.seconds(-2L, 0),
+            Instant.seconds(-2L, 999999998),
+            Instant.seconds(-2L, 999999999),
+            Instant.seconds(-1L, 0),
+            Instant.seconds(-1L, 1),
+            Instant.seconds(-1L, 999999998),
+            Instant.seconds(-1L, 999999999),
+            Instant.seconds(0L, 0),
+            Instant.seconds(0L, 1),
+            Instant.seconds(0L, 2),
+            Instant.seconds(0L, 999999999),
+            Instant.seconds(1L, 0),
+            Instant.seconds(2L, 0)
+        );
+    }
+
+    void doTest_comparisons_Instant(Instant... instants) {
+        for (int i = 0; i < instants.length; i++) {
+            Instant a = instants[i];
+            for (int j = 0; j < instants.length; j++) {
+                Instant b = instants[j];
+                if (i < j) {
+                    assertEquals(a.compareTo(b), -1, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else if (i > j) {
+                    assertEquals(a.compareTo(b), 1, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else {
+                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                }
+            }
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_compareTo_ObjectNull() {
+        Instant a = Instant.seconds(0L, 0);
+        a.compareTo(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isBefore_ObjectNull() {
+        Instant a = Instant.seconds(0L, 0);
+        a.isBefore(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isAfter_ObjectNull() {
+        Instant a = Instant.seconds(0L, 0);
+        a.isAfter(null);
+    }
+
+    @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void compareToNonInstant() {
+       Comparable c = Instant.seconds(0L);
+       c.compareTo(new Object());
+    }
+
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    public void test_equals() {
+        Instant test5a = Instant.seconds(5L, 20);
+        Instant test5b = Instant.seconds(5L, 20);
+        Instant test5n = Instant.seconds(5L, 30);
+        Instant test6 = Instant.seconds(6L, 20);
+        
+        assertEquals(test5a.equals(test5a), true);
+        assertEquals(test5a.equals(test5b), true);
+        assertEquals(test5a.equals(test5n), false);
+        assertEquals(test5a.equals(test6), false);
+        
+        assertEquals(test5b.equals(test5a), true);
+        assertEquals(test5b.equals(test5b), true);
+        assertEquals(test5b.equals(test5n), false);
+        assertEquals(test5b.equals(test6), false);
+        
+        assertEquals(test5n.equals(test5a), false);
+        assertEquals(test5n.equals(test5b), false);
+        assertEquals(test5n.equals(test5n), true);
+        assertEquals(test5n.equals(test6), false);
+        
+        assertEquals(test6.equals(test5a), false);
+        assertEquals(test6.equals(test5b), false);
+        assertEquals(test6.equals(test5n), false);
+        assertEquals(test6.equals(test6), true);
+    }
+
+    public void test_equals_null() {
+        Instant test5 = Instant.seconds(5L, 20);
+        assertEquals(test5.equals(null), false);
+    }
+
+    public void test_equals_otherClass() {
+        Instant test5 = Instant.seconds(5L, 20);
+        assertEquals(test5.equals(""), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // hashCode()
+    //-----------------------------------------------------------------------
+    public void test_hashCode() {
+        Instant test5a = Instant.seconds(5L, 20);
+        Instant test5b = Instant.seconds(5L, 20);
+        Instant test5n = Instant.seconds(5L, 30);
+        Instant test6 = Instant.seconds(6L, 20);
+        
+        assertEquals(test5a.hashCode() == test5a.hashCode(), true);
+        assertEquals(test5a.hashCode() == test5b.hashCode(), true);
+        assertEquals(test5b.hashCode() == test5b.hashCode(), true);
+        
+        assertEquals(test5a.hashCode() == test5n.hashCode(), false);
+        assertEquals(test5a.hashCode() == test6.hashCode(), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString()
     //-----------------------------------------------------------------------
     @Test
     public void test_toString() {

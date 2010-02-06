@@ -2727,7 +2727,7 @@ public abstract class Calendar
      */
     public final void setInstant(InstantProvider instantProvider) {
         Instant instant = Instant.instant(instantProvider);
-        setTimeInMillis(instant.toEpochMillis());
+        setTimeInMillis(instant.toEpochMillisLong());
     }
 
     /**

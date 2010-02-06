@@ -322,6 +322,7 @@ public final class Instant
      * Instants on the time-line after the epoch are positive, earlier are negative.
      *
      * @return the seconds from the epoch
+     * @see #getNanoOfSecond()
      */
     public long getEpochSeconds() {
         return seconds;
@@ -332,6 +333,7 @@ public final class Instant
      * of the second returned by {@link #getEpochSeconds()}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
+     * @see #getEpochSeconds()
      */
     public int getNanoOfSecond() {
         return nanos;
@@ -544,26 +546,26 @@ public final class Instant
         return create(MathUtils.safeSubtract(seconds, secondsToSubtract) , nos);
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Converts this instant to the number of seconds from the epoch
-//     * of 1970-01-01T00:00:00Z expressed as a <code>BigDecimal</code>.
-//     *
-//     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z
-//     */
-//    public BigDecimal toEpochSeconds() {
-//        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
-//    }
-//
-//    /**
-//     * Converts this instant to the number of nanoseconds from the epoch
-//     * of 1970-01-01T00:00:00Z expressed as a <code>BigInteger</code>.
-//     *
-//     * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z
-//     */
-//    public BigInteger toEpcohNanos() {
-//        return BigInteger.valueOf(seconds).multiply(BILLION).add(BigInteger.valueOf(nanos));
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this instant to the number of seconds from the epoch
+     * of 1970-01-01T00:00:00Z expressed as a <code>BigDecimal</code>.
+     *
+     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z
+     */
+    public BigDecimal toEpochSeconds() {
+        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
+    }
+
+    /**
+     * Converts this instant to the number of nanoseconds from the epoch
+     * of 1970-01-01T00:00:00Z expressed as a <code>BigInteger</code>.
+     *
+     * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z
+     */
+    public BigInteger toEpochNanos() {
+        return BigInteger.valueOf(seconds).multiply(BILLION).add(BigInteger.valueOf(nanos));
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -582,7 +584,7 @@ public final class Instant
      * @throws CalendarConversionException if the instant is too large or too
      *  small to represent as epoch milliseconds
      */
-    public long toEpochMillis() {
+    public long toEpochMillisLong() {
         try {
             long millis = MathUtils.safeMultiply(seconds, 1000);
             return millis + nanos / 1000000;

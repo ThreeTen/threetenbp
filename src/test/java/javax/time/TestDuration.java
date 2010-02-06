@@ -1903,22 +1903,25 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    // toMillis()
+    // toSeconds()
     //-----------------------------------------------------------------------
-    public void test_toMillis() {
+    public void test_toSeconds() {
         Duration test = Duration.seconds(321, 123456789);
-        assertEquals(test.toMillis(), 321000 + 123);
+        assertEquals(test.toSeconds(), new BigDecimal("321.123456789"));
     }
 
-    public void test_toMillis_max() {
-        Duration test = Duration.seconds(Long.MAX_VALUE / 1000, (Long.MAX_VALUE % 1000) * 1000000);
-        assertEquals(test.toMillis(), Long.MAX_VALUE);
+    public void test_toSeconds_max() {
+        Duration test = Duration.seconds(Long.MAX_VALUE, 999999999);
+        BigDecimal expected = BigDecimal.valueOf(Long.MAX_VALUE);
+        expected = expected.add(BigDecimal.valueOf(999999999, 9));
+        assertEquals(test.toSeconds(), expected);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_toMillis_tooBig() {
-        Duration test = Duration.seconds(Long.MAX_VALUE / 1000, ((Long.MAX_VALUE % 1000) + 1) * 1000000);
-        test.toMillis();
+    public void test_toSeconds_min() {
+        Duration test = Duration.seconds(Long.MIN_VALUE, 0);
+        BigDecimal expected = BigDecimal.valueOf(Long.MIN_VALUE);
+        expected = expected.setScale(9);
+        assertEquals(test.toSeconds(), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -1962,25 +1965,22 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    // toSeconds()
+    // toMillisLong()
     //-----------------------------------------------------------------------
-    public void test_toSeconds() {
+    public void test_toMillisLong() {
         Duration test = Duration.seconds(321, 123456789);
-        assertEquals(test.toSeconds(), new BigDecimal("321.123456789"));
+        assertEquals(test.toMillisLong(), 321000 + 123);
     }
 
-    public void test_toSeconds_max() {
-        Duration test = Duration.seconds(Long.MAX_VALUE, 999999999);
-        BigDecimal expected = BigDecimal.valueOf(Long.MAX_VALUE);
-        expected = expected.add(BigDecimal.valueOf(999999999, 9));
-        assertEquals(test.toSeconds(), expected);
+    public void test_toMillisLong_max() {
+        Duration test = Duration.seconds(Long.MAX_VALUE / 1000, (Long.MAX_VALUE % 1000) * 1000000);
+        assertEquals(test.toMillisLong(), Long.MAX_VALUE);
     }
 
-    public void test_toSeconds_min() {
-        Duration test = Duration.seconds(Long.MIN_VALUE, 0);
-        BigDecimal expected = BigDecimal.valueOf(Long.MIN_VALUE);
-        expected = expected.setScale(9);
-        assertEquals(test.toSeconds(), expected);
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_toMillisLong_tooBig() {
+        Duration test = Duration.seconds(Long.MAX_VALUE / 1000, ((Long.MAX_VALUE % 1000) + 1) * 1000000);
+        test.toMillisLong();
     }
 
     //-----------------------------------------------------------------------
@@ -2053,7 +2053,7 @@ public class TestDuration {
        Comparable c = Duration.seconds(0L);
        c.compareTo(new Object());
     }
-    
+
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------

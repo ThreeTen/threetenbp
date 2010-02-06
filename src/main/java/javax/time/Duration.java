@@ -480,6 +480,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * stored as -1 seconds plus 999,999,999 nanoseconds.
      *
      * @return the length of the duration in seconds
+     * @see #getNanosInSecond()
      */
     public long getSeconds() {
         return seconds;
@@ -497,6 +498,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * -1 nanosecond is stored as -1 seconds plus 999,999,999 nanoseconds.
      *
      * @return the nanoseconds within the second, from 0 to 999,999,999
+     * @see #getSeconds()
      */
     public int getNanosInSecond() {
         return nanos;
@@ -788,20 +790,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the length of this duration in milliseconds.
-     * <p>
-     * If the duration is too large to fit in a long milliseconds, then an
-     * exception is thrown.
-     * If the duration has a length in nanoseconds that is not a whole number
-     * of milliseconds, then the remainder is simply dropped.
+     * Returns the length of this duration in seconds expressed as a <code>BigDecimal</code>.
      *
-     * @return the length of the duration in milliseconds
-     * @throws ArithmeticException if the length exceeds the capacity of a long
+     * @return the length of the duration in seconds, with a scale of 9
      */
-    public long toMillis() {
-        long millis = MathUtils.safeMultiply(seconds, 1000);
-        millis = MathUtils.safeAdd(millis, nanos / 1000000);
-        return millis;
+    public BigDecimal toSeconds() {
+        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
     }
 
     /**
@@ -828,13 +822,24 @@ public final class Duration implements Comparable<Duration>, Serializable {
         return millis;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Returns the length of this duration in seconds expressed as a <code>BigDecimal</code>.
+     * Returns the length of this duration in milliseconds.
+     * <p>
+     * <code>Duration</code> uses a precision of nanoseconds.
+     * The conversion will drop any excess precision information as though the
+     * amount in nanoseconds was subject to integer division by one million.
+     * <p>
+     * <code>Duration</code> can store lengths that are too large to be represented
+     * by a millisecond value. In this scenario, this method will throw an exception.
      *
-     * @return the length of the duration in seconds, with a scale of 9
+     * @return the length of the duration in milliseconds
+     * @throws ArithmeticException if the length exceeds the capacity of a long
      */
-    public BigDecimal toSeconds() {
-        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
+    public long toMillisLong() {
+        long millis = MathUtils.safeMultiply(seconds, 1000);
+        millis = MathUtils.safeAdd(millis, nanos / 1000000);
+        return millis;
     }
 
     //-----------------------------------------------------------------------
