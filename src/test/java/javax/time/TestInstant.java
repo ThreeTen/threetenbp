@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,6 +38,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.time.calendar.CalendarConversionException;
 
@@ -54,21 +56,18 @@ import org.testng.annotations.Test;
 public class TestInstant {
 
     //-----------------------------------------------------------------------
-    public void test_isSerializable() {
-        Instant t = Instant.seconds(0L, 0);
-        assertTrue(t instanceof Serializable);
+    public void test_interfaces() {
+        assertTrue(Serializable.class.isAssignableFrom(Duration.class));
+        assertTrue(Comparable.class.isAssignableFrom(Duration.class));
     }
 
-    public void test_isComparable() {
-        Instant t = Instant.seconds(0L, 0);
-        assertTrue(t instanceof Comparable);
-    }
-
-    public void test_epoch() {
+    public void test_zero() {
         assertEquals(Instant.EPOCH.getEpochSeconds(), 0L);
         assertEquals(Instant.EPOCH.getNanoOfSecond(), 0);
     }
 
+    //-----------------------------------------------------------------------
+    // from(InstantProvider)
     //-----------------------------------------------------------------------
     public void factory_instant_provider() {
         InstantProvider provider = Instant.seconds(1, 2);
@@ -90,7 +89,9 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_instant_long() {
+    // seconds(long)
+    //-----------------------------------------------------------------------
+    public void factory_seconds_long() {
         for (long i = -2; i <= 2; i++) {
             Instant t = Instant.seconds(i);
             assertEquals(t.getEpochSeconds(), i);
@@ -98,12 +99,20 @@ public class TestInstant {
         }
     }
 
-    public void factory_instant_long_int() {
+    //-----------------------------------------------------------------------
+    // seconds(long,long)
+    //-----------------------------------------------------------------------
+    public void factory_seconds_long_long() {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
                 Instant t = Instant.seconds(i, j);
                 assertEquals(t.getEpochSeconds(), i);
                 assertEquals(t.getNanoOfSecond(), j);
+            }
+            for (int j = -10; j < 0; j++) {
+                Instant t = Instant.seconds(i, j);
+                assertEquals(t.getEpochSeconds(), i - 1);
+                assertEquals(t.getNanoOfSecond(), j + 1000000000);
             }
             for (int j = 999999990; j < 1000000000; j++) {
                 Instant t = Instant.seconds(i, j);
@@ -113,66 +122,83 @@ public class TestInstant {
         }
     }
 
-    public void factory_instant_long_int_negative() {
-        for (long i = -2; i <= 2; i++) {
-            for (int j = -10; j < 0; j++) {
-                Instant t = Instant.seconds(i, j);
-                assertEquals(t.getEpochSeconds(), i - 1);
-                assertEquals(t.getNanoOfSecond(), j + 1000000000);
-            }
-            for (int j = -999999999; j < -999999990; j++) {
-                Instant t = Instant.seconds(i, j);
-                assertEquals(t.getEpochSeconds(), i - 1);
-                assertEquals(t.getNanoOfSecond(), j + 1000000000);
-            }
-        }
+    public void factory_seconds_long_long_nanosNegativeAdjusted() {
+        Instant test = Instant.seconds(2L, -1);
+        assertEquals(test.getEpochSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_instant_long_int_nanosTooSmall() {
-        Instant.seconds(0L, -1000000000);
-    }
-
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_instant_long_int_nanosTooLarge() {
-        Instant.seconds(0L, 1000000000);
-    }
-
-    public void factory_instant_long_double() {
-        int nanosPerSecond = 1000000000;
-        for (long i = -2; i <= 2; i++) {
-            for (int j = 0; j < nanosPerSecond / 10000; j++) {
-                Instant t = Instant.seconds(i, ((double)j) / nanosPerSecond);
-                assertEquals(t.getEpochSeconds(), i);
-                assertEquals(t.getNanoOfSecond(), j);
-            }
-        }
-    }
-
-    public void factory_instant_long_double_negative() {
-        int nanosPerSecond = 1000000000;
-        for (long i = -2; i <= 2; i++) {
-            for (int j = -1; j >= -nanosPerSecond / 10000; j--) {
-                Instant t = Instant.seconds(i, ((double)j) / nanosPerSecond);
-                assertEquals(t.getEpochSeconds(), i - 1);
-                assertEquals(t.getNanoOfSecond(), j + 1000000000);
-            }
-        }
-    }
-
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_instant_long_double_nanosTooSmall() {
-        Instant.seconds(0L, -1d);
-    }
-
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_instant_long_double_nanosTooLarge() {
-        Instant.seconds(0L, 1d);
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_seconds_long_long_tooBig() {
+        Instant.seconds(Long.MAX_VALUE, 1000000000);
     }
 
     //-----------------------------------------------------------------------
+    // seconds(BigDecimal)
+    //-----------------------------------------------------------------------
+    public void factory_seconds_BigDecimal_secs() {
+        BigDecimal val = BigDecimal.valueOf(1);
+        Instant test = Instant.seconds(val);
+        assertEquals(test.getEpochSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void factory_seconds_BigDecimal_nanosSecs() {
+        BigDecimal val = BigDecimal.valueOf(1.000000002);
+        Instant test = Instant.seconds(val);
+        assertEquals(test.getEpochSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 2);
+    }
+
+    public void factory_seconds_BigDecimal_negative() {
+        BigDecimal val = BigDecimal.valueOf(-2.000000001);
+        Instant test = Instant.seconds(val);
+        assertEquals(test.getEpochSeconds(), -3);
+        assertEquals(test.getNanoOfSecond(), 999999999);
+    }
+
+    public void factory_seconds_BigDecimal_max() {
+        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).movePointRight(9).add(BigDecimal.valueOf(999999999)).movePointLeft(9);
+        Instant test = Instant.seconds(val);
+        assertEquals(test.getEpochSeconds(), Long.MAX_VALUE);
+        assertEquals(test.getNanoOfSecond(), 999999999);
+    }
+
+    public void factory_seconds_BigDecimal_min() {
+        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE);
+        Instant test = Instant.seconds(val);
+        assertEquals(test.getEpochSeconds(), Long.MIN_VALUE);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_seconds_BigDecimal_tooBig() {
+        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(1));
+        Instant.seconds(val);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_seconds_BigDecimal_tooSmall() {
+        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE).movePointRight(9).subtract(BigDecimal.valueOf(1)).movePointLeft(9);
+        Instant.seconds(val);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_seconds_BigDecimal_tooDetailed() {
+        BigDecimal val = new BigDecimal("0.0000000001");
+        Instant.seconds(val);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_seconds_BigDecimal_null() {
+        Instant.seconds((BigDecimal) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // millis(long)
+    //-----------------------------------------------------------------------
     @DataProvider(name="MillisInstantNoNanos")
-    Object[][] provider_factory_millisInstant_long() {
+    Object[][] provider_factory_millis_long() {
         return new Object[][] {
             {0, 0, 0},
             {1, 0, 1000000},
@@ -189,7 +215,7 @@ public class TestInstant {
     }
 
     @Test(dataProvider="MillisInstantNoNanos")
-    public void factory_millisInstant_long(long millis, long expectedSeconds, int expectedNanoOfSecond) {
+    public void factory_millis_long(long millis, long expectedSeconds, int expectedNanoOfSecond) {
         Instant t = Instant.millis(millis);
         assertEquals(t.getEpochSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
@@ -240,18 +266,119 @@ public class TestInstant {
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_millisInstant_long_int_nanosNegative() {
-        Instant.millis(0L, -1);
-    }
-
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_millisInstant_long_int_nanosTooLarge() {
-        Instant.millis(0L, 1000000000);
+    public void factory_millis_long_long_nanosNegativeAdjusted() {
+        long nanos = ((Long.MAX_VALUE % 1000) * 1000000) + (Long.MAX_VALUE % 1000000000);
+        long secs = (Long.MAX_VALUE / 1000) + (Long.MAX_VALUE / 1000000000) + nanos / 1000000000;
+        nanos = nanos % 1000000000;
+        Instant test = Instant.millis(Long.MAX_VALUE, Long.MAX_VALUE);
+        assertEquals(test.getEpochSeconds(), secs);
+        assertEquals(test.getNanoOfSecond(), nanos);
     }
 
     //-----------------------------------------------------------------------
+    // nanos()
+    //-----------------------------------------------------------------------
+    public void factory_nanos_nanos() {
+        Instant test = Instant.nanos(1);
+        assertEquals(test.getEpochSeconds(), 0);
+        assertEquals(test.getNanoOfSecond(), 1);
+    }
+
+    public void factory_nanos_nanosSecs() {
+        Instant test = Instant.nanos(1000000002);
+        assertEquals(test.getEpochSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 2);
+    }
+
+    public void factory_nanos_negative() {
+        Instant test = Instant.nanos(-2000000001);
+        assertEquals(test.getEpochSeconds(), -3);
+        assertEquals(test.getNanoOfSecond(), 999999999);
+    }
+
+    public void factory_nanos_max() {
+        Instant test = Instant.nanos(Long.MAX_VALUE);
+        assertEquals(test.getEpochSeconds(), Long.MAX_VALUE / 1000000000);
+        assertEquals(test.getNanoOfSecond(), Long.MAX_VALUE % 1000000000);
+    }
+
+    public void factory_nanos_min() {
+        Instant test = Instant.nanos(Long.MIN_VALUE);
+        assertEquals(test.getEpochSeconds(), Long.MIN_VALUE / 1000000000 - 1);
+        assertEquals(test.getNanoOfSecond(), Long.MIN_VALUE % 1000000000 + 1000000000);
+    }
+
+    //-----------------------------------------------------------------------
+    // nanos(BigInteger)
+    //-----------------------------------------------------------------------
+    public void factory_nanos_BigInteger_nanos() {
+        BigInteger val = BigInteger.valueOf(1);
+        Instant test = Instant.nanos(val);
+        assertEquals(test.getEpochSeconds(), 0);
+        assertEquals(test.getNanoOfSecond(), 1);
+    }
+
+    public void factory_nanos_BigInteger_nanosSecs() {
+        BigInteger val = BigInteger.valueOf(1000000002);
+        Instant test = Instant.nanos(val);
+        assertEquals(test.getEpochSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 2);
+    }
+
+    public void factory_nanos_BigInteger_negative() {
+        BigInteger val = BigInteger.valueOf(-2000000001);
+        Instant test = Instant.nanos(val);
+        assertEquals(test.getEpochSeconds(), -3);
+        assertEquals(test.getNanoOfSecond(), 999999999);
+    }
+
+    public void factory_nanos_BigInteger_max() {
+        BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(999999999));
+        Instant test = Instant.nanos(val);
+        assertEquals(test.getEpochSeconds(), Long.MAX_VALUE);
+        assertEquals(test.getNanoOfSecond(), 999999999);
+    }
+
+    public void factory_nanos_BigInteger_min() {
+        BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
+        Instant test = Instant.nanos(val);
+        assertEquals(test.getEpochSeconds(), Long.MIN_VALUE);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_nanos_BigInteger_tooBig() {
+        BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(1000000000));
+        Instant.nanos(val);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_nanos_BigInteger_tooSmall() {
+        BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000)).subtract(BigInteger.valueOf(1));
+        Instant.nanos(val);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_nanos_BigInteger_null() {
+        Instant.nanos((BigInteger) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // serialization
+    //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
+        Instant orginal = Instant.EPOCH;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(orginal);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        Instant ser = (Instant) in.readObject();
+        assertSame(ser, Instant.EPOCH);
+    }
+
+    public void test_deserialization() throws Exception {
         Instant orginal = Instant.seconds(2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);

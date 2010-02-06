@@ -112,6 +112,67 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    // seconds(BigDecimal)
+    //-----------------------------------------------------------------------
+    public void factory_seconds_BigDecimal_secs() {
+        BigDecimal val = BigDecimal.valueOf(1);
+        Duration test = Duration.seconds(val);
+        assertEquals(test.getSeconds(), 1);
+        assertEquals(test.getNanosInSecond(), 0);
+    }
+
+    public void factory_seconds_BigDecimal_nanosSecs() {
+        BigDecimal val = BigDecimal.valueOf(1.000000002);
+        Duration test = Duration.seconds(val);
+        assertEquals(test.getSeconds(), 1);
+        assertEquals(test.getNanosInSecond(), 2);
+    }
+
+    public void factory_seconds_BigDecimal_negative() {
+        BigDecimal val = BigDecimal.valueOf(-2.000000001);
+        Duration test = Duration.seconds(val);
+        assertEquals(test.getSeconds(), -3);
+        assertEquals(test.getNanosInSecond(), 999999999);
+    }
+
+    public void factory_seconds_BigDecimal_max() {
+        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).movePointRight(9).add(BigDecimal.valueOf(999999999)).movePointLeft(9);
+        Duration test = Duration.seconds(val);
+        assertEquals(test.getSeconds(), Long.MAX_VALUE);
+        assertEquals(test.getNanosInSecond(), 999999999);
+    }
+
+    public void factory_seconds_BigDecimal_min() {
+        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE);
+        Duration test = Duration.seconds(val);
+        assertEquals(test.getSeconds(), Long.MIN_VALUE);
+        assertEquals(test.getNanosInSecond(), 0);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_seconds_BigDecimal_tooBig() {
+        BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(1));
+        Duration.seconds(val);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_seconds_BigDecimal_tooSmall() {
+        BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE).movePointRight(9).subtract(BigDecimal.valueOf(1)).movePointLeft(9);
+        Duration.seconds(val);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_seconds_BigDecimal_tooDetailed() {
+        BigDecimal val = new BigDecimal("0.0000000001");
+        Duration.seconds(val);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_seconds_BigDecimal_null() {
+        Duration.seconds((BigDecimal) null);
+    }
+
+    //-----------------------------------------------------------------------
     // millis(long)
     //-----------------------------------------------------------------------
     @DataProvider(name="MillisDurationNoNanos")
@@ -282,6 +343,11 @@ public class TestDuration {
     public void factory_nanos_BigInteger_tooSmall() {
         BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000)).subtract(BigInteger.valueOf(1));
         Duration.nanos(val);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_nanos_BigInteger_null() {
+        Duration.nanos((BigInteger) null);
     }
 
     //-----------------------------------------------------------------------
