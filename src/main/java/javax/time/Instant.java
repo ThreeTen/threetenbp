@@ -654,7 +654,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Is this {@code Instant} equal to that specified.
+     * Checks if this {@code Instant} is equal to that specified.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *

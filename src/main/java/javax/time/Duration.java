@@ -876,7 +876,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this {@code Duration} equal to that specified.
+     * Checks if this {@code Duration} is equal to that specified.
      * <p>
      * The comparison is based on the total length of the durations.
      *
