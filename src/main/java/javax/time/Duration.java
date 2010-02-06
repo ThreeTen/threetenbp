@@ -476,7 +476,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified duration added.
+     * Returns a copy of this duration with the specified duration added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -501,7 +501,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified number of seconds added.
+     * Returns a copy of this duration with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -518,7 +518,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of milliseconds added.
+     * Returns a copy of this duration with the specified number of milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -546,7 +546,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of nanoseconds added.
+     * Returns a copy of this duration with the specified number of nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -575,7 +575,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified duration subtracted.
+     * Returns a copy of this duration with the specified duration subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -600,7 +600,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified number of seconds subtracted.
+     * Returns a copy of this duration with the specified number of seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -617,7 +617,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of milliseconds subtracted.
+     * Returns a copy of this duration with the specified number of milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -643,7 +643,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of nanoseconds subtracted.
+     * Returns a copy of this duration with the specified number of nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -670,7 +670,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration multiplied by the scalar.
+     * Returns a copy of this duration multiplied by the scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -696,7 +696,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration divided by the specified value.
+     * Returns a copy of this duration divided by the specified value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -717,9 +717,31 @@ public final class Duration implements Comparable<Duration>, Serializable {
         return seconds(divRem[0].longValue(), divRem[1].intValue());
      }
 
-    // TODO: negated
-    // TODO: abs
-    
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this duration with the amount negated.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the new period with the amount negated, never null
+     * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
+     */
+    public Duration negated() {
+        return multipliedBy(-1);
+    }
+
+    /**
+     * Returns a copy of this duration with positive length.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the new period with absolute amount, never null
+     * @throws ArithmeticException if the seconds part of the length is <code>Long.MIN_VALUE</code>
+     */
+    public Duration abs() {
+        return isNegative() ? negated() : this;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this Duration to another.

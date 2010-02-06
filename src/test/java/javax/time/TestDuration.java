@@ -1840,6 +1840,49 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    // negated()
+    //-----------------------------------------------------------------------
+    public void test_negated() {
+        assertEquals(Duration.seconds(0).negated(), Duration.seconds(0));
+        assertEquals(Duration.seconds(12).negated(), Duration.seconds(-12));
+        assertEquals(Duration.seconds(-12).negated(), Duration.seconds(12));
+        assertEquals(Duration.seconds(12, 20).negated(), Duration.seconds(-12, -20));
+        assertEquals(Duration.seconds(12, -20).negated(), Duration.seconds(-12, 20));
+        assertEquals(Duration.seconds(-12, -20).negated(), Duration.seconds(12, 20));
+        assertEquals(Duration.seconds(-12, 20).negated(), Duration.seconds(12, -20));
+        assertEquals(Duration.seconds(Long.MAX_VALUE).negated(), Duration.seconds(-Long.MAX_VALUE));
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_negated_overflow() {
+        Duration.seconds(Long.MIN_VALUE).negated();
+    }
+
+    //-----------------------------------------------------------------------
+    // abs()
+    //-----------------------------------------------------------------------
+    public void test_abs() {
+        assertEquals(Duration.seconds(0).abs(), Duration.seconds(0));
+        assertEquals(Duration.seconds(12).abs(), Duration.seconds(12));
+        assertEquals(Duration.seconds(-12).abs(), Duration.seconds(12));
+        assertEquals(Duration.seconds(12, 20).abs(), Duration.seconds(12, 20));
+        assertEquals(Duration.seconds(12, -20).abs(), Duration.seconds(12, -20));
+        assertEquals(Duration.seconds(-12, -20).abs(), Duration.seconds(12, 20));
+        assertEquals(Duration.seconds(-12, 20).abs(), Duration.seconds(12, -20));
+        assertEquals(Duration.seconds(Long.MAX_VALUE).abs(), Duration.seconds(Long.MAX_VALUE));
+    }
+
+    public void test_abs_same() {
+        Duration base = Duration.seconds(12);
+        assertSame(base.abs(), base);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_abs_overflow() {
+        Duration.seconds(Long.MIN_VALUE).abs();
+    }
+
+    //-----------------------------------------------------------------------
     // toSeconds()
     //-----------------------------------------------------------------------
     public void test_toSeconds() {
