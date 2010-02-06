@@ -31,31 +31,26 @@
  */
 package javax.time;
 
-
 /**
  * Provides access to an instant on the time-line.
  * <p>
- * InstantProvider is a simple interface that provides uniform access to any
- * object that can provide access to an <code>Instant</code>.
+ * {@code InstantProvider} is a simple interface that provides uniform access to any
+ * object that can provide access to an {@code Instant}.
  * <p>
- * The implementation of <code>InstantProvider</code> may be mutable.
- * For example, {@link java.util.Date Date} is a mutable implementation of
- * this interface.
- * The result of {@link #toInstant()}, however, is immutable.
+ * The implementation of {@code InstantProvider} may be mutable.
+ * For example, {@link java.util.Date Date} is a mutable implementation of this interface.
+ * The result of calling {@link #toInstant()} is always immutable.
  * <p>
- * When implementing an API that accepts an InstantProvider as a parameter, it is
- * important to convert the input to a <code>Instant</code> once and once only.
+ * When implementing an API that accepts an {@code InstantProvider} as a parameter, it is
+ * important to convert the input to a {@code Instant} once and once only.
  * It is recommended that this is done at the top of the method before other processing.
  * This is necessary to handle the case where the implementation of the provider is
- * mutable and changes in value between two calls to <code>toInstant()</code>.
+ * mutable and changes in value between two calls to {@code toInstant()}.
  * <p>
- * The recommended way to convert an InstantProvider to a Instant is using
+ * The recommended way to convert an {@code InstantProvider} to a {@code Instant} is using
  * {@link Instant#instant(InstantProvider)} as this method provides additional null checking.
  * <p>
- * It is recommended that this interface should only be implemented by classes
- * that provide time information to at least minute precision.
- * <p>
- * The implementation of <code>InstantProvider</code> may provide more
+ * The implementation of {@code InstantProvider} may provide more
  * information than just an instant. For example,
  * {@link javax.time.calendar.ZonedDateTime ZonedDateTime}, implements this
  * interface and also provides full date, time and time zone information.
@@ -69,17 +64,19 @@ package javax.time;
 public interface InstantProvider {
 
     /**
-     * Returns an instance of <code>Instant</code> initialized from the
+     * Returns an instance of {@code Instant} initialized from the
      * state of this object.
      * <p>
      * This method will take the instant represented by this object and return
-     * an {@link Instant}. If this object is already a <code>Instant</code>
+     * an {@link Instant}. If this object is already a {@code Instant}
      * then it is simply returned.
      * <p>
      * If this object does not support nanosecond precision, then all fields
      * below the precision it does support must be set to zero. For example,
      * if this instance only stores millisecond precision, then the
-     * nanoseconds part of the <code>Instant</code> will be set to zero.
+     * nanoseconds part of the {@code Instant} will be set to zero.
+     * It is recommended that this interface should only be implemented by classes
+     * that provide time information to at least minute precision.
      * <p>
      * InstantProvider makes no overall guarantees about the thread-safety.
      * However, this method must return a fully consistent result.
@@ -87,7 +84,7 @@ public interface InstantProvider {
      * then the result of this method must refer to a valid snapshot of both fields,
      * and not a snapshot where one field has been updated and not the other.
      *
-     * @return the <code>Instant</code> equivalent to this object, never null
+     * @return the {@code Instant} equivalent to this object, never null
      * @throws CalendricalException if the time cannot be converted
      */
     Instant toInstant();

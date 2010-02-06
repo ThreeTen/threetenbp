@@ -32,7 +32,7 @@
 package javax.time;
 
 /**
- * These methods are proposed for java.lang.Math.
+ * These methods are proposed for {@code java.lang.Math}
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

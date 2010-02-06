@@ -38,6 +38,7 @@ import java.math.BigInteger;
 import javax.time.calendar.CalendarConversionException;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
+import javax.time.calendar.format.CalendricalParseException;
 
 /**
  * An instantaneous point on the time-line.
@@ -51,18 +52,19 @@ import javax.time.calendar.ZoneOffset;
  * <p>
  * A physical instant could be at any point on an infinite time-line.
  * However, for practicality the API and this class limits the measurable time-line
- * to the number of seconds that can be held in a <code>long</code>. This is greater
+ * to the number of seconds that can be held in a {@code long}. This is greater
  * than the current estimated age of the universe.
  * <p>
  * In order to represent the data a 96 bit number is required. To achieve this the
- * data is stored as seconds, measured using a <code>long</code>, and nanoseconds,
- * measured using an <code>int</code>. The nanosecond part will always be between
+ * data is stored as seconds, measured using a {@code long}, and nanoseconds,
+ * measured using an {@code int}. The nanosecond part will always be between
  * 0 and 999,999,999 representing the nanosecond part of the second.
+ * <p>
  * The seconds are measured from the standard Java epoch of 1970-01-01T00:00:00Z.
+ * Instants on the time-line after the epoch are positive, earlier are negative.
  * <p>
  * This class uses the {@link TimeScales#utc() simplified UTC} time scale.
  * The scale keeps in step with true UTC by simply ignoring leap seconds.
- * <p>
  * This scale has been chosen as the default because it is simple to understand
  * and is what most users of the API expect. If the application needs an accurate
  * time scale that is aware of leap seconds then {@link TimeScaleInstant} should
@@ -119,13 +121,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Instant</code> from a provider of instants.
+     * Obtains an instance of {@code Instant} from a provider of instants.
      * <p>
      * In addition to calling {@link InstantProvider#toInstant()} this method
      * also checks the validity of the result of the provider.
      *
      * @param instantProvider  a provider of instant information, not null
-     * @return the created instant, never null
+     * @return an {@code Instant}, never null
      */
     public static Instant instant(InstantProvider instantProvider) {
         checkNotNull(instantProvider, "InstantProvider must not be null");
@@ -136,18 +138,20 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Instant</code> using seconds from the
-     * epoch of 1970-01-01T00:00:00Z with a zero nanosecond fraction.
+     * Obtains an instance of {@code Instant} using seconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * The nanosecond field is set to zero.
      *
      * @param seconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @return the created Instant, never null
+     * @return an {@code Instant}, never null
      */
     public static Instant seconds(long seconds) {
         return create(seconds, 0);
     }
 
     /**
-     * Obtains an instance of <code>Instant</code> using seconds from the
+     * Obtains an instance of {@code Instant} using seconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
      * <p>
      * This methods allows an arbitrary number of nanoseconds to be passed in.
@@ -162,8 +166,8 @@ public final class Instant
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
-     * @return the created Instant, never null
-     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of Instant
+     * @return an {@code Instant}, never null
+     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Instant}
      */
     public static Instant seconds(long epochSeconds, long nanoAdjustment) {
         long secs = MathUtils.safeAdd(epochSeconds, nanoAdjustment / NANOS_PER_SECOND);
@@ -176,12 +180,16 @@ public final class Instant
     }
 
     /**
-     * Obtains an instance of <code>Instant</code> using seconds from the
-     * epoch of 1970-01-01T00:00:00Z with up to 9 fractional digits.
+     * Obtains an instance of {@code Instant} using seconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * The seconds and nanoseconds are extracted from the specified {@code BigDecimal}.
+     * If the decimal is larger than {@code Long.MAX_VALUE} or has more than 9 decimal
+     * places then an exception is thrown.
      *
-     * @param seconds  the number of seconds
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the input seconds exceeds the capacity of a duration
+     * @param seconds  the number of seconds, up to scale 9
+     * @return an {@code Instant}, never null
+     * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Instant}
      */
     public static Instant seconds(BigDecimal seconds) {
         checkNotNull(seconds, "Seconds must not be null");
@@ -190,11 +198,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Instant</code> using milliseconds from the
-     * epoch of 1970-01-01T00:00:00Z with no further fraction of a second.
+     * Obtains an instance of {@code Instant} using milliseconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * The seconds and nanoseconds are extracted from the specified milliseconds.
      *
      * @param millis  the number of milliseconds
-     * @return the created Duration, never null
+     * @return an {@code Instant}, never null
      */
     public static Instant millis(long millis) {
         long secs = millis / 1000;
@@ -208,14 +218,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Instant</code> using nanoseconds from the
+     * Obtains an instance of {@code Instant} using nanoseconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
-     * This factory will split the supplied nanosecond amount to ensure that the
-     * stored nanosecond is in the range 0 to 999,999,999.
+     * The seconds and nanoseconds are extracted from the specified nanoseconds.
      *
      * @param nanos  the number of nanoseconds
-     * @return the created Duration, never null
+     * @return an {@code Instant}, never null
      */
     public static Instant nanos(long nanos) {
         long secs = nanos / NANOS_PER_SECOND;
@@ -228,15 +237,16 @@ public final class Instant
     }
 
     /**
-     * Obtains an instance of <code>Instant</code> using nanoseconds from the
+     * Obtains an instance of {@code Instant} using nanoseconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
-     * This factory will split the supplied nanosecond amount to ensure that the
-     * stored nanosecond is in the range 0 to 999,999,999.
+     * The seconds and nanoseconds are extracted from the specified {@code BigInteger}.
+     * If the resulting seconds value is larger than {@code Long.MAX_VALUE} then an
+     * exception is thrown.
      *
      * @param nanos  the number of nanoseconds, not null
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of Duration
+     * @return an {@code Instant}, never null
+     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Instant}
      */
     public static Instant nanos(BigInteger nanos) {
         checkNotNull(nanos, "Nanos must not be null");
@@ -249,7 +259,29 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an instance of Duration using seconds and nanoseconds.
+     * Obtains an instance of {@code Instant} by parsing a string.
+     * <p>
+     * This will parse the string produced by {@link #toString()} which is
+     * the ISO-8601 format {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
+     * The numbers must be ASCII numerals.
+     * The seconds are mandatory, but the fractional seconds are optional.
+     * There must be no more than 9 digits after the decimal point.
+     * The letters (T and Z) will be accepted in upper or lower case.
+     * The decimal point may be either a dot or a comma.
+     *
+     * @param text  the text to parse, not null
+     * @return an {@code Instant}, never null
+     * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
+     */
+    public static Instant parse(final String text) {
+        Instant.checkNotNull(text, "Text to parse must not be null");
+        // TODO: Implement
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code Instant} using seconds and nanoseconds.
      *
      * @param seconds  the length of the duration in seconds
      * @param nanoAdjustment  the nanosecond adjustment within the second, from 0 to 999,999,999
@@ -262,16 +294,16 @@ public final class Instant
     }
 
     /**
-     * Constructs an instance of Instant using seconds from the epoch of
+     * Constructs an instance of {@code Instant} using seconds from the epoch of
      * 1970-01-01T00:00:00Z and nanosecond fraction of second.
      *
      * @param epochSeconds  the number of seconds from the epoch
-     * @param nanoOfSecond  the nanoseconds within the second, must be positive
+     * @param nanos  the nanoseconds within the second, must be positive
      */
-    private Instant(long epochSeconds, int nanoOfSecond) {
+    private Instant(long epochSeconds, int nanos) {
         super();
         this.seconds = epochSeconds;
-        this.nanos = nanoOfSecond;
+        this.nanos = nanos;
     }
 
     /**
@@ -285,12 +317,16 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z.
+     * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * in this {@code Instant}.
      * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
+     * The instant is stored using two fields - seconds and nanoseconds.
+     * The seconds are relative to the epoch of 1970-01-01T00:00:00Z.
+     * The nanoseconds are a value from 0 to 999,999,999 adjusting the epoch
+     * seconds to be later along the time-line.
+     * The total instant is defined by calling this method and {@link #getNanoOfSecond()}.
      *
      * @return the seconds from the epoch
-     * @see #getNanoOfSecond()
      */
     public long getEpochSeconds() {
         return seconds;
@@ -299,9 +335,14 @@ public final class Instant
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
      * of the second returned by {@link #getEpochSeconds()}.
+     * <p>
+     * The instant is stored using two fields - seconds and nanoseconds.
+     * The seconds are relative to the epoch of 1970-01-01T00:00:00Z.
+     * The nanoseconds are a value from 0 to 999,999,999 adjusting the epoch
+     * seconds to be later along the time-line.
+     * The total instant is defined by calling this method and {@link #getEpochSeconds()}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
-     * @see #getEpochSeconds()
      */
     public int getNanoOfSecond() {
         return nanos;
@@ -309,13 +350,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified duration added.
+     * Returns a copy of this {@code Instant} with the specified {@code Duration} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to add, not null
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param duration  the duration to add, positive or negative, not null
+     * @return an {@code Instant} with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
@@ -337,13 +378,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of seconds added.
+     * Returns a copy of this {@code Instant} with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondsToAdd  the seconds to add
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param secondsToAdd  the seconds to add, positive or negative
+     * @return an {@code Instant} with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusSeconds(long secondsToAdd) {
         if (secondsToAdd == 0) {
@@ -355,13 +396,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of milliseconds added.
+     * Returns a copy of this {@code Instant} with the specified number of milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param millisToAdd  the milliseconds to add
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param millisToAdd  the milliseconds to add, positive or negative
+     * @return an {@code Instant} with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusMillis(long millisToAdd) {
         if (millisToAdd == 0) {
@@ -384,13 +425,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of nanoseconds added.
+     * Returns a copy of this {@code Instant} with the specified number of nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanosToAdd  the nanoseconds to add
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param nanosToAdd  the nanoseconds to add, positive or negative
+     * @return an {@code Instant} with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusNanos(long nanosToAdd) {
         if (nanosToAdd == 0) {
@@ -413,13 +454,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified duration subtracted.
+     * Returns a copy of this {@code Instant} with the specified {@code Duration} subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to subtract, not null
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param duration  the duration to subtract, positive or negative, not null
+     * @return an {@code Instant} with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
@@ -438,13 +479,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of seconds subtracted.
+     * Returns a copy of this {@code Instant} with the specified number of seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondsToSubtract  the seconds to subtract
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param secondsToSubtract  the seconds to subtract, positive or negative
+     * @return an {@code Instant} with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusSeconds(long secondsToSubtract) {
         if (secondsToSubtract == 0) {
@@ -456,13 +497,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of milliseconds subtracted.
+     * Returns a copy of this {@code Instant} with the specified number of milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param millisToSubtract  the milliseconds to subtract
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param millisToSubtract  the milliseconds to subtract, positive or negative
+     * @return an {@code Instant} with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusMillis(long millisToSubtract) {
         if (millisToSubtract == 0) {
@@ -486,13 +527,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of nanoseconds subtracted.
+     * Returns a copy of this {@code Instant} with the specified number of nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanosToSubtract  the nanoseconds to subtract
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
+     * @return an {@code Instant} with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusNanos(long nanosToSubtract) {
         if (nanosToSubtract == 0) {
@@ -516,20 +557,20 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to the number of seconds from the epoch
-     * of 1970-01-01T00:00:00Z expressed as a <code>BigDecimal</code>.
+     * Converts this {@code Instant} to the number of seconds from the epoch
+     * of 1970-01-01T00:00:00Z expressed as a {@code BigDecimal}.
      *
-     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z
+     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, scale 9, never null
      */
     public BigDecimal toEpochSeconds() {
         return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
     }
 
     /**
-     * Converts this instant to the number of nanoseconds from the epoch
-     * of 1970-01-01T00:00:00Z expressed as a <code>BigInteger</code>.
+     * Converts this {@code Instant} to the number of nanoseconds from the epoch
+     * of 1970-01-01T00:00:00Z expressed as a {@code BigInteger}.
      *
-     * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z
+     * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z, never null
      */
     public BigInteger toEpochNanos() {
         return BigInteger.valueOf(seconds).multiply(BILLION).add(BigInteger.valueOf(nanos));
@@ -537,20 +578,18 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to the number of milliseconds from the epoch
+     * Converts this {@code Instant} to the number of milliseconds from the epoch
      * of 1970-01-01T00:00:00Z.
      * <p>
-     * <code>Instant</code> uses a precision of nanoseconds.
-     * The conversion will drop any excess precision information as though the
-     * amount in nanoseconds was subject to integer division by one million.
+     * If this instant represents a point on the time-line too far in the future
+     * or past to fit in a {@code long} milliseconds, then an exception is thrown.
      * <p>
-     * <code>Instant</code> can store points on the time-line further in the
-     * future and further in the past than can be represented by a millisecond
-     * value. In this scenario, this method will throw an exception.
+     * If this instant has greater than millisecond precision, then the conversion
+     * will drop any excess precision information as though the amount in nanoseconds
+     * was subject to integer division by one million.
      *
      * @return the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
-     * @throws CalendarConversionException if the instant is too large or too
-     *  small to represent as epoch milliseconds
+     * @throws CalendarConversionException if the calculation exceeds the capacity of {@code long}
      */
     public long toEpochMillisLong() {
         try {
@@ -564,10 +603,10 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to an <code>Instant</code>, trivially
-     * returning <code>this</code>.
+     * Converts this {@code Instant} to an {@code Instant}, trivially
+     * returning {@code this}.
      *
-     * @return <code>this</code>, never null
+     * @return {@code this}, never null
      */
     public Instant toInstant() {
         return this;
@@ -575,7 +614,9 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this Instant to another.
+     * Compares this {@code Instant} to another.
+     * <p>
+     * The comparison is based on the time-line position of the instants.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -590,7 +631,9 @@ public final class Instant
     }
 
     /**
-     * Is this Instant after the specified one.
+     * Checks if this {@code Instant} is after the specified one.
+     * <p>
+     * The comparison is based on the time-line position of the instants.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return true if this instant is after the specified instant
@@ -601,7 +644,9 @@ public final class Instant
     }
 
     /**
-     * Is this Instant before the specified one.
+     * Checks if this {@code Instant} is before the specified one.
+     * <p>
+     * The comparison is based on the time-line position of the instants.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return true if this instant is before the specified instant
@@ -613,7 +658,9 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Is this Instant equal to that specified.
+     * Is this {@code Instant} equal to that specified.
+     * <p>
+     * The comparison is based on the time-line position of the instants.
      *
      * @param otherInstant  the other instant, null returns false
      * @return true if the other instant is equal to this one
@@ -632,7 +679,7 @@ public final class Instant
     }
 
     /**
-     * A hash code for this Instant.
+     * A hash code for this {@code Instant}.
      *
      * @return a suitable hash code
      */
@@ -643,15 +690,16 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * A string representation of this Instant using ISO-8601 representation.
+     * A string representation of this {@code Instant} using ISO-8601 representation.
      * <p>
-     * The format of the returned string will be <code>yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ</code>.
+     * The format of the returned string will be {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
      *
-     * @return an ISO-8601 representation of this Instant
+     * @return an ISO-8601 representation of this instant, never null
      */
     @Override
     public String toString() {
         // TODO: optimize and handle big instants
+        // TODO: Consider epoch plus offset format instead
         return OffsetDateTime.fromInstant(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
     }
 

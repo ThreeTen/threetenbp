@@ -41,7 +41,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * A duration between two instants on the time-line.
  * <p>
  * The Java Time Framework models time as a series of instantaneous events,
- * known as instants, along a single time-line. This class represents the
+ * known as {@link Instant instants}, along a single time-line. This class represents the
  * duration between two of those instants.
  * <p>
  * A physical instant is an instantaneous event.
@@ -49,18 +49,21 @@ import javax.time.calendar.format.CalendricalParseException;
  * <p>
  * A physical duration could be of infinite length.
  * However, for practicality the API and this class limits the length to the
- * number of seconds that can be held in a <code>long</code>.
+ * number of seconds that can be held in a {@code long}.
  * <p>
- * The nanosecond part is stored as an amount between 0 and 999,999,999 that
- * is added to the length of the duration in seconds. For example, the negative
- * duration of <code>PT-0.1S</code> is represented as -1 second and 900,000,000 nanoseconds.
+ * In order to represent the data a 96 bit number is required. To achieve this the
+ * data is stored as seconds, measured using a {@code long}, and nanoseconds,
+ * measured using an {@code int}. The nanosecond part will always be between
+ * 0 and 999,999,999 representing the nanosecond part of the second.
+ * For example, the negative duration of {@code PT-0.1S} is represented as
+ * -1 second and 900,000,000 nanoseconds.
  * <p>
- * In strict scientific terms, the unit of "seconds" only has a precise meaning
- * when applied to an instant. This is because it is the instant that defines the
- * time scale used, not the duration. For example, the simplified UTC time scale
- * used by {@link Instant} ignore leap seconds, which alters the effective length
- * of a second. By comparison, the TAI time scale follows the international scientific
- * definition of a second exactly. For most applications, this subtlety will be irrelevant.
+ * In this API, the unit of "seconds" only has a precise meaning when applied to an instant.
+ * This is because it is the instant that defines the time scale used, not the duration.
+ * For example, the simplified UTC time scale used by {@code Instant} ignores leap seconds,
+ * which alters the effective length of a second. By comparison, the TAI time scale follows
+ * the international scientific definition of a second exactly.
+ * For most applications, this subtlety will be irrelevant.
  * <p>
  * Duration is immutable and thread-safe.
  *
@@ -94,20 +97,22 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from a number of seconds.
+     * Obtains an instance of {@code Duration} from a number of seconds.
+     * <p>
+     * The nanosecond in second field is set to zero.
      *
-     * @param seconds  the number of seconds
-     * @return the created Duration, never null
+     * @param seconds  the number of seconds, positive or negative
+     * @return a {@code Duration}, never null
      */
     public static Duration seconds(long seconds) {
         return create(seconds, 0);
     }
 
     /**
-     * Obtains an instance of <code>Duration</code> from a number of seconds
+     * Obtains an instance of {@code Duration} from a number of seconds
      * and an adjustment in nanoseconds.
      * <p>
-     * This methods allows an arbitrary number of nanoseconds to be passed in.
+     * This method allows an arbitrary number of nanoseconds to be passed in.
      * The factory will alter the values of the second and nanosecond in order
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
      * For example, the following will result in the exactly the same duration:
@@ -117,10 +122,10 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *  Duration.duration(2, 1000000001);
      * </pre>
      *
-     * @param seconds  the number of seconds
+     * @param seconds  the number of seconds, positive or negative
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of Duration
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Duration}
      */
     public static Duration seconds(long seconds, long nanoAdjustment) {
         long secs = MathUtils.safeAdd(seconds, nanoAdjustment / NANOS_PER_SECOND);
@@ -133,11 +138,15 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Obtains an instance of <code>Duration</code> from a number of seconds.
+     * Obtains an instance of {@code Duration} from a number of seconds.
+     * <p>
+     * The seconds and nanoseconds are extracted from the specified {@code BigDecimal}.
+     * If the decimal is larger than {@code Long.MAX_VALUE} or has more than 9 decimal
+     * places then an exception is thrown.
      *
-     * @param seconds  the number of seconds
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the input seconds exceeds the capacity of a duration
+     * @param seconds  the number of seconds, up to scale 9, positive or negative
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Duration}
      */
     public static Duration seconds(BigDecimal seconds) {
         Instant.checkNotNull(seconds, "Seconds must not be null");
@@ -146,10 +155,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from a number of milliseconds.
+     * Obtains an instance of {@code Duration} from a number of milliseconds.
+     * <p>
+     * The seconds and nanoseconds are extracted from the specified milliseconds.
      *
-     * @param millis  the number of milliseconds
-     * @return the created Duration, never null
+     * @param millis  the number of milliseconds, positive or negative
+     * @return a {@code Duration}, never null
      */
     public static Duration millis(long millis) {
         long secs = millis / 1000;
@@ -163,13 +174,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from a number of nanoseconds.
+     * Obtains an instance of {@code Duration} from a number of nanoseconds.
      * <p>
-     * This factory will split the supplied nanosecond amount to ensure that the
-     * stored nanosecond is in the range 0 to 999,999,999.
+     * The seconds and nanoseconds are extracted from the specified nanoseconds.
      *
-     * @param nanos  the number of nanoseconds
-     * @return the created Duration, never null
+     * @param nanos  the number of nanoseconds, positive or negative
+     * @return a {@code Duration}, never null
      */
     public static Duration nanos(long nanos) {
         long secs = nanos / NANOS_PER_SECOND;
@@ -182,14 +192,15 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Obtains an instance of <code>Duration</code> from a number of nanoseconds.
+     * Obtains an instance of {@code Duration} from a number of nanoseconds.
      * <p>
-     * This factory will split the supplied nanosecond amount to ensure that the
-     * stored nanosecond is in the range 0 to 999,999,999.
+     * The seconds and nanoseconds are extracted from the specified {@code BigInteger}.
+     * If the resulting seconds value is larger than {@code Long.MAX_VALUE} then an
+     * exception is thrown.
      *
-     * @param nanos  the number of nanoseconds, not null
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of Duration
+     * @param nanos  the number of nanoseconds, positive or negative, not null
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Duration}
      */
     public static Duration nanos(BigInteger nanos) {
         Instant.checkNotNull(nanos, "Nanos must not be null");
@@ -202,42 +213,45 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from a number of standard length minutes.
+     * Obtains an instance of {@code Duration} from a number of standard length minutes.
      * <p>
-     * This factory uses the standard definition of a minute, where each
-     * minute is 60 seconds.
+     * The seconds are calculated based on the standard definition of a minute,
+     * where each minute is 60 seconds.
+     * The nanosecond in second field is set to zero.
      *
-     * @param minutes  the number of minutes
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the input minutes exceeds the capacity of Duration
+     * @param minutes  the number of minutes, positive or negative
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the input minutes exceeds the capacity of {@code Duration}
      */
     public static Duration standardMinutes(long minutes) {
         return create(MathUtils.safeMultiply(minutes, 60), 0);
     }
 
     /**
-     * Obtains an instance of <code>Duration</code> from a number of standard length hours.
+     * Obtains an instance of {@code Duration} from a number of standard length hours.
      * <p>
-     * This factory uses the standard definition of an hour, where each
-     * hour is 3600 seconds.
+     * The seconds are calculated based on the standard definition of an hour,
+     * where each hour is 3600 seconds.
+     * The nanosecond in second field is set to zero.
      *
-     * @param hours  the number of hours
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the input hours exceeds the capacity of Duration
+     * @param hours  the number of hours, positive or negative
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the input hours exceeds the capacity of {@code Duration}
      */
     public static Duration standardHours(long hours) {
         return create(MathUtils.safeMultiply(hours, 3600), 0);
     }
 
     /**
-     * Obtains an instance of <code>Duration</code> from a number of standard length days.
+     * Obtains an instance of {@code Duration} from a number of standard length days.
      * <p>
-     * This factory uses the standard definition of a day, where each
-     * day is 86400 seconds which implies a 24 hour day.
+     * The seconds are calculated based on the standard definition of a day,
+     * where each day is 86400 seconds which implies a 24 hour day.
+     * The nanosecond in second field is set to zero.
      *
-     * @param days  the number of days
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the input days exceeds the capacity of Duration
+     * @param days  the number of days, positive or negative
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the input days exceeds the capacity of {@code Duration}
      */
     public static Duration standardDays(long days) {
         return create(MathUtils.safeMultiply(days, 86400), 0);
@@ -245,13 +259,16 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> representing the duration between two instants.
-     * This method will return a negative duration if the end is before the start.
+     * Obtains an instance of {@code Duration} representing the duration between two instants.
+     * <p>
+     * A {@code Duration} represents a directed distance between two points on the time-line.
+     * As such, this method will return a negative duration if the end is before the start.
+     * To obtain a positive duration call {@link #abs()} on the result of this factory.
      *
      * @param startInclusive  the start instant, inclusive, not null
      * @param endExclusive  the end instant, exclusive, not null
-     * @return the created Duration, never null
-     * @throws ArithmeticException if the duration exceeds the capacity of Duration
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
         Instant start = Instant.instant(startInclusive);
@@ -267,10 +284,10 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from a string.
+     * Obtains an instance of {@code Duration} by parsing a string.
      * <p>
-     * This will parse the string produced by <code>toString()</code> which is
-     * the ISO8601 format <code>PTnS</code> where <code>n</code> is
+     * This will parse the string produced by {@link #toString()} which is
+     * the ISO-8601 format {@code PTnS} where {@code n} is
      * the number of seconds with optional decimal part.
      * The number must consist of ASCII numerals.
      * There must only be a negative sign at the start of the number and it can
@@ -281,8 +298,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The decimal point may be either a dot or a comma.
      *
      * @param text  the text to parse, not null
-     * @return the created Duration, never null
-     * @throws IllegalArgumentException if the text cannot be parsed to a Duration
+     * @return a {@code Duration}, never null
+     * @throws CalendricalParseException if the text cannot be parsed to a {@code Duration}
      */
     public static Duration parse(final String text) {
         Instant.checkNotNull(text, "Text to parse must not be null");
@@ -350,9 +367,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates an instance of Duration using seconds and nanoseconds.
+     * Obtains an instance of {@code Duration} using seconds and nanoseconds.
      *
-     * @param seconds  the length of the duration in seconds
+     * @param seconds  the length of the duration in seconds, positive or negative
      * @param nanoAdjustment  the nanosecond adjustment within the second, from 0 to 999,999,999
      */
     private static Duration create(long seconds, int nanoAdjustment) {
@@ -363,9 +380,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Constructs an instance of Duration using seconds and nanoseconds.
+     * Constructs an instance of {@code Duration} using seconds and nanoseconds.
      *
-     * @param seconds  the length of the duration in seconds
+     * @param seconds  the length of the duration in seconds, positive or negative
      * @param nanos  the nanoseconds within the second, from 0 to 999,999,999
      */
     private Duration(long seconds, int nanos) {
@@ -385,53 +402,65 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this duration is zero length.
+     * Checks if this {@code Duration} is zero length.
+     * <p>
+     * A {@code Duration} represents a directed distance between two points on the time-line
+     * and can therefore be positive, zero or negative.
+     * This method checks whether the length is zero.
      *
-     * @return true if this duration is zero length
+     * @return true if this duration has a total length equal to zero
      */
     public boolean isZero() {
         return (seconds | nanos) == 0;
     }
 
     /**
-     * Checks if this duration is positive, excluding zero.
+     * Checks if this {@code Duration} is positive, excluding zero.
      * <p>
-     * Periods are allowed to be negative, so this method checks if this period is positive.
+     * A {@code Duration} represents a directed distance between two points on the time-line
+     * and can therefore be positive, zero or negative.
+     * This method checks whether the length is greater than zero.
      *
-     * @return true if this duration is positive and not zero
+     * @return true if this duration has a total length greater than zero
      */
     public boolean isPositive() {
         return seconds >= 0 && ((seconds | nanos) != 0);
     }
 
     /**
-     * Checks if this duration is positive or zero.
+     * Checks if this {@code Duration} is positive or zero.
      * <p>
-     * Periods are allowed to be negative, so this method checks if this period is positive.
+     * A {@code Duration} represents a directed distance between two points on the time-line
+     * and can therefore be positive, zero or negative.
+     * This method checks whether the length is greater than or equal to zero.
      *
-     * @return true if this duration is positive or zero
+     * @return true if this duration has a total length greater than or equal zero
      */
     public boolean isPositiveOrZero() {
         return seconds >= 0;
     }
 
     /**
-     * Checks if this duration is negative, excluding zero.
+     * Checks if this {@code Duration} is negative, excluding zero.
      * <p>
-     * Periods are allowed to be negative, so this method checks if this period is negative.
+     * A {@code Duration} represents a directed distance between two points on the time-line
+     * and can therefore be positive, zero or negative.
+     * This method checks whether the length is less than zero.
      *
-     * @return true if this duration is negative and not zero
+     * @return true if this duration has a total length less than zero
      */
     public boolean isNegative() {
         return seconds < 0;
     }
 
     /**
-     * Checks if this duration is negative or zero.
+     * Checks if this {@code Duration} is negative or zero.
      * <p>
-     * Periods are allowed to be negative, so this method checks if this period is negative.
+     * A {@code Duration} represents a directed distance between two points on the time-line
+     * and can therefore be positive, zero or negative.
+     * This method checks whether the length is less than or equal to zero.
      *
-     * @return true if this duration is negative or zero
+     * @return true if this duration has a total length less than or equal to zero
      */
     public boolean isNegativeOrZero() {
         return seconds < 0 || ((seconds | nanos) == 0);
@@ -439,36 +468,36 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of seconds in this duration.
+     * Gets the number of seconds in this {@code Duration}.
      * <p>
-     * The length of the duration is expressed using two fields - seconds and
-     * nanoseconds. The nanoseconds is held as a value from 0 to 999,999,999
-     * and is an adjustment to the length.
+     * The length of the duration is stored using two fields - seconds and nanoseconds.
+     * The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to
+     * the length in seconds.
+     * The total duration is defined by calling this method and {@link #getNanosInSecond()}.
      * <p>
-     * A duration can be negative, and this is expressed by the negative sign
-     * of the value returned from this method. A duration of -1 nanosecond is
-     * stored as -1 seconds plus 999,999,999 nanoseconds.
+     * A {@code Duration} represents a directed distance between two points on the time-line.
+     * A negative duration is expressed by the negative sign of the seconds part.
+     * A duration of -1 nanosecond is stored as -1 seconds plus 999,999,999 nanoseconds.
      *
-     * @return the length of the duration in seconds
-     * @see #getNanosInSecond()
+     * @return the whole seconds part of the length of the duration, positive or negative
      */
     public long getSeconds() {
         return seconds;
     }
 
     /**
-     * Gets the number of nanoseconds within the second in this duration.
+     * Gets the number of nanoseconds within the second in this {@code Duration}.
      * <p>
-     * The length of the duration is expressed using two fields - seconds and
-     * nanoseconds. The nanoseconds is held as a value from 0 to 999,999,999
-     * and is an adjustment to the length.
+     * The length of the duration is stored using two fields - seconds and nanoseconds.
+     * The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to
+     * the length in seconds.
+     * The total duration is defined by calling this method and {@link #getSeconds()}.
      * <p>
-     * A duration can be negative, and this is expressed by the negative sign
-     * of the value returned from {@link #getSeconds()}. A duration of
-     * -1 nanosecond is stored as -1 seconds plus 999,999,999 nanoseconds.
+     * A {@code Duration} represents a directed distance between two points on the time-line.
+     * A negative duration is expressed by the negative sign of the seconds part.
+     * A duration of -1 nanosecond is stored as -1 seconds plus 999,999,999 nanoseconds.
      *
-     * @return the nanoseconds within the second, from 0 to 999,999,999
-     * @see #getSeconds()
+     * @return the nanoseconds within the second part of the length of the duration, from 0 to 999,999,999
      */
     public int getNanosInSecond() {
         return nanos;
@@ -476,13 +505,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified duration added.
+     * Returns a copy of this {@code Duration} with the specified {@code Duration} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to add, not null
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param duration  the duration to add, positive or negative, not null
+     * @return a {@code Duration} with the length added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plus(Duration duration) {
         long secsToAdd = duration.seconds;
@@ -501,13 +530,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified number of seconds added.
+     * Returns a copy of this {@code Duration} with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondsToAdd  the seconds to add
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param secondsToAdd  the seconds to add, positive or negative
+     * @return a {@code Duration} with the length added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plusSeconds(long secondsToAdd) {
         if (secondsToAdd == 0) {
@@ -518,13 +547,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this duration with the specified number of milliseconds added.
+     * Returns a copy of this {@code Duration} with the specified number of milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param millisToAdd  the milliseconds to add
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param millisToAdd  the milliseconds to add, positive or negative
+     * @return a {@code Duration} with the length added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plusMillis(long millisToAdd) {
         if (millisToAdd == 0) {
@@ -546,13 +575,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this duration with the specified number of nanoseconds added.
+     * Returns a copy of this {@code Duration} with the specified number of nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanosToAdd  the nanoseconds to add
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param nanosToAdd  the nanoseconds to add, positive or negative
+     * @return a {@code Duration} with the length added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plusNanos(long nanosToAdd) {
         if (nanosToAdd == 0) {
@@ -575,13 +604,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified duration subtracted.
+     * Returns a copy of this {@code Duration} with the specified duration subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to subtract, not null
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param duration  the duration to subtract, positive or negative, not null
+     * @return a {@code Duration} with the length subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minus(Duration duration) {
         long secsToSubtract = duration.seconds;
@@ -600,13 +629,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the specified number of seconds subtracted.
+     * Returns a copy of this {@code Duration} with the specified number of seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondsToSubtract the seconds to subtract
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param secondsToSubtract the seconds to subtract, positive or negative
+     * @return a {@code Duration} with the length subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusSeconds(long secondsToSubtract) {
         if (secondsToSubtract == 0) {
@@ -617,13 +646,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this duration with the specified number of milliseconds subtracted.
+     * Returns a copy of this {@code Duration} with the specified number of milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param millisToSubtract  the milliseconds to subtract
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param millisToSubtract  the milliseconds to subtract, positive or negative
+     * @return a {@code Duration} with the length subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusMillis(long millisToSubtract) {
         if (millisToSubtract == 0) {
@@ -643,13 +672,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this duration with the specified number of nanoseconds subtracted.
+     * Returns a copy of this {@code Duration} with the specified number of nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanosToSubtract  the nanoseconds to subtract
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
+     * @return a {@code Duration} with the length subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusNanos(long nanosToSubtract) {
         if (nanosToSubtract == 0) {
@@ -670,13 +699,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration multiplied by the scalar.
+     * Returns a copy of this {@code Duration} multiplied by the scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param multiplicand  the value to multiply the duration by
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param multiplicand  the value to multiply the duration by, positive or negative
+     * @return a {@code Duration} with the length multiplied, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration multipliedBy(long multiplicand) {
         if (multiplicand == 0) {
@@ -696,13 +725,14 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration divided by the specified value.
+     * Returns a copy of this {@code Duration} divided by the specified value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param divisor  the value to divide the duration by
-     * @return a new updated Duration, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
+     * @param divisor  the value to divide the duration by, positive or negative, not zero
+     * @return a {@code Duration} with the length divided, never null
+     * @throws ArithmeticException if the divisor is zero
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration dividedBy(long divisor) {
         if (divisor == 0) {
@@ -719,24 +749,30 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this duration with the amount negated.
+     * Returns a copy of this {@code Duration} with the length negated.
+     * <p>
+     * This method swaps the sign of the total length of this duration.
+     * For example, {@code PT1.3S} will be returned as {@code PT-1.3S}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return the new period with the amount negated, never null
-     * @throws ArithmeticException if the amount is <code>Long.MIN_VALUE</code>
+     * @return a {@code Duration} with the length negated, never null
+     * @throws ArithmeticException if the seconds part of the length is {@code Long.MIN_VALUE}
      */
     public Duration negated() {
         return multipliedBy(-1);
     }
 
     /**
-     * Returns a copy of this duration with positive length.
+     * Returns a copy of this {@code Duration} with positive length.
+     * <p>
+     * This method returns a positive duration by effectively removing the sign from any negative total length.
+     * For example, {@code PT-1.3S} will be returned as {@code PT1.3S}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return the new period with absolute amount, never null
-     * @throws ArithmeticException if the seconds part of the length is <code>Long.MIN_VALUE</code>
+     * @return a {@code Duration} with absolute length, never null
+     * @throws ArithmeticException if the seconds part of the length is {@code Long.MIN_VALUE}
      */
     public Duration abs() {
         return isNegative() ? negated() : this;
@@ -744,11 +780,67 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this duration to another.
+     * Converts this {@code Duration} to the total length in seconds and
+     * fractional nanoseconds expressed as a {@code BigDecimal}.
+     *
+     * @return the total length of the duration in seconds, with a scale of 9, never null
+     */
+    public BigDecimal toSeconds() {
+        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
+    }
+
+    /**
+     * Converts this {@code Duration} to the total length in nanoseconds expressed as a {@code BigInteger}.
+     *
+     * @return the total length of the duration in nanoseconds, never null
+     */
+    public BigInteger toNanos() {
+        return BigInteger.valueOf(seconds).multiply(Instant.BILLION).add(BigInteger.valueOf(nanos));
+    }
+
+    /**
+     * Converts this {@code Duration} to the total length in milliseconds expressed as a {@code long}.
+     * <p>
+     * If this duration is too large to fit in a {@code long} nanoseconds, then an
+     * exception is thrown.
+     *
+     * @return the total length of the duration in nanoseconds
+     * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
+     */
+    public long toNanosLong() {
+        long millis = MathUtils.safeMultiply(seconds, 1000000000);
+        millis = MathUtils.safeAdd(millis, nanos);
+        return millis;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this {@code Duration} to the total length in milliseconds.
+     * <p>
+     * If this duration is too large to fit in a {@code long} milliseconds, then an
+     * exception is thrown.
+     * <p>
+     * If this duration has greater than millisecond precision, then the conversion
+     * will drop any excess precision information as though the amount in nanoseconds
+     * was subject to integer division by one million.
+     *
+     * @return the total length of the duration in milliseconds
+     * @throws ArithmeticException if the length exceeds the capacity of a {@code long}
+     */
+    public long toMillisLong() {
+        long millis = MathUtils.safeMultiply(seconds, 1000);
+        millis = MathUtils.safeAdd(millis, nanos / 1000000);
+        return millis;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this {@code Duration} to another.
+     * <p>
+     * The comparison is based on the total length of the durations.
      *
      * @param otherDuration  the other duration to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if otherDuration is null
      */
     public int compareTo(Duration otherDuration) {
         int cmp = MathUtils.safeCompare(seconds, otherDuration.seconds);
@@ -759,22 +851,24 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Is this duration greater than the specified one.
+     * Checks if this {@code Duration} is greater than the specified one.
+     * <p>
+     * The comparison is based on the total length of the durations.
      *
      * @param otherDuration  the other duration to compare to, not null
      * @return true if this duration is greater than the specified duration
-     * @throws NullPointerException if otherDuration is null
      */
     public boolean isGreaterThan(Duration otherDuration) {
         return compareTo(otherDuration) > 0;
     }
 
     /**
-     * Is this duration less than the specified one.
+     * Checks if this {@code Duration} is less than the specified one.
+     * <p>
+     * The comparison is based on the total length of the durations.
      *
      * @param otherDuration  the other duration to compare to, not null
      * @return true if this duration is less than the specified duration
-     * @throws NullPointerException if otherDuration is null
      */
     public boolean isLessThan(Duration otherDuration) {
         return compareTo(otherDuration) < 0;
@@ -782,61 +876,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the length of this duration in seconds expressed as a <code>BigDecimal</code>.
-     *
-     * @return the length of the duration in seconds, with a scale of 9
-     */
-    public BigDecimal toSeconds() {
-        return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
-    }
-
-    /**
-     * Returns the length of this duration in nanoseconds expressed as a <code>BigInteger</code>.
-     *
-     * @return the length of the duration in nanoseconds
-     */
-    public BigInteger toNanos() {
-        return BigInteger.valueOf(seconds).multiply(Instant.BILLION).add(BigInteger.valueOf(nanos));
-    }
-
-    /**
-     * Returns the length of this duration in nanoseconds expressed as a <code>long</code>.
+     * Is this {@code Duration} equal to that specified.
      * <p>
-     * If the duration is too large to fit in a long nanoseconds, then an
-     * exception is thrown.
-     *
-     * @return the length of the duration in nanoseconds
-     * @throws ArithmeticException if the length exceeds the capacity of a long
-     */
-    public long toNanosLong() {
-        long millis = MathUtils.safeMultiply(seconds, 1000000000);
-        millis = MathUtils.safeAdd(millis, nanos);
-        return millis;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the length of this duration in milliseconds.
-     * <p>
-     * <code>Duration</code> uses a precision of nanoseconds.
-     * The conversion will drop any excess precision information as though the
-     * amount in nanoseconds was subject to integer division by one million.
-     * <p>
-     * <code>Duration</code> can store lengths that are too large to be represented
-     * by a millisecond value. In this scenario, this method will throw an exception.
-     *
-     * @return the length of the duration in milliseconds
-     * @throws ArithmeticException if the length exceeds the capacity of a long
-     */
-    public long toMillisLong() {
-        long millis = MathUtils.safeMultiply(seconds, 1000);
-        millis = MathUtils.safeAdd(millis, nanos / 1000000);
-        return millis;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this Duration equal to that specified.
+     * The comparison is based on the total length of the durations.
      *
      * @param otherDuration  the other duration, null returns false
      * @return true if the other duration is equal to this one
@@ -855,7 +897,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * A hash code for this Duration.
+     * A hash code for this {@code Duration}.
      *
      * @return a suitable hash code
      */
@@ -866,13 +908,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * A string representation of this Duration using ISO-8601 seconds based
-     * representation.
+     * A string representation of this {@code Duration} using ISO-8601 seconds
+     * based representation, such as {@code PT12.345S}.
      * <p>
-     * The format of the returned string will be <code>PTnS</code> where n is
+     * The format of the returned string will be {@code PTnS} where n is
      * the seconds and fractional seconds of the duration.
      *
-     * @return an ISO-8601 representation of this Duration
+     * @return an ISO-8601 representation of this duration, never null
      */
     @Override
     public String toString() {

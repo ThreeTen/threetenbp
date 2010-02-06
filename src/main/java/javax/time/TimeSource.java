@@ -34,26 +34,30 @@ package javax.time;
 import java.io.Serializable;
 
 /**
- * A time-source providing access to the current instant.
+ * A source providing access to the current instant.
  * <p>
- * The Java Time Framework abstracts the concept of the 'current time' into two interfaces
- * - <code>TimeSource</code> and {@link javax.time.calendar.Clock Clock}.
- * The former, this class, provides access to the current instant and
- * is independent of local factors such as time-zone.
- * The latter, <code>Clock</code>, provides access to the current date and
- * time but requires a time-zone.
+ * The Java Time Framework abstracts the concept of the "current time" into two interfaces
+ * - {@code TimeSource} and {@link javax.time.calendar.Clock Clock}.
+ * This class, provides access to the current {@code Instant} which is independent of
+ * local factors such as time-zone and cannot be queried for human-scale fields.
+ * By comparison, {@code Clock} provides access to the current date and time, via
+ * human-scale fields, but requires a time-zone.
  * <p>
  * The purpose of this abstraction is to allow alternate time-sources
  * to be plugged in as and when required. Applications use an object to obtain
  * the current time rather than a static method. This simplifies testing.
- * <p>
- * Applications should <i>avoid</i> using the static methods on this class.
- * Instead, they should pass a <code>TimeSource</code> into any method that requires it.
- * A dependency injection framework is one way to achieve this:
+ * 
+ * <h4>Best practice</h4>
+ * The recommended best practice for most applications is to <i>only using the static methods</i>
+ * of this class in framework and testing code. Instead, the main application should obtain the
+ * current time from a {@code TimeSource} instance that is passed to the object or method.
+ * This approach is typically implemented using a dependency injection framework.
  * <pre>
  * public class MyBean {
- *   private TimeSource timeSource;  // dependency inject
- *   ...
+ *   final TimeSource timeSource;
+ *   &#064;Inject MyBean(TimeSource ts) {
+ *       this.timeSource = ts;
+ *   }
  *   public void process(Instant eventTime) {
  *     if (eventTime.isBefore(timeSource.instant()) {
  *       ...
@@ -63,10 +67,18 @@ import java.io.Serializable;
  * </pre>
  * This approach allows alternate time-source implementations, such as {@link #fixed}
  * or {@link #offsetSystem} to be used during testing.
+ * <pre>
+ * public void test_process() {
+ *   MyBean bean = new MyBean(TimeSource.fixed(Instant.EPOCH)) {
+ *   assert ...
+ * }
+ * </pre>
  * <p>
  * TimeSource is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
+ * <p>
+ * It is recommended that implementations are {@code Serializable} where possible.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -79,21 +91,25 @@ public abstract class TimeSource {
      * <p>
      * The time-source wraps {@link System#currentTimeMillis()}, thus it has
      * at best millisecond resolution.
+     * <p>
+     * The returned implementation is {@code Serializable}
      *
-     * @return a time-source that uses the system millisecond clock, never null
+     * @return a {@code TimeSource} that uses the system millisecond clock, never null
      */
     public static TimeSource system() {
         return SystemTimeSource.INSTANCE;
     }
 
     /**
-     * Gets a time-source that always returns the same instant.
+     * Gets a time-source that always returns the same {@code Instant}.
      * <p>
-     * The time-source will return the <code>Instant</code> passed in, which may
-     * have any resolution an instant supports.
+     * This method converts the {@code InstantProvider} to an {@code Instant}
+     * which it then returns from the {@code TimeSource}.
+     * <p>
+     * The returned implementation is {@code Serializable}
      *
      * @param fixedInstantProvider  the instant to return from each call to the time-source
-     * @return a time-source that always returns the same instant, never null
+     * @return a {@code TimeSource} that always returns the same instant, never null
      */
     public static TimeSource fixed(InstantProvider fixedInstantProvider) {
         Instant.checkNotNull(fixedInstantProvider, "InstantProvider must not be null");
@@ -111,9 +127,11 @@ public abstract class TimeSource {
      * The final instant is adjusted by adding the offset.
      * This is useful for simulating an application running at a later or earlier
      * point in time.
+     * <p>
+     * The returned implementation is {@code Serializable}
      *
      * @param offset  the duration by which this time-source is offset from the system millisecond clock
-     * @return a time-source that is offset from the system millisecond clock, never null
+     * @return a {@code TimeSource} that is offset from the system millisecond clock, never null
      */
     public static TimeSource offsetSystem(Duration offset) {
         Instant.checkNotNull(offset, "Duration must not be null");
@@ -132,7 +150,7 @@ public abstract class TimeSource {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the current instant from the time-source.
+     * Gets the current {@code Instant} from this {@code TimeSource}.
      * <p>
      * The instant returned by this method will vary according to the implementation.
      * For example, the time-source returned by {@link #system()} will return
@@ -143,10 +161,16 @@ public abstract class TimeSource {
      * central time server across the network. Obviously, in this case the lookup
      * could fail, and so the method is permitted to throw an exception.
      *
-     * @return the current instant from the time-source, never null
+     * @return the current {@code Instant} from this time-source, never null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public abstract Instant instant();
+
+    // TODO: implement InstantProvider?
+    // TODO: add timeScaleInstant overridable method
+    // TODO: add long millis method?
+    // TODO: add caching of instants ("get to second precision")
+    // TODO: define equals/hashCode
 
     //-----------------------------------------------------------------------
     /**
