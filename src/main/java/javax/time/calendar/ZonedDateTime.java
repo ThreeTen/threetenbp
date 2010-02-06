@@ -733,7 +733,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the date altered using the adjuster.
+     * Returns a copy of this {@code ZonedDateTime} with the date altered using the adjuster.
      * <p>
      * Adjusters can be used to alter the date in various ways.
      * A simple adjuster might simply set the one of the fields, such as the year field.
@@ -753,7 +753,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the date altered using the
+     * Returns a copy of this {@code ZonedDateTime} with the date altered using the
      * adjuster, providing a resolver to handle an invalid date-time.
      * <p>
      * Adjusters can be used to alter the date in various ways.
@@ -776,7 +776,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the time altered using the adjuster.
+     * Returns a copy of this {@code ZonedDateTime} with the time altered using the adjuster.
      * <p>
      * Adjusters can be used to alter the time in various ways.
      * A simple adjuster might simply set the one of the fields, such as the hour field.
@@ -796,7 +796,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the time altered using the
+     * Returns a copy of this {@code ZonedDateTime} with the time altered using the
      * adjuster, providing a resolver to handle an invalid date-time.
      * <p>
      * Adjusters can be used to alter the time in various ways.
@@ -820,7 +820,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the year value altered.
+     * Returns a copy of this {@code ZonedDateTime} with the year value altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -838,7 +838,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the month-of-year value altered.
+     * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -856,7 +856,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the day-of-month value altered.
+     * Returns a copy of this {@code ZonedDateTime} with the day-of-month value altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -875,7 +875,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the day-of-year altered.
+     * Returns a copy of this {@code ZonedDateTime} with the day-of-year altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -895,7 +895,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the date values altered.
+     * Returns a copy of this {@code ZonedDateTime} with the date values altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -920,7 +920,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the hour-of-day value altered.
+     * Returns a copy of this {@code ZonedDateTime} with the hour-of-day value altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -928,7 +928,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested hour, never null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public ZonedDateTime withHourOfDay(int hourOfDay) {
@@ -938,7 +938,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the minute-of-hour value altered.
+     * Returns a copy of this {@code ZonedDateTime} with the minute-of-hour value altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -946,7 +946,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested minute, never null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
@@ -956,7 +956,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the second-of-minute value altered.
+     * Returns a copy of this {@code ZonedDateTime} with the second-of-minute value altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -964,7 +964,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested second, never null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
@@ -974,7 +974,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the nano-of-second value altered.
+     * Returns a copy of this {@code ZonedDateTime} with the nano-of-second value altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -982,7 +982,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested nanosecond, never null
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
@@ -992,7 +992,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the time values altered.
+     * Returns a copy of this {@code ZonedDateTime} with the time values altered.
      * <p>
      * This method will return a new instance with the same date fields,
      * but altered time fields.
@@ -1006,7 +1006,7 @@ public final class ZonedDateTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested time, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
@@ -1016,7 +1016,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the time values altered.
+     * Returns a copy of this {@code ZonedDateTime} with the time values altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1026,7 +1026,7 @@ public final class ZonedDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested time, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
@@ -1036,7 +1036,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the time values altered.
+     * Returns a copy of this {@code ZonedDateTime} with the time values altered.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1047,7 +1047,7 @@ public final class ZonedDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested time, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
@@ -1058,7 +1058,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the specified period added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period added.
      * <p>
      * This adds the specified period to this date-time.
      * <p>
@@ -1068,7 +1068,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the period added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plus(PeriodProvider periodProvider) {
@@ -1076,7 +1076,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period added.
      * <p>
      * This adds the specified period to this date-time.
      * <p>
@@ -1084,7 +1084,7 @@ public final class ZonedDateTime
      *
      * @param periodProvider  the period to add, not null
      * @param resolver  the resolver to use, not null
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the period added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @throws CalendricalException if the date-time cannot be resolved
      */
@@ -1098,7 +1098,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in years added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in years added.
      * <p>
      * This method add the specified amount to the years field in four steps:
      * <ol>
@@ -1115,7 +1115,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusYears(int years) {
@@ -1125,7 +1125,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in months added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in months added.
      * <p>
      * This method adds the specified amount to the months field in four steps:
      * <ol>
@@ -1142,7 +1142,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMonths(int months) {
@@ -1152,7 +1152,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in weeks added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in weeks added.
      * <p>
      * This method adds the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
@@ -1166,7 +1166,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusWeeks(int weeks) {
@@ -1176,7 +1176,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in days added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in days added.
      * <p>
      * This method adds the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
@@ -1190,7 +1190,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the days added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusDays(int days) {
@@ -1200,7 +1200,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in hours added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in hours added.
      * <p>
      * This method uses field based addition.
      * This method changes the field by the specified number of hours.
@@ -1218,7 +1218,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the hours added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusHours(int hours) {
@@ -1228,7 +1228,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in minutes added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in minutes added.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1236,7 +1236,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the minutes added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMinutes(int minutes) {
@@ -1246,7 +1246,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in seconds added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in seconds added.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1254,7 +1254,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the seconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusSeconds(int seconds) {
@@ -1264,7 +1264,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in nanoseconds added.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in nanoseconds added.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1272,7 +1272,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the nanoseconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusNanos(int nanos) {
@@ -1283,7 +1283,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the specified period subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period subtracted.
      * <p>
      * This subtracts the specified period from this date-time.
      * <p>
@@ -1293,7 +1293,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the period subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minus(PeriodProvider periodProvider) {
@@ -1301,7 +1301,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period subtracted.
      * <p>
      * This subtracts the specified period from this date-time.
      * <p>
@@ -1309,7 +1309,7 @@ public final class ZonedDateTime
      *
      * @param periodProvider  the period to subtract, not null
      * @param resolver  the resolver to use, not null
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the period subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @throws CalendricalException if the date-time cannot be resolved
      */
@@ -1323,7 +1323,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in years subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in years subtracted.
      * <p>
      * This method subtracts the specified amount to the years field in four steps:
      * <ol>
@@ -1340,7 +1340,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusYears(int years) {
@@ -1350,7 +1350,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in months subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in months subtracted.
      * <p>
      * This method subtracts the specified amount to the months field in four steps:
      * <ol>
@@ -1367,7 +1367,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusMonths(int months) {
@@ -1377,7 +1377,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in weeks subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in weeks subtracted.
      * <p>
      * This method subtracts the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
@@ -1391,7 +1391,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusWeeks(int weeks) {
@@ -1401,7 +1401,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in days subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in days subtracted.
      * <p>
      * This method subtracts the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
@@ -1415,7 +1415,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusDays(int days) {
@@ -1425,7 +1425,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in hours subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in hours subtracted.
      * <p>
      * This method uses field based subtraction.
      * This method changes the field by the specified number of hours.
@@ -1443,7 +1443,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the hours subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusHours(int hours) {
@@ -1453,7 +1453,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in minutes subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in minutes subtracted.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1461,7 +1461,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the minutes subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusMinutes(int minutes) {
@@ -1471,7 +1471,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in seconds subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in seconds subtracted.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1479,7 +1479,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the seconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusSeconds(int seconds) {
@@ -1489,7 +1489,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the specified period in nanoseconds subtracted.
+     * Returns a copy of this {@code ZonedDateTime} with the specified period in nanoseconds subtracted.
      * <p>
      * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
@@ -1497,7 +1497,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a new updated ZonedDateTime, never null
+     * @return a {@code ZonedDateTime} with the nanoseconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime minusNanos(int nanos) {
@@ -1534,7 +1534,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date-time to an {@code Instant}.
+     * Converts this {@code ZonedDateTime} to an {@code Instant}.
      *
      * @return an Instant representing the same instant, never null
      */
@@ -1543,7 +1543,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a {@code LocalDate}.
+     * Converts this {@code ZonedDateTime} to a {@code LocalDate}.
      *
      * @return a LocalDate representing the date fields of this date-time, never null
      */
@@ -1552,7 +1552,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a {@code LocalTime}.
+     * Converts this {@code ZonedDateTime} to a {@code LocalTime}.
      *
      * @return a LocalTime representing the time fields of this date-time, never null
      */
@@ -1561,7 +1561,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a {@code LocalDateTime}.
+     * Converts this {@code ZonedDateTime} to a {@code LocalDateTime}.
      *
      * @return a LocalDateTime representing the fields of this date-time, never null
      */
@@ -1570,7 +1570,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a {@code OffsetDate}.
+     * Converts this {@code ZonedDateTime} to a {@code OffsetDate}.
      *
      * @return a OffsetDate representing the date fields of this date-time, never null
      */
@@ -1579,7 +1579,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a {@code OffsetTime}.
+     * Converts this {@code ZonedDateTime} to a {@code OffsetTime}.
      *
      * @return a OffsetTime representing the time fields of this date-time, never null
      */
@@ -1588,7 +1588,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date-time to a {@code OffsetDateTime}.
+     * Converts this {@code ZonedDateTime} to a {@code OffsetDateTime}.
      *
      * @return a OffsetDateTime representing the fields of this date-time, never null
      */
@@ -1610,7 +1610,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date-time to another date-time based on the UTC
+     * Compares this {@code ZonedDateTime} to another date-time based on the UTC
      * equivalent date-times then time zone unique key.
      * <p>
      * The ordering is consistent with equals as it takes into account
@@ -1629,7 +1629,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Is this date-time after the specified date-time.
+     * Checks if this {@code ZonedDateTime} is after the specified date-time.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
@@ -1640,7 +1640,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * Is this date-time before the specified date-time.
+     * Checks if this {@code ZonedDateTime} is before the specified date-time.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this point is before the specified date-time
@@ -1652,7 +1652,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Is this date-time equal to the specified date-time.
+     * Checks if this {@code ZonedDateTime} is equal to the specified date-time.
      * <p>
      * This compares the date-time and the offset.
      *
@@ -1673,7 +1673,7 @@ public final class ZonedDateTime
     }
 
     /**
-     * A hash code for this date-time.
+     * A hash code for this {@code ZonedDateTime}.
      *
      * @return a suitable hash code
      */
@@ -1684,7 +1684,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date-time as a {@code String}, such as
+     * Outputs this {@code ZonedDateTime} as a {@code String}, such as
      * '2007-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * The output will be one of the following formats:
