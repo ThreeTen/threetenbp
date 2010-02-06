@@ -181,24 +181,26 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_DateProvider() {
-        assertSame(LocalDate.of(TEST_2007_07_15), TEST_2007_07_15);
+    // from(DateProvider)
+    //-----------------------------------------------------------------------
+    public void factory_from_DateProvider() {
+        assertSame(LocalDate.from(TEST_2007_07_15), TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateProvider_null() {
-        LocalDate.of(null);
+    public void factory_from_DateProvider_null() {
+        LocalDate.from(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateProvider_null_toLocalDate() {
-        LocalDate.of(new MockDateProviderReturnsNull());
+    public void factory_from_DateProvider_null_toLocalDate() {
+        LocalDate.from(new MockDateProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDate test = LocalDate.of(mmp);
+        LocalDate test = LocalDate.from(mmp);
         check(test, 2008, 6, 30);
     }
 

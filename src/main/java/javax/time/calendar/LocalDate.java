@@ -138,7 +138,7 @@ public final class LocalDate
      * @return the local date, never null
      * @throws NullPointerException if the provider is null or returns null
      */
-    public static LocalDate of(DateProvider dateProvider) {
+    public static LocalDate from(DateProvider dateProvider) {
         ISOChronology.checkNotNull(dateProvider, "DateProvider must not be null");
         LocalDate result = dateProvider.toLocalDate();
         ISOChronology.checkNotNull(result, "DateProvider implementation must not return null");
@@ -147,7 +147,7 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts an Epoch Day count to a date.
+     * Obtains an instance of {@code LocalDate} from the epoch days count.
      * <p>
      * The Epoch Day count is a simple incrementing count of days
      * where day 0 is 1970-01-01.
@@ -161,7 +161,7 @@ public final class LocalDate
     }
 
     /**
-     * Converts a Modified Julian Day (MJD) count to a date.
+     * Obtains an instance of {@code LocalDate} from the Modified Julian Day (MJD).
      * <p>
      * The Modified Julian Day count is a simple incrementing count of days
      * where day 0 is 1858-11-17.

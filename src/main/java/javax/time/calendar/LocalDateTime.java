@@ -128,7 +128,7 @@ public final class LocalDateTime
      * @return the local date-time, never null
      */
     public static LocalDateTime midnightFrom(DateProvider dateProvider) {
-        LocalDate date = LocalDate.of(dateProvider);
+        LocalDate date = LocalDate.from(dateProvider);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -295,7 +295,7 @@ public final class LocalDateTime
      * @return the local date-time, never null
      */
     public static LocalDateTime from(DateProvider dateProvider, TimeProvider timeProvider) {
-        LocalDate date = LocalDate.of(dateProvider);
+        LocalDate date = LocalDate.from(dateProvider);
         LocalTime time = LocalTime.from(timeProvider);
         return new LocalDateTime(date, time);
     }

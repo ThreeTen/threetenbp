@@ -51,7 +51,7 @@ import javax.time.CalendricalException;
  * mutable and changes in value between two calls to {@code toLocalDate()}.
  * <p>
  * The recommended way to convert a DateProvider to a LocalDate is using
- * {@link LocalDate#of(DateProvider)} as this method provides additional null checking.
+ * {@link LocalDate#from(DateProvider)} as this method provides additional null checking.
  * <p>
  * The implementation of {@code DateProvider} may provide more
  * information than just a local date. For example, {@link OffsetDate},

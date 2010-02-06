@@ -123,7 +123,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalTime}.
+     * Obtains an instance of {@code LocalTime} from an hour and minute.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      * <p>
@@ -144,7 +144,7 @@ public final class LocalTime
     }
 
     /**
-     * Obtains an instance of {@code LocalTime}.
+     * Obtains an instance of {@code LocalTime} from an hour, minute and second.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
      * <p>
@@ -188,7 +188,7 @@ public final class LocalTime
 //    }
 
     /**
-     * Obtains an instance of {@code LocalTime}.
+     * Obtains an instance of {@code LocalTime} from an hour, minute, second and nanosecond.
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
@@ -229,7 +229,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts a second-of-day value to a time.
+     * Obtains an instance of {@code LocalTime} from a second-of-day value.
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
@@ -247,7 +247,8 @@ public final class LocalTime
     }
 
     /**
-     * Converts a second-of-day value, with associated nanos of second, to a time.
+     * Obtains an instance of {@code LocalTime} from a second-of-day value, with
+     * associated nanos of second.
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
@@ -267,7 +268,7 @@ public final class LocalTime
     }
 
     /**
-     * Converts a nanos of day value to a time.
+     * Obtains an instance of {@code LocalTime} from a nanos-of-day value.
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
