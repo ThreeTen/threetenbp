@@ -60,22 +60,22 @@ public enum QuarterOfYear {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
-     * This has the numeric value of {@code 1}
+     * This has the numeric value of {@code 1}.
      */
     Q1,
     /**
      * The singleton instance for the second quarter-of-year, from April to June.
-     * This has the numeric value of {@code 2}
+     * This has the numeric value of {@code 2}.
      */
     Q2,
     /**
      * The singleton instance for the third quarter-of-year, from July to September.
-     * This has the numeric value of {@code 3}
+     * This has the numeric value of {@code 3}.
      */
     Q3,
     /**
      * The singleton instance for the fourth quarter-of-year, from October to December.
-     * This has the numeric value of {@code 4}
+     * This has the numeric value of {@code 4}.
      */
     Q4;
 

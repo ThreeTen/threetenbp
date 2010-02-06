@@ -65,62 +65,62 @@ public enum MonthOfYear {
 
     /**
      * The singleton instance for the month of January.
-     * This has the numeric value of {@code 1}
+     * This has the numeric value of {@code 1}.
      */
     JANUARY,
     /**
      * The singleton instance for the month of February.
-     * This has the numeric value of {@code 2}
+     * This has the numeric value of {@code 2}.
      */
     FEBRUARY,
     /**
      * The singleton instance for the month of March.
-     * This has the numeric value of {@code 3}
+     * This has the numeric value of {@code 3}.
      */
     MARCH,
     /**
      * The singleton instance for the month of April.
-     * This has the numeric value of {@code 4}
+     * This has the numeric value of {@code 4}.
      */
     APRIL,
     /**
      * The singleton instance for the month of May.
-     * This has the numeric value of {@code 5}
+     * This has the numeric value of {@code 5}.
      */
     MAY,
     /**
      * The singleton instance for the month of June.
-     * This has the numeric value of {@code 6}
+     * This has the numeric value of {@code 6}.
      */
     JUNE,
     /**
      * The singleton instance for the month of July.
-     * This has the numeric value of {@code 7}
+     * This has the numeric value of {@code 7}.
      */
     JULY,
     /**
      * The singleton instance for the month of August.
-     * This has the numeric value of {@code 8}
+     * This has the numeric value of {@code 8}.
      */
     AUGUST,
     /**
      * The singleton instance for the month of September.
-     * This has the numeric value of {@code 9}
+     * This has the numeric value of {@code 9}.
      */
     SEPTEMBER,
     /**
      * The singleton instance for the month of October.
-     * This has the numeric value of {@code 10}
+     * This has the numeric value of {@code 10}.
      */
     OCTOBER,
     /**
      * The singleton instance for the month of November.
-     * This has the numeric value of {@code 11}
+     * This has the numeric value of {@code 11}.
      */
     NOVEMBER,
     /**
      * The singleton instance for the month of December.
-     * This has the numeric value of {@code 12}
+     * This has the numeric value of {@code 12}.
      */
     DECEMBER;
 

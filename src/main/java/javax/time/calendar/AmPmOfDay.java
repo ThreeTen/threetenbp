@@ -63,12 +63,12 @@ public enum AmPmOfDay {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
-     * This has the numeric value of {@code 0}
+     * This has the numeric value of {@code 0}.
      */
     AM,
     /**
      * The singleton instance for the afternoon, PM - post meridiem.
-     * This has the numeric value of {@code 1}
+     * This has the numeric value of {@code 1}.
      */
     PM;
 
