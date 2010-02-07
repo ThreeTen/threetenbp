@@ -788,7 +788,7 @@ public class TestPeriodFields {
         try {
             PeriodFields.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[0]);
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: []", ex.getMessage());
+            assertEquals("Unable to convert Years to any requested unit: []", ex.getMessage());
             throw ex;
         }
     }
@@ -798,7 +798,7 @@ public class TestPeriodFields {
         try {
             PeriodFields.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[] {DAYS});
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: [Days]", ex.getMessage());
+            assertEquals("Unable to convert Years to any requested unit: [Days]", ex.getMessage());
             throw ex;
         }
     }
@@ -808,7 +808,7 @@ public class TestPeriodFields {
         try {
             PeriodFields.of(5, YEARS).toEquivalentPeriod(DAYS, HOURS);
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: [Days, Hours]", ex.getMessage());
+            assertEquals("Unable to convert Years to any requested unit: [Days, Hours]", ex.getMessage());
             throw ex;
         }
     }
@@ -821,14 +821,6 @@ public class TestPeriodFields {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toEquivalentPeriod_units_arrayContainsNull() {
         PeriodFields.of(5, YEARS).toEquivalentPeriod(null, YEARS);
-    }
-
-    //-----------------------------------------------------------------------
-    // toPeriodFields()
-    //-----------------------------------------------------------------------
-    public void test_toPeriodFields() {
-        PeriodFields base = PeriodFields.of(5, YEARS);
-        assertSame(base.toPeriodFields(), base);
     }
 
     //-----------------------------------------------------------------------
@@ -851,6 +843,14 @@ public class TestPeriodFields {
         Duration twoYears = ISOChronology.periodYears().getEstimatedDuration().multipliedBy(2);
         Duration fiveDays = ISOChronology.periodDays().getEstimatedDuration().multipliedBy(5);
         assertEquals(test, twoYears.plus(fiveDays));
+    }
+
+    //-----------------------------------------------------------------------
+    // toPeriodFields()
+    //-----------------------------------------------------------------------
+    public void test_toPeriodFields() {
+        PeriodFields base = PeriodFields.of(5, YEARS);
+        assertSame(base.toPeriodFields(), base);
     }
 
 //    //-----------------------------------------------------------------------

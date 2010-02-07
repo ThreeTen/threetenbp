@@ -37,6 +37,7 @@ import java.util.Arrays;
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.MathUtils;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -49,7 +50,7 @@ import javax.time.calendar.PeriodUnit;
  * allows an amount to be specified for one of the units, such as '3 Days' or '65 Seconds'.
  * <p>
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
- * dividedBy() and negated(), all of which return a new instance
+ * dividedBy(), negated() and abs(), all of which return a new instance.
  * <p>
  * {@code PeriodField} can store rules of any kind which makes it usable with
  * any calendar system.
@@ -67,7 +68,7 @@ public final class PeriodField
     private static final long serialVersionUID = 1L;
 
     /**
-     *  The amount of the period.
+     * The amount of the period.
      */
     private final long amount;
     /**
@@ -80,7 +81,7 @@ public final class PeriodField
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      *
-     * @param amount  the amount of the period, measured in terms of the unit, may be negative
+     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, not null
      */
     public static PeriodField of(long amount, PeriodUnit unit) {
@@ -92,7 +93,7 @@ public final class PeriodField
     /**
      * Constructor.
      *
-     * @param amount  the amount of the period, measured in terms of the unit, may be negative
+     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, validated not null
      */
     private PeriodField(long amount, PeriodUnit unit) {
@@ -104,6 +105,9 @@ public final class PeriodField
     //-----------------------------------------------------------------------
     /**
      * Checks if this period is zero length.
+     * <p>
+     * A {@code PeriodField} can be positive, zero or negative.
+     * This method checks whether the length is zero.
      *
      * @return true if this period is zero length
      */
@@ -112,21 +116,22 @@ public final class PeriodField
     }
 
     /**
-     * Checks if this period is positive, including zero.
+     * Checks if this period is positive, excluding zero.
      * <p>
-     * Periods are allowed to be negative, so this method checks if this period is positive.
+     * A {@code PeriodField} can be positive, zero or negative.
+     * This method checks whether the length is greater than zero.
      *
      * @return true if this period is positive or zero
      */
     public boolean isPositive() {
-        // TODO not inc zero
-        return amount >= 0;
+        return amount > 0;
     }
 
     /**
      * Checks if this period is negative, excluding zero.
      * <p>
-     * Periods are allowed to be negative, so this method checks if this period is negative.
+     * A {@code PeriodField} can be positive, zero or negative.
+     * This method checks whether the length is less than zero.
      *
      * @return true if this period is negative
      */
@@ -140,7 +145,7 @@ public final class PeriodField
      * <p>
      * For example, in the period '5 Days', the amount is '5'.
      *
-     * @return the amount of time of this period, may be negative
+     * @return the amount of time of this period, positive or negative
      */
     public long getAmount() {
         return amount;
@@ -151,7 +156,8 @@ public final class PeriodField
      * <p>
      * For example, in the period '5 Days', the amount is '5'.
      *
-     * @return the amount of time of this period, may be negative
+     * @return the amount of time of this period, positive or negative
+     * @throws ArithmeticException if the amount exceeds the capacity of an {@code int}
      */
     public int getAmountInt() {
         return MathUtils.safeToInt(amount);
@@ -175,8 +181,8 @@ public final class PeriodField
      * Calling this method returns a new period with the same unit but different amount.
      * For example, it could be used to change '3 Days' to '5 Days'.
      *
-     * @param amount  the amount of time to set in the returned period, may be negative
-     * @return a new period with the specified amount, never null
+     * @param amount  the amount of time to set in the returned period, positive or negative
+     * @return a {@code PeriodField} based on this period with the specified amount, never null
      */
     public PeriodField withAmount(long amount) {
         if (amount == this.amount) {
@@ -191,8 +197,8 @@ public final class PeriodField
      * Calling this method returns a new period with the same amount but different unit.
      * For example, it could be used to change '3 Days' to '3 Months'.
      *
-     * @param unit  the unit to set in the returned period, may be negative
-     * @return a new period with the specified rule, never null
+     * @param unit  the unit to set in the returned period, positive or negative
+     * @return a {@code PeriodField} based on this period with the specified unit, never null
      */
     public PeriodField withRule(PeriodUnit unit) {
         PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
@@ -208,8 +214,8 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to add, may be negative
-     * @return the new period with the specified period added, never null
+     * @param period  the period to add, positive or negative
+     * @return a {@code PeriodField} based on this period with the specified period added, never null
      * @throws IllegalArgumetException if the specified period has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
@@ -226,8 +232,8 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the period to add, measured in the unit of the period, may be negative
-     * @return the new period with the specified amount added, never null
+     * @param amount  the period to add, measured in the unit of the period, positive or negative
+     * @return a {@code PeriodField} based on this period with the specified amount added, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField plus(long amount) {
@@ -240,8 +246,8 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to subtract, may be negative
-     * @return the new period with the specified period subtracted, never null
+     * @param period  the period to subtract, positive or negative
+     * @return a {@code PeriodField} based on this period with the specified period subtracted, never null
      * @throws IllegalArgumetException if the specified has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
@@ -258,8 +264,8 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the period to subtract, measured in the unit of the period, may be negative
-     * @return the new period with the specified amount subtracted, never null
+     * @param amount  the period to subtract, measured in the unit of the period, positive or negative
+     * @return a {@code PeriodField} based on this period with the specified amount subtracted, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField minus(long amount) {
@@ -272,8 +278,8 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param scalar  the value to multiply by, may be negative
-     * @return the new period multiplied by the specified scalar, never null
+     * @param scalar  the value to multiply by, positive or negative
+     * @return a {@code PeriodField} based on this period multiplied by the specified scalar, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField multipliedBy(long scalar) {
@@ -286,8 +292,8 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param divisor  the value to divide by, may be negative
-     * @return the new period divided by the specified divisor, never null
+     * @param divisor  the value to divide by, positive or negative
+     * @return a {@code PeriodField} based on this period divided by the specified divisor, never null
      * @throws ArithmeticException if the divisor is zero
      */
     public PeriodField dividedBy(long divisor) {
@@ -300,7 +306,7 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return the new period with the amount negated, never null
+     * @return a {@code PeriodField} based on this period with the amount negated, never null
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField negated() {
@@ -312,7 +318,7 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return the new period with absolute amount, never null
+     * @return a {@code PeriodField} based on this period with an absolute amount, never null
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField abs() {
@@ -339,7 +345,7 @@ public final class PeriodField
         if (equivalent != null) {
             return equivalent.multipliedBy(amount);
         }
-        throw new CalendricalException("Unable to convert '" + this + "' to " + requiredUnit );
+        throw new CalendricalException("Unable to convert " + getUnit() + " to " + requiredUnit);
     }
 
     /**
@@ -366,7 +372,7 @@ public final class PeriodField
                 return equivalent.multipliedBy(amount);
             }
         }
-        throw new CalendricalException("Unable to convert '" + this + "' to any requested unit: " + Arrays.toString(requiredUnits));
+        throw new CalendricalException("Unable to convert " + getUnit() + " to any requested unit: " + Arrays.toString(requiredUnits));
     }
 
     //-----------------------------------------------------------------------
@@ -377,11 +383,39 @@ public final class PeriodField
      * This method uses that estimate to calculate an estimated duration for
      * this period.
      *
-     * @return the estimated duration of this period, may be negative
+     * @return the estimated duration of this period, positive or negative
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toEstimatedDuration() {
         return unit.getEstimatedDuration().multipliedBy(amount);
+    }
+
+    /**
+     * Converts this period to a {@code Duration} based on the standard durations of
+     * seconds and nanoseconds.
+     * <p>
+     * The conversion is based on the {@code ISOChronology} definition of the seconds and
+     * nanoseconds units. If this period can be converted to either seconds or nanoseconds
+     * then the conversion will succeed, subject to calculation overflow.
+     * <p>
+     * This conversion can only be used if the duration is being used in a manner
+     * compatible with the {@code ISOChronology} definitions of seconds and nanoseconds.
+     * This will be the case for most applications - care only needs to be taken if
+     * using explicit time-scales.
+     *
+     * @return the duration of this period based on {@code ISOChronology} fields, never null
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public Duration toDuration() {
+        PeriodField equivalent = unit.getEquivalentPeriod(ISOChronology.periodSeconds());
+        if (equivalent != null) {
+            return equivalent.multipliedBy(amount).toEstimatedDuration();
+        }
+        equivalent = unit.getEquivalentPeriod(ISOChronology.periodNanos());
+        if (equivalent != null) {
+            return equivalent.multipliedBy(amount).toEstimatedDuration();
+        }
+        throw new CalendricalException("Unable to convert " + getUnit() + " to a Duration");
     }
 
     //-----------------------------------------------------------------------
@@ -399,15 +433,15 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this period to another.
+     * Compares this period to the specified {@code PeriodField}.
      * <p>
      * The comparison orders first by the unit, then by the amount.
      *
      * @param otherPeriod  the other period to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if otherPeriod is null
      */
     public int compareTo(PeriodField otherPeriod) {
+        // there are no isGreaterThan/isLessThan methods as they don't make sense
         int cmp = unit.compareTo(otherPeriod.unit);
         if (cmp != 0) {
             return cmp;
@@ -417,9 +451,9 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instance equal to the object specified.
+     * Checks if this period is equal to the specified {@code PeriodField}.
      * <p>
-     * Two {@code PeriodField} instances are equal if the unit and amount are equal.
+     * The comparison is based on the unit and amount.
      *
      * @param obj  the object to check, null returns false
      * @return true if this period is the same as that specified
@@ -449,9 +483,11 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the period, such as '6 Days'.
+     * Returns a string representation of this period, such as '6 Days'.
+     * <p>
+     * The format consists of the amount, followed by a space, followed by the unit name.
      *
-     * @return a descriptive representation of the period, not null
+     * @return a descriptive representation of this period, not null
      */
     @Override
     public String toString() {

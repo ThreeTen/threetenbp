@@ -114,7 +114,7 @@ public class TestPeriodField {
     // isPositive()
     //-----------------------------------------------------------------------
     public void test_isPositive() {
-        assertEquals(PeriodField.of(0, DAYS).isPositive(), true);
+        assertEquals(PeriodField.of(0, DAYS).isPositive(), false);
         assertEquals(PeriodField.of(1, DAYS).isPositive(), true);
         assertEquals(PeriodField.of(-1, DAYS).isPositive(), false);
     }
@@ -135,20 +135,29 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(0, DAYS).getAmount(), 0L);
         assertEquals(PeriodField.of(1, DAYS).getAmount(), 1L);
         assertEquals(PeriodField.of(-1, DAYS).getAmount(), -1L);
+        assertEquals(PeriodField.of(Long.MAX_VALUE, DAYS).getAmount(), Long.MAX_VALUE);
+        assertEquals(PeriodField.of(Long.MIN_VALUE, DAYS).getAmount(), Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
     // getAmountInt()
     //-----------------------------------------------------------------------
     public void test_getAmountInt() {
-        assertEquals(PeriodField.of(0, DAYS).getAmountInt(), 0L);
-        assertEquals(PeriodField.of(1, DAYS).getAmountInt(), 1L);
-        assertEquals(PeriodField.of(-1, DAYS).getAmountInt(), -1L);
+        assertEquals(PeriodField.of(0, DAYS).getAmountInt(), 0);
+        assertEquals(PeriodField.of(1, DAYS).getAmountInt(), 1);
+        assertEquals(PeriodField.of(-1, DAYS).getAmountInt(), -1);
+        assertEquals(PeriodField.of(Integer.MAX_VALUE, DAYS).getAmountInt(), Integer.MAX_VALUE);
+        assertEquals(PeriodField.of(Integer.MIN_VALUE, DAYS).getAmountInt(), Integer.MIN_VALUE);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_getAmountInt_tooBig() {
         PeriodField.of(Integer.MAX_VALUE + 1L, DAYS).getAmountInt();
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_getAmountInt_tooSmall() {
+        PeriodField.of(Integer.MIN_VALUE - 1L, DAYS).getAmountInt();
     }
 
     //-----------------------------------------------------------------------
@@ -313,6 +322,11 @@ public class TestPeriodField {
         assertEquals(test5.multipliedBy(-3), PeriodField.of(-15, DAYS));
     }
 
+    public void test_multipliedBy_same() {
+        PeriodField base = PeriodField.of(12, DAYS);
+        assertSame(base.multipliedBy(1), base);
+    }
+
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooBig() {
         PeriodField.of(Long.MAX_VALUE / 2 + 1, DAYS).multipliedBy(2);
@@ -335,6 +349,11 @@ public class TestPeriodField {
         assertEquals(test12.dividedBy(5), PeriodField.of(2, DAYS));
         assertEquals(test12.dividedBy(6), PeriodField.of(2, DAYS));
         assertEquals(test12.dividedBy(-3), PeriodField.of(-4, DAYS));
+    }
+
+    public void test_dividedBy_same() {
+        PeriodField base = PeriodField.of(12, DAYS);
+        assertSame(base.dividedBy(1), base);
     }
 
     public void test_dividedBy_negate() {
@@ -400,7 +419,7 @@ public class TestPeriodField {
         try {
             PeriodField.of(5, YEARS).toEquivalentPeriod(DAYS);
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to Days", ex.getMessage());
+            assertEquals("Unable to convert Years to Days", ex.getMessage());
             throw ex;
         }
     }
@@ -458,7 +477,7 @@ public class TestPeriodField {
         try {
             PeriodField.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[0]);
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: []", ex.getMessage());
+            assertEquals("Unable to convert Years to any requested unit: []", ex.getMessage());
             throw ex;
         }
     }
@@ -468,7 +487,7 @@ public class TestPeriodField {
         try {
             PeriodField.of(5, YEARS).toEquivalentPeriod(new PeriodUnit[] {DAYS});
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: [Days]", ex.getMessage());
+            assertEquals("Unable to convert Years to any requested unit: [Days]", ex.getMessage());
             throw ex;
         }
     }
@@ -478,7 +497,7 @@ public class TestPeriodField {
         try {
             PeriodField.of(5, YEARS).toEquivalentPeriod(DAYS, HOURS);
         } catch (CalendricalException ex) {
-            assertEquals("Unable to convert '5 Years' to any requested unit: [Days, Hours]", ex.getMessage());
+            assertEquals("Unable to convert Years to any requested unit: [Days, Hours]", ex.getMessage());
             throw ex;
         }
     }
@@ -503,6 +522,31 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
+    // toDuration()
+    //-----------------------------------------------------------------------
+    public void test_toDuration_hours() {
+        Duration test = PeriodField.of(5, HOURS).toDuration();
+        Duration fiveHours = Duration.standardHours(5);
+        assertEquals(test, fiveHours);
+    }
+
+    public void test_toDuration_millis() {
+        Duration test = PeriodField.of(5, ISOChronology.periodMillis()).toDuration();
+        Duration fiveMillis = Duration.millis(5);
+        assertEquals(test, fiveMillis);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toDuration_cannotConvert() {
+        try {
+            PeriodField.of(5, MONTHS).toDuration();
+        } catch (CalendricalException ex) {
+            assertEquals(ex.getMessage(), "Unable to convert Months to a Duration");
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // toPeriodFields()
     //-----------------------------------------------------------------------
     public void test_toPeriodFields() {
@@ -514,11 +558,19 @@ public class TestPeriodField {
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        PeriodField test5 = PeriodField.of(5, DAYS);
-        PeriodField test6 = PeriodField.of(6, DAYS);
-        assertEquals(0, test5.compareTo(test5));
-        assertEquals(-1, test5.compareTo(test6));
-        assertEquals(1, test6.compareTo(test5));
+        PeriodField a = PeriodField.of(5, DAYS);
+        PeriodField b = PeriodField.of(6, DAYS);
+        assertEquals(0, a.compareTo(a));
+        assertEquals(-1, a.compareTo(b));
+        assertEquals(1, b.compareTo(a));
+    }
+
+    public void test_compareTo_differentUnits() {
+        PeriodField a = PeriodField.of(6 * 60, MINUTES);  // longer than 5 hours
+        PeriodField b = PeriodField.of(5, HOURS);
+        assertEquals(0, a.compareTo(a));
+        assertEquals(-1, a.compareTo(b));
+        assertEquals(1, b.compareTo(a));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
@@ -528,32 +580,40 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
     public void test_equals() {
-        PeriodField test5 = PeriodField.of(5, DAYS);
-        PeriodField test6 = PeriodField.of(6, DAYS);
-        assertEquals(true, test5.equals(test5));
-        assertEquals(false, test5.equals(test6));
-        assertEquals(false, test6.equals(test5));
+        PeriodField a = PeriodField.of(5, DAYS);
+        PeriodField b = PeriodField.of(6, DAYS);
+        assertEquals(true, a.equals(a));
+        assertEquals(false, a.equals(b));
+        assertEquals(false, b.equals(a));
     }
 
     public void test_equals_null() {
-        PeriodField test5 = PeriodField.of(5, DAYS);
-        assertEquals(false, test5.equals(null));
+        PeriodField test = PeriodField.of(5, DAYS);
+        assertEquals(false, test.equals(null));
     }
 
     public void test_equals_otherClass() {
-        PeriodField test5 = PeriodField.of(5, DAYS);
-        assertEquals(false, test5.equals(""));
+        PeriodField test = PeriodField.of(5, DAYS);
+        assertEquals(false, test.equals(""));
     }
 
     //-----------------------------------------------------------------------
+    // hashCode()
+    //-----------------------------------------------------------------------
     public void test_hashCode() {
-        PeriodField test5 = PeriodField.of(5, DAYS);
-        PeriodField test6 = PeriodField.of(6, DAYS);
-        assertEquals(true, test5.hashCode() == test5.hashCode());
-        assertEquals(false, test5.hashCode() == test6.hashCode());
+        PeriodField a = PeriodField.of(5, DAYS);
+        PeriodField b = PeriodField.of(6, DAYS);
+        PeriodField c = PeriodField.of(5, HOURS);
+        assertEquals(true, a.hashCode() == a.hashCode());
+        assertEquals(false, a.hashCode() == b.hashCode());
+        assertEquals(false, a.hashCode() == c.hashCode());
     }
 
+    //-----------------------------------------------------------------------
+    // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
         PeriodField test5 = PeriodField.of(5, DAYS);
