@@ -93,7 +93,7 @@ public final class PeriodFields
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      *
-     * @param amount  the amount of create with, may be negative
+     * @param amount  the amount of create with, positive or negative
      * @param unit  the period unit, not null
      * @return the {@code PeriodFields} instance, never null
      */
@@ -392,7 +392,7 @@ public final class PeriodFields
      * @return the period, null if no period stored for the unit
      */
     public PeriodField get(PeriodUnit unit) {
-        checkNotNull(unit, "PeriodRule must not be null");
+        checkNotNull(unit, "PeriodUnit must not be null");
         return unitFieldMap.get(unit);
     }
 
@@ -434,45 +434,13 @@ public final class PeriodFields
         return field.getAmountInt();
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the amount of the period for the specified unit, returning
-//     * the default value if this period does have an amount for the unit.
-//     *
-//     * @param unit  the unit to query, not null
-//     * @param defaultValue  the default value to return if the unit is not present
-//     * @return the period amount
-//     * @throws NullPointerException if the period unit is null
-//     */
-//    public long get(PeriodRule unit, long defaultValue) {
-//        checkNotNull(unit, "PeriodRule must not be null");
-//        Long amount = unitAmountMap.get(unit);
-//        return amount == null ? defaultValue : amount;
-//    }
-//
-//    /**
-//     * Gets the amount of the period for the specified unit, returning
-//     * the default value if this period does have an amount for the unit.
-//     * <p>
-//     * The amount is safely converted to an {@code int}.
-//     *
-//     * @param unit  the unit to query, not null
-//     * @param defaultValue  the default value to return if the unit is not present
-//     * @return the period amount
-//     * @throws NullPointerException if the period unit is null
-//     * @throws ArithmeticException if the amount is too large to be returned in an int
-//     */
-//    public int getInt(PeriodRule unit, int defaultValue) {
-//        return MathUtils.safeToInt(get(unit, defaultValue));
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with all zero amounts removed.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a new period with no zero amounts, never null
+     * @return a {@code PeriodField} based on this period with zero amounts removed, never null
      */
     public PeriodFields withZeroesRemoved() {
         if (isZero()) {
@@ -496,9 +464,9 @@ public final class PeriodFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount to store in terms of the unit, may be negative
+     * @param amount  the amount to store in terms of the unit, positive or negative
      * @param unit  the unit to store not null
-     * @return a new period with the specified amount and unit, never null
+     * @return a {@code PeriodField} based on this period with the specified period overlaid, never null
      */
     public PeriodFields with(long amount, PeriodUnit unit) {
         PeriodField existing = get(unit);
@@ -510,35 +478,6 @@ public final class PeriodFields
         return create(copy);
     }
 
-//    /**
-//     * Returns a copy of this period with the amounts from the specified map added.
-//     * <p>
-//     * If this instance already has an amount for any unit then the value is replaced.
-//     * Otherwise the value is added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param unitAmountMap  the new map of fields, not null
-//     * @return a new updated period instance, never null
-//     * @throws NullPointerException if the map contains null keys or values
-//     */
-//    public PeriodFields with(Map<PeriodRule, Long> unitAmountMap) {
-//        checkNotNull(unitAmountMap, "The field-value map must not be null");
-//        if (unitAmountMap.isEmpty()) {
-//            return this;
-//        }
-//        // don't use contains() as tree map and others can throw NPE
-//        TreeMap<PeriodRule, Long> clonedMap = clonedMap();
-//        for (Entry<PeriodRule, Long> entry : unitAmountMap.entrySet()) {
-//            PeriodRule unit = entry.getKey();
-//            Long value = entry.getValue();
-//            checkNotNull(unit, "Null keys are not permitted in field-value map");
-//            checkNotNull(value, "Null values are not permitted in field-value map");
-//            clonedMap.put(unit, value);
-//        }
-//        return new PeriodFields(clonedMap);
-//    }
-
     /**
      * Returns a copy of this period with the specified values altered.
      * <p>
@@ -549,7 +488,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to store, not null
-     * @return a new period with the specified period set, never null
+     * @return a {@code PeriodField} based on this period with the specified period overlaid, never null
      */
     public PeriodFields with(PeriodFields period) {
         if (this == ZERO) {
@@ -572,10 +511,10 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param unit  the unit to remove, not null
-     * @return a new period with the unit removed, never null
+     * @return a {@code PeriodField} based on this period with the specified unit removed, never null
      */
-    public PeriodFields withRuleRemoved(PeriodUnit unit) {
-        checkNotNull(unit, "PeriodRule must not be null");
+    public PeriodFields without(PeriodUnit unit) {
+        checkNotNull(unit, "PeriodUnit must not be null");
         if (unitFieldMap.containsKey(unit) == false) {
             return this;
         }
@@ -597,7 +536,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new period with the specified period added, never null
+     * @return a {@code PeriodField} based on this period with the specified period added, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(PeriodProvider periodProvider) {
@@ -620,17 +559,18 @@ public final class PeriodFields
      * <p>
      * The result will contain the units and amounts from this period plus the
      * specified unit and amount.
+     * The specified unit will always be in the result even if the amount is zero.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount to add, measured in the specified unit, may be negative
+     * @param amount  the amount to add, measured in the specified unit, positive or negative
      * @param unit  the unit defining the amount, not null
-     * @return a new period with the specified unit and amount added, never null
+     * @return a {@code PeriodField} based on this period with the specified period added, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(long amount, PeriodUnit unit) {
         checkNotNull(unit, "PeiodRule must not be null");
-        if (amount == 0) {
+        if (amount == 0 && contains(unit)) {
             return this;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
@@ -653,7 +593,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to subtract, not null
-     * @return a new period with the specified period subtracted, never null
+     * @return a {@code PeriodField} based on this period with the specified period subtracted, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(PeriodProvider periodProvider) {
@@ -676,17 +616,18 @@ public final class PeriodFields
      * <p>
      * The result will contain the units and amounts from this period minus the
      * specified unit and amount.
+     * The specified unit will always be in the result even if the amount is zero.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount to subtract, measured in the specified unit, may be negative
+     * @param amount  the amount to subtract, measured in the specified unit, positive or negative
      * @param unit  the unit defining the amount, not null
-     * @return a new period with the specified amount and unit subtracted, never null
+     * @return a {@code PeriodField} based on this period with the specified period subtracted, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(long amount, PeriodUnit unit) {
         checkNotNull(unit, "PeiodRule must not be null");
-        if (amount == 0) {
+        if (amount == 0 && contains(unit)) {
             return this;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
@@ -701,7 +642,7 @@ public final class PeriodFields
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return a new period multiplied by the scalar, never null
+     * @return a {@code PeriodField} based on this period with the amount multiplied by the scalar, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields multipliedBy(long scalar) {
@@ -720,7 +661,7 @@ public final class PeriodFields
      * by the specified value.
      *
      * @param divisor  the value to divide by, not null, not zero
-     * @return a new period instance with the amount divided by the divisor, never null
+     * @return a {@code PeriodField} based on this period with the amount divided by the divisor, never null
      * @throws ArithmeticException if dividing by zero
      */
     public PeriodFields dividedBy(long divisor) {
@@ -740,7 +681,7 @@ public final class PeriodFields
     /**
      * Returns a new instance with each amount in this period negated.
      *
-     * @return a new period with the amount negated, never null
+     * @return a {@code PeriodField} based on this period with the amount negated, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields negated() {
@@ -776,7 +717,7 @@ public final class PeriodFields
      * single unit of minutes, resulting in '214 Minutes'.
      *
      * @param units  the required unit array, not altered, not null
-     * @return the converted period, never null
+     * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if the period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
      */
