@@ -793,16 +793,6 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this period to a {@code PeriodFields}, trivially
-     * returning {@code this}.
-     *
-     * @return {@code this}, never null
-     */
-    public PeriodFields toPeriodFields() {
-        return this;
-    }
-
-    /**
      * Converts this object to a map of units to amounts.
      * <p>
      * The returned map will never be null, however it may be empty.
@@ -857,6 +847,17 @@ public final class PeriodFields
     public Duration toDuration() {
         PeriodFields period = toEquivalentPeriod(ISOChronology.periodSeconds(), ISOChronology.periodNanos());
         return Duration.seconds(period.getAmount(ISOChronology.periodSeconds()), period.getAmount(ISOChronology.periodNanos()));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this period to a {@code PeriodFields}, trivially
+     * returning {@code this}.
+     *
+     * @return {@code this}, never null
+     */
+    public PeriodFields toPeriodFields() {
+        return this;
     }
 
     //-----------------------------------------------------------------------
