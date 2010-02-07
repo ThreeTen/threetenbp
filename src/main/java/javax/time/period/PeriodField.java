@@ -336,7 +336,8 @@ public final class PeriodField
      * For example, '3 Hours' could be converted to '180 Minutes' assuming the
      * 'Hours' unit has an equivalent of '60 Minutes'.
      *
-     * @return the equivalent period, null if no equivalent period
+     * @param unit  the unit to convert to, not null
+     * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to the specified unit
      * @throws ArithmeticException if the calculation overflows
      */
@@ -361,7 +362,7 @@ public final class PeriodField
      * be measured in whichever is first in the array.
      *
      * @param requiredUnits  the required unit array, not altered, not null
-     * @return the converted period, never null
+     * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
      */
