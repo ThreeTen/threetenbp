@@ -356,7 +356,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, positive or negative, not null
-     * @return an {@code Instant} with the duration added, never null
+     * @return an {@code Instant} based on this instant with the specified duration added, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plus(Duration duration) {
@@ -384,7 +384,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToAdd  the seconds to add, positive or negative
-     * @return an {@code Instant} with the duration added, never null
+     * @return an {@code Instant} based on this instant with the specified seconds added, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusSeconds(long secondsToAdd) {
@@ -402,7 +402,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToAdd  the milliseconds to add, positive or negative
-     * @return an {@code Instant} with the duration added, never null
+     * @return an {@code Instant} based on this instant with the specified milliseconds added, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusMillis(long millisToAdd) {
@@ -431,7 +431,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToAdd  the nanoseconds to add, positive or negative
-     * @return an {@code Instant} with the duration added, never null
+     * @return an {@code Instant} based on this instant with the specified nanoseconds added, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusNanos(long nanosToAdd) {
@@ -460,7 +460,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, positive or negative, not null
-     * @return an {@code Instant} with the duration subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified duration subtracted, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minus(Duration duration) {
@@ -485,7 +485,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToSubtract  the seconds to subtract, positive or negative
-     * @return an {@code Instant} with the duration subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified seconds subtracted, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusSeconds(long secondsToSubtract) {
@@ -503,7 +503,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToSubtract  the milliseconds to subtract, positive or negative
-     * @return an {@code Instant} with the duration subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified milliseconds subtracted, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusMillis(long millisToSubtract) {
@@ -533,7 +533,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
-     * @return an {@code Instant} with the duration subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified nanoseconds subtracted, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusNanos(long nanosToSubtract) {
