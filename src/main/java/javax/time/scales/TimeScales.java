@@ -75,7 +75,8 @@ public final class TimeScales {
      * "simplified UTC".
      * <p>
      * The result of ignoring leap seconds is that real leap seconds cannot be represented.
-     * The benefit is that a day always has a fixed length of 86400 seconds.
+     * The benefit is that a day always has 86400 "seconds" (where the "second" may not
+     * equal the scientific definition of a second).
      * The downside is that the time-scale does not model physical reality.
      * This is not a problem for most applications, but may be a problem for some.
      * If the application needs to handle leap seconds then the true UTC or TAI

@@ -122,23 +122,6 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Instant} from a provider of instants.
-     * <p>
-     * In addition to calling {@link InstantProvider#toInstant()} this method
-     * also checks the validity of the result of the provider.
-     *
-     * @param instantProvider  a provider of instant information, not null
-     * @return an {@code Instant}, never null
-     */
-    public static Instant instant(InstantProvider instantProvider) {
-        checkNotNull(instantProvider, "InstantProvider must not be null");
-        Instant provided = instantProvider.toInstant();
-        checkNotNull(provided, "The implementation of InstantProvider must not return null");
-        return provided;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code Instant} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.
      * <p>
@@ -256,6 +239,23 @@ public final class Instant
             throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
         }
         return seconds(divRem[0].longValue(), divRem[1].intValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code Instant} from a provider of instants.
+     * <p>
+     * In addition to calling {@link InstantProvider#toInstant()} this method
+     * also checks the validity of the result of the provider.
+     *
+     * @param instantProvider  a provider of instant information, not null
+     * @return an {@code Instant}, never null
+     */
+    public static Instant from(InstantProvider instantProvider) {
+        checkNotNull(instantProvider, "InstantProvider must not be null");
+        Instant provided = instantProvider.toInstant();
+        checkNotNull(provided, "The implementation of InstantProvider must not return null");
+        return provided;
     }
 
     //-----------------------------------------------------------------------

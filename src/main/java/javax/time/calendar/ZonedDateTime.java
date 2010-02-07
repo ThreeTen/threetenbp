@@ -284,7 +284,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime fromInstant(InstantProvider instantProvider, TimeZone zone) {
-        Instant instant = Instant.instant(instantProvider);
+        Instant instant = Instant.from(instantProvider);
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         OffsetDateTime offsetDT = OffsetDateTime.fromInstant(instant, rules.getOffset(instant));

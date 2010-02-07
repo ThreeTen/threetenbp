@@ -176,7 +176,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /** {@inheritDoc} */
     @Override
     public ZoneOffset getOffset(InstantProvider instantProvider) {
-        Instant instant = Instant.instant(instantProvider);
+        Instant instant = Instant.from(instantProvider);
         long epochSecs = instant.getEpochSeconds();
         
         // check if using last rules
@@ -311,7 +311,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /** {@inheritDoc} */
     @Override
     public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
-        Instant instant = Instant.instant(instantProvider);
+        Instant instant = Instant.from(instantProvider);
         long epochSecs = instant.getEpochSeconds();
         int index  = Arrays.binarySearch(standardTransitions, epochSecs);
         if (index < 0) {
@@ -330,7 +330,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      */
     @Override
     public ZoneOffsetTransition nextTransition(InstantProvider instantProvider) {
-        Instant instant = Instant.instant(instantProvider);
+        Instant instant = Instant.from(instantProvider);
         long epochSecs = instant.getEpochSeconds();
         
         // check if using last rules
@@ -372,7 +372,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      */
     @Override
     public ZoneOffsetTransition previousTransition(InstantProvider instantProvider) {
-        Instant instant = Instant.instant(instantProvider);
+        Instant instant = Instant.from(instantProvider);
         long epochSecs = instant.getEpochSeconds();
         if (instant.getNanoOfSecond() > 0 && epochSecs < Long.MAX_VALUE) {
             epochSecs += 1;  // allow rest of method to only use seconds

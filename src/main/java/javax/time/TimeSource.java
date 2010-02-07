@@ -113,7 +113,7 @@ public abstract class TimeSource {
      */
     public static TimeSource fixed(InstantProvider fixedInstantProvider) {
         Instant.checkNotNull(fixedInstantProvider, "InstantProvider must not be null");
-        Instant instant = Instant.instant(fixedInstantProvider);
+        Instant instant = Instant.from(fixedInstantProvider);
         return new FixedTimeSource(instant);
     }
 

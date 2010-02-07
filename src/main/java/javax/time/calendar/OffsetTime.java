@@ -148,7 +148,7 @@ public final class OffsetTime
      * @return the offset time, never null
      */
     public static OffsetTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
-        Instant instant = Instant.instant(instantProvider);
+        Instant instant = Instant.from(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         
         long secsOfDay = instant.getEpochSeconds() % ISOChronology.SECONDS_PER_DAY;

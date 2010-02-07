@@ -41,8 +41,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import javax.time.calendar.CalendarConversionException;
-
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -64,28 +62,6 @@ public class TestInstant {
     public void test_zero() {
         assertEquals(Instant.EPOCH.getEpochSeconds(), 0L);
         assertEquals(Instant.EPOCH.getNanoOfSecond(), 0);
-    }
-
-    //-----------------------------------------------------------------------
-    // from(InstantProvider)
-    //-----------------------------------------------------------------------
-    public void factory_instant_provider() {
-        InstantProvider provider = Instant.seconds(1, 2);
-        Instant test = Instant.instant(provider);
-        assertEquals(test.getEpochSeconds(), 1);
-        assertEquals(test.getNanoOfSecond(), 2);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_instant_provider_null() {
-        InstantProvider provider = null;
-        Instant.instant(provider);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_instant_badProvider() {
-        InstantProvider provider = new MockInstantProviderReturnsNull();
-        Instant.instant(provider);
     }
 
     //-----------------------------------------------------------------------
@@ -307,6 +283,38 @@ public class TestInstant {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_nanos_BigInteger_null() {
         Instant.nanos((BigInteger) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // from(InstantProvider)
+    //-----------------------------------------------------------------------
+    public void factory_from_provider() {
+        InstantProvider provider = new InstantProvider() {
+            public Instant toInstant() {
+                return Instant.seconds(1, 2);
+            }
+        };
+        Instant test = Instant.from(provider);
+        assertEquals(test.getEpochSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 2);
+    }
+
+    public void factory_from_provider_same() {
+        InstantProvider provider = Instant.seconds(1, 2);
+        Instant test = Instant.from(provider);
+        assertSame(test, provider);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_from_provider_null() {
+        InstantProvider provider = null;
+        Instant.from(provider);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_from_badProvider() {
+        InstantProvider provider = new MockInstantProviderReturnsNull();
+        Instant.from(provider);
     }
 
     //-----------------------------------------------------------------------

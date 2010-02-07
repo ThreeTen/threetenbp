@@ -213,7 +213,7 @@ public abstract class ZoneRules {
      * @return the difference between the standard and actual offset, never null
      */
     public Period getDaylightSavings(InstantProvider instantProvider) {
-        Instant instant = Instant.instant(instantProvider);
+        Instant instant = Instant.from(instantProvider);
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
         return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();

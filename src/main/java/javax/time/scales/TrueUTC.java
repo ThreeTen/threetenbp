@@ -118,7 +118,7 @@ class TrueUTC implements TimeScale, Serializable {
 
     /** {@inheritDoc} */
     public TimeScaleInstant toTimeScaleInstant(InstantProvider provider) {
-        Instant t = Instant.instant(provider);
+        Instant t = Instant.from(provider);
         return TimeScaleInstant.seconds(this, t.getEpochSeconds(), t.getNanoOfSecond());
     }
 

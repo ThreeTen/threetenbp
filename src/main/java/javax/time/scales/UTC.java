@@ -46,7 +46,8 @@ import javax.time.scales.TimeScaleInstant.Validity;
  * "leap seconds" to ensure that the instant represented stays in line with
  * the earths rotational changes. These leap seconds are hard to follow and
  * calculate with, thus many computer systems simply pretend they do not exist.
- * Thus, for this time-scale, a day always has a fixed length of 86400 seconds.
+ * Thus, for this time-scale, a day always has 86400 "seconds", but the second
+ * may differ from the standard scientific definition of a second.
  * <p>
  * The result of ignoring leap seconds is that real leap seconds cannot be represented.
  * This is not a problem for most applications, but may be a problem for some.
@@ -120,7 +121,7 @@ class UTC implements TimeScale, Serializable {
 
     /** {@inheritDoc} */
     public TimeScaleInstant toTimeScaleInstant(InstantProvider instantProvider) {
-        Instant t = Instant.instant(instantProvider);
+        Instant t = Instant.from(instantProvider);
         return TimeScaleInstant.seconds(this, t.getEpochSeconds(), t.getNanoOfSecond());
     }
 
