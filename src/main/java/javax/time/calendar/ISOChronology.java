@@ -789,21 +789,53 @@ public final class ISOChronology extends Chronology implements Serializable {
      * The period unit defines the concept of a period of a day.
      * This is typically equal to 24 hours, but may vary due to time zone changes.
      * <p>
+     * This chronology defines two units that could represent a day.
+     * This unit, {@code Days}, represents a day that varies in length based on
+     * time zone (daylight savings time) changes. It is a basic unit that cannot
+     * be converted to seconds, nanoseconds or {@link Duration}.
+     * By contrast, the {@link #period24Hours() 24Hours} unit has a fixed length of
+     * exactly 24 hours allowing it to be converted to seconds, nanoseconds and {@code Duration}.
+     * <p>
      * This is a basic unit and has no equivalent period.
      * The estimated duration is equal to 24 hours.
      * <p>
      * See {@link #dayOfMonthRule()} for the main date-time field.
      *
-     * @return the period unit for days, never null
+     * @return the period unit for accurate, variable length, days, never null
      */
     public static PeriodUnit periodDays() {
         return DAYS;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the period unit for twenty-four hours, that is often treated as a day.
+     * <p>
+     * The period unit defines the concept of a period of exactly 24 hours that
+     * is often treated as a day. The unit name of "24Hours" is intended to convey
+     * the fact that this is primarily a 24 hour unit that happens to be used as
+     * a day unit on occasion. In most scenarios, the standard {@link #periodDays() Days}
+     * unit is more applicable and accurate.
+     * <p>
+     * This chronology defines two units that could represent a day.
+     * This unit, {@code 24Hours}, represents a fixed length of exactly 24 hours,
+     * allowing it to be converted to seconds, nanoseconds and {@link Duration}.
+     * By contrast, the {@code Days} unit varies in length based on time zone (daylight
+     * savings time) changes and cannot be converted to seconds, nanoseconds or {@code Duration}.
+     * <p>
+     * The equivalent period and estimated duration are equal to twice the
+     * 12 hours unit, making it also equivalent to 24 hours.
+     *
+     * @return the period unit for fixed, 24 hour, days, never null
+     */
+    public static PeriodUnit period24Hours() {
+        return _24_HOURS;
+    }
+
     /**
      * Gets the period unit for twelve hours, as used by AM/PM.
      * <p>
-     * The period unit defines the concept of a period of twelve hours.
+     * The period unit defines the concept of a period of 12 hours.
      * <p>
      * The equivalent period and estimated duration are equal to 12 hours.
      * <p>
@@ -811,8 +843,8 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the period unit for twelve hours, never null
      */
-    public static PeriodUnit periodTwelveHours() {
-        return TWELVE_HOURS;
+    public static PeriodUnit period12Hours() {
+        return _12_HOURS;
     }
 
     /**
@@ -1742,7 +1774,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private AmPmOfDayRule() {
-            super(AmPmOfDay.class, ISOChronology.INSTANCE, "AmPmOfDay", TWELVE_HOURS, DAYS, 0, 1, true);
+            super(AmPmOfDay.class, ISOChronology.INSTANCE, "AmPmOfDay", _12_HOURS, DAYS, 0, 1, true);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1802,7 +1834,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private HourOfAmPmRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "HourOfAmPm", HOURS, TWELVE_HOURS, 0, 11);
+            super(Integer.class, ISOChronology.INSTANCE, "HourOfAmPm", HOURS, _12_HOURS, 0, 11);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1831,7 +1863,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private ClockHourOfAmPmRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "ClockHourOfAmPm", HOURS, TWELVE_HOURS, 1, 12);
+            super(Integer.class, ISOChronology.INSTANCE, "ClockHourOfAmPm", HOURS, _12_HOURS, 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1889,57 +1921,61 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     private static final Unit HOURS = new Unit(5, "Hours", PeriodField.of(60, MINUTES), Duration.seconds(60 * 60));
     /**
-     * Period unit for half days.
+     * Period unit for 12 hours half-days, used by AM/PM.
      */
-    private static final Unit TWELVE_HOURS = new Unit(6, "TwelveHours", PeriodField.of(12, HOURS), Duration.seconds(12 * 60 * 60));
+    private static final Unit _12_HOURS = new Unit(6, "12Hours", PeriodField.of(12, HOURS), Duration.seconds(12 * 60 * 60));
+    /**
+     * Period unit for 24 hour fixed length days.
+     */
+    private static final Unit _24_HOURS = new Unit(7, "24Hours", PeriodField.of(2, _12_HOURS), Duration.seconds(24 * 60 * 60));
 
     /**
      * Period unit for days.
      */
-    private static final Unit DAYS = new Unit(7, "Days", null, Duration.seconds(86400));
+    private static final Unit DAYS = new Unit(8, "Days", null, Duration.seconds(86400));
     /**
      * Period unit for weeks.
      */
-    private static final Unit WEEKS = new Unit(8, "Weeks", PeriodField.of(7, DAYS), Duration.seconds(7L * 86400L));
+    private static final Unit WEEKS = new Unit(9, "Weeks", PeriodField.of(7, DAYS), Duration.seconds(7L * 86400L));
     /**
      * Period unit for months.
      */
-    private static final Unit MONTHS = new Unit(9, "Months", null, Duration.seconds(31556952L / 12L));
+    private static final Unit MONTHS = new Unit(10, "Months", null, Duration.seconds(31556952L / 12L));
     /**
      * Period unit for quarters.
      */
-    private static final Unit QUARTERS = new Unit(10, "Quarters", PeriodField.of(3, MONTHS), Duration.seconds(31556952L / 4));
+    private static final Unit QUARTERS = new Unit(11, "Quarters", PeriodField.of(3, MONTHS), Duration.seconds(31556952L / 4));
     /**
      * Period unit for week-based-years.
      */
-    private static final Unit WEEK_BASED_YEARS = new Unit(11, "WeekBasedYears", null, Duration.seconds(364L * 86400L + 43200L));  // 364.5 days
+    private static final Unit WEEK_BASED_YEARS = new Unit(12, "WeekBasedYears", null, Duration.seconds(364L * 86400L + 43200L));  // 364.5 days
     /**
      * Period unit for years.
      */
-    private static final Unit YEARS = new Unit(12, "Years", PeriodField.of(4, QUARTERS), Duration.seconds(31556952L));  // 365.2425 days
+    private static final Unit YEARS = new Unit(13, "Years", PeriodField.of(4, QUARTERS), Duration.seconds(31556952L));  // 365.2425 days
     /**
      * Period unit for decades.
      */
-    private static final Unit DECADES = new Unit(13, "Decades", PeriodField.of(10, YEARS), Duration.seconds(10L * 31556952L));
+    private static final Unit DECADES = new Unit(14, "Decades", PeriodField.of(10, YEARS), Duration.seconds(10L * 31556952L));
     /**
      * Period unit for centuries.
      */
-    private static final Unit CENTURIES = new Unit(14, "Centuries", PeriodField.of(10, DECADES), Duration.seconds(100L * 31556952L));
+    private static final Unit CENTURIES = new Unit(15, "Centuries", PeriodField.of(10, DECADES), Duration.seconds(100L * 31556952L));
     /**
      * Period unit for millennia.
      */
-    private static final Unit MILLENNIA = new Unit(15, "Millennia", PeriodField.of(10, CENTURIES), Duration.seconds(1000L * 31556952L));
+    private static final Unit MILLENNIA = new Unit(16, "Millennia", PeriodField.of(10, CENTURIES), Duration.seconds(1000L * 31556952L));
     /**
      * Period unit for eras.
      */
-    private static final Unit ERAS = new Unit(16, "Eras", null, Duration.seconds(31556952L * 2000000000L));
+    private static final Unit ERAS = new Unit(17, "Eras", null, Duration.seconds(31556952L * 2000000000L));
 
     /**
      * Cache of units for deserialization.
      * Indices must match ordinal passed to unit constructor.
      */
     private static final Unit[] UNIT_CACHE = new Unit[] {
-        NANOS, MICROS, MILLIS, SECONDS, MINUTES, HOURS, TWELVE_HOURS,
+        NANOS, MICROS, MILLIS, SECONDS, MINUTES, HOURS, _12_HOURS, _24_HOURS,
         DAYS, WEEKS, MONTHS, QUARTERS, WEEK_BASED_YEARS, YEARS,
         DECADES, CENTURIES, MILLENNIA, ERAS,
     };

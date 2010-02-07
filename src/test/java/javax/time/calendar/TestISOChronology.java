@@ -225,7 +225,7 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 1);
         assertEquals(rule.getSmallestMaximumValue(), 1);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodTwelveHours());
+        assertEquals(rule.getPeriodUnit(), ISOChronology.period12Hours());
         assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
         serialize(rule);
     }
@@ -241,7 +241,7 @@ public class TestISOChronology {
         assertEquals(rule.getSmallestMaximumValue(), 11);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodTwelveHours());
+        assertEquals(rule.getPeriodRange(), ISOChronology.period12Hours());
         serialize(rule);
     }
 
@@ -256,7 +256,7 @@ public class TestISOChronology {
         assertEquals(rule.getSmallestMaximumValue(), 12);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodTwelveHours());
+        assertEquals(rule.getPeriodRange(), ISOChronology.period12Hours());
         serialize(rule);
     }
 
@@ -397,12 +397,31 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-    // twelveHours
+    // 24Hours
     //-----------------------------------------------------------------------
-    public void test_twelveHours() throws Exception {
-        PeriodUnit rule = ISOChronology.periodTwelveHours();
-        assertSame(ISOChronology.periodTwelveHours(), rule);
-        assertEquals(rule.getName(), "TwelveHours");
+    public void test_24hours() throws Exception {
+        PeriodUnit rule = ISOChronology.period24Hours();
+        assertSame(ISOChronology.period24Hours(), rule);
+        assertEquals(rule.getName(), "24Hours");
+        assertEquals(rule.getEquivalentPeriods().size(), 7);
+        assertEquals(rule.getEquivalentPeriods().get(0), PeriodField.of(2, ISOChronology.period12Hours()));
+        assertEquals(rule.getEquivalentPeriods().get(1), PeriodField.of(24, ISOChronology.periodHours()));
+        assertEquals(rule.getEquivalentPeriods().get(2), PeriodField.of(24 * 60, ISOChronology.periodMinutes()));
+        assertEquals(rule.getEquivalentPeriods().get(3), PeriodField.of(24 * 60 * 60L, ISOChronology.periodSeconds()));
+        assertEquals(rule.getEquivalentPeriods().get(4), PeriodField.of(24 * 60 * 60 * 1000L, ISOChronology.periodMillis()));
+        assertEquals(rule.getEquivalentPeriods().get(5), PeriodField.of(24 * 60 * 60 * 1000000L, ISOChronology.periodMicros()));
+        assertEquals(rule.getEquivalentPeriods().get(6), PeriodField.of(24 * 60 * 60 * 1000000000L, ISOChronology.periodNanos()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(24 * 60 * 60L));
+        serialize(rule);
+    }
+
+    //-----------------------------------------------------------------------
+    // 12Hours
+    //-----------------------------------------------------------------------
+    public void test_12hours() throws Exception {
+        PeriodUnit rule = ISOChronology.period12Hours();
+        assertSame(ISOChronology.period12Hours(), rule);
+        assertEquals(rule.getName(), "12Hours");
         assertEquals(rule.getEquivalentPeriods().size(), 6);
         assertEquals(rule.getEquivalentPeriods().get(0), PeriodField.of(12, ISOChronology.periodHours()));
         assertEquals(rule.getEquivalentPeriods().get(1), PeriodField.of(12 * 60, ISOChronology.periodMinutes()));
@@ -512,7 +531,7 @@ public class TestISOChronology {
         list.add(ISOChronology.periodSeconds());
         list.add(ISOChronology.periodMinutes());
         list.add(ISOChronology.periodHours());
-        list.add(ISOChronology.periodTwelveHours());
+        list.add(ISOChronology.period12Hours());
         list.add(ISOChronology.periodDays());
         list.add(ISOChronology.periodWeeks());
         list.add(ISOChronology.periodMonths());
