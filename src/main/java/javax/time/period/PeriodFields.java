@@ -41,6 +41,7 @@ import java.util.Map.Entry;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -226,6 +227,30 @@ public final class PeriodFields
             }
         }
         return create(map);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains a {@code PeriodFields} from a {@code Duration} based on the standard
+     * durations of seconds and nanoseconds.
+     * <p>
+     * The conversion will create an instance with two units - the {@code ISOChronology}
+     * seconds and nanoseconds units. This matches the {@link #toDuration()} method.
+     * <p>
+     * This conversion can only be used if the duration is being used in a manner
+     * compatible with the {@code ISOChronology} definitions of seconds and nanoseconds.
+     * This will be the case for most applications - care only needs to be taken if
+     * using explicit time-scales.
+     *
+     * @param duration  the duration to create from, not null
+     * @return the {@code PeriodFields} instance, never null
+     */
+    public static PeriodFields from(Duration duration) {
+        checkNotNull(duration, "Duration must not be null");
+        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
+        internalMap.put(ISOChronology.periodSeconds(), PeriodField.of(duration.getSeconds(), ISOChronology.periodSeconds()));
+        internalMap.put(ISOChronology.periodNanos(), PeriodField.of(duration.getNanosInSecond(), ISOChronology.periodNanos()));
+        return create(internalMap);
     }
 
     //-----------------------------------------------------------------------
@@ -801,7 +826,7 @@ public final class PeriodFields
      * This method uses that estimate to calculate a total estimated duration for
      * this period.
      *
-     * @return the estimated duration of this period, may be negative
+     * @return the estimated duration of this period, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toEstimatedDuration() {
@@ -810,6 +835,28 @@ public final class PeriodFields
             dur = dur.plus(field.toEstimatedDuration());
         }
         return dur;
+    }
+
+    /**
+     * Converts this {@code PeriodFields} to a {@code Duration} based on the standard
+     * durations of seconds and nanoseconds.
+     * <p>
+     * The conversion is based on the {@code ISOChronology} definition of the seconds and
+     * nanoseconds units. If all the fields in this period can be converted to one of these
+     * units then the conversion will succeed, subject to calculation overflow.
+     * If any field cannot be converted to these fields above then an exception is thrown.
+     * <p>
+     * This conversion can only be used if the duration is being used in a manner
+     * compatible with the {@code ISOChronology} definitions of seconds and nanoseconds.
+     * This will be the case for most applications - care only needs to be taken if
+     * using explicit time-scales.
+     *
+     * @return the duration of this period based on {@code ISOChronology} fields, never null
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public Duration toDuration() {
+        PeriodFields period = toEquivalentPeriod(ISOChronology.periodSeconds(), ISOChronology.periodNanos());
+        return Duration.seconds(period.getAmount(ISOChronology.periodSeconds()), period.getAmount(ISOChronology.periodNanos()));
     }
 
     //-----------------------------------------------------------------------

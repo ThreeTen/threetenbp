@@ -34,12 +34,14 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -1069,7 +1071,7 @@ public final class ZonedDateTime
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code ZonedDateTime} with the period added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plus(PeriodProvider periodProvider) {
         return plus(periodProvider, ZoneResolvers.retainOffset());
@@ -1085,7 +1087,7 @@ public final class ZonedDateTime
      * @param periodProvider  the period to add, not null
      * @param resolver  the resolver to use, not null
      * @return a {@code ZonedDateTime} with the period added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime plus(PeriodProvider periodProvider, ZoneResolver resolver) {
@@ -1114,9 +1116,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, may be negative
+     * @param years  the years to add, positive or negative
      * @return a {@code ZonedDateTime} with the years added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusYears(int years) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusYears(years);
@@ -1141,9 +1143,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, may be negative
+     * @param months  the months to add, positive or negative
      * @return a {@code ZonedDateTime} with the months added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusMonths(int months) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusMonths(months);
@@ -1165,9 +1167,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to add, may be negative
+     * @param weeks  the weeks to add, positive or negative
      * @return a {@code ZonedDateTime} with the weeks added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusWeeks(int weeks) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusWeeks(weeks);
@@ -1189,9 +1191,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, may be negative
+     * @param days  the days to add, positive or negative
      * @return a {@code ZonedDateTime} with the days added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusDays(int days) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusDays(days);
@@ -1217,9 +1219,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to add, may be negative
+     * @param hours  the hours to add, positive or negative
      * @return a {@code ZonedDateTime} with the hours added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusHours(int hours) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusHours(hours);
@@ -1235,9 +1237,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to add, may be negative
+     * @param minutes  the minutes to add, positive or negative
      * @return a {@code ZonedDateTime} with the minutes added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusMinutes(int minutes) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusMinutes(minutes);
@@ -1253,9 +1255,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to add, may be negative
+     * @param seconds  the seconds to add, positive or negative
      * @return a {@code ZonedDateTime} with the seconds added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusSeconds(int seconds) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusSeconds(seconds);
@@ -1271,14 +1273,70 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to add, may be negative
+     * @param nanos  the nanos to add, positive or negative
      * @return a {@code ZonedDateTime} with the nanoseconds added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusNanos(int nanos) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusNanos(nanos);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
+     * <p>
+     * This method {@link PeriodFields#toDuration() converts} the period to a duration
+     * based on the {@code ISOChronology} seconds and nanoseconds units.
+     * The duration is then added to the {@link #toInstant() instant} equivalent of this instance.
+     * <p>
+     * Adding a duration differs from adding a period as gaps and overlaps in
+     * the local time-line are taken into account. For example, if there is a
+     * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
+     * duration of one hour to 00:30 will yield 02:30.
+     * <p>
+     * The addition of a duration is always absolute and zone-resolvers are not required.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to add, positive or negative
+     * @return a {@code ZonedDateTime} with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
+     */
+    public ZonedDateTime plusDuration(PeriodProvider periodProvider) {
+        PeriodFields period = PeriodFields.from(periodProvider);
+        Duration duration = period.toDuration();
+        return duration.isZero() ? this : fromInstant(toInstant().plus(duration), zone);
+    }
+
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
+     * <p>
+     * Adding a duration differs from adding a period as gaps and overlaps in
+     * the local time-line are taken into account. For example, if there is a
+     * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
+     * duration of one hour to 00:30 will yield 02:30.
+     * <p>
+     * The addition of a duration is always absolute and zone-resolvers are not required.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to add, positive or negative
+     * @param minutes  the minutes to add, positive or negative
+     * @param seconds  the seconds to add, positive or negative
+     * @param nanos  the nanos to add, positive or negative
+     * @return a {@code ZonedDateTime} with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
+     */
+    public ZonedDateTime plusDuration(int hours, int minutes, int seconds, long nanos) {
+        if ((hours | minutes | seconds | nanos) == 0) {
+            return this;
+        }
+        Instant instant = toInstant().plusSeconds(hours * 3600L + minutes * 60L + seconds).plusNanos(nanos);
+        return fromInstant(instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1294,7 +1352,7 @@ public final class ZonedDateTime
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code ZonedDateTime} with the period subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minus(PeriodProvider periodProvider) {
         return minus(periodProvider, ZoneResolvers.retainOffset());
@@ -1310,7 +1368,7 @@ public final class ZonedDateTime
      * @param periodProvider  the period to subtract, not null
      * @param resolver  the resolver to use, not null
      * @return a {@code ZonedDateTime} with the period subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime minus(PeriodProvider periodProvider, ZoneResolver resolver) {
@@ -1339,9 +1397,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract, may be negative
+     * @param years  the years to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the years subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusYears(int years) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusYears(years);
@@ -1366,9 +1424,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to subtract, may be negative
+     * @param months  the months to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the months subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusMonths(int months) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusMonths(months);
@@ -1390,9 +1448,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to subtract, may be negative
+     * @param weeks  the weeks to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the weeks subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusWeeks(int weeks) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusWeeks(weeks);
@@ -1414,9 +1472,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to subtract, may be negative
+     * @param days  the days to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the days subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusDays(int days) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusDays(days);
@@ -1442,9 +1500,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to subtract, may be negative
+     * @param hours  the hours to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the hours subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusHours(int hours) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusHours(hours);
@@ -1460,9 +1518,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to subtract, may be negative
+     * @param minutes  the minutes to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the minutes subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusMinutes(int minutes) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusMinutes(minutes);
@@ -1478,9 +1536,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to subtract, may be negative
+     * @param seconds  the seconds to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the seconds subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusSeconds(int seconds) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusSeconds(seconds);
@@ -1496,14 +1554,70 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to subtract, may be negative
+     * @param nanos  the nanos to subtract, positive or negative
      * @return a {@code ZonedDateTime} with the nanoseconds subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusNanos(int nanos) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusNanos(nanos);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
+     * <p>
+     * This method {@link PeriodFields#toDuration() converts} the period to a duration
+     * based on the {@code ISOChronology} seconds and nanoseconds units.
+     * The duration is then subtracted from the {@link #toInstant() instant} equivalent of this instance.
+     * <p>
+     * Subtracting a duration differs from subtracting a period as gaps and overlaps in
+     * the local time-line are taken into account. For example, if there is a
+     * gap in the local time-line of one hour from 01:00 to 02:00, then subtracting a
+     * duration of one hour from 02:30 will yield 00:30.
+     * <p>
+     * The subtraction of a duration is always absolute and zone-resolvers are not required.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to subtract, positive or negative
+     * @return a {@code ZonedDateTime} with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
+     */
+    public ZonedDateTime minusDuration(PeriodProvider periodProvider) {
+        PeriodFields period = PeriodFields.from(periodProvider);
+        Duration duration = period.toDuration();
+        return duration.isZero() ? this : fromInstant(toInstant().minus(duration), zone);
+    }
+
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
+     * <p>
+     * Subtracting a duration differs from subtracting a period as gaps and overlaps in
+     * the local time-line are taken into account. For example, if there is a
+     * gap in the local time-line of one hour from 01:00 to 02:00, then subtracting a
+     * duration of one hour from 02:30 will yield 00:30.
+     * <p>
+     * The subtraction of a duration is always absolute and zone-resolvers are not required.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to subtract, positive or negative
+     * @param minutes  the minutes to subtract, positive or negative
+     * @param seconds  the seconds to subtract, positive or negative
+     * @param nanos  the nanos to subtract, positive or negative
+     * @return a {@code ZonedDateTime} with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
+     */
+    public ZonedDateTime minusDuration(int hours, int minutes, int seconds, long nanos) {
+        if ((hours | minutes | seconds | nanos) == 0) {
+            return this;
+        }
+        Instant instant = toInstant().minusSeconds(hours * 3600L + minutes * 60L + seconds).minusNanos(nanos);
+        return fromInstant(instant, zone);
     }
 
     //-----------------------------------------------------------------------
