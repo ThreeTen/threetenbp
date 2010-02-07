@@ -319,7 +319,7 @@ public final class Instant
     //-----------------------------------------------------------------------
     /**
      * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * in this {@code Instant}.
+     * in this instant.
      * <p>
      * The instant is stored using two fields - seconds and nanoseconds.
      * The seconds are relative to the epoch of 1970-01-01T00:00:00Z.
@@ -351,7 +351,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified {@code Duration} added.
+     * Returns a copy of this instant with the specified {@code Duration} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -379,7 +379,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified number of seconds added.
+     * Returns a copy of this instant with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -397,7 +397,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified number of milliseconds added.
+     * Returns a copy of this instant with the specified number of milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -426,7 +426,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified number of nanoseconds added.
+     * Returns a copy of this instant with the specified number of nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -455,7 +455,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified {@code Duration} subtracted.
+     * Returns a copy of this instant with the specified {@code Duration} subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -480,7 +480,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified number of seconds subtracted.
+     * Returns a copy of this instant with the specified number of seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -498,7 +498,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified number of milliseconds subtracted.
+     * Returns a copy of this instant with the specified number of milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -528,7 +528,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Instant} with the specified number of nanoseconds subtracted.
+     * Returns a copy of this instant with the specified number of nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -558,7 +558,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code Instant} to the number of seconds from the epoch
+     * Converts this instant to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z expressed as a {@code BigDecimal}.
      *
      * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, scale 9, never null
@@ -568,7 +568,7 @@ public final class Instant
     }
 
     /**
-     * Converts this {@code Instant} to the number of nanoseconds from the epoch
+     * Converts this instant to the number of nanoseconds from the epoch
      * of 1970-01-01T00:00:00Z expressed as a {@code BigInteger}.
      *
      * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z, never null
@@ -579,7 +579,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code Instant} to the number of milliseconds from the epoch
+     * Converts this instant to the number of milliseconds from the epoch
      * of 1970-01-01T00:00:00Z.
      * <p>
      * If this instant represents a point on the time-line too far in the future
@@ -599,7 +599,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code Instant} to an {@code Instant}, trivially
+     * Converts this instant to an instant, trivially
      * returning {@code this}.
      *
      * @return {@code this}, never null
@@ -610,7 +610,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code Instant} to another.
+     * Compares this instant to the specified {@code Instant}.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
@@ -627,7 +627,7 @@ public final class Instant
     }
 
     /**
-     * Checks if this {@code Instant} is after the specified one.
+     * Checks if this instant is after the specified {@code Instant}.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
@@ -640,7 +640,7 @@ public final class Instant
     }
 
     /**
-     * Checks if this {@code Instant} is before the specified one.
+     * Checks if this instant is before the specified {@code Instant}.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
@@ -654,7 +654,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code Instant} is equal to that specified.
+     * Checks if this instant is equal to the specified {@code Instant}.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
@@ -675,7 +675,7 @@ public final class Instant
     }
 
     /**
-     * A hash code for this {@code Instant}.
+     * A hash code for this instant.
      *
      * @return a suitable hash code
      */
@@ -686,7 +686,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * A string representation of this {@code Instant} using ISO-8601 representation.
+     * A string representation of this instant using ISO-8601 representation.
      * <p>
      * The format of the returned string will be {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
      *

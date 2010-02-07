@@ -402,7 +402,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code Duration} is zero length.
+     * Checks if this duration is zero length.
      * <p>
      * A {@code Duration} represents a directed distance between two points on the time-line
      * and can therefore be positive, zero or negative.
@@ -415,7 +415,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Checks if this {@code Duration} is positive, excluding zero.
+     * Checks if this duration is positive, excluding zero.
      * <p>
      * A {@code Duration} represents a directed distance between two points on the time-line
      * and can therefore be positive, zero or negative.
@@ -428,7 +428,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Checks if this {@code Duration} is positive or zero.
+     * Checks if this duration is positive or zero.
      * <p>
      * A {@code Duration} represents a directed distance between two points on the time-line
      * and can therefore be positive, zero or negative.
@@ -441,7 +441,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Checks if this {@code Duration} is negative, excluding zero.
+     * Checks if this duration is negative, excluding zero.
      * <p>
      * A {@code Duration} represents a directed distance between two points on the time-line
      * and can therefore be positive, zero or negative.
@@ -454,7 +454,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Checks if this {@code Duration} is negative or zero.
+     * Checks if this duration is negative or zero.
      * <p>
      * A {@code Duration} represents a directed distance between two points on the time-line
      * and can therefore be positive, zero or negative.
@@ -468,7 +468,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of seconds in this {@code Duration}.
+     * Gets the number of seconds in this duration.
      * <p>
      * The length of the duration is stored using two fields - seconds and nanoseconds.
      * The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to
@@ -486,7 +486,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Gets the number of nanoseconds within the second in this {@code Duration}.
+     * Gets the number of nanoseconds within the second in this duration.
      * <p>
      * The length of the duration is stored using two fields - seconds and nanoseconds.
      * The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to
@@ -505,7 +505,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Duration} with the specified {@code Duration} added.
+     * Returns a copy of this duration with the specified {@code Duration} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -530,7 +530,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Duration} with the specified number of seconds added.
+     * Returns a copy of this duration with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -547,7 +547,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this {@code Duration} with the specified number of milliseconds added.
+     * Returns a copy of this duration with the specified number of milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -575,7 +575,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this {@code Duration} with the specified number of nanoseconds added.
+     * Returns a copy of this duration with the specified number of nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -604,7 +604,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Duration} with the specified duration subtracted.
+     * Returns a copy of this duration with the specified {@code Duration} subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -629,7 +629,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Duration} with the specified number of seconds subtracted.
+     * Returns a copy of this duration with the specified number of seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -646,7 +646,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this {@code Duration} with the specified number of milliseconds subtracted.
+     * Returns a copy of this duration with the specified number of milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -672,7 +672,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this {@code Duration} with the specified number of nanoseconds subtracted.
+     * Returns a copy of this duration with the specified number of nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -699,7 +699,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Duration} multiplied by the scalar.
+     * Returns a copy of this duration multiplied by the scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -725,7 +725,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Duration} divided by the specified value.
+     * Returns a copy of this duration divided by the specified value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -749,7 +749,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code Duration} with the length negated.
+     * Returns a copy of this duration with the length negated.
      * <p>
      * This method swaps the sign of the total length of this duration.
      * For example, {@code PT1.3S} will be returned as {@code PT-1.3S}.
@@ -764,7 +764,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Returns a copy of this {@code Duration} with positive length.
+     * Returns a copy of this duration with positive length.
      * <p>
      * This method returns a positive duration by effectively removing the sign from any negative total length.
      * For example, {@code PT-1.3S} will be returned as {@code PT1.3S}.
@@ -780,7 +780,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code Duration} to the total length in seconds and
+     * Converts this duration to the total length in seconds and
      * fractional nanoseconds expressed as a {@code BigDecimal}.
      *
      * @return the total length of the duration in seconds, with a scale of 9, never null
@@ -790,7 +790,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Converts this {@code Duration} to the total length in nanoseconds expressed as a {@code BigInteger}.
+     * Converts this duration to the total length in nanoseconds expressed as a {@code BigInteger}.
      *
      * @return the total length of the duration in nanoseconds, never null
      */
@@ -799,7 +799,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Converts this {@code Duration} to the total length in milliseconds expressed as a {@code long}.
+     * Converts this duration to the total length in milliseconds expressed as a {@code long}.
      * <p>
      * If this duration is too large to fit in a {@code long} nanoseconds, then an
      * exception is thrown.
@@ -815,7 +815,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this {@code Duration} to the total length in milliseconds.
+     * Converts this duration to the total length in milliseconds.
      * <p>
      * If this duration is too large to fit in a {@code long} milliseconds, then an
      * exception is thrown.
@@ -835,7 +835,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code Duration} to another.
+     * Compares this duration to the specified {@code Duration}.
      * <p>
      * The comparison is based on the total length of the durations.
      *
@@ -851,7 +851,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Checks if this {@code Duration} is greater than the specified one.
+     * Checks if this duration is greater than the specified {@code Duration}.
      * <p>
      * The comparison is based on the total length of the durations.
      *
@@ -863,7 +863,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Checks if this {@code Duration} is less than the specified one.
+     * Checks if this duration is less than the specified {@code Duration}.
      * <p>
      * The comparison is based on the total length of the durations.
      *
@@ -876,7 +876,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code Duration} is equal to that specified.
+     * Checks if this duration is equal to the specified {@code Duration}.
      * <p>
      * The comparison is based on the total length of the durations.
      *
@@ -897,7 +897,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * A hash code for this {@code Duration}.
+     * A hash code for this duration.
      *
      * @return a suitable hash code
      */
@@ -908,7 +908,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * A string representation of this {@code Duration} using ISO-8601 seconds
+     * A string representation of this duration using ISO-8601 seconds
      * based representation, such as {@code PT12.345S}.
      * <p>
      * The format of the returned string will be {@code PTnS} where n is
