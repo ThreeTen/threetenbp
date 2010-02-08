@@ -39,7 +39,7 @@ import javax.time.calendar.CalendarConversionException;
 /**
  * A time-scale that defines how an instant relates to the time-line.
  * <p>
- * Most of the Java Time Framework works on the assumption that the time-line is
+ * Most of the Time Framework for Java works on the assumption that the time-line is
  * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
  * Sadly, the real-life time-line is not this simple.
  * <p>

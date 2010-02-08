@@ -76,7 +76,7 @@ import sun.util.calendar.ZoneInfo;
  * <code>Calendar</code> and provides the standard calendar system
  * used by most of the world.
  *
- * <p>This class is now effectively deprecated by the Java Time Framework.
+ * <p>This class is now effectively deprecated by the Time Framework for Java.
  * A group of classes replace the use cases that this single class is used for.
  * The most direct replacement is {@link ZonedDateTime} which provides for
  * both a date, time and time zone.  Additional classes support just the offset -
@@ -90,10 +90,10 @@ import sun.util.calendar.ZoneInfo;
  * Thus, when converting to use the new classes, care must be taken with
  * historic dates.
  *
- * <p>The Java Time Framework is the third date-time API in Java.
+ * <p>The Time Framework for Java is the third date-time API in Java.
  * The <code>Date</code> class was the first and the <code>Calendar</code> API
  * was the second.  It is advised to use the newest date-time API wherever
- * possible.  First preference is the Java Time Framework, followed by the
+ * possible.  First preference is the Time Framework for Java, followed by the
  * <code>Calendar</code> API, followed by the <code>Date</code> API.
  *
  * <h4> GregorianCalendar </h4>

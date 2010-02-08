@@ -49,13 +49,13 @@ import sun.util.calendar.ZoneInfo;
  * The class <code>Date</code> represents a specific instant
  * in time, with millisecond precision.
  * <p>
- * This class is now effectively deprecated by the Java Time Framework.
+ * This class is now effectively deprecated by the Time Framework for Java.
  * The equivalent class and replacement is {@link Instant}.
  * A method, {@link #toInstant()}, is provided for conversion.
  * This class also implements {@link InstantProvider} allowing instances
- * to be directly passed to many APIs in the new time framework.
+ * to be directly passed to many APIs in the new framework.
  * <p>
- * The Java Time Framework is the third date-time API in Java.
+ * The Time Framework for Java is the third date-time API in Java.
  * The <code>Date</code> class was the first, and was the only one available
  * prior to JDK&nbsp;1.1.  At that time, it had two additional functions.
  * It allowed the interpretation of dates as year, month, day, hour,
@@ -66,7 +66,7 @@ import sun.util.calendar.ZoneInfo;
  * on <code>Date</code> were deprecated.
  * <p>
  * It is advised to use the newest date-time API wherever possible.
- * First preference is the Java Time Framework, followed by the
+ * First preference is the Time Framework for Java, followed by the
  * <code>Calendar</code> API, followed by the <code>Date</code> API.
  * 
  * <h4> UTC, GMT and Leap seconds </h4>

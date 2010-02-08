@@ -44,7 +44,7 @@ import javax.time.scales.TimeScales;
 /**
  * An instantaneous point on the time-line.
  * <p>
- * The Java Time Framework models time as a series of instantaneous events,
+ * The Time Framework for Java models time as a series of instantaneous events,
  * known as instants, along a single time-line. This class represents one
  * of those instants.
  * <p>

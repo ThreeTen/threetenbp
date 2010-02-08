@@ -40,7 +40,7 @@ import javax.time.TimeSource;
 /**
  * A clock providing access to the current date and time.
  * <p>
- * The Java Time Framework abstracts the concept of the 'current time' into two interfaces
+ * The Time Framework for Java abstracts the concept of the 'current time' into two interfaces
  * - {@link TimeSource} and {@code Clock}.
  * The former, this class, provides access to the current instant and
  * is independent of local factors such as time-zone.

@@ -32,9 +32,9 @@
 package javax.time;
 
 /**
- * The base class for all exceptions in the Java Time Framework.
+ * The base class for all exceptions in the Time Framework for Java.
  * <p>
- * All exceptions in the Java Time Framework extend this class. This allows
+ * All exceptions in the Time Framework for Java extend this class. This allows
  * catch blocks to catch just this exception, or more specific ones.
  *
  * @author Stephen Colebourne

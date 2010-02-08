@@ -71,7 +71,7 @@ public final class TimeScales {
      * systems simply pretend they do not exist.
      * <p>
      * This time-scale has no internationally recognized name, but is often incorrectly
-     * referred to as UTC. The Java Time Framework refers to this time-scale as
+     * referred to as UTC. The Time Framework for Java refers to this time-scale as
      * "simplified UTC".
      * <p>
      * The result of ignoring leap seconds is that real leap seconds cannot be represented.

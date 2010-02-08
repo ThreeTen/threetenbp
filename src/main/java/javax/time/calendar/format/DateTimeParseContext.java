@@ -54,7 +54,7 @@ import javax.time.calendar.DateTimeFieldRule;
  * to obtain a merger that will merge the separate parsed fields into meaningful values.
  * <p>
  * This class is mutable and thus not thread-safe.
- * Usage of the class is thread-safe within the Java Time Framework as the
+ * Usage of the class is thread-safe within the Time Framework for Java as the
  * framework creates a new instance of the class for each parse.
  *
  * @author Michael Nascimento Santos

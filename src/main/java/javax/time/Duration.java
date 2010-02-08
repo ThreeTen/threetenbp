@@ -40,7 +40,7 @@ import javax.time.calendar.format.CalendricalParseException;
 /**
  * A duration between two instants on the time-line.
  * <p>
- * The Java Time Framework models time as a series of instantaneous events,
+ * The Time Framework for Java models time as a series of instantaneous events,
  * known as {@link Instant instants}, along a single time-line. This class represents the
  * duration between two of those instants.
  * <p>
