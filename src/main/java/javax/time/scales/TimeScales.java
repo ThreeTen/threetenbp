@@ -85,11 +85,8 @@ public final class TimeScales {
      * This class does correctly implement the relationship between TAI and UTC in
      * the period 1961 to 1972 (and also extends that to the period 1958 - 1961).
      * Prior to 1958 UTC, TrueUTC and TAI are defined to be identical.
-     * 
-     * UTC without leap seconds.
-     * UTC as most commonly implemented in computer systems.
      *
-     * @return
+     * @return the simplified UTC time scale, never null
      */
     public static TimeScale simplifiedUtc() {
         return UTC.INSTANCE;
@@ -111,11 +108,8 @@ public final class TimeScales {
      * extended back to 1958 where UT and TAI where equal. In the period 1958 to
      * 1961 adjustments where not coordinated internationally, hence there is no
      * single definitive record of the relationship between TAI and UT.
-     * 
-     * True UTC with leap seconds.
-     * UTC with support for leap seconds.
      *
-     * @return
+     * @return the true scientific UTC time scale with leap seconds, never null
      */
     public static TimeScale trueUtc() {
         return TrueUTC.INSTANCE;
