@@ -1055,8 +1055,8 @@ public final class LocalDate
      * @return the local date-time formed from this date and the specified time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public LocalDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfHour) {
-        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfHour));
+    public LocalDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute));
     }
 
     /**
@@ -1074,8 +1074,8 @@ public final class LocalDate
      * @return the local date-time formed from this date and the specified time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public LocalDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfHour, int nanoOfSecond) {
-        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfHour, nanoOfSecond));
+    public LocalDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond));
     }
 
     /**

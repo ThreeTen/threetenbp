@@ -60,12 +60,12 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 public enum HistoricEra {
 
     /**
-     * The singleton instance for the era BCE - Before Christ.
+     * The singleton instance for the era BCE - Before Common Era.
      * This has the numeric value of {@code 0}.
      */
     BCE,
     /**
-     * The singleton instance for the era CE - Anno Domini.
+     * The singleton instance for the era CE - Common Era.
      * This has the numeric value of {@code 1}.
      */
     CE;
@@ -81,7 +81,7 @@ public enum HistoricEra {
      * An exception is thrown if the value is invalid. The exception uses the
      * {@link ISOChronology} BCE/CE rule to indicate the failed rule.
      *
-     * @parBCE era  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
+     * @param era  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
      * @return the HistoricEra singleton, never null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
@@ -115,7 +115,7 @@ public enum HistoricEra {
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
-     * @parBCE locale  the locale to use, not null
+     * @param locale  the locale to use, not null
      * @return the short text value of the BCE/CE, never null
      */
     public String getShortText(Locale locale) {
@@ -128,7 +128,7 @@ public enum HistoricEra {
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
-     * @parBCE locale  the locale to use, not null
+     * @param locale  the locale to use, not null
      * @return the long text value of the BCE/CE, never null
      */
     public String getText(Locale locale) {

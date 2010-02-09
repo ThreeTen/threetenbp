@@ -173,9 +173,10 @@ public class EarlyUTC_TAI {
             return deltaNanoseconds + Math.round(taiRate*((taiEpochSeconds-originEpochSeconds) + 1e-9*(nanoOfSecond-deltaNanoseconds)));
         }
 
-        /** Repeated period in UTC at end of period.
+        /** 
+         * Repeated period in UTC at end of period.
          * If negative indicates the size of the invalid interval
-         * @return
+         * @return the gap in nanoseconds
          */
         public int getUTCGapNanoseconds() {
             return utcGapNanoseconds;

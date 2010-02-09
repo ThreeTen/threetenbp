@@ -101,7 +101,7 @@ public abstract class UTCPeriod {
      *
      * @param utcEpochSeconds
      * @param nanoOfSecond
-     * @return
+     * @return the delta in nanoseconds
      */
     public abstract long getUTCDeltaNanoseconds(long utcEpochSeconds, int nanoOfSecond);
 
@@ -110,7 +110,7 @@ public abstract class UTCPeriod {
      *
      * @param taiEpochSeconds
      * @param nanoOfSecond
-     * @return
+     * @return the delta in nanoseconds
      */
     public abstract long getTAIDeltaNanoseconds(long taiEpochSeconds, int nanoOfSecond);
 
