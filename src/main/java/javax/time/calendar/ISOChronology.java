@@ -226,7 +226,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * Calculates the date from a year and day-of-year.
      *
      * @param year  the year, valid
-     * @param year  the day-of-year, valid
+     * @param dayOfYear  the day-of-year, valid
      * @return the date, never null
      */
     static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {

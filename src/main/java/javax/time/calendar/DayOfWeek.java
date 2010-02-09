@@ -190,7 +190,7 @@ public enum DayOfWeek {
     }
 
     /**
-     * Gets the short textual representation of this day-of-week, such as 'Monday' or 'Friday'.
+     * Gets the full textual representation of this day-of-week, such as 'Monday' or 'Friday'.
      * <p>
      * This method is notionally specific to {@link ISOChronology} as it uses
      * the day-of-week rule to obtain the text. However, it is expected that
@@ -201,7 +201,7 @@ public enum DayOfWeek {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the day-of-week, never null
+     * @return the full text value of the day-of-week, never null
      */
     public String getText(Locale locale) {
         return ISOChronology.dayOfWeekRule().getText(getValue(), locale, TextStyle.FULL);

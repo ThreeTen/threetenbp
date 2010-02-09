@@ -130,7 +130,7 @@ public enum AmPmOfDay {
     }
 
     /**
-     * Gets the short textual representation of this day-of-week, such as 'AM' or 'PM'.
+     * Gets the full textual representation of this AM/PM, such as 'AM' or 'PM'.
      * <p>
      * This method is notionally specific to {@link ISOChronology} as it uses
      * the AM/PM rule to obtain the text. However, it is expected that

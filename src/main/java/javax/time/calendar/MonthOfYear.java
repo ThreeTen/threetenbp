@@ -203,7 +203,7 @@ public enum MonthOfYear {
     }
 
     /**
-     * Gets the short textual representation of this month-of-year, such as 'January' or 'December'.
+     * Gets the full textual representation of this month-of-year, such as 'January' or 'December'.
      * <p>
      * This method is notionally specific to {@link ISOChronology} as it uses
      * the month-of-year rule to obtain the text. However, it is expected that
@@ -214,7 +214,7 @@ public enum MonthOfYear {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the month-of-year, never null
+     * @return the full text value of the month-of-year, never null
      */
     public String getText(Locale locale) {
         return ISOChronology.monthOfYearRule().getText(getValue(), locale, TextStyle.FULL);
