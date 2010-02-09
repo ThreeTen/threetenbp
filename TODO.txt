@@ -36,52 +36,48 @@ MathUtils
 Duration
 
 Instant
-- parse factory
+- toString/parse
 
 Time scales
-- time scales (minimum?)
-
-Intervals
-- intervals (defer completely?)
+- less public classes
+- simplified UTC should always have 86400 seconds per day
+? more implementations
+? gps
 
 Date/Time classes
-- factories from Calendrical... ?
-- getChronology()
-- getMonthOfYear() -> getMonth(), etc?
+- factories from Calendrical...
 - OffsetDate.atTime(int...)
-- getAmPm()
-- ZonedDateTime plusDurationSeconds() etc
 - LocalDate.plus(PeriodProvider) needs correct algorithm
+? remove getChronology()
+? getMonthOfYear() -> getMonth(), etc
+? getAmPm()
 
 Rules
-- parse() ?
-- merge -> normalize ?
-- merge MonthDay and Year
-- deriveInt for fields ?
+- ensure can merge MonthDay and Year
 - test min/max year for week-based-year
-- ISO era?
+? parse()
+? merge -> normalize
+? deriveInt for fields
+? ISO era
 
 Date/Time formatting
+- parse 24:00
 - format patterns - yyyy-MM-dd, check details
 - strict/lenient parse
 - upper/lower case
-- substitute text (replacing built in text for Months/DOW etc)?
 - only ASCII numbers
-- parse zone
 - Arabic numbers have negative sign after number
 - parseInto(Calendrical)
 - default calendrical to pre-define era for example
-- isPrintDataAvailable() causes get of field value twice, can we drop method?
+? isPrintDataAvailable() causes get of field value twice, can we drop method
+? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
-- public access to transitions and transition rules?
-- OffsetInfo, discontinuity rename to transition
 - zone rule where time of day is 24:00
 - SPI and zone providers
 - versions of zone data files
 
 Periods
-- construct fields without period units (what does this mean?)
 - formatting (defer?)
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - PeriodFields.normalize(Unit...)
@@ -104,6 +100,7 @@ General
 - serialization formats
 - evaluate hash codes
 - check overflows
+- Use ArithmeticException everywhere
 
 Possible items
 - Rename DateProvider to LocalDateProvider?
@@ -116,6 +113,8 @@ Possible items
 - IntValue interface, implemented by Number/Integer
 - public factory for LocalDate.fromDayOfYear(year, doy)
 - Optimise LocalDateTime plus/minus times by having a local plus(int,int,int,long,sign,LocalDate) method
+- intervals (defer completely?)
+- HalfDays period unit for AM/PM (more accurate than 12 hours)
 
 
 DONE
@@ -137,4 +136,9 @@ DONE
 - Year.atDay()
 - LocalDate.atTime(int...)
 - review in line with changes to Duration
+- ZonedDateTime plusDurationSeconds() etc
+- public access to transitions and transition rules
+- OffsetInfo, discontinuity rename to transition
+- parse zone
+
 
