@@ -49,7 +49,8 @@ import javax.time.calendar.UnsupportedRuleException;
  * <p>
  * HistoricDate is an immutable class that represents a date in the Historic calendar system.
  * The rules of the calendar system are described in {@link HistoricChronology}.
- * The date has a precision of one day and a range from Historic year 1 to year 9999 (inclusive).
+ * The date has a precision of one day and a range within the era from
+ * year 1 to year 999,999,999 (inclusive).
  * <p>
  * Instances of this class may be created from any other object that implements
  * {@link DateProvider} including {@link LocalDate}. Similarly, instances of

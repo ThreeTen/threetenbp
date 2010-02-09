@@ -48,9 +48,9 @@ import java.io.Serializable;
  * the current time rather than a static method. This simplifies testing.
  * 
  * <h4>Best practice</h4>
- * The recommended best practice for most applications is to <i>only using the static methods</i>
- * of this class in framework and testing code. Instead, the main application should obtain the
- * current time from a {@code TimeSource} instance that is passed to the object or method.
+ * The recommended best practice for most applications is to <i>avoid using the static methods</i>.
+ * Instead, the main application should obtain the current time from a {@code TimeSource}
+ * instance that is passed to the object or method.
  * This approach is typically implemented using a dependency injection framework.
  * <pre>
  * public class MyBean {
@@ -65,8 +65,9 @@ import java.io.Serializable;
  *   }
  * }
  * </pre>
- * This approach allows alternate time-source implementations, such as {@link #fixed}
- * or {@link #offsetSystem} to be used during testing.
+ * This approach allows alternate time-source implementations, such as
+ * {@link #fixed(InstantProvider) fixed} or {@link #offsetSystem(Duration) offsetSystem}
+ * to be used during testing.
  * <pre>
  * public void test_process() {
  *   MyBean bean = new MyBean(TimeSource.fixed(Instant.EPOCH)) {
