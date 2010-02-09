@@ -39,7 +39,6 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
@@ -554,7 +553,7 @@ public final class CopticDate
         private static final CalendricalRule<CopticDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(CopticDate.class, ISOChronology.INSTANCE, "CopticDate", CopticChronology.periodDays(), null);
+            super(CopticDate.class, CopticChronology.INSTANCE, "CopticDate", CopticChronology.periodDays(), null);
         }
         private Object readResolve() {
             return INSTANCE;
