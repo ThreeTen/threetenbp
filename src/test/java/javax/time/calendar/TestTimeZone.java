@@ -158,8 +158,8 @@ public class TestTimeZone {
         assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.seconds(0L)), ZoneOffset.UTC);
         OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 30));
-        assertEquals(info.isDiscontinuity(), false);
-        assertEquals(info.getDiscontinuity(), null);
+        assertEquals(info.isTransition(), false);
+        assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), ZoneOffset.UTC);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.UTC);
         assertSame(test, TimeZone.of("UTC"));
@@ -213,8 +213,8 @@ public class TestTimeZone {
         ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));
         assertEquals(test.getRules().getOffset(Instant.seconds(0L)), offset);
         OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 30));
-        assertEquals(info.isDiscontinuity(), false);
-        assertEquals(info.getDiscontinuity(), null);
+        assertEquals(info.isTransition(), false);
+        assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), offset);
         assertEquals(info.getEstimatedOffset(), offset);
     }
@@ -432,10 +432,10 @@ public class TestTimeZone {
         TimeZone test = TimeZone.of("Europe/London");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 1, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
-        assertEquals(info.isDiscontinuity(), true);
+        assertEquals(info.isTransition(), true);
         assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(1));
-        ZoneOffsetTransition dis = info.getDiscontinuity();
+        ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
         assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(0));
@@ -455,7 +455,7 @@ public class TestTimeZone {
         assertFalse(dis.equals(ZoneOffset.hours(0)));
         assertTrue(dis.equals(dis));
 
-        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
+        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getTransition();
         assertTrue(dis.equals(otherDis));
 
         assertEquals(dis.hashCode(), otherDis.hashCode());
@@ -465,10 +465,10 @@ public class TestTimeZone {
         TimeZone test = TimeZone.of("Europe/London");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 1, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
-        assertEquals(info.isDiscontinuity(), true);
+        assertEquals(info.isTransition(), true);
         assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(0));
-        ZoneOffsetTransition dis = info.getDiscontinuity();
+        ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
         assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(1));
@@ -490,7 +490,7 @@ public class TestTimeZone {
         assertFalse(dis.equals(ZoneOffset.hours(1)));
         assertTrue(dis.equals(dis));
 
-        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
+        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getTransition();
         assertTrue(dis.equals(otherDis));
 
         assertEquals(dis.hashCode(), otherDis.hashCode());
@@ -606,10 +606,10 @@ public class TestTimeZone {
         TimeZone test = TimeZone.of("Europe/Paris");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
-        assertEquals(info.isDiscontinuity(), true);
+        assertEquals(info.isTransition(), true);
         assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(2));
-        ZoneOffsetTransition dis = info.getDiscontinuity();
+        ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
         assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(1));
@@ -627,7 +627,7 @@ public class TestTimeZone {
         assertFalse(dis.equals(ZoneOffset.hours(1)));
         assertTrue(dis.equals(dis));
 
-        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
+        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getTransition();
         assertTrue(dis.equals(otherDis));
 
         assertEquals(dis.hashCode(), otherDis.hashCode());
@@ -637,10 +637,10 @@ public class TestTimeZone {
         TimeZone test = TimeZone.of("Europe/Paris");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
-        assertEquals(info.isDiscontinuity(), true);
+        assertEquals(info.isTransition(), true);
         assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(1));
-        ZoneOffsetTransition dis = info.getDiscontinuity();
+        ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
         assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(2));
@@ -660,7 +660,7 @@ public class TestTimeZone {
         assertFalse(dis.equals(ZoneOffset.hours(2)));
         assertTrue(dis.equals(dis));
 
-        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
+        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getTransition();
         assertTrue(dis.equals(otherDis));
 
         assertEquals(dis.hashCode(), otherDis.hashCode());
@@ -799,10 +799,10 @@ public class TestTimeZone {
         TimeZone test = TimeZone.of("America/New_York");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 9, 2, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
-        assertEquals(info.isDiscontinuity(), true);
+        assertEquals(info.isTransition(), true);
         assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(-4));
-        ZoneOffsetTransition dis = info.getDiscontinuity();
+        ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
         assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(-5));
@@ -820,7 +820,7 @@ public class TestTimeZone {
         assertFalse(dis.equals(ZoneOffset.hours(-5)));
         assertTrue(dis.equals(dis));
 
-        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
+        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getTransition();
         assertTrue(dis.equals(otherDis));
 
         assertEquals(dis.hashCode(), otherDis.hashCode());
@@ -830,10 +830,10 @@ public class TestTimeZone {
         TimeZone test = TimeZone.of("America/New_York");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 11, 2, 1, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
-        assertEquals(info.isDiscontinuity(), true);
+        assertEquals(info.isTransition(), true);
         assertEquals(info.getOffset(), null);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(-5));
-        ZoneOffsetTransition dis = info.getDiscontinuity();
+        ZoneOffsetTransition dis = info.getTransition();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
         assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(-4));
@@ -853,7 +853,7 @@ public class TestTimeZone {
         assertFalse(dis.equals(ZoneOffset.hours(-4)));
         assertTrue(dis.equals(dis));
 
-        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
+        final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getTransition();
         assertTrue(dis.equals(otherDis));
 
         assertEquals(dis.hashCode(), otherDis.hashCode());
@@ -931,8 +931,8 @@ public class TestTimeZone {
 
     //-----------------------------------------------------------------------
     private void checkOffset(OffsetInfo info, ZoneOffset zoneOffset) {
-        assertEquals(info.isDiscontinuity(), false);
-        assertEquals(info.getDiscontinuity(), null);
+        assertEquals(info.isTransition(), false);
+        assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), zoneOffset);
         assertEquals(info.getEstimatedOffset(), zoneOffset);
 //        assertEquals(info.containsOffset(zoneOffset), true);

@@ -154,7 +154,7 @@ public abstract class ZoneRules {
      * The third case, a gap in the local time-line, cannot be returned by this
      * method as an instant will always represent a valid point and cannot be in a gap.
      * The returned object provides information about the offset or overlap and it
-     * is vital to check {@link OffsetInfo#isDiscontinuity()} to handle the overlap.
+     * is vital to check {@link OffsetInfo#isTransition()} to handle the overlap.
      *
      * @param instant  the instant to find the offset information for, not null
      * @return the offset information, never null
@@ -179,7 +179,7 @@ public abstract class ZoneRules {
      * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
      * </ul>
      * The returned object provides this information and it is vital to check
-     * {@link OffsetInfo#isDiscontinuity()} to handle the gap or overlap.
+     * {@link OffsetInfo#isTransition()} to handle the gap or overlap.
      *
      * @param dateTime  the date-time to find the offset information for, not null
      * @return the offset information, never null
@@ -344,7 +344,7 @@ public abstract class ZoneRules {
      *
      * @param dateTime  the date-time that this info applies to, not null
      * @param cutoverDateTime  the date-time of the discontinuity using the offset before, not null
-     * @param offsetAfter  the offset after the discontinuity, not null
+     * @param offsetAfter  the offset after the transition, not null
      * @return the created offset info, never null
      */
     protected OffsetInfo createOffsetInfo(
@@ -426,12 +426,12 @@ public abstract class ZoneRules {
      * There are three cases:
      * <ul>
      * <li>Normal. Where there is a single offset for the local date-time.</li>
-     * <li>Gap. Where there is a gap in the local time-line normally caused by the
+     * <li>Gap. Where there is a gap in the local time-line typically caused by the
      * spring cutover to daylight savings. There are no valid offsets within the gap</li>
-     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
+     * <li>Overlap. Where there is a gap in the local time-line typically caused by the
      * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
      * </ul>
-     * When using this class, it is vital to check the {@link #isDiscontinuity()}
+     * When using this class, it is vital to check the {@link #isTransition()}
      * method to handle the gap and overlap. Alternatively use one of the general
      * methods {@link #getEstimatedOffset()} or {@link #isValidOffset(ZoneOffset)}.
      * <p>
@@ -444,8 +444,8 @@ public abstract class ZoneRules {
         private final LocalDateTime dateTime;
         /** The offset for the local time-line. */
         private final ZoneOffset offset;
-        /** The discontinuity in the local time-line. */
-        private final ZoneOffsetTransition discontinuity;
+        /** The transition between two offsets on the local time-line. */
+        private final ZoneOffsetTransition transition;
         
         /**
          * Constructor for handling a simple single offset.
@@ -458,11 +458,11 @@ public abstract class ZoneRules {
                 ZoneOffset offset) {
             this.dateTime = dateTime;
             this.offset = offset;
-            this.discontinuity = null;
+            this.transition = null;
         }
         
         /**
-         * Constructor for handling a discontinuity.
+         * Constructor for handling a transition.
          *
          * @param dateTime  the date-time that this info applies to, not null
          * @param cutoverDateTime  the date-time of the cutover with the offset before, not null
@@ -474,73 +474,86 @@ public abstract class ZoneRules {
                 ZoneOffset offsetAfter) {
             this.dateTime = dateTime;
             this.offset = null;
-            this.discontinuity = new ZoneOffsetTransition(cutoverDateTime, offsetAfter);
+            this.transition = new ZoneOffsetTransition(cutoverDateTime, offsetAfter);
         }
         
         //-----------------------------------------------------------------------
         /**
          * Gets the local date-time that this info is applicable to.
          *
-         * @return true if there is no valid offset
+         * @return the date-time that this is the information for, not null
          */
         public LocalDateTime getLocalDateTime() {
             return dateTime;
         }
         
         /**
-         * Is the offset information for the local date-time a discontinuity.
-         * A discontinuity may be a gap or overlap and is normally caused by
+         * Is a transition occurring on the local time-line.
+         * <p>
+         * A transition may be a gap or overlap and is normally caused by
          * daylight savings cutover.
          *
-         * @return true if there is a discontinuity in the local time-line
+         * @return true if there is a transition occurring on the local time-line,
+         *  false if there is a single valid offset
          */
-        public boolean isDiscontinuity() {
-            return discontinuity != null;
+        public boolean isTransition() {
+            return transition != null;
         }
         
         /**
          * Gets the offset applicable at this point on the local time-line.
-         * This method is intended for use when {@link #isDiscontinuity()} returns false.
+         * <p>
+         * This method is intended for use when {@link #isTransition()} returns {@code false}.
          *
-         * @return the offset applicable when there is not a discontinuity in the
-         *  local-time line, null if it is a discontinuity
+         * @return the offset applicable when there is not a transition on the
+         *  local-time line, null if it is a transition
          */
         public ZoneOffset getOffset() {
             return offset;
         }
         
         /**
-         * Gets information about any discontinuity in the local time-line.
-         * This method should only be called after calling {@link #isDiscontinuity()}.
+         * Gets information about the transition occurring on the local time-line.
+         * <p>
+         * This method is intended for use when {@link #isTransition()} returns {@code true}
          *
-         * @return the discontinuity in the local-time line, null if not a discontinuity
+         * @return the transition on the local-time line, null if not a transition
          */
-        public ZoneOffsetTransition getDiscontinuity() {
-            return discontinuity;
+        public ZoneOffsetTransition getTransition() {
+            return transition;
         }
         
         //-----------------------------------------------------------------------
         /**
          * Gets an estimated offset for the local date-time.
          * <p>
-         * The result will be the same as {@link #getOffset()} except during a discontinuity.
-         * During a discontinuity, the value of {@link ZoneOffsetTransition#getOffsetAfter()} will
-         * be returned. How meaningful that offset is depends on your application.
+         * The date-time will typically have a single valid offset.
+         * During a gap, there will be no valid offsets.
+         * During an overlap, there will be two valid offsets.
+         * This method returns the {@link #getOffset() single offset} in the normal
+         * case, and the {@link ZoneOffsetTransition#getOffsetAfter() offset after}
+         * when a transition is occurring.
          *
          * @return a suitable estimated offset, never null
          */
         public ZoneOffset getEstimatedOffset() {
-            return isDiscontinuity() ? getDiscontinuity().getOffsetAfter() : offset;
+            return isTransition() ? getTransition().getOffsetAfter() : offset;
         }
         
         /**
-         * Checks if the specified offset is valid for this discontinuity.
+         * Checks if the specified offset is valid for this date-time.
+         * <p>
+         * The date-time will typically have a single valid offset.
+         * During a gap, there will be no valid offsets.
+         * During an overlap, there will be two valid offsets.
+         * This method returns {@code true} if the specified offset is one of the
+         * valid offsets.
          *
          * @param offset  the offset to check, null returns false
-         * @return true if the offset is one of those described by this discontinuity
+         * @return true if the offset is one of those allowed by the date-time
          */
         public boolean isValidOffset(ZoneOffset offset) {
-            return isDiscontinuity() ? discontinuity.isValidOffset(offset) : this.offset.equals(offset);
+            return isTransition() ? transition.isValidOffset(offset) : this.offset.equals(offset);
         }
         
         //-----------------------------------------------------------------------
@@ -553,7 +566,7 @@ public abstract class ZoneRules {
         public String toString() {
             StringBuilder buf = new StringBuilder();
             buf.append("OffsetInfo[")
-                .append(isDiscontinuity() ? discontinuity : offset)
+                .append(isTransition() ? transition : offset)
                 .append(']');
             return buf.toString();
         }

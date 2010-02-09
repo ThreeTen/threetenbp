@@ -258,7 +258,7 @@ public final class ZonedDateTime
         ZoneRules rules = zone.getRules();  // latest rules version
         OffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
         if (info.isValidOffset(inputOffset) == false) {
-            if (info.isDiscontinuity() && info.getDiscontinuity().isGap()) {
+            if (info.isTransition() && info.getTransition().isGap()) {
                 throw new CalendarConversionException("The local time " + dateTime.toLocalDateTime() +
                         " does not exist in time zone " + zone + " due to a daylight savings gap");
             }
@@ -466,8 +466,8 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
         OffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
-        if (info.isDiscontinuity()) {
-            ZoneOffset offset = info.getDiscontinuity().getOffsetBefore();
+        if (info.isTransition()) {
+            ZoneOffset offset = info.getTransition().getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);
@@ -496,8 +496,8 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
         OffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
-        if (info.isDiscontinuity()) {
-            ZoneOffset offset = info.getDiscontinuity().getOffsetAfter();
+        if (info.isTransition()) {
+            ZoneOffset offset = info.getTransition().getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);

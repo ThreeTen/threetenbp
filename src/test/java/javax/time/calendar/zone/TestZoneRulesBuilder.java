@@ -931,20 +931,20 @@ public class TestZoneRulesBuilder {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         OffsetInfo offsetInfo = test.getOffsetInfo(dt);
         assertEquals(offsetInfo.getLocalDateTime(), dt);
-        assertEquals(offsetInfo.isDiscontinuity(), true);
-        assertEquals(offsetInfo.getDiscontinuity().isGap(), true);
-        assertEquals(offsetInfo.getDiscontinuity().getOffsetBefore(), before);
-        assertEquals(offsetInfo.getDiscontinuity().getOffsetAfter(), after);
+        assertEquals(offsetInfo.isTransition(), true);
+        assertEquals(offsetInfo.getTransition().isGap(), true);
+        assertEquals(offsetInfo.getTransition().getOffsetBefore(), before);
+        assertEquals(offsetInfo.getTransition().getOffsetAfter(), after);
     }
 
     private static void assertOverlap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         OffsetInfo offsetInfo = test.getOffsetInfo(dt);
         assertEquals(offsetInfo.getLocalDateTime(), dt);
-        assertEquals(offsetInfo.isDiscontinuity(), true);
-        assertEquals(offsetInfo.getDiscontinuity().isOverlap(), true);
-        assertEquals(offsetInfo.getDiscontinuity().getOffsetBefore(), before);
-        assertEquals(offsetInfo.getDiscontinuity().getOffsetAfter(), after);
+        assertEquals(offsetInfo.isTransition(), true);
+        assertEquals(offsetInfo.getTransition().isOverlap(), true);
+        assertEquals(offsetInfo.getTransition().getOffsetBefore(), before);
+        assertEquals(offsetInfo.getTransition().getOffsetAfter(), after);
     }
 
     //-----------------------------------------------------------------------

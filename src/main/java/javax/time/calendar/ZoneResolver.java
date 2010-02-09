@@ -87,10 +87,10 @@ public abstract class ZoneResolver {
         ZoneRules rules = (oldDateTime != null ? oldDateTime.getApplicableRules() : zone.getRules());
         
         OffsetInfo info = rules.getOffsetInfo(newDateTime);
-        if (info.isDiscontinuity() == false) {
+        if (info.isTransition() == false) {
             return OffsetDateTime.from(newDateTime, info.getOffset());
         }
-        ZoneOffsetTransition discontinuity = info.getDiscontinuity();
+        ZoneOffsetTransition discontinuity = info.getTransition();
         OffsetDateTime result = discontinuity.isGap() ?
             handleGap(zone, rules, discontinuity, newDateTime, oldDateTime != null ? oldDateTime.toOffsetDateTime() : null) :
             handleOverlap(zone, rules, discontinuity, newDateTime, oldDateTime != null ? oldDateTime.toOffsetDateTime() : null);

@@ -214,7 +214,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             OffsetInfo info = null;
             for (ZoneOffsetTransition trans : transArray) {
                 info = findOffsetInfo(dt, trans);
-                if (info.isDiscontinuity() || info.getOffset().equals(trans.getOffsetBefore())) {
+                if (info.isTransition() || info.getOffset().equals(trans.getOffsetBefore())) {
                     return info;
                 }
             }
