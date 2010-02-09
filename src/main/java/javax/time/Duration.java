@@ -799,7 +799,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Converts this duration to the total length in milliseconds expressed as a {@code long}.
+     * Converts this duration to the total length in nanoseconds expressed as a {@code long}.
      * <p>
      * If this duration is too large to fit in a {@code long} nanoseconds, then an
      * exception is thrown.
