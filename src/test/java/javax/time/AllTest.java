@@ -35,6 +35,7 @@ import java.util.Arrays;
 
 import javax.time.calendar.TestAmPmOfDay;
 import javax.time.calendar.TestCalendricalMatchers;
+import javax.time.calendar.TestCalendricalMerger;
 import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
@@ -57,6 +58,7 @@ import javax.time.calendar.TestISOYearRule;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
 import javax.time.calendar.TestLocalTime;
+import javax.time.calendar.TestMonthDay;
 import javax.time.calendar.TestMonthOfYear;
 import javax.time.calendar.TestOffsetDate;
 import javax.time.calendar.TestOffsetDateTime;
@@ -65,6 +67,7 @@ import javax.time.calendar.TestOffsetTime;
 import javax.time.calendar.TestQuarterOfYear;
 import javax.time.calendar.TestTimeZone;
 import javax.time.calendar.TestYear;
+import javax.time.calendar.TestYearMonth;
 import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.TestZoneResolvers;
 import javax.time.calendar.TestZonedDateTime;
@@ -129,7 +132,7 @@ public class AllTest {
             TestTimeSource_System.class,
             // calendar classes
             TestAmPmOfDay.class,
-//            TestCalendricalMerger.class,
+            TestCalendricalMerger.class,
             TestCalendricalMatchers.class,
             TestCalendricalRule.class,
             TestClock.class,
@@ -153,7 +156,7 @@ public class AllTest {
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
-//            TestMonthDay.class,  // needs strict to block overflow leftovers
+            TestMonthDay.class,  // needs strict to block overflow leftovers
             TestMonthOfYear.class,
             TestOffsetDate.class,
             TestOffsetDateTime.class,
@@ -162,7 +165,7 @@ public class AllTest {
             TestQuarterOfYear.class,
             TestTimeZone.class,
             TestYear.class,
-//            TestYearMonth.class,  // needs strict to block overflow leftovers
+            TestYearMonth.class,  // needs strict to block overflow leftovers
             TestZonedDateTime.class,
             TestZoneOffset.class,
             TestZoneResolvers.class,

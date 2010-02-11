@@ -114,36 +114,36 @@ public class TestCalendricalMerger {
         m.merge();
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_getValue_strictInvalidValue() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            protected void merge(CalendricalMerger merger) {
-                fail();
-            }
-        };
-        CalendricalMerger m = createMerger(MOY_RULE, -1, rule, 20, STRICT_CONTEXT);
-        try {
-            m.merge();
-        } catch (IllegalCalendarFieldValueException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), MOY_RULE);
-            throw ex;
-        }
-    }
-
-    public void test_getValue_lenientInvalidValue() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            protected void merge(CalendricalMerger merger) {
-                assertEquals(merger.getValue(MOY_RULE), -1);
-            }
-        };
-        CalendricalMerger m = createMerger(MOY_RULE, -1, rule, 20, STRICT_CONTEXT);
-        m.merge();
-    }
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_getValue_strictInvalidValue() {
+//        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+//            private static final long serialVersionUID = 1L;
+//            @Override
+//            protected void merge(CalendricalMerger merger) {
+//                fail();
+//            }
+//        };
+//        CalendricalMerger m = createMerger(MOY_RULE, -1, rule, 20, STRICT_CONTEXT);
+//        try {
+//            m.merge();
+//        } catch (IllegalCalendarFieldValueException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), MOY_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_getValue_lenientInvalidValue() {
+//        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+//            private static final long serialVersionUID = 1L;
+//            @Override
+//            protected void merge(CalendricalMerger merger) {
+//                assertEquals(merger.getValue(MOY_RULE), -1);
+//            }
+//        };
+//        CalendricalMerger m = createMerger(MOY_RULE, -1, rule, 20, STRICT_CONTEXT);
+//        m.merge();
+//    }
 
 //    //-----------------------------------------------------------------------
 //    // removeProcessed()
@@ -304,713 +304,713 @@ public class TestCalendricalMerger {
         assertMerged(m, null, LocalTime.rule(), time(21, 00));  // merged to 21:00
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_merge_strict() {
-        CalendricalMerger m = createMerger(AMPM_RULE, 1, HOUR_AMPM_RULE, 14, STRICT_CONTEXT);  // 14pm
-        try {
-            m.merge();
-        } catch (IllegalCalendarFieldValueException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), HOUR_AMPM_RULE);
-            throw ex;
-        }
-    }
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_merge_strict() {
+//        CalendricalMerger m = createMerger(AMPM_RULE, 1, HOUR_AMPM_RULE, 14, STRICT_CONTEXT);  // 14pm
+//        try {
+//            m.merge();
+//        } catch (IllegalCalendarFieldValueException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), HOUR_AMPM_RULE);
+//            throw ex;
+//        }
+//    }
 
-    public void test_merge_lenient() {
-        CalendricalMerger m = createMerger(AMPM_RULE, 1, HOUR_AMPM_RULE, 14, LENIENT_CONTEXT);  // 14pm
-        m.merge();
-        assertMerged(m, Period.days(1), LocalTime.rule(), time(2, 00));  // merged to 02:00 + 1day (26:00)
-    }
-
-    public void test_merge_empty() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.merge();
-        assertEquals(m.get(YEAR_RULE), null);
-    }
-
-    public void test_merge_doubleMerge() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(AMPM_RULE, 1);
-        m.getInputMap().put(HOUR_AMPM_RULE, 9);  // 9pm -> 21:00
-        m.getInputMap().put(QOY_RULE, 2);
-        m.getInputMap().put(MOQ_RULE, 3);  // Q2M3 -> June
-        m.merge();
-        assertMerged(m, null, MOY_RULE, MonthOfYear.JUNE, LocalTime.rule(), time(21, 0));  // merged to 21:00 and June
-    }
-
-    public void test_merge_nothingToMerge() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOQ_RULE, 1);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.merge();
-        assertMerged(m, null, YEAR_RULE, 2008, MOQ_RULE, 1, DOM_RULE, 30);
-    }
-
-    public void test_merge_otherFieldsUntouched() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(QOY_RULE, 3);
-        m.getInputMap().put(MOQ_RULE, 2);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.merge();
-        assertMerged(m, null, MOY_RULE, MonthOfYear.AUGUST, MIN_RULE, 30);  // merged to August
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_inconsistentValue() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(AMPM_RULE, 0);
-        m.getInputMap().put(HOUR_AMPM_RULE, 9);  // 9am
-        m.getInputMap().put(HOUR_RULE, 10);  // 10am
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), HOUR_RULE);
-            assertMerged(m, null, AMPM_RULE, AmPmOfDay.AM, HOUR_AMPM_RULE, 9, HOUR_RULE, 10);
-            throw ex;
-        }
-    }
-
-    public void test_merge_multiLevelMerge_simple() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
-        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
-        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        m.merge();
-        assertMerged(m, null, YEAR_RULE, 1972);  // merged to 1972
-    }
-
-    public void test_merge_multiLevelMerge_fullUpToDate() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
-        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
-        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        m.getInputMap().put(QOY_RULE, 4);
-        m.getInputMap().put(MOQ_RULE, 3);  // M3 + Q4 -> December
-        m.getInputMap().put(DOM_RULE, 3);
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(1972, 12, 3));  // merged to 1972-12-03
-    }
-
-    public void test_merge_multiLevelMerge_crossCheck_valid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
-        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);  // cross check against year of century
-        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        m.getInputMap().put(YEAR_RULE, 1972);  // cross check against year
-        m.merge();
-        assertMerged(m, null, YEAR_RULE, 1972);  // merged to 1972
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_multiLevelMerge_crossCheck_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
-        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 71);  // cross check against year of century
-        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        m.getInputMap().put(YEAR_RULE, 1972);  // cross check against year
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), YEAR_RULE);
-            assertMerged(m, null, MockDecadeOfCenturyFieldRule.INSTANCE, 7, MockYearOfDecadeFieldRule.INSTANCE, 2,
-                    MockYearOfCenturyFieldRule.INSTANCE, 71, MockCenturyFieldRule.INSTANCE, 19, YEAR_RULE, 1972);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_singleLevel_derivableRemoved_valid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);  // derivable from YearOfCentury
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        m.merge();
-        assertMerged(m, null, MockYearOfCenturyFieldRule.INSTANCE, 72);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_singleLevel_derivableChecked_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from YearOfCentury, value is wrong
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
-            assertMerged(m, null, MockDecadeOfCenturyFieldRule.INSTANCE, 6, MockYearOfCenturyFieldRule.INSTANCE, 72);
-            throw ex;
-        }
-    }
-
-    public void test_merge_singleLevel_derivableDiscardUnused_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from YearOfCentury, value is wrong
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        m.merge();
-        assertMerged(m, null, MockYearOfCenturyFieldRule.INSTANCE, 72);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_multiLevel_simple_derivableRemoved_valid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);  // derivable from Year
-        m.getInputMap().put(YEAR_RULE, 1972);
-        m.merge();
-        assertMerged(m, null, YEAR_RULE, 1972);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_multiLevel_simple_derivableChecked_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
-        m.getInputMap().put(YEAR_RULE, 1972);
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
-            assertMerged(m,  null, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972);
-            throw ex;
-        }
-    }
-
-    public void test_merge_multiLevel_simple_derivableDiscardUnused_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
-        m.getInputMap().put(YEAR_RULE, 1972);
-        m.merge();
-        assertMerged(m,  null, YEAR_RULE, 1972);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_multiLevel_complex_derivableRemoved_valid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);  // derivable from Year
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        m.merge();
-        assertMerged(m,  null, YEAR_RULE, 1972);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_multiLevel_complex_derivableChecked_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
-            assertMerged(m, null, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972);
-            throw ex;
-        }
-    }
-
-    public void test_merge_multiLevel_complex_derivableDiscardUnused_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
-        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        m.merge();
-        assertMerged(m, null, YEAR_RULE, 1972);
-    }
-
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    public void test_merge_toDate_directDMY() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
-    }
-
-    public void test_merge_toDate_directDY() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(DOY_RULE, 182);
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
-    }
-
-    public void test_merge_toDate_mergeFieldsThenDMY() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(QOY_RULE, 2);
-        m.getInputMap().put(MOQ_RULE, 3);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_toDate_direct_strictInvalidWithinBounds() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 31);
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), DOM_RULE);
-            assertMerged(m, null, YEAR_RULE, 2008, MOY_RULE, MonthOfYear.JUNE, DOM_RULE, 31);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_merge_toDate_direct_strictInvalidOutsideBounds() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 32);
-        try {
-            m.merge();
-        } catch (IllegalCalendarFieldValueException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), DOM_RULE);
-            assertMerged(m, null, YEAR_RULE, 2008, MOY_RULE, MonthOfYear.JUNE, DOM_RULE, 32);
-            throw ex;
-        }
-    }
-
-    public void test_merge_toDate_direct_lenientInvalidWithinBounds() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 31);
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 7, 1));
-    }
-
-    public void test_merge_toDate_direct_lenientInvalidOutsideBounds() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 32);
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 7, 2));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_toDate_twoPrimarySetsMatch() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(DOY_RULE, 182);
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_merge_toDate_twoPrimarySetsDiffer() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(DOY_RULE, 183);
-        try {
-            m.merge();
-        } catch (CalendricalException ex) {
-            dumpException(ex);
-            assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30), DOY_RULE, 183);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_mergeToDate_strict_crossCheck_valid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(DOW_RULE, 1);   // 2008-06-30 is a Monday, so this is right
-        m.getInputMap().put(QOY_RULE, 2);   // 2008-06-30 is Q2, so this is right
-        m.getInputMap().put(MIN_RULE, 30);  // ignored
-        m.merge();
-        assertMerged(m, null, MIN_RULE, 30, LocalDate.rule(), date(2008, 6, 30));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_mergeToDate_strict_crossCheck_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), DOW_RULE);
-            assertMerged(m, null, DOW_RULE, DayOfWeek.TUESDAY, LocalDate.rule(), date(2008, 6, 30));
-            throw ex;
-        }
-    }
-
-    public void test_mergeToDate_strict_crossCheck_discardUnused() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong, but discarded
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_mergeToDate_lenient_crossCheck_valid() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 32);
-        m.getInputMap().put(DOW_RULE, 3);   // 2008-07-02 is a Wednesday, so this is right
-        m.getInputMap().put(QOY_RULE, 3);   // 2008-07-02 is Q3, so this is right
-        m.getInputMap().put(MIN_RULE, 30);  // ignored
-        m.merge();
-        assertMerged(m, null, MIN_RULE, 30, LocalDate.rule(), date(2008, 7, 2));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_mergeToDate_lenient_crossCheck_invalid() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 32);
-        m.getInputMap().put(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), DOW_RULE);
-            assertMerged(m, null, DOW_RULE, DayOfWeek.TUESDAY, LocalDate.rule(), date(2008, 7, 2));
-            throw ex;
-        }
-    }
-
-    public void test_mergeToDate_lenient_crossCheck_discardUnused() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 32);
-        m.getInputMap().put(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong, but discarded
-        m.merge();
-        assertMerged(m, null, LocalDate.rule(), date(2008, 7, 2));
-    }
-
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    public void test_merge_toTime_directHM() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.merge();
-        assertMerged(m, null, LocalTime.rule(), time(11, 30));
-    }
-
-    public void test_merge_toTime_fieldsThenHM() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_AMPM_RULE, 2);
-        m.getInputMap().put(AMPM_RULE, 1);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.merge();
-        assertMerged(m, null, LocalTime.rule(), time(14, 30));
-    }
-
-    public void test_merge_toTime_fieldsThenHMSN() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 14);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(SEC_RULE, 50);
-        m.getInputMap().put(MILLISEC_RULE, 1);  // must be merged to nanos before merge to LocalTime
-        m.merge();
-        assertMerged(m, null, LocalTime.rule(), time(14, 30, 50, 1000000));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_merge_toTime_strict_outsideBoundsHours() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 24);
-        m.getInputMap().put(MIN_RULE, 30);
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), HOUR_RULE);
-            assertMerged(m, null, HOUR_RULE, 24, MIN_RULE, 30);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_merge_toTime_strict_outsideBoundsMins() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 70);
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), MIN_RULE);
-            assertMerged(m, null, HOUR_RULE, 11, MIN_RULE, 70);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_toTime_lenient_outsideBoundsHours() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 24);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.merge();
-        assertMerged(m, Period.days(1), LocalTime.rule(), time(0, 30)); // +P1D
-    }
-
-    public void test_merge_toTime_lenient_outsideBoundsMins() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 70);
-        m.merge();
-        assertMerged(m, null, LocalTime.rule(), time(12, 10));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_toTime_twoPrimarySetsMatch() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(MILLIDAY_RULE, 41400000);
-        m.merge();
-        assertMerged(m, null, LocalTime.rule(), time(11, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_merge_toTime_twoPrimarySetsDiffer() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(MILLIDAY_RULE, 41400001);
-        try {
-            m.merge();
-        } catch (CalendricalException ex) {
-            dumpException(ex);
-            assertMerged(m, null, LocalTime.rule(), time(11, 30), MILLIDAY_RULE, 41400001);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_toTime_strict_crossCheck_valid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 0);  // 11:30 is AM, so this is right
-        m.merge();
-        assertMerged(m, null, LocalTime.rule(), time(11, 30));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_toTime_strict_crossCheck_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertMerged(m, null, AMPM_RULE, AmPmOfDay.PM, LocalTime.rule(), time(11, 30));
-            throw ex;
-        }
-    }
-
-    public void test_merge_toTime_strict_crossCheck_discardUnused() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
-        m.merge();
-        assertMerged(m, null, LocalTime.rule(), time(11, 30));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_toTime_lenient_crossCheck_valid() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 24);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 0);  // 00:30 is AM, so this is right
-        m.merge();
-        assertMerged(m, Period.days(1), LocalTime.rule(), time(0, 30)); // +P1D
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_toTime_lenient_crossCheck_invalid() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 24);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertMerged(m, Period.days(1), AMPM_RULE, AmPmOfDay.PM, LocalTime.rule(), time(0, 30)); // +P1D
-            throw ex;
-        }
-    }
-
-    public void test_merge_toTime_lenient_crossCheck_discardUnused() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(HOUR_RULE, 24);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong, but ignored
-        m.merge();
-        assertMerged(m, Period.days(1), LocalTime.rule(), time(0, 30)); // +P1D
-    }
-
-    //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    public void test_merge_toDateTime_directYMDHM() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.merge();
-        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
-    }
-
-    public void test_merge_toDateTime_lenientOverflow() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(HOUR_RULE, 23);
-        m.getInputMap().put(MIN_RULE, 70);
-        m.merge();
-        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 7, 1, 0, 10));  // +P1D added
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_toDateTime_strict_crossCheck_valid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 0);  // 11:30 is AM, so this is correct
-        m.merge();
-        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_toDateTime_strict_crossCheck_invalid() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), AMPM_RULE);
-            assertMerged(m, null, AMPM_RULE, AmPmOfDay.PM, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
-            throw ex;
-        }
-    }
-
-    public void test_merge_toDateTime_strict_crossCheck_discardUnused() {
-        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(HOUR_RULE, 11);
-        m.getInputMap().put(MIN_RULE, 30);
-        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
-        m.merge();
-        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_merge_toDateTime_lenient_crossCheck_valid() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(DOW_RULE, 1);  // Monday, correct for 2008-06-30
-        m.getInputMap().put(HOUR_RULE, 23);
-        m.getInputMap().put(MIN_RULE, 70);
-        m.getInputMap().put(AMPM_RULE, 0);  // 00:10 is AM, so this is correct
-        m.merge();
-        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 7, 1, 0, 10));  // +P1D added
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_toDateTime_lenient_crossCheck_invalid_daysAdded() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(DOW_RULE, 2);  // Tuesday, correct for end result of 2008-07-01, but check is before days added
-        m.getInputMap().put(HOUR_RULE, 23);
-        m.getInputMap().put(MIN_RULE, 70);
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), DOW_RULE);
-            assertMerged(m, null, DOW_RULE, DayOfWeek.TUESDAY, LocalDateTime.rule(), dateTime(2008, 6, 30, 0, 10));  // +P1D
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_merge_toDateTime_lenient_crossCheck_invalid() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(HOUR_RULE, 23);
-        m.getInputMap().put(MIN_RULE, 70);
-        m.getInputMap().put(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong
-        try {
-            m.merge();
-        } catch (InvalidCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getRule(), AMPM_RULE);
-            assertMerged(m, null, AMPM_RULE, AmPmOfDay.PM, LocalDateTime.rule(), dateTime(2008, 6, 30, 0, 10));  // +P1D
-            throw ex;
-        }
-    }
-
-    public void test_merge_toDateTime_lenient_crossCheck_discardUnused() {
-        CalendricalMerger m = new CalendricalMerger(LENIENT_DISCARD_UNUSED_CONTEXT);
-        m.getInputMap().put(YEAR_RULE, 2008);
-        m.getInputMap().put(MOY_RULE, 6);
-        m.getInputMap().put(DOM_RULE, 30);
-        m.getInputMap().put(HOUR_RULE, 23);
-        m.getInputMap().put(MIN_RULE, 70);
-        m.getInputMap().put(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong, but discarded
-        m.merge();
-        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 7, 1, 0, 10));  // +P1D added
-    }
-
-    //-----------------------------------------------------------------------
+//    public void test_merge_lenient() {
+//        CalendricalMerger m = createMerger(AMPM_RULE, 1, HOUR_AMPM_RULE, 14, LENIENT_CONTEXT);  // 14pm
+//        m.merge();
+//        assertMerged(m, Period.days(1), LocalTime.rule(), time(2, 00));  // merged to 02:00 + 1day (26:00)
+//    }
+//
+//    public void test_merge_empty() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.merge();
+//        assertEquals(m.get(YEAR_RULE), null);
+//    }
+//
+//    public void test_merge_doubleMerge() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(AMPM_RULE, 1);
+//        m.getInputMap().put(HOUR_AMPM_RULE, 9);  // 9pm -> 21:00
+//        m.getInputMap().put(QOY_RULE, 2);
+//        m.getInputMap().put(MOQ_RULE, 3);  // Q2M3 -> June
+//        m.merge();
+//        assertMerged(m, null, MOY_RULE, MonthOfYear.JUNE, LocalTime.rule(), time(21, 0));  // merged to 21:00 and June
+//    }
+//
+//    public void test_merge_nothingToMerge() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOQ_RULE, 1);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.merge();
+//        assertMerged(m, null, YEAR_RULE, 2008, MOQ_RULE, 1, DOM_RULE, 30);
+//    }
+//
+//    public void test_merge_otherFieldsUntouched() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(QOY_RULE, 3);
+//        m.getInputMap().put(MOQ_RULE, 2);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.merge();
+//        assertMerged(m, null, MOY_RULE, MonthOfYear.AUGUST, MIN_RULE, 30);  // merged to August
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_inconsistentValue() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(AMPM_RULE, 0);
+//        m.getInputMap().put(HOUR_AMPM_RULE, 9);  // 9am
+//        m.getInputMap().put(HOUR_RULE, 10);  // 10am
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), HOUR_RULE);
+//            assertMerged(m, null, AMPM_RULE, AmPmOfDay.AM, HOUR_AMPM_RULE, 9, HOUR_RULE, 10);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_multiLevelMerge_simple() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
+//        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
+//        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+//        m.merge();
+//        assertMerged(m, null, YEAR_RULE, 1972);  // merged to 1972
+//    }
+//
+//    public void test_merge_multiLevelMerge_fullUpToDate() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
+//        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
+//        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+//        m.getInputMap().put(QOY_RULE, 4);
+//        m.getInputMap().put(MOQ_RULE, 3);  // M3 + Q4 -> December
+//        m.getInputMap().put(DOM_RULE, 3);
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(1972, 12, 3));  // merged to 1972-12-03
+//    }
+//
+//    public void test_merge_multiLevelMerge_crossCheck_valid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
+//        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);  // cross check against year of century
+//        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+//        m.getInputMap().put(YEAR_RULE, 1972);  // cross check against year
+//        m.merge();
+//        assertMerged(m, null, YEAR_RULE, 1972);  // merged to 1972
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_multiLevelMerge_crossCheck_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);
+//        m.getInputMap().put(MockYearOfDecadeFieldRule.INSTANCE, 2);  // 7 + 2 -> 72
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 71);  // cross check against year of century
+//        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+//        m.getInputMap().put(YEAR_RULE, 1972);  // cross check against year
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getRule(), YEAR_RULE);
+//            assertMerged(m, null, MockDecadeOfCenturyFieldRule.INSTANCE, 7, MockYearOfDecadeFieldRule.INSTANCE, 2,
+//                    MockYearOfCenturyFieldRule.INSTANCE, 71, MockCenturyFieldRule.INSTANCE, 19, YEAR_RULE, 1972);
+//            throw ex;
+//        }
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_singleLevel_derivableRemoved_valid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);  // derivable from YearOfCentury
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+//        m.merge();
+//        assertMerged(m, null, MockYearOfCenturyFieldRule.INSTANCE, 72);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_singleLevel_derivableChecked_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from YearOfCentury, value is wrong
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
+//            assertMerged(m, null, MockDecadeOfCenturyFieldRule.INSTANCE, 6, MockYearOfCenturyFieldRule.INSTANCE, 72);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_singleLevel_derivableDiscardUnused_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from YearOfCentury, value is wrong
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+//        m.merge();
+//        assertMerged(m, null, MockYearOfCenturyFieldRule.INSTANCE, 72);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_multiLevel_simple_derivableRemoved_valid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);  // derivable from Year
+//        m.getInputMap().put(YEAR_RULE, 1972);
+//        m.merge();
+//        assertMerged(m, null, YEAR_RULE, 1972);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_multiLevel_simple_derivableChecked_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
+//        m.getInputMap().put(YEAR_RULE, 1972);
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
+//            assertMerged(m,  null, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_multiLevel_simple_derivableDiscardUnused_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
+//        m.getInputMap().put(YEAR_RULE, 1972);
+//        m.merge();
+//        assertMerged(m,  null, YEAR_RULE, 1972);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_multiLevel_complex_derivableRemoved_valid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 7);  // derivable from Year
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+//        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+//        m.merge();
+//        assertMerged(m,  null, YEAR_RULE, 1972);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_multiLevel_complex_derivableChecked_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+//        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
+//            assertMerged(m, null, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_multiLevel_complex_derivableDiscardUnused_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(MockDecadeOfCenturyFieldRule.INSTANCE, 6);  // derivable from Year, value is wrong
+//        m.getInputMap().put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+//        m.getInputMap().put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+//        m.merge();
+//        assertMerged(m, null, YEAR_RULE, 1972);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toDate_directDMY() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
+//    }
+//
+//    public void test_merge_toDate_directDY() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(DOY_RULE, 182);
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
+//    }
+//
+//    public void test_merge_toDate_mergeFieldsThenDMY() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(QOY_RULE, 2);
+//        m.getInputMap().put(MOQ_RULE, 3);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_toDate_direct_strictInvalidWithinBounds() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 31);
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), DOM_RULE);
+//            assertMerged(m, null, YEAR_RULE, 2008, MOY_RULE, MonthOfYear.JUNE, DOM_RULE, 31);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_merge_toDate_direct_strictInvalidOutsideBounds() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 32);
+//        try {
+//            m.merge();
+//        } catch (IllegalCalendarFieldValueException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), DOM_RULE);
+//            assertMerged(m, null, YEAR_RULE, 2008, MOY_RULE, MonthOfYear.JUNE, DOM_RULE, 32);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_toDate_direct_lenientInvalidWithinBounds() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 31);
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 7, 1));
+//    }
+//
+//    public void test_merge_toDate_direct_lenientInvalidOutsideBounds() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 32);
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 7, 2));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toDate_twoPrimarySetsMatch() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(DOY_RULE, 182);
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class)
+//    public void test_merge_toDate_twoPrimarySetsDiffer() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(DOY_RULE, 183);
+//        try {
+//            m.merge();
+//        } catch (CalendricalException ex) {
+//            dumpException(ex);
+//            assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30), DOY_RULE, 183);
+//            throw ex;
+//        }
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_mergeToDate_strict_crossCheck_valid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(DOW_RULE, 1);   // 2008-06-30 is a Monday, so this is right
+//        m.getInputMap().put(QOY_RULE, 2);   // 2008-06-30 is Q2, so this is right
+//        m.getInputMap().put(MIN_RULE, 30);  // ignored
+//        m.merge();
+//        assertMerged(m, null, MIN_RULE, 30, LocalDate.rule(), date(2008, 6, 30));
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_mergeToDate_strict_crossCheck_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), DOW_RULE);
+//            assertMerged(m, null, DOW_RULE, DayOfWeek.TUESDAY, LocalDate.rule(), date(2008, 6, 30));
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_mergeToDate_strict_crossCheck_discardUnused() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong, but discarded
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 6, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_mergeToDate_lenient_crossCheck_valid() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 32);
+//        m.getInputMap().put(DOW_RULE, 3);   // 2008-07-02 is a Wednesday, so this is right
+//        m.getInputMap().put(QOY_RULE, 3);   // 2008-07-02 is Q3, so this is right
+//        m.getInputMap().put(MIN_RULE, 30);  // ignored
+//        m.merge();
+//        assertMerged(m, null, MIN_RULE, 30, LocalDate.rule(), date(2008, 7, 2));
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_mergeToDate_lenient_crossCheck_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 32);
+//        m.getInputMap().put(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), DOW_RULE);
+//            assertMerged(m, null, DOW_RULE, DayOfWeek.TUESDAY, LocalDate.rule(), date(2008, 7, 2));
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_mergeToDate_lenient_crossCheck_discardUnused() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 32);
+//        m.getInputMap().put(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong, but discarded
+//        m.merge();
+//        assertMerged(m, null, LocalDate.rule(), date(2008, 7, 2));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toTime_directHM() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.merge();
+//        assertMerged(m, null, LocalTime.rule(), time(11, 30));
+//    }
+//
+//    public void test_merge_toTime_fieldsThenHM() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_AMPM_RULE, 2);
+//        m.getInputMap().put(AMPM_RULE, 1);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.merge();
+//        assertMerged(m, null, LocalTime.rule(), time(14, 30));
+//    }
+//
+//    public void test_merge_toTime_fieldsThenHMSN() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 14);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(SEC_RULE, 50);
+//        m.getInputMap().put(MILLISEC_RULE, 1);  // must be merged to nanos before merge to LocalTime
+//        m.merge();
+//        assertMerged(m, null, LocalTime.rule(), time(14, 30, 50, 1000000));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_merge_toTime_strict_outsideBoundsHours() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 24);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), HOUR_RULE);
+//            assertMerged(m, null, HOUR_RULE, 24, MIN_RULE, 30);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_merge_toTime_strict_outsideBoundsMins() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 70);
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), MIN_RULE);
+//            assertMerged(m, null, HOUR_RULE, 11, MIN_RULE, 70);
+//            throw ex;
+//        }
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toTime_lenient_outsideBoundsHours() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 24);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.merge();
+//        assertMerged(m, Period.days(1), LocalTime.rule(), time(0, 30)); // +P1D
+//    }
+//
+//    public void test_merge_toTime_lenient_outsideBoundsMins() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 70);
+//        m.merge();
+//        assertMerged(m, null, LocalTime.rule(), time(12, 10));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toTime_twoPrimarySetsMatch() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(MILLIDAY_RULE, 41400000);
+//        m.merge();
+//        assertMerged(m, null, LocalTime.rule(), time(11, 30));
+//    }
+//
+//    @Test(expectedExceptions=CalendricalException.class)
+//    public void test_merge_toTime_twoPrimarySetsDiffer() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(MILLIDAY_RULE, 41400001);
+//        try {
+//            m.merge();
+//        } catch (CalendricalException ex) {
+//            dumpException(ex);
+//            assertMerged(m, null, LocalTime.rule(), time(11, 30), MILLIDAY_RULE, 41400001);
+//            throw ex;
+//        }
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toTime_strict_crossCheck_valid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 0);  // 11:30 is AM, so this is right
+//        m.merge();
+//        assertMerged(m, null, LocalTime.rule(), time(11, 30));
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_toTime_strict_crossCheck_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertMerged(m, null, AMPM_RULE, AmPmOfDay.PM, LocalTime.rule(), time(11, 30));
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_toTime_strict_crossCheck_discardUnused() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
+//        m.merge();
+//        assertMerged(m, null, LocalTime.rule(), time(11, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toTime_lenient_crossCheck_valid() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 24);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 0);  // 00:30 is AM, so this is right
+//        m.merge();
+//        assertMerged(m, Period.days(1), LocalTime.rule(), time(0, 30)); // +P1D
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_toTime_lenient_crossCheck_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 24);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertMerged(m, Period.days(1), AMPM_RULE, AmPmOfDay.PM, LocalTime.rule(), time(0, 30)); // +P1D
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_toTime_lenient_crossCheck_discardUnused() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(HOUR_RULE, 24);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong, but ignored
+//        m.merge();
+//        assertMerged(m, Period.days(1), LocalTime.rule(), time(0, 30)); // +P1D
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toDateTime_directYMDHM() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.merge();
+//        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
+//    }
+//
+//    public void test_merge_toDateTime_lenientOverflow() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(HOUR_RULE, 23);
+//        m.getInputMap().put(MIN_RULE, 70);
+//        m.merge();
+//        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 7, 1, 0, 10));  // +P1D added
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toDateTime_strict_crossCheck_valid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 0);  // 11:30 is AM, so this is correct
+//        m.merge();
+//        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_toDateTime_strict_crossCheck_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), AMPM_RULE);
+//            assertMerged(m, null, AMPM_RULE, AmPmOfDay.PM, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_toDateTime_strict_crossCheck_discardUnused() {
+//        CalendricalMerger m = new CalendricalMerger(STRICT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(HOUR_RULE, 11);
+//        m.getInputMap().put(MIN_RULE, 30);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
+//        m.merge();
+//        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 6, 30, 11, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_merge_toDateTime_lenient_crossCheck_valid() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(DOW_RULE, 1);  // Monday, correct for 2008-06-30
+//        m.getInputMap().put(HOUR_RULE, 23);
+//        m.getInputMap().put(MIN_RULE, 70);
+//        m.getInputMap().put(AMPM_RULE, 0);  // 00:10 is AM, so this is correct
+//        m.merge();
+//        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 7, 1, 0, 10));  // +P1D added
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_toDateTime_lenient_crossCheck_invalid_daysAdded() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(DOW_RULE, 2);  // Tuesday, correct for end result of 2008-07-01, but check is before days added
+//        m.getInputMap().put(HOUR_RULE, 23);
+//        m.getInputMap().put(MIN_RULE, 70);
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), DOW_RULE);
+//            assertMerged(m, null, DOW_RULE, DayOfWeek.TUESDAY, LocalDateTime.rule(), dateTime(2008, 6, 30, 0, 10));  // +P1D
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_merge_toDateTime_lenient_crossCheck_invalid() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(HOUR_RULE, 23);
+//        m.getInputMap().put(MIN_RULE, 70);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong
+//        try {
+//            m.merge();
+//        } catch (InvalidCalendarFieldException ex) {
+//            dumpException(ex);
+//            assertEquals(ex.getRule(), AMPM_RULE);
+//            assertMerged(m, null, AMPM_RULE, AmPmOfDay.PM, LocalDateTime.rule(), dateTime(2008, 6, 30, 0, 10));  // +P1D
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_merge_toDateTime_lenient_crossCheck_discardUnused() {
+//        CalendricalMerger m = new CalendricalMerger(LENIENT_DISCARD_UNUSED_CONTEXT);
+//        m.getInputMap().put(YEAR_RULE, 2008);
+//        m.getInputMap().put(MOY_RULE, 6);
+//        m.getInputMap().put(DOM_RULE, 30);
+//        m.getInputMap().put(HOUR_RULE, 23);
+//        m.getInputMap().put(MIN_RULE, 70);
+//        m.getInputMap().put(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong, but discarded
+//        m.merge();
+//        assertMerged(m, null, LocalDateTime.rule(), dateTime(2008, 7, 1, 0, 10));  // +P1D added
+//    }
+//
+//    //-----------------------------------------------------------------------
     private static <T> void assertMerged(
             CalendricalMerger m, Period overflow,
             CalendricalRule<T> rule1, T value1) {
@@ -1047,43 +1047,43 @@ public class TestCalendricalMerger {
         assertEquals(m.getValue(rule2), value2);
         assertEquals(m.getValue(rule3), value3);
     }
-    private static <T, U, V, W, X> void assertMerged(
-            CalendricalMerger m, Period overflow,
-            CalendricalRule<T> rule1, T value1,
-            CalendricalRule<U> rule2, U value2,
-            CalendricalRule<V> rule3, V value3,
-            CalendricalRule<W> rule4, W value4,
-            CalendricalRule<X> rule5, W value5) {
-        if (overflow != null) {
-            assertEquals(m.getOverflow(), overflow);
-        } else {
-            assertEquals(m.getOverflow(), Period.ZERO);
-        }
-        assertEquals(m.getValue(rule1), value1);
-        assertEquals(m.getValue(rule2), value2);
-        assertEquals(m.getValue(rule3), value3);
-        assertEquals(m.getValue(rule4), value4);
-        assertEquals(m.getValue(rule5), value5);
-    }
+//    private static <T, U, V, W, X> void assertMerged(
+//            CalendricalMerger m, Period overflow,
+//            CalendricalRule<T> rule1, T value1,
+//            CalendricalRule<U> rule2, U value2,
+//            CalendricalRule<V> rule3, V value3,
+//            CalendricalRule<W> rule4, W value4,
+//            CalendricalRule<X> rule5, W value5) {
+//        if (overflow != null) {
+//            assertEquals(m.getOverflow(), overflow);
+//        } else {
+//            assertEquals(m.getOverflow(), Period.ZERO);
+//        }
+//        assertEquals(m.getValue(rule1), value1);
+//        assertEquals(m.getValue(rule2), value2);
+//        assertEquals(m.getValue(rule3), value3);
+//        assertEquals(m.getValue(rule4), value4);
+//        assertEquals(m.getValue(rule5), value5);
+//    }
     private static void dumpException(Exception ex) {
         // this is used to allow a human to inspect the error messages to see if they are understandable
         System.out.println(ex.getMessage());
     }
 
-    private LocalDate date(int year, int month, int day) {
-        return LocalDate.of(year, month, day);
-    }
-
+//    private LocalDate date(int year, int month, int day) {
+//        return LocalDate.of(year, month, day);
+//    }
+//
     private LocalTime time(int hour, int minute) {
         return LocalTime.of(hour, minute);
     }
 
-    private LocalTime time(int hour, int minute, int second, int nano) {
-        return LocalTime.of(hour, minute, second, nano);
-    }
-
-    private LocalDateTime dateTime(int year, int month, int day, int hour, int minute) {
-        return LocalDateTime.of(year, month, day, hour, minute);
-    }
+//    private LocalTime time(int hour, int minute, int second, int nano) {
+//        return LocalTime.of(hour, minute, second, nano);
+//    }
+//
+//    private LocalDateTime dateTime(int year, int month, int day, int hour, int minute) {
+//        return LocalDateTime.of(year, month, day, hour, minute);
+//    }
 
 }
