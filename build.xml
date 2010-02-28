@@ -78,6 +78,8 @@
         <tstamp />
     </target>
 
+    <target name="clean" depends="cleanAll" description="clean up" />
+
     <target name="cleanAll" description="clean up">
         <delete dir="${build}" />
         <delete dir="${dist}" />
@@ -100,7 +102,7 @@
 
     <target name="compileOpenJDK" depends="compileCore">
         <mkdir  dir="${ojdk.main.classes}"/>
-        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true">
+        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" bootclasspath="${java.home}/lib/rt.jar">
             <classpath refid="main.path"/>
         </javac>
     </target>
@@ -230,6 +232,9 @@
         <mkdir dir="${dist}/${src}" />
         <copy todir="${dist}/${src}">
             <fileset dir="${src}"/>
+        </copy>
+        <copy todir="${dist}/lib" flatten="true">
+            <fileset dir="${src}" includes="**/ZoneRuleInfo*.jar"/>
         </copy>
         <copy todir="${dist}/nbproject">
             <fileset dir="nbproject"/>
