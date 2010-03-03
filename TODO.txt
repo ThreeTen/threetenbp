@@ -51,24 +51,28 @@ Date/Time classes
 ? remove getChronology()
 ? getMonthOfYear() -> getMonth(), etc
 ? getAmPm()
+? Factory now(Clock)
 
 Rules
 - ensure can merge MonthDay and Year
 - test min/max year for week-based-year
+- remove Chronology and share
 ? parse()
 ? merge -> normalize
 ? deriveInt for fields
 ? ISO era
 
 Date/Time formatting
-- parse 24:00
+- two digit years
+- parse 24:00 - maybe a special end-of-day class?
 - format patterns - yyyy-MM-dd, check details
 - strict/lenient parse
-- upper/lower case
+? upper/lower case
 - only ASCII numbers
 - Arabic numbers have negative sign after number
 - parseInto(Calendrical)
 - default calendrical to pre-define era for example
+- check compatible with RFC "Wed, 02 Apr 2008" and j.u.Date "Wed Apr 02 time zone 2008"
 ? isPrintDataAvailable() causes get of field value twice, can we drop method
 ? substitute text (replacing built in text for Months/DOW etc)
 
@@ -76,6 +80,8 @@ Time zones
 - zone rule where time of day is 24:00
 - SPI and zone providers
 - versions of zone data files
+- better error when zone jar file missing
+? built in UTC definition when zone jar file missing
 
 Periods
 - formatting (defer?)
@@ -86,12 +92,15 @@ Periods
 Matchers/Adjusters
 - DateTimeAdjuster
 - weekend?
+- more general next/previous
+? recurrences
 
 Calendars
 - GJCalendar
 - more calendar systems
 
 General
+- localized day of week number
 - first day of week
 - get month/weekday text
 - get rule by name
@@ -113,8 +122,30 @@ Possible items
 - IntValue interface, implemented by Number/Integer
 - public factory for LocalDate.fromDayOfYear(year, doy)
 - Optimise LocalDateTime plus/minus times by having a local plus(int,int,int,long,sign,LocalDate) method
+- optimise Clock methods to Local* avoiding Offset* object creation
 - intervals (defer completely?)
 - HalfDays period unit for AM/PM (more accurate than 12 hours)
+- InvalidDateException - better exception name?
+
+Document
+- requirement: non JDK extensible
+- type-safe where sensible
+- many-headed problem
+-- Zone - Local/Offset/Zoned
+-- Precision - Y/YM/YMD/HM/HMS/HMSN/DateTime/...
+-- Calendar - ISO/Julian/Coptic/...
+-- FieldTypes - Y/M/D/H/M/S...
+-- Periods - Y/M/D/H/M/S...
+- Joda issues
+-- Instant vs Partial
+-- Partial with time zone
+-- Not easily extensible
+-- Chronology is complex
+-- Date holding chronology is complex
+-- Exposed long millis
+
+Use cases
+- Day of Olympiad (roughly four year period)
 
 
 DONE
