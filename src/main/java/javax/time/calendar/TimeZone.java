@@ -108,15 +108,16 @@ public final class TimeZone implements Calendrical, Serializable {
     public static final TimeZone UTC = new TimeZone("", "UTC", "", ZoneRules.fixed(ZoneOffset.UTC));
 
     /**
-     * The time zone group ID.
+     * The time zone group ID, not null.
+     * The group object is not stored allowing the id to be invalid.
      */
     private final String groupID;
     /**
-     * The time zone region ID.
+     * The time zone region ID, not null.
      */
     private final String regionID;
     /**
-     * The time zone version ID.
+     * The time zone version ID, not null.
      */
     private final String versionID;
     /**
@@ -155,10 +156,10 @@ public final class TimeZone implements Calendrical, Serializable {
      * <ul>
      * <li>{@code {groupID}:{regionID}#{versionID}} - full
      * <li>{@code {groupID}:{regionID}} - implies the floating version
-     * <li><code>{regionID}#{versionID} - implies 'TZDB' group and specific version
-     * <li><code>{regionID} - implies 'TZDB' group and the floating version
-     * <li><code>UTC{offset} - fixed time zone
-     * <li><code>GMT{offset} - fixed time zone
+     * <li>{@code {regionID}#{versionID}} - implies 'TZDB' group and specific version
+     * <li>{@code {regionID}} - implies 'TZDB' group and the floating version
+     * <li>{@code UTC{offset}} - fixed time zone
+     * <li>{@code GMT{offset}} - fixed time zone
      * </ul>
      * <p>
      * Most of the formats are based around the group, version and region IDs.
@@ -250,6 +251,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @param groupID  the time zone rules group ID, not null
      * @param regionID  the time zone region ID, not null
      * @param versionID  the time zone rules version ID, not null
+     * @param rules  the rules to be cached, may be null
      */
     private TimeZone(String groupID, String regionID, String versionID, ZoneRules rules) {
         super();
@@ -329,7 +331,8 @@ public final class TimeZone implements Calendrical, Serializable {
      * Time zone rules change over time as governments change the associated laws.
      * The time zone groups capture these changes by issuing multiple versions
      * of the data. An application can reference the exact set of rules used
-     * by using the group ID and version.
+     * by using the group ID and version. Once loaded, there is no way to unload
+     * a version of the rules, however new versions may be added.
      * <p>
      * The version can be an empty string which represents the floating version.
      * This always uses the latest version of the rules available.
@@ -415,10 +418,8 @@ public final class TimeZone implements Calendrical, Serializable {
     /**
      * Returns a copy of this time zone with the latest available version ID.
      * <p>
-     * For floating group based time zones, {@code this} is returned.
-     * <p>
-     * For non-floating group based time zones, this returns a {@code TimeZone}
-     * with the same group and region, but the latest version.
+     * For floating and non-floating group based time zones, this returns a zone with the same
+     * group and region, but the latest version that has been registered.
      * The group and region IDs are validated in order to calculate the latest version.
      * <p>
      * For fixed time zones, {@code this} is returned.
@@ -427,14 +428,14 @@ public final class TimeZone implements Calendrical, Serializable {
      * @throws CalendricalException if the version is non-floating and the group or region ID is not found
      */
     public TimeZone withLatestVersion() {
-        if (isFloatingVersion()) {
+        if (isFixed()) {
             return this;
         }
         String versionID = getGroup().getLatestVersionID(regionID);  // validates IDs
         if (versionID.equals(this.versionID)) {
             return this;
         }
-        return new TimeZone(groupID, regionID, versionID, rules);
+        return new TimeZone(groupID, regionID, versionID, null);
     }
 
     //-----------------------------------------------------------------------

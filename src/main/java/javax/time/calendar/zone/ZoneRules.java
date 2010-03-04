@@ -71,12 +71,6 @@ import javax.time.period.Period;
 public abstract class ZoneRules {
 
     /**
-     * A serialization identifier for this class.
-     */
-    private static final long serialVersionUID = 93618758758127L;
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains a rules instance for a specific offset.
      * <p>
      * The returned rules object will have no transitions and will use the
@@ -135,7 +129,8 @@ public abstract class ZoneRules {
      * is returned by this method. To access more detailed information about
      * the offset at and around the instant use {@link #getOffsetInfo(Instant)}.
      *
-     * @param instant  the instant to find the offset for, not null
+     * @param instant  the instant to find the offset for,
+     *   ignored for fixed offset rules, otherwise not null
      * @return the offset, never null
      */
     public abstract ZoneOffset getOffset(InstantProvider instant);
@@ -268,17 +263,18 @@ public abstract class ZoneRules {
     public abstract ZoneOffsetTransition previousTransition(InstantProvider instantProvider);
 
     /**
-     * Gets the complete list of transitions.
+     * Gets the complete list of fully defined transitions.
      * <p>
-     * This list contains a complete historical set of transitions that have occurred.
-     * Some transitions may be in the future, although generally the transition
-     * rules handle future years.
+     * The complete set of transitions for this rules instance is defined by this method
+     * and {@link #getTransitionRules()}. This method returns those transitions that have
+     * been fully defined. These are typically historical, but may be in the future.
+     * The list will be empty for fixed offset rules.
      * <p>
-     * Some providers of rules may not be able to return this information, thus
-     * the method is defined to throw UnsupportedOperationException. The supplied
-     * rules implementations do supply this information and don't throw the exception
+     * Some providers of rules cannot return this information, thus this method is defined
+     * to throw UnsupportedOperationException. The supplied 'TZDB' implementation can supply
+     * this information thus does not throw the exception.
      *
-     * @return true if the time zone is fixed and the offset never changes
+     * @return independent, modifiable copy of the list of fully defined transitions, never null
      * @throws UnsupportedOperationException if the implementation cannot return this information -
      *  the default 'TZDB' can return this information
      */
@@ -287,18 +283,23 @@ public abstract class ZoneRules {
     /**
      * Gets the list of transition rules for years beyond those defined in the transition list.
      * <p>
-     * The list represents all the transitions that are expected in each year
-     * beyond those in the transition list. The list size will normally be zero or two.
-     * It will never be size one however it could theoretically be greater than two.
+     * The complete set of transitions for this rules instance is defined by this method
+     * and {@link #getTransitions()}. This method returns instances of {@link ZoneOffsetTransitionRule}
+     * that define an algorithm for when transitions will occur.
+     * The list will be empty for fixed offset rules.
+     * <p>
+     * For any given {@code ZoneRules}, this list contains the transition rules for years
+     * beyond those years that have been fully defined. These rules typically refer to future
+     * daylight savings time rule changes.
      * <p>
      * If the zone defines daylight savings into the future, then the list will normally
      * be of size two and hold information about entering and exiting daylight savings.
      * If the zone does not have daylight savings, or information about future changes
      * is uncertain, then the list will be empty.
      * <p>
-     * Some providers of rules may not be able to return this information, thus
-     * the method is defined to throw UnsupportedOperationException. The supplied
-     * rules implementations do supply this information and don't throw the exception
+     * Some providers of rules cannot return this information, thus this method is defined
+     * to throw UnsupportedOperationException. The supplied 'TZDB' implementation can supply
+     * this information thus does not throw the exception.
      *
      * @return independent, modifiable copy of the list of transition rules, never null
      * @throws UnsupportedOperationException if the implementation cannot return this information -

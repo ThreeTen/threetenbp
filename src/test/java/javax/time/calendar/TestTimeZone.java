@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,7 +62,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestTimeZone {
 
-    public static final String LATEST_TZDB = "2008i";
+    public static final String LATEST_TZDB = "2009b";
 
     //-----------------------------------------------------------------------
     // Basics
@@ -858,7 +862,193 @@ public class TestTimeZone {
 
         assertEquals(dis.hashCode(), otherDis.hashCode());
     }
-    
+
+    //-----------------------------------------------------------------------
+    // getXxx() isXxx()
+    //-----------------------------------------------------------------------
+    public void test_get_TzdbFloating() {
+        TimeZone test = TimeZone.of("Europe/London");
+        assertEquals(test.getID(), "Europe/London");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "Europe/London");
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.getGroup().getID(), "TZDB");
+        assertEquals(test.isFixed(), false);
+        assertEquals(test.isFloatingVersion(), true);
+        assertEquals(test.isLatestVersion(), true);
+    }
+
+    public void test_get_TzdbVersioned() {
+        TimeZone test = TimeZone.of("Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London#2008i");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "Europe/London");
+        assertEquals(test.getVersionID(), "2008i");
+        assertEquals(test.getGroup().getID(), "TZDB");
+        assertEquals(test.isFixed(), false);
+        assertEquals(test.isFloatingVersion(), false);
+        assertEquals(test.isLatestVersion(), LATEST_TZDB.equals("2008i"));
+    }
+
+    public void test_get_TzdbFixed() {
+        TimeZone test = TimeZone.of("UTC+01:30");
+        assertEquals(test.getID(), "UTC+01:30");
+        assertEquals(test.getGroupID(), "");
+        assertEquals(test.getRegionID(), "UTC+01:30");
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.isFixed(), true);
+        assertEquals(test.isFloatingVersion(), true);
+        assertEquals(test.isLatestVersion(), true);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_get_TzdbFixed_getGroup() {
+        TimeZone test = TimeZone.of("UTC+01:30");
+        test.getGroup();
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withFloatingVersion_TzdbFloating() {
+        TimeZone base = TimeZone.of("Europe/London");
+        TimeZone test = base.withFloatingVersion();
+        assertSame(test, base);
+    }
+
+    public void test_withFloatingVersion_TzdbVersioned() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        TimeZone test = base.withFloatingVersion();
+        assertEquals(base.getID(), "Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London");
+        assertNotSame(test.getRules(), base.getRules());
+    }
+
+    public void test_withFloatingVersion_TzdbFixed() {
+        TimeZone base = TimeZone.of("UTC+01:30");
+        TimeZone test = base.withFloatingVersion();
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withLatestVersion_TzdbFloating() {
+        TimeZone base = TimeZone.of("Europe/London");
+        TimeZone test = base.withLatestVersion();
+        assertEquals(base.getID(), "Europe/London");
+        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
+    }
+
+    public void test_withLatestVersion_TzdbVersioned() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        TimeZone test = base.withLatestVersion();
+        assertEquals(base.getID(), "Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
+        assertNotSame(test.getRules(), base.getRules());
+    }
+
+    public void test_withLatestVersion_TzdbVersioned_alreadyLatest() {
+        TimeZone base = TimeZone.of("Europe/London#" + LATEST_TZDB);
+        TimeZone test = base.withLatestVersion();
+        assertSame(test, base);
+        assertSame(test.getRules(), base.getRules());
+    }
+
+    public void test_withLatestVersion_TzdbFixed() {
+        TimeZone base = TimeZone.of("UTC+01:30");
+        TimeZone test = base.withLatestVersion();
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withVersion_TzdbFloating() {
+        TimeZone base = TimeZone.of("Europe/London");
+        TimeZone test = base.withVersion("2008i");
+        assertEquals(base.getID(), "Europe/London");
+        assertEquals(test.getID(), "Europe/London#2008i");
+    }
+
+    public void test_withVersion_TzdbFloating_latestVersion() {
+        TimeZone base = TimeZone.of("Europe/London");
+        TimeZone test = base.withVersion(LATEST_TZDB);
+        assertEquals(base.getID(), "Europe/London");
+        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
+    }
+
+    public void test_withVersion_TzdbFloating_floatingVersion() {
+        TimeZone base = TimeZone.of("Europe/London");
+        TimeZone test = base.withVersion("");
+        assertEquals(test, base);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_withVersion_TzdbFloating_badVersion() {
+        TimeZone base = TimeZone.of("Europe/London");
+        base.withVersion("20");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withVersion_TzdbFloating_null() {
+        TimeZone base = TimeZone.of("Europe/London");
+        base.withVersion(null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withVersion_TzdbVersioned() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        TimeZone test = base.withVersion("2009a");
+        assertEquals(base.getID(), "Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London#2009a");
+    }
+
+    public void test_withVersion_TzdbVersioned_latestVersion() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        TimeZone test = base.withVersion(LATEST_TZDB);
+        assertEquals(base.getID(), "Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
+    }
+
+    public void test_withVersion_TzdbVersioned_sameVersion() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        TimeZone test = base.withVersion("2008i");
+        assertSame(test, base);
+    }
+
+    public void test_withVersion_TzdbVersioned_floatingVersion() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        TimeZone test = base.withVersion("");
+        assertEquals(base.getID(), "Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London");
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_withVersion_TzdbVersioned_badVersion() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        base.withVersion("20");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withVersion_TzdbVersioned_null() {
+        TimeZone base = TimeZone.of("Europe/London#2008i");
+        base.withVersion(null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withVersion_TzdbFixed_floatingVersion() {
+        TimeZone base = TimeZone.of("UTC+01:30");
+        TimeZone test = base.withVersion("");
+        assertSame(test, base);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_withVersion_TzdbFixed_badVersion() {
+        TimeZone base = TimeZone.of("UTC+01:30");
+        base.withVersion("20");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withVersion_TzdbFixed_null() {
+        TimeZone base = TimeZone.of("UTC+01:30");
+        base.withVersion(null);
+    }
+
 //    //-----------------------------------------------------------------------
 //    // toTimeZone()
 //    //-----------------------------------------------------------------------
