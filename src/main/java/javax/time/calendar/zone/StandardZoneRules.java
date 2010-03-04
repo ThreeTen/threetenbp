@@ -206,12 +206,12 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    public OffsetInfo getOffsetInfo(LocalDateTime dt) {
+    public ZoneOffsetInfo getOffsetInfo(LocalDateTime dt) {
         // check if using last rules
         if (lastRules.length > 0 &&
                 dt.isAfter(savingsLocalTransitions[savingsLocalTransitions.length - 1])) {
             ZoneOffsetTransition[] transArray = findTransitionArray(dt.toYear());
-            OffsetInfo info = null;
+            ZoneOffsetInfo info = null;
             for (ZoneOffsetTransition trans : transArray) {
                 info = findOffsetInfo(dt, trans);
                 if (info.isTransition() || info.getOffset().equals(trans.getOffsetBefore())) {
@@ -262,7 +262,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @param trans  the transition, not null
      * @return the offset info, never null
      */
-    private OffsetInfo findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
+    private ZoneOffsetInfo findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
         if (trans.isGap()) {
             if (dt.isBefore(trans.getLocal())) {
                 return createOffsetInfo(dt, trans.getOffsetBefore());

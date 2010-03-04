@@ -39,8 +39,8 @@ import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneRules;
-import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
@@ -256,7 +256,7 @@ public final class ZonedDateTime
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
-        OffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
+        ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
         if (info.isValidOffset(inputOffset) == false) {
             if (info.isTransition() && info.getTransition().isGap()) {
                 throw new CalendarConversionException("The local time " + dateTime.toLocalDateTime() +
@@ -465,7 +465,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if no rules are valid for this date-time
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
-        OffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
         if (info.isTransition()) {
             ZoneOffset offset = info.getTransition().getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
@@ -495,7 +495,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if no rules are valid for this date-time
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        OffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
+        ZoneOffsetInfo info = getApplicableRules().getOffsetInfo(toLocalDateTime());
         if (info.isTransition()) {
             ZoneOffset offset = info.getTransition().getOffsetAfter();
             if (offset.equals(getOffset()) == false) {

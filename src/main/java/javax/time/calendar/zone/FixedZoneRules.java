@@ -73,7 +73,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
 
     /** {@inheritDoc} */
     @Override
-    public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
+    public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
         return createOffsetInfo(dateTime, offset);
     }
 

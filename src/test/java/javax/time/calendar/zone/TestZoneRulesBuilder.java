@@ -42,7 +42,6 @@ import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
@@ -929,7 +928,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     private static void assertGap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
-        OffsetInfo offsetInfo = test.getOffsetInfo(dt);
+        ZoneOffsetInfo offsetInfo = test.getOffsetInfo(dt);
         assertEquals(offsetInfo.getLocalDateTime(), dt);
         assertEquals(offsetInfo.isTransition(), true);
         assertEquals(offsetInfo.getTransition().isGap(), true);
@@ -939,7 +938,7 @@ public class TestZoneRulesBuilder {
 
     private static void assertOverlap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
-        OffsetInfo offsetInfo = test.getOffsetInfo(dt);
+        ZoneOffsetInfo offsetInfo = test.getOffsetInfo(dt);
         assertEquals(offsetInfo.getLocalDateTime(), dt);
         assertEquals(offsetInfo.isTransition(), true);
         assertEquals(offsetInfo.getTransition().isOverlap(), true);

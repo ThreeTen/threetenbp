@@ -32,9 +32,9 @@
 package javax.time.calendar;
 
 import javax.time.CalendricalException;
+import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendar.zone.ZoneRules;
-import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 
 /**
  * Strategy for resolving a {@code LocalDateTime} to an {@code OffsetDateTime}
@@ -86,7 +86,7 @@ public abstract class ZoneResolver {
         // ensure rules used are appropriate if zone has a floating version
         ZoneRules rules = (oldDateTime != null ? oldDateTime.getApplicableRules() : zone.getRules());
         
-        OffsetInfo info = rules.getOffsetInfo(newDateTime);
+        ZoneOffsetInfo info = rules.getOffsetInfo(newDateTime);
         if (info.isTransition() == false) {
             return OffsetDateTime.from(newDateTime, info.getOffset());
         }

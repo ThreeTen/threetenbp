@@ -149,12 +149,12 @@ public abstract class ZoneRules {
      * The third case, a gap in the local time-line, cannot be returned by this
      * method as an instant will always represent a valid point and cannot be in a gap.
      * The returned object provides information about the offset or overlap and it
-     * is vital to check {@link OffsetInfo#isTransition()} to handle the overlap.
+     * is vital to check {@link ZoneOffsetInfo#isTransition()} to handle the overlap.
      *
      * @param instant  the instant to find the offset information for, not null
      * @return the offset information, never null
      */
-    public OffsetInfo getOffsetInfo(Instant instant) {
+    public ZoneOffsetInfo getOffsetInfo(Instant instant) {
         ZoneOffset offset = getOffset(instant);
         OffsetDateTime odt = OffsetDateTime.fromInstant(instant, offset);
         return getOffsetInfo(odt.toLocalDateTime());
@@ -174,12 +174,12 @@ public abstract class ZoneRules {
      * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
      * </ul>
      * The returned object provides this information and it is vital to check
-     * {@link OffsetInfo#isTransition()} to handle the gap or overlap.
+     * {@link ZoneOffsetInfo#isTransition()} to handle the gap or overlap.
      *
      * @param dateTime  the date-time to find the offset information for, not null
      * @return the offset information, never null
      */
-    public abstract OffsetInfo getOffsetInfo(LocalDateTime dateTime);
+    public abstract ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -318,7 +318,7 @@ public abstract class ZoneRules {
      * @return true if the offset date-time is valid for these rules
      */
     public boolean isValidDateTime(OffsetDateTime dateTime) {
-        OffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
+        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
         return info.isValidOffset(dateTime.getOffset());
     }
 
@@ -327,16 +327,16 @@ public abstract class ZoneRules {
      * Creates an offset info for the normal case where only one offset is valid.
      * <p>
      * This protected method provides the means for subclasses to create instances
-     * of {@link OffsetInfo}. This is the only way to create that class.
+     * of {@link ZoneOffsetInfo}. This is the only way to create that class.
      *
      * @param dateTime  the date-time that this info applies to, not null
      * @param offset  the zone offset, not null
      * @return the created offset info, never null
      */
-    protected OffsetInfo createOffsetInfo(LocalDateTime dateTime, ZoneOffset offset) {
+    protected ZoneOffsetInfo createOffsetInfo(LocalDateTime dateTime, ZoneOffset offset) {
         checkNotNull(dateTime, "LocalDateTime must not be null");
         checkNotNull(offset, "ZoneOffset must not be null");
-        return new OffsetInfo(dateTime, offset);
+        return new ZoneOffsetInfo(dateTime, offset);
     }
 
     /**
@@ -348,7 +348,7 @@ public abstract class ZoneRules {
      * @param offsetAfter  the offset after the transition, not null
      * @return the created offset info, never null
      */
-    protected OffsetInfo createOffsetInfo(
+    protected ZoneOffsetInfo createOffsetInfo(
             LocalDateTime dateTime,
             OffsetDateTime cutoverDateTime,
             ZoneOffset offsetAfter) {
@@ -356,7 +356,7 @@ public abstract class ZoneRules {
         checkNotNull(dateTime, "LocalDateTime must not be null");
         checkNotNull(cutoverDateTime, "OffsetDateTime must not be null");
         checkNotNull(offsetAfter, "ZoneOffset must not be null");
-        return new OffsetInfo(dateTime, cutoverDateTime, offsetAfter);
+        return new ZoneOffsetInfo(dateTime, cutoverDateTime, offsetAfter);
     }
 
     /**
@@ -418,159 +418,5 @@ public abstract class ZoneRules {
      */
     @Override
     public abstract int hashCode();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Information about the valid offsets applicable for a local date-time.
-     * <p>
-     * The mapping from a local date-time to an offset is not straightforward.
-     * There are three cases:
-     * <ul>
-     * <li>Normal. Where there is a single offset for the local date-time.</li>
-     * <li>Gap. Where there is a gap in the local time-line typically caused by the
-     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
-     * <li>Overlap. Where there is a gap in the local time-line typically caused by the
-     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-     * </ul>
-     * When using this class, it is vital to check the {@link #isTransition()}
-     * method to handle the gap and overlap. Alternatively use one of the general
-     * methods {@link #getEstimatedOffset()} or {@link #isValidOffset(ZoneOffset)}.
-     * <p>
-     * OffsetInfo is immutable and thread-safe.
-     *
-     * @author Stephen Colebourne
-     */
-    public static final class OffsetInfo {
-        /** The date-time that this info applies to. */
-        private final LocalDateTime dateTime;
-        /** The offset for the local time-line. */
-        private final ZoneOffset offset;
-        /** The transition between two offsets on the local time-line. */
-        private final ZoneOffsetTransition transition;
-        
-        /**
-         * Constructor for handling a simple single offset.
-         *
-         * @param dateTime  the date-time that this info applies to, not null
-         * @param offset  the offset applicable at the date-time, not null
-         */
-        OffsetInfo(
-                LocalDateTime dateTime,
-                ZoneOffset offset) {
-            this.dateTime = dateTime;
-            this.offset = offset;
-            this.transition = null;
-        }
-        
-        /**
-         * Constructor for handling a transition.
-         *
-         * @param dateTime  the date-time that this info applies to, not null
-         * @param cutoverDateTime  the date-time of the cutover with the offset before, not null
-         * @param offsetAfter  the offset applicable after the cutover gap/overlap, not null
-         */
-        OffsetInfo(
-                LocalDateTime dateTime,
-                OffsetDateTime cutoverDateTime,
-                ZoneOffset offsetAfter) {
-            this.dateTime = dateTime;
-            this.offset = null;
-            this.transition = new ZoneOffsetTransition(cutoverDateTime, offsetAfter);
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Gets the local date-time that this info is applicable to.
-         *
-         * @return the date-time that this is the information for, not null
-         */
-        public LocalDateTime getLocalDateTime() {
-            return dateTime;
-        }
-        
-        /**
-         * Is a transition occurring on the local time-line.
-         * <p>
-         * A transition may be a gap or overlap and is normally caused by
-         * daylight savings cutover.
-         *
-         * @return true if there is a transition occurring on the local time-line,
-         *  false if there is a single valid offset
-         */
-        public boolean isTransition() {
-            return transition != null;
-        }
-        
-        /**
-         * Gets the offset applicable at this point on the local time-line.
-         * <p>
-         * This method is intended for use when {@link #isTransition()} returns {@code false}.
-         *
-         * @return the offset applicable when there is not a transition on the
-         *  local-time line, null if it is a transition
-         */
-        public ZoneOffset getOffset() {
-            return offset;
-        }
-        
-        /**
-         * Gets information about the transition occurring on the local time-line.
-         * <p>
-         * This method is intended for use when {@link #isTransition()} returns {@code true}
-         *
-         * @return the transition on the local-time line, null if not a transition
-         */
-        public ZoneOffsetTransition getTransition() {
-            return transition;
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Gets an estimated offset for the local date-time.
-         * <p>
-         * The date-time will typically have a single valid offset.
-         * During a gap, there will be no valid offsets.
-         * During an overlap, there will be two valid offsets.
-         * This method returns the {@link #getOffset() single offset} in the normal
-         * case, and the {@link ZoneOffsetTransition#getOffsetAfter() offset after}
-         * when a transition is occurring.
-         *
-         * @return a suitable estimated offset, never null
-         */
-        public ZoneOffset getEstimatedOffset() {
-            return isTransition() ? getTransition().getOffsetAfter() : offset;
-        }
-        
-        /**
-         * Checks if the specified offset is valid for this date-time.
-         * <p>
-         * The date-time will typically have a single valid offset.
-         * During a gap, there will be no valid offsets.
-         * During an overlap, there will be two valid offsets.
-         * This method returns {@code true} if the specified offset is one of the
-         * valid offsets.
-         *
-         * @param offset  the offset to check, null returns false
-         * @return true if the offset is one of those allowed by the date-time
-         */
-        public boolean isValidOffset(ZoneOffset offset) {
-            return isTransition() ? transition.isValidOffset(offset) : this.offset.equals(offset);
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Gets a string describing this object.
-         *
-         * @return a string for debugging, never null
-         */
-        @Override
-        public String toString() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("OffsetInfo[")
-                .append(isTransition() ? transition : offset)
-                .append(']');
-            return buf.toString();
-        }
-    }
 
 }
