@@ -100,8 +100,7 @@ public final class ZoneRulesGroup {
     /**
      * Checks if the group ID is valid.
      * <p>
-     * The 'TZDB' group will be always be available.
-     * Any other groups are dependent on what has been installed.
+     * Which groups are available is dependent on the registered providers.
      *
      * @param groupID  the group ID, null returns false
      * @return true if the group ID is valid
@@ -116,8 +115,7 @@ public final class ZoneRulesGroup {
     /**
      * Gets a group by ID, such as 'TZDB'.
      * <p>
-     * The 'TZDB' group will be always be available.
-     * Any other groups are dependent on what has been installed.
+     * Which groups are available is dependent on the registered providers.
      *
      * @param groupID  the group ID, not null
      * @return the zone rules group, never null
@@ -135,8 +133,7 @@ public final class ZoneRulesGroup {
     /**
      * Gets the set of available zone rule groups.
      * <p>
-     * The 'TZDB' group will be always be available.
-     * Any other groups are dependent on what has been installed.
+     * Which groups are available is dependent on the registered providers.
      *
      * @return an unsorted, independent, modifiable list of available groups, never null
      */
@@ -156,12 +153,12 @@ public final class ZoneRulesGroup {
      * For example, for the single time zone of 'Europe/London' and two available
      * versions, the set would contain:
      * <ul>
-     * <li>Europe/London</li>
-     * <li>Europe/London#2009a</li>
-     * <li>Europe/London#2009b</li>
-     * <li>TZDB:Europe/London</li>
-     * <li>TZDB:Europe/London#2009a</li>
-     * <li>TZDB:Europe/London#2009b</li>
+     * <li>{@code Europe/London}</li>
+     * <li>{@code Europe/London#2009a}</li>
+     * <li>{@code Europe/London#2009b}</li>
+     * <li>{@code TZDB:Europe/London}</li>
+     * <li>{@code TZDB:Europe/London#2009a}</li>
+     * <li>{@code TZDB:Europe/London#2009b}</li>
      * </ul>
      * <p>
      * The returned set is a view of underlying state that may be changed by another thread.
@@ -296,6 +293,10 @@ public final class ZoneRulesGroup {
     //-----------------------------------------------------------------------
     /**
      * Checks if the time zone version ID is valid.
+     * <p>
+     * This checks both the region and version IDs for validity.
+     * The floating version (an empty version ID) is considered to be valid.
+     * Null returns false.
      *
      * @param regionID  the time zone region ID, null returns false
      * @param versionID  the time zone version ID, empty means floating version, null returns false
@@ -313,8 +314,9 @@ public final class ZoneRulesGroup {
     /**
      * Gets the rules for the specified region and version.
      * <p>
-     * If the version is an empty string, then the latest version of the rules
-     * will be returned for the region.
+     * This checks both the region and version IDs for validity.
+     * The floating version (an empty version ID) will return the latest available
+     * rules for the region.
      *
      * @param regionID  the time zone region ID, not null
      * @param versionID  the time zone version ID, empty means floating version, not null
@@ -346,8 +348,9 @@ public final class ZoneRulesGroup {
      * <p>
      * This method returns true if it is possible to obtain a set of rules for
      * the specified region and version that are valid for the date-time.
-     * If the version is an empty string, which represents a floating version,
-     * then the search will check if any rules are valid for the specified date-time.
+     * This checks both the region and version IDs for validity.
+     * The floating version (an empty version ID) will search for any version of
+     * the region rules that are valid for the date-time.
      *
      * @param regionID  the time zone region ID, null returns false
      * @param versionID  the time zone version ID, empty means floating version, null returns false
@@ -371,9 +374,10 @@ public final class ZoneRulesGroup {
      * are valid for the date-time.
      * <p>
      * This method returns the rules matching the region and version providing that
-     * the date-time is valid. If the version is an empty string, which represents a
-     * floating version, then the latest version of the rules which are valid for the
-     * specified date-time will be returned.
+     * the date-time is valid.
+     * This checks both the region and version IDs for validity.
+     * The floating version (an empty version ID) will search for any version of
+     * the region rules that are valid for the date-time.
      *
      * @param regionID  the time zone region ID, not null
      * @param versionID  the time zone version ID, empty means floating version, not null
@@ -402,10 +406,14 @@ public final class ZoneRulesGroup {
 
     /**
      * Finds the latest version ID that is valid for
+     * <p>
+     * This method returns the latest version of the region rules where the date-time is valid.
+     * This checks the region for validity.
      *
      * @param regionID  the time zone region ID, not null
      * @param dateTime  the date-time that must be valid, not null
      * @return the matched zone rules, never null
+     * @throws CalendricalException if the region is unknown
      * @throws CalendricalException if the rules cannot be found
      */
     public String getLatestVersionIDValidFor(String regionID, OffsetDateTime dateTime) {

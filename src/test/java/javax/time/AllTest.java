@@ -97,6 +97,7 @@ import javax.time.calendar.i18n.TestCopticDate;
 import javax.time.calendar.i18n.TestInterCalendarSystem;
 import javax.time.calendar.zone.TestStandardZoneRules;
 import javax.time.calendar.zone.TestZoneRulesBuilder;
+import javax.time.calendar.zone.TestZoneRulesGroup;
 import javax.time.period.TestPeriod;
 import javax.time.period.TestPeriodField;
 import javax.time.period.TestPeriodFields;
@@ -199,6 +200,7 @@ public class AllTest {
             // zone
             TestStandardZoneRules.class,
             TestZoneRulesBuilder.class,
+            TestZoneRulesGroup.class,
             // periods
             TestPeriod.class,
             TestPeriodParser.class,
