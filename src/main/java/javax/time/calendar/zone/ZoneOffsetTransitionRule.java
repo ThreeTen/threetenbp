@@ -45,10 +45,10 @@ import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 
 /**
- * A rule expressing how to create transitions.
+ * A rule expressing how to create a transition.
  * <p>
  * This class allows rules for identifying future transitions to be expressed.
- * A rule might be of n forms:
+ * A rule might be written in many forms:
  * <ul>
  * <li>the 16th March
  * <li>the Sunday on or after the 16th March
