@@ -83,14 +83,14 @@
 
     <target name="compileCore" depends="init">
         <mkdir  dir="${core.main.classes}"/>
-        <javac srcdir="${core.main}" destdir="${core.main.classes}" debug="true">
+        <javac srcdir="${core.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
     </target>
 
     <target name="compileExtra" depends="compileCore">
         <mkdir  dir="${extra.main.classes}"/>
-        <javac srcdir="${extra.main}" destdir="${extra.main.classes}">
+        <javac srcdir="${extra.main}" destdir="${extra.main.classes}" includeantruntime="false">
             <classpath location="${core.main.classes}"/>
             <classpath refid="main.path"/>            
         </javac>
@@ -98,14 +98,14 @@
 
     <target name="compileOpenJDK" depends="compileCore">
         <mkdir  dir="${ojdk.main.classes}"/>
-        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" bootclasspath="${java.home}/lib/rt.jar">
+        <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
     </target>
 
     <target name="compileOracle" depends="compileCore">
         <mkdir dir="${oracle.main.classes}"/>
-        <javac  srcdir="${oracle.main}" destdir="${oracle.main.classes}">
+        <javac  srcdir="${oracle.main}" destdir="${oracle.main.classes}" includeantruntime="false">
             <classpath location="${core.main.classes}"/>
             <classpath refid="main.path"/>
         </javac>
@@ -147,12 +147,12 @@
 
     <target name="compile-core-tests" depends="compileCore">
         <mkdir dir="${core.test.classes}" />
-        <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" />
+        <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" includeantruntime="false" />
     </target>
 
     <target name="compile-extra-tests" depends="compileExtra,compile-core-tests">
         <mkdir dir="${extra.test.classes}" />
-        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path" />
+        <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path"  includeantruntime="false" />
     </target>
 
     <target name="test-core" depends="compile-core-tests">
