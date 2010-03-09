@@ -232,7 +232,7 @@ public class ZoneRulesBuilder {
         return addRuleToWindow(
                 dateTime.getYear(), dateTime.getYear(),
                 dateTime.getMonthOfYear(), dateTime.getDayOfMonth(),
-                null, dateTime.toLocalTime(), timeDefinition, savingAmount);
+                null, dateTime.toLocalTime(), false, timeDefinition, savingAmount);
     }
 
     /**
@@ -243,8 +243,10 @@ public class ZoneRulesBuilder {
      *
      * @param year  the year of the transition, from MIN_YEAR to MAX_YEAR
      * @param month  the month of the transition, not null
-     * @param dayOfMonth  the day-of-month of the transition, from 1 to 31, or -1 for the last day-of-month
+     * @param dayOfMonthIndicator  the day-of-month of the transition, adjusted by dayOfWeek,
+     *   from 1 to 31 adjusted later, or -1 to -28 adjusted earlier from the last day of the month
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
+     * @param timeEndOfDay  whether midnight is at the end of day
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmount  the amount of saving from the standard offset after the transition, not null
      * @return this, for chaining
@@ -256,11 +258,12 @@ public class ZoneRulesBuilder {
     public ZoneRulesBuilder addRuleToWindow(
             int year,
             MonthOfYear month,
-            int dayOfMonth,
+            int dayOfMonthIndicator,
             LocalTime time,
+            boolean timeEndOfDay,
             TimeDefinition timeDefinition,
             Period savingAmount) {
-        return addRuleToWindow(year, year, month, dayOfMonth, null, time, timeDefinition, savingAmount);
+        return addRuleToWindow(year, year, month, dayOfMonthIndicator, null, time, timeEndOfDay, timeDefinition, savingAmount);
     }
 
     /**
@@ -272,14 +275,17 @@ public class ZoneRulesBuilder {
      * @param startYear  the start year of the rule, from MIN_YEAR to MAX_YEAR
      * @param endYear  the end year of the rule, from MIN_YEAR to MAX_YEAR
      * @param month  the month of the transition, not null
-     * @param dayOfMonth  the day-of-month of the transition, adjusted by dayOfWeek,
-     *   from 1 to 31 adjusted later, or -1 adjusted earlier from the last day of the month
+     * @param dayOfMonthIndicator  the day-of-month of the transition, adjusted by dayOfWeek,
+     *   from 1 to 31 adjusted later, or -1 to -28 adjusted earlier from the last day of the month
      * @param dayOfWeek  the day-of-week to adjust to, null if day-of-month should not be adjusted
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
+     * @param timeEndOfDay  whether midnight is at the end of day
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmount  the amount of saving from the standard offset after the transition, not null
      * @return this, for chaining
      * @throws IllegalCalendarFieldValueException if a date-time field is out of range
+     * @throws IllegalArgumentException if the day of month indicator is invalid
+     * @throws IllegalArgumentException if the end of day midnight flag does not match the time
      * @throws IllegalStateException if no window has yet been added
      * @throws IllegalStateException if the window already has fixed savings
      * @throws IllegalStateException if the window has reached the maximum capacity of 2000 rules
@@ -288,9 +294,10 @@ public class ZoneRulesBuilder {
             int startYear,
             int endYear,
             MonthOfYear month,
-            int dayOfMonth,
+            int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
             LocalTime time,
+            boolean timeEndOfDay,
             TimeDefinition timeDefinition,
             Period savingAmount) {
         
@@ -300,20 +307,26 @@ public class ZoneRulesBuilder {
         checkNotNull(savingAmount, "Savings amount must not be null");
         ISOChronology.yearRule().checkValue(startYear);
         ISOChronology.yearRule().checkValue(endYear);
-        if (dayOfMonth != -1) {
-            ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
+            throw new IllegalArgumentException("Day of month indicator must be between -28 and 31 inclusive excluding zero");
+        }
+        if (timeEndOfDay && time.equals(LocalTime.MIDNIGHT) == false) {
+            throw new IllegalArgumentException("Time must be midnight when end of day flag is true");
         }
         if (windowList.isEmpty()) {
             throw new IllegalStateException("Must add a window before adding a rule");
         }
         TZWindow window = windowList.get(windowList.size() - 1);
-        window.addRule(startYear, endYear, month, dayOfMonth, dayOfWeek, time, timeDefinition, savingAmount);
+        window.addRule(startYear, endYear, month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition, savingAmount);
         return this;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Completes the build converting the builder to a set of time zone rules.
+     * <p>
+     * Calling this method alters the state of the builder.
+     * Further rules should not be added to this builder once this method is called.
      *
      * @param id  the time zone id, not null
      * @return the zone rules, never null
@@ -326,6 +339,9 @@ public class ZoneRulesBuilder {
 
     /**
      * Completes the build converting the builder to a set of time zone rules.
+     * <p>
+     * Calling this method alters the state of the builder.
+     * Further rules should not be added to this builder once this method is called.
      *
      * @param id  the time zone id, not null
      * @param deduplicateMap  a map for deduplicating the values, not null
@@ -386,14 +402,14 @@ public class ZoneRulesBuilder {
             // check if the start of the window represents a transition
             ZoneOffset effectiveWallOffset = deduplicate(standardOffset.plus(effectiveSavings));
             if (windowStart.getOffset().equals(effectiveWallOffset) == false) {
-                ZoneOffsetTransition trans = new ZoneOffsetTransition(windowStart, effectiveWallOffset);
+                ZoneOffsetTransition trans = deduplicate(new ZoneOffsetTransition(windowStart, effectiveWallOffset));
                 transitionList.add(trans);
             }
             savings = effectiveSavings;
             
             // apply rules within the window
             for (TZRule rule : window.ruleList) {
-                ZoneOffsetTransition trans = rule.toTransition(standardOffset, savings);
+                ZoneOffsetTransition trans = deduplicate(rule.toTransition(standardOffset, savings));
                 if (trans.getDateTime().isBefore(windowStart) == false &&
                         trans.getDateTime().isBefore(window.createDateTime(savings)) &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
@@ -404,7 +420,7 @@ public class ZoneRulesBuilder {
             
             // calculate last rules
             for (TZRule lastRule : window.lastRuleList) {
-                ZoneOffsetTransitionRule transitionRule = lastRule.toTransitionRule(standardOffset, savings);
+                ZoneOffsetTransitionRule transitionRule = deduplicate(lastRule.toTransitionRule(standardOffset, savings));
                 lastTransitionRuleList.add(transitionRule);
                 savings = lastRule.savingAmount;
             }
@@ -537,10 +553,11 @@ public class ZoneRulesBuilder {
          * @param startYear  the start year of the rule, from MIN_YEAR to MAX_YEAR
          * @param endYear  the end year of the rule, from MIN_YEAR to MAX_YEAR
          * @param month  the month of the transition, not null
-         * @param dayOfMonth  the day-of-month of the transition, adjusted by dayOfWeek,
-         *   from 1 to 31 adjusted later, or -1 adjusted earlier from the last day of the month
+         * @param dayOfMonthIndicator  the day-of-month of the transition, adjusted by dayOfWeek,
+         *   from 1 to 31 adjusted later, or -1 to -28 adjusted earlier from the last day of the month
          * @param dayOfWeek  the day-of-week to adjust to, null if day-of-month should not be adjusted
          * @param time  the time that the transition occurs as defined by timeDefintion, not null
+         * @param timeEndOfDay  whether midnight is at the end of day
          * @param timeDefinition  the definition of how to convert local to actual time, not null
          * @param savingAmount  the amount of saving from the standard offset, not null
          * @throws IllegalStateException if the window already has fixed savings
@@ -550,9 +567,10 @@ public class ZoneRulesBuilder {
                 int startYear,
                 int endYear,
                 MonthOfYear month,
-                int dayOfMonth,
+                int dayOfMonthIndicator,
                 DayOfWeek dayOfWeek,
                 LocalTime time,
+                boolean timeEndOfDay,
                 TimeDefinition timeDefinition,
                 Period savingAmount) {
             
@@ -569,7 +587,7 @@ public class ZoneRulesBuilder {
             }
             int year = startYear;
             while (year <= endYear) {
-                TZRule rule = new TZRule(year, month, dayOfMonth, dayOfWeek, time, timeDefinition, savingAmount);
+                TZRule rule = new TZRule(year, month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition, savingAmount);
                 if (lastRule) {
                     lastRuleList.add(rule);
                     maxLastRuleStartYear = Math.max(startYear, maxLastRuleStartYear);
@@ -610,8 +628,8 @@ public class ZoneRulesBuilder {
                 // setup at least one real rule, which closes off other windows nicely
                 maxLastRuleStartYear = Math.max(maxLastRuleStartYear, windowStartYear) + 1;
                 for (TZRule lastRule : lastRuleList) {
-                    addRule(lastRule.year, maxLastRuleStartYear, lastRule.month, lastRule.dayOfMonth,
-                        lastRule.dayOfWeek, lastRule.time, lastRule.timeDefinition, lastRule.savingAmount);
+                    addRule(lastRule.year, maxLastRuleStartYear, lastRule.month, lastRule.dayOfMonthIndicator,
+                        lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                     lastRule.year = maxLastRuleStartYear + 1;
                 }
                 if (maxLastRuleStartYear == Year.MAX_YEAR) {
@@ -623,8 +641,8 @@ public class ZoneRulesBuilder {
                 // convert all within the endYear limit
                 int endYear = windowEnd.getYear();
                 for (TZRule lastRule : lastRuleList) {
-                    addRule(lastRule.year, endYear + 1, lastRule.month, lastRule.dayOfMonth,
-                        lastRule.dayOfWeek, lastRule.time, lastRule.timeDefinition, lastRule.savingAmount);
+                    addRule(lastRule.year, endYear + 1, lastRule.month, lastRule.dayOfMonthIndicator,
+                        lastRule.dayOfWeek, lastRule.time, lastRule.timeEndOfDay, lastRule.timeDefinition, lastRule.savingAmount);
                 }
                 lastRuleList.clear();
                 maxLastRuleStartYear = Year.MAX_YEAR;
@@ -660,38 +678,43 @@ public class ZoneRulesBuilder {
         /** The year. */
         private int year;
         /** The month. */
-        private final MonthOfYear month;
+        private MonthOfYear month;
         /** The day-of-month. */
-        private final int dayOfMonth;
+        private int dayOfMonthIndicator;
         /** The day-of-month. */
-        private final DayOfWeek dayOfWeek;
+        private DayOfWeek dayOfWeek;
         /** The local time. */
-        private final LocalTime time;
+        private LocalTime time;
+        /** Whether the local time is end of day. */
+        private boolean timeEndOfDay;
         /** The type of the time. */
-        private final TimeDefinition timeDefinition;
+        private TimeDefinition timeDefinition;
         /** The amount of the saving to be applied after this point. */
-        private final Period savingAmount;
+        private Period savingAmount;
 
         /**
          * Constructor.
          *
          * @param year  the year
          * @param month  the month, not null
-         * @param dayOfMonth  the day-of-month
+         * @param dayOfMonthIndicator  the day-of-month of the transition, adjusted by dayOfWeek,
+         *   from 1 to 31 adjusted later, or -1 to -28 adjusted earlier from the last day of the month
          * @param dayOfWeek  the day-of-week, null if day-of-month is exact
          * @param time  the time, not null
+         * @param timeEndOfDay  whether midnight is at the end of day
          * @param timeDefinition  the time definition, not null
          * @param savingAfter  the savings amount, not null
          */
-        TZRule(int year, MonthOfYear month, int dayOfMonth,
-                DayOfWeek dayOfWeek, LocalTime time,
+        TZRule(int year, MonthOfYear month, int dayOfMonthIndicator,
+                DayOfWeek dayOfWeek, LocalTime time, boolean timeEndOfDay,
                 TimeDefinition timeDefinition, Period savingAfter) {
             super();
             this.year = year;
             this.month = month;
-            this.dayOfMonth = dayOfMonth;
+            this.dayOfMonthIndicator = dayOfMonthIndicator;
             this.dayOfWeek = dayOfWeek;
             this.time = time;
+            this.timeEndOfDay = timeEndOfDay;
             this.timeDefinition = timeDefinition;
             this.savingAmount = savingAfter;
         }
@@ -706,13 +729,13 @@ public class ZoneRulesBuilder {
         ZoneOffsetTransition toTransition(ZoneOffset standardOffset, Period savingsBefore) {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
             LocalDate date;
-            if (dayOfMonth == -1) {
+            if (dayOfMonthIndicator == -1) {
                 date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)));
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }
             } else {
-                date = LocalDate.of(year, month, dayOfMonth);
+                date = LocalDate.of(year, month, dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
                 }
@@ -733,21 +756,25 @@ public class ZoneRulesBuilder {
          */
         ZoneOffsetTransitionRule toTransitionRule(ZoneOffset standardOffset, Period savingsBefore) {
             // optimize stored format
-            int dom;
-            if (dayOfMonth == -1) {
-                if (month == MonthOfYear.FEBRUARY) {
-                    dom = -1;
-                } else {
-                    dom = month.maxLengthInDays() - 6;
+            if (dayOfMonthIndicator < 0) {
+                if (month != MonthOfYear.FEBRUARY) {
+                    dayOfMonthIndicator = month.maxLengthInDays() - 6;
                 }
-            } else {
-                dom = dayOfMonth;
+            }
+            if (timeEndOfDay && dayOfMonthIndicator > 0 && (dayOfMonthIndicator == 28 && month == MonthOfYear.FEBRUARY) == false) {
+                LocalDate date = LocalDate.of(2004, month, dayOfMonthIndicator).plusDays(1);  // leap-year
+                month = date.getMonthOfYear();
+                dayOfMonthIndicator = date.getDayOfMonth();
+                if (dayOfWeek != null) {
+                    dayOfWeek = dayOfWeek.next();
+                }
+                timeEndOfDay = false;
             }
             
             // build rule
             ZoneOffsetTransition trans = toTransition(standardOffset, savingsBefore);
             return new ZoneOffsetTransitionRule(
-                    month, dom, dayOfWeek, time, timeDefinition,
+                    month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefinition,
                     standardOffset, trans.getOffsetBefore(), trans.getOffsetAfter());
         }
 
@@ -755,7 +782,7 @@ public class ZoneRulesBuilder {
         public int compareTo(TZRule other) {
             int cmp = year - other.year;
             cmp = (cmp == 0 ? month.compareTo(other.month) : cmp);
-            cmp = (cmp == 0 ? dayOfMonth - other.dayOfMonth : cmp);
+            cmp = (cmp == 0 ? dayOfMonthIndicator - other.dayOfMonthIndicator : cmp);
             cmp = (cmp == 0 ? time.compareTo(other.time) : cmp);
             return cmp;
         }

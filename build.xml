@@ -115,7 +115,29 @@
         </javac>
     </target>
 
-    <target name="compileAll" depends="compileCore, compileExtra, compileOracle, compileOpenJDK" description="compile all sources" />
+    <target name="compileTZDB" depends="compileCore">
+        <mkdir dir="${tzdata.main.workarea}"/>
+        <copy todir="${tzdata.main.workarea}">
+            <fileset dir="${tzdata.main}" includes="tzdata*.tar.gz"/>
+            <mapper type="glob" from="tzdata*.tar.gz" to="*/tzdb.tar.gz" />
+        </copy>
+        <subant genericantfile="build.xml" target="tzdb-unpack">
+            <dirset dir="${tzdata.main.workarea}" includes="*" />
+        </subant>
+        <java classpath="${core.main.classes}" classname="javax.time.calendar.zone.TZDBZoneRulesCompiler" fork="true" failonerror="true">
+            <arg line="-srcdir ${tzdata.main.workarea}" />
+            <arg line="-dstdir ${lib.main}" />
+            <arg line="${tzdb.files}" />
+        </java>
+    </target>
+    <target name="tzdb-unpack">
+        <echo message="${basedir}"></echo>
+        <gunzip src="${basedir}/tzdb.tar.gz" />
+        <untar src="${basedir}/tzdb.tar" dest="${basedir}" />
+        <delete file="${basedir}/tzdb.tar" />
+    </target>
+
+    <target name="compileAll" depends="compileCore, compileExtra, compileOracle, compileOpenJDK, compileTZDB" description="compile all sources" />
 
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>

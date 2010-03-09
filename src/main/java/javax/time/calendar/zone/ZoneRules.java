@@ -378,6 +378,7 @@ public abstract class ZoneRules {
      *  day or later, negative if the week is that day or earlier, counting from the last day of the month
      * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
      * @param time  the cutover time in the 'before' offset, not null
+     * @param timeEndOfDay  whether the time is midnight end of day
      * @param timeDefnition  how to interpret the cutover
      * @param standardOffset  the standard offset in force at the cutover, not null
      * @param offsetBefore  the offset before the cutover, not null
@@ -389,11 +390,13 @@ public abstract class ZoneRules {
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
             LocalTime time,
+            boolean timeEndOfDay,
             TimeDefinition timeDefnition,
             ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
             ZoneOffset offsetAfter) {
-        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek, time, timeDefnition,
+        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek,
+                time, timeEndOfDay, timeDefnition,
                 standardOffset, offsetBefore, offsetAfter);
     }
 

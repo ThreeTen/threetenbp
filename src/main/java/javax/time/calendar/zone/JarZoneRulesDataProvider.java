@@ -71,17 +71,7 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @throws RuntimeException if the time zone rules cannot be loaded
      */
     static void load() {
-        // load all files named ZoneRuleInfo.dat
-        List<ZoneRulesDataProvider> providers;
-        try {
-            providers = loadJars();
-        } catch (RuntimeException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to load time zone rule data", ex);
-        }
-        // register the loaded providers
-        for (ZoneRulesDataProvider provider : providers) {
+        for (ZoneRulesDataProvider provider : loadJars()) {
             ZoneRulesGroup.registerProvider(provider);
         }
     }
@@ -93,38 +83,43 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @throws Exception if an error occurs
      */
     @SuppressWarnings("unchecked")
-    private static List<ZoneRulesDataProvider> loadJars() throws Exception {
+    private static List<ZoneRulesDataProvider> loadJars() {
         List<ZoneRulesDataProvider> providers = new ArrayList<ZoneRulesDataProvider>();
-        Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/calendar/zone/ZoneRuleInfo.dat");
-        while (en.hasMoreElements()) {
-            URL url = en.nextElement();
-            boolean throwing = false;
-            InputStream in = null;
-            try {
-                in = url.openStream();
-                ObjectInputStream ois = new ObjectInputStream(in);
-                int dataSets = ois.readInt();
-                for (int i = 0; i < dataSets; i++) {
-                    String groupID = ois.readUTF();
-                    String versionID = ois.readUTF();
-                    Map<String, ZoneRules> zones = (Map<String, ZoneRules>) ois.readObject();
-                    providers.add(new JarZoneRulesDataProvider(groupID, versionID, zones));
-                }
-                
-            } catch (IOException ex) {
-                throwing = true;
-                throw ex;
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException ex) {
-                        if (throwing == false) {
-                            throw ex;
+        URL url = null;
+        try {
+            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/calendar/zone/ZoneRuleInfo.dat");
+            while (en.hasMoreElements()) {
+                url = en.nextElement();
+                boolean throwing = false;
+                InputStream in = null;
+                try {
+                    in = url.openStream();
+                    ObjectInputStream ois = new ObjectInputStream(in);
+                    int dataSets = ois.readInt();
+                    for (int i = 0; i < dataSets; i++) {
+                        String groupID = ois.readUTF();
+                        String versionID = ois.readUTF();
+                        Map<String, ZoneRules> zones = (Map<String, ZoneRules>) ois.readObject();
+                        providers.add(new JarZoneRulesDataProvider(groupID, versionID, zones));
+                    }
+                    
+                } catch (IOException ex) {
+                    throwing = true;
+                    throw ex;
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException ex) {
+                            if (throwing == false) {
+                                throw ex;
+                            }
                         }
                     }
                 }
             }
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to load time zone rule data: " + url, ex);
         }
         return providers;
     }

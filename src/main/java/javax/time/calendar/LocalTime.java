@@ -1123,6 +1123,79 @@ public final class LocalTime
         return buf.toString();
     }
 
+//    //-----------------------------------------------------------------------
+//    /**
+//     * The result of addition to a {@code LocalTime} allowing the expression of
+//     * any overflow in days.
+//     */
+//    public static final class MaybeEndOfDay implements Calendrical, Comparable<MaybeEndOfDay> {
+//        /** The time, null if end of day. */
+//        private final LocalTime time;
+//
+//        @Override
+//        public <T> T get(CalendricalRule<T> rule) {
+//            if (rule == ISOChronology.hourOfDayRule() && time == null) {
+//                return rule.reify(24);
+//            }
+//            return rule().deriveValueFor(rule, time, time);
+//        }
+//
+//        /**
+//         * Compares this object to another.
+//         *
+//         * @param obj  the object to compare to
+//         * @return true if equal
+//         */
+//        @Override
+//        public int compareTo(MaybeEndOfDay other) {
+//            if (time == null) {
+//                return other.time == null ? 0 : 1;
+//            }
+//            if (other.time == null) {
+//                return -1;
+//            }
+//            return time.compareTo(other.time);
+//        }
+//
+//        /**
+//         * Compares this object to another.
+//         *
+//         * @param obj  the object to compare to
+//         * @return true if equal
+//         */
+//        @Override
+//        public boolean equals(Object obj) {
+//            if (this == obj) {
+//                return true;
+//            }
+//            if (obj instanceof MaybeEndOfDay) {
+//                MaybeEndOfDay other = (MaybeEndOfDay) obj;
+//                return time == null ? other.time == null : time.equals(other.time);
+//            }
+//            return false;
+//        }
+//
+//        /**
+//         * Returns a suitable hash code.
+//         *
+//         * @return the hash code
+//         */
+//        @Override
+//        public int hashCode() {
+//            return time == null ? 0 : time.hashCode();
+//        }
+//
+//        /**
+//         * Returns a string description of this instance.
+//         *
+//         * @return the string, never null
+//         */
+//        @Override
+//        public String toString() {
+//            return time == null ? "24:00" : time.toString();
+//        }
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * The result of addition to a {@code LocalTime} allowing the expression of

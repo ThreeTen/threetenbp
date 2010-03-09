@@ -38,10 +38,12 @@ import java.io.FileReader;
 import java.io.ObjectOutputStream;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
@@ -70,26 +72,16 @@ import javax.time.period.Period;
 public final class TZDBZoneRulesCompiler {
 
     /**
-     * A map to deduplicate object instances.
+     * Time parser.
      */
-    private final Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
-
-    /**
-     * The TZDB rules.
-     */
-    private final Map<String, List<TZDBRule>> rules = new HashMap<String, List<TZDBRule>>();
-    /**
-     * The TZDB zones.
-     */
-    private final Map<String, List<TZDBZone>> zones = new HashMap<String, List<TZDBZone>>();
-    /**
-     * The TZDB links.
-     */
-    private final Map<String, String> links = new HashMap<String, String>();
-    /**
-     * The built zones.
-     */
-    private final Map<String, ZoneRules> builtZones = new HashMap<String, ZoneRules>();
+    private static final DateTimeFormatter TIME_PARSER;
+    static {
+        TIME_PARSER = new DateTimeFormatterBuilder()
+            .appendValue(ISOChronology.hourOfDayRule())
+            .optionalStart().appendLiteral(':').appendValue(ISOChronology.minuteOfHourRule(), 2)
+            .optionalStart().appendLiteral(':').appendValue(ISOChronology.secondOfMinuteRule(), 2)
+            .toFormatter();
+    }
 
     /**
      * Reads a set of TZDB files and builds a single combined data file.
@@ -104,12 +96,11 @@ public final class TZDBZoneRulesCompiler {
         
         // parse args
         String version = null;
-        File srcDir = null;
+        File baseSrcDir = null;
         File dstDir = null;
         boolean verbose = false;
         
         // parse options
-        File baseDir = new File(System.getProperty("user.dir"));
         int i;
         for (i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -117,13 +108,13 @@ public final class TZDBZoneRulesCompiler {
                 break;
             }
             if ("-srcdir".equals(arg)) {
-                if (srcDir == null && ++i < args.length) {
-                    srcDir = new File(baseDir, args[i]);
+                if (baseSrcDir == null && ++i < args.length) {
+                    baseSrcDir = new File(args[i]);
                     continue;
                 }
             } else if ("-dstdir".equals(arg)) {
                 if (dstDir == null && ++i < args.length) {
-                    dstDir = new File(baseDir, args[i]);
+                    dstDir = new File(args[i]);
                     continue;
                 }
             } else if ("-version".equals(arg)) {
@@ -142,27 +133,47 @@ public final class TZDBZoneRulesCompiler {
             outputHelp();
             return;
         }
-        if (version == null) {
-            System.out.println("Missing -version");
-            return;
-        }
-        srcDir = (srcDir != null ? srcDir : baseDir);
-        dstDir = (dstDir != null ? dstDir : baseDir);
         
-        // parse source files
-        if (i >= args.length) {
-            System.out.println("Missing source files");
-            outputHelp();
+        // check source directory
+        if (baseSrcDir == null) {
+            System.out.println("Source directory must be specified using -srcdir: " + baseSrcDir);
             return;
         }
-        List<File> sourceFiles = new ArrayList<File>();
-        for ( ; i < args.length; i++) {
-            File file = new File(srcDir, args[i]);
-            if (file.exists() == false) {
-                System.out.println("Source file does not exist: " + file);
+        if (baseSrcDir == null || baseSrcDir.isDirectory() == false) {
+            System.out.println("Source does not exist or is not a directory: " + baseSrcDir);
+            return;
+        }
+        dstDir = (dstDir != null ? dstDir : baseSrcDir);
+        
+        // parse source file names
+        List<String> srcFileNames = Arrays.asList(Arrays.copyOfRange(args, i, args.length));
+        if (srcFileNames.isEmpty()) {
+            System.out.println("Source filenames not specified, using default set");
+            System.out.println("(africa antarctica asia australasia backward etcetera europe northamerica southamerica)");
+            srcFileNames = Arrays.asList("africa", "antarctica", "asia", "australasia", "backward",
+                    "etcetera", "europe", "northamerica", "southamerica");
+        }
+        
+        // find source directories to process
+        List<File> srcDirs = new ArrayList<File>();
+        if (version != null) {
+            File srcDir = new File(baseSrcDir, version);
+            if (srcDir.isDirectory() == false) {
+                System.out.println("Version does not represent a valid source directory : " + srcDir);
                 return;
             }
-            sourceFiles.add(file);
+            srcDirs.add(srcDir);
+        } else {
+            File[] dirs = baseSrcDir.listFiles();
+            for (File dir : dirs) {
+                if (dir.isDirectory() && dir.getName().matches("[12][0-9][0-9][0-9][A-Za-z0-9._-]+")) {
+                    srcDirs.add(dir);
+                }
+            }
+        }
+        if (srcDirs.isEmpty()) {
+            System.out.println("Source directory contains no valid source folders: " + baseSrcDir);
+            return;
         }
         
         // check destination directory
@@ -175,38 +186,98 @@ public final class TZDBZoneRulesCompiler {
             return;
         }
         
-        // compile
-        TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(version, sourceFiles, dstDir, verbose);
+        // build actual jar files
+        Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
+        Map<String, Map<String, ZoneRules>> allBuiltZones = new HashMap<String, Map<String, ZoneRules>>();
+        for (File srcDir : srcDirs) {
+            // source files in this directory
+            List<File> srcFiles = new ArrayList<File>();
+            for (String srcFileName : srcFileNames) {
+                File file = new File(srcDir, srcFileName);
+                if (file.exists()) {
+                    srcFiles.add(file);
+                }
+            }
+            if (srcFiles.isEmpty()) {
+                continue;  // nothing to process
+            }
+            
+            // compile
+            String loopVersion = srcDir.getName();
+            File dstFile = new File(dstDir, "ZoneRuleInfo-TZDB-" + loopVersion + ".jar");
+            TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(loopVersion, srcFiles, dstFile, verbose);
+            compiler.setDeduplicateMap(deduplicateMap);
+            try {
+                compiler.compile();
+                allBuiltZones.put(loopVersion, compiler.getBuiltZones());
+            } catch (Exception ex) {
+                System.out.println("Failed: " + ex.toString());
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        
+        // output merged file
         try {
-            compiler.compile();
-            System.exit(0);
+            File mergedFile = new File(dstDir, "ZoneRuleInfo-TZDB-all.jar");
+            JarOutputStream jos = new JarOutputStream(new FileOutputStream(mergedFile));
+            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRuleInfo.dat"));
+            
+            ObjectOutputStream out = new ObjectOutputStream(jos);
+            out.writeInt(allBuiltZones.size());
+            for (Entry<String, Map<String, ZoneRules>> entry : allBuiltZones.entrySet()) {
+                out.writeUTF("TZDB");
+                out.writeUTF(entry.getKey());
+                out.writeObject(entry.getValue());
+            }
+            
+            jos.closeEntry();
+            out.close();
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
             ex.printStackTrace();
             System.exit(1);
         }
+        System.exit(0);
     }
 
     /**
      * Output usage text for the command line.
      */
     private static void outputHelp() {
-        System.out.println("Usage: TZDBZoneRulesCompiler <options> <source files>");
+        System.out.println("Usage: TZDBZoneRulesCompiler <options> <tzdb source filenames>");
         System.out.println("where options include:");
-        System.out.println("   -version <version>      Specify the version name, such as 2009a (required)");
-        System.out.println("   -srcdir <directory>     Specify where to find TZDB source files");
-        System.out.println("   -dstdir <directory>     Specify where to output the generated file");
-        System.out.println("   -help                   Print this usage message");
-        System.out.println("   -verbose                Output verbose information during compilation");
+        System.out.println("   -srcdir <directory>   Where to find source directories (required)");
+        System.out.println("   -dstdir <directory>   Where to output generated files (default srcdir)");
+        System.out.println("   -version <version>    Specify the version, such as 2009a (optional)");
+        System.out.println("   -help                 Print this usage message");
+        System.out.println("   -verbose              Output verbose information during compilation");
+        System.out.println(" There must be one directory for each version in srcdir");
+        System.out.println(" Each directory must have the name of the version, such as 2009a");
+        System.out.println(" Each directory must contain the unpacked tzdb files, such as asia or europe");
+        System.out.println(" Directories must match the regex [12][0-9][0-9][0-9][A-Za-z0-9._-]+");
+        System.out.println(" There will be one jar file for each version and one combined jar in dstdir");
+        System.out.println(" If the version is specified, only that version is processed");
     }
 
     //-----------------------------------------------------------------------
+    /** The TZDB rules. */
+    private final Map<String, List<TZDBRule>> rules = new HashMap<String, List<TZDBRule>>();
+    /** The TZDB zones. */
+    private final Map<String, List<TZDBZone>> zones = new HashMap<String, List<TZDBZone>>();
+    /** The TZDB links. */
+    private final Map<String, String> links = new HashMap<String, String>();
+    /** The built zones. */
+    private final Map<String, ZoneRules> builtZones = new HashMap<String, ZoneRules>();
+    /** A map to deduplicate object instances. */
+    private Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
+
     /** The version to produce. */
     private final String version;
-    /** The version to produce. */
+    /** The source files. */
     private final List<File> sourceFiles;
-    /** The version to produce. */
-    private final File destinationDir;
+    /** The destination file. */
+    private final File destFile;
     /** The version to produce. */
     private final boolean verbose;
 
@@ -215,13 +286,13 @@ public final class TZDBZoneRulesCompiler {
      *
      * @param version  the version, such as 2009a, not null
      * @param sourceFiles  the list of source files, not empty, not null
-     * @param destinationDir  the destination directory, not null
+     * @param destFile  the destination file, not null
      * @param verbose  whether to output verbose messages
      */
-    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, File destinationDir, boolean verbose) {
+    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, File destFile, boolean verbose) {
         this.version = version;
         this.sourceFiles = sourceFiles;
-        this.destinationDir = destinationDir;
+        this.destFile = destFile;
         this.verbose = verbose;
     }
 
@@ -230,11 +301,25 @@ public final class TZDBZoneRulesCompiler {
      * @throws Exception if an error occurs
      */
     public void compile() throws Exception {
-        printVerbose("Compiling TZDB version " + version + " to directory " + destinationDir);
+        printVerbose("Compiling TZDB to directory " + destFile);
         parseFiles();
         buildZoneRules();
         outputFile();
-        printVerbose("Compiled TZDB version " + version + " to directory " + destinationDir);
+        printVerbose("Compiled TZDB to directory " + destFile);
+    }
+
+    /**
+     * Sets the deduplication map.
+     */
+    void setDeduplicateMap(Map<Object, Object> deduplicateMap) {
+        this.deduplicateMap = deduplicateMap;
+    }
+
+    /**
+     * Gets the built time zones.
+     */
+    public Map<String, ZoneRules> getBuiltZones() {
+        return builtZones;
     }
 
     //-----------------------------------------------------------------------
@@ -255,59 +340,70 @@ public final class TZDBZoneRulesCompiler {
      * @throws Exception if an error occurs
      */
     private void parseFile(File file) throws Exception {
-        BufferedReader in = new BufferedReader(new FileReader(file));
-        List<TZDBZone> openZone = null;
-        String line;
-        while ((line = in.readLine()) != null) {
-            int index = line.indexOf('#');
-            if (index >= 0) {
-                line = line.substring(0, index);
-            }
-            if (line.trim().length() == 0) {
-                continue;
-            }
-            StringTokenizer st = new StringTokenizer(line, " \t");
-            if (openZone != null && Character.isWhitespace(line.charAt(0)) && st.hasMoreTokens()) {
-                if (parseZoneLine(st, openZone)) {
-                    openZone = null;
+        int lineNumber = 1;
+        String line = null;
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new FileReader(file));
+            List<TZDBZone> openZone = null;
+            for (; (line = in.readLine()) != null; lineNumber++) {
+                int index = line.indexOf('#');
+                if (index >= 0) {
+                    line = line.substring(0, index);
                 }
-            } else {
-                if (st.hasMoreTokens()) {
-                    String first = st.nextToken();
-                    if (first.equals("Zone")) {
-                        if (st.countTokens() < 3) {
-                            printVerbose("Invalid Zone line in file: " + file + ", line: " + line);
-                            throw new IllegalArgumentException("Invalid Zone line in file: " + file);
-                        }
-                        openZone = new ArrayList<TZDBZone>();
-                        zones.put(st.nextToken(), openZone);
-                        if (parseZoneLine(st, openZone)) {
-                            openZone = null;
-                        }
-                    } else {
+                if (line.trim().length() == 0) {
+                    continue;
+                }
+                StringTokenizer st = new StringTokenizer(line, " \t");
+                if (openZone != null && Character.isWhitespace(line.charAt(0)) && st.hasMoreTokens()) {
+                    if (parseZoneLine(st, openZone)) {
                         openZone = null;
-                        if (first.equals("Rule")) {
-                            if (st.countTokens() < 9) {
-                                printVerbose("Invalid Rule line in file: " + file + ", line: " + line);
-                                throw new IllegalArgumentException("Invalid Rule line in file: " + file);
+                    }
+                } else {
+                    if (st.hasMoreTokens()) {
+                        String first = st.nextToken();
+                        if (first.equals("Zone")) {
+                            if (st.countTokens() < 3) {
+                                printVerbose("Invalid Zone line in file: " + file + ", line: " + line);
+                                throw new IllegalArgumentException("Invalid Zone line");
                             }
-                            parseRuleLine(st);
-                            
-                        } else if (first.equals("Link")) {
-                            if (st.countTokens() < 2) {
-                                printVerbose("Invalid Link line in file: " + file + ", line: " + line);
-                                throw new IllegalArgumentException("Invalid Link line in file: " + file);
+                            openZone = new ArrayList<TZDBZone>();
+                            zones.put(st.nextToken(), openZone);
+                            if (parseZoneLine(st, openZone)) {
+                                openZone = null;
                             }
-                            links.put(st.nextToken(), st.nextToken());
-                            
                         } else {
-                            System.out.println("Unknown line: " + line);
+                            openZone = null;
+                            if (first.equals("Rule")) {
+                                if (st.countTokens() < 9) {
+                                    printVerbose("Invalid Rule line in file: " + file + ", line: " + line);
+                                    throw new IllegalArgumentException("Invalid Rule line");
+                                }
+                                parseRuleLine(st);
+                                
+                            } else if (first.equals("Link")) {
+                                if (st.countTokens() < 2) {
+                                    printVerbose("Invalid Link line in file: " + file + ", line: " + line);
+                                    throw new IllegalArgumentException("Invalid Link line");
+                                }
+                                links.put(st.nextToken(), st.nextToken());
+                                
+                            } else {
+                                throw new IllegalArgumentException("Unknown line");
+                            }
                         }
                     }
                 }
             }
+        } catch (Exception ex) {
+            throw new Exception("Failed while processing file '" + file + "' on line " + lineNumber + " '" + line + "'", ex);
+        } finally {
+            try {
+                in.close();
+            } catch (Exception ex) {
+                // ignore NPE and IOE
+            }
         }
-        in.close();
     }
 
     /**
@@ -334,7 +430,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Parses a Zone line.
-     * @param st  the tokerizer, not null
+     * @param st  the tokenizer, not null
      * @return true if the zone is complete
      */
     private boolean parseZoneLine(StringTokenizer st, List<TZDBZone> zoneList) {
@@ -395,9 +491,15 @@ public final class TZDBZoneRulesCompiler {
                 mdt.dayOfMonth = Integer.parseInt(dayRule);
             }
             if (st.hasMoreTokens()) {
-                String time = st.nextToken();
-                mdt.time = parseTime(time);
-                mdt.timeDefinition = parseTimeDefinition(time.charAt(time.length() - 1));
+                String timeStr = st.nextToken();
+                int secsOfDay = parseSecs(timeStr);
+                if (secsOfDay == 86400) {
+                    mdt.endOfDay = true;
+                    secsOfDay = 0;
+                }
+                LocalTime time = deduplicate(LocalTime.fromSecondOfDay(secsOfDay));
+                mdt.time = time;
+                mdt.timeDefinition = parseTimeDefinition(timeStr.charAt(timeStr.length() - 1));
             }
         }
     }
@@ -437,38 +539,21 @@ public final class TZDBZoneRulesCompiler {
         return str.equals("-") ? null : str;
     }
 
-    private LocalTime parseTime(String str) {
-        DateTimeFormatter f = new DateTimeFormatterBuilder()
-            .appendValue(ISOChronology.hourOfDayRule())
-            .optionalStart().appendLiteral(':').appendValue(ISOChronology.minuteOfHourRule(), 2)
-            .optionalStart().appendLiteral(':').appendValue(ISOChronology.secondOfMinuteRule(), 2)
-            .toFormatter();
-        ParsePosition pp = new ParsePosition(0);
-        DateTimeParseContext cal = f.parse(str, pp);
-        if (pp.getErrorIndex() >= 0) {
-            throw new IllegalArgumentException(str);
-        }
-        return deduplicate(cal.toCalendricalMerger().merge().get(LocalTime.rule()));
-    }
-
     private int parseSecs(String str) {
-        DateTimeFormatter f = new DateTimeFormatterBuilder()
-            .appendValue(ISOChronology.hourOfDayRule())
-            .optionalStart().appendLiteral(':').appendValue(ISOChronology.minuteOfHourRule(), 2)
-            .optionalStart().appendLiteral(':').appendValue(ISOChronology.secondOfMinuteRule(), 2)
-            .toFormatter();
         int pos = 0;
         if (str.startsWith("-")) {
             pos = 1;
         }
         ParsePosition pp = new ParsePosition(pos);
-        DateTimeParseContext cal = f.parse(str, pp);
+        DateTimeParseContext cal = TIME_PARSER.parse(str, pp);
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        LocalTime time = cal.toCalendricalMerger().merge().get(LocalTime.rule());
-        int secs = time.getHourOfDay() * 60 * 60 +
-                time.getMinuteOfHour() * 60 + time.getSecondOfMinute();
+        int hour = (Integer) cal.getParsed(ISOChronology.hourOfDayRule());
+        Integer min = (Integer) cal.getParsed(ISOChronology.minuteOfHourRule());
+        Integer sec = (Integer) cal.getParsed(ISOChronology.secondOfMinuteRule());
+        int secs = hour * 60 * 60 +
+            (min != null ? min : 0) * 60 + (sec != null ? sec : 0);
         if (pos == 1) {
             secs = -secs;
         }
@@ -476,11 +561,17 @@ public final class TZDBZoneRulesCompiler {
     }
 
     private ZoneOffset parseOffset(String str) {
+        if (str.equals("-")) {
+            return ZoneOffset.UTC;
+        }
         int secs = parseSecs(str);
         return ZoneOffset.fromTotalSeconds(secs);
     }
 
     private Period parsePeriod(String str) {
+        if (str.equals("-")) {
+            return Period.ZERO;
+        }
         int secs = parseSecs(str);
         return deduplicate(Period.seconds(secs).normalized());
     }
@@ -515,12 +606,13 @@ public final class TZDBZoneRulesCompiler {
         // build zones
         for (String zoneId : zones.keySet()) {
             printVerbose("Building zone " + zoneId);
+            zoneId = deduplicate(zoneId);
             List<TZDBZone> tzdbZones = zones.get(zoneId);
             ZoneRulesBuilder bld = new ZoneRulesBuilder();
             for (TZDBZone tzdbZone : tzdbZones) {
                 bld = tzdbZone.addToBuilder(bld, rules);
             }
-            builtZones.put(zoneId, bld.toRules(zoneId, deduplicateMap));
+            builtZones.put(zoneId, deduplicate(bld.toRules(zoneId, deduplicateMap)));
         }
         
 //        // build aliases  // TODO
@@ -550,10 +642,9 @@ public final class TZDBZoneRulesCompiler {
 //        }
 //        out.close();
         
-        File outputJar = new File(destinationDir, "ZoneRuleInfo-TZDB-" + version + ".jar");
-        printVerbose("Outputting file: " + outputJar);
+        printVerbose("Outputting file: " + destFile);
         
-        JarOutputStream jos = new JarOutputStream(new FileOutputStream(outputJar));
+        JarOutputStream jos = new JarOutputStream(new FileOutputStream(destFile));
         jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRuleInfo.dat"));
         
         ObjectOutputStream out = new ObjectOutputStream(jos);
@@ -607,27 +698,10 @@ public final class TZDBZoneRulesCompiler {
         DayOfWeek dayOfWeek;
         /** The time of the cutover. */
         LocalTime time = LocalTime.MIDNIGHT;
+        /** Whether this is midnight end of day. */
+        boolean endOfDay;
         /** The time of the cutover. */
         TimeDefinition timeDefinition = TimeDefinition.WALL;
-
-        LocalDateTime toDateTime(int year) {
-            adjustToFowards(year);
-            LocalDate date;
-            if (dayOfMonth == -1) {
-                dayOfMonth = month.getLastDayOfMonth(ISOChronology.isLeapYear(year));
-                date = LocalDate.of(year, month, dayOfMonth);
-                if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
-                }
-            } else {
-                date = LocalDate.of(year, month, dayOfMonth);
-                if (dayOfWeek != null) {
-                    date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
-                }
-            }
-            date = deduplicate(date);
-            return LocalDateTime.from(date, time);
-        }
 
         void adjustToFowards(int year) {
             if (adjustForwards == false && dayOfMonth > 0) {
@@ -654,8 +728,8 @@ public final class TZDBZoneRulesCompiler {
         String text;
 
         void addToBuilder(ZoneRulesBuilder bld) {
-            adjustToFowards(2001);
-            bld.addRuleToWindow(startYear, endYear, month, dayOfMonth, dayOfWeek, time, timeDefinition, savingsAmount);
+            adjustToFowards(2004);  // irrelevant, treat as leap year
+            bld.addRuleToWindow(startYear, endYear, month, dayOfMonth, dayOfWeek, time, endOfDay, timeDefinition, savingsAmount);
         }
     }
 
@@ -695,6 +769,29 @@ public final class TZDBZoneRulesCompiler {
             }
             
             return bld;
+        }
+
+        private LocalDateTime toDateTime(int year) {
+            adjustToFowards(year);
+            LocalDate date;
+            if (dayOfMonth == -1) {
+                dayOfMonth = month.getLastDayOfMonth(ISOChronology.isLeapYear(year));
+                date = LocalDate.of(year, month, dayOfMonth);
+                if (dayOfWeek != null) {
+                    date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
+                }
+            } else {
+                date = LocalDate.of(year, month, dayOfMonth);
+                if (dayOfWeek != null) {
+                    date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
+                }
+            }
+            date = deduplicate(date);
+            LocalDateTime ldt = LocalDateTime.from(date, time);
+            if (endOfDay) {
+                ldt = ldt.plusDays(1);
+            }
+            return ldt;
         }
     }
 

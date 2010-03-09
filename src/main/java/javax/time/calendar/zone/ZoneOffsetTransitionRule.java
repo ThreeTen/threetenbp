@@ -53,7 +53,7 @@ import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
  * <li>the 16th March
  * <li>the Sunday on or after the 16th March
  * <li>the Sunday on or before the 16th March
- * <li>the last Sunday in March
+ * <li>the last Sunday in February
  * </ul>
  * These different rule types can be expressed and queried.
  * <p>
@@ -81,7 +81,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * {@code -1} is the last day of the month, {@code -2} is the second
      * to last day, and so on.
      */
-    private final int dom;
+    private final byte dom;
     /**
      * The cutover day-of-week, null to retain the day-of-month.
      */
@@ -90,6 +90,10 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * The cutover time in the 'before' offset.
      */
     private final LocalTime time;
+    /**
+     * Whether the cutover time is midnight at the end of day.
+     */
+    private boolean timeEndOfDay;
     /**
      * The definition of how the local time should be interpreted.
      */
@@ -112,19 +116,24 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      *
      * @param month  the month of the month-day of the first day of the cutover week, not null
      * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
-     *  day or later, negative if the week is that day or earlier, counting from the last day of the month
+     *  day or later, negative if the week is that day or earlier, counting from the last day of the month,
+     *  from -28 to 31 excluding 0
      * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
      * @param time  the cutover time in the 'before' offset, not null
+     * @param timeEndOfDay  whether the time is midnight at the end of day
      * @param timeDefnition  how to interpret the cutover
      * @param standardOffset  the standard offset in force at the cutover, not null
      * @param offsetBefore  the offset before the cutover, not null
      * @param offsetAfter  the offset after the cutover, not null
+     * @throws IllegalArgumentException if the day of month indicator is invalid
+     * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
      */
     ZoneOffsetTransitionRule(
             MonthOfYear month,
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
             LocalTime time,
+            boolean timeEndOfDay,
             TimeDefinition timeDefnition,
             ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
@@ -135,10 +144,17 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         ZoneRules.checkNotNull(standardOffset, "Standard offset must not be null");
         ZoneRules.checkNotNull(offsetBefore, "Offset before must not be null");
         ZoneRules.checkNotNull(offsetAfter, "Offset after must not be null");
+        if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
+            throw new IllegalArgumentException("Day of month indicator must be between -28 and 31 inclusive excluding zero");
+        }
+        if (timeEndOfDay && time.equals(LocalTime.MIDNIGHT) == false) {
+            throw new IllegalArgumentException("Time must be midnight when end of day flag is true");
+        }
         this.month = month;
-        this.dom = dayOfMonthIndicator;
+        this.dom = (byte) dayOfMonthIndicator;
         this.dow = dayOfWeek;
         this.time = time;
+        this.timeEndOfDay = timeEndOfDay;
         this.timeDefinition = timeDefnition;
         this.standardOffset = standardOffset;
         this.offsetBefore = offsetBefore;
@@ -167,13 +183,16 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * <p>
      * If the rule defines a week where the transition might occur, then the day
      * defines either the start of the end of the transition week.
+     * <p>
      * If the value is positive, then it represents a normal day-of-month, and is the
      * earliest possible date that the transition can be.
+     * The date may refer to 29th February which should be treated as 1st March in non-leap years.
+     * <p>
      * If the value is negative, then it represents the number of days back from the
      * end of the month where {@code -1} is the last day of the month.
      * In this case, the day identified is the latest possible date that the transition can be.
      *
-     * @return the day-of-month indicator, from -31 to 31 excluding 0
+     * @return the day-of-month indicator, from -28 to 31 excluding 0
      */
     public int getDayOfMonthIndicator() {
         return dom;
@@ -196,7 +215,8 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     }
 
     /**
-     * Gets the local time of day of the transition.
+     * Gets the local time of day of the transition which must be checked with
+     * {@link #isMidnightEndOfDay()}.
      * <p>
      * The time is converted into an instant using the time definition.
      *
@@ -204,6 +224,17 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     public LocalTime getLocalTime() {
         return time;
+    }
+
+    /**
+     * Is the transition local time midnight at the end of day.
+     * <p>
+     * The transition may be represented as occurring at 24:00.
+     *
+     * @return whether a local time of midnight is at the start or end of the day
+     */
+    public boolean isMidnightEndOfDay() {
+        return timeEndOfDay;
     }
 
     /**
@@ -265,6 +296,9 @@ public final class ZoneOffsetTransitionRule implements Serializable {
                 date = date.with(DateAdjusters.nextOrCurrent(dow));
             }
         }
+        if (timeEndOfDay) {
+            date = date.plusDays(1);
+        }
         LocalDateTime localDT = LocalDateTime.from(date, time);
         OffsetDateTime transition = timeDefinition.createDateTime(localDT, standardOffset, offsetBefore);
         return new ZoneOffsetTransition(transition, offsetAfter);
@@ -287,9 +321,10 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             return month == other.month && dom == other.dom && dow == other.dow &&
                 timeDefinition == other.timeDefinition &&
                 time.equals(other.time) &&
+                timeEndOfDay == other.timeEndOfDay &&
                 standardOffset.equals(other.standardOffset) &&
                 offsetBefore.equals(other.offsetBefore) &&
-                offsetBefore.equals(other.offsetBefore);
+                offsetAfter.equals(other.offsetAfter);
         }
         return false;
     }
@@ -301,8 +336,9 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     @Override
     public int hashCode() {
-        int hash = (time.toSecondOfDay() << 15) + (month.ordinal() << 11) + ((dom + 32) << 5) +
-                (dow.ordinal() << 2) + (timeDefinition.ordinal());
+        int hash = ((time.toSecondOfDay() + (timeEndOfDay ? 1 : 0)) << 15) +
+                (month.ordinal() << 11) + ((dom + 32) << 5) +
+                ((dow == null ? 7 : dow.ordinal()) << 2) + (timeDefinition.ordinal());
         return hash ^ standardOffset.hashCode() ^
                 offsetBefore.hashCode() ^ offsetAfter.hashCode();
     }
@@ -320,15 +356,17 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             .append(offsetBefore.compareTo(offsetAfter) > 0 ? "Gap " : "Overlap ")
             .append(offsetBefore).append(" to ").append(offsetAfter).append(", ");
         if (dow != null) {
-            if (dom < 0) {
-                buf.append(dow.name()).append(" on or before ").append(month.name()).append(' ').append(dom);
+            if (dom == -1) {
+                buf.append(dow.name()).append(" on or before last day of ").append(month.name());
+            } else if (dom < 0) {
+                buf.append(dow.name()).append(" on or before last day minus ").append(-dom - 1).append(" of ").append(month.name());
             } else {
                 buf.append(dow.name()).append(" on or after ").append(month.name()).append(' ').append(dom);
             }
         } else {
             buf.append(month.name()).append(' ').append(dom);
         }
-        buf.append(" at ").append(time)
+        buf.append(" at ").append(timeEndOfDay ? "24:00" : time.toString())
             .append(" ").append(timeDefinition)
             .append(", standard offset ").append(standardOffset)
             .append(']');

@@ -9,8 +9,6 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/test/testng-5.8-jdk15.jar"/>
-	<classpathentry kind="lib" path="src/main/tzdata/2008i/ZoneRuleInfo-TZDB-2008i.jar"/>
-	<classpathentry kind="lib" path="src/main/tzdata/2009a/ZoneRuleInfo-TZDB-2009a.jar"/>
-	<classpathentry kind="lib" path="src/main/tzdata/2009b/ZoneRuleInfo-TZDB-2009b.jar"/>
-	<classpathentry kind="output" path="build/main"/>
+	<classpathentry kind="lib" path="lib/main/ZoneRuleInfo-TZDB-all.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
