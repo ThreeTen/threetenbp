@@ -1629,6 +1629,129 @@ public class TestOffsetDate {
         t.atTime((LocalTime) null);
     }
 
+    public void test_atTime_int_int() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        assertEquals(t.atTime(11, 30), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_hourTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(-1, 30);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_hourTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(24, 30);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_minuteTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_minuteTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 60);
+    }
+
+    public void test_atTime_int_int_int() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        assertEquals(t.atTime(11, 30, 40), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_hourTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(-1, 30, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_hourTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(24, 30, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_minuteTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, -1, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_minuteTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 60, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_secondTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 30, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_secondTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 30, 60);
+    }
+
+    public void test_atTime_int_int_int_int() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        assertEquals(t.atTime(11, 30, 40, 50), OffsetDateTime.of(2008, 6, 30, 11, 30, 40, 50, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_hourTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(-1, 30, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_hourTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(24, 30, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_minuteTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, -1, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_minuteTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 60, 40, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_secondTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 30, -1, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_secondTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 30, 60, 50);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_nanoTooSmall() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 30, 40, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atTime_int_int_int_int_nanoTooBig() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime(11, 30, 40, 1000000000);
+    }
+
     //-----------------------------------------------------------------------
     // atMidnight()
     //-----------------------------------------------------------------------

@@ -869,6 +869,60 @@ public final class OffsetDate
     }
 
     /**
+     * Returns a offset date-time formed from this date at the specified time.
+     * <p>
+     * This merges the three values - {@code this} and the specified time -
+     * to form an instance of {@code OffsetDateTime}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour-of-day to use, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
+     * @return the offset date-time formed from this date and the specified time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     */
+    public OffsetDateTime atTime(int hourOfDay, int minuteOfHour) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour));
+    }
+
+    /**
+     * Returns a offset date-time formed from this date at the specified time.
+     * <p>
+     * This merges the four values - {@code this} and the specified time -
+     * to form an instance of {@code OffsetDateTime}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour-of-day to use, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @return the offset date-time formed from this date and the specified time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     */
+    public OffsetDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute));
+    }
+
+    /**
+     * Returns a offset date-time formed from this date at the specified time.
+     * <p>
+     * This merges the five values - {@code this} and the specified time -
+     * to form an instance of {@code OffsetDateTime}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour-of-day to use, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to use, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @return the offset date-time formed from this date and the specified time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     */
+    public OffsetDateTime atTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        return atTime(LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond));
+    }
+
+    /**
      * Returns an offset date-time formed from this date at the time of midnight.
      * <p>
      * This merges the two objects - {@code this} and {@link LocalTime#MIDNIGHT} -
