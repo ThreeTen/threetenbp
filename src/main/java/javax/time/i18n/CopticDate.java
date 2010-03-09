@@ -175,7 +175,7 @@ public final class CopticDate
      * @return a CopticDate object, never null
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
-    private static CopticDate copticDateFromEopchDays(int epochDays) {
+    private static CopticDate copticDateFromEpochDays(int epochDays) {
         if (epochDays < MIN_EPOCH_DAY || epochDays > MAX_EPOCH_DAY) {
             throw new IllegalCalendarFieldValueException(
                     "Date exceeds supported range for CopticDate", CopticChronology.yearRule());
@@ -210,7 +210,7 @@ public final class CopticDate
      * @return the resolved date, never null
      */
     private Object readResolve() {
-        return copticDateFromEopchDays(epochDays);
+        return copticDateFromEpochDays(epochDays);
     }
 
     //-----------------------------------------------------------------------
@@ -431,7 +431,7 @@ public final class CopticDate
      */
     public CopticDate plusDays(int days) {
         int newEpochDays = epochDays + days;  // may overflow, but caught in factory
-        return copticDateFromEopchDays(newEpochDays);
+        return copticDateFromEpochDays(newEpochDays);
     }
 
     //-----------------------------------------------------------------------
@@ -565,7 +565,7 @@ public final class CopticDate
                 return null;
             }
             long epochDays = ld.toModifiedJulianDays() + MJD_TO_COPTIC;
-            return copticDateFromEopchDays((int) epochDays);
+            return copticDateFromEpochDays((int) epochDays);
         }
         @Override
         protected void merge(CalendricalMerger merger) {
