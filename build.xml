@@ -11,11 +11,11 @@
     <property file="build.properties" />
     <property file="version.properties"/>
 
-    <property name="jarCoreName" value="jsr-310-ri-core-${version.full}" />
-    <property name="jarExtraName" value="jsr-310-ri-extra-${version.full}" />
-    <property name="jarOpenJDKName" value="jsr-310-ri-openjdk-${version.full}" />
-    <property name="jarOracleName" value="jsr-310-ri-oracle-${version.full}" />
-    <property name="jarAllName" value="jsr-310-ri-${version.full}" />
+    <property name="jarCoreName" value="jsr-310-ri-core-${version.full}.jar" />
+    <property name="jarExtraName" value="jsr-310-ri-extra-${version.full}.jar" />
+    <property name="jarOpenJDKName" value="jsr-310-ri-openjdk-${version.full}.jar" />
+    <property name="jarOracleName" value="jsr-310-ri-oracle-${version.full}.jar" />
+    <property name="jarAllName" value="jsr-310-ri-${version.full}.jar" />
     <property name="distFileName" value="jsr-310-${version.full}.zip"/>
     
     <macrodef name="get-dependency">
@@ -26,8 +26,8 @@
         <attribute name="dest" />
         <sequential>
             <get
-                src="${maven.ibiblio.url}/@{group}/@{artifact}/@{version}/@{artifact}-@{version}@{variant}"
-                dest="@{dest}/@{artifact}-@{version}@{variant}"
+                src="${maven.ibiblio.url}/@{group}/@{artifact}/@{version}/@{artifact}-@{version}@{variant}.jar"
+                dest="@{dest}/@{artifact}-@{version}@{variant}.jar"
                 verbose="true"
                 usetimestamp="true" ignoreerrors="true"/>
         </sequential>
