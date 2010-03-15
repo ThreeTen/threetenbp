@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
 import java.util.Map;
 
 import javax.time.CalendricalException;
@@ -101,7 +103,7 @@ public final class TimeZone implements Calendrical, Serializable {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 93618758758127L;
+    private static final long serialVersionUID = 1L;
     /**
      * The time zone offset for UTC, with an id of 'UTC'.
      */
@@ -266,14 +268,13 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return the resolved instance, never null
      */
-    private Object readResolve() {
+    private Object readResolve() throws ObjectStreamException {
+        if (groupID == null || regionID == null || versionID == null) {
+            throw new StreamCorruptedException();
+        }
         // fixed time zone must always be valid
         if (isFixed()) {
-            if ("UTC".equals(regionID)) {
-                return UTC;
-            } else {
-                return TimeZone.of(getID());
-            }
+            return TimeZone.of(regionID);
         }
         return this;
     }
