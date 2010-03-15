@@ -64,6 +64,7 @@ import javax.time.calendar.OffsetDateTime;
  * <p>
  * The static methods of ZoneRulesGroup wrap a thread-safe map of groups.
  * New groups and providers may safely be added during the lifetime of the application.
+ * To maintain data integrity, providers may not be removed during the lifetime of the application.
  *
  * @author Stephen Colebourne
  */
@@ -134,6 +135,10 @@ public final class ZoneRulesGroup {
      * Gets the set of available zone rule groups.
      * <p>
      * Which groups are available is dependent on the registered providers.
+     * <p>
+     * The returned groups will remain available and valid for the lifetime of the application as
+     * there is no way to deregister time zone information. More groups may be added during
+     * the lifetime of the application, however the returned list will not be altered.
      *
      * @return an unsorted, independent, modifiable list of available groups, never null
      */
@@ -317,6 +322,10 @@ public final class ZoneRulesGroup {
      * This checks both the region and version IDs for validity.
      * The floating version (an empty version ID) will return the latest available
      * rules for the region.
+     * <p>
+     * The returned rules will remain available and valid for the lifetime of the application as
+     * there is no way to deregister time zone information. More rules may be added during
+     * the lifetime of the application, however the returned rules will not be altered.
      *
      * @param regionID  the time zone region ID, not null
      * @param versionID  the time zone version ID, empty means floating version, not null
@@ -351,6 +360,11 @@ public final class ZoneRulesGroup {
      * This checks both the region and version IDs for validity.
      * The floating version (an empty version ID) will search for any version of
      * the region rules that are valid for the date-time.
+     * <p>
+     * Any loaded rules remain available for the lifetime of the application as there is no
+     * way to deregister time zone information thus a {@code true} return value will remain true.
+     * More information may be added during the lifetime of the application which may cause the
+     * return value to change from {@code false} to {@code true}. 
      *
      * @param regionID  the time zone region ID, null returns false
      * @param versionID  the time zone version ID, empty means floating version, null returns false
@@ -378,6 +392,10 @@ public final class ZoneRulesGroup {
      * This checks both the region and version IDs for validity.
      * The floating version (an empty version ID) will search for any version of
      * the region rules that are valid for the date-time.
+     * <p>
+     * The returned rules will remain available and valid for the lifetime of the application as
+     * there is no way to deregister time zone information. More rules may be added during
+     * the lifetime of the application, however the returned rules will not be altered.
      *
      * @param regionID  the time zone region ID, not null
      * @param versionID  the time zone version ID, empty means floating version, not null
@@ -409,6 +427,10 @@ public final class ZoneRulesGroup {
      * <p>
      * This method returns the latest version of the region rules where the date-time is valid.
      * This checks the region for validity.
+     * <p>
+     * The returned version will remain valid for the lifetime of the application as
+     * there is no way to deregister time zone information. If more time zone information
+     * is added then a later version may become available.
      *
      * @param regionID  the time zone region ID, not null
      * @param dateTime  the date-time that must be valid, not null
@@ -437,6 +459,10 @@ public final class ZoneRulesGroup {
      * Gets the set of available region IDs for this group.
      * <p>
      * Each returned region will have at least one associated version.
+     * <p>
+     * The returned regions will remain available for the lifetime of the application as
+     * there is no way to deregister time zone information. More regions may be added during
+     * the lifetime of the application, however the returned list will not be dynamically updated.
      *
      * @return an independent, modifiable list of available regions sorted alphabetically, never null
      */
@@ -453,6 +479,10 @@ public final class ZoneRulesGroup {
      * an ordering determined by a {@code String} based sort.
      * <p>
      * If the version is not found, an empty list is returned.
+     * <p>
+     * The returned regions will remain available for the lifetime of the application as
+     * there is no way to deregister time zone information. More regions may be added during
+     * the lifetime of the application, however the returned list will not be altered.
      *
      * @param versionID  the time zone version ID, empty means any version, not null
      * @return an independent, modifiable list of available regions sorted alphabetically, never null
@@ -479,6 +509,10 @@ public final class ZoneRulesGroup {
      * <p>
      * The latest available group is determined by a {@code String} based sort
      * of the versions.
+     * <p>
+     * The returned version will remain available for the lifetime of the application as
+     * there is no way to deregister time zone information. More information may be added during
+     * the lifetime of the application, causing a later version to be available.
      *
      * @param regionID  the time zone region ID, not null
      * @return the latest version ID for the region, never null
@@ -495,6 +529,10 @@ public final class ZoneRulesGroup {
      * <p>
      * The available versions are returned sorted from oldest to newest using
      * an ordering determined by a {@code String} based sort.
+     * <p>
+     * The returned versions will remain available for the lifetime of the application as
+     * there is no way to deregister time zone information. More regions may be added during
+     * the lifetime of the application, however the returned list will not be dynamically updated.
      *
      * @param regionID  the time zone region ID, not null
      * @return an independent, modifiable list of available versions from oldest to newest, never null
