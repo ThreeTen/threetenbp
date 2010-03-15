@@ -1,7 +1,10 @@
 <!--
+  Ant Build for JSR-310 Reference Implementation
+
   @author Fabio Kung (fabio.kung@gmail.com)
   @author Michael Nascimento Santos
   @author Oliver Fischer (o.b.fischer@swe-blog.net)
+  @author Stephen Colebourne
 -->
 <project name="jsr-310-ri" default="dist">
     <description>
@@ -65,7 +68,6 @@
         <mkdir dir="${lib.coverage}" />
 
         <get-dependency group="org/testng" artifact="testng" version="5.8" variant="-jdk15" dest="${lib.test}" />
-
         <get-dependency group="emma" artifact="emma" version="2.0.5312" dest="${lib.coverage}" />
         <get-dependency group="emma" artifact="emma_ant" version="2.0.5312" dest="${lib.coverage}" />
     </target>
@@ -74,21 +76,19 @@
         <tstamp />
     </target>
 
-    <target name="clean" depends="cleanAll" description="clean up" />
-
-    <target name="cleanAll" description="clean up">
+    <target name="clean" description="clean up">
         <delete dir="${build}" />
         <delete dir="${dist}" />
     </target>
 
-    <target name="compileCore" depends="init">
+    <target name="compile-core" depends="init">
         <mkdir  dir="${core.main.classes}"/>
         <javac srcdir="${core.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
     </target>
 
-    <target name="compileExtra" depends="compileCore">
+    <target name="compile-extra" depends="compile-core">
         <mkdir  dir="${extra.main.classes}"/>
         <javac srcdir="${extra.main}" destdir="${extra.main.classes}" includeantruntime="false">
             <classpath location="${core.main.classes}"/>
@@ -96,14 +96,14 @@
         </javac>
     </target>
 
-    <target name="compileOpenJDK" depends="compileCore">
+    <target name="compile-openjdk" depends="compile-core">
         <mkdir  dir="${ojdk.main.classes}"/>
         <javac srcdir="${ojdk.main}" destdir="${ojdk.main.classes}" nowarn="true" bootclasspath="${java.home}/lib/rt.jar" includeantruntime="false">
             <classpath refid="main.path"/>
         </javac>
     </target>
 
-    <target name="compileOracle" depends="compileCore">
+    <target name="compile-oracle" depends="compile-core">
         <mkdir dir="${oracle.main.classes}"/>
         <javac  srcdir="${oracle.main}" destdir="${oracle.main.classes}" includeantruntime="false">
             <classpath location="${core.main.classes}"/>
@@ -111,7 +111,7 @@
         </javac>
     </target>
 
-    <target name="compileTZDB" depends="compileCore">
+    <target name="compile-tzdb" depends="compile-core">
         <mkdir dir="${tzdata.main.workarea}"/>
         <copy todir="${tzdata.main.workarea}">
             <fileset dir="${tzdata.main}" includes="tzdata*.tar.gz"/>
@@ -133,7 +133,7 @@
         <delete file="${basedir}/tzdb.tar" />
     </target>
 
-    <target name="compileAll" depends="compileCore, compileExtra, compileOracle, compileOpenJDK, compileTZDB" description="compile all sources" />
+    <target name="compile" depends="compile-core, compile-extra, compile-oracle, compile-openjdk, compile-tzdb" description="compile all sources" />
 
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
@@ -145,12 +145,12 @@
                overview="${core.main}/javax/time/overview.html" />
     </target>
 
-    <target name="compile-core-tests" depends="compileCore">
+    <target name="compile-core-tests" depends="compile-core">
         <mkdir dir="${core.test.classes}" />
         <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" includeantruntime="false" />
     </target>
 
-    <target name="compile-extra-tests" depends="compileExtra,compile-core-tests">
+    <target name="compile-extra-tests" depends="compile-extra,compile-core-tests">
         <mkdir dir="${extra.test.classes}" />
         <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path"  includeantruntime="false" />
     </target>
@@ -171,7 +171,7 @@
         </testng>
     </target>
 
-    <target name="testScales" depends="compile-core-tests" description="run the scales tests">
+    <target name="test-scales" depends="compile-core-tests" description="run the scales tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
@@ -196,7 +196,7 @@
         </emmajava>
     </target>
 
-    <target  name="jarOracle" depends="compileOracle">
+    <target  name="jarOracle" depends="compile-oracle">
         <mkdir dir="${dist}" />        
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarOracleName}">
@@ -204,7 +204,7 @@
         </jar>
     </target>
 
-    <target  name="jarOpenJDK" depends="compileOpenJDK">
+    <target  name="jarOpenJDK" depends="compile-openjdk">
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarOpenJDKName}">
@@ -212,7 +212,7 @@
         </jar>
     </target>
 
-    <target  name="jarExtra" depends="compileExtra">
+    <target  name="jarExtra" depends="compile-extra">
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarExtraName}">
@@ -220,7 +220,7 @@
         </jar>
     </target>
 
-    <target name="jarCore" depends="compileCore">
+    <target name="jarCore" depends="compile-core">
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarCoreName}">
@@ -229,7 +229,7 @@
         </jar>
     </target>
 
-    <target name="jarAll" depends="compileAll">
+    <target name="jarAll" depends="compile">
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarAllName}">
@@ -240,7 +240,7 @@
         </jar>
     </target>
 
-    <target name="jar" depends="compileAll" description="build a jar file">
+    <target name="jar" depends="compile" description="build a jar file">
         <delete dir="${dist}" />
         <mkdir dir="${dist}" />
         <jar jarfile="${dist}/${ant.project.name}-${DSTAMP}.jar" basedir="${build.main}" />
@@ -252,7 +252,7 @@
             <fileset dir="${src}"/>
         </copy>
         <copy todir="${dist}/lib" flatten="true">
-            <fileset dir="${src}" includes="**/ZoneRuleInfo*.jar"/>
+            <fileset dir="${lib.main}" includes="**/ZoneRuleInfo*.jar"/>
         </copy>
         <copy todir="${dist}/nbproject">
             <fileset dir="nbproject"/>
@@ -268,7 +268,7 @@
         <zip destfile="${distFileName}" basedir="${dist}" />
     </target>
 
-    <target name="testExamples" depends="compile-core-tests" description="outputs some examples to system out">
+    <target name="examples" depends="compile-core-tests" description="outputs some examples to system out">
         <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
     </target>
 </project>
