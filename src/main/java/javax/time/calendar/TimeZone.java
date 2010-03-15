@@ -654,10 +654,11 @@ public final class TimeZone implements Calendrical, Serializable {
     public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
         ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
         if (isFixed()) {
-            if (getRules().getOffset(dateTime).equals(dateTime.getOffset()) == false) {
+            ZoneRules rules = getRules();
+            if (rules.getOffset(dateTime).equals(dateTime.getOffset()) == false) {
                 throw new CalendricalException("Fixed time zone " + getID() + " is invalid for date-time " + dateTime);
             }
-            return ZoneRules.fixed(getRules().getOffset(dateTime));
+            return rules;
         }
         ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
         return group.getRulesValidFor(regionID, versionID, dateTime);
