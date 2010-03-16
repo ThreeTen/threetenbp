@@ -88,19 +88,6 @@ public class ZoneRulesBuilder {
      */
     private Map<Object, Object> deduplicateMap;
 
-//    /**
-//     * Creates an alias zone that wraps a zone with a different one id.
-//     *
-//     * @param zoneId  the new zone id, not null
-//     * @param baseZoneId  the base zone id, not null
-//     * @return the created zone, never null
-//     */
-//    public static ZoneRules createAlias(String zoneId, String baseZoneId) {
-//        checkNotNull(zoneId, "Zone id must not be null");
-//        checkNotNull(baseZoneId, "Base zone id must not be null");
-//        return new AliasZone(zoneId, baseZoneId);
-//    }
-
     /**
      * Validates that the input value is not null.
      *
@@ -787,49 +774,5 @@ public class ZoneRulesBuilder {
             return cmp;
         }
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * An alias for a time zone, allowing it to be referred to using a different ID.
-//     */
-//    static class AliasZone extends ZoneRules {
-//        /**
-//         * A serialization identifier for this class.
-//         */
-//        private static final long serialVersionUID = 93618758758127L;
-//        /**
-//         * The time zone being aliased.
-//         */
-//        private final String baseZoneId;
-//
-//        /**
-//         * Constructor.
-//         *
-//         * @param id  the time zone id, not null
-//         * @param baseZoneId  the id of the base zone, not null
-//         */
-//        AliasZone(String id, String baseZoneId) {
-//            super(id);
-//            this.baseZoneId = baseZoneId;
-//        }
-//
-//        /** {@inheritDoc}. */
-//        @Override
-//        public ZoneOffset getOffset(InstantProvider instantProvider) {
-//            return TimeZone.timeZone(baseZoneId).getOffset(instantProvider);
-//        }
-//
-//        /** {@inheritDoc}. */
-//        @Override
-//        public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-//            return TimeZone.timeZone(baseZoneId).getOffsetInfo(dateTime);
-//        }
-//
-//        /** {@inheritDoc}. */
-//        @Override
-//        public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
-//            return TimeZone.timeZone(baseZoneId).getStandardOffset(instantProvider);
-//        }
-//    }
 
 }

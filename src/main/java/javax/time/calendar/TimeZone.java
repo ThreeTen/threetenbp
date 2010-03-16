@@ -178,12 +178,12 @@ public final class TimeZone implements Calendrical, Serializable {
      * for example 'TZDB:Asia/Tokyo#2008g'.
      * <p>
      * The alternate format is for fixed time zones, where the offset never changes over time.
-     * It is intended that {@link ZoneOffset} and {@link OffsetDateTime} are used in preference,
-     * however sometimes it is necessary to have a fixed time zone.
-     * A fixed time zone is returned if the first three characters are 'UTC' or 'GMT'.
-     * The remainder of the ID must be a valid format for {@link ZoneOffset#of(String)}.
-     * Using 'UTCZ' or 'GMTZ' is invalid.
-     * The normalized time zone ID is 'UTC&plusmn;hh:mm:ss', or just 'UTC' if the offset is zero.
+     * A fixed time zone is returned if the first three characters are 'UTC' or 'GMT' and
+     * the remainder of the ID is a valid format for {@link ZoneOffset#of(String)}.
+     * The result will have a normalized time zone ID of 'UTC{offset}', or just 'UTC' if the offset is zero.
+     * <p>
+     * Note that it is intended that fixed offset time zones are rarely used. Applications should use
+     * {@link ZoneOffset} and {@link OffsetDateTime} are in preference.
      *
      * @param zoneID  the time zone identifier, not null
      * @return the TimeZone, never null
@@ -191,37 +191,36 @@ public final class TimeZone implements Calendrical, Serializable {
      */
     public static TimeZone of(String zoneID) {
         ISOChronology.checkNotNull(zoneID, "Time zone ID must not be null");
+        
+        // special fixed cases
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
             return UTC;
-            
-        } else if (zoneID.equals("UTCZ") || zoneID.equals("GMTZ")) {
-            throw new CalendricalException("Invalid time zone ID: " + zoneID);
-            
-        } else if (zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) {  // not sure about GMT
+        }
+        if ((zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) && zoneID.indexOf('#') < 0) {
             try {
                 return of(ZoneOffset.of(zoneID.substring(3)));
             } catch (IllegalArgumentException ex) {
-                throw new CalendricalException("Invalid time zone ID: " + ex.toString(), ex);
+                // continue, in case it is something like GMT0, GMT+0, GMT-0
             }
-            
-        } else {
-            int pos = zoneID.indexOf(':');
-            ZoneRulesGroup group;
-            if (pos >= 0) {
-                group = ZoneRulesGroup.getGroup(zoneID.substring(0, pos));  // validates ID
-                zoneID = zoneID.substring(pos + 1);
-            } else {
-                group = ZoneRulesGroup.getGroup("TZDB");  // validates ID
-            }
-            pos = zoneID.indexOf('#');
-            String versionID = "";
-            if (pos >= 0) {
-                versionID = zoneID.substring(pos + 1);
-                zoneID = zoneID.substring(0, pos);
-            }
-            ZoneRules rules = group.getRules(zoneID, versionID);  // validates IDs
-            return new TimeZone(group.getID(), zoneID, versionID, rules);
         }
+        
+        // main parsing
+        ZoneRulesGroup group;
+        int colonPos = zoneID.indexOf(':');
+        if (colonPos >= 0) {
+            group = ZoneRulesGroup.getGroup(zoneID.substring(0, colonPos));  // validates group available
+            zoneID = zoneID.substring(colonPos + 1);
+        } else {
+            group = ZoneRulesGroup.getGroup("TZDB");  // validates group available
+        }
+        String versionID = "";
+        int hashPos = zoneID.indexOf('#');
+        if (hashPos >= 0) {
+            versionID = zoneID.substring(hashPos + 1);
+            zoneID = zoneID.substring(0, hashPos);
+        }
+        ZoneRules rules = group.getRules(zoneID, versionID);  // validates IDs
+        return new TimeZone(group.getID(), zoneID, versionID, rules);
     }
 
     /**

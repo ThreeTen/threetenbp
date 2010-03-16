@@ -174,7 +174,7 @@ public class TestTimeZone {
     @DataProvider(name="String_UTC")
     Object[][] data_factory_string_UTC() {
         return new Object[][] {
-            {""},
+            {""}, {"Z"},
             {"+00"},{"+0000"},{"+00:00"},{"+000000"},{"+00:00:00"},
             {"-00"},{"-0000"},{"-00:00"},{"-000000"},{"-00:00:00"},
         };
@@ -228,7 +228,7 @@ public class TestTimeZone {
     Object[][] data_factory_string_UTC_invalid() {
         return new Object[][] {
                 {"A"}, {"B"}, {"C"}, {"D"}, {"E"}, {"F"}, {"G"}, {"H"}, {"I"}, {"J"}, {"K"}, {"L"}, {"M"},
-                {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"}, {"Z"},
+                {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"},
                 {"+0"}, {"+0:00"}, {"+00:0"}, {"+0:0"},
                 {"+000"}, {"+00000"},
                 {"+0:00:00"}, {"+00:0:00"}, {"+00:00:0"}, {"+0:0:0"}, {"+0:0:00"}, {"+00:0:0"}, {"+0:00:0"},
@@ -246,6 +246,51 @@ public class TestTimeZone {
     @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
     public void test_factory_string_invalid(String id) {
         TimeZone.of("UTC" + id);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_factory_string_floatingGMT0() {
+        TimeZone test = TimeZone.of("GMT0");
+        assertEquals(test.getID(), "GMT0");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "GMT0");
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.getName(), "GMT0");
+        assertEquals(test.getShortName(), "GMT0");
+        assertEquals(test.isFixed(), false);
+    }
+
+    public void test_factory_string_versionedGMT0() {
+        TimeZone test = TimeZone.of("GMT0#2008i");
+        assertEquals(test.getID(), "GMT0#2008i");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "GMT0");
+        assertEquals(test.getVersionID(), "2008i");
+        assertEquals(test.getName(), "GMT0");
+        assertEquals(test.getShortName(), "GMT0");
+        assertEquals(test.isFixed(), false);
+    }
+
+    public void test_factory_string_groupGMT0() {
+        TimeZone test = TimeZone.of("TZDB:GMT0");
+        assertEquals(test.getID(), "GMT0");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "GMT0");
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.getName(), "GMT0");
+        assertEquals(test.getShortName(), "GMT0");
+        assertEquals(test.isFixed(), false);
+    }
+
+    public void test_factory_string_groupVersionedGMT0() {
+        TimeZone test = TimeZone.of("TZDB:GMT0#2008i");
+        assertEquals(test.getID(), "GMT0#2008i");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "GMT0");
+        assertEquals(test.getVersionID(), "2008i");
+        assertEquals(test.getName(), "GMT0");
+        assertEquals(test.getShortName(), "GMT0");
+        assertEquals(test.isFixed(), false);
     }
 
     //-----------------------------------------------------------------------

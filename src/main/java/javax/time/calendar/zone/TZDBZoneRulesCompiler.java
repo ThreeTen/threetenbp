@@ -386,7 +386,9 @@ public final class TZDBZoneRulesCompiler {
                                     printVerbose("Invalid Link line in file: " + file + ", line: " + line);
                                     throw new IllegalArgumentException("Invalid Link line");
                                 }
-                                links.put(st.nextToken(), st.nextToken());
+                                String realId = st.nextToken();
+                                String aliasId = st.nextToken();
+                                links.put(aliasId, realId);
                                 
                             } else {
                                 throw new IllegalArgumentException("Unknown line");
@@ -504,7 +506,6 @@ public final class TZDBZoneRulesCompiler {
         }
     }
 
-    //-----------------------------------------------------------------------
     private int parseYear(String str, int defaultYear) {
         str = str.toLowerCase();
         if (str.equals("minimum") || str.equals("min")) {
@@ -601,6 +602,7 @@ public final class TZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     /**
      * Build the rules, zones and links into real zones.
+     * @throws Exception if an error occurs
      */
     private void buildZoneRules() throws Exception {
         // build zones
@@ -612,36 +614,33 @@ public final class TZDBZoneRulesCompiler {
             for (TZDBZone tzdbZone : tzdbZones) {
                 bld = tzdbZone.addToBuilder(bld, rules);
             }
-            builtZones.put(zoneId, deduplicate(bld.toRules(zoneId, deduplicateMap)));
+            ZoneRules buildRules = bld.toRules(zoneId, deduplicateMap);
+            builtZones.put(zoneId, deduplicate(buildRules));
         }
         
-//        // build aliases  // TODO
-//        for (String realId : links.keySet()) {
-//            String aliasId = links.get(realId);
-//            printVerbose("Linking alias " + aliasId + " to " + realId);
-//            builtZones.put(aliasId, ZoneRulesBuilder.createAlias(aliasId, realId));
-//        }
+        // build aliases
+        for (String aliasId : links.keySet()) {
+            aliasId = deduplicate(aliasId);
+            String realId = links.get(aliasId);
+            printVerbose("Linking alias " + aliasId + " to " + realId);
+            ZoneRules realRules = builtZones.get(realId);
+            if (realRules == null) {
+                throw new IllegalArgumentException("Alias '" + aliasId + "' links to invalid zone '" + realId + "'");
+            }
+            builtZones.put(aliasId, realRules);
+        }
+        
+        // remove UTC and GMT
+        builtZones.remove("UTC");
+        builtZones.remove("GMT");
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Outputs the jar file.
+     * @throws Exception if an error occurs
+     */
     private void outputFile() throws Exception {
-//        File outputFile = new File(destinationDir, "ZoneRuleInfo.dat");
-//        printVerbose("Outputting file: " + outputFile);
-//        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(outputFile));
-//        out.writeInt(1);
-//        out.writeUTF("TZDB");
-//        out.writeUTF(version);
-//        out.writeObject(builtZones);
-//        out.close();
-        
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 512);
-//        DataOutputStream out = new DataOutputStream(baos);
-//        Map<String, byte[]> data = new HashMap<String, byte[]>();
-//        for (String zoneId : builtZones.keySet()) {
-//            printVerbose("Outputting zone: " + zoneId);
-//            out.
-//        }
-//        out.close();
-        
         printVerbose("Outputting file: " + destFile);
         
         JarOutputStream jos = new JarOutputStream(new FileOutputStream(destFile));
@@ -673,6 +672,7 @@ public final class TZDBZoneRulesCompiler {
         return (T) deduplicateMap.get(object);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Prints a verbose message.
      * @param message  the message, not null
