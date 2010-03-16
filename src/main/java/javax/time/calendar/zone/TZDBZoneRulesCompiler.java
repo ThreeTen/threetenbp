@@ -347,11 +347,11 @@ public final class TZDBZoneRulesCompiler {
             in = new BufferedReader(new FileReader(file));
             List<TZDBZone> openZone = null;
             for (; (line = in.readLine()) != null; lineNumber++) {
-                int index = line.indexOf('#');
+                int index = line.indexOf('#');  // remove comments (doesn't handle # in quotes)
                 if (index >= 0) {
                     line = line.substring(0, index);
                 }
-                if (line.trim().length() == 0) {
+                if (line.trim().length() == 0) {  // ignore blank lines
                     continue;
                 }
                 StringTokenizer st = new StringTokenizer(line, " \t");
@@ -508,9 +508,9 @@ public final class TZDBZoneRulesCompiler {
 
     private int parseYear(String str, int defaultYear) {
         str = str.toLowerCase();
-        if (str.equals("minimum") || str.equals("min")) {
+        if (str.startsWith("min") && "minimum".startsWith(str) && str.length() <= 7) {
             return Year.MIN_YEAR;
-        } else if (str.equals("maximum") || str.equals("max")) {
+        } else if (str.startsWith("max") && "maximum".startsWith(str) && str.length() <= 7) {
             return Year.MAX_YEAR;
         } else if (str.equals("only")) {
             return defaultYear;
@@ -541,6 +541,9 @@ public final class TZDBZoneRulesCompiler {
     }
 
     private int parseSecs(String str) {
+        if (str.equals("-")) {
+            return 0;
+        }
         int pos = 0;
         if (str.startsWith("-")) {
             pos = 1;
@@ -562,17 +565,11 @@ public final class TZDBZoneRulesCompiler {
     }
 
     private ZoneOffset parseOffset(String str) {
-        if (str.equals("-")) {
-            return ZoneOffset.UTC;
-        }
         int secs = parseSecs(str);
         return ZoneOffset.fromTotalSeconds(secs);
     }
 
     private Period parsePeriod(String str) {
-        if (str.equals("-")) {
-            return Period.ZERO;
-        }
         int secs = parseSecs(str);
         return deduplicate(Period.seconds(secs).normalized());
     }
@@ -625,7 +622,12 @@ public final class TZDBZoneRulesCompiler {
             printVerbose("Linking alias " + aliasId + " to " + realId);
             ZoneRules realRules = builtZones.get(realId);
             if (realRules == null) {
-                throw new IllegalArgumentException("Alias '" + aliasId + "' links to invalid zone '" + realId + "'");
+                realId = links.get(realId);  // try again (handle alias liked to alias)
+                printVerbose("Relinking alias " + aliasId + " to " + realId);
+                realRules = builtZones.get(realId);
+                if (realRules == null) {
+                    throw new IllegalArgumentException("Alias '" + aliasId + "' links to invalid zone '" + realId + "' for '" + version + "'");
+                }
             }
             builtZones.put(aliasId, realRules);
         }
@@ -687,7 +689,7 @@ public final class TZDBZoneRulesCompiler {
     /**
      * Class representing a month-day-time in the TZDB file.
      */
-    private abstract class TZDBMonthDayTime {
+    abstract class TZDBMonthDayTime {
         /** The month of the cutover. */
         MonthOfYear month = MonthOfYear.JANUARY;
         /** The day-of-month of the cutover. */
@@ -717,7 +719,7 @@ public final class TZDBZoneRulesCompiler {
     /**
      * Class representing a rule line in the TZDB file.
      */
-    private final class TZDBRule extends TZDBMonthDayTime {
+    final class TZDBRule extends TZDBMonthDayTime {
         /** The start year. */
         int startYear;
         /** The end year. */
@@ -737,7 +739,7 @@ public final class TZDBZoneRulesCompiler {
     /**
      * Class representing a linked set of zone lines in the TZDB file.
      */
-    private final class TZDBZone extends TZDBMonthDayTime {
+    final class TZDBZone extends TZDBMonthDayTime {
         /** The standard offset. */
         ZoneOffset standardOffset;
         /** The fixed savings amount. */
