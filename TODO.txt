@@ -46,8 +46,10 @@ Time scales
 
 Date/Time classes
 - factories from Calendrical...
-- OffsetDate.atTime(int...)
 - LocalDate.plus(PeriodProvider) needs correct algorithm
+- ZDT toEpochSeconds()
+- toString(pattern) parse(str, pattern)
+? InstantProvider implementations toEpochMillis()
 ? remove getChronology()
 ? getMonthOfYear() -> getMonth(), etc
 ? getAmPm()
@@ -66,6 +68,7 @@ Date/Time formatting
 - two digit years
 - parse 24:00 - maybe a special end-of-day class?
 - format patterns - yyyy-MM-dd, check details
+- simpler way to setup pattern - DTF.forPattern()
 - strict/lenient parse
 ? upper/lower case
 - only ASCII numbers
@@ -77,11 +80,23 @@ Date/Time formatting
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
-- zone rule where time of day is 24:00
+- TimeZone.of() loads rules, whereas it should just check if rules available
+- convert rules to fixed rules when possible
 - SPI and zone providers
-- versions of zone data files
 - better error when zone jar file missing
+? get region ids by offset (JDK method)
 ? built in UTC definition when zone jar file missing
+(EST, MST, HST changed in 2005r - no longer observe DST - http://java.sun.com/developer/technicalArticles/Intl/alertFurtherInfo.html)
+(MET no longer Asia/Tehran, now Middle Europe)
+http://java.sun.com/javase/tzupdater_README.html
+http://java.sun.com/javase/timezones/tzdata_versions.html
+http://java.sun.com/javase/timezones/DST_faq.html
+http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5055567 and related
+JDK TimeZone.setDefault sets an inherited thread local
+- Drop Etc (signs reversed), Older country based IDs
+? Platform specific ids - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6534626
+- Change zone info dynamically - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4701860
+- Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
 
 Periods
 - formatting (defer?)
@@ -171,5 +186,8 @@ DONE
 - public access to transitions and transition rules
 - OffsetInfo, discontinuity rename to transition
 - parse zone
+- OffsetDate.atTime(int...)
+- zone rule where time of day is 24:00
+- versions of zone data files
 
 
