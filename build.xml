@@ -62,6 +62,7 @@
         <pathelement location="${lib.coverage}/emma_ant-2.0.5312.jar" />
     </path>
 
+    <!-- ==================================================================== -->
     <target name="resolve-deps">
         <mkdir dir="${lib.main}" />
         <mkdir dir="${lib.test}" />
@@ -81,6 +82,7 @@
         <delete dir="${dist}" />
     </target>
 
+    <!-- ==================================================================== -->
     <target name="compile-core" depends="init">
         <mkdir  dir="${core.main.classes}"/>
         <javac srcdir="${core.main}" destdir="${core.main.classes}" debug="true" includeantruntime="false">
@@ -135,6 +137,7 @@
 
     <target name="compile" depends="compile-core, compile-extra, compile-oracle, compile-openjdk, compile-tzdb" description="compile all sources" />
 
+    <!-- ==================================================================== -->
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
       <javadoc sourcepath="${core.main}" destdir="${build.javadoc}"
@@ -145,6 +148,7 @@
                overview="${core.main}/javax/time/overview.html" />
     </target>
 
+    <!-- ==================================================================== -->
     <target name="compile-core-tests" depends="compile-core">
         <mkdir dir="${core.test.classes}" />
         <javac srcdir="${core.test}" destdir="${core.test.classes}" classpathref="test.path" includeantruntime="false" />
@@ -155,7 +159,7 @@
         <javac srcdir="${extra.test}" destdir="${extra.test.classes}" classpathref="test.path"  includeantruntime="false" />
     </target>
 
-    <target name="test-core" depends="compile-core-tests">
+    <target name="test-core" depends="compile-core-tests,compile-tzdb">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
@@ -163,7 +167,7 @@
         </testng>
     </target>
 
-    <target name="test-extra" depends="compile-extra-tests">
+    <target name="test-extra" depends="compile-extra-tests,compile-tzdb">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
@@ -171,7 +175,7 @@
         </testng>
     </target>
 
-    <target name="test-scales" depends="compile-core-tests" description="run the scales tests">
+    <target name="test-scales" depends="compile-core-tests,compile-tzdb" description="run the scales tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
@@ -181,6 +185,7 @@
 
     <target name="test" depends="test-core,test-extra" description="run tests" />
 
+    <!-- ==================================================================== -->
     <target name="coverage" depends="compile-core-tests" description="test coverage">
         <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
         <mkdir dir="${coverage}" />
@@ -196,31 +201,8 @@
         </emmajava>
     </target>
 
-    <target  name="jarOracle" depends="compile-oracle">
-        <mkdir dir="${dist}" />        
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarOracleName}">
-          <fileset dir="${oracle.main.classes}"/>
-        </jar>
-    </target>
-
-    <target  name="jarOpenJDK" depends="compile-openjdk">
-        <mkdir dir="${dist}" />
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarOpenJDKName}">
-          <fileset dir="${ojdk.main.classes}"/>
-        </jar>
-    </target>
-
-    <target  name="jarExtra" depends="compile-extra">
-        <mkdir dir="${dist}" />
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarExtraName}">
-          <fileset dir="${extra.main.classes}"/>
-        </jar>
-    </target>
-
-    <target name="jarCore" depends="compile-core">
+    <!-- ==================================================================== -->
+    <target name="jar-core" depends="compile-core">
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarCoreName}">
@@ -229,7 +211,31 @@
         </jar>
     </target>
 
-    <target name="jarAll" depends="compile">
+    <target  name="jar-extra" depends="compile-extra">
+        <mkdir dir="${dist}" />
+        <mkdir dir="${dist}/lib" />
+        <jar jarfile="${dist}/lib/${jarExtraName}">
+          <fileset dir="${extra.main.classes}"/>
+        </jar>
+    </target>
+
+    <target  name="jar-openjdk" depends="compile-openjdk">
+        <mkdir dir="${dist}" />
+        <mkdir dir="${dist}/lib" />
+        <jar jarfile="${dist}/lib/${jarOpenJDKName}">
+          <fileset dir="${ojdk.main.classes}"/>
+        </jar>
+    </target>
+
+    <target  name="jar-oracle" depends="compile-oracle">
+        <mkdir dir="${dist}" />        
+        <mkdir dir="${dist}/lib" />
+        <jar jarfile="${dist}/lib/${jarOracleName}">
+          <fileset dir="${oracle.main.classes}"/>
+        </jar>
+    </target>
+
+    <target name="jar-all" depends="compile">
         <mkdir dir="${dist}" />
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarAllName}">
@@ -246,7 +252,8 @@
         <jar jarfile="${dist}/${ant.project.name}-${DSTAMP}.jar" basedir="${build.main}" />
     </target>
 
-    <target name="dist" depends="jarAll, jarCore, jarExtra, jarOpenJDK, jarOracle" description="generate the distribution">
+    <!-- ==================================================================== -->
+    <target name="dist" depends="jar-all, jar-core, jar-extra, jar-openjdk, jar-oracle, compile-tzdb" description="generate the distribution">
         <mkdir dir="${dist}/${src}" />
         <copy todir="${dist}/${src}">
             <fileset dir="${src}"/>
