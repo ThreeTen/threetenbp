@@ -250,7 +250,8 @@ public final class DateTimeFormatter {
             if (str.length() > 64) {
                 str = str.substring(0, 64) + "...";
             }
-            throw new CalendricalParseException("Text could not be parsed into a " + rule.getName() + ": " + str, text, 0);
+            throw new CalendricalParseException("Text '" + str + "' could not be parsed into " + rule.getName() +
+                    " but was parsed to " + merger, text, 0);
         }
         return result;
     }
@@ -285,11 +286,11 @@ public final class DateTimeFormatter {
                 str = str.substring(0, 64) + "...";
             }
             if (pos.getErrorIndex() >= 0) {
-                throw new CalendricalParseException("Text could not be parsed at index " +
-                        pos.getErrorIndex() + ": " + str, text, pos.getErrorIndex());
+                throw new CalendricalParseException("Text '" + str + "' could not be parsed at index " +
+                        pos.getErrorIndex(), text, pos.getErrorIndex());
             } else {
-                throw new CalendricalParseException("Unparsed text found at index " +
-                        pos.getIndex() + ": " + str, text, pos.getIndex());
+                throw new CalendricalParseException("Text '" + str + "' could not be parsed, unparsed text found at index " +
+                        pos.getIndex(), text, pos.getIndex());
             }
         }
         return result.toCalendricalMerger();

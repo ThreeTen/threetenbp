@@ -404,4 +404,20 @@ public final class CalendricalMerger implements Calendrical {
         }
     }
 
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc}  */
+    @Override
+    public String toString() {
+        String str;
+        if (processingMap.isEmpty() && inputMap.size() > 0) {
+            str = inputMap.toString();
+        } else {
+            str = processingMap.toString();
+        }
+        if (overflow.isZero() == false) {
+            str += "+" + overflow;
+        }
+        return str;
+    }
+
 }
