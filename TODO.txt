@@ -81,7 +81,8 @@ Date/Time formatting
 
 Time zones
 - TimeZone.of() loads rules, whereas it should just check if rules available
-- convert rules to fixed rules when possible
+- specialised data format
+- setup list of deprecated time zone ids
 - SPI and zone providers
 - better error when zone jar file missing
 ? get region ids by offset (JDK method)
@@ -93,7 +94,7 @@ http://java.sun.com/javase/timezones/tzdata_versions.html
 http://java.sun.com/javase/timezones/DST_faq.html
 http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5055567 and related
 JDK TimeZone.setDefault sets an inherited thread local
-- Drop Etc (signs reversed), Older country based IDs
+? Drop Etc (signs reversed), Older country based IDs
 ? Platform specific ids - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6534626
 - Change zone info dynamically - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4701860
 - Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
@@ -189,5 +190,6 @@ DONE
 - OffsetDate.atTime(int...)
 - zone rule where time of day is 24:00
 - versions of zone data files
+- convert time zone rules to fixed rules when possible
 
 
