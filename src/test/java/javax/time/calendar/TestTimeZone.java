@@ -62,7 +62,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestTimeZone {
 
-    public static final String LATEST_TZDB = "2010c";
+    public static final String LATEST_TZDB = "2010e";
 
     //-----------------------------------------------------------------------
     // Basics
