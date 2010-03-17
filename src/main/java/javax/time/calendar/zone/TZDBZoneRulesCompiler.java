@@ -508,9 +508,9 @@ public final class TZDBZoneRulesCompiler {
 
     private int parseYear(String str, int defaultYear) {
         str = str.toLowerCase();
-        if (str.startsWith("min") && "minimum".startsWith(str) && str.length() <= 7) {
+        if (matches(str, "minimum")) {
             return Year.MIN_YEAR;
-        } else if (str.startsWith("max") && "maximum".startsWith(str) && str.length() <= 7) {
+        } else if (matches(str, "maximum")) {
             return Year.MAX_YEAR;
         } else if (str.equals("only")) {
             return defaultYear;
@@ -519,21 +519,27 @@ public final class TZDBZoneRulesCompiler {
     }
 
     private MonthOfYear parseMonth(String str) {
-        int index = "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(str);
-        if (index == -1) {
-            throw new IllegalArgumentException("Unknown month: " + str);
+        str = str.toLowerCase();
+        for (MonthOfYear moy : MonthOfYear.values()) {
+            if (matches(str, moy.name().toLowerCase())) {
+                return moy;
+            }
         }
-        int month = index / 3 + 1;
-        return MonthOfYear.of(month);
+        throw new IllegalArgumentException("Unknown month: " + str);
     }
 
     private DayOfWeek parseDayOfWeek(String str) {
-        int index = "MonTueWedThuFriSatSun".indexOf(str);
-        if (index == -1) {
-            throw new IllegalArgumentException("Unknown day-of-week: " + str);
+        str = str.toLowerCase();
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            if (matches(str, dow.name().toLowerCase())) {
+                return dow;
+            }
         }
-        int dow = index / 3 + 1;
-        return DayOfWeek.of(dow);
+        throw new IllegalArgumentException("Unknown day-of-week: " + str);
+    }
+
+    private boolean matches(String str, String search) {
+        return str.startsWith(search.substring(0, 3)) && search.startsWith(str) && str.length() <= search.length();
     }
 
     private String parseOptional(String str) {

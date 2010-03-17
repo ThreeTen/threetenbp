@@ -194,6 +194,21 @@ public class TestTZDBZoneRulesCompiler {
         assertEquals(parseMonth(test, "Oct"), MonthOfYear.OCTOBER);
         assertEquals(parseMonth(test, "Nov"), MonthOfYear.NOVEMBER);
         assertEquals(parseMonth(test, "Dec"), MonthOfYear.DECEMBER);
+        assertEquals(parseMonth(test, "January"), MonthOfYear.JANUARY);
+        assertEquals(parseMonth(test, "February"), MonthOfYear.FEBRUARY);
+        assertEquals(parseMonth(test, "March"), MonthOfYear.MARCH);
+        assertEquals(parseMonth(test, "April"), MonthOfYear.APRIL);
+        assertEquals(parseMonth(test, "May"), MonthOfYear.MAY);
+        assertEquals(parseMonth(test, "June"), MonthOfYear.JUNE);
+        assertEquals(parseMonth(test, "July"), MonthOfYear.JULY);
+        assertEquals(parseMonth(test, "August"), MonthOfYear.AUGUST);
+        assertEquals(parseMonth(test, "September"), MonthOfYear.SEPTEMBER);
+        assertEquals(parseMonth(test, "October"), MonthOfYear.OCTOBER);
+        assertEquals(parseMonth(test, "November"), MonthOfYear.NOVEMBER);
+        assertEquals(parseMonth(test, "December"), MonthOfYear.DECEMBER);
+        assertEquals(parseMonth(test, "Janu"), MonthOfYear.JANUARY);
+        assertEquals(parseMonth(test, "Janua"), MonthOfYear.JANUARY);
+        assertEquals(parseMonth(test, "Januar"), MonthOfYear.JANUARY);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
@@ -234,6 +249,15 @@ public class TestTZDBZoneRulesCompiler {
         assertEquals(parseDayOfWeek(test, "Fri"), DayOfWeek.FRIDAY);
         assertEquals(parseDayOfWeek(test, "Sat"), DayOfWeek.SATURDAY);
         assertEquals(parseDayOfWeek(test, "Sun"), DayOfWeek.SUNDAY);
+        assertEquals(parseDayOfWeek(test, "Monday"), DayOfWeek.MONDAY);
+        assertEquals(parseDayOfWeek(test, "Tuesday"), DayOfWeek.TUESDAY);
+        assertEquals(parseDayOfWeek(test, "Wednesday"), DayOfWeek.WEDNESDAY);
+        assertEquals(parseDayOfWeek(test, "Thursday"), DayOfWeek.THURSDAY);
+        assertEquals(parseDayOfWeek(test, "Friday"), DayOfWeek.FRIDAY);
+        assertEquals(parseDayOfWeek(test, "Saturday"), DayOfWeek.SATURDAY);
+        assertEquals(parseDayOfWeek(test, "Sunday"), DayOfWeek.SUNDAY);
+        assertEquals(parseDayOfWeek(test, "Mond"), DayOfWeek.MONDAY);
+        assertEquals(parseDayOfWeek(test, "Monda"), DayOfWeek.MONDAY);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
