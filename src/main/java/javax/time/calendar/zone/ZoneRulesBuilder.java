@@ -166,8 +166,7 @@ public class ZoneRulesBuilder {
      * @return this, for chaining
      * @throws IllegalStateException if a forever window has already been added
      */
-    public ZoneRulesBuilder addWindowForever(
-            ZoneOffset standardOffset) {
+    public ZoneRulesBuilder addWindowForever(ZoneOffset standardOffset) {
         return addWindow(standardOffset, MAX_DATE_TIME, TimeDefinition.WALL);
     }
 
@@ -338,10 +337,16 @@ public class ZoneRulesBuilder {
      */
     ZoneRules toRules(String id, Map<Object, Object> deduplicateMap) {
         checkNotNull(id, "Time zone id must not be null");
+        this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
         }
-        this.deduplicateMap = deduplicateMap;
+        if (windowList.size() == 1) {
+            TZWindow window = windowList.get(0);
+            if (window.isSingleWindowStandardOffset()) {
+                return ZoneRules.fixed(window.standardOffset);
+            }
+        }
         
         List<OffsetDateTime> standardOffsetList = new ArrayList<OffsetDateTime>(4);
         List<ZoneOffsetTransition> transitionList = new ArrayList<ZoneOffsetTransition>(256);
@@ -488,11 +493,11 @@ public class ZoneRulesBuilder {
      * fixed DST savings or a set of rules.
      */
     class TZWindow {
-        /** The standard offset during the window. */
+        /** The standard offset during the window, not null. */
         private final ZoneOffset standardOffset;
-        /** The end local time. */
+        /** The end local time, not null. */
         private final LocalDateTime windowEnd;
-        /** The type of the end time. */
+        /** The type of the end time, not null. */
         private final TimeDefinition timeDefinition;
 
         /** The fixed amount of the saving to be applied during this window. */
@@ -646,6 +651,16 @@ public class ZoneRulesBuilder {
         }
 
         /**
+         * Checks if the window is empty.
+         *
+         * @return true if the window is only a standard offset
+         */
+        boolean isSingleWindowStandardOffset() {
+            return windowEnd.equals(MAX_DATE_TIME) && timeDefinition == TimeDefinition.WALL &&
+                    fixedSavingAmount == null && lastRuleList.isEmpty() && ruleList.isEmpty();
+        }
+
+        /**
          * Creates the offset date-time for the local date-time at the end of the window.
          *
          * @param savings  the amount of savings in use, not null
@@ -714,10 +729,10 @@ public class ZoneRulesBuilder {
          * @return the transition, never null
          */
         ZoneOffsetTransition toTransition(ZoneOffset standardOffset, Period savingsBefore) {
-            ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
+            // copy of code in ZoneOffsetTransitionRule to avoid infinite loop
             LocalDate date;
-            if (dayOfMonthIndicator == -1) {
-                date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)));
+            if (dayOfMonthIndicator < 0) {
+                date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)) + 1 + dayOfMonthIndicator);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }
@@ -727,10 +742,14 @@ public class ZoneRulesBuilder {
                     date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
                 }
             }
+            if (timeEndOfDay) {
+                date = date.plusDays(1);
+            }
             date = deduplicate(date);
             LocalDateTime ldt = deduplicate(LocalDateTime.from(date, time));
             ZoneOffset wallOffset = deduplicate(standardOffset.plus(savingsBefore));
             OffsetDateTime dt = deduplicate(timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
+            ZoneOffset offsetAfter = deduplicate(standardOffset.plus(savingAmount));
             return new ZoneOffsetTransition(dt, offsetAfter);
         }
 

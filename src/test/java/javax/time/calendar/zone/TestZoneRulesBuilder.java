@@ -545,6 +545,32 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(1999, 10, 31, 3, 0)).getOffset(), minus6);
     }
 
+    public void test_jordan2400() {
+        // rule is 24:00 - this is simplified from the TZDB
+//    Rule    Jordan  2002    max -   Mar lastThu 24:00   1:00    S
+//    Rule    Jordan  2002    max -   Sep lastFri 0:00s   0   -
+//    # Zone  NAME        GMTOFF  RULES   FORMAT  [UNTIL]
+//                2:00    Jordan  EE%sT
+        ZoneOffset plus2 = ZoneOffset.hours(2);
+        ZoneOffset plus3 = ZoneOffset.hours(3);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindowForever(plus2);
+        b.addRuleToWindow(2002, Year.MAX_YEAR, MARCH, -1, THURSDAY, time(0, 0), true, WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2002, Year.MAX_YEAR, SEPTEMBER, -1, FRIDAY, time(0, 0), false, STANDARD, PERIOD_0);
+        ZoneRules test = b.toRules("Asia/Amman");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
+        
+        assertGap(test, 2002, 3, 29, 0, 0, plus2, plus3);
+        assertEquals(test.getOffsetInfo(dateTime(2002, 3, 28, 23, 0)).getOffset(), plus2);
+        assertEquals(test.getOffsetInfo(dateTime(2002, 3, 29, 1, 0)).getOffset(), plus3);
+        
+        assertOverlap(test, 2002, 9, 27, 0, 0, plus3, plus2);
+        assertEquals(test.getOffsetInfo(dateTime(2002, 9, 26, 23, 0)).getOffset(), plus3);
+        assertEquals(test.getOffsetInfo(dateTime(2002, 9, 27, 1, 0)).getOffset(), plus2);
+    }
+
     //-----------------------------------------------------------------------
     // addWindow()
     //-----------------------------------------------------------------------
@@ -605,6 +631,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_07_01).getOffset(), OFFSET_1);
+        assertEquals(test, ZoneRules.fixed(OFFSET_1));
     }
 
     public void test_addWindowForever_rules() {
