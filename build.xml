@@ -13,13 +13,16 @@
 
     <property file="build.properties" />
     <property file="version.properties"/>
+    <tstamp />
+    <property name="version.full" value="0.6.1" /><!-- -${DSTAMP} -->
 
+    <property name="jarName" value="jsr-310-ri-${version.full}.jar" />
     <property name="jarCoreName" value="jsr-310-ri-core-${version.full}.jar" />
     <property name="jarExtraName" value="jsr-310-ri-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="jsr-310-ri-openjdk-${version.full}.jar" />
     <property name="jarOracleName" value="jsr-310-ri-oracle-${version.full}.jar" />
-    <property name="jarAllName" value="jsr-310-ri-${version.full}.jar" />
-    <property name="distFileName" value="jsr-310-${version.full}.zip"/>
+    <property name="jarAllName" value="jsr-310-ri-all-${version.full}.jar" />
+    <property name="distFileName" value="jsr-310-ri-${version.full}.zip"/>
     
     <macrodef name="get-dependency">
         <attribute name="group" />
@@ -41,7 +44,7 @@
         <pathelement location="${extra.main.classes}" />
         <pathelement location="${oracle.main.classes}" />
         <pathelement location="${ojdk.main.classes}" />
-        <pathelement location="lib/main/ZoneRuleInfo-TZDB-all.jar"/>
+        <pathelement location="${lib.main}/${tzdb.outputjar}"/>
     </path>
 
     <path id="test.path">
@@ -51,7 +54,7 @@
         <pathelement location="${oracle.test.classes}" />
         <pathelement location="${ojdk.test.classes}" />
         <pathelement location="src/main/resources"/>
-        <pathelement location="lib/main/ZoneRuleInfo-TZDB-all.jar"/>
+        <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
         </fileset>
@@ -65,6 +68,7 @@
     <!-- ==================================================================== -->
     <target name="resolve-deps">
         <mkdir dir="${lib.main}" />
+        <mkdir dir="${lib.optional}" />
         <mkdir dir="${lib.test}" />
         <mkdir dir="${lib.coverage}" />
 
@@ -74,7 +78,6 @@
     </target>
 
     <target name="init" depends="resolve-deps">
-        <tstamp />
     </target>
 
     <target name="clean" description="clean up">
@@ -124,9 +127,13 @@
         </subant>
         <java classpath="${core.main.classes}" classname="javax.time.calendar.zone.TZDBZoneRulesCompiler" fork="true" failonerror="true">
             <arg line="-srcdir ${tzdata.main.workarea}" />
-            <arg line="-dstdir ${lib.main}" />
+            <arg line="-dstdir ${lib.optional}" />
             <arg line="${tzdb.files}" />
         </java>
+        <copy todir="${lib.main}">
+            <fileset dir="${lib.optional}" includes="${tzdb.outputjar}"/>
+        </copy>
+        <delete file="${lib.optional}/${tzdb.outputjar}" />
     </target>
     <target name="tzdb-unpack">
         <echo message="${basedir}"></echo>
@@ -203,78 +210,80 @@
 
     <!-- ==================================================================== -->
     <target name="jar-core" depends="compile-core">
-        <mkdir dir="${dist}" />
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarCoreName}">
+        <jar jarfile="${build}/${jarCoreName}">
           <fileset dir="${core.main.classes}"/>
           <fileset dir="src/main/resources"/>
         </jar>
     </target>
 
-    <target  name="jar-extra" depends="compile-extra">
-        <mkdir dir="${dist}" />
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarExtraName}">
+    <target name="jar-extra" depends="compile-extra">
+        <jar jarfile="${build}/${jarExtraName}">
           <fileset dir="${extra.main.classes}"/>
         </jar>
     </target>
 
-    <target  name="jar-openjdk" depends="compile-openjdk">
-        <mkdir dir="${dist}" />
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarOpenJDKName}">
+    <target name="jar-openjdk" depends="compile-openjdk">
+        <jar jarfile="${build}/${jarOpenJDKName}">
           <fileset dir="${ojdk.main.classes}"/>
         </jar>
     </target>
 
-    <target  name="jar-oracle" depends="compile-oracle">
-        <mkdir dir="${dist}" />        
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarOracleName}">
+    <target name="jar-oracle" depends="compile-oracle">
+        <jar jarfile="${build}/${jarOracleName}">
           <fileset dir="${oracle.main.classes}"/>
         </jar>
     </target>
 
     <target name="jar-all" depends="compile">
-        <mkdir dir="${dist}" />
-        <mkdir dir="${dist}/lib" />
-        <jar jarfile="${dist}/lib/${jarAllName}">
+        <jar jarfile="${build}/${jarAllName}">
+          <fileset dir="${core.main.classes}"/>
+          <fileset dir="${extra.main.classes}"/>
           <fileset dir="${ojdk.main.classes}"/>
           <fileset dir="${oracle.main.classes}"/>
-          <fileset dir="${extra.main.classes}"/>
-          <fileset dir="${core.main.classes}"/>
         </jar>
     </target>
 
-    <target name="jar" depends="compile" description="build a jar file">
-        <delete dir="${dist}" />
-        <mkdir dir="${dist}" />
-        <jar jarfile="${dist}/${ant.project.name}-${DSTAMP}.jar" basedir="${build.main}" />
+    <target name="jar-main" depends="compile">
+        <jar jarfile="${build}/${jarName}">
+          <fileset dir="${core.main.classes}"/>
+          <fileset dir="${ojdk.main.classes}"/>
+          <fileset dir="${oracle.main.classes}"/>
+        </jar>
+    </target>
+
+    <target name="jar" depends="jar-core,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main" description="build jar files" />
+
+    <!-- ==================================================================== -->
+    <target name="dist" depends="jar" description="generate the distribution">
+        <copy todir="${dist.workarea}/${src}">
+            <fileset dir="${src}"/>
+        </copy>
+        <copy todir="${dist.workarea}/lib" flatten="true">
+            <fileset dir="${lib.main}" includes="${tzdb.outputjar}" />
+            <fileset dir="${build}" includes="${jarName}" />
+        </copy>
+        <copy todir="${dist.workarea}/lib-optional" flatten="true">
+            <fileset dir="${lib.optional}" includes="*.jar" />
+            <fileset dir="${build}" includes="*.jar" />
+        </copy>
+        <delete file="${dist.workarea}/lib-optional/${jarName}" />
+        <copy todir="${dist.workarea}/nbproject">
+            <fileset dir="nbproject"/>
+        </copy>
+        <copy file=".classpath" todir="${dist.workarea}" />
+        <copy file=".project" todir="${dist.workarea}" />
+        <copy file="build.xml" todir="${dist.workarea}" />
+        <copy file="build.properties" todir="${dist.workarea}" />
+        <copy file="checkstyle.xml" todir="${dist.workarea}" />
+        <copy file="LICENSE.txt" todir="${dist.workarea}" />
+        <copy file="LICENSE_OpenJDK.txt" todir="${dist.workarea}" />
+        <copy file="LICENSE_Oracle.txt" todir="${dist.workarea}" />
+        <copy file="README.txt" todir="${dist.workarea}" />
+        <copy file="TODO.txt" todir="${dist.workarea}" />
+        <zip destfile="${dist}/${distFileName}" basedir="${dist.workarea}" />
     </target>
 
     <!-- ==================================================================== -->
-    <target name="dist" depends="jar-all, jar-core, jar-extra, jar-openjdk, jar-oracle, compile-tzdb" description="generate the distribution">
-        <mkdir dir="${dist}/${src}" />
-        <copy todir="${dist}/${src}">
-            <fileset dir="${src}"/>
-        </copy>
-        <copy todir="${dist}/lib" flatten="true">
-            <fileset dir="${lib.main}" includes="**/ZoneRuleInfo*.jar"/>
-        </copy>
-        <copy todir="${dist}/nbproject">
-            <fileset dir="nbproject"/>
-        </copy>
-        <copy file=".classpath" todir="${dist}" />
-        <copy file=".project" todir="${dist}" />
-        <copy file="build.xml" todir="${dist}" />
-        <copy file="checkstyle.xml" todir="${dist}" />
-        <copy file="LICENSE.txt" todir="${dist}" />
-        <copy file="LICENSE_OpenJDK.txt" todir="${dist}" />
-        <copy file="README.txt" todir="${dist}" />
-        <copy file="TODO.txt" todir="${dist}" />
-        <zip destfile="${distFileName}" basedir="${dist}" />
-    </target>
-
     <target name="examples" depends="compile-core-tests" description="outputs some examples to system out">
         <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
     </target>
