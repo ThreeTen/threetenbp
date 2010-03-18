@@ -37,6 +37,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
@@ -84,6 +85,49 @@ public class TestDateTimeFormatters {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullCalendrical() {
         DateTimeFormatters.isoDate().print((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    public void test_pattern_String() {
+        DateTimeFormatter test = DateTimeFormatters.pattern("d MMM yyyy");
+        assertEquals(test.toString(), "Value(ISO.DayOfMonth)' 'Text(ISO.MonthOfYear,SHORT)' 'Value(ISO.Year,4,10,EXCEEDS_PAD)");
+        assertEquals(test.getLocale(), Locale.getDefault());
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_pattern_String_invalid() {
+        DateTimeFormatters.pattern("p");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_pattern_String_null() {
+        DateTimeFormatters.pattern(null);
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    public void test_pattern_StringLocale() {
+        DateTimeFormatter test = DateTimeFormatters.pattern("d MMM yyyy", Locale.UK);
+        assertEquals(test.toString(), "Value(ISO.DayOfMonth)' 'Text(ISO.MonthOfYear,SHORT)' 'Value(ISO.Year,4,10,EXCEEDS_PAD)");
+        assertEquals(test.getLocale(), Locale.UK);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_pattern_StringLocale_invalid() {
+        DateTimeFormatters.pattern("p", Locale.UK);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_pattern_StringLocale_nullPattern() {
+        DateTimeFormatters.pattern(null, Locale.UK);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_pattern_StringLocale_nullLocale() {
+        DateTimeFormatters.pattern("yyyy", null);
     }
 
     //-----------------------------------------------------------------------

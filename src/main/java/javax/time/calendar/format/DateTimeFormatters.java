@@ -31,8 +31,10 @@
  */
 package javax.time.calendar.format;
 
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -52,6 +54,143 @@ public final class DateTimeFormatters {
      * Private constructor since this is a utility class
      */
     private DateTimeFormatters() {
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a formatter using the specified pattern.
+     * <p>
+     * This method will create a formatter based on a simple pattern of letters and symbols.
+     * For example, {@code d MMM yyyy} will format 2008-12-03 as '3 Dec 2008'.
+     * <p>
+     * The returned formatter will use the default locale, but this can be changed
+     * using {@link DateTimeFormatter#withLocale(Locale)}.
+     * <p>
+     * All letters 'A' to 'Z' and 'a' to 'z' are reserved as pattern letters.
+     * The following pattern letters are defined:
+     * <pre>
+     *  Symbol  Meaning                     Presentation      Examples
+     *  ------  -------                     ------------      -------
+     *   y       year                        year              1996
+     *   D       day-of-year                 number            189
+     *   M       month-of-year               month             July; Jul; 07
+     *   d       day-of-month                number            10
+     *
+     *   Q       quarter-of-year             number            3
+     *   q       month-of-quarter            number            2
+     *
+     *   x       week-based-year             year              1996
+     *   w       week-of-week-based-year     number            27
+     *   e       day-of-week                 number            2
+     *   E       day-of-week                 text              Tuesday; Tue
+     *   F       week-of-month               number            3
+     *
+     *   a       am-pm-of-day                text              PM
+     *   h       clock-hour-of-am-pm (1-12)  number            12
+     *   K       hour-of-am-pm (0-11)        number/fraction   0
+     *
+     *   H       hour-of-day (0-23)          number/fraction   0
+     *   m       minute-of-hour              number/fraction   30
+     *   s       second-of-minute            number/fraction   55
+     *   S       milli-of-second             number/fraction   978
+     *   n       nano-of-second              number/fraction   987654321
+     *
+     *   I       time-zone ID                zoneID            America/Los_Angeles
+     *   z       time-zone name              text              Pacific Standard Time; PST
+     *   Z       zone-offset                 offset            -0800; -08:00;
+     *
+     *   f       make next a fraction        fraction modifier .123
+     *   p       pad next                    pad modifier      1
+     *
+     *   '       escape for text             delimiter
+     *   ''      single quote                literal           '
+     *   [       optional section start
+     *   ]       optional section end
+     * </pre>
+     * <p>
+     * The count of pattern letters determine the format.
+     * <p>
+     * <b>Text</b>: If the number of pattern letters is 4 or more, the full textual form is used
+     * as per {@link TextStyle#FULL}. Otherwise a short form is used, as per {@link TextStyle#SHORT}.
+     * <p>
+     * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
+     * of digits and without padding as per {@link #appendValue(DateTimeFieldRule)}. Otherwise, the
+     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeFieldRule, int)}.
+     * <p>
+     * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
+     * All fractional values must use the 'f' prefix to ensure correct parsing.
+     * The fraction also outputs the decimal point.
+     * If the count of 'f' is one, then the fractional value has the exact number of digits defined by
+     * the count of the value being output.
+     * If the count of 'f' is two or more, then the fractional value has the a minimum number of digits
+     * defined by the count of the value being output and a maximum output of nine digits.
+     * <p>
+     * For example, 'ssffnnn' outputs the second followed by 3-9 digits of the nanosecond, while
+     * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
+     * <p>
+     * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
+     * If the count of letters is less than four, then the sign is only output for negative years as per
+     * {@link SignStyle#NORMAL}.
+     * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
+     * <p>
+     * <b>Month</b>: If the count of letters is 3 or greater, use the Text rules above.
+     * Otherwise use the Number rules above.
+     * <p>
+     * <b>ZoneID</b>: 'Z' outputs offset without a colon, 'ZZ' outputs the offset with a colon, 'ZZZ' or more outputs the zone id.
+     * <p>
+     * <b>Offset</b>: 'Z' outputs offset without a colon, without seconds and '+0000' as the text for UTC.
+     * 'ZZ' outputs the offset with a colon, without seconds and '+00:00' as the text for UTC.
+     * 'ZZZ' outputs offset without a colon, with seconds and 'Z' as the text for UTC (ISO-8601 style).
+     * 'ZZZZ' outputs the offset with a colon, with seconds and 'Z' as the text for UTC (ISO-8601 style).
+     * <p>
+     * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
+     * <p>
+     * <b>Optional section</b>: The optional section markers work exactly like calling {@link #optionalStart()}
+     * and {@link #optionalEnd()}.
+     * <p>
+     * <b>Pad modifier</b>: Modifies the pattern that immediately follows to be padded with spaces.
+     * The pad width is determined by the number of pattern letters.
+     * This is the same as calling {@link #padNext(int)}.
+     * <p>
+     * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
+     * <p>
+     * Any unrecognized letter will be output directly.
+     * However, since these are reserved, that may change in future versions.
+     * Any non-letter character, other than '[', ']' and the single quote will be output directly.
+     * Despite this, it is recommended to use single quotes around all characters that you want to
+     * output directly to ensure that future changes do not break your application.
+     * <p>
+     * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
+     * SimpleDateFormat pattern letters 'G', 'W' and 'k' are not available.
+     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'I', 'f' and 'p' are added.
+     * Letters 'y', 'z' and 'Z' have some differences.
+     *
+     * @param pattern  the pattern to use, not null
+     * @return the formatter based on the pattern, never null
+     * @throws IllegalArgumentException if the pattern is invalid
+     */
+    public static DateTimeFormatter pattern(String pattern) {
+        return new DateTimeFormatterBuilder().appendPattern(pattern).toFormatter();
+    }
+
+    /**
+     * Creates a formatter using the specified pattern.
+     * <p>
+     * This method will create a formatter based on a simple pattern of letters and symbols.
+     * For example, {@code d MMM yyyy} will format 2008-12-03 as '3 Dec 2008'.
+     * <p>
+     * See {@link #pattern(String)} for details of the pattern.
+     * <p>
+     * The returned formatter will use the specified locale, but this can be changed
+     * using {@link DateTimeFormatter#withLocale(Locale)}.
+     * 
+     * @param pattern  the pattern to use, not null
+     * @param locale  the locale to use, not null
+     * @return the formatter based on the pattern, never null
+     * @throws IllegalArgumentException if the pattern is invalid
+     */
+    public static DateTimeFormatter pattern(String pattern, Locale locale) {
+        return new DateTimeFormatterBuilder().appendPattern(pattern).toFormatter(locale);
     }
 
     //-----------------------------------------------------------------------
