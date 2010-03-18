@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -44,6 +43,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
@@ -170,6 +171,39 @@ public class TestTimeZone {
         assertSame(test, TimeZone.of(ZoneOffset.UTC));
     }
 
+    //-----------------------------------------------------------------------
+    // mapped factory
+    //-----------------------------------------------------------------------
+    public void test_factory_string_Map() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("LONDON", "Europe/London");
+        map.put("PARIS", "Europe/Paris");
+        TimeZone test = TimeZone.of("LONDON", map);
+        assertEquals(test.getID(), "Europe/London");
+    }
+
+    public void test_factory_string_Map_lookThrough() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("LONDON", "Europe/London");
+        map.put("PARIS", "Europe/Paris");
+        TimeZone test = TimeZone.of("Europe/Madrid", map);
+        assertEquals(test.getID(), "Europe/Madrid");
+    }
+
+    public void test_factory_string_Map_emptyMap() {
+        Map<String, String> map = new HashMap<String, String>();
+        TimeZone test = TimeZone.of("Europe/Madrid", map);
+        assertEquals(test.getID(), "Europe/Madrid");
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_string_Map_unknown() {
+        Map<String, String> map = new HashMap<String, String>();
+        TimeZone.of("Unknown", map);
+    }
+
+    //-----------------------------------------------------------------------
+    // regular factory
     //-----------------------------------------------------------------------
     @DataProvider(name="String_UTC")
     Object[][] data_factory_string_UTC() {

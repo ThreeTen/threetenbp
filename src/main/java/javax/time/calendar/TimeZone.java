@@ -36,6 +36,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.time.CalendricalException;
@@ -110,6 +112,40 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * The time zone offset for UTC, with an id of 'UTC'.
      */
     public static final TimeZone UTC = new Fixed(ZoneOffset.UTC);
+    /**
+     * A map of zone overrides to enable the older US time zone names to be used.
+     * <p>
+     * This maps as follows:
+     * <ul>
+     * <li>EST - America/Indianapolis</li>
+     * <li>MST - America/Phoenix</li>
+     * <li>HST - Pacific/Honolulu</li>
+     * </ul>
+     */
+    public static final Map<String, String> OLD_PRE_2005;
+    /**
+     * A map of zone overrides to enable the older US time zone names to be used.
+     * <p>
+     * This maps as follows:
+     * <ul>
+     * <li>EST - UTC-05:00</li>
+     * <li>MST - UTC-07:00</li>
+     * <li>HST - UTC-10:00</li>
+     * </ul>
+     */
+    public static final Map<String, String> OLD_POST_2005;
+    static {
+        Map<String, String> pre = new HashMap<String, String>();
+        pre.put("EST", "America/Indianapolis");
+        pre.put("MST", "America/Phoenix");
+        pre.put("HST", "Pacific/Honolulu");
+        OLD_PRE_2005 = Collections.unmodifiableMap(pre);
+        Map<String, String> post = new HashMap<String, String>();
+        post.put("EST", "UTC-05:00");
+        post.put("MST", "UTC-07:00");
+        post.put("HST", "UTC-10:00");
+        OLD_POST_2005 = Collections.unmodifiableMap(post);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -123,16 +159,16 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * within an application.
      *
      * @param timeZoneIdentifier  the time zone id, not null
-     * @param aliasMap  a map of time zone IDs (typically abbreviations) to time zones, not null
+     * @param aliasMap  a map of time zone IDs (typically abbreviations) to real time zone IDs, not null
      * @return the TimeZone, never null
      * @throws IllegalArgumentException if the time zone cannot be found
      */
-    public static TimeZone of(String timeZoneIdentifier, Map<String, TimeZone> aliasMap) {
-        // TODO: review
+    public static TimeZone of(String timeZoneIdentifier, Map<String, String> aliasMap) {
         ISOChronology.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
         ISOChronology.checkNotNull(aliasMap, "Alias map must not be null");
-        TimeZone zone = aliasMap.get(timeZoneIdentifier);
-        return zone == null ? of(timeZoneIdentifier) : zone;
+        String zoneId = aliasMap.get(timeZoneIdentifier);
+        zoneId = (zoneId != null ? zoneId : timeZoneIdentifier);
+        return of(zoneId);
     }
 
     /**
@@ -203,8 +239,11 @@ public abstract class TimeZone implements Calendrical, Serializable {
             versionID = zoneID.substring(hashPos + 1);
             zoneID = zoneID.substring(0, hashPos);
         }
-        ZoneRules rules = group.getRules(zoneID, versionID);  // validates IDs
-        return new ID(group.getID(), zoneID, versionID, rules);
+        if (group.isValidRules(zoneID, versionID) == false) {
+            throw new CalendricalException("Unknown time zone version: " + group.getID() + ":" +
+                    zoneID + (versionID.length() == 0 ? "" : "#" + versionID));
+        }
+        return new ID(group.getID(), zoneID, versionID, null);
     }
 
     /**
@@ -730,11 +769,14 @@ public abstract class TimeZone implements Calendrical, Serializable {
         @Override
         public TimeZone withVersion(String versionID) {
             ISOChronology.checkNotNull(versionID, "Version ID must not be null");
-            ZoneRules rules = getGroup().getRules(regionID, versionID);  // validates IDs
+            if (getGroup().isValidRules(regionID, versionID) == false) {
+                throw new CalendricalException("Unknown time zone version: " + groupID + ":" +
+                        regionID + (versionID.length() == 0 ? "" : "#" + versionID));
+            }
             if (versionID.equals(this.versionID)) {
                 return this;
             }
-            return new ID(groupID, regionID, versionID, rules);
+            return new ID(groupID, regionID, versionID, null);
         }
 
         @Override
