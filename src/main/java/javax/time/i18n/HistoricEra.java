@@ -45,7 +45,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * BCE is defined as the time-line before historic year 1, while CE is defined as
  * the time-line from year 1 onwards.
  * <p>
- * The calendrical frBCEework requires date-time fields to have an {@code int} value.
+ * The calendrical framework requires date-time fields to have an {@code int} value.
  * The {@code int} value follows {@link Calendar}, assigning 0 to BCE and 1 to CE.
  * It is recommended that applications use the enum rather than the {@code int} value
  * to ensure code clarity.
