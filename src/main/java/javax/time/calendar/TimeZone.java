@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
@@ -98,7 +100,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  *
  * @author Stephen Colebourne
  */
-public final class TimeZone implements Calendrical, Serializable {
+public abstract class TimeZone implements Calendrical, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -107,25 +109,7 @@ public final class TimeZone implements Calendrical, Serializable {
     /**
      * The time zone offset for UTC, with an id of 'UTC'.
      */
-    public static final TimeZone UTC = new TimeZone("", "UTC", "", ZoneRules.fixed(ZoneOffset.UTC));
-
-    /**
-     * The time zone group ID, not null.
-     * The group object is not stored allowing the id to be invalid.
-     */
-    private final String groupID;
-    /**
-     * The time zone region ID, not null.
-     */
-    private final String regionID;
-    /**
-     * The time zone version ID, not null.
-     */
-    private final String versionID;
-    /**
-     * The time zone rules.
-     */
-    private transient volatile ZoneRules rules;
+    public static final TimeZone UTC = new Fixed(ZoneOffset.UTC);
 
     //-----------------------------------------------------------------------
     /**
@@ -220,7 +204,7 @@ public final class TimeZone implements Calendrical, Serializable {
             zoneID = zoneID.substring(0, hashPos);
         }
         ZoneRules rules = group.getRules(zoneID, versionID);  // validates IDs
-        return new TimeZone(group.getID(), zoneID, versionID, rules);
+        return new ID(group.getID(), zoneID, versionID, rules);
     }
 
     /**
@@ -240,42 +224,14 @@ public final class TimeZone implements Calendrical, Serializable {
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }
-        String id = "UTC" + offset.getID();
-        ZoneRules zoneRules = ZoneRules.fixed(offset);
-        return new TimeZone("", id, "", zoneRules);
+        return new Fixed(offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor.
-     *
-     * @param groupID  the time zone rules group ID, not null
-     * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone rules version ID, not null
-     * @param rules  the rules to be cached, may be null
+     * Constructor only accessible within the package.
      */
-    private TimeZone(String groupID, String regionID, String versionID, ZoneRules rules) {
-        super();
-        this.groupID = groupID;
-        this.regionID = regionID;
-        this.versionID = versionID;
-        this.rules = rules;
-    }
-
-    /**
-     * Handle UTC on deserialization.
-     *
-     * @return the resolved instance, never null
-     */
-    private Object readResolve() throws ObjectStreamException {
-        if (groupID == null || regionID == null || versionID == null) {
-            throw new StreamCorruptedException();
-        }
-        // fixed time zone must always be valid
-        if (isFixed()) {
-            return TimeZone.of(regionID);
-        }
-        return this;
+    TimeZone() {
     }
 
     //-----------------------------------------------------------------------
@@ -290,15 +246,7 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return the time zone unique ID, never null
      */
-    public String getID() {
-        if (isFixed()) {
-            return regionID;
-        }
-        if (groupID.equals("TZDB")) {
-            return regionID + (versionID.length() == 0 ? "" : "#" + versionID);
-        }
-        return groupID + ":" + regionID + (versionID.length() == 0 ? "" : "#" + versionID);
-    }
+    public abstract String getID();
 
     /**
      * Gets the time zone rules group ID, such as 'TZDB'.
@@ -309,9 +257,7 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return the time zone rules group ID, never null
      */
-    public String getGroupID() {
-        return groupID;
-    }
+    public abstract String getGroupID();
 
     /**
      * Gets the time zone region identifier, such as 'Europe/London'.
@@ -321,9 +267,7 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return the time zone rules region ID, never null
      */
-    public String getRegionID() {
-        return regionID;
-    }
+    public abstract String getRegionID();
 
     /**
      * Gets the time zone rules group version, such as '2009b'.
@@ -341,9 +285,7 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return the time zone rules version ID, empty if the version is floating, never null
      */
-    public String getVersionID() {
-        return versionID;
-    }
+    public abstract String getVersionID();
 
     //-----------------------------------------------------------------------
     /**
@@ -355,9 +297,7 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return true if the time zone is fixed and the offset never changes
      */
-    public boolean isFixed() {
-        return groupID.length() == 0;
-    }
+    public abstract boolean isFixed();
 
     //-----------------------------------------------------------------------
     /**
@@ -372,9 +312,7 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return true if the version is floating
      */
-    public boolean isFloatingVersion() {
-        return isFixed() || versionID.length() == 0;
-    }
+    public abstract boolean isFloatingVersion();
 
     /**
      * Returns a copy of this time zone with the specified version ID.
@@ -388,12 +326,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return the new updated time zone, never null
      * @throws CalendricalException if the time zone is fixed
      */
-    public TimeZone withFloatingVersion() {
-        if (isFloatingVersion()) {
-            return this;
-        }
-        return new TimeZone(groupID, regionID, "", null);
-    }
+    public abstract TimeZone withFloatingVersion();
 
     //-----------------------------------------------------------------------
     /**
@@ -410,10 +343,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return true if the version is the latest available
      * @throws CalendricalException if the version is non-floating and the group or region ID is not found
      */
-    public boolean isLatestVersion() {
-        return isFloatingVersion() ||
-                versionID.equals(getGroup().getLatestVersionID(regionID));  // validates IDs
-    }
+    public abstract boolean isLatestVersion();
 
     /**
      * Returns a copy of this time zone with the latest available version ID.
@@ -427,16 +357,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return the new updated time zone, never null
      * @throws CalendricalException if the version is non-floating and the group or region ID is not found
      */
-    public TimeZone withLatestVersion() {
-        if (isFixed()) {
-            return this;
-        }
-        String versionID = getGroup().getLatestVersionID(regionID);  // validates IDs
-        if (versionID.equals(this.versionID)) {
-            return this;
-        }
-        return new TimeZone(groupID, regionID, versionID, null);
-    }
+    public abstract TimeZone withLatestVersion();
 
     //-----------------------------------------------------------------------
     /**
@@ -454,20 +375,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @throws CalendricalException if the time zone is fixed and the version is not empty
      * @throws CalendricalException if the group, region or version ID is not found
      */
-    public TimeZone withVersion(String versionID) {
-        ISOChronology.checkNotNull(versionID, "Version ID must not be null");
-        if (isFixed()) {
-            if (versionID.length() > 0) {
-                throw new CalendricalException("Fixed time zone does not provide versions");
-            }
-            return this;
-        }
-        ZoneRules rules = getGroup().getRules(regionID, versionID);  // validates IDs
-        if (versionID.equals(this.versionID)) {
-            return this;
-        }
-        return new TimeZone(groupID, regionID, versionID, rules);
-    }
+    public abstract TimeZone withVersion(String versionID);
 
     /**
      * Returns a copy of this time zone with the latest version that is valid
@@ -480,16 +388,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @throws CalendricalException if the group or region ID is not found
      * @throws CalendricalException if there are no valid rules for the date-time
      */
-    public TimeZone withLatestVersionValidFor(OffsetDateTime dateTime) {
-        ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
-        if (isFixed()) {
-            if (getRules().getOffset(dateTime).equals(dateTime.getOffset()) == false) {
-                throw new CalendricalException("Fixed time zone " + getID() + " is invalid for date-time " + dateTime);
-            }
-            return this;
-        }
-        return withVersion(getGroup().getLatestVersionIDValidFor(regionID, dateTime));
-    }
+    public abstract TimeZone withLatestVersionValidFor(OffsetDateTime dateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -513,12 +412,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @throws CalendricalException if the time zone is fixed
      * @throws CalendricalException if the group ID cannot be found
      */
-    public ZoneRulesGroup getGroup() {
-        if (isFixed()) {
-            throw new CalendricalException("Fixed time zone is not provided by a group");
-        }
-        return ZoneRulesGroup.getGroup(groupID);
-    }
+    public abstract ZoneRulesGroup getGroup();
 
     //-----------------------------------------------------------------------
     /**
@@ -540,16 +434,7 @@ public final class TimeZone implements Calendrical, Serializable {
      *
      * @return true if this time zone is valid and rules are available
      */
-    public boolean isValid() {
-        if (isFixed()) {
-            return true;
-        }
-        if (ZoneRulesGroup.isValidGroup(groupID) == false) {
-            return false;
-        }
-        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-        return group.isValidRules(regionID, versionID);
-    }
+    public abstract boolean isValid();
 
     /**
      * Gets the time zone rules allowing calculations to be performed.
@@ -574,18 +459,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return the rules, never null
      * @throws CalendricalException if the group, region or version ID cannot be found
      */
-    public ZoneRules getRules() {
-        // fixed rules always in transient field
-        if (rules != null) {
-            return rules;
-        }
-        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-        ZoneRules r = group.getRules(regionID, versionID);
-        if (versionID.length() > 0) {
-            rules = r;
-        }
-        return r;
-    }
+    public abstract ZoneRules getRules();
 
     //-----------------------------------------------------------------------
     /**
@@ -610,19 +484,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @param dateTime  a date-time for which the rules must be valid, null returns false
      * @return true if this time zone is valid and rules are available
      */
-    public boolean isValidFor(OffsetDateTime dateTime) {
-        if (dateTime == null) {
-            return false;
-        }
-        if (isFixed()) {
-            return getRules().getOffset(dateTime).equals(dateTime.getOffset());
-        }
-        if (ZoneRulesGroup.isValidGroup(groupID) == false) {
-            return false;
-        }
-        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-        return group.isValidRulesFor(regionID, versionID, dateTime);
-    }
+    public abstract boolean isValidFor(OffsetDateTime dateTime);
 
     /**
      * Gets the time zone rules allowing calculations to be performed, ensuring that
@@ -651,18 +513,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @throws CalendricalException if the zone ID cannot be found
      * @throws CalendricalException if no rules match the zone ID and date-time
      */
-    public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-        ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
-        if (isFixed()) {
-            ZoneRules rules = getRules();
-            if (rules.getOffset(dateTime).equals(dateTime.getOffset()) == false) {
-                throw new CalendricalException("Fixed time zone " + getID() + " is invalid for date-time " + dateTime);
-            }
-            return rules;
-        }
-        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-        return group.getRulesValidFor(regionID, versionID, dateTime);
-    }
+    public abstract ZoneRules getRulesValidFor(OffsetDateTime dateTime);
 
     //-----------------------------------------------------------------------
     /**
@@ -671,7 +522,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return the time zone name, never null
      */
     public String getName() {
-        return regionID;  // TODO
+        return getRegionID();  // TODO
     }
 
     /**
@@ -680,7 +531,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return the time zone short name, never null
      */
     public String getShortName() {
-        return regionID;  // TODO
+        return getRegionID();  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -697,9 +548,9 @@ public final class TimeZone implements Calendrical, Serializable {
         }
         if (otherZone instanceof TimeZone) {
             TimeZone zone = (TimeZone) otherZone;
-            return regionID.equals(zone.regionID) &&
-                    versionID.equals(zone.versionID) &&
-                    groupID.equals(zone.groupID);
+            return getRegionID().equals(zone.getRegionID()) &&
+                    getVersionID().equals(zone.getVersionID()) &&
+                    getGroupID().equals(zone.getGroupID());
         }
         return false;
     }
@@ -711,7 +562,7 @@ public final class TimeZone implements Calendrical, Serializable {
      */
     @Override
     public int hashCode() {
-        return groupID.hashCode() ^ regionID.hashCode() ^ versionID.hashCode();
+        return getGroupID().hashCode() ^ getRegionID().hashCode() ^ getVersionID().hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -772,6 +623,293 @@ public final class TimeZone implements Calendrical, Serializable {
         protected TimeZone derive(Calendrical calendrical) {
             ZonedDateTime zdt = calendrical.get(ZonedDateTime.rule());
             return zdt != null ? zdt.getZone() : null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * ID based time zone.
+     * This can refer to an id that does not have available rules.
+     */
+    static final class ID extends TimeZone {
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** The time zone group ID, not null. */
+        private final String groupID;
+        /** The time zone region ID, not null. */
+        private final String regionID;
+        /** The time zone version ID, not null. */
+        private final String versionID;
+        /** The cached time zone rules. */
+        private transient volatile ZoneRules rules;
+
+        /**
+         * Constructor.
+         *
+         * @param groupID  the time zone rules group ID, not null
+         * @param regionID  the time zone region ID, not null
+         * @param versionID  the time zone rules version ID, not null
+         * @param rules  the rules to be cached, may be null
+         */
+        ID(String groupID, String regionID, String versionID, ZoneRules rules) {
+            this.groupID = groupID;
+            this.regionID = regionID;
+            this.versionID = versionID;
+            this.rules = rules;
+        }
+
+        /**
+         * Validate deserialization.
+         *
+         * @param in  the input stream
+         */
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            in.defaultReadObject();
+            if (groupID == null || groupID.length() == 0 || regionID == null || versionID == null) {
+                throw new StreamCorruptedException();
+            }
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public String getID() {
+            if (groupID.equals("TZDB")) {
+                return regionID + (versionID.length() == 0 ? "" : '#' + versionID);
+            }
+            return groupID + ':' + regionID + (versionID.length() == 0 ? "" : '#' + versionID);
+        }
+
+        @Override
+        public String getGroupID() {
+            return groupID;
+        }
+
+        @Override
+        public String getRegionID() {
+            return regionID;
+        }
+
+        @Override
+        public String getVersionID() {
+            return versionID;
+        }
+
+        @Override
+        public boolean isFixed() {
+            return false;
+        }
+
+        @Override
+        public boolean isFloatingVersion() {
+            return versionID.length() == 0;
+        }
+
+        @Override
+        public TimeZone withFloatingVersion() {
+            if (isFloatingVersion()) {
+                return this;
+            }
+            return new ID(groupID, regionID, "", null);
+        }
+
+        @Override
+        public boolean isLatestVersion() {
+            return isFloatingVersion() ||
+                    versionID.equals(getGroup().getLatestVersionID(regionID));  // validates IDs
+        }
+
+        @Override
+        public TimeZone withLatestVersion() {
+            String versionID = getGroup().getLatestVersionID(regionID);  // validates IDs
+            if (versionID.equals(this.versionID)) {
+                return this;
+            }
+            return new ID(groupID, regionID, versionID, null);
+        }
+
+        @Override
+        public TimeZone withVersion(String versionID) {
+            ISOChronology.checkNotNull(versionID, "Version ID must not be null");
+            ZoneRules rules = getGroup().getRules(regionID, versionID);  // validates IDs
+            if (versionID.equals(this.versionID)) {
+                return this;
+            }
+            return new ID(groupID, regionID, versionID, rules);
+        }
+
+        @Override
+        public TimeZone withLatestVersionValidFor(OffsetDateTime dateTime) {
+            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            return withVersion(getGroup().getLatestVersionIDValidFor(regionID, dateTime));
+        }
+
+        @Override
+        public ZoneRulesGroup getGroup() {
+            return ZoneRulesGroup.getGroup(groupID);
+        }
+
+        @Override
+        public boolean isValid() {
+            return ZoneRulesGroup.isValidGroup(groupID) && getGroup().isValidRules(regionID, versionID);
+        }
+
+        @Override
+        public ZoneRules getRules() {
+            ZoneRules r = rules;
+            if (rules == null) {
+                r = getGroup().getRules(regionID, versionID);
+                if (isFloatingVersion() == false) {
+                    rules = r;
+                }
+            }
+            return r;
+        }
+
+        @Override
+        public boolean isValidFor(OffsetDateTime dateTime) {
+            if (dateTime == null) {
+                return false;
+            }
+            return ZoneRulesGroup.isValidGroup(groupID) && getGroup().isValidRulesFor(regionID, versionID, dateTime);
+        }
+
+        @Override
+        public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
+            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            return getGroup().getRulesValidFor(regionID, versionID, dateTime);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Fixed time zone.
+     */
+    static final class Fixed extends TimeZone {
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** The zone id. */
+        private final String id;
+        /** The zone rules. */
+        private final transient ZoneRules rules;
+
+        /**
+         * Constructor.
+         *
+         * @param offset  the offset, not null
+         */
+        Fixed(ZoneOffset offset) {
+            this.rules = ZoneRules.fixed(offset);
+            this.id = rules.toString();
+        }
+
+        /**
+         * Handle deserialization.
+         *
+         * @return the resolved instance, never null
+         */
+        private Object readResolve() throws ObjectStreamException {
+            if (id == null || id.startsWith("UTC") == false) {
+                throw new StreamCorruptedException();
+            }
+            // fixed time zone must always be valid
+            return TimeZone.of(id);
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public String getID() {
+            return id;
+        }
+
+        @Override
+        public String getGroupID() {
+            return "";
+        }
+
+        @Override
+        public String getRegionID() {
+            return id;
+        }
+
+        @Override
+        public String getVersionID() {
+            return "";
+        }
+
+        @Override
+        public boolean isFixed() {
+            return true;
+        }
+
+        @Override
+        public boolean isFloatingVersion() {
+            return true;
+        }
+
+        @Override
+        public TimeZone withFloatingVersion() {
+            return this;
+        }
+
+        @Override
+        public boolean isLatestVersion() {
+            return true;
+        }
+
+        @Override
+        public TimeZone withLatestVersion() {
+            return this;
+        }
+
+        @Override
+        public TimeZone withVersion(String versionID) {
+            ISOChronology.checkNotNull(versionID, "Version ID must not be null");
+            if (versionID.length() > 0) {
+                throw new CalendricalException("Fixed time zone does not provide versions");
+            }
+            return this;
+        }
+
+        @Override
+        public TimeZone withLatestVersionValidFor(OffsetDateTime dateTime) {
+            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            if (getRules().getOffset(dateTime).equals(dateTime.getOffset()) == false) {
+                throw new CalendricalException("Fixed time zone " + getID() + " is invalid for date-time " + dateTime);
+            }
+            return this;
+        }
+
+        @Override
+        public ZoneRulesGroup getGroup() {
+            throw new CalendricalException("Fixed time zone is not provided by a group");
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public ZoneRules getRules() {
+            return rules;
+        }
+
+        @Override
+        public boolean isValidFor(OffsetDateTime dateTime) {
+            if (dateTime == null) {
+                return false;
+            }
+            return rules.getOffset(dateTime).equals(dateTime.getOffset());
+        }
+
+        @Override
+        public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
+            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            // fixed rules always in transient field
+            if (rules.getOffset(dateTime).equals(dateTime.getOffset()) == false) {
+                throw new CalendricalException("Fixed time zone " + getID() + " is invalid for date-time " + dateTime);
+            }
+            return rules;
         }
     }
 
