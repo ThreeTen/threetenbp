@@ -82,46 +82,60 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @return the list of loaded rules, never null
      * @throws Exception if an error occurs
      */
-    @SuppressWarnings("unchecked")
     private static List<ZoneRulesDataProvider> loadJars() {
         List<ZoneRulesDataProvider> providers = new ArrayList<ZoneRulesDataProvider>();
         URL url = null;
         try {
             Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/calendar/zone/ZoneRuleInfo.dat");
+            Set<String> loaded = new HashSet<String>();  // avoid equals() on URL
             while (en.hasMoreElements()) {
                 url = en.nextElement();
-                boolean throwing = false;
-                InputStream in = null;
-                try {
-                    in = url.openStream();
-                    ObjectInputStream ois = new ObjectInputStream(in);
-                    int dataSets = ois.readInt();
-                    for (int i = 0; i < dataSets; i++) {
-                        String groupID = ois.readUTF();
-                        String versionID = ois.readUTF();
-                        Map<String, ZoneRules> zones = (Map<String, ZoneRules>) ois.readObject();
-                        providers.add(new JarZoneRulesDataProvider(groupID, versionID, zones));
-                    }
-                    
-                } catch (IOException ex) {
-                    throwing = true;
-                    throw ex;
-                } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException ex) {
-                            if (throwing == false) {
-                                throw ex;
-                            }
-                        }
-                    }
+                if (loaded.add(url.toExternalForm())) {
+                    loadJar(providers, url);
                 }
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to load time zone rule data: " + url, ex);
         }
         return providers;
+    }
+
+    /**
+     * Loads the rules from a jar file.
+     *
+     * @param providers  the list to add to, not null
+     * @param url  the jar file to load, not null 
+     * @throws Exception if an error occurs
+     */
+    @SuppressWarnings("unchecked")
+    private static void loadJar(List<ZoneRulesDataProvider> providers, URL url) throws ClassNotFoundException, IOException {
+        boolean throwing = false;
+        InputStream in = null;
+        try {
+            in = url.openStream();
+            ObjectInputStream ois = new ObjectInputStream(in);
+            int dataSets = ois.readInt();
+            for (int i = 0; i < dataSets; i++) {
+                String groupID = ois.readUTF();
+                String versionID = ois.readUTF();
+                Map<String, ZoneRules> zones = (Map<String, ZoneRules>) ois.readObject();
+                providers.add(new JarZoneRulesDataProvider(groupID, versionID, zones));
+            }
+            
+        } catch (IOException ex) {
+            throwing = true;
+            throw ex;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    if (throwing == false) {
+                        throw ex;
+                    }
+                }
+            }
+        }
     }
 
     /**
