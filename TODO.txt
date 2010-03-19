@@ -30,12 +30,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-MathUtils
-- can't be public, can't put in java.math as we require JDK5 support
+Utils
+- MathUtils can't be public, can't put in java.math as we require JDK5 support
+- simplify TimeSource to InstantProvider and Clock to Calendrical, merging
 
 Duration
+- rename millis() to ofMillis() etc
+- integrate TimeUnit
 
 Instant
+- rename millis() to ofMillis() etc
 - toString/parse
 
 Time scales
@@ -47,13 +51,16 @@ Time scales
 Date/Time classes
 - factories from Calendrical...
 - LocalDate.plus(PeriodProvider) needs correct algorithm
-- ZDT toEpochSeconds()
-- toString(pattern) parse(str, pattern)
+- toString(pattern)
+- parse(str, pattern)
+- ZDT int factories
+? DateResolver takes int or MonthOfDay or calendricals
+? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
 ? remove getChronology()
 ? getMonthOfYear() -> getMonth(), etc
 ? getAmPm()
-? Factory now(Clock)
+? with(rule, value)
 
 Rules
 - ensure can merge MonthDay and Year
@@ -67,8 +74,9 @@ Rules
 Date/Time formatting
 - two digit years
 - parse 24:00 - maybe a special end-of-day class?
-- format patterns - yyyy-MM-dd, check details
-- simpler way to setup pattern - DTF.forPattern()
+- format patterns - yyyy-MM-dd, check details and letters
+- formats LONG/MEDIUM/SHORT from better data source
+- SPI for date-time text
 - strict/lenient parse
 ? upper/lower case
 - only ASCII numbers
@@ -80,30 +88,36 @@ Date/Time formatting
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
-- TimeZone.of() loads rules, whereas it should just check if rules available
-- specialised data format
-- setup list of deprecated time zone ids
+- ZoneRulesGroup loads rules, whereas it should just load keys initially
+- don't use Local Mean Time (or anything before 1900?)
+- specialised data format for rules
 - SPI and zone providers
-- better error when zone jar file missing
+- SPI for names
+# some zones have transitions where only the name changes - America/Resolute
+# "resolvers need to use correct rules" what does this mean?
+- parse/format names
+- test against TZDB binary data
 ? get region ids by offset (JDK method)
-? built in UTC definition when zone jar file missing
-(EST, MST, HST changed in 2005r - no longer observe DST - http://java.sun.com/developer/technicalArticles/Intl/alertFurtherInfo.html)
-(MET no longer Asia/Tehran, now Middle Europe)
-http://java.sun.com/javase/tzupdater_README.html
-http://java.sun.com/javase/timezones/tzdata_versions.html
-http://java.sun.com/javase/timezones/DST_faq.html
-http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5055567 and related
-JDK TimeZone.setDefault sets an inherited thread local
 ? Drop Etc (signs reversed), Older country based IDs
-? Platform specific ids - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6534626
-- Change zone info dynamically - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4701860
-- Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
+# (EST, MST, HST changed in 2005r - no longer observe DST - http://java.sun.com/developer/technicalArticles/Intl/alertFurtherInfo.html)
+# (MET no longer Asia/Tehran, now Middle Europe)
+# http://java.sun.com/javase/tzupdater_README.html
+# http://java.sun.com/javase/timezones/tzdata_versions.html
+# http://java.sun.com/javase/timezones/DST_faq.html
+# http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5055567 and related
+# JDK TimeZone.setDefault sets an inherited thread local
+# Platform specific ids - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6534626
+# Change zone info dynamically - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4701860
+# Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
 
 Periods
 - formatting (defer?)
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - PeriodFields.normalize(Unit...)
 - PeriodFields.total(Unit)
+- Period.toString is not output of state
+- Period parsing
+- Days between, and similar
 
 Matchers/Adjusters
 - DateTimeAdjuster
@@ -121,7 +135,6 @@ General
 - get month/weekday text
 - get rule by name
 - get chrono by name
-- OffsetDateTime.fromEpochSeconds()
 - serialization formats
 - evaluate hash codes
 - check overflows
@@ -138,7 +151,6 @@ Possible items
 - IntValue interface, implemented by Number/Integer
 - public factory for LocalDate.fromDayOfYear(year, doy)
 - Optimise LocalDateTime plus/minus times by having a local plus(int,int,int,long,sign,LocalDate) method
-- optimise Clock methods to Local* avoiding Offset* object creation
 - intervals (defer completely?)
 - HalfDays period unit for AM/PM (more accurate than 12 hours)
 - InvalidDateException - better exception name?
@@ -187,9 +199,18 @@ DONE
 - public access to transitions and transition rules
 - OffsetInfo, discontinuity rename to transition
 - parse zone
+EDR
 - OffsetDate.atTime(int...)
 - zone rule where time of day is 24:00
 - versions of zone data files
 - convert time zone rules to fixed rules when possible
+- simpler way to setup pattern - DateTimeFormatters.forPattern()
+- Factory now(Clock)
+- optimise Clock methods to Local* avoiding Offset* object creation
+- better error when zone jar file missing
+- setup list of deprecated time zone ids
+- ZonedDateTime toEpochSeconds()
+- OffsetDateTime.fromEpochSeconds()
+- ZonedDateTime.fromEpochSeconds()
 
 
