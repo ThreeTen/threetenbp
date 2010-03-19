@@ -120,31 +120,109 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * <li>EST - America/Indianapolis</li>
      * <li>MST - America/Phoenix</li>
      * <li>HST - Pacific/Honolulu</li>
+     * <li>ACT - Australia/Darwin</li>
+     * <li>AET - Australia/Sydney</li>
+     * <li>AGT - America/Argentina/Buenos_Aires</li>
+     * <li>ART - Africa/Cairo</li>
+     * <li>AST - America/Anchorage</li>
+     * <li>BET - America/Sao_Paulo</li>
+     * <li>BST - Asia/Dhaka</li>
+     * <li>CAT - Africa/Harare</li>
+     * <li>CNT - America/St_Johns</li>
+     * <li>CST - America/Chicago</li>
+     * <li>CTT - Asia/Shanghai</li>
+     * <li>EAT - Africa/Addis_Ababa</li>
+     * <li>ECT - Europe/Paris</li>
+     * <li>IET - America/Indiana/Indianapolis</li>
+     * <li>IST - Asia/Kolkata</li>
+     * <li>JST - Asia/Tokyo</li>
+     * <li>MIT - Pacific/Apia</li>
+     * <li>NET - Asia/Yerevan</li>
+     * <li>NST - Pacific/Auckland</li>
+     * <li>PLT - Asia/Karachi</li>
+     * <li>PNT - America/Phoenix</li>
+     * <li>PRT - America/Puerto_Rico</li>
+     * <li>PST - America/Los_Angeles</li>
+     * <li>SST - Pacific/Guadalcanal</li>
+     * <li>VST - Asia/Ho_Chi_Minh</li>
      * </ul>
+     * The map is unmodifiable.
      */
-    public static final Map<String, String> OLD_PRE_2005;
+    public static final Map<String, String> OLD_IDS_PRE_2005;
     /**
      * A map of zone overrides to enable the older US time-zone names to be used.
      * <p>
      * This maps as follows:
      * <ul>
      * <li>EST - UTC-05:00</li>
-     * <li>MST - UTC-07:00</li>
      * <li>HST - UTC-10:00</li>
+     * <li>MST - UTC-07:00</li>
+     * <li>ACT - Australia/Darwin</li>
+     * <li>AET - Australia/Sydney</li>
+     * <li>AGT - America/Argentina/Buenos_Aires</li>
+     * <li>ART - Africa/Cairo</li>
+     * <li>AST - America/Anchorage</li>
+     * <li>BET - America/Sao_Paulo</li>
+     * <li>BST - Asia/Dhaka</li>
+     * <li>CAT - Africa/Harare</li>
+     * <li>CNT - America/St_Johns</li>
+     * <li>CST - America/Chicago</li>
+     * <li>CTT - Asia/Shanghai</li>
+     * <li>EAT - Africa/Addis_Ababa</li>
+     * <li>ECT - Europe/Paris</li>
+     * <li>IET - America/Indiana/Indianapolis</li>
+     * <li>IST - Asia/Kolkata</li>
+     * <li>JST - Asia/Tokyo</li>
+     * <li>MIT - Pacific/Apia</li>
+     * <li>NET - Asia/Yerevan</li>
+     * <li>NST - Pacific/Auckland</li>
+     * <li>PLT - Asia/Karachi</li>
+     * <li>PNT - America/Phoenix</li>
+     * <li>PRT - America/Puerto_Rico</li>
+     * <li>PST - America/Los_Angeles</li>
+     * <li>SST - Pacific/Guadalcanal</li>
+     * <li>VST - Asia/Ho_Chi_Minh</li>
      * </ul>
+     * The map is unmodifiable.
      */
-    public static final Map<String, String> OLD_POST_2005;
+    public static final Map<String, String> OLD_IDS_POST_2005;
     static {
-        Map<String, String> pre = new HashMap<String, String>();
+        Map<String, String> base = new HashMap<String, String>();
+        base.put("ACT", "Australia/Darwin");
+        base.put("AET", "Australia/Sydney");
+        base.put("AGT", "America/Argentina/Buenos_Aires");
+        base.put("ART", "Africa/Cairo");
+        base.put("AST", "America/Anchorage");
+        base.put("BET", "America/Sao_Paulo");
+        base.put("BST", "Asia/Dhaka");
+        base.put("CAT", "Africa/Harare");
+        base.put("CNT", "America/St_Johns");
+        base.put("CST", "America/Chicago");
+        base.put("CTT", "Asia/Shanghai");
+        base.put("EAT", "Africa/Addis_Ababa");
+        base.put("ECT", "Europe/Paris");
+        base.put("IET", "America/Indiana/Indianapolis");
+        base.put("IST", "Asia/Kolkata");
+        base.put("JST", "Asia/Tokyo");
+        base.put("MIT", "Pacific/Apia");
+        base.put("NET", "Asia/Yerevan");
+        base.put("NST", "Pacific/Auckland");
+        base.put("PLT", "Asia/Karachi");
+        base.put("PNT", "America/Phoenix");
+        base.put("PRT", "America/Puerto_Rico");
+        base.put("PST", "America/Los_Angeles");
+        base.put("SST", "Pacific/Guadalcanal");
+        base.put("VST", "Asia/Ho_Chi_Minh");
+        Map<String, String> pre = new HashMap<String, String>(base);
         pre.put("EST", "America/Indianapolis");
         pre.put("MST", "America/Phoenix");
         pre.put("HST", "Pacific/Honolulu");
-        OLD_PRE_2005 = Collections.unmodifiableMap(pre);
-        Map<String, String> post = new HashMap<String, String>();
+        OLD_IDS_PRE_2005 = Collections.unmodifiableMap(pre);
+        Map<String, String> post = new HashMap<String, String>(base);
         post.put("EST", "UTC-05:00");
         post.put("MST", "UTC-07:00");
         post.put("HST", "UTC-10:00");
-        OLD_POST_2005 = Collections.unmodifiableMap(post);
+        OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
     }
 
     //-----------------------------------------------------------------------
