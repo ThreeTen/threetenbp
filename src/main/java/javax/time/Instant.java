@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.time.calendar.Clock;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.CalendricalParseException;
@@ -118,6 +119,37 @@ public final class Instant
         if (object == null) {
             throw new NullPointerException(errorMessage);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains the current instant from the specified clock.
+     * <p>
+     * This will query the specified time-source to obtain the current time.
+     * <p>
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param timeSource  the time-source to use, not null
+     * @return the current instant, never null
+     */
+    public static Instant now(TimeSource timeSource) {
+        checkNotNull(timeSource, "TimeSource must not be null");
+        return from(timeSource.instant());
+    }
+
+    /**
+     * Obtains the current instant from the system clock in the default time zone.
+     * <p>
+     * This will query the system clock time-source to obtain the current time.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current instant using the system clock, never null
+     */
+    public static Instant nowSystemClock() {
+        return now(TimeSource.system());
     }
 
     //-----------------------------------------------------------------------

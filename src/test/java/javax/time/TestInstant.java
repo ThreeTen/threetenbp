@@ -31,7 +31,9 @@
  */
 package javax.time;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,6 +64,48 @@ public class TestInstant {
     public void test_zero() {
         assertEquals(Instant.EPOCH.getEpochSeconds(), 0L);
         assertEquals(Instant.EPOCH.getNanoOfSecond(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // nowClock()
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        Instant.now(null);
+    }
+
+    public void now_TimeSource_allSecsInDay_utc() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant expected = Instant.seconds(i).plusNanos(123456789L);
+            TimeSource clock = TimeSource.fixed(expected);
+            Instant test = Instant.now(clock);
+            assertEquals(test, expected);
+        }
+    }
+
+    public void now_TimeSource_allSecsInDay_beforeEpoch() {
+        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+            Instant expected = Instant.seconds(i).plusNanos(123456789L);
+            TimeSource clock = TimeSource.fixed(expected);
+            Instant test = Instant.now(clock);
+            assertEquals(test, expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    public void nowSystemClock() {
+        Instant expected = Instant.now(TimeSource.system());
+        Instant test = Instant.nowSystemClock();
+        BigInteger diff = test.toEpochNanos().subtract(expected.toEpochNanos()).abs();
+        if (diff.compareTo(BigInteger.valueOf(100000000)) >= 0) {
+            // may be date change
+            expected = Instant.now(TimeSource.system());
+            test = Instant.nowSystemClock();
+            diff = test.toEpochNanos().subtract(expected.toEpochNanos()).abs();
+        }
+        assertTrue(diff.compareTo(BigInteger.valueOf(100000000)) < 0);  // less than 0.1 secs
     }
 
     //-----------------------------------------------------------------------
