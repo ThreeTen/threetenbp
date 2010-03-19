@@ -168,6 +168,7 @@ public final class DateTimeFormatters {
      * @param pattern  the pattern to use, not null
      * @return the formatter based on the pattern, never null
      * @throws IllegalArgumentException if the pattern is invalid
+     * @see DateTimeFormatterBuilder#appendPattern(String)
      */
     public static DateTimeFormatter pattern(String pattern) {
         return new DateTimeFormatterBuilder().appendPattern(pattern).toFormatter();
@@ -188,6 +189,7 @@ public final class DateTimeFormatters {
      * @param locale  the locale to use, not null
      * @return the formatter based on the pattern, never null
      * @throws IllegalArgumentException if the pattern is invalid
+     * @see DateTimeFormatterBuilder#appendPattern(String)
      */
     public static DateTimeFormatter pattern(String pattern, Locale locale) {
         return new DateTimeFormatterBuilder().appendPattern(pattern).toFormatter(locale);
