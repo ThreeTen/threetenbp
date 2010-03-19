@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
 import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
@@ -120,6 +121,43 @@ public final class LocalTime
      * The nanosecond.
      */
     private final int nano;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains the current time from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current time.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current time, never null
+     */
+    public static LocalTime now(Clock clock) {
+        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        // inline OffsetTime factory to avoid creating object and InstantProvider checks
+        Instant instant = clock.instant();
+        ZoneOffset offset = clock.getZone().getRules().getOffset(instant);
+        long secsOfDay = instant.getEpochSeconds() % ISOChronology.SECONDS_PER_DAY;
+        secsOfDay = (secsOfDay + offset.getAmountSeconds()) % ISOChronology.SECONDS_PER_DAY;
+        if (secsOfDay < 0) {
+            secsOfDay += ISOChronology.SECONDS_PER_DAY;
+        }
+        return LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
+    }
+
+    /**
+     * Obtains the current time from the system clock in the default time zone.
+     * <p>
+     * This will query the system clock in the default time zone to obtain the current time.
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current time using the system clock, never null
+     */
+    public static LocalTime nowSystemClock() {
+        return now(Clock.systemDefaultZone());
+    }
 
     //-----------------------------------------------------------------------
     /**

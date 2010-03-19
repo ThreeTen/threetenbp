@@ -31,7 +31,12 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,6 +48,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
+import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
@@ -63,6 +70,7 @@ public class TestLocalDate {
 
 //    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
 //    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
     private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
     private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
@@ -72,6 +80,10 @@ public class TestLocalDate {
     private long MIN_VALID_EPOCHDAYS;
     private long MAX_VALID_MJDAYS;
     private long MIN_VALID_MJDAYS;
+    private LocalDate MAX_DATE;
+    private LocalDate MIN_DATE;
+    private Instant MAX_INSTANT;
+    private Instant MIN_INSTANT;
 
     @BeforeMethod
     public void setUp() {
@@ -83,6 +95,10 @@ public class TestLocalDate {
         MIN_VALID_EPOCHDAYS = min.toEpochDays();
         MAX_VALID_MJDAYS = max.toModifiedJulianDays();
         MIN_VALID_MJDAYS = min.toModifiedJulianDays();
+        MAX_DATE = max;
+        MIN_DATE = min;
+        MAX_INSTANT = max.atOffset(ZoneOffset.UTC).atMidnight().toInstant();
+        MIN_INSTANT = min.atOffset(ZoneOffset.UTC).atMidnight().toInstant();
     }
 
     //-----------------------------------------------------------------------
@@ -124,6 +140,100 @@ public class TestLocalDate {
         assertEquals(test_2008_02_29.getDayOfMonth(), d);
     }
 
+    //-----------------------------------------------------------------------
+    // nowClock()
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        LocalDate.now(null);
+    }
+
+    public void now_Clock_InstantProvider_allSecsInDay_utc() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.seconds(i);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            LocalDate test = LocalDate.now(clock);
+            assertEquals(test.getYear(), 1970);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
+        }
+    }
+
+    public void now_Clock_InstantProvider_allSecsInDay_offset() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.seconds(i);
+            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), TimeZone.of(OFFSET_PONE));
+            LocalDate test = LocalDate.now(clock);
+            assertEquals(test.getYear(), 1970);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
+        }
+    }
+
+    public void now_Clock_InstantProvider_allSecsInDay_beforeEpoch() {
+        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+            Instant instant = Instant.seconds(i);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            LocalDate test = LocalDate.now(clock);
+            assertEquals(test.getYear(), 1969);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+            assertEquals(test.getDayOfMonth(), 31);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void now_Clock_InstantProvider_maxYear() {
+        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT), TimeZone.UTC);
+        LocalDate test = LocalDate.now(clock);
+        assertEquals(test, MAX_DATE);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void now_Clock_InstantProvider_tooBig() {
+        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60)), TimeZone.UTC);
+        try {
+            LocalDate.now(clock);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getRule(), ISOChronology.yearRule());
+            throw ex;
+        }
+    }
+
+    public void now_Clock_InstantProvider_minYear() {
+        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT), TimeZone.UTC);
+        LocalDate test = LocalDate.now(clock);
+        assertEquals(test, MIN_DATE);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void now_Clock_InstantProvider_tooLow() {
+        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT.minusNanos(1)), TimeZone.UTC);
+        try {
+            LocalDate.now(clock);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getRule(), ISOChronology.yearRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    public void nowSystemClock() {
+        LocalDate expected = LocalDate.now(Clock.systemDefaultZone());
+        LocalDate test = LocalDate.nowSystemClock();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = LocalDate.now(Clock.systemDefaultZone());
+            test = LocalDate.nowSystemClock();
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // of() factories
     //-----------------------------------------------------------------------
     public void factory_date_intsMonth() {
         assertEquals(TEST_2007_07_15, LocalDate.of(2007, MonthOfYear.JULY, 15));

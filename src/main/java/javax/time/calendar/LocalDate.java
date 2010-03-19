@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
 import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
@@ -86,6 +87,44 @@ public final class LocalDate
      * The day-of-month.
      */
     private final int day;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains the current date from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date - today.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current date, never null
+     */
+    public static LocalDate now(Clock clock) {
+        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        // inline OffsetDate factory to avoid creating object and InstantProvider checks
+        Instant instant = clock.instant();
+        ZoneOffset offset = clock.getZone().getRules().getOffset(instant);
+        long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        long yearZeroDays = (epochSecs / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        long secsOfDay = epochSecs % ISOChronology.SECONDS_PER_DAY;
+        if (secsOfDay < 0) {
+            yearZeroDays--;  // overflow caught later
+        }
+        return LocalDate.fromYearZeroDays(yearZeroDays);
+    }
+
+    /**
+     * Obtains the current date from the system clock in the default time zone.
+     * <p>
+     * This will query the system clock in the default time zone to obtain the current date - today.
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date using the system clock, never null
+     */
+    public static LocalDate nowSystemClock() {
+        return now(Clock.systemDefaultZone());
+    }
 
     //-----------------------------------------------------------------------
     /**

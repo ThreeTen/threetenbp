@@ -44,6 +44,8 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
+import javax.time.TimeSource;
 import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
@@ -130,6 +132,80 @@ public class TestLocalTime {
         assertSame(LocalTime.MIDDAY, LocalTime.of(12, 0));
     }
 
+    //-----------------------------------------------------------------------
+    // now(Clock)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        LocalTime.now(null);
+    }
+
+    public void now_Clock_allSecsInDay() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.seconds(i, 8);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            LocalTime test = LocalTime.now(clock);
+            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), i % 60);
+            assertEquals(test.getNanoOfSecond(), 8);
+        }
+    }
+
+    public void now_Clock_beforeEpoch() {
+        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+            Instant instant = Instant.seconds(i, 8);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            LocalTime test = LocalTime.now(clock);
+            assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), (i + 24 * 60 * 60) % 60);
+            assertEquals(test.getNanoOfSecond(), 8);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void now_Clock_maxYear() {
+        Clock clock = Clock.clock(TimeSource.fixed(Instant.seconds(Long.MAX_VALUE)), TimeZone.UTC);
+        LocalTime test = LocalTime.now(clock);
+        int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
+        int min = (int) ((Long.MAX_VALUE / 60) % 60);
+        int sec = (int) (Long.MAX_VALUE % 60);
+        assertEquals(test.getHourOfDay(), hour);
+        assertEquals(test.getMinuteOfHour(), min);
+        assertEquals(test.getSecondOfMinute(), sec);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void now_Clock_minYear() {
+        long oneDay = 24 * 60 * 60;
+        long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
+        
+        Clock clock = Clock.clock(TimeSource.fixed(Instant.seconds(Long.MIN_VALUE)), TimeZone.UTC);
+        LocalTime test = LocalTime.now(clock);
+        long added = Long.MIN_VALUE + addition;
+        int hour = (int) ((added / (60 * 60)) % 24);
+        int min = (int) ((added / 60) % 60);
+        int sec = (int) (added % 60);
+        assertEquals(test.getHourOfDay(), hour);
+        assertEquals(test.getMinuteOfHour(), min);
+        assertEquals(test.getSecondOfMinute(), sec);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    @Test(timeOut=30000)  // TODO: remove when time zone loading is faster
+    public void nowSystemClock() {
+        LocalTime expected = LocalTime.now(Clock.systemDefaultZone());
+        LocalTime test = LocalTime.nowSystemClock();
+        long diff = Math.abs(test.toNanoOfDay() - expected.toNanoOfDay());
+        assertTrue(diff < 100000000);  // less than 0.1 secs
+    }
+
+    //-----------------------------------------------------------------------
+    // of() factories
     //-----------------------------------------------------------------------
     public void factory_time_2ints() {
         LocalTime test = LocalTime.of(12, 30);

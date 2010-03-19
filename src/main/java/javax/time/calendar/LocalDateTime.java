@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
 import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
@@ -74,6 +75,47 @@ public final class LocalDateTime
      * The time part.
      */
     private final LocalTime time;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains the current date-time from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current date-time.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current date-time, never null
+     */
+    public static LocalDateTime now(Clock clock) {
+        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
+        Instant instant = clock.instant();
+        ZoneOffset offset = clock.getZone().getRules().getOffset(instant);
+        long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        long yearZeroDays = (epochSecs / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        int secsOfDay = (int) (epochSecs % ISOChronology.SECONDS_PER_DAY);
+        if (secsOfDay < 0) {
+            secsOfDay += ISOChronology.SECONDS_PER_DAY;
+            yearZeroDays--;  // overflow caught later
+        }
+        LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
+        LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
+        return new LocalDateTime(date, time);
+    }
+
+    /**
+     * Obtains the current date from the system clock in the default time zone.
+     * <p>
+     * This will query the system clock in the default time zone to obtain the current date-time.
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date-time using the system clock, never null
+     */
+    public static LocalDateTime nowSystemClock() {
+        return now(Clock.systemDefaultZone());
+    }
 
     //-----------------------------------------------------------------------
     /**
