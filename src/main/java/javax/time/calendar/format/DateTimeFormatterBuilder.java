@@ -59,8 +59,8 @@ import javax.time.calendar.ZoneOffset;
  * outputting fractions to ensure that the fraction is parsed correctly</li>
  * <li>Text - the textual equivalent for the value</li>
  * <li>OffsetId/Offset - the {@link ZoneOffset zone offset}</li>
- * <li>ZoneId - the {@link TimeZone time zone} id</li>
- * <li>ZoneText - the name of the time zone</li>
+ * <li>ZoneId - the {@link TimeZone time-zone} id</li>
+ * <li>ZoneText - the name of the time-zone</li>
  * <li>Literal - a text literal</li>
  * <li>Nested and Optional - formats can be nested or made optional</li>
  * <li>Other - the printer and parser interfaces can be used to add user supplied formatting</li>
@@ -508,9 +508,9 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the time zone rule id, such as 'Europe/Paris', to the formatter.
+     * Appends the time-zone rule id, such as 'Europe/Paris', to the formatter.
      * <p>
-     * The time zone id will be output during a print.
+     * The time-zone id will be output during a print.
      * If the zone cannot be obtained then an exception will be thrown.
      *
      * @return this, for chaining, never null
@@ -522,9 +522,9 @@ public final class DateTimeFormatterBuilder {
     }
 
     /**
-     * Appends the time zone rule name, such as 'British Summer Time', to the formatter.
+     * Appends the time-zone rule name, such as 'British Summer Time', to the formatter.
      * <p>
-     * The time zone name will be output during a print.
+     * The time-zone name will be output during a print.
      * If the zone cannot be obtained then an exception will be thrown.
      * <p>
      * The zone name is obtained from the formatting symbols.

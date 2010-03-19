@@ -42,7 +42,7 @@ import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
- * A date-time without a time zone in the ISO-8601 calendar system,
+ * A date-time without a time-zone in the ISO-8601 calendar system,
  * such as '2007-12-03T10:15:30'.
  * <p>
  * LocalDateTime is an immutable calendrical that represents a date-time, often
@@ -50,7 +50,7 @@ import javax.time.period.PeriodProvider;
  * fields such as day-of-year, day-of-week and week-of-year.
  * <p>
  * This class stores all date and time fields, to a precision of nanoseconds.
- * It does not store or represent a time zone. Thus, for example, the value
+ * It does not store or represent a time-zone. Thus, for example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an LocalDateTime.
  * <p>
  * LocalDateTime is immutable and thread-safe.
@@ -105,9 +105,9 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains the current date from the system clock in the default time zone.
+     * Obtains the current date from the system clock in the default time-zone.
      * <p>
-     * This will query the system clock in the default time zone to obtain the current date-time.
+     * This will query the system clock in the default time-zone to obtain the current date-time.
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *

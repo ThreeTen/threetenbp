@@ -104,7 +104,7 @@ public abstract class Clock {
      * at best millisecond resolution.
      * <p>
      * Using this method hard codes a dependency to the default time-zone into your application.
-     * It is recommended to avoid this and use a specific time zone whenever possible.
+     * It is recommended to avoid this and use a specific time-zone whenever possible.
      *
      * @return a clock that uses the system millisecond clock in the specified zone, never null
      */
@@ -134,7 +134,7 @@ public abstract class Clock {
      * time-source and default time-zone.
      * <p>
      * Using this method hard codes a dependency to the default time-zone into your application.
-     * It is recommended to avoid this and use a specific time zone whenever possible.
+     * It is recommended to avoid this and use a specific time-zone whenever possible.
      *
      * @param timeSource  the time-source to use to obtain the current time, not null
      * @return a clock that uses the system millisecond clock in the specified zone, never null
@@ -231,7 +231,7 @@ public abstract class Clock {
      * {@code UnsupportedOperationException}.
      *
      * @param zone  the time-zone to change to, not null
-     * @return the new clock with the altered time zone, never null
+     * @return the new clock with the altered time-zone, never null
      * @throws UnsupportedOperationException if the implementation does not support changing the time-zone
      */
     public Clock withZone(TimeZone zone) {

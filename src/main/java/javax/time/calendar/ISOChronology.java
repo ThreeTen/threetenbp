@@ -787,11 +787,11 @@ public final class ISOChronology extends Chronology implements Serializable {
      * Gets the period unit for days.
      * <p>
      * The period unit defines the concept of a period of a day.
-     * This is typically equal to 24 hours, but may vary due to time zone changes.
+     * This is typically equal to 24 hours, but may vary due to time-zone changes.
      * <p>
      * This chronology defines two units that could represent a day.
      * This unit, {@code Days}, represents a day that varies in length based on
-     * time zone (daylight savings time) changes. It is a basic unit that cannot
+     * time-zone (daylight savings time) changes. It is a basic unit that cannot
      * be converted to seconds, nanoseconds or {@link Duration}.
      * By contrast, the {@link #period24Hours() 24Hours} unit has a fixed length of
      * exactly 24 hours allowing it to be converted to seconds, nanoseconds and {@code Duration}.
@@ -820,7 +820,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * This chronology defines two units that could represent a day.
      * This unit, {@code 24Hours}, represents a fixed length of exactly 24 hours,
      * allowing it to be converted to seconds, nanoseconds and {@link Duration}.
-     * By contrast, the {@code Days} unit varies in length based on time zone (daylight
+     * By contrast, the {@code Days} unit varies in length based on time-zone (daylight
      * savings time) changes and cannot be converted to seconds, nanoseconds or {@code Duration}.
      * <p>
      * The equivalent period and estimated duration are equal to twice the

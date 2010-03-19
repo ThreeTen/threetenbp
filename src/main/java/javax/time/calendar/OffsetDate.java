@@ -93,9 +93,9 @@ public final class OffsetDate
     }
 
     /**
-     * Obtains the current date from the system clock in the default time zone.
+     * Obtains the current date from the system clock in the default time-zone.
      * <p>
-     * This will query the system clock in the default time zone to obtain the current date - today.
+     * This will query the system clock in the default time-zone to obtain the current date - today.
      * The offset will be set based on the time-zone in the system clock.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing

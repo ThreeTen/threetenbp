@@ -53,12 +53,12 @@ import javax.time.calendar.format.CalendricalParseException;
  * The {@code ISOChronology} defines a relationship between some of the units:
  * <ul>
  * <li>12 months in a year</li>
- * <li>24 hours in a day (ignoring time zones)</li>
+ * <li>24 hours in a day (ignoring time-zones)</li>
  * <li>60 minutes in an hour</li>
  * <li>60 seconds in a minute</li>
  * <li>1,000,000,000 nanoseconds in a second</li>
  * </ul>
- * The 24 hours in a day connection is not always true, due to time zone changes.
+ * The 24 hours in a day connection is not always true, due to time-zone changes.
  * As such, methods on this class make it clear when the that connection is being used.
  * <p>
  * Period is immutable and thread-safe.

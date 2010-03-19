@@ -139,7 +139,7 @@ public final class Instant
     }
 
     /**
-     * Obtains the current instant from the system clock in the default time zone.
+     * Obtains the current instant from the system clock in the default time-zone.
      * <p>
      * This will query the system clock time-source to obtain the current time.
      * <p>

@@ -39,7 +39,7 @@ import java.io.Serializable;
  * These matchers are useful and common implementations of {@link CalendricalMatcher}.
  * A matcher allows any type of matching to be performed against a calendrical.
  * Examples might be checking of the calendrical represents Friday the Thirteenth,
- * or the last day of the month, or one of the American continent time zones.
+ * or the last day of the month, or one of the American continent time-zones.
  * <p>
  * CalendricalMatchers is a utility class.
  * All matchers returned are immutable and thread-safe.

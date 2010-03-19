@@ -41,12 +41,12 @@ import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
- * A time zone offset from UTC, such as '+02:00'.
+ * A time-zone offset from UTC, such as '+02:00'.
  * <p>
- * A time zone offset is the period of time that a time zone differs from UTC.
+ * A time-zone offset is the period of time that a time-zone differs from UTC.
  * This is usually a fixed number of hours and minutes.
  * <p>
- * Different parts of the world have different time zone offsets.
+ * Different parts of the world have different time-zone offsets.
  * The rules for how offsets vary by place and time of year are captured in the
  * {@link TimeZone} class.
  * <p>
@@ -55,7 +55,7 @@ import javax.time.period.PeriodProvider;
  * {@code ZoneOffset} instances - a {@code +01:00} instance for winter,
  * and a {@code +02:00} instance for summer.
  * <p>
- * In 2008, time zone offsets around the world extended from -12:00 to +14:00.
+ * In 2008, time-zone offsets around the world extended from -12:00 to +14:00.
  * To prevent any problems with that range being extended, yet still provide
  * validation, the range of offsets is restricted to -18:00 to 18:00 inclusive.
  * <p>
@@ -76,15 +76,15 @@ import javax.time.period.PeriodProvider;
 public final class ZoneOffset
         implements Calendrical, Comparable<ZoneOffset>, Serializable {
 
-    /** Cache of time zone offset by offset in seconds. */
+    /** Cache of time-zone offset by offset in seconds. */
     private static final ReadWriteLock CACHE_LOCK = new ReentrantReadWriteLock();
-    /** Cache of time zone offset by offset in seconds. */
+    /** Cache of time-zone offset by offset in seconds. */
     private static final Map<Integer, ZoneOffset> SECONDS_CACHE = new HashMap<Integer, ZoneOffset>();
-    /** Cache of time zone offset by id. */
+    /** Cache of time-zone offset by id. */
     private static final Map<String, ZoneOffset> ID_CACHE = new HashMap<String, ZoneOffset>();
 
     /**
-     * The time zone offset for UTC, with an id of 'Z'.
+     * The time-zone offset for UTC, with an id of 'Z'.
      */
     public static final ZoneOffset UTC = hoursMinutesSeconds(0, 0, 0);
     /**
@@ -105,7 +105,7 @@ public final class ZoneOffset
     private static final long serialVersionUID = 3552876348982168937L;
 
     /**
-     * The string form of the time zone offset.
+     * The string form of the time-zone offset.
      */
     private final String id;
     /**
@@ -223,7 +223,7 @@ public final class ZoneOffset
     /**
      * Obtains an instance of {@code ZoneOffset} using an offset in hours.
      *
-     * @param hours  the time zone offset in hours, from -18 to +18
+     * @param hours  the time-zone offset in hours, from -18 to +18
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
@@ -239,8 +239,8 @@ public final class ZoneOffset
      * Thus, if the hours is negative, the minutes must be negative or zero.
      * If the hours is zero, the minutes may be positive, negative or zero.
      *
-     * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59, sign matches hours
+     * @param hours  the time-zone offset in hours, from -18 to +18
+     * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
@@ -255,9 +255,9 @@ public final class ZoneOffset
      * The sign of the hours, minutes and seconds components must match.
      * Thus, if the hours is negative, the minutes and seconds must be negative or zero.
      *
-     * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
-     * @param seconds  the time zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
+     * @param hours  the time-zone offset in hours, from -18 to +18
+     * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
+     * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
@@ -287,9 +287,9 @@ public final class ZoneOffset
     /**
      * Validates the offset fields.
      *
-     * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59
-     * @param seconds  the time zone offset in seconds, from 0 to &plusmn;59
+     * @param hours  the time-zone offset in hours, from -18 to +18
+     * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59
+     * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     private static void validate(int hours, int minutes, int seconds) {
@@ -324,9 +324,9 @@ public final class ZoneOffset
     /**
      * Calculates the total offset in seconds.
      *
-     * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
-     * @param seconds  the time zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
+     * @param hours  the time-zone offset in hours, from -18 to +18
+     * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
+     * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
      * @return the total in seconds
      */
     private static int totalSeconds(int hours, int minutes, int seconds) {
@@ -339,7 +339,7 @@ public final class ZoneOffset
      * <p>
      * The offset must be in the range -18:00 to +18:00, which corresponds to -64800 to +64800.
      *
-     * @param totalSeconds  the total time zone offset in seconds, from -64800 to +64800
+     * @param totalSeconds  the total time-zone offset in seconds, from -64800 to +64800
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
@@ -379,7 +379,7 @@ public final class ZoneOffset
     /**
      * Constructor.
      *
-     * @param totalSeconds  the total time zone offset in seconds, from -64800 to +64800
+     * @param totalSeconds  the total time-zone offset in seconds, from -64800 to +64800
      */
     private ZoneOffset(int totalSeconds) {
         super();
@@ -539,11 +539,11 @@ public final class ZoneOffset
     }
 
     /**
-     * Converts this offset to a time zone.
+     * Converts this offset to a time-zone.
      * <p>
-     * The returned time zone will use this offset for all instants.
+     * The returned time-zone will use this offset for all instants.
      *
-     * @return the time zone, never null
+     * @return the time-zone, never null
      */
     public TimeZone toTimeZone() {
         return TimeZone.of(this);

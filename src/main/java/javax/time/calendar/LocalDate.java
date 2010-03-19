@@ -42,14 +42,14 @@ import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
- * A date without a time zone in the ISO-8601 calendar system,
+ * A date without a time-zone in the ISO-8601 calendar system,
  * such as '2007-12-03'.
  * <p>
  * LocalDate is an immutable calendrical that represents a date, often viewed
  * as year-month-day. This object can also access other date fields such as
  * day-of-year, day-of-week and week-of-year.
  * <p>
- * This class does not store or represent a time or time zone.
+ * This class does not store or represent a time or time-zone.
  * Thus, for example, the value "2nd October 2007" can be stored in a LocalDate.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
@@ -114,9 +114,9 @@ public final class LocalDate
     }
 
     /**
-     * Obtains the current date from the system clock in the default time zone.
+     * Obtains the current date from the system clock in the default time-zone.
      * <p>
-     * This will query the system clock in the default time zone to obtain the current date - today.
+     * This will query the system clock in the default time-zone to obtain the current date - today.
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *

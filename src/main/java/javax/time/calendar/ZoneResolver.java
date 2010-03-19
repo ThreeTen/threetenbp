@@ -38,9 +38,9 @@ import javax.time.calendar.zone.ZoneRules;
 
 /**
  * Strategy for resolving a {@code LocalDateTime} to an {@code OffsetDateTime}
- * using the rules of the time zone.
+ * using the rules of the time-zone.
  * <p>
- * A time zone provides rules for when and by how much the offset changes for
+ * A time-zone provides rules for when and by how much the offset changes for
  * a given location. These rules can result in 'missing hours', such as at the
  * spring daylight savings cutover, and 'overlapping hours', such as at the
  * autumn cutover.
@@ -72,7 +72,7 @@ public abstract class ZoneResolver {
      * or {@link #handleOverlap}. The internal method will validate the result
      * to ensure it is valid for the zone.
      *
-     * @param zone  the time zone, not null
+     * @param zone  the time-zone, not null
      * @param newDateTime  the new date-time, not null
      * @param oldDateTime  the old date-time before the adjustment, may be null
      * @return the resolved values, returned as a (year,month,day) tuple, never null
@@ -131,7 +131,7 @@ public abstract class ZoneResolver {
      * </pre>
      * This implementation works by returning the first valid date-time after the gap.
      *
-     * @param zone  the time zone, not null
+     * @param zone  the time-zone, not null
      * @param rules  the applicable zone rules, not null
      * @param gapInfo  the information about the gap for the newDateTime, not null
      * @param newDateTime  the new local date-time, not null
@@ -177,7 +177,7 @@ public abstract class ZoneResolver {
      * offset in the same offset as the old date-time. Otherwise, it returns the
      * earlier of the two offsets.
      *
-     * @param zone  the time zone, not null
+     * @param zone  the time-zone, not null
      * @param rules  the applicable zone rules, not null
      * @param overlapInfo  the information about the overlap for the newDateTime, not null
      * @param newDateTime  the new local date-time, not null

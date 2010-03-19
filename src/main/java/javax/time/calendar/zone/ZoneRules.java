@@ -49,9 +49,9 @@ import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
 /**
- * The rules defining how the zone offset varies for a single time zone.
+ * The rules defining how the zone offset varies for a single time-zone.
  * <p>
- * The rules model all the historic and future transitions for a time zone.
+ * The rules model all the historic and future transitions for a time-zone.
  * The rules are loaded via {@link TimeZone} and {@link ZoneRulesGroup} and
  * are specific to a group, region and version. The same rules may be shared
  * between multiple versions, regions or even groups.
@@ -110,12 +110,12 @@ public abstract class ZoneRules {
      * Checks of the zone rules are fixed, such that the offset never varies.
      * <p>
      * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
-     * {@link OffsetTime} are used in preference to fixed offset time zones
+     * {@link OffsetTime} are used in preference to fixed offset time-zones
      * in {@link ZonedDateTime}.
      * <p>
      * The default implementation returns false.
      *
-     * @return true if the time zone is fixed and the offset never changes
+     * @return true if the time-zone is fixed and the offset never changes
      */
     public boolean isFixedOffset() {
         return false;

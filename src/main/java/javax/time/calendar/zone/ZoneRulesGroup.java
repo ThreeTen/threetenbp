@@ -46,14 +46,14 @@ import javax.time.CalendricalException;
 import javax.time.calendar.OffsetDateTime;
 
 /**
- * A group of time zone rules wrapping a provider of multiple versions of the data.
+ * A group of time-zone rules wrapping a provider of multiple versions of the data.
  * <p>
  * Zone rule data is provided by organizations or groups.
  * To manage this data each group is given a unique ID.
  * One group is provided as standard - 'TZDB' - and more may be added.
  * <p>
  * The 'TZDB' group represents that data provided by the
- * <a href="http://www.twinsun.com/tz/tz-link.htm">time zone database</a>
+ * <a href="http://www.twinsun.com/tz/tz-link.htm">time-zone database</a>
  * as used in older versions of Java and many operating systems.
  * <p>
  * Other groups of zone rules can be developed and registered.
@@ -137,7 +137,7 @@ public final class ZoneRulesGroup {
      * Which groups are available is dependent on the registered providers.
      * <p>
      * The returned groups will remain available and valid for the lifetime of the application as
-     * there is no way to deregister time zone information. More groups may be added during
+     * there is no way to deregister time-zone information. More groups may be added during
      * the lifetime of the application, however the returned list will not be altered.
      *
      * @return an unsorted, independent, modifiable list of available groups, never null
@@ -147,7 +147,7 @@ public final class ZoneRulesGroup {
     }
 
     /**
-     * Gets a view of the complete set of parsable time zone IDs.
+     * Gets a view of the complete set of parsable time-zone IDs.
      * <p>
      * This returns the complete set of IDs that can be parsed.
      * For each group and region, all the valid versions and the 'floating'
@@ -155,7 +155,7 @@ public final class ZoneRulesGroup {
      * as the 'TZDB:' prefix is optional in parsing.
      * For more detailed control, use the instance methods on this class.
      * <p>
-     * For example, for the single time zone of 'Europe/London' and two available
+     * For example, for the single time-zone of 'Europe/London' and two available
      * versions, the set would contain:
      * <ul>
      * <li>{@code Europe/London}</li>
@@ -188,7 +188,7 @@ public final class ZoneRulesGroup {
      * Each provider is specific to one group, but may provide any number of
      * regions and versions.
      * <p>
-     * To ensure the integrity of time zones already created, there is no way
+     * To ensure the integrity of time-zones already created, there is no way
      * to deregister providers.
      *
      * @param provider  the provider to register, not null
@@ -273,14 +273,14 @@ public final class ZoneRulesGroup {
     /**
      * Gets the region from the ID.
      *
-     * @param regionID  the time zone region ID, not null
+     * @param regionID  the time-zone region ID, not null
      * @return the region map, never null
      * @throws CalendricalException if the region is unknown
      */
     private TreeMap<String, ZoneRulesDataProvider> getVersions(String regionID) {
         TreeMap<String, ZoneRulesDataProvider> versions = regions.get(regionID);
         if (versions == null) {
-            throw new CalendricalException("Unknown time zone region: " + groupID + ":" + regionID);
+            throw new CalendricalException("Unknown time-zone region: " + groupID + ":" + regionID);
         }
         return versions;
     }
@@ -297,14 +297,14 @@ public final class ZoneRulesGroup {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the time zone version ID is valid.
+     * Checks if the time-zone version ID is valid.
      * <p>
      * This checks both the region and version IDs for validity.
      * The floating version (an empty version ID) is considered to be valid.
      * Null returns false.
      *
-     * @param regionID  the time zone region ID, null returns false
-     * @param versionID  the time zone version ID, empty means floating version, null returns false
+     * @param regionID  the time-zone region ID, null returns false
+     * @param versionID  the time-zone version ID, empty means floating version, null returns false
      * @return true if the version ID is valid
      */
     public boolean isValidRules(String regionID, String versionID) {
@@ -324,11 +324,11 @@ public final class ZoneRulesGroup {
      * rules for the region.
      * <p>
      * The returned rules will remain available and valid for the lifetime of the application as
-     * there is no way to deregister time zone information. More rules may be added during
+     * there is no way to deregister time-zone information. More rules may be added during
      * the lifetime of the application, however the returned rules will not be altered.
      *
-     * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone version ID, empty means floating version, not null
+     * @param regionID  the time-zone region ID, not null
+     * @param versionID  the time-zone version ID, empty means floating version, not null
      * @return the matched zone rules, never null
      * @throws CalendricalException if the rules cannot be found
      */
@@ -343,7 +343,7 @@ public final class ZoneRulesGroup {
         } else {
             provider = versions.get(versionID);
             if (provider == null) {
-                throw new CalendricalException("Unknown time zone version: " + groupID + ":" +
+                throw new CalendricalException("Unknown time-zone version: " + groupID + ":" +
                         regionID + (versionID.length() == 0 ? "" : "#" + versionID));
             }
         }
@@ -362,12 +362,12 @@ public final class ZoneRulesGroup {
      * the region rules that are valid for the date-time.
      * <p>
      * Any loaded rules remain available for the lifetime of the application as there is no
-     * way to deregister time zone information thus a {@code true} return value will remain true.
+     * way to deregister time-zone information thus a {@code true} return value will remain true.
      * More information may be added during the lifetime of the application which may cause the
      * return value to change from {@code false} to {@code true}. 
      *
-     * @param regionID  the time zone region ID, null returns false
-     * @param versionID  the time zone version ID, empty means floating version, null returns false
+     * @param regionID  the time-zone region ID, null returns false
+     * @param versionID  the time-zone version ID, empty means floating version, null returns false
      * @param dateTime  the date-time that must be valid, null returns false
      * @return true if the version ID is valid
      */
@@ -394,11 +394,11 @@ public final class ZoneRulesGroup {
      * the region rules that are valid for the date-time.
      * <p>
      * The returned rules will remain available and valid for the lifetime of the application as
-     * there is no way to deregister time zone information. More rules may be added during
+     * there is no way to deregister time-zone information. More rules may be added during
      * the lifetime of the application, however the returned rules will not be altered.
      *
-     * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone version ID, empty means floating version, not null
+     * @param regionID  the time-zone region ID, not null
+     * @param versionID  the time-zone version ID, empty means floating version, not null
      * @param dateTime  the date-time that must be valid, not null
      * @return the matched zone rules, never null
      * @throws CalendricalException if the rules cannot be found
@@ -411,7 +411,7 @@ public final class ZoneRulesGroup {
             // specific version
             ZoneRules rules = getRules(regionID, versionID);
             if (rules.isValidDateTime(dateTime) == false) {
-                throw new CalendricalException("Rules in time zone " + groupID + ":" + regionID +
+                throw new CalendricalException("Rules in time-zone " + groupID + ":" + regionID +
                         "#" + versionID + " are invalid for date-time " + dateTime);
             }
             return rules;
@@ -429,10 +429,10 @@ public final class ZoneRulesGroup {
      * This checks the region for validity.
      * <p>
      * The returned version will remain valid for the lifetime of the application as
-     * there is no way to deregister time zone information. If more time zone information
+     * there is no way to deregister time-zone information. If more time-zone information
      * is added then a later version may become available.
      *
-     * @param regionID  the time zone region ID, not null
+     * @param regionID  the time-zone region ID, not null
      * @param dateTime  the date-time that must be valid, not null
      * @return the matched zone rules, never null
      * @throws CalendricalException if the region is unknown
@@ -450,7 +450,7 @@ public final class ZoneRulesGroup {
                 return entry.getKey();
             }
         }
-        throw new CalendricalException("No rules could be found in time zone " + groupID + ":" + regionID +
+        throw new CalendricalException("No rules could be found in time-zone " + groupID + ":" + regionID +
                 " that are valid for date-time " + dateTime);
     }
 
@@ -461,7 +461,7 @@ public final class ZoneRulesGroup {
      * Each returned region will have at least one associated version.
      * <p>
      * The returned regions will remain available for the lifetime of the application as
-     * there is no way to deregister time zone information. More regions may be added during
+     * there is no way to deregister time-zone information. More regions may be added during
      * the lifetime of the application, however the returned list will not be dynamically updated.
      *
      * @return an independent, modifiable list of available regions sorted alphabetically, never null
@@ -481,10 +481,10 @@ public final class ZoneRulesGroup {
      * If the version is not found, an empty list is returned.
      * <p>
      * The returned regions will remain available for the lifetime of the application as
-     * there is no way to deregister time zone information. More regions may be added during
+     * there is no way to deregister time-zone information. More regions may be added during
      * the lifetime of the application, however the returned list will not be altered.
      *
-     * @param versionID  the time zone version ID, empty means any version, not null
+     * @param versionID  the time-zone version ID, empty means any version, not null
      * @return an independent, modifiable list of available regions sorted alphabetically, never null
      */
     public List<String> getAvailableRegionIDs(String versionID) {
@@ -511,10 +511,10 @@ public final class ZoneRulesGroup {
      * of the versions.
      * <p>
      * The returned version will remain available for the lifetime of the application as
-     * there is no way to deregister time zone information. More information may be added during
+     * there is no way to deregister time-zone information. More information may be added during
      * the lifetime of the application, causing a later version to be available.
      *
-     * @param regionID  the time zone region ID, not null
+     * @param regionID  the time-zone region ID, not null
      * @return the latest version ID for the region, never null
      * @throws CalendricalException if the region ID is not found
      */
@@ -525,16 +525,16 @@ public final class ZoneRulesGroup {
     }
 
     /**
-     * Gets the set of available time zone versions for this group and the specified region.
+     * Gets the set of available time-zone versions for this group and the specified region.
      * <p>
      * The available versions are returned sorted from oldest to newest using
      * an ordering determined by a {@code String} based sort.
      * <p>
      * The returned versions will remain available for the lifetime of the application as
-     * there is no way to deregister time zone information. More regions may be added during
+     * there is no way to deregister time-zone information. More regions may be added during
      * the lifetime of the application, however the returned list will not be dynamically updated.
      *
-     * @param regionID  the time zone region ID, not null
+     * @param regionID  the time-zone region ID, not null
      * @return an independent, modifiable list of available versions from oldest to newest, never null
      * @throws CalendricalException if the region ID is not found
      */

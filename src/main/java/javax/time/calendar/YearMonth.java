@@ -49,7 +49,7 @@ import javax.time.period.PeriodProvider;
  * of a year and month. Any field that can be derived from a year and month, such as
  * quarter-of-year, can be obtained.
  * <p>
- * This class does not store or represent a day, time or time zone.
+ * This class does not store or represent a day, time or time-zone.
  * Thus, for example, the value "October 2007" can be stored in a {@code YearMonth}.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today

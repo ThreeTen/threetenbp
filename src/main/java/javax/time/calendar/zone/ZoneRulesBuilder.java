@@ -51,9 +51,9 @@ import javax.time.calendar.ZoneOffset;
 import javax.time.period.Period;
 
 /**
- * A mutable builder used to create all the rules for a historic time zone.
+ * A mutable builder used to create all the rules for a historic time-zone.
  * <p>
- * The rules of a time zone describe how the offset changes over time.
+ * The rules of a time-zone describe how the offset changes over time.
  * The rules are created by building windows on the time-line within which
  * the different rules apply. The rules may be one of two kinds:
  * <ul>
@@ -309,12 +309,12 @@ public class ZoneRulesBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Completes the build converting the builder to a set of time zone rules.
+     * Completes the build converting the builder to a set of time-zone rules.
      * <p>
      * Calling this method alters the state of the builder.
      * Further rules should not be added to this builder once this method is called.
      *
-     * @param id  the time zone id, not null
+     * @param id  the time-zone id, not null
      * @return the zone rules, never null
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
@@ -324,12 +324,12 @@ public class ZoneRulesBuilder {
     }
 
     /**
-     * Completes the build converting the builder to a set of time zone rules.
+     * Completes the build converting the builder to a set of time-zone rules.
      * <p>
      * Calling this method alters the state of the builder.
      * Further rules should not be added to this builder once this method is called.
      *
-     * @param id  the time zone id, not null
+     * @param id  the time-zone id, not null
      * @param deduplicateMap  a map for deduplicating the values, not null
      * @return the zone rules, never null
      * @throws IllegalStateException if no windows have been added

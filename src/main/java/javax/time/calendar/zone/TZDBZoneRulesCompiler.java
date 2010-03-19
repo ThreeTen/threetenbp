@@ -316,7 +316,7 @@ public final class TZDBZoneRulesCompiler {
     }
 
     /**
-     * Gets the built time zones.
+     * Gets the built time-zones.
      */
     public Map<String, ZoneRules> getBuiltZones() {
         return builtZones;

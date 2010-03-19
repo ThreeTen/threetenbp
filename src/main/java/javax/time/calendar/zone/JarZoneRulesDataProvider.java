@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Loads time zone rules stored in a jar file.
+ * Loads time-zone rules stored in a jar file.
  * <p>
  * JarZoneRulesDataProvider is thread-safe and immutable.
  *
@@ -61,14 +61,14 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      */
     private final String versionID;
     /**
-     * Cache of time zone data providers.
+     * Cache of time-zone data providers.
      */
     private final Map<String, ZoneRules> zones;
 
     /**
-     * Loads any time zone rules data stored in jar files.
+     * Loads any time-zone rules data stored in jar files.
      *
-     * @throws RuntimeException if the time zone rules cannot be loaded
+     * @throws RuntimeException if the time-zone rules cannot be loaded
      */
     static void load() {
         for (ZoneRulesDataProvider provider : loadJars()) {
@@ -95,7 +95,7 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
                 }
             }
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to load time zone rule data: " + url, ex);
+            throw new RuntimeException("Unable to load time-zone rule data: " + url, ex);
         }
         return providers;
     }
@@ -139,7 +139,7 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
     }
 
     /**
-     * Loads the time zone data.
+     * Loads the time-zone data.
      *
      * @param groupID  the group ID of the rules, not null
      * @param versionID  the version ID of the rules, not null

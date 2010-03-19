@@ -116,10 +116,10 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
      * For example, parsing Etc/GMT-2 will return Etc/GMC-2 rather than just
      * Etc/GMC although both are valid.
      * <p>
-     * This implementation uses a tree to search for valid time zone names in
+     * This implementation uses a tree to search for valid time-zone names in
      * the parseText. The top level node of the tree has a length equal to the
-     * length of the shortest time zone as well as the beginning characters of
-     * all other time zones.
+     * length of the shortest time-zone as well as the beginning characters of
+     * all other time-zones.
      */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
@@ -142,7 +142,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
             tree = preparedTree;
         }
         
-        // handle fixed time zone ids
+        // handle fixed time-zone ids
         if (parseText.substring(position).startsWith("UTC")) {
             DateTimeParseContext newContext = new DateTimeParseContext(context.getSymbols());
             int startPos = position + 3;
@@ -181,24 +181,24 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /**
      * Model a tree of substrings to make the parsing easier. Due to the nature
-     * of time zone names, it can be faster to parse based in unique substrings
+     * of time-zone names, it can be faster to parse based in unique substrings
      * rather than just a character by character match.
      * <p>
      * For example, to parse America/Denver we can look at the first two
-     * character "Am". We then notice that the shortest time zone that starts
+     * character "Am". We then notice that the shortest time-zone that starts
      * with Am is America/Nome which is 12 characters long. Checking the first
      * 12 characters of America/Denver giver America/Denv which is a substring
-     * of only 1 time zone: America/Denver. Thus, with just 3 comparisons that
+     * of only 1 time-zone: America/Denver. Thus, with just 3 comparisons that
      * match can be found.
      * <p>
      * This structure maps substrings to substrings of a longer length. Each
      * node of the tree contains a length and a map of valid substrings to
      * sub-nodes. The parser gets the length from the root node. It then
      * extracts a substring of that length from the parseText. If the map
-     * contains the substring, it is set as the possible time zone and the
+     * contains the substring, it is set as the possible time-zone and the
      * sub-node for that substring is retrieved. The process continues until the
      * substring is no longer found, at which point the matched text is checked
-     * against the real time zones.
+     * against the real time-zones.
      */
     private static class SubstringTree {
         /**

@@ -92,9 +92,9 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains the current time from the system clock in the default time zone.
+     * Obtains the current time from the system clock in the default time-zone.
      * <p>
-     * This will query the system clock in the default time zone to obtain the current time.
+     * This will query the system clock in the default time-zone to obtain the current time.
      * The offset will be set based on the time-zone in the system clock.
      * <p>
      * Using this method will prevent the ability to use an alternate clock for testing

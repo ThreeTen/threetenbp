@@ -34,9 +34,9 @@ package javax.time.calendar.zone;
 import java.util.Set;
 
 /**
- * Provides access to a versioned set of time zone rules.
+ * Provides access to a versioned set of time-zone rules.
  * <p>
- * Multiple providers of time zone rules may be registered.
+ * Multiple providers of time-zone rules may be registered.
  * Each provider will supply one to many zone IDs.
  * No two providers may overlap in the set of zone IDs that they provide.
  * <p>
@@ -51,7 +51,7 @@ import java.util.Set;
 public interface ZoneRulesDataProvider {
 
     /**
-     * Gets the time zone group ID of the data available via this provider, such as 'TZDB'.
+     * Gets the time-zone group ID of the data available via this provider, such as 'TZDB'.
      * <p>
      * Group IDs may consist of alphanumeric characters, the dot, underscore and dash.
      * Group IDs should use reverse domain name notation, like packages.
@@ -62,7 +62,7 @@ public interface ZoneRulesDataProvider {
     String getGroupID();
 
     /**
-     * Gets the complete set of provided time zone IDs.
+     * Gets the complete set of provided time-zone IDs.
      * <p>
      * The returned IDs specify the region ID, optionally followed by the version ID.
      * If the provider supports versions, then versions must be included.
@@ -75,12 +75,12 @@ public interface ZoneRulesDataProvider {
     Set<String> getIDs();
 
     /**
-     * Gets the zone rules for the specified time zone ID.
+     * Gets the zone rules for the specified time-zone ID.
      * <p>
-     * The combined time zone ID must be one of those returned by {@link #getIDs()}.
+     * The combined time-zone ID must be one of those returned by {@link #getIDs()}.
      *
-     * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone version ID, not null
+     * @param regionID  the time-zone region ID, not null
+     * @param versionID  the time-zone version ID, not null
      * @return the matched zone rules, null if not found
      */
     ZoneRules getZoneRules(String regionID, String versionID);

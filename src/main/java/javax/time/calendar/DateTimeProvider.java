@@ -58,7 +58,7 @@ import javax.time.CalendricalException;
  * <p>
  * The implementation of {@code DateTimeProvider} may provide more
  * information than just a local date-time. For example, {@link ZonedDateTime},
- * implements this interface and also provides a time zone.
+ * implements this interface and also provides a time-zone.
  * <p>
  * DateTimeProvider makes no guarantees about the thread-safety or immutability
  * of implementations.

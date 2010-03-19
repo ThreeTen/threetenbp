@@ -79,7 +79,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            throw new CalendricalException("Local time " + newDateTime + " does not exist in time zone " +
+            throw new CalendricalException("Local time " + newDateTime + " does not exist in time-zone " +
                     zone + " due to a gap in the local time-line");
         }
         /** {@inheritDoc} */
@@ -89,7 +89,7 @@ public final class ZoneResolvers {
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
             throw new CalendricalException("Local time " + newDateTime +
                     " has two matching offsets, " + discontinuity.getOffsetBefore() +
-                    " and " + discontinuity.getOffsetAfter() + ", in time zone " + zone);
+                    " and " + discontinuity.getOffsetAfter() + ", in time-zone " + zone);
         }
     }
 
