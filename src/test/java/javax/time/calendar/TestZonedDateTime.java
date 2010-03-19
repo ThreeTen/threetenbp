@@ -507,7 +507,7 @@ public class TestZonedDateTime {
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
         } catch (CalendarConversionException ex) {
-            assertEquals(ex.getMessage().contains("invalid for time zone"), true);
+            assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
             throw ex;
         }
     }
@@ -518,7 +518,7 @@ public class TestZonedDateTime {
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
         } catch (CalendarConversionException ex) {
-            assertEquals(ex.getMessage().contains("invalid for time zone"), true);
+            assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
             throw ex;
         }
     }
