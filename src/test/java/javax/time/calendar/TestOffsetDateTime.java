@@ -45,7 +45,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.TimeSource;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -109,6 +111,91 @@ public class TestOffsetDateTime {
             assertTrue(Modifier.isPrivate(field.getModifiers()));
             assertTrue(Modifier.isFinal(field.getModifiers()));
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // nowClock()
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        OffsetDateTime.now(null);
+    }
+
+    public void now_Clock_allSecsInDay_utc() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.seconds(i).plusNanos(123456789L);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            OffsetDateTime test = OffsetDateTime.now(clock);
+            assertEquals(test.getYear(), 1970);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
+            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), i % 60);
+            assertEquals(test.getNanoOfSecond(), 123456789);
+            assertEquals(test.getOffset(), ZoneOffset.UTC);
+        }
+    }
+
+    public void now_Clock_allSecsInDay_offset() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.seconds(i).plusNanos(123456789L);
+            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), TimeZone.of(OFFSET_PONE));
+            OffsetDateTime test = OffsetDateTime.now(clock);
+            assertEquals(test.getYear(), 1970);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
+            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), i % 60);
+            assertEquals(test.getNanoOfSecond(), 123456789);
+            assertEquals(test.getOffset(), OFFSET_PONE);
+        }
+    }
+
+    public void now_Clock_allSecsInDay_beforeEpoch() {
+        LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
+        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+            Instant instant = Instant.seconds(i).plusNanos(123456789L);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            OffsetDateTime test = OffsetDateTime.now(clock);
+            assertEquals(test.getYear(), 1969);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+            assertEquals(test.getDayOfMonth(), 31);
+            expected = expected.minusSeconds(1);
+            assertEquals(test.toLocalTime(), expected);
+            assertEquals(test.getOffset(), ZoneOffset.UTC);
+        }
+    }
+
+    public void now_Clock_offsets() {
+        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
+        for (int i = -9; i < 15; i++) {
+            ZoneOffset offset = ZoneOffset.hours(i);
+            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
+            OffsetDateTime test = OffsetDateTime.now(clock);
+            assertEquals(test.getHourOfDay(), (12 + i) % 24);
+            assertEquals(test.getMinuteOfHour(), 0);
+            assertEquals(test.getSecondOfMinute(), 0);
+            assertEquals(test.getNanoOfSecond(), 0);
+            assertEquals(test.getOffset(), offset);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    public void nowSystemClock() {
+        OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
+        OffsetDateTime test = OffsetDateTime.nowSystemClock();
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        if (diff >= 100000000) {
+            // may be date change
+            expected = OffsetDateTime.now(Clock.systemDefaultZone());
+            test = OffsetDateTime.nowSystemClock();
+            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        }
+        assertTrue(diff < 100000000);  // less than 0.1 secs
     }
 
     //-----------------------------------------------------------------------

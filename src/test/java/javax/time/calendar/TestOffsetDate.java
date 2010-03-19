@@ -46,6 +46,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
+import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -115,6 +116,67 @@ public class TestOffsetDate {
             assertTrue(Modifier.isPrivate(field.getModifiers()));
             assertTrue(Modifier.isFinal(field.getModifiers()));
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // nowClock()
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        OffsetDate.now(null);
+    }
+
+    public void now_Clock_allSecsInDay_utc() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.seconds(i);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            OffsetDate test = OffsetDate.now(clock);
+            assertEquals(test.getYear(), 1970);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
+            assertEquals(test.getOffset(), ZoneOffset.UTC);
+        }
+    }
+
+    public void now_Clock_allSecsInDay_beforeEpoch() {
+        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+            Instant instant = Instant.seconds(i);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            OffsetDate test = OffsetDate.now(clock);
+            assertEquals(test.getYear(), 1969);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+            assertEquals(test.getDayOfMonth(), 31);
+            assertEquals(test.getOffset(), ZoneOffset.UTC);
+        }
+    }
+
+    public void now_Clock_offsets() {
+        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
+        for (int i = -9; i < 15; i++) {
+            ZoneOffset offset = ZoneOffset.hours(i);
+            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
+            OffsetDate test = OffsetDate.now(clock);
+            assertEquals(test.getYear(), 1970);
+            assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+            assertEquals(test.getDayOfMonth(), i >= 12 ? 2 : 1);
+            assertEquals(test.getOffset(), offset);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    public void nowSystemClock() {
+        OffsetDate expected = OffsetDate.now(Clock.systemDefaultZone());
+        OffsetDate test = OffsetDate.nowSystemClock();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = OffsetDate.now(Clock.systemDefaultZone());
+            test = OffsetDate.nowSystemClock();
+        }
+        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

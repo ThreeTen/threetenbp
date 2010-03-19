@@ -133,7 +133,7 @@ public class TestLocalDateTime {
         LocalDateTime.now(null);
     }
 
-    public void now_Clock_InstantProvider_allSecsInDay_utc() {
+    public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.seconds(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
@@ -148,7 +148,7 @@ public class TestLocalDateTime {
         }
     }
 
-    public void now_Clock_InstantProvider_allSecsInDay_offset() {
+    public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.seconds(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), TimeZone.of(OFFSET_PONE));
@@ -163,7 +163,7 @@ public class TestLocalDateTime {
         }
     }
 
-    public void now_Clock_InstantProvider_allSecsInDay_beforeEpoch() {
+    public void now_Clock_allSecsInDay_beforeEpoch() {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.seconds(i).plusNanos(123456789L);
@@ -178,14 +178,14 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
-    public void now_Clock_InstantProvider_maxYear() {
+    public void now_Clock_maxYear() {
         Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT), TimeZone.UTC);
         LocalDateTime test = LocalDateTime.now(clock);
         assertEquals(test, MAX_DATE_TIME);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void now_Clock_InstantProvider_tooBig() {
+    public void now_Clock_tooBig() {
         Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60)), TimeZone.UTC);
         try {
             LocalDateTime.now(clock);
@@ -195,14 +195,14 @@ public class TestLocalDateTime {
         }
     }
 
-    public void now_Clock_InstantProvider_minYear() {
+    public void now_Clock_minYear() {
         Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT), TimeZone.UTC);
         LocalDateTime test = LocalDateTime.now(clock);
         assertEquals(test, MIN_DATE_TIME);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void now_Clock_InstantProvider_tooLow() {
+    public void now_Clock_tooLow() {
         Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT.minusNanos(1)), TimeZone.UTC);
         try {
             LocalDateTime.now(clock);

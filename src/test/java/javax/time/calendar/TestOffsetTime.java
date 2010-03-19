@@ -45,6 +45,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
+import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
@@ -103,6 +104,66 @@ public class TestOffsetTime {
             assertTrue(Modifier.isPrivate(field.getModifiers()));
             assertTrue(Modifier.isFinal(field.getModifiers()));
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        OffsetTime.now(null);
+    }
+
+    public void now_Clock_allSecsInDay() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.seconds(i, 8);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            OffsetTime test = OffsetTime.now(clock);
+            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), i % 60);
+            assertEquals(test.getNanoOfSecond(), 8);
+            assertEquals(test.getOffset(), ZoneOffset.UTC);
+        }
+    }
+
+    public void now_Clock_beforeEpoch() {
+        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+            Instant instant = Instant.seconds(i, 8);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            OffsetTime test = OffsetTime.now(clock);
+            assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), (i + 24 * 60 * 60) % 60);
+            assertEquals(test.getNanoOfSecond(), 8);
+            assertEquals(test.getOffset(), ZoneOffset.UTC);
+        }
+    }
+
+    public void now_Clock_offsets() {
+        OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
+        for (int i = -9; i < 15; i++) {
+            ZoneOffset offset = ZoneOffset.hours(i);
+            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
+            OffsetTime test = OffsetTime.now(clock);
+            assertEquals(test.getHourOfDay(), (12 + i) % 24);
+            assertEquals(test.getMinuteOfHour(), 0);
+            assertEquals(test.getSecondOfMinute(), 0);
+            assertEquals(test.getNanoOfSecond(), 0);
+            assertEquals(test.getOffset(), offset);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    @Test(timeOut=30000)  // TODO: remove when time zone loading is faster
+    public void nowSystemClock() {
+        OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
+        OffsetTime test = OffsetTime.nowSystemClock();
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        assertTrue(diff < 100000000);  // less than 0.1 secs
+        assertEquals(test.getOffset(), ZoneOffset.UTC);
     }
 
     //-----------------------------------------------------------------------
