@@ -271,7 +271,7 @@ public abstract class Clock {
      * @throws CalendricalException if the date cannot be created
      */
     public LocalDate today() {
-        return offsetDate().toLocalDate();
+        return LocalDate.now(this);
     }
 
     /**
@@ -342,7 +342,7 @@ public abstract class Clock {
      * @throws CalendricalException if the time cannot be created
      */
     public LocalTime time() {
-        return offsetTime().toLocalTime();
+        return LocalTime.now(this);
     }
 
     /**
@@ -386,7 +386,7 @@ public abstract class Clock {
      * @throws CalendricalException if the date-time cannot be created
      */
     public LocalDateTime dateTime() {
-        return offsetDateTime().toLocalDateTime();
+        return LocalDateTime.now(this);
     }
 
     /**
@@ -427,8 +427,7 @@ public abstract class Clock {
      * @throws CalendricalException if the date-time cannot be created
      */
     public OffsetDate offsetDate() {
-        Instant instant = instant();
-        return OffsetDate.fromInstant(instant, getZone().getRules().getOffset(instant));
+        return OffsetDate.now(this);
     }
 
     //-----------------------------------------------------------------------
@@ -445,8 +444,7 @@ public abstract class Clock {
      * @throws CalendricalException if the time cannot be created
      */
     public OffsetTime offsetTime() {
-        Instant instant = instant();
-        return OffsetTime.fromInstant(instant, getZone().getRules().getOffset(instant));
+        return OffsetTime.now(this);
     }
 
     /**
@@ -489,8 +487,7 @@ public abstract class Clock {
      * @throws CalendricalException if the date-time cannot be created
      */
     public OffsetDateTime offsetDateTime() {
-        Instant instant = instant();
-        return OffsetDateTime.fromInstant(instant, getZone().getRules().getOffset(instant));
+        return OffsetDateTime.now(this);
     }
 
     /**
