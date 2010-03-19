@@ -117,6 +117,10 @@ public final class ZoneRulesGroup {
      * Gets a group by ID, such as 'TZDB'.
      * <p>
      * Which groups are available is dependent on the registered providers.
+     * <p>
+     * This method relies on time-zone data provider files. These are often loaded as jar files.
+     * If no providers have been {@link #registerProvider0(ZoneRulesDataProvider) registered} or no
+     * provider has been registered for the requested group then an exception is thrown.
      *
      * @param groupID  the group ID, not null
      * @return the zone rules group, never null
@@ -126,7 +130,10 @@ public final class ZoneRulesGroup {
         ZoneRules.checkNotNull(groupID, "Group ID must not be null");
         ZoneRulesGroup group = GROUPS.get(groupID);
         if (group == null) {
-            throw new CalendricalException("Unknown time zone group ID: " + groupID);
+            if (GROUPS.isEmpty()) {
+                throw new CalendricalException("Unknown time-zone group ID '" + groupID + "', no time-zone data files registered");
+            }
+            throw new CalendricalException("Unknown time-zone group ID '" + groupID + '\'');
         }
         return group;
     }
