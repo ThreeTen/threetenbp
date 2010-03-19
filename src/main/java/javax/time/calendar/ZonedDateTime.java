@@ -625,7 +625,7 @@ public final class ZonedDateTime
      * For a floating time-zone, the applicable version is the latest version
      * for which the offset date-time contained in this object would be valid.
      * <p>
-     * This method can throw an exception if time-zone is invalid for this JVM.
+     * This method can throw an exception if the time-zone is invalid for this JVM.
      *
      * @return the time-zone complete with version, never null
      * @throws CalendricalException if no rules can be found for the zone
@@ -646,7 +646,7 @@ public final class ZonedDateTime
      * The rules are determined using {@link TimeZone#getRulesValidFor(OffsetDateTime)}
      * which finds the best matching set of rules for this date-time.
      * <p>
-     * This method can throw an exception if time-zone is invalid for this JVM.
+     * This method can throw an exception if the time-zone is invalid for this JVM.
      *
      * @return the time-zone rules, never null
      * @throws CalendricalException if no rules can be found for the zone
