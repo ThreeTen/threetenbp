@@ -360,6 +360,23 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZonedDateTime} using seconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * The nanosecond field is set to zero.
+     *
+     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param zone  the time-zone, not null
+     * @return the zoned date-time, never null
+     * @throws CalendricalException if the result exceeds the supported range
+     */
+    public static ZonedDateTime ofEpochSeconds(long epochSeconds, TimeZone zone) {
+        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+        return ZonedDateTime.fromInstant(Instant.seconds(epochSeconds), zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code ZonedDateTime} from a text string.
      * <p>
      * The following formats are accepted in ASCII:

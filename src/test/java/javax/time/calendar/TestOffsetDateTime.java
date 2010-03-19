@@ -328,6 +328,38 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // ofEpochSeconds()
+    //-----------------------------------------------------------------------
+    public void factory_ofEpochSeconds_longOffset_afterEpoch() {
+        for (int i = 0; i < 100000; i++) {
+            OffsetDateTime test = OffsetDateTime.ofEpochSeconds(i, OFFSET_PONE);
+            assertEquals(test, OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_PONE).plusSeconds(i));
+        }
+    }
+
+    public void factory_ofEpochSeconds_longOffset_beforeEpoch() {
+        for (int i = 0; i < 100000; i++) {
+            OffsetDateTime test = OffsetDateTime.ofEpochSeconds(-i, OFFSET_PONE);
+            assertEquals(test, OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_PONE).minusSeconds(i));
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void factory_ofEpochSeconds_longOffset_tooBig() {
+        OffsetDateTime.ofEpochSeconds(Long.MAX_VALUE, OFFSET_PONE);  // TODO: better test
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void factory_ofEpochSeconds_longOffset_tooSmall() {
+        OffsetDateTime.ofEpochSeconds(Long.MIN_VALUE, OFFSET_PONE);  // TODO: better test
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofEpochSeconds_longOffset_nullOffset() {
+        OffsetDateTime.ofEpochSeconds(0L, null);
+    }
+
+    //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleToString")

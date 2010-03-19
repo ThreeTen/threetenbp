@@ -350,18 +350,27 @@ public final class OffsetDateTime
     public static OffsetDateTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.from(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-        
-        long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
-        long yearZeroDays = (epochSecs / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        int secsOfDay = (int) (epochSecs % ISOChronology.SECONDS_PER_DAY);
-        if (secsOfDay < 0) {
-            secsOfDay += ISOChronology.SECONDS_PER_DAY;
-            yearZeroDays--;  // overflow caught later
-        }
-        LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
-        LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
-        LocalDateTime dateTime = LocalDateTime.from(date, time);
-        return new OffsetDateTime(dateTime, offset);
+        long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
+        return new OffsetDateTime(ldt, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code OffsetDateTime} using seconds from the
+     * epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * The nanosecond field is set to zero.
+     *
+     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @return the offset date-time, never null
+     * @throws CalendricalException if the result exceeds the supported range
+     */
+    public static OffsetDateTime ofEpochSeconds(long epochSeconds, ZoneOffset offset) {
+        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        long localSeconds = epochSeconds + offset.getAmountSeconds();  // overflow caught later
+        LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
+        return new OffsetDateTime(ldt, offset);
     }
 
     //-----------------------------------------------------------------------

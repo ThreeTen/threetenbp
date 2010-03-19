@@ -92,16 +92,8 @@ public final class LocalDateTime
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         Instant instant = clock.instant();
         ZoneOffset offset = clock.getZone().getRules().getOffset(instant);
-        long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
-        long yearZeroDays = (epochSecs / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        int secsOfDay = (int) (epochSecs % ISOChronology.SECONDS_PER_DAY);
-        if (secsOfDay < 0) {
-            secsOfDay += ISOChronology.SECONDS_PER_DAY;
-            yearZeroDays--;  // overflow caught later
-        }
-        LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
-        LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
-        return new LocalDateTime(date, time);
+        long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        return create(localSeconds, instant.getNanoOfSecond());
     }
 
     /**
@@ -115,6 +107,29 @@ public final class LocalDateTime
      */
     public static LocalDateTime nowSystemClock() {
         return now(Clock.systemDefaultZone());
+    }
+
+    /**
+     * Obtains an instance of {@code LocalDateTime} using seconds from the
+     * local epoch of 1970-01-01T00:00:00.
+     * <p>
+     * The nanosecond field is set to zero.
+     *
+     * @param localSeconds  the number of seconds from the local epoch of 1970-01-01T00:00:00
+     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
+     * @return the local date-time, never null
+     * @throws CalendarConversionException if the instant exceeds the supported date range
+     */
+    static LocalDateTime create(long localSeconds, int nanoOfSecond) {
+        long yearZeroDays = (localSeconds / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        int secsOfDay = (int) (localSeconds % ISOChronology.SECONDS_PER_DAY);
+        if (secsOfDay < 0) {
+            secsOfDay += ISOChronology.SECONDS_PER_DAY;
+            yearZeroDays--;  // overflow caught later
+        }
+        LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
+        LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, nanoOfSecond);
+        return LocalDateTime.from(date, time);
     }
 
     //-----------------------------------------------------------------------

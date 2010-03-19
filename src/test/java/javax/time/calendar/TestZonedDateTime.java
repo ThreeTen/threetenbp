@@ -37,6 +37,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.TimeSource;
@@ -607,6 +608,40 @@ public class TestZonedDateTime {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
         ZonedDateTime test = ZonedDateTime.fromInstant(mmp, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofEpochSeconds()
+    //-----------------------------------------------------------------------
+    public void factory_ofEpochSeconds_longOffset_afterEpoch() {
+        for (int i = 0; i < 100000; i++) {
+            ZonedDateTime test = ZonedDateTime.ofEpochSeconds(i, ZONE_0200);
+            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).plusSeconds(i);
+            assertEquals(test, ZonedDateTime.fromInstant(odt, ZONE_0200));
+        }
+    }
+
+    public void factory_ofEpochSeconds_longOffset_beforeEpoch() {
+        for (int i = 0; i < 100000; i++) {
+            ZonedDateTime test = ZonedDateTime.ofEpochSeconds(-i, ZONE_0200);
+            OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).minusSeconds(i);
+            assertEquals(test, ZonedDateTime.fromInstant(odt, ZONE_0200));
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void factory_ofEpochSeconds_longOffset_tooBig() {
+        ZonedDateTime.ofEpochSeconds(Long.MAX_VALUE, ZONE_PARIS);  // TODO: better test
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void factory_ofEpochSeconds_longOffset_tooSmall() {
+        ZonedDateTime.ofEpochSeconds(Long.MIN_VALUE, ZONE_PARIS);  // TODO: better test
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofEpochSeconds_longOffset_nullOffset() {
+        ZonedDateTime.ofEpochSeconds(0L, null);
     }
 
     //-----------------------------------------------------------------------
