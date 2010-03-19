@@ -1225,6 +1225,23 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // toEpochSeconds()
+    //-----------------------------------------------------------------------
+    public void test_toEpochSeconds_afterEpoch() {
+        for (int i = 0; i < 100000; i++) {
+            OffsetDateTime a = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).plusSeconds(i);
+            assertEquals(a.toEpochSeconds(), i);
+        }
+    }
+
+    public void test_toEpochSeconds_beforeEpoch() {
+        for (int i = 0; i < 100000; i++) {
+            OffsetDateTime a = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).minusSeconds(i);
+            assertEquals(a.toEpochSeconds(), -i);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_time1() {

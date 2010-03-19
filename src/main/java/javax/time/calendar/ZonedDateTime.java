@@ -1757,6 +1757,19 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this {@code ZonedDateTime} to the number of seconds from the epoch
+     * of 1970-01-01T00:00:00Z.
+     * <p>
+     * Instants on the time-line after the epoch are positive, earlier are negative.
+     *
+     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     */
+    public long toEpochSeconds() {
+        return dateTime.toEpochSeconds();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this {@code ZonedDateTime} to another date-time based on the UTC
      * equivalent date-times then time-zone unique key.
      * <p>
