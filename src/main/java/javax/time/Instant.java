@@ -173,7 +173,7 @@ public final class Instant
      * This methods allows an arbitrary number of nanoseconds to be passed in.
      * The factory will alter the values of the second and nanosecond in order
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
-     * For example, the following will result in the exactly the same duration:
+     * For example, the following will result in the exactly the same instant:
      * <pre>
      *  Instant.ofSeconds(3, 1);
      *  Instant.ofSeconds(4, -999999999);
