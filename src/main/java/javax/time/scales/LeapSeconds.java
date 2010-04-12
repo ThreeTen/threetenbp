@@ -163,8 +163,12 @@ public class LeapSeconds {
             Entry[] entryArray = new Entry[entries.size()];
             entries.toArray(entryArray);
             LeapSeconds.list = new UTC_TAI<Entry>(entryArray);
-            in.close();
         } catch (IOException e) {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                // ignore
+            }
             throw new CalendricalException("Exception reading LeapSeconds.txt", e);
         }
     }
