@@ -1466,10 +1466,14 @@ public final class Period
                                     buf.append('-');
                                 }
                             }
-                            buf.append(s).append('.').append(n);
-                            while (buf.charAt(buf.length() - 1) == '0') {
-                                buf.setLength(buf.length() - 1);
+                            buf.append(s);
+                            int dotPos = buf.length();
+                            n += 1000000000;
+                            while (n % 10 == 0) {
+                                n /= 10;
                             }
+                            buf.append(n);
+                            buf.setCharAt(dotPos, '.');
                             buf.append('S');
                         }
                     }
