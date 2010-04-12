@@ -373,10 +373,8 @@ public final class DateTimeFormatter {
     /**
      * Implements the classic Java Format API.
      */
+    @SuppressWarnings("serial")  // not actually serializable
     private class ClassicFormat extends Format {
-
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
 
         /** {@inheritDoc} */
         @Override
