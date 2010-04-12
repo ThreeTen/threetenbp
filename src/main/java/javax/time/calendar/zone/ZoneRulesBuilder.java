@@ -792,6 +792,8 @@ public class ZoneRulesBuilder {
             cmp = (cmp == 0 ? time.compareTo(other.time) : cmp);
             return cmp;
         }
+
+        // no equals() or hashCode()
     }
 
 }
