@@ -197,7 +197,7 @@ public class ScaleUtil {
             nanos += NANOS_PER_SECOND;
             secs = MathUtils.safeDecrement(secs);
         }
-        return Duration.seconds(secs, nanos);
+        return Duration.ofSeconds(secs, nanos);
     }
 
     public static int julianDayNumber(int year, int month, int day) {

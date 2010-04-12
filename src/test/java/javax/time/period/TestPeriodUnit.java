@@ -53,7 +53,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodUnit {
 
-    private static final PeriodUnit BASIC = basic("TestBasic", Duration.seconds(1));
+    private static final PeriodUnit BASIC = basic("TestBasic", Duration.ofSeconds(1));
     private static final PeriodUnit DERIVED1 = new PeriodUnit("TestDerived", PeriodField.of(30, BASIC)) {
         private static final long serialVersionUID = 1L;
     };
@@ -71,7 +71,7 @@ public class TestPeriodUnit {
     // basic()
     //-----------------------------------------------------------------------
     public void test_factory_basic() {
-        Duration dur = Duration.seconds(30);
+        Duration dur = Duration.ofSeconds(30);
         PeriodUnit test = basic("TestFactoryBasic1", dur);
         assertEquals(test.getEquivalentPeriods().size(), 0);
         assertSame(test.getEstimatedDuration(), dur);
@@ -81,7 +81,7 @@ public class TestPeriodUnit {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_basic_nullName() {
-        basic(null, Duration.seconds(30));
+        basic(null, Duration.ofSeconds(30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -96,7 +96,7 @@ public class TestPeriodUnit {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_basic_negativeDuration() {
-        basic("TestFactoryBasic3", Duration.nanos(-1));
+        basic("TestFactoryBasic3", Duration.ofNanos(-1));
     }
 
     //-----------------------------------------------------------------------
@@ -107,7 +107,7 @@ public class TestPeriodUnit {
         PeriodUnit test = derived("TestFactoryDerived1", pf);
         assertEquals(test.getEquivalentPeriods().size(), 1);
         assertSame(test.getEquivalentPeriods().get(0), pf);
-        assertEquals(test.getEstimatedDuration(), Duration.seconds(30));
+        assertEquals(test.getEstimatedDuration(), Duration.ofSeconds(30));
         assertEquals(test.getName(), "TestFactoryDerived1");
         assertEquals(test.toString(), "TestFactoryDerived1");
     }
@@ -139,7 +139,7 @@ public class TestPeriodUnit {
         static final Basic INSTANCE = new Basic();
         private static final long serialVersionUID = 1L;
          Basic() {
-             super("TestSerializationBasic", Duration.seconds(30));
+             super("TestSerializationBasic", Duration.ofSeconds(30));
          }
          private Object readResolve() {
              return INSTANCE;
@@ -248,17 +248,17 @@ public class TestPeriodUnit {
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_basic() {
-        PeriodUnit test1 = basic("TestCompareTo1", Duration.seconds(30));
-        PeriodUnit test2 = basic("TestCompareTo2", Duration.seconds(40));
+        PeriodUnit test1 = basic("TestCompareTo1", Duration.ofSeconds(30));
+        PeriodUnit test2 = basic("TestCompareTo2", Duration.ofSeconds(40));
         assertEquals(test1.compareTo(test1), 0);
         assertEquals(test1.compareTo(test2), -1);
         assertEquals(test2.compareTo(test1), 1);
     }
 
     public void test_compareTo_durationThenName() {
-        PeriodUnit test1 = basic("TestCompareTo1", Duration.seconds(30));
-        PeriodUnit test2 = basic("TestCompareTo2", Duration.seconds(30));
-        PeriodUnit test3 = basic("TestCompareTo0", Duration.seconds(40));
+        PeriodUnit test1 = basic("TestCompareTo1", Duration.ofSeconds(30));
+        PeriodUnit test2 = basic("TestCompareTo2", Duration.ofSeconds(30));
+        PeriodUnit test3 = basic("TestCompareTo0", Duration.ofSeconds(40));
         assertEquals(test1.compareTo(test1), 0);
         assertTrue(test1.compareTo(test2) < 0);
         assertTrue(test1.compareTo(test3) < 0);
@@ -286,7 +286,7 @@ public class TestPeriodUnit {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_compareTo_null() {
-        PeriodUnit test5 = basic("TestCompareToNull", Duration.seconds(30));
+        PeriodUnit test5 = basic("TestCompareToNull", Duration.ofSeconds(30));
         test5.compareTo(null);
     }
 
@@ -315,9 +315,9 @@ public class TestPeriodUnit {
     }
 
     public void test_equals_nameDuration() {
-        PeriodUnit test1 = basic("TestEquals1", Duration.seconds(30));
-        PeriodUnit test2 = basic("TestEquals2", Duration.seconds(30));
-        PeriodUnit test3 = basic("TestEquals2", Duration.seconds(40));
+        PeriodUnit test1 = basic("TestEquals1", Duration.ofSeconds(30));
+        PeriodUnit test2 = basic("TestEquals2", Duration.ofSeconds(30));
+        PeriodUnit test3 = basic("TestEquals2", Duration.ofSeconds(40));
         assertEquals(test1.equals(test1), true);
         assertEquals(test1.equals(test2), false);
         assertEquals(test1.equals(test3), false);
@@ -330,26 +330,26 @@ public class TestPeriodUnit {
     }
 
     public void test_equals_null() {
-        PeriodUnit test = basic("TestEqualsNull", Duration.seconds(30));
+        PeriodUnit test = basic("TestEqualsNull", Duration.ofSeconds(30));
         assertEquals(false, test.equals(null));
     }
 
     public void test_equals_otherClass() {
-        PeriodUnit test = basic("TestEqualsOther", Duration.seconds(30));
+        PeriodUnit test = basic("TestEqualsOther", Duration.ofSeconds(30));
         assertEquals(false, test.equals(""));
     }
 
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        PeriodUnit test1 = basic("TestHashCode", Duration.seconds(30));
-        PeriodUnit test2 = basic("TestHashCode", Duration.seconds(40));
+        PeriodUnit test1 = basic("TestHashCode", Duration.ofSeconds(30));
+        PeriodUnit test2 = basic("TestHashCode", Duration.ofSeconds(40));
         assertEquals(test1.hashCode() == test1.hashCode(), true);
         assertEquals(test1.hashCode() == test2.hashCode(), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() {
-        PeriodUnit test = basic("TestToString", Duration.seconds(30));
+        PeriodUnit test = basic("TestToString", Duration.ofSeconds(30));
         assertEquals(test.toString(), "TestToString");
     }
 

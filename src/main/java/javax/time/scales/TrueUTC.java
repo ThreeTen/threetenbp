@@ -308,7 +308,7 @@ class TrueUTC implements TimeScale, Serializable {
         if (adjust != 0) {
             secs = MathUtils.safeAdd(secs, adjust);
         }
-        return Duration.seconds(secs, nanos);
+        return Duration.ofSeconds(secs, nanos);
     }
 
 }

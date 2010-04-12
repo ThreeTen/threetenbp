@@ -1899,76 +1899,76 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Period unit for nanoseconds.
      */
-    private static final Unit NANOS = new Unit(0, "Nanos", null, Duration.nanos(1));
+    private static final Unit NANOS = new Unit(0, "Nanos", null, Duration.ofNanos(1));
     /**
      * Period unit for microseconds.
      */
-    private static final Unit MICROS = new Unit(1, "Micros", PeriodField.of(1000, NANOS), Duration.nanos(1000));
+    private static final Unit MICROS = new Unit(1, "Micros", PeriodField.of(1000, NANOS), Duration.ofNanos(1000));
     /**
      * Period unit for milliseconds.
      */
-    private static final Unit MILLIS = new Unit(2, "Millis", PeriodField.of(1000, MICROS), Duration.millis(1));
+    private static final Unit MILLIS = new Unit(2, "Millis", PeriodField.of(1000, MICROS), Duration.ofMillis(1));
     /**
      * Period unit for seconds.
      */
-    private static final Unit SECONDS = new Unit(3, "Seconds", PeriodField.of(1000, MILLIS), Duration.seconds(1));
+    private static final Unit SECONDS = new Unit(3, "Seconds", PeriodField.of(1000, MILLIS), Duration.ofSeconds(1));
     /**
      * Period unit for minutes.
      */
-    private static final Unit MINUTES = new Unit(4, "Minutes", PeriodField.of(60, SECONDS), Duration.seconds(60));
+    private static final Unit MINUTES = new Unit(4, "Minutes", PeriodField.of(60, SECONDS), Duration.ofSeconds(60));
     /**
      * Period unit for hours.
      */
-    private static final Unit HOURS = new Unit(5, "Hours", PeriodField.of(60, MINUTES), Duration.seconds(60 * 60));
+    private static final Unit HOURS = new Unit(5, "Hours", PeriodField.of(60, MINUTES), Duration.ofSeconds(60 * 60));
     /**
      * Period unit for 12 hours half-days, used by AM/PM.
      */
-    private static final Unit _12_HOURS = new Unit(6, "12Hours", PeriodField.of(12, HOURS), Duration.seconds(12 * 60 * 60));
+    private static final Unit _12_HOURS = new Unit(6, "12Hours", PeriodField.of(12, HOURS), Duration.ofSeconds(12 * 60 * 60));
     /**
      * Period unit for 24 hour fixed length days.
      */
-    private static final Unit _24_HOURS = new Unit(7, "24Hours", PeriodField.of(2, _12_HOURS), Duration.seconds(24 * 60 * 60));
+    private static final Unit _24_HOURS = new Unit(7, "24Hours", PeriodField.of(2, _12_HOURS), Duration.ofSeconds(24 * 60 * 60));
 
     /**
      * Period unit for days.
      */
-    private static final Unit DAYS = new Unit(8, "Days", null, Duration.seconds(86400));
+    private static final Unit DAYS = new Unit(8, "Days", null, Duration.ofSeconds(86400));
     /**
      * Period unit for weeks.
      */
-    private static final Unit WEEKS = new Unit(9, "Weeks", PeriodField.of(7, DAYS), Duration.seconds(7L * 86400L));
+    private static final Unit WEEKS = new Unit(9, "Weeks", PeriodField.of(7, DAYS), Duration.ofSeconds(7L * 86400L));
     /**
      * Period unit for months.
      */
-    private static final Unit MONTHS = new Unit(10, "Months", null, Duration.seconds(31556952L / 12L));
+    private static final Unit MONTHS = new Unit(10, "Months", null, Duration.ofSeconds(31556952L / 12L));
     /**
      * Period unit for quarters.
      */
-    private static final Unit QUARTERS = new Unit(11, "Quarters", PeriodField.of(3, MONTHS), Duration.seconds(31556952L / 4));
+    private static final Unit QUARTERS = new Unit(11, "Quarters", PeriodField.of(3, MONTHS), Duration.ofSeconds(31556952L / 4));
     /**
      * Period unit for week-based-years.
      */
-    private static final Unit WEEK_BASED_YEARS = new Unit(12, "WeekBasedYears", null, Duration.seconds(364L * 86400L + 43200L));  // 364.5 days
+    private static final Unit WEEK_BASED_YEARS = new Unit(12, "WeekBasedYears", null, Duration.ofSeconds(364L * 86400L + 43200L));  // 364.5 days
     /**
      * Period unit for years.
      */
-    private static final Unit YEARS = new Unit(13, "Years", PeriodField.of(4, QUARTERS), Duration.seconds(31556952L));  // 365.2425 days
+    private static final Unit YEARS = new Unit(13, "Years", PeriodField.of(4, QUARTERS), Duration.ofSeconds(31556952L));  // 365.2425 days
     /**
      * Period unit for decades.
      */
-    private static final Unit DECADES = new Unit(14, "Decades", PeriodField.of(10, YEARS), Duration.seconds(10L * 31556952L));
+    private static final Unit DECADES = new Unit(14, "Decades", PeriodField.of(10, YEARS), Duration.ofSeconds(10L * 31556952L));
     /**
      * Period unit for centuries.
      */
-    private static final Unit CENTURIES = new Unit(15, "Centuries", PeriodField.of(10, DECADES), Duration.seconds(100L * 31556952L));
+    private static final Unit CENTURIES = new Unit(15, "Centuries", PeriodField.of(10, DECADES), Duration.ofSeconds(100L * 31556952L));
     /**
      * Period unit for millennia.
      */
-    private static final Unit MILLENNIA = new Unit(16, "Millennia", PeriodField.of(10, CENTURIES), Duration.seconds(1000L * 31556952L));
+    private static final Unit MILLENNIA = new Unit(16, "Millennia", PeriodField.of(10, CENTURIES), Duration.ofSeconds(1000L * 31556952L));
     /**
      * Period unit for eras.
      */
-    private static final Unit ERAS = new Unit(17, "Eras", null, Duration.seconds(31556952L * 2000000000L));
+    private static final Unit ERAS = new Unit(17, "Eras", null, Duration.ofSeconds(31556952L * 2000000000L));
 
     /**
      * Cache of units for deserialization.

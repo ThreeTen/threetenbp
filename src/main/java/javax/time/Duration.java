@@ -104,7 +104,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @param seconds  the number of seconds, positive or negative
      * @return a {@code Duration}, never null
      */
-    public static Duration seconds(long seconds) {
+    public static Duration ofSeconds(long seconds) {
         return create(seconds, 0);
     }
 
@@ -117,9 +117,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
      * For example, the following will result in the exactly the same duration:
      * <pre>
-     *  Duration.duration(3, 1);
-     *  Duration.duration(4, -999999999);
-     *  Duration.duration(2, 1000000001);
+     *  Duration.ofSeconds(3, 1);
+     *  Duration.ofSeconds(4, -999999999);
+     *  Duration.ofSeconds(2, 1000000001);
      * </pre>
      *
      * @param seconds  the number of seconds, positive or negative
@@ -127,7 +127,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, never null
      * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Duration}
      */
-    public static Duration seconds(long seconds, long nanoAdjustment) {
+    public static Duration ofSeconds(long seconds, long nanoAdjustment) {
         long secs = MathUtils.safeAdd(seconds, nanoAdjustment / NANOS_PER_SECOND);
         int nos = (int) (nanoAdjustment % NANOS_PER_SECOND);
         if (nos < 0) {
@@ -148,9 +148,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, never null
      * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Duration}
      */
-    public static Duration seconds(BigDecimal seconds) {
+    public static Duration ofSeconds(BigDecimal seconds) {
         Instant.checkNotNull(seconds, "Seconds must not be null");
-        return nanos(seconds.movePointRight(9).toBigIntegerExact());
+        return ofNanos(seconds.movePointRight(9).toBigIntegerExact());
     }
 
     //-----------------------------------------------------------------------
@@ -162,7 +162,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @param millis  the number of milliseconds, positive or negative
      * @return a {@code Duration}, never null
      */
-    public static Duration millis(long millis) {
+    public static Duration ofMillis(long millis) {
         long secs = millis / 1000;
         int mos = (int) (millis % 1000);
         if (mos < 0) {
@@ -181,7 +181,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @param nanos  the number of nanoseconds, positive or negative
      * @return a {@code Duration}, never null
      */
-    public static Duration nanos(long nanos) {
+    public static Duration ofNanos(long nanos) {
         long secs = nanos / NANOS_PER_SECOND;
         int nos = (int) (nanos % NANOS_PER_SECOND);
         if (nos < 0) {
@@ -202,13 +202,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, never null
      * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Duration}
      */
-    public static Duration nanos(BigInteger nanos) {
+    public static Duration ofNanos(BigInteger nanos) {
         Instant.checkNotNull(nanos, "Nanos must not be null");
         BigInteger[] divRem = nanos.divideAndRemainder(Instant.BILLION);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
         }
-        return seconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
     }
 
     //-----------------------------------------------------------------------
@@ -223,7 +223,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, never null
      * @throws ArithmeticException if the input minutes exceeds the capacity of {@code Duration}
      */
-    public static Duration standardMinutes(long minutes) {
+    public static Duration ofStandardMinutes(long minutes) {
         return create(MathUtils.safeMultiply(minutes, 60), 0);
     }
 
@@ -238,7 +238,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, never null
      * @throws ArithmeticException if the input hours exceeds the capacity of {@code Duration}
      */
-    public static Duration standardHours(long hours) {
+    public static Duration ofStandardHours(long hours) {
         return create(MathUtils.safeMultiply(hours, 3600), 0);
     }
 
@@ -253,7 +253,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, never null
      * @throws ArithmeticException if the input days exceeds the capacity of {@code Duration}
      */
-    public static Duration standardDays(long days) {
+    public static Duration ofStandardDays(long days) {
         return create(MathUtils.safeMultiply(days, 86400), 0);
     }
 
@@ -270,7 +270,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, never null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
-    public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
+    public static Duration between(InstantProvider startInclusive, InstantProvider endExclusive) {
         Instant start = Instant.from(startInclusive);
         Instant end = Instant.from(endExclusive);
         long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
@@ -356,7 +356,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
                     nanos *= 10;
                     break;
             }
-            return negative ? seconds(secs, -nanos) : create(secs, nanos);
+            return negative ? ofSeconds(secs, -nanos) : create(secs, nanos);
             
         } catch (ArithmeticException ex) {
             throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2, ex);
@@ -720,7 +720,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Multiplication result exceeds capacity of Duration: " + this + " * " + multiplicand);
         }
-        return seconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
      }
 
     //-----------------------------------------------------------------------
@@ -744,7 +744,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         BigInteger nanos = toNanos();
         nanos = nanos.divide(BigInteger.valueOf(divisor));
         BigInteger[] divRem = nanos.divideAndRemainder(Instant.BILLION);
-        return seconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
      }
 
     //-----------------------------------------------------------------------

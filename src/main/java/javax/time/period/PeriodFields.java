@@ -787,7 +787,7 @@ public final class PeriodFields
      */
     public Duration toDuration() {
         PeriodFields period = toEquivalentPeriod(ISOChronology.periodSeconds(), ISOChronology.periodNanos());
-        return Duration.seconds(period.getAmount(ISOChronology.periodSeconds()), period.getAmount(ISOChronology.periodNanos()));
+        return Duration.ofSeconds(period.getAmount(ISOChronology.periodSeconds()), period.getAmount(ISOChronology.periodNanos()));
     }
 
     //-----------------------------------------------------------------------

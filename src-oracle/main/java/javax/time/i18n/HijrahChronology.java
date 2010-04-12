@@ -595,7 +595,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     private static final class Months extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         private Months() {
-            super("HijrahMonths", Duration.seconds(2551440L));  // 29.5305... days
+            super("HijrahMonths", Duration.ofSeconds(2551440L));  // 29.5305... days
         }
         private Object readResolve() {
             return MONTHS;

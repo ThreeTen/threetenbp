@@ -549,7 +549,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     private static final class Years extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         private Years() {
-            super("JulianYears", Duration.seconds(31557600L));  // 365.25 days
+            super("JulianYears", Duration.ofSeconds(31557600L));  // 365.25 days
         }
         private Object readResolve() {
             return YEARS;
@@ -565,7 +565,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     private static final class Months extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         private Months() {
-            super("JulianMonths", Duration.standardHours(31557600L / 12L));  // 365.25 days / 12
+            super("JulianMonths", Duration.ofStandardHours(31557600L / 12L));  // 365.25 days / 12
         }
         private Object readResolve() {
             return MONTHS;

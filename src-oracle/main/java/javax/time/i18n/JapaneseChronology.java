@@ -539,7 +539,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     private static final class Eras extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         private Eras() {
-            super("JapaneseEras", Duration.seconds(31556952L * 40L));
+            super("JapaneseEras", Duration.ofSeconds(31556952L * 40L));
         }
         private Object readResolve() {
             return ERAS;

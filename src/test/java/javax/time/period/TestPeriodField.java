@@ -526,13 +526,13 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     public void test_toDuration_hours() {
         Duration test = PeriodField.of(5, HOURS).toDuration();
-        Duration fiveHours = Duration.standardHours(5);
+        Duration fiveHours = Duration.ofStandardHours(5);
         assertEquals(test, fiveHours);
     }
 
     public void test_toDuration_millis() {
         Duration test = PeriodField.of(5, ISOChronology.periodMillis()).toDuration();
-        Duration fiveMillis = Duration.millis(5);
+        Duration fiveMillis = Duration.ofMillis(5);
         assertEquals(test, fiveMillis);
     }
 

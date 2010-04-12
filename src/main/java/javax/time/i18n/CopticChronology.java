@@ -471,7 +471,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     private static final class Years extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         private Years() {
-            super("CopticYears", Duration.seconds(31557600L));  // 365.25 days
+            super("CopticYears", Duration.ofSeconds(31557600L));  // 365.25 days
         }
         private Object readResolve() {
             return YEARS;
@@ -487,7 +487,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     private static final class Months extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         private Months() {
-            super("CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
+            super("CopticMonths", Duration.ofStandardHours(24L * 30L - 12L));  // 29.5 days
         }
         private Object readResolve() {
             return MONTHS;

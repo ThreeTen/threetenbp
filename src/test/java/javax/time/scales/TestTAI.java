@@ -128,21 +128,21 @@ public class TestTAI {
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
     @Test public void testCalculation() {
-        assertEquals(instant(date(2008, 12, 31)+time(23,59,59)).plus(Duration.seconds(1)),
+        assertEquals(instant(date(2008, 12, 31)+time(23,59,59)).plus(Duration.ofSeconds(1)),
            instant(date(2009, 1, 1)));
-        assertEquals(instant(date(2009, 1, 1)).minus(Duration.seconds(1)), instant(date(2008, 12, 31)+time(23,59,59)));
+        assertEquals(instant(date(2009, 1, 1)).minus(Duration.ofSeconds(1)), instant(date(2008, 12, 31)+time(23,59,59)));
         assertEquals(TimeScales.tai().durationBetween(
                instant(date(2008, 12, 31)+time(23,59,59)),
                instant(date(2009, 1, 1))),
-           Duration.seconds(1));
+           Duration.ofSeconds(1));
         assertEquals(TimeScales.tai().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2009, 1, 1)+60)),
-           Duration.seconds(120));
+           Duration.ofSeconds(120));
         assertEquals(TimeScales.tai().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2008, 12, 31)+time(23,59,59),0)),
-           Duration.seconds(59));
+           Duration.ofSeconds(59));
     }
 
     private static TimeScaleInstant instant(long epochSeconds) {

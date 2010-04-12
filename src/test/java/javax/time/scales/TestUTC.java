@@ -111,25 +111,25 @@ public class TestUTC {
     }
 
     @Test public void testCalculation() {
-        assertEquals(instant(date(2008, 12, 31)+time(23,59,59)).plus(Duration.seconds(1)),
+        assertEquals(instant(date(2008, 12, 31)+time(23,59,59)).plus(Duration.ofSeconds(1)),
            instant(date(2009, 1, 1)));
-        assertEquals(instant(date(2009, 1, 1)).minus(Duration.seconds(1)), instant(date(2008, 12, 31)+time(23,59,59)));
+        assertEquals(instant(date(2009, 1, 1)).minus(Duration.ofSeconds(1)), instant(date(2008, 12, 31)+time(23,59,59)));
         assertEquals(TimeScales.simplifiedUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59,59)),
                instant(date(2009, 1, 1))),
-           Duration.seconds(1));
+           Duration.ofSeconds(1));
         assertEquals(TimeScales.simplifiedUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2009, 1, 1)+60)),
-           Duration.seconds(120));
+           Duration.ofSeconds(120));
         assertEquals(TimeScales.simplifiedUtc().durationBetween(
                instant(date(2008, 12, 31)+time(23,59)),
                instant(date(2008, 12, 31)+time(23,59,59),0)),
-           Duration.seconds(59));
+           Duration.ofSeconds(59));
 
         // check behaviour around gap in time scale
-        assertTrue(instant(date(1968,2,1)).minus(Duration.millis(10)).getValidity() == TimeScaleInstant.Validity.VALID);
-        assertEquals(instant(date(1968,1,31)+time(23,59,59)).plus(Duration.millis(990)), instant(date(1968,2,1)));
+        assertTrue(instant(date(1968,2,1)).minus(Duration.ofMillis(10)).getValidity() == TimeScaleInstant.Validity.VALID);
+        assertEquals(instant(date(1968,1,31)+time(23,59,59)).plus(Duration.ofMillis(990)), instant(date(1968,2,1)));
 
         TimeScaleInstant t0 = instant(date(1968,1,1));
         TimeScaleInstant t1= instant(date(1969,1,1));

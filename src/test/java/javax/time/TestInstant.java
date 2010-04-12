@@ -576,7 +576,7 @@ public class TestInstant {
     
     @Test(dataProvider="Plus") 
     public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
-       Instant i = Instant.ofSeconds(seconds, nanos).plus(Duration.seconds(otherSeconds, otherNanos));
+       Instant i = Instant.ofSeconds(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(i.getEpochSeconds(), expectedSeconds);
        assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
@@ -584,13 +584,13 @@ public class TestInstant {
     @Test(expectedExceptions=ArithmeticException.class)
     public void plusOverflowTooBig() {
        Instant i = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
-       i.plus(Duration.seconds(0, 1));
+       i.plus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void plusOverflowTooSmall() {
        Instant i = Instant.ofSeconds(Long.MIN_VALUE);
-       i.plus(Duration.seconds(-1, 999999999));
+       i.plus(Duration.ofSeconds(-1, 999999999));
     }
 
     //-----------------------------------------------------------------------
@@ -1028,7 +1028,7 @@ public class TestInstant {
     
     @Test(dataProvider="Minus") 
     public void minus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
-       Instant i = Instant.ofSeconds(seconds, nanos).minus(Duration.seconds(otherSeconds, otherNanos));
+       Instant i = Instant.ofSeconds(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(i.getEpochSeconds(), expectedSeconds);
        assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
@@ -1036,13 +1036,13 @@ public class TestInstant {
     @Test(expectedExceptions=ArithmeticException.class)
     public void minusOverflowTooSmall() {
        Instant i = Instant.ofSeconds(Long.MIN_VALUE);
-       i.minus(Duration.seconds(0, 1));
+       i.minus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void minusOverflowTooBig() {
        Instant i = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
-       i.minus(Duration.seconds(-1, 999999999));
+       i.minus(Duration.ofSeconds(-1, 999999999));
     }
 
     //-----------------------------------------------------------------------
