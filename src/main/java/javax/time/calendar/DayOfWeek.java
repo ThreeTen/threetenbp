@@ -179,8 +179,8 @@ public enum DayOfWeek {
      * the text will be equivalent for all day-of-week rules, thus this aspect
      * of the implementation should be irrelevant to applications.
      * <p>
-     * If there is no textual mapping for the locale, then the value is
-     * returned as per {@link Integer#toString()}.
+     * If there is no textual mapping for the locale, then the ISO-8601
+     * {@link #getValue() value} is returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, never null
@@ -197,8 +197,8 @@ public enum DayOfWeek {
      * the text will be equivalent for all day-of-week rules, thus this aspect
      * of the implementation should be irrelevant to applications.
      * <p>
-     * If there is no textual mapping for the locale, then the value is
-     * returned as per {@link Integer#toString()}.
+     * If there is no textual mapping for the locale, then the ISO-8601
+     * {@link #getValue() value} is returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
      * @return the full text value of the day-of-week, never null

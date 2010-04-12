@@ -294,7 +294,7 @@ public final class DateTimeFields
      * Returns a copy of this DateTimeFields with the specified field value.
      * <p>
      * If this instance already has a value for the field then the value is replaced.
-     * Otherwise the value is added.
+     * Otherwise the value is added to the map.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
