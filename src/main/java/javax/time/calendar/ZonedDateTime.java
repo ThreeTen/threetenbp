@@ -372,7 +372,7 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime ofEpochSeconds(long epochSeconds, TimeZone zone) {
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
-        return ZonedDateTime.fromInstant(Instant.seconds(epochSeconds), zone);
+        return ZonedDateTime.fromInstant(Instant.ofSeconds(epochSeconds), zone);
     }
 
     //-----------------------------------------------------------------------

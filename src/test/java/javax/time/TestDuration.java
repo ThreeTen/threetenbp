@@ -396,8 +396,8 @@ public class TestDuration {
 
     @Test(dataProvider="DurationBetween")
     public void factory_durationBetween_Instant_Instant(long secs1, int nanos1, long secs2, int nanos2, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant start = Instant.seconds(secs1, nanos1);
-        Instant end = Instant.seconds(secs2, nanos2);
+        Instant start = Instant.ofSeconds(secs1, nanos1);
+        Instant end = Instant.ofSeconds(secs2, nanos2);
         Duration t = Duration.durationBetween(start, end);
         assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNanosInSecond(), expectedNanoOfSecond);
@@ -405,8 +405,8 @@ public class TestDuration {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_durationBetween_Instant_Instant_tooBig() {
-        Instant start = Instant.seconds(-1);
-        Instant end = Instant.seconds(Long.MAX_VALUE);
+        Instant start = Instant.ofSeconds(-1);
+        Instant end = Instant.ofSeconds(Long.MAX_VALUE);
         Duration.durationBetween(start, end);
     }
 

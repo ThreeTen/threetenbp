@@ -161,7 +161,7 @@ public class TestTimeZone {
         assertEquals(test.getShortName(), "UTC");
         assertEquals(test.isFixed(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
-        assertEquals(test.getRules().getOffset(Instant.seconds(0L)), ZoneOffset.UTC);
+        assertEquals(test.getRules().getOffset(Instant.ofSeconds(0L)), ZoneOffset.UTC);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 30));
         assertEquals(info.isTransition(), false);
         assertEquals(info.getTransition(), null);
@@ -331,7 +331,7 @@ public class TestTimeZone {
         assertEquals(test.isFixed(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
         ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));
-        assertEquals(test.getRules().getOffset(Instant.seconds(0L)), offset);
+        assertEquals(test.getRules().getOffset(Instant.ofSeconds(0L)), offset);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 30));
         assertEquals(info.isTransition(), false);
         assertEquals(info.getTransition(), null);

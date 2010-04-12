@@ -194,7 +194,7 @@ public abstract class TimeSource {
         /** {@inheritDoc} */
         @Override
         public Instant instant() {
-            return Instant.millis(System.currentTimeMillis());
+            return Instant.ofMillis(System.currentTimeMillis());
         }
         /** {@inheritDoc} */
         @Override
@@ -261,7 +261,7 @@ public abstract class TimeSource {
         /** {@inheritDoc} */
         @Override
         public Instant instant() {
-            return Instant.millis(System.currentTimeMillis()).plus(offset);
+            return Instant.ofMillis(System.currentTimeMillis()).plus(offset);
         }
         /** {@inheritDoc} */
         @Override

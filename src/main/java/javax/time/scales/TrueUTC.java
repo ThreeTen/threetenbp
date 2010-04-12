@@ -105,7 +105,7 @@ class TrueUTC implements TimeScale, Serializable {
             return tsi.getTimeScale().toInstant(tsi);
         }
         // just lose the leap second (if any)
-        return Instant.seconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
+        return Instant.ofSeconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
     }
 
     /** {@inheritDoc} */

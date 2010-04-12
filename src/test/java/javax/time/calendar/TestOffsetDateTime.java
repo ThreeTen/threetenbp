@@ -123,7 +123,7 @@ public class TestOffsetDateTime {
 
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofSeconds(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -139,7 +139,7 @@ public class TestOffsetDateTime {
 
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofSeconds(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), TimeZone.of(OFFSET_PONE));
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -156,7 +156,7 @@ public class TestOffsetDateTime {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.seconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofSeconds(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1969);

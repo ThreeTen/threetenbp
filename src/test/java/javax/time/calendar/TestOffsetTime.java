@@ -116,7 +116,7 @@ public class TestOffsetTime {
 
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i, 8);
+            Instant instant = Instant.ofSeconds(i, 8);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
@@ -129,7 +129,7 @@ public class TestOffsetTime {
 
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.seconds(i, 8);
+            Instant instant = Instant.ofSeconds(i, 8);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
@@ -159,11 +159,13 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     @Test(timeOut=30000)  // TODO: remove when time zone loading is faster
     public void nowSystemClock() {
+        OffsetDateTime nowDT = OffsetDateTime.nowSystemClock();
+        
         OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
         OffsetTime test = OffsetTime.nowSystemClock();
         long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
         assertTrue(diff < 100000000);  // less than 0.1 secs
-        assertEquals(test.getOffset(), ZoneOffset.UTC);
+        assertEquals(test.getOffset(), nowDT.getOffset());
     }
 
     //-----------------------------------------------------------------------
@@ -225,13 +227,13 @@ public class TestOffsetTime {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullOffset() {
-        Instant instant = Instant.seconds(0L);
+        Instant instant = Instant.ofSeconds(0L);
         OffsetTime.fromInstant(instant, (ZoneOffset) null);
     }
 
     public void factory_fromInstant_InstantProvider_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i, 8);
+            Instant instant = Instant.ofSeconds(i, 8);
             OffsetTime test = OffsetTime.fromInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -242,7 +244,7 @@ public class TestOffsetTime {
 
     public void factory_fromInstant_InstantProvider_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.seconds(i, 8);
+            Instant instant = Instant.ofSeconds(i, 8);
             OffsetTime test = OffsetTime.fromInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
@@ -253,7 +255,7 @@ public class TestOffsetTime {
 
     //-----------------------------------------------------------------------
     public void factory_fromInstant_InstantProvider_maxYear() {
-        OffsetTime test = OffsetTime.fromInstant(Instant.seconds(Long.MAX_VALUE), ZoneOffset.UTC);
+        OffsetTime test = OffsetTime.fromInstant(Instant.ofSeconds(Long.MAX_VALUE), ZoneOffset.UTC);
         int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
         int min = (int) ((Long.MAX_VALUE / 60) % 60);
         int sec = (int) (Long.MAX_VALUE % 60);
@@ -267,7 +269,7 @@ public class TestOffsetTime {
         long oneDay = 24 * 60 * 60;
         long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
         
-        OffsetTime test = OffsetTime.fromInstant(Instant.seconds(Long.MIN_VALUE), ZoneOffset.UTC);
+        OffsetTime test = OffsetTime.fromInstant(Instant.ofSeconds(Long.MIN_VALUE), ZoneOffset.UTC);
         long added = Long.MIN_VALUE + addition;
         int hour = (int) ((added / (60 * 60)) % 24);
         int min = (int) ((added / 60) % 60);

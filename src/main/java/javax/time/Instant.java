@@ -162,7 +162,7 @@ public final class Instant
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @return an {@code Instant}, never null
      */
-    public static Instant seconds(long epochSeconds) {
+    public static Instant ofSeconds(long epochSeconds) {
         return create(epochSeconds, 0);
     }
 
@@ -175,9 +175,9 @@ public final class Instant
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
      * For example, the following will result in the exactly the same duration:
      * <pre>
-     *  Instant.duration(3, 1);
-     *  Instant.duration(4, -999999999);
-     *  Instant.duration(2, 1000000001);
+     *  Instant.ofSeconds(3, 1);
+     *  Instant.ofSeconds(4, -999999999);
+     *  Instant.ofSeconds(2, 1000000001);
      * </pre>
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
@@ -185,7 +185,7 @@ public final class Instant
      * @return an {@code Instant}, never null
      * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Instant}
      */
-    public static Instant seconds(long epochSeconds, long nanoAdjustment) {
+    public static Instant ofSeconds(long epochSeconds, long nanoAdjustment) {
         long secs = MathUtils.safeAdd(epochSeconds, nanoAdjustment / NANOS_PER_SECOND);
         int nos = (int) (nanoAdjustment % NANOS_PER_SECOND);
         if (nos < 0) {
@@ -207,9 +207,9 @@ public final class Instant
      * @return an {@code Instant}, never null
      * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Instant}
      */
-    public static Instant seconds(BigDecimal epochSeconds) {
+    public static Instant ofSeconds(BigDecimal epochSeconds) {
         checkNotNull(epochSeconds, "Seconds must not be null");
-        return nanos(epochSeconds.movePointRight(9).toBigIntegerExact());
+        return ofNanos(epochSeconds.movePointRight(9).toBigIntegerExact());
     }
 
     //-----------------------------------------------------------------------
@@ -222,7 +222,7 @@ public final class Instant
      * @param epochMillis  the number of milliseconds
      * @return an {@code Instant}, never null
      */
-    public static Instant millis(long epochMillis) {
+    public static Instant ofMillis(long epochMillis) {
         long secs = epochMillis / 1000;
         int mos = (int) (epochMillis % 1000);
         if (mos < 0) {
@@ -242,7 +242,7 @@ public final class Instant
      * @param epochNanos  the number of nanoseconds
      * @return an {@code Instant}, never null
      */
-    public static Instant nanos(long epochNanos) {
+    public static Instant ofNanos(long epochNanos) {
         long secs = epochNanos / NANOS_PER_SECOND;
         int nos = (int) (epochNanos % NANOS_PER_SECOND);
         if (nos < 0) {
@@ -264,13 +264,13 @@ public final class Instant
      * @return an {@code Instant}, never null
      * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Instant}
      */
-    public static Instant nanos(BigInteger epochNanos) {
+    public static Instant ofNanos(BigInteger epochNanos) {
         checkNotNull(epochNanos, "Nanos must not be null");
         BigInteger[] divRem = epochNanos.divideAndRemainder(BILLION);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Exceeds capacity of Duration: " + epochNanos);
         }
-        return seconds(divRem[0].longValue(), divRem[1].intValue());
+        return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
     }
 
     //-----------------------------------------------------------------------

@@ -90,7 +90,7 @@ public class TestDate {
     //-----------------------------------------------------------------------
     public void test_constructor() {
         for (int i = -1100; i < 1100; i++) {
-            Instant instant = Instant.millis(i);
+            Instant instant = Instant.ofMillis(i);
             Date test = new Date(instant);
             assertEquals(test.getTime(), i);
         }
@@ -116,7 +116,7 @@ public class TestDate {
 
     public void test_constructor_tooBig() {
         try {
-            new Date(Instant.seconds(Long.MAX_VALUE / 1000 + 1));
+            new Date(Instant.ofSeconds(Long.MAX_VALUE / 1000 + 1));
             fail();
         } catch (CalendarConversionException ex) {
             // expected
@@ -125,7 +125,7 @@ public class TestDate {
 
     public void test_constructor_tooSmall() {
         try {
-            new Date(Instant.seconds(Long.MIN_VALUE / 1000 - 1));
+            new Date(Instant.ofSeconds(Long.MIN_VALUE / 1000 - 1));
             fail();
         } catch (CalendarConversionException ex) {
             // expected
@@ -135,7 +135,7 @@ public class TestDate {
     //-----------------------------------------------------------------------
     public void test_setInstant() {
         for (int i = -1100; i < 1100; i++) {
-            Instant instant = Instant.millis(i);
+            Instant instant = Instant.ofMillis(i);
             Date test = new Date();
             test.setInstant(instant);
             assertEquals(test.getTime(), i);
@@ -165,7 +165,7 @@ public class TestDate {
     public void test_setInstant_tooBig() {
         Date test = new Date();
         try {
-            test.setInstant(Instant.seconds(Long.MAX_VALUE / 1000 + 1));
+            test.setInstant(Instant.ofSeconds(Long.MAX_VALUE / 1000 + 1));
             fail();
         } catch (CalendarConversionException ex) {
             // expected
@@ -175,7 +175,7 @@ public class TestDate {
     public void test_setInstant_tooSmall() {
         Date test = new Date();
         try {
-            test.setInstant(Instant.seconds(Long.MIN_VALUE / 1000 - 1));
+            test.setInstant(Instant.ofSeconds(Long.MIN_VALUE / 1000 - 1));
             fail();
         } catch (CalendarConversionException ex) {
             // expected
@@ -187,7 +187,7 @@ public class TestDate {
         for (int i = -1100; i < 1100; i++) {
             Date utilDate = new Date(i);
             Instant test = utilDate.toInstant();
-            assertEquals(test, Instant.millis(i));
+            assertEquals(test, Instant.ofMillis(i));
         }
     }
 

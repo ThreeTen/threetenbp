@@ -142,7 +142,7 @@ public class TestLocalTime {
 
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i, 8);
+            Instant instant = Instant.ofSeconds(i, 8);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             LocalTime test = LocalTime.now(clock);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
@@ -154,7 +154,7 @@ public class TestLocalTime {
 
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.seconds(i, 8);
+            Instant instant = Instant.ofSeconds(i, 8);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             LocalTime test = LocalTime.now(clock);
             assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
@@ -166,7 +166,7 @@ public class TestLocalTime {
 
     //-----------------------------------------------------------------------
     public void now_Clock_maxYear() {
-        Clock clock = Clock.clock(TimeSource.fixed(Instant.seconds(Long.MAX_VALUE)), TimeZone.UTC);
+        Clock clock = Clock.clock(TimeSource.fixed(Instant.ofSeconds(Long.MAX_VALUE)), TimeZone.UTC);
         LocalTime test = LocalTime.now(clock);
         int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
         int min = (int) ((Long.MAX_VALUE / 60) % 60);
@@ -181,7 +181,7 @@ public class TestLocalTime {
         long oneDay = 24 * 60 * 60;
         long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
         
-        Clock clock = Clock.clock(TimeSource.fixed(Instant.seconds(Long.MIN_VALUE)), TimeZone.UTC);
+        Clock clock = Clock.clock(TimeSource.fixed(Instant.ofSeconds(Long.MIN_VALUE)), TimeZone.UTC);
         LocalTime test = LocalTime.now(clock);
         long added = Long.MIN_VALUE + addition;
         int hour = (int) ((added / (60 * 60)) % 24);

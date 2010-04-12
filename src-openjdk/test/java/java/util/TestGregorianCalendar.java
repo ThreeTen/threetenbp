@@ -96,7 +96,7 @@ public class TestGregorianCalendar {
     //-----------------------------------------------------------------------
     public void test_setInstant() {
         for (int i = -1100; i < 1100; i++) {
-            Instant instant = Instant.millis(i);
+            Instant instant = Instant.ofMillis(i);
             GregorianCalendar test = new GregorianCalendar();
             test.setInstant(instant);
             assertEquals(test.getTimeInMillis(), i);
@@ -126,7 +126,7 @@ public class TestGregorianCalendar {
     public void test_setInstant_tooBig() {
         GregorianCalendar test = new GregorianCalendar();
         try {
-            test.setInstant(Instant.seconds(Long.MAX_VALUE / 1000 + 1));
+            test.setInstant(Instant.ofSeconds(Long.MAX_VALUE / 1000 + 1));
             fail();
         } catch (CalendarConversionException ex) {
             // expected
@@ -136,7 +136,7 @@ public class TestGregorianCalendar {
     public void test_setInstant_tooSmall() {
         GregorianCalendar test = new GregorianCalendar();
         try {
-            test.setInstant(Instant.seconds(Long.MIN_VALUE / 1000 - 1));
+            test.setInstant(Instant.ofSeconds(Long.MIN_VALUE / 1000 - 1));
             fail();
         } catch (CalendarConversionException ex) {
             // expected
@@ -149,7 +149,7 @@ public class TestGregorianCalendar {
             GregorianCalendar gcal = new GregorianCalendar();
             gcal.setTimeInMillis(i);
             Instant test = gcal.toInstant();
-            assertEquals(test, Instant.millis(i));
+            assertEquals(test, Instant.ofMillis(i));
         }
     }
 

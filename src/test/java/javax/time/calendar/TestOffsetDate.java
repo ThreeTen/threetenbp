@@ -128,7 +128,7 @@ public class TestOffsetDate {
 
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i);
+            Instant instant = Instant.ofSeconds(i);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -140,7 +140,7 @@ public class TestOffsetDate {
 
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.seconds(i);
+            Instant instant = Instant.ofSeconds(i);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1969);
@@ -307,13 +307,13 @@ public class TestOffsetDate {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullOffset() {
-        Instant instant = Instant.seconds(0L);
+        Instant instant = Instant.ofSeconds(0L);
         OffsetDate.fromInstant(instant, (ZoneOffset) null);
     }
 
     public void factory_fromInstant_InstantProvider_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i);
+            Instant instant = Instant.ofSeconds(i);
             OffsetDate test = OffsetDate.fromInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -323,7 +323,7 @@ public class TestOffsetDate {
 
     public void factory_fromInstant_InstantProvider_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.seconds(i);
+            Instant instant = Instant.ofSeconds(i);
             OffsetDate test = OffsetDate.fromInstant(instant.minusSeconds(OFFSET_PONE.getAmountSeconds()), OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -333,7 +333,7 @@ public class TestOffsetDate {
 
     public void factory_fromInstant_InstantProvider_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.seconds(i);
+            Instant instant = Instant.ofSeconds(i);
             OffsetDate test = OffsetDate.fromInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);

@@ -1437,6 +1437,6 @@ public class Date
      * @since ?
      */
     public final Instant toInstant() {
-        return Instant.millis(getTime());
+        return Instant.ofMillis(getTime());
     }
 }
