@@ -41,8 +41,9 @@ import javax.time.calendar.format.CalendricalParseException;
  * A duration between two instants on the time-line.
  * <p>
  * The Time Framework for Java models time as a series of instantaneous events,
- * known as {@link Instant instants}, along a single time-line. This class represents the
- * duration between two of those instants.
+ * known as {@link Instant instants}, along a single time-line.
+ * This class represents the duration between two of those instants.
+ * The model is of a directed duration, meaning that the duration may be negative.
  * <p>
  * A physical instant is an instantaneous event.
  * However, for practicality the API and this class uses a precision of nanoseconds.
@@ -263,7 +264,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * <p>
      * A {@code Duration} represents a directed distance between two points on the time-line.
      * As such, this method will return a negative duration if the end is before the start.
-     * To obtain a positive duration call {@link #abs()} on the result of this factory.
+     * To guarantee to obtain a positive duration call {@link #abs()} on the result of this factory.
      *
      * @param startInclusive  the start instant, inclusive, not null
      * @param endExclusive  the end instant, exclusive, not null
