@@ -254,7 +254,7 @@ class PeriodParser {
     /**
      * Parse values container created for each parse
      */
-    private class ParseValues {
+    private static class ParseValues {
         /**
          * The number of years.
          */
