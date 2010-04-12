@@ -81,7 +81,7 @@ public final class Year
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 2751581L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The year being represented.

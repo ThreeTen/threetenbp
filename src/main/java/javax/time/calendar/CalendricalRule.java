@@ -61,7 +61,7 @@ public abstract class CalendricalRule<T>
         implements Comparable<CalendricalRule<T>>, Comparator<Calendrical>, Serializable {
 
     /** A serialization identifier for this class. */
-    private static final long serialVersionUID = 36518675L;
+    private static final long serialVersionUID = 1L;
 
     /** The reified class for the generic type. */
     private final Class<T> reified;

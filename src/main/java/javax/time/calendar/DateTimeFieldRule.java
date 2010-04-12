@@ -68,7 +68,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     // TODO: broken serialization
 
     /** A serialization identifier for this class. */
-    private static final long serialVersionUID = 837528753278L;
+    private static final long serialVersionUID = 1L;
     /** A Math context for calculating fractions from values. */
     private static final MathContext FRACTION_CONTEXT = new MathContext(9, RoundingMode.FLOOR);
     /** A Math context for calculating values from fractions. */

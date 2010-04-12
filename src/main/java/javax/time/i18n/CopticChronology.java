@@ -67,7 +67,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 24275872L;
+    private static final long serialVersionUID = 1L;
 
     //-----------------------------------------------------------------------
     /**

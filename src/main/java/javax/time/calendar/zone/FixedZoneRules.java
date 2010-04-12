@@ -49,7 +49,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 21787269186981L;
+    private static final long serialVersionUID = 1L;
     /**
      * The fixed offset.
      */

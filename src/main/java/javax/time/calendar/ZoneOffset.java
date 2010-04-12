@@ -102,7 +102,7 @@ public final class ZoneOffset
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 3552876348982168937L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The string form of the time-zone offset.

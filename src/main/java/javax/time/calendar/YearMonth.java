@@ -69,7 +69,7 @@ public final class YearMonth
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1507289123L;
+    private static final long serialVersionUID = 1L;
     /**
      * Parser.
      */

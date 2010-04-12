@@ -79,7 +79,7 @@ public final class CopticDate
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 27545623L;
+    private static final long serialVersionUID = 1L;
     /**
      * The number of days to add to MJD to get the Coptic epoch day.
      */

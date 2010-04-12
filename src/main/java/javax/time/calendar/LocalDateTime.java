@@ -65,7 +65,7 @@ public final class LocalDateTime
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1153828870L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The date part.

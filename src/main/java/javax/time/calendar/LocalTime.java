@@ -83,7 +83,7 @@ public final class LocalTime
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 798759096L;
+    private static final long serialVersionUID = 1L;
     /** Hours per minute. */
     private static final int HOURS_PER_DAY = 24;
     /** Minutes per hour. */

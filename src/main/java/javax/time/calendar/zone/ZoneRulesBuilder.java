@@ -73,7 +73,7 @@ public class ZoneRulesBuilder {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 9375261659767L;
+    private static final long serialVersionUID = 1L;
     /**
      * The maximum date-time.
      */

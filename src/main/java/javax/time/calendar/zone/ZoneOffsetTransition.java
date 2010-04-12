@@ -60,7 +60,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 3582762487L;
+    private static final long serialVersionUID = 1L;
     /**
      * The transition date-time with the offset before the discontinuity.
      */

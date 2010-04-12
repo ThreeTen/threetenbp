@@ -73,7 +73,7 @@ public final class LocalDate
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 798274969L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The year.
