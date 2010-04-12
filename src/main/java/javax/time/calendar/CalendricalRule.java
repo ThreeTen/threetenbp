@@ -37,9 +37,10 @@ import java.util.Comparator;
 import javax.time.CalendricalException;
 
 /**
- * The rule defining how a single well-defined calendrical operates.
+ * A rule defining how a single well-defined calendrical element operates.
  * <p>
- * Calendrical rules may be fields like day-of-month, or combinations like date-time.
+ * Calendrical rules may define fields like day-of-month, combinations like date-time,
+ * or other related types like time-zone.
  * <p>
  * Each rule uses an underlying type to represent the data.
  * This is captured in the generic type of the rule.
@@ -126,9 +127,9 @@ public abstract class CalendricalRule<T>
      * Gets the ID of the rule.
      * <p>
      * The ID is of the form 'ChronologyName.RuleName'.
-     * No two fields should have the same id.
+     * No two fields should have the same ID.
      *
-     * @return the id of the rule, never null
+     * @return the ID of the rule, never null
      */
     public final String getID() {
         return id;
@@ -149,10 +150,16 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the period unit, which the element which alters within the range.
+     * Gets the unit that the rule is measured in.
      * <p>
-     * In the phrase 'hour of day', the unit is 'Hours'.
-     * For a date, this will return 'Days'.
+     * Most rules define a field such as 'hour of day' or 'month of year'.
+     * The unit is the period that varies within the range.
+     * <p>
+     * For example, the rule for hour-of-day will return Hours, while the rule for
+     * month-of-year will return Months. The rule for a date will return Days
+     * as a date could alternately be described as 'days of forever'.
+     * <p>
+     * The {@code null} value is returned if the rule is not defined by a unit and range.
      *
      * @return the unit defining the rule unit, null if this rule isn't based on a period
      */
@@ -161,10 +168,17 @@ public abstract class CalendricalRule<T>
     }
 
     /**
-     * Gets the period range, which the field is bound by.
+     * Gets the range that the rule is bound by.
      * <p>
-     * In the phrase 'hour of day', the range unit is 'Days'.
-     * For an unbounded field or date, this will return {@code null}.
+     * Most rules define a field such as 'hour of day' or 'month of year'.
+     * The range is the period that the field varies within.
+     * <p>
+     * For example, the rule for hour-of-day will return Days, while the rule for
+     * month-of-year will return Years.
+     * <p>
+     * When the range is unbounded, such as for a date or the year field, then {@code null}
+     * will be returned.
+     * The {@code null} value is also returned if the rule is not defined by a unit and range.
      *
      * @return the unit defining the rule range, null if unbounded,
      *  or if this rule isn't based on a period
@@ -232,8 +246,8 @@ public abstract class CalendricalRule<T>
      * Gets the value of the rule from the specified calendrical throwing
      * an exception if the rule cannot be returned.
      * <p>
-     * This uses {@link #getValue(Calendrical)} to find the value and then
-     * ensures it isn't {@code null}.
+     * This convenience method uses {@link #getValue(Calendrical)} to find the value
+     * and then ensures it isn't {@code null}.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, never null
@@ -365,6 +379,7 @@ public abstract class CalendricalRule<T>
      *
      * @param merger  the merger instance controlling the merge process, not null
      * @param value  the value to interpret, null if unable to interpret the value
+     * @return the interpreted value
      */
     protected T interpret(CalendricalMerger merger, Object value) {
         return null;

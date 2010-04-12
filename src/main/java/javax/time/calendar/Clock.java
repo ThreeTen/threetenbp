@@ -42,9 +42,9 @@ import javax.time.TimeSource;
  * <p>
  * The Time Framework for Java abstracts the concept of the 'current time' into two interfaces
  * - {@link TimeSource} and {@code Clock}.
- * The former, this class, provides access to the current instant and
+ * The former, {@code TimeSource}, provides access to the current instant and
  * is independent of local factors such as time-zone.
- * The latter, {@code Clock}, provides access to the current date and
+ * The latter, this class, provides access to the current date and
  * time but requires a time-zone.
  * <p>
  * The purpose of this abstraction is to allow alternate time-sources
@@ -576,11 +576,13 @@ public abstract class Clock {
             this.timeSource = timeSource;
             this.zone = zone;
         }
+
         /** {@inheritDoc} */
         @Override
         public TimeSource getSource() {
             return timeSource;
         }
+
         /** {@inheritDoc} */
         @Override
         public Clock withSource(TimeSource timeSource) {
@@ -590,11 +592,13 @@ public abstract class Clock {
             }
             return new TimeSourceClock(timeSource, zone);
         }
+
         /** {@inheritDoc} */
         @Override
         public TimeZone getZone() {
             return zone;
         }
+
         /** {@inheritDoc} */
         @Override
         public Clock withZone(TimeZone zone) {
@@ -604,6 +608,7 @@ public abstract class Clock {
             }
             return new TimeSourceClock(timeSource, zone);
         }
+
         /** {@inheritDoc} */
         @Override
         public boolean equals(Object obj) {
@@ -616,6 +621,7 @@ public abstract class Clock {
             }
             return false;
         }
+
         /** {@inheritDoc} */
         @Override
         public int hashCode() {
@@ -624,6 +630,8 @@ public abstract class Clock {
             hash = 41 * hash + zone.hashCode();
             return hash;
         }
+
+        /** {@inheritDoc} */
         @Override
         public String toString() {
             return "TimeSourceClock[" + timeSource + ", " + zone + ']';
