@@ -52,6 +52,19 @@ public final class DateAdjusters {
 
     //-----------------------------------------------------------------------
     /**
+     * Returns the first day-of-month adjuster, which returns a new date with
+     * the day-of-month changed to be the first day of the month.
+     * <p>
+     * The input 2007-01-15 will return 2007-01-01.<br />
+     * The input 2008-02-15 will return 2008-02-01.
+     *
+     * @return the first day-of-month adjuster, never null
+     */
+    public static DateAdjuster firstDayOfMonth() {
+        return Impl.FIRST_DAY_OF_MONTH;
+    }
+
+    /**
      * Returns the last day-of-month adjuster, which returns a new date with
      * the day-of-month changed to be the last valid day of the month.
      * <p>
@@ -68,8 +81,21 @@ public final class DateAdjusters {
     }
 
     /**
+     * Returns the first day-of-year adjuster, which returns a new date with
+     * the day-of-year changed to be the first day of the year - January 1.
+     * <p>
+     * The input 2007-01-15 will return 2007-01-01.<br />
+     * The input 2008-02-15 will return 2008-01-01.<br />
+     *
+     * @return the first day-of-year adjuster, never null
+     */
+    public static DateAdjuster firstDayOfYear() {
+        return Impl.FIRST_DAY_OF_YEAR;
+    }
+
+    /**
      * Returns the last day-of-year adjuster, which returns a new date with
-     * the day-of-year changed to be the last valid day of the year.
+     * the day-of-year changed to be the last day of the year - December 31.
      * <p>
      * The input 2007-01-15 will return 2007-12-31.<br />
      * The input 2008-02-15 will return 2008-12-31.<br />
@@ -80,6 +106,7 @@ public final class DateAdjusters {
         return Impl.LAST_DAY_OF_YEAR;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns the next non weekend day adjuster, which adjusts the date one day
      * forward skipping Saturday and Sunday.
@@ -87,6 +114,7 @@ public final class DateAdjusters {
      * @return the next working day adjuster, never null
      */
     public static DateAdjuster nextNonWeekendDay() {
+        // TODO: This is not localized
         return Impl.NEXT_NON_WEEKEND;
     }
 
@@ -95,12 +123,26 @@ public final class DateAdjusters {
      * Enum implementing the adjusters.
      */
     private static enum Impl implements DateAdjuster {
+        /** First day-of-year adjuster. */
+        FIRST_DAY_OF_MONTH {
+            /** {@inheritDoc} */
+            public LocalDate adjustDate(LocalDate date) {
+                return date.withDayOfMonth(1);
+            }
+        },
         /** Last day-of-month adjuster. */
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
                 int dom = date.getMonthOfYear().getLastDayOfMonth(ISOChronology.isLeapYear(date.getYear()));
                 return date.withDayOfMonth(dom);
+            }
+        },
+        /** First day-of-year adjuster. */
+        FIRST_DAY_OF_YEAR {
+            /** {@inheritDoc} */
+            public LocalDate adjustDate(LocalDate date) {
+                return LocalDate.of(date.getYear(), MonthOfYear.JANUARY, 1);
             }
         },
         /** Last day-of-year adjuster. */

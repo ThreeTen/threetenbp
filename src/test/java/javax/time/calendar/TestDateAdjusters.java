@@ -66,19 +66,63 @@ public class TestDateAdjusters {
     }
 
     //-----------------------------------------------------------------------
+    // firstDayOfMonth()
+    //-----------------------------------------------------------------------
+    public void test_firstDayOfMonth_serialization() throws IOException, ClassNotFoundException {
+        DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfMonth();
+        assertTrue(firstDayOfMonth instanceof Serializable);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(firstDayOfMonth);
+        oos.close();
+        
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        assertSame(ois.readObject(), firstDayOfMonth);
+    }
+
+    public void factory_firstDayOfMonth() {
+        assertNotNull(DateAdjusters.firstDayOfMonth());
+        assertSame(DateAdjusters.firstDayOfMonth(), DateAdjusters.firstDayOfMonth());
+    }
+
+    public void test_firstDayOfMonth_nonLeap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
+                LocalDate date = date(2007, month, i);
+                LocalDate test = DateAdjusters.firstDayOfMonth().adjustDate(date);
+                assertEquals(test.getYear(), 2007);
+                assertEquals(test.getMonthOfYear(), month);
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    public void test_firstDayOfMonth_leap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(true); i++) {
+                LocalDate date = date(2008, month, i);
+                LocalDate test = DateAdjusters.firstDayOfMonth().adjustDate(date);
+                assertEquals(test.getYear(), 2008);
+                assertEquals(test.getMonthOfYear(), month);
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // lastDayOfMonth()
     //-----------------------------------------------------------------------
     public void test_lastDayOfMonth_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster lastDayOfMonth = DateAdjusters.lastDayOfMonth();
         assertTrue(lastDayOfMonth instanceof Serializable);
-
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(lastDayOfMonth);
         oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
+        
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), lastDayOfMonth);
     }
 
@@ -112,19 +156,63 @@ public class TestDateAdjusters {
     }
 
     //-----------------------------------------------------------------------
+    // firstDayOfYear()
+    //-----------------------------------------------------------------------
+    public void test_firstDayOfYear_serialization() throws IOException, ClassNotFoundException {
+        DateAdjuster firstDayOfYear = DateAdjusters.firstDayOfYear();
+        assertTrue(firstDayOfYear instanceof Serializable);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(firstDayOfYear);
+        oos.close();
+        
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        assertSame(ois.readObject(), firstDayOfYear);
+    }
+
+    public void factory_firstDayOfYear() {
+        assertNotNull(DateAdjusters.firstDayOfYear());
+        assertSame(DateAdjusters.firstDayOfYear(), DateAdjusters.firstDayOfYear());
+    }
+
+    public void test_firstDayOfYear_nonLeap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
+                LocalDate date = date(2007, month, i);
+                LocalDate test = DateAdjusters.firstDayOfYear().adjustDate(date);
+                assertEquals(test.getYear(), 2007);
+                assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    public void test_firstDayOfYear_leap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(true); i++) {
+                LocalDate date = date(2008, month, i);
+                LocalDate test = DateAdjusters.firstDayOfYear().adjustDate(date);
+                assertEquals(test.getYear(), 2008);
+                assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // lastDayOfYear()
     //-----------------------------------------------------------------------
     public void test_lastDayOfYear_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster lastDayOfYear = DateAdjusters.lastDayOfYear();
         assertTrue(lastDayOfYear instanceof Serializable);
-
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(lastDayOfYear);
         oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
+        
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), lastDayOfYear);
     }
 
