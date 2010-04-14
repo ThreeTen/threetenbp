@@ -150,15 +150,12 @@ public class TestZoneRulesGroup {
 
     //-----------------------------------------------------------------------
     static class MockTempProvider implements ZoneRulesDataProvider {
-        @Override
         public String getGroupID() {
             return "TEMPMOCK";
         }
-        @Override
         public Set<String> getIDs() {
             return Collections.singleton("World");
         }
-        @Override
         public ZoneRules getZoneRules(String regionID, String versionID) {
             return ZoneRules.fixed(ZoneOffset.of("+01:45"));
         }
@@ -480,15 +477,12 @@ public class TestZoneRulesGroup {
 
     //-----------------------------------------------------------------------
     static class MockProvider implements ZoneRulesDataProvider {
-        @Override
         public String getGroupID() {
             return "MOCK";
         }
-        @Override
         public Set<String> getIDs() {
             return new HashSet<String>(Arrays.asList("RulesChange#v1", "RulesChange#v2", "NewPlace#v2"));
         }
-        @Override
         public ZoneRules getZoneRules(String regionID, String versionID) {
             if (regionID.equals("NewPlace")) {
                 return ZoneRules.fixed(ZoneOffset.of("+01:00"));
