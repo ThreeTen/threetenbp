@@ -35,11 +35,9 @@ Utils
 - simplify TimeSource to InstantProvider and Clock to Calendrical, merging
 
 Duration
-- rename millis() to ofMillis() etc
 - integrate TimeUnit
 
 Instant
-- rename millis() to ofMillis() etc
 - toString/parse
 
 Time scales
@@ -212,5 +210,6 @@ EDR
 - ZonedDateTime toEpochSeconds()
 - OffsetDateTime.fromEpochSeconds()
 - ZonedDateTime.fromEpochSeconds()
+- Duration/Instant rename millis() to ofMillis() etc
 
 
