@@ -105,13 +105,13 @@ public final class ZoneOffset
     private static final long serialVersionUID = 1L;
 
     /**
-     * The string form of the time-zone offset.
-     */
-    private final String id;
-    /**
      * The offset in seconds.
      */
-    private final transient int amountSeconds;
+    private final int amountSeconds;
+    /**
+     * The string form of the time-zone offset.
+     */
+    private final transient String id;
 
     //-----------------------------------------------------------------------
     /**
@@ -408,7 +408,7 @@ public final class ZoneOffset
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ZoneOffset.of(id);
+        return ZoneOffset.fromTotalSeconds(amountSeconds);
     }
 
     //-----------------------------------------------------------------------
