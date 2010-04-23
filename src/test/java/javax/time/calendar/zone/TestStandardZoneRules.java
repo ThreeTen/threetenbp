@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,9 @@
  */
 package javax.time.calendar.zone;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -93,8 +95,33 @@ public class TestStandardZoneRules {
         }
     }
 
-    public void test_serialization() throws Exception {
-        StandardZoneRules test = europeLondon();
+    public void test_serialization_simple() throws Exception {
+        ZoneRulesBuilder b = new ZoneRulesBuilder()
+            .addWindow(OFFSET_PONE, LocalDateTime.of(1980, 3, 1, 1, 0), TimeDefinition.STANDARD)
+            .setFixedSavingsToWindow(Period.hours(1))
+            .addWindowForever(OFFSET_PONE)
+            .setFixedSavingsToWindow(Period.hours(2));
+        ZoneRules test = b.toRules("Test");
+        assertSerialization(test);
+    }
+
+    public void test_serialization_unusual() throws Exception {
+        ZoneRulesBuilder b = new ZoneRulesBuilder()
+            .addWindow(ZoneOffset.of("-17:49:23"), LocalDateTime.of(1980, 3, 1, 1, 34, 56), TimeDefinition.WALL)
+            .setFixedSavingsToWindow(Period.hoursMinutesSeconds(1, 34, 23))
+            .addWindowForever(ZoneOffset.of("+04:23"))
+            .setFixedSavingsToWindow(Period.hoursMinutesSeconds(13, 22, 9));
+        ZoneRules test = b.toRules("Test");
+        assertSerialization(test);
+    }
+
+    public void test_serialization_loaded() throws Exception {
+        assertSerialization(europeLondon());
+        assertSerialization(europeParis());
+        assertSerialization(americaNewYork());
+    }
+
+    private void assertSerialization(ZoneRules test) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);

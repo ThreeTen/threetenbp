@@ -95,8 +95,10 @@ import javax.time.calendar.format.TestZoneParser;
 import javax.time.calendar.i18n.TestCopticChronology;
 import javax.time.calendar.i18n.TestCopticDate;
 import javax.time.calendar.i18n.TestInterCalendarSystem;
+import javax.time.calendar.zone.TestFixedZoneRules;
 import javax.time.calendar.zone.TestStandardZoneRules;
 import javax.time.calendar.zone.TestTZDBZoneRulesCompiler;
+import javax.time.calendar.zone.TestZoneOffsetTransition;
 import javax.time.calendar.zone.TestZoneOffsetTransitionRule;
 import javax.time.calendar.zone.TestZoneRulesBuilder;
 import javax.time.calendar.zone.TestZoneRulesGroup;
@@ -200,11 +202,13 @@ public class AllTest {
             TestCopticDate.class,
             TestInterCalendarSystem.class,
             // zone
+            TestFixedZoneRules.class,
             TestStandardZoneRules.class,
-            TestZoneRulesBuilder.class,
-            TestZoneOffsetTransitionRule.class,
-            TestZoneRulesGroup.class,
             TestTZDBZoneRulesCompiler.class,
+            TestZoneOffsetTransition.class,
+            TestZoneOffsetTransitionRule.class,
+            TestZoneRulesBuilder.class,
+            TestZoneRulesGroup.class,
             // periods
             TestPeriod.class,
             TestPeriodParser.class,

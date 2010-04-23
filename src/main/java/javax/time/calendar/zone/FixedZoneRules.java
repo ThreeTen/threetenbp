@@ -31,6 +31,9 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +68,37 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
         this.offset = offset;
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Uses a serialization delegate.
+     *
+     * @return the replacing object, never null
+     */
+    private Object writeReplace() {
+        return new Ser(Ser.FZR, this);
+    }
+
+    /**
+     * Writes the state to the stream.
+     * @param out  the output stream, not null
+     * @throws IOException if an error occurs
+     */
+    void writeExternal(ObjectOutput out) throws IOException {
+        Ser.writeOffset(offset, out);
+    }
+
+    /**
+     * Reads the state from the stream.
+     * @param in  the input stream, not null
+     * @return the created object, never null
+     * @throws IOException if an error occurs
+     */
+    static FixedZoneRules readExternal(ObjectInput in) throws IOException {
+        ZoneOffset offset = Ser.readOffset(in);
+        return new FixedZoneRules(offset);
+    }
+
+    //-------------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
     public ZoneOffset getOffset(InstantProvider instant) {

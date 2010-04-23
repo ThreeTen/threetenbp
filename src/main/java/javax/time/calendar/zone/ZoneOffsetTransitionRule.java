@@ -31,6 +31,9 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import javax.time.calendar.DateAdjusters;
@@ -159,6 +162,78 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         this.standardOffset = standardOffset;
         this.offsetBefore = offsetBefore;
         this.offsetAfter = offsetAfter;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Uses a serialization delegate.
+     *
+     * @return the replacing object, never null
+     */
+    private Object writeReplace() {
+        return new Ser(Ser.ZOTRULE, this);
+    }
+
+    /**
+     * Writes the state to the stream.
+     * @param out  the output stream, not null
+     * @throws IOException if an error occurs
+     */
+    void writeExternal(ObjectOutput out) throws IOException {
+        final int timeSecs = (timeEndOfDay ? 86400 : time.toSecondOfDay());
+        final int stdOffset = standardOffset.getAmountSeconds();
+        final int beforeDiff = offsetBefore.getAmountSeconds() - stdOffset;
+        final int afterDiff = offsetAfter.getAmountSeconds() - stdOffset;
+        final int timeByte = (timeSecs % 3600 == 0 ? (timeEndOfDay ? 24 : time.getHourOfDay()) : 31);
+        final int stdOffsetByte = (stdOffset % 900 == 0 ? stdOffset / 900 + 128 : 255);
+        final int beforeByte = (beforeDiff == 0 || beforeDiff == 1800 || beforeDiff == 3600 ? beforeDiff / 1800 : 3);
+        final int afterByte = (afterDiff == 0 || afterDiff == 1800 || afterDiff == 3600 ? afterDiff / 1800 : 3);
+        final int dowByte = (dow == null ? 0 : dow.getValue());
+        int b = (month.getValue() << 28) +          // 4 bytes
+                ((dom + 32) << 22) +                // 6 bytes
+                (dowByte << 19) +                   // 3 bytes
+                (timeByte << 14) +                  // 5 bytes
+                (timeDefinition.ordinal() << 12) +  // 2 bytes
+                (stdOffsetByte << 4) +              // 8 bytes
+                (beforeByte << 2) +                 // 2 bytes
+                afterByte;                          // 2 bytes
+        out.writeInt(b);
+        if (timeByte == 31) {
+            out.writeInt(timeSecs);
+        }
+        if (stdOffsetByte == 255) {
+            out.writeInt(stdOffset);
+        }
+        if (beforeByte == 3) {
+            out.writeInt(offsetBefore.getAmountSeconds());
+        }
+        if (afterByte == 3) {
+            out.writeInt(offsetAfter.getAmountSeconds());
+        }
+    }
+
+    /**
+     * Reads the state from the stream.
+     * @param in  the input stream, not null
+     * @return the created object, never null
+     * @throws IOException if an error occurs
+     */
+    static ZoneOffsetTransitionRule readExternal(ObjectInput in) throws IOException {
+        int data = in.readInt();
+        MonthOfYear month = MonthOfYear.of(data >>> 28);
+        int dom = ((data & (63 << 22)) >>> 22) -32;
+        int dowByte = (data & (7 << 19)) >>> 19;
+        DayOfWeek dow = dowByte == 0 ? null : DayOfWeek.of(dowByte);
+        int timeByte = (data & (31 << 14)) >>> 14;
+        TimeDefinition defn = TimeDefinition.values()[(data & (3 << 12)) >>> 12];
+        int stdByte = (data & (255 << 4)) >>> 4;
+        int beforeByte = (data & (3 << 2)) >>> 2;
+        int afterByte = (data & 3);
+        LocalTime time = (timeByte == 31 ? LocalTime.fromSecondOfDay(in.readInt()) : LocalTime.of(timeByte % 24, 0));
+        ZoneOffset std = (stdByte == 255 ? ZoneOffset.fromTotalSeconds(in.readInt()) : ZoneOffset.fromTotalSeconds((stdByte - 128) * 900));
+        ZoneOffset before = (beforeByte == 3 ? ZoneOffset.fromTotalSeconds(in.readInt()) : ZoneOffset.fromTotalSeconds(std.getAmountSeconds() + beforeByte * 1800));
+        ZoneOffset after = (afterByte == 3 ? ZoneOffset.fromTotalSeconds(in.readInt()) : ZoneOffset.fromTotalSeconds(std.getAmountSeconds() + afterByte * 1800));
+        return new ZoneOffsetTransitionRule(month, dom, dow, time, timeByte == 24, defn, std, before, after);
     }
 
     //-----------------------------------------------------------------------

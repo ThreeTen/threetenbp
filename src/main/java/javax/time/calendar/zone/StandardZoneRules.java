@@ -32,7 +32,8 @@
 package javax.time.calendar.zone;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +84,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * This is a paired array, where the first entry is the start of the transition
      * and the second entry is the end of the transition.
      */
-    private final LocalDateTime[] savingsLocalTransitions;  // TODO: transient
+    private final LocalDateTime[] savingsLocalTransitions;
     /**
      * The wall offsets.
      */
@@ -95,7 +96,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * The map of recent transitions.
      */
-    private transient volatile ConcurrentMap<Year, ZoneOffsetTransition[]> lastRulesCache =
+    private final ConcurrentMap<Year, ZoneOffsetTransition[]> lastRulesCache =
                 new ConcurrentHashMap<Year, ZoneOffsetTransition[]>();
 
     /**
@@ -105,7 +106,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @param baseWallOffset  the wall offset to use before legal rules were set, not null
      * @param standardOffsetTransitionList  the list of changes to the standard offset, not null
      * @param transitionList  the list of transitions, not null
-     * @param lastRules  the recurring last rules, not null
+     * @param lastRules  the recurring last rules, size 15 or less, not null
      */
     StandardZoneRules(
             ZoneOffset baseStandardOffset,
@@ -148,29 +149,121 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         }
         
         // last rules
+        if (lastRules.size() > 15) {
+            throw new IllegalArgumentException("Too many transition rules");
+        }
         this.lastRules = lastRules.toArray(new ZoneOffsetTransitionRule[lastRules.size()]);
     }
 
     /**
-     * Reinstate the cache.
+     * Constructor.
      *
-     * @param in  the input
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @param standardTransitions  the standard transitions, not null
+     * @param standardOffsets  the standard offsets, not null
+     * @param savingsLocalTransitions  the standard transitions, not null
+     * @param wallOffsets  the wall offsets, not null
+     * @param lastRules  the recurring last rules, size 15 or less, not null
      */
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        lastRulesCache = new ConcurrentHashMap<Year, ZoneOffsetTransition[]>();
+    private StandardZoneRules(
+            long[] standardTransitions,
+            ZoneOffset[] standardOffsets,
+            long[] savingsInstantTransitions,
+            ZoneOffset[] wallOffsets,
+            ZoneOffsetTransitionRule[] lastRules) {
+        super();
+        
+        this.standardTransitions = standardTransitions;
+        this.standardOffsets = standardOffsets;
+        this.savingsInstantTransitions = savingsInstantTransitions;
+        this.wallOffsets = wallOffsets;
+        this.lastRules = lastRules;
+        
+        // convert savings transitions to locals
+        List<LocalDateTime> localTransitionList = new ArrayList<LocalDateTime>();
+        for (int i = 0; i < savingsInstantTransitions.length; i++) {
+            ZoneOffset before = wallOffsets[i];
+            ZoneOffset after = wallOffsets[i + 1];
+            OffsetDateTime odt = OffsetDateTime.ofEpochSeconds(savingsInstantTransitions[i], before);
+            ZoneOffsetTransition trans = new ZoneOffsetTransition(odt, after);
+            if (trans.isGap()) {
+                localTransitionList.add(trans.getDateTime().toLocalDateTime());
+                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
+            } else {
+                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
+                localTransitionList.add(trans.getDateTime().toLocalDateTime());
+            }
+        }
+        this.savingsLocalTransitions = localTransitionList.toArray(new LocalDateTime[localTransitionList.size()]);
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Resolves singletons.
-//     * @return the singleton instance
-//     */
-//    private Object readResolve() {
-//        return TimeZone.timeZone(getID());
-//    }
+    //-------------------------------------------------------------------------
+    /**
+     * Uses a serialization delegate.
+     *
+     * @return the replacing object, never null
+     */
+    private Object writeReplace() {
+        return new Ser(Ser.SZR, this);
+    }
+
+    /**
+     * Writes the state to the stream.
+     * @param out  the output stream, not null
+     * @throws IOException if an error occurs
+     */
+    void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(standardTransitions.length);
+        for (long trans : standardTransitions) {
+            Ser.writeEpochSecs(trans, out);
+        }
+        for (ZoneOffset offset : standardOffsets) {
+            Ser.writeOffset(offset, out);
+        }
+        out.writeInt(savingsInstantTransitions.length);
+        for (long trans : savingsInstantTransitions) {
+            Ser.writeEpochSecs(trans, out);
+        }
+        for (ZoneOffset offset : wallOffsets) {
+            Ser.writeOffset(offset, out);
+        }
+        out.writeByte(lastRules.length);
+        for (ZoneOffsetTransitionRule rule : lastRules) {
+            rule.writeExternal(out);
+        }
+    }
+
+    /**
+     * Reads the state from the stream.
+     * @param in  the input stream, not null
+     * @return the created object, never null
+     * @throws IOException if an error occurs
+     */
+    static StandardZoneRules readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        int stdSize = in.readInt();
+        long[] stdTrans = new long[stdSize];
+        for (int i = 0; i < stdSize; i++) {
+            stdTrans[i] = Ser.readEpochSecs(in);
+        }
+        ZoneOffset[] stdOffsets = new ZoneOffset[stdSize + 1];
+        for (int i = 0; i < stdOffsets.length; i++) {
+            stdOffsets[i] = Ser.readOffset(in);
+        }
+        int savSize = in.readInt();
+        long[] savTrans = new long[savSize];
+        for (int i = 0; i < savSize; i++) {
+            savTrans[i] = Ser.readEpochSecs(in);
+        }
+        ZoneOffset[] savOffsets = new ZoneOffset[savSize + 1];
+        for (int i = 0; i < savOffsets.length; i++) {
+            savOffsets[i] = Ser.readOffset(in);
+        }
+        int ruleSize = in.readByte();
+        ZoneOffsetTransitionRule[] rules = new ZoneOffsetTransitionRule[ruleSize];
+        for (int i = 0; i < ruleSize; i++) {
+            rules[i] = ZoneOffsetTransitionRule.readExternal(in);
+        }
+        return new StandardZoneRules(stdTrans, stdOffsets, savTrans, savOffsets, rules);
+    }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */

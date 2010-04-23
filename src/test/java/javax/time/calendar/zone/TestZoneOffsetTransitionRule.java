@@ -33,6 +33,11 @@ package javax.time.calendar.zone;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
@@ -130,7 +135,7 @@ public class TestZoneOffsetTransitionRule {
     //-----------------------------------------------------------------------
     // getters
     //-----------------------------------------------------------------------
-    public void test_getters_floatingWeek() {
+    public void test_getters_floatingWeek() throws Exception {
         ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
                 MonthOfYear.MARCH, 20, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
@@ -143,9 +148,10 @@ public class TestZoneOffsetTransitionRule {
         assertEquals(test.getStandardOffset(), OFFSET_0200);
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
+        assertSerializable(test);
     }
 
-    public void test_getters_floatingWeekBackwards() {
+    public void test_getters_floatingWeekBackwards() throws Exception {
         ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
                 MonthOfYear.MARCH, -1, DayOfWeek.SUNDAY, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
@@ -158,9 +164,10 @@ public class TestZoneOffsetTransitionRule {
         assertEquals(test.getStandardOffset(), OFFSET_0200);
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
+        assertSerializable(test);
     }
 
-    public void test_getters_fixedDate() {
+    public void test_getters_fixedDate() throws Exception {
         ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
                 MonthOfYear.MARCH, 20, null, TIME_0100, false, TimeDefinition.WALL,
                 OFFSET_0200, OFFSET_0200, OFFSET_0300);
@@ -173,6 +180,44 @@ public class TestZoneOffsetTransitionRule {
         assertEquals(test.getStandardOffset(), OFFSET_0200);
         assertEquals(test.getOffsetBefore(), OFFSET_0200);
         assertEquals(test.getOffsetAfter(), OFFSET_0300);
+        assertSerializable(test);
+    }
+
+    public void test_serialization_unusualOffsets() throws Exception {
+        ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
+                MonthOfYear.MARCH, 20, null, TIME_0100, false, TimeDefinition.STANDARD,
+                ZoneOffset.hoursMinutesSeconds(-12, -20, -50),
+                ZoneOffset.hoursMinutesSeconds(-4, -10, -34),
+                ZoneOffset.hours(-18));
+        assertSerializable(test);
+    }
+
+    public void test_serialization_endOfDay() throws Exception {
+        ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
+                MonthOfYear.MARCH, 20, DayOfWeek.FRIDAY, LocalTime.MIDNIGHT, true, TimeDefinition.UTC,
+                OFFSET_0200, OFFSET_0200, OFFSET_0300);
+        assertSerializable(test);
+    }
+
+    public void test_serialization_unusualTime() throws Exception {
+        ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
+                MonthOfYear.MARCH, 20, DayOfWeek.WEDNESDAY, LocalTime.of(13, 34, 56), false, TimeDefinition.STANDARD,
+                OFFSET_0200, OFFSET_0200, OFFSET_0300);
+        assertSerializable(test);
+    }
+
+    private void assertSerializable(ZoneOffsetTransitionRule test) throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(test);
+        baos.close();
+        byte[] bytes = baos.toByteArray();
+        
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        ObjectInputStream in = new ObjectInputStream(bais);
+        ZoneOffsetTransitionRule result = (ZoneOffsetTransitionRule) in.readObject();
+        
+        assertEquals(result, test);
     }
 
     //-----------------------------------------------------------------------

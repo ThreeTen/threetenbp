@@ -30,7 +30,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package javax.time.calendar.zone;
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 
 import javax.time.Instant;
 import javax.time.calendar.LocalDateTime;
@@ -82,6 +85,40 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
         ZoneRules.checkNotNull(transition, "ZoneOffset must not be null");
         this.transition = transition;
         this.transitionAfter = transition.withOffsetSameInstant(offsetAfter);  // cached for performance
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Uses a serialization delegate.
+     *
+     * @return the replacing object, never null
+     */
+    private Object writeReplace() {
+        return new Ser(Ser.ZOT, this);
+    }
+
+    /**
+     * Writes the state to the stream.
+     * @param out  the output stream, not null
+     * @throws IOException if an error occurs
+     */
+    void writeExternal(ObjectOutput out) throws IOException {
+        Ser.writeEpochSecs(transition.toEpochSeconds(), out);
+        Ser.writeOffset(transition.getOffset(), out);
+        Ser.writeOffset(transitionAfter.getOffset(), out);
+    }
+
+    /**
+     * Reads the state from the stream.
+     * @param in  the input stream, not null
+     * @return the created object, never null
+     * @throws IOException if an error occurs
+     */
+    static ZoneOffsetTransition readExternal(ObjectInput in) throws IOException {
+        long epochSeconds = Ser.readEpochSecs(in);
+        ZoneOffset before = Ser.readOffset(in);
+        ZoneOffset after = Ser.readOffset(in);
+        return new ZoneOffsetTransition(OffsetDateTime.ofEpochSeconds(epochSeconds, before), after);
     }
 
     //-----------------------------------------------------------------------

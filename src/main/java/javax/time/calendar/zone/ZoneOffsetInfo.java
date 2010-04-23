@@ -181,6 +181,35 @@ public final class ZoneOffsetInfo {
 
     //-----------------------------------------------------------------------
     /**
+     * Is this instance equal to that specified by comparing the offset.
+     *
+     * @param otherInfo  the other info, null returns false
+     * @return true if this rules is the same as that specified
+     */
+    @Override
+    public boolean equals(Object otherInfo) {
+        if (this == otherInfo) {
+           return true;
+        }
+        if (otherInfo instanceof ZoneOffsetInfo) {
+            ZoneOffsetInfo info = (ZoneOffsetInfo) otherInfo;
+            return dateTime.equals(info.dateTime) &&
+                    (transition != null ? transition.equals(info.transition) : offset.equals(info.offset));
+        }
+        return false;
+    }
+
+    /**
+     * A hash code for the info object.
+     *
+     * @return a suitable hash code
+     */
+    @Override
+    public int hashCode() {
+        return dateTime.hashCode() ^ (transition != null ? transition.hashCode() : offset.hashCode());
+    }
+
+    /**
      * Gets a string describing this object.
      *
      * @return a string for debugging, never null
@@ -189,6 +218,8 @@ public final class ZoneOffsetInfo {
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("OffsetInfo[")
+            .append(dateTime)
+            .append(':')
             .append(isTransition() ? transition : offset)
             .append(']');
         return buf.toString();
