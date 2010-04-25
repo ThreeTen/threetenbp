@@ -34,6 +34,7 @@ package javax.time;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 import javax.time.calendar.format.CalendricalParseException;
 
@@ -85,6 +86,38 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Constant for nanos per second.
      */
     private static final int NANOS_PER_SECOND = 1000000000;
+    /**
+     * Constant for nanos per microsecond.
+     */
+    private static final BigInteger BI_NANOS_PER_MICRO = BigInteger.valueOf(1000L);
+    /**
+     * Constant for nanos per millisecond.
+     */
+    private static final BigInteger BI_NANOS_PER_MILLI = BigInteger.valueOf(1000000L);
+    /**
+     * Constant for nanos per second.
+     */
+    private static final BigInteger BI_NANOS_PER_SECOND = Instant.BILLION;
+    /**
+     * Constant for nanos per minute.
+     */
+    private static final BigInteger BI_NANOS_PER_MINUTE = BigInteger.valueOf(60L * 1000000000L);
+    /**
+     * Constant for nanos per hour.
+     */
+    private static final BigInteger BI_NANOS_PER_HOUR = BigInteger.valueOf(60L * 60L * 1000000000L);
+    /**
+     * Constant for nanos per day.
+     */
+    private static final BigInteger BI_NANOS_PER_DAY = BigInteger.valueOf(24L * 60L * 60L * 1000000000L);
+    /**
+     * Constant for maximum long.
+     */
+    private static final BigInteger BI_MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
+    /**
+     * Constant for minimum long.
+     */
+    private static final BigInteger BI_MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
 
     /**
      * The number of seconds in the duration.
@@ -205,7 +238,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public static Duration ofNanos(BigInteger nanos) {
         Instant.checkNotNull(nanos, "Nanos must not be null");
-        BigInteger[] divRem = nanos.divideAndRemainder(Instant.BILLION);
+        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
         }
@@ -256,6 +289,48 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     public static Duration ofStandardDays(long days) {
         return create(MathUtils.safeMultiply(days, 86400), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code Duration} from a duration in a specifed time unit.
+     * <p>
+     * The duration amount is measured in terms of the specified unit. For example:
+     * <pre>
+     *  Duration.of(3, TimeUnit.SECONDS);
+     *  Duration.of(465, TimeUnit.MICROSECONDS);
+     * </pre>
+     *
+     * @param amount  the amount of the duration, positive or negative
+     * @param unit  the unit that the duration is measured in, not null
+     * @return a {@code Duration}, never null
+     * @throws ArithmeticException if the input amount exceeds the capacity of {@code Duration}
+     *  which can only occur for units MINUTES, HOURS and DAYS
+     */
+    public static Duration of(long amount, TimeUnit unit) {
+        Instant.checkNotNull(unit, "TimeUnit must not be null");
+        long nanos = unit.toNanos(amount);
+        if (unit == TimeUnit.NANOSECONDS ||
+                (nanos > Long.MAX_VALUE && nanos < Long.MIN_VALUE)) {
+            return ofNanos(nanos);
+        }
+        BigInteger calc = BigInteger.valueOf(amount);
+        switch (unit) {
+            case MICROSECONDS:
+                return ofNanos(calc.multiply(BI_NANOS_PER_MICRO));
+            case MILLISECONDS:
+                return ofNanos(calc.multiply(BI_NANOS_PER_MILLI));
+            case SECONDS:
+                return ofNanos(calc.multiply(BI_NANOS_PER_SECOND));
+            case MINUTES:
+                return ofNanos(calc.multiply(BI_NANOS_PER_MINUTE));
+            case HOURS:
+                return ofNanos(calc.multiply(BI_NANOS_PER_HOUR));
+            case DAYS:
+                return ofNanos(calc.multiply(BI_NANOS_PER_DAY));
+            default:
+                throw new InternalError("Unreachable");
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -405,8 +480,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Checks if this duration is zero length.
      * <p>
-     * A {@code Duration} represents a directed distance between two points on the time-line
-     * and can therefore be positive, zero or negative.
+     * A {@code Duration} represents a directed distance between two points on
+     * the time-line and can therefore be positive, zero or negative.
      * This method checks whether the length is zero.
      *
      * @return true if this duration has a total length equal to zero
@@ -418,8 +493,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Checks if this duration is positive, excluding zero.
      * <p>
-     * A {@code Duration} represents a directed distance between two points on the time-line
-     * and can therefore be positive, zero or negative.
+     * A {@code Duration} represents a directed distance between two points on
+     * the time-line and can therefore be positive, zero or negative.
      * This method checks whether the length is greater than zero.
      *
      * @return true if this duration has a total length greater than zero
@@ -431,8 +506,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Checks if this duration is positive or zero.
      * <p>
-     * A {@code Duration} represents a directed distance between two points on the time-line
-     * and can therefore be positive, zero or negative.
+     * A {@code Duration} represents a directed distance between two points on
+     * the time-line and can therefore be positive, zero or negative.
      * This method checks whether the length is greater than or equal to zero.
      *
      * @return true if this duration has a total length greater than or equal zero
@@ -444,8 +519,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Checks if this duration is negative, excluding zero.
      * <p>
-     * A {@code Duration} represents a directed distance between two points on the time-line
-     * and can therefore be positive, zero or negative.
+     * A {@code Duration} represents a directed distance between two points on
+     * the time-line and can therefore be positive, zero or negative.
      * This method checks whether the length is less than zero.
      *
      * @return true if this duration has a total length less than zero
@@ -457,8 +532,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Checks if this duration is negative or zero.
      * <p>
-     * A {@code Duration} represents a directed distance between two points on the time-line
-     * and can therefore be positive, zero or negative.
+     * A {@code Duration} represents a directed distance between two points on
+     * the time-line and can therefore be positive, zero or negative.
      * This method checks whether the length is less than or equal to zero.
      *
      * @return true if this duration has a total length less than or equal to zero
@@ -506,6 +581,48 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the duration in terms of the specified unit.
+     * <p>
+     * This method returns the duration converted to the unit, truncating
+     * excess precision.
+     * If the conversion would overflow, the result will saturate to
+     * {@code Long.MAX_VALUE} or {@code Long.MIN_VALUE}.
+     *
+     * @return the duration in the specified unit, saturated at {@code Long.MAX_VALUE}
+     * and {@code Long.MIN_VALUE}, positive or negative
+     */
+    public long get(TimeUnit unit) {
+        Instant.checkNotNull(unit, "TimeUnit must not be null");
+        BigInteger nanos = toNanos();
+        switch (unit) {
+            case NANOSECONDS:
+                break;
+            case MICROSECONDS:
+                nanos = nanos.divide(BI_NANOS_PER_MICRO);
+                break;
+            case MILLISECONDS:
+                nanos = nanos.divide(BI_NANOS_PER_MILLI);
+                break;
+            case SECONDS:
+                nanos = nanos.divide(BI_NANOS_PER_SECOND);
+                break;
+            case MINUTES:
+                nanos = nanos.divide(BI_NANOS_PER_MINUTE);
+                break;
+            case HOURS:
+                nanos = nanos.divide(BI_NANOS_PER_HOUR);
+                break;
+            case DAYS:
+                nanos = nanos.divide(BI_NANOS_PER_DAY);
+                break;
+            default:
+                throw new InternalError("Unreachable");
+        }
+        return nanos.min(BI_MAX_LONG).max(BI_MIN_LONG).longValue();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this duration with the specified {@code Duration} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -527,6 +644,22 @@ public final class Duration implements Comparable<Duration>, Serializable {
             secs = MathUtils.safeIncrement(secs);
         }
         return create(secs, nos);
+     }
+
+    /**
+     * Returns a copy of this duration with the specified duration added.
+     * <p>
+     * The duration to be added is measured in terms of the specified unit.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the duration to add, positive or negative
+     * @param unit  the unit that the duration is measured in, not null
+     * @return a {@code Duration} based on this duration with the specified duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     */
+    public Duration plus(long amount, TimeUnit unit) {
+        return plus(of(amount, unit));
      }
 
     //-----------------------------------------------------------------------
@@ -628,6 +761,22 @@ public final class Duration implements Comparable<Duration>, Serializable {
         return create(secs, nos);
      }
 
+    /**
+     * Returns a copy of this duration with the specified duration subtracted.
+     * <p>
+     * The duration to be subtracted is measured in terms of the specified unit.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the duration to subtract, positive or negative
+     * @param unit  the unit that the duration is measured in, not null
+     * @return a {@code Duration} based on this duration with the specified duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     */
+    public Duration minus(long amount, TimeUnit unit) {
+        return minus(of(amount, unit));
+     }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this duration with the specified number of seconds subtracted.
@@ -717,7 +866,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         }
         BigInteger nanos = toNanos();
         nanos = nanos.multiply(BigInteger.valueOf(multiplicand));
-        BigInteger[] divRem = nanos.divideAndRemainder(Instant.BILLION);
+        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Multiplication result exceeds capacity of Duration: " + this + " * " + multiplicand);
         }
@@ -744,7 +893,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         }
         BigInteger nanos = toNanos();
         nanos = nanos.divide(BigInteger.valueOf(divisor));
-        BigInteger[] divRem = nanos.divideAndRemainder(Instant.BILLION);
+        BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
         return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
      }
 
@@ -796,7 +945,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the total length of the duration in nanoseconds, never null
      */
     public BigInteger toNanos() {
-        return BigInteger.valueOf(seconds).multiply(Instant.BILLION).add(BigInteger.valueOf(nanos));
+        return BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
     }
 
     /**

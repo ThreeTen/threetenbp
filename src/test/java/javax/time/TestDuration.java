@@ -40,6 +40,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 import javax.time.calendar.format.CalendricalParseException;
 
@@ -381,10 +382,97 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    // of(long,TimeUnit)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="OfTimeUnit")
+    Object[][] provider_factory_of_long_TimeUnit() {
+        return new Object[][] {
+            {0, TimeUnit.NANOSECONDS, 0, 0},
+            {0, TimeUnit.MICROSECONDS, 0, 0},
+            {0, TimeUnit.MILLISECONDS, 0, 0},
+            {0, TimeUnit.SECONDS, 0, 0},
+            {0, TimeUnit.MINUTES, 0, 0},
+            {0, TimeUnit.HOURS, 0, 0},
+            {0, TimeUnit.DAYS, 0, 0},
+            {1, TimeUnit.NANOSECONDS, 0, 1},
+            {1, TimeUnit.MICROSECONDS, 0, 1000},
+            {1, TimeUnit.MILLISECONDS, 0, 1000000},
+            {1, TimeUnit.SECONDS, 1, 0},
+            {1, TimeUnit.MINUTES, 60, 0},
+            {1, TimeUnit.HOURS, 3600, 0},
+            {1, TimeUnit.DAYS, 86400, 0},
+            {3, TimeUnit.NANOSECONDS, 0, 3},
+            {3, TimeUnit.MICROSECONDS, 0, 3000},
+            {3, TimeUnit.MILLISECONDS, 0, 3000000},
+            {3, TimeUnit.SECONDS, 3, 0},
+            {3, TimeUnit.MINUTES, 3 * 60, 0},
+            {3, TimeUnit.HOURS, 3 * 3600, 0},
+            {3, TimeUnit.DAYS, 3 * 86400, 0},
+            {-1, TimeUnit.NANOSECONDS, -1, 999999999},
+            {-1, TimeUnit.MICROSECONDS, -1, 999999000},
+            {-1, TimeUnit.MILLISECONDS, -1, 999000000},
+            {-1, TimeUnit.SECONDS, -1, 0},
+            {-1, TimeUnit.MINUTES, -60, 0},
+            {-1, TimeUnit.HOURS, -3600, 0},
+            {-1, TimeUnit.DAYS, -86400, 0},
+            {-3, TimeUnit.NANOSECONDS, -1, 999999997},
+            {-3, TimeUnit.MICROSECONDS, -1, 999997000},
+            {-3, TimeUnit.MILLISECONDS, -1, 997000000},
+            {-3, TimeUnit.SECONDS, -3, 0},
+            {-3, TimeUnit.MINUTES, -3 * 60, 0},
+            {-3, TimeUnit.HOURS, -3 * 3600, 0},
+            {-3, TimeUnit.DAYS, -3 * 86400, 0},
+            {Long.MAX_VALUE, TimeUnit.NANOSECONDS, Long.MAX_VALUE / 1000000000, (int) (Long.MAX_VALUE % 1000000000)},
+            {Long.MIN_VALUE, TimeUnit.NANOSECONDS, Long.MIN_VALUE / 1000000000 - 1, (int) (Long.MIN_VALUE % 1000000000 + 1000000000)},
+            {Long.MAX_VALUE, TimeUnit.MICROSECONDS, Long.MAX_VALUE / 1000000, (int) ((Long.MAX_VALUE % 1000000) * 1000)},
+            {Long.MIN_VALUE, TimeUnit.MICROSECONDS, Long.MIN_VALUE / 1000000 - 1, (int) ((Long.MIN_VALUE % 1000000 + 1000000) * 1000)},
+            {Long.MAX_VALUE, TimeUnit.MILLISECONDS, Long.MAX_VALUE / 1000, (int) ((Long.MAX_VALUE % 1000) * 1000000)},
+            {Long.MIN_VALUE, TimeUnit.MILLISECONDS, Long.MIN_VALUE / 1000 - 1, (int) ((Long.MIN_VALUE % 1000 + 1000) * 1000000)},
+            {Long.MAX_VALUE, TimeUnit.SECONDS, Long.MAX_VALUE, 0},
+            {Long.MIN_VALUE, TimeUnit.SECONDS, Long.MIN_VALUE, 0},
+            {Long.MAX_VALUE / 60, TimeUnit.MINUTES, (Long.MAX_VALUE / 60) * 60, 0},
+            {Long.MIN_VALUE / 60, TimeUnit.MINUTES, (Long.MIN_VALUE / 60) * 60, 0},
+            {Long.MAX_VALUE / 3600, TimeUnit.HOURS, (Long.MAX_VALUE / 3600) * 3600, 0},
+            {Long.MIN_VALUE / 3600, TimeUnit.HOURS, (Long.MIN_VALUE / 3600) * 3600, 0},
+            {Long.MAX_VALUE / 86400, TimeUnit.DAYS, (Long.MAX_VALUE / 86400) * 86400, 0},
+            {Long.MIN_VALUE / 86400, TimeUnit.DAYS, (Long.MIN_VALUE / 86400) * 86400, 0},
+        };
+    }
+
+    @Test(dataProvider="OfTimeUnit")
+    public void factory_of_long_TimeUnit(long amount, TimeUnit unit, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.of(amount, unit);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNanosInSecond(), expectedNanoOfSecond);
+    }
+
+    @DataProvider(name="OfTimeUnitOutOfRange")
+    Object[][] provider_factory_of_long_TimeUnit_outOfRange() {
+        return new Object[][] {
+            {Long.MAX_VALUE / 60 + 1, TimeUnit.MINUTES},
+            {Long.MIN_VALUE / 60 - 1, TimeUnit.MINUTES},
+            {Long.MAX_VALUE / 3600 + 1, TimeUnit.HOURS},
+            {Long.MIN_VALUE / 3600 - 1, TimeUnit.HOURS},
+            {Long.MAX_VALUE / 86400 + 1, TimeUnit.DAYS},
+            {Long.MIN_VALUE / 86400 - 1, TimeUnit.DAYS},
+        };
+    }
+
+    @Test(dataProvider="OfTimeUnitOutOfRange", expectedExceptions=ArithmeticException.class)
+    public void factory_of_long_TimeUnit_outOfRange(long amount, TimeUnit unit) {
+        Duration.of(amount, unit);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_of_long_TimeUnit_null() {
+        Duration.of(1, null);
+    }
+
+    //-----------------------------------------------------------------------
     // between()
     //-----------------------------------------------------------------------
     @DataProvider(name="DurationBetween")
-    Object[][] provider_factory_durationBetween_Instant_Instant() {
+    Object[][] provider_factory_between_Instant_Instant() {
         return new Object[][] {
             {0, 0, 0, 0, 0, 0},
             {3, 0, 7, 0, 4, 0},
@@ -395,7 +483,7 @@ public class TestDuration {
     }
 
     @Test(dataProvider="DurationBetween")
-    public void factory_durationBetween_Instant_Instant(long secs1, int nanos1, long secs2, int nanos2, long expectedSeconds, int expectedNanoOfSecond) {
+    public void factory_between_Instant_Instant(long secs1, int nanos1, long secs2, int nanos2, long expectedSeconds, int expectedNanoOfSecond) {
         Instant start = Instant.ofSeconds(secs1, nanos1);
         Instant end = Instant.ofSeconds(secs2, nanos2);
         Duration t = Duration.between(start, end);
@@ -404,10 +492,22 @@ public class TestDuration {
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_durationBetween_Instant_Instant_tooBig() {
+    public void factory_between_Instant_Instant_tooBig() {
         Instant start = Instant.ofSeconds(-1);
         Instant end = Instant.ofSeconds(Long.MAX_VALUE);
         Duration.between(start, end);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_between_Instant_Instant_startNull() {
+        Instant end = Instant.ofSeconds(1);
+        Duration.between(null, end);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_between_Instant_Instant_endNull() {
+        Instant start = Instant.ofSeconds(1);
+        Duration.between(start, null);
     }
 
     //-----------------------------------------------------------------------
@@ -625,6 +725,92 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    // get(TimeUnit)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="GetTimeUnit")
+    Object[][] provider_get_TimeUnit() {
+        return new Object[][] {
+            {0, 0, TimeUnit.NANOSECONDS, 0},
+            {0, 0, TimeUnit.MICROSECONDS, 0},
+            {0, 0, TimeUnit.MILLISECONDS, 0},
+            {0, 0, TimeUnit.SECONDS, 0},
+            {0, 0, TimeUnit.MINUTES, 0},
+            {0, 0, TimeUnit.HOURS, 0},
+            {0, 0, TimeUnit.DAYS, 0},
+            {0, 1, TimeUnit.NANOSECONDS, 1},
+            {0, 1, TimeUnit.MICROSECONDS, 0},
+            {0, 1, TimeUnit.MILLISECONDS, 0},
+            {0, 1, TimeUnit.SECONDS, 0},
+            {0, 1, TimeUnit.MINUTES, 0},
+            {0, 1, TimeUnit.HOURS, 0},
+            {0, 1, TimeUnit.DAYS, 0},
+            {2, 123456789, TimeUnit.NANOSECONDS, 2123456789L},
+            {2, 123456789, TimeUnit.MICROSECONDS, 2123456L},
+            {2, 123456789, TimeUnit.MILLISECONDS, 2123L},
+            {2, 123456789, TimeUnit.SECONDS, 2},
+            {2, 123456789, TimeUnit.MINUTES, 0},
+            {3, 123456789, TimeUnit.HOURS, 0},
+            {2, 123456789, TimeUnit.DAYS, 0},
+            {59, 0, TimeUnit.MINUTES, 0},
+            {60, 0, TimeUnit.MINUTES, 1},
+            {119, 0, TimeUnit.MINUTES, 1},
+            {120, 0, TimeUnit.MINUTES, 2},
+            {-59, 0, TimeUnit.MINUTES, 0},
+            {-60, 0, TimeUnit.MINUTES, -1},
+            {-119, 0, TimeUnit.MINUTES, -1},
+            {-120, 0, TimeUnit.MINUTES, -2},
+            {3599, 0, TimeUnit.HOURS, 0},
+            {3600, 0, TimeUnit.HOURS, 1},
+            {7199, 0, TimeUnit.HOURS, 1},
+            {7200, 0, TimeUnit.HOURS, 2},
+            {-3599, 0, TimeUnit.HOURS, 0},
+            {-3600, 0, TimeUnit.HOURS, -1},
+            {-7199, 0, TimeUnit.HOURS, -1},
+            {-7200, 0, TimeUnit.HOURS, -2},
+            {86399, 0, TimeUnit.DAYS, 0},
+            {86400, 0, TimeUnit.DAYS, 1},
+            {-86399, 0, TimeUnit.DAYS, 0},
+            {-86400, 0, TimeUnit.DAYS, -1},
+            {Long.MAX_VALUE / 1000000000L, Long.MAX_VALUE % 1000000000L, TimeUnit.NANOSECONDS, Long.MAX_VALUE},
+            {Long.MAX_VALUE / 1000000000L, Long.MAX_VALUE % 1000000000L + 1, TimeUnit.NANOSECONDS, Long.MAX_VALUE},
+            {Long.MAX_VALUE, 999999999, TimeUnit.NANOSECONDS, Long.MAX_VALUE},
+            {Long.MAX_VALUE, 999999999, TimeUnit.MICROSECONDS, Long.MAX_VALUE},
+            {Long.MAX_VALUE, 999999999, TimeUnit.MILLISECONDS, Long.MAX_VALUE},
+            {Long.MAX_VALUE, 999999999, TimeUnit.SECONDS, Long.MAX_VALUE},
+            {Long.MAX_VALUE, 999999999, TimeUnit.MINUTES, Long.MAX_VALUE / 60},
+            {Long.MAX_VALUE, 999999999, TimeUnit.HOURS, Long.MAX_VALUE / 3600},
+            {Long.MAX_VALUE, 999999999, TimeUnit.DAYS, Long.MAX_VALUE / 86400},
+            {Long.MIN_VALUE / 1000000000L, Long.MIN_VALUE % 1000000000L, TimeUnit.NANOSECONDS, Long.MIN_VALUE},
+            {Long.MIN_VALUE / 1000000000L, Long.MIN_VALUE % 1000000000L - 1, TimeUnit.NANOSECONDS, Long.MIN_VALUE},
+            {Long.MIN_VALUE, 999999999, TimeUnit.NANOSECONDS, Long.MIN_VALUE},
+            {Long.MIN_VALUE, 999999999, TimeUnit.MICROSECONDS, Long.MIN_VALUE},
+            {Long.MIN_VALUE, 999999999, TimeUnit.MILLISECONDS, Long.MIN_VALUE},
+            {Long.MIN_VALUE, 0, TimeUnit.SECONDS, Long.MIN_VALUE},
+            {Long.MIN_VALUE, 1, TimeUnit.SECONDS, Long.MIN_VALUE + 1},
+            {Long.MIN_VALUE, 0, TimeUnit.MINUTES, Long.MIN_VALUE / 60},
+            {Long.MIN_VALUE, 1, TimeUnit.MINUTES, Long.MIN_VALUE / 60},
+            {Long.MIN_VALUE, 0, TimeUnit.HOURS, Long.MIN_VALUE / 3600},
+            {Long.MIN_VALUE, 1, TimeUnit.HOURS, Long.MIN_VALUE / 3600},
+            {Long.MIN_VALUE, 0, TimeUnit.DAYS, Long.MIN_VALUE / 86400},
+            {Long.MIN_VALUE, 1, TimeUnit.DAYS, Long.MIN_VALUE / 86400},
+        };
+    }
+
+    @Test(dataProvider="GetTimeUnit")
+    public void get_TimeUnit(long secs, long nanos, TimeUnit unit, long expected) {
+        Duration t = Duration.ofSeconds(secs, nanos);
+        assertEquals(t.get(unit), expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void get_TimeUnit_null() {
+        Duration t = Duration.ofSeconds(1, 34);
+        t.get(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus()
+    //-----------------------------------------------------------------------
     @DataProvider(name="Plus")
     Object[][] provider_plus() {
         return new Object[][] {
@@ -837,6 +1023,20 @@ public class TestDuration {
     public void plusOverflowTooSmall() {
        Duration t = Duration.ofSeconds(Long.MIN_VALUE);
        t.plus(Duration.ofSeconds(-1, 999999999));
+    }
+
+    //-----------------------------------------------------------------------
+    public void plus_long_TimeUnit() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.plus(1, TimeUnit.MILLISECONDS);
+        assertEquals(1, t.getSeconds());
+        assertEquals(1000000, t.getNanosInSecond());
+     }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void plus_long_TimeUnit_null() {
+       Duration t = Duration.ofSeconds(1);
+       t.plus(1, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1329,6 +1529,20 @@ public class TestDuration {
     public void minusOverflowTooBig() {
        Duration t = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
        t.minus(Duration.ofSeconds(-1, 999999999));
+    }
+
+    //-----------------------------------------------------------------------
+    public void minus_long_TimeUnit() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.minus(1, TimeUnit.MILLISECONDS);
+        assertEquals(0, t.getSeconds());
+        assertEquals(999000000, t.getNanosInSecond());
+     }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void minus_long_TimeUnit_null() {
+       Duration t = Duration.ofSeconds(1);
+       t.minus(1, null);
     }
 
     //-----------------------------------------------------------------------
