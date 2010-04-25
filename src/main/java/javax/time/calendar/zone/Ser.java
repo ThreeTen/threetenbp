@@ -78,7 +78,6 @@ final class Ser implements Externalizable {
         this.object = object;
     }
 
-    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
@@ -99,7 +98,6 @@ final class Ser implements Externalizable {
         }
     }
 
-    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         type = in.readByte();
         switch (type) {
@@ -159,7 +157,7 @@ final class Ser implements Externalizable {
     //-------------------------------------------------------------------------
     /**
      * Writes the state to the stream.
-     * @param epochSecs  the epoch secs, not null
+     * @param epochSecs  the epoch seconds, not null
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
@@ -178,16 +176,16 @@ final class Ser implements Externalizable {
     /**
      * Reads the state from the stream.
      * @param in  the input stream, not null
-     * @return the epoch secs, never null
+     * @return the epoch seconds, never null
      * @throws IOException if an error occurs
      */
     static long readEpochSecs(ObjectInput in) throws IOException {
-        int hiByte = (int) (in.readByte()) & 255;
+        int hiByte = in.readByte() & 255;
         if (hiByte == 255) {
             return in.readLong();
         } else {
-            int midByte = (int) (in.readByte()) & 255;
-            int loByte = (int) (in.readByte()) & 255;
+            int midByte = in.readByte() & 255;
+            int loByte = in.readByte() & 255;
             long tot = ((hiByte << 16) + (midByte << 8) + loByte);
             return (tot * 900) - 4575744000L;
         }
