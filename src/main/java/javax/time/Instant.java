@@ -394,7 +394,7 @@ public final class Instant
      */
     public Instant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
-        int nanosToAdd = duration.getNanosInSecond();
+        int nanosToAdd = duration.getNanoOfSecond();
         if (secsToAdd == 0 && nanosToAdd == 0) {
             return this;
         }
@@ -519,7 +519,7 @@ public final class Instant
      */
     public Instant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
-        int nanosToSubtract = duration.getNanosInSecond();
+        int nanosToSubtract = duration.getNanoOfSecond();
         if (secsToSubtract == 0 && nanosToSubtract == 0) {
             return this;
         }

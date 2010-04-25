@@ -215,7 +215,7 @@ class TrueUTC implements TimeScale, Serializable {
             return tsi.getTimeScale().add(tsi, dur);
         }
         long seconds = dur.getSeconds();
-        int nanos = dur.getNanosInSecond();
+        int nanos = dur.getNanoOfSecond();
         if (seconds == 0 && nanos == 0) {
             return tsi;
         }
@@ -265,7 +265,7 @@ class TrueUTC implements TimeScale, Serializable {
             return tsi.getTimeScale().subtract(tsi, dur);
         }
         long seconds = dur.getSeconds();
-        int nanos = dur.getNanosInSecond();
+        int nanos = dur.getNanoOfSecond();
         if (seconds == 0 && nanos == 0) {
             return tsi;
         }

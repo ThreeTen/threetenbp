@@ -549,7 +549,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The length of the duration is stored using two fields - seconds and nanoseconds.
      * The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to
      * the length in seconds.
-     * The total duration is defined by calling this method and {@link #getNanosInSecond()}.
+     * The total duration is defined by calling this method and {@link #getNanoOfSecond()}.
      * <p>
      * A {@code Duration} represents a directed distance between two points on the time-line.
      * A negative duration is expressed by the negative sign of the seconds part.
@@ -575,7 +575,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @return the nanoseconds within the second part of the length of the duration, from 0 to 999,999,999
      */
-    public int getNanosInSecond() {
+    public int getNanoOfSecond() {
         return nanos;
     }
 

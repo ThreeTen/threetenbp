@@ -158,7 +158,7 @@ public class ScaleUtil {
         if (t.getTimeScale().supportsLeapSecond())
             throw new UnsupportedOperationException("simpleAdd does not support timescales with leap seconds");
         long seconds = d.getSeconds();
-        int nanos = d.getNanosInSecond();
+        int nanos = d.getNanoOfSecond();
         if (seconds == 0 && nanos == 0) {
             return t;
         }
@@ -175,7 +175,7 @@ public class ScaleUtil {
         if (t.getTimeScale().supportsLeapSecond())
             throw new UnsupportedOperationException("simpleAdd does not support timescales with leap seconds");
         long seconds = d.getSeconds();
-        int nanos = d.getNanosInSecond();
+        int nanos = d.getNanoOfSecond();
         if (seconds == 0 && nanos == 0) {
             return t;
         }

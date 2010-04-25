@@ -249,7 +249,7 @@ public final class PeriodFields
         checkNotNull(duration, "Duration must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         internalMap.put(ISOChronology.periodSeconds(), PeriodField.of(duration.getSeconds(), ISOChronology.periodSeconds()));
-        internalMap.put(ISOChronology.periodNanos(), PeriodField.of(duration.getNanosInSecond(), ISOChronology.periodNanos()));
+        internalMap.put(ISOChronology.periodNanos(), PeriodField.of(duration.getNanoOfSecond(), ISOChronology.periodNanos()));
         return create(internalMap);
     }
 

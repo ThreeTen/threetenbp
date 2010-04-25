@@ -218,7 +218,7 @@ class UTC implements TimeScale, Serializable {
             return t.getTimeScale().add(t, d);
         }
         long seconds = d.getSeconds();
-        int nanos = d.getNanosInSecond();
+        int nanos = d.getNanoOfSecond();
         if (seconds == 0 && nanos == 0) {
             return t;
         }
@@ -240,7 +240,7 @@ class UTC implements TimeScale, Serializable {
             return t.getTimeScale().subtract(t, d);
         }
         long seconds = d.getSeconds();
-        int nanos = d.getNanosInSecond();
+        int nanos = d.getNanoOfSecond();
         if (seconds == 0 && nanos == 0) {
             return t;
         }
