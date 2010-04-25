@@ -1026,11 +1026,32 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    public void plus_long_TimeUnit() {
+    public void plus_long_TimeUnit_seconds() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.plus(1, TimeUnit.SECONDS);
+        assertEquals(2, t.getSeconds());
+        assertEquals(0, t.getNanosInSecond());
+     }
+
+    public void plus_long_TimeUnit_millis() {
         Duration t = Duration.ofSeconds(1);
         t = t.plus(1, TimeUnit.MILLISECONDS);
         assertEquals(1, t.getSeconds());
         assertEquals(1000000, t.getNanosInSecond());
+     }
+
+    public void plus_long_TimeUnit_micros() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.plus(1, TimeUnit.MICROSECONDS);
+        assertEquals(1, t.getSeconds());
+        assertEquals(1000, t.getNanosInSecond());
+     }
+
+    public void plus_long_TimeUnit_nanos() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.plus(1, TimeUnit.NANOSECONDS);
+        assertEquals(1, t.getSeconds());
+        assertEquals(1, t.getNanosInSecond());
      }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1532,11 +1553,32 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    public void minus_long_TimeUnit() {
+    public void minus_long_TimeUnit_seconds() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.minus(1, TimeUnit.SECONDS);
+        assertEquals(0, t.getSeconds());
+        assertEquals(0, t.getNanosInSecond());
+     }
+
+    public void minus_long_TimeUnit_millis() {
         Duration t = Duration.ofSeconds(1);
         t = t.minus(1, TimeUnit.MILLISECONDS);
         assertEquals(0, t.getSeconds());
         assertEquals(999000000, t.getNanosInSecond());
+     }
+
+    public void minus_long_TimeUnit_micros() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.minus(1, TimeUnit.MICROSECONDS);
+        assertEquals(0, t.getSeconds());
+        assertEquals(999999000, t.getNanosInSecond());
+     }
+
+    public void minus_long_TimeUnit_nanos() {
+        Duration t = Duration.ofSeconds(1);
+        t = t.minus(1, TimeUnit.NANOSECONDS);
+        assertEquals(0, t.getSeconds());
+        assertEquals(999999999, t.getNanosInSecond());
      }
 
     @Test(expectedExceptions=NullPointerException.class)

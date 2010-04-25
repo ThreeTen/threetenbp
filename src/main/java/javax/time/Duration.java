@@ -659,6 +659,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plus(long amount, TimeUnit unit) {
+        if (unit == TimeUnit.SECONDS) {
+            return plusSeconds(amount);
+        } else if (unit == TimeUnit.MILLISECONDS) {
+            return plusMillis(amount);
+        } else if (unit == TimeUnit.NANOSECONDS) {
+            return plusNanos(amount);
+        }
         return plus(of(amount, unit));
      }
 
@@ -774,6 +781,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minus(long amount, TimeUnit unit) {
+        if (unit == TimeUnit.SECONDS) {
+            return minusSeconds(amount);
+        } else if (unit == TimeUnit.MILLISECONDS) {
+            return minusMillis(amount);
+        } else if (unit == TimeUnit.NANOSECONDS) {
+            return minusNanos(amount);
+        }
         return minus(of(amount, unit));
      }
 
