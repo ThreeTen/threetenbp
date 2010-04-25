@@ -42,6 +42,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -594,6 +595,41 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
+    public void plus_long_TimeUnit_seconds() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.plus(1, TimeUnit.SECONDS);
+        assertEquals(2, t.getEpochSeconds());
+        assertEquals(0, t.getNanoOfSecond());
+     }
+
+    public void plus_long_TimeUnit_millis() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.plus(1, TimeUnit.MILLISECONDS);
+        assertEquals(1, t.getEpochSeconds());
+        assertEquals(1000000, t.getNanoOfSecond());
+     }
+
+    public void plus_long_TimeUnit_micros() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.plus(1, TimeUnit.MICROSECONDS);
+        assertEquals(1, t.getEpochSeconds());
+        assertEquals(1000, t.getNanoOfSecond());
+     }
+
+    public void plus_long_TimeUnit_nanos() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.plus(1, TimeUnit.NANOSECONDS);
+        assertEquals(1, t.getEpochSeconds());
+        assertEquals(1, t.getNanoOfSecond());
+     }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void plus_long_TimeUnit_null() {
+        Instant t = Instant.ofSeconds(1);
+       t.plus(1, null);
+    }
+
+    //-----------------------------------------------------------------------
     @DataProvider(name="PlusSeconds")
     Object[][] provider_plusSeconds_long() {
         return new Object[][] {
@@ -1043,6 +1079,41 @@ public class TestInstant {
     public void minusOverflowTooBig() {
        Instant i = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
        i.minus(Duration.ofSeconds(-1, 999999999));
+    }
+
+    //-----------------------------------------------------------------------
+    public void minus_long_TimeUnit_seconds() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.minus(1, TimeUnit.SECONDS);
+        assertEquals(0, t.getEpochSeconds());
+        assertEquals(0, t.getNanoOfSecond());
+     }
+
+    public void minus_long_TimeUnit_millis() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.minus(1, TimeUnit.MILLISECONDS);
+        assertEquals(0, t.getEpochSeconds());
+        assertEquals(999000000, t.getNanoOfSecond());
+     }
+
+    public void minus_long_TimeUnit_micros() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.minus(1, TimeUnit.MICROSECONDS);
+        assertEquals(0, t.getEpochSeconds());
+        assertEquals(999999000, t.getNanoOfSecond());
+     }
+
+    public void minus_long_TimeUnit_nanos() {
+        Instant t = Instant.ofSeconds(1);
+        t = t.minus(1, TimeUnit.NANOSECONDS);
+        assertEquals(0, t.getEpochSeconds());
+        assertEquals(999999999, t.getNanoOfSecond());
+     }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void minus_long_TimeUnit_null() {
+        Instant t = Instant.ofSeconds(1);
+       t.minus(1, null);
     }
 
     //-----------------------------------------------------------------------

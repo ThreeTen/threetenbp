@@ -34,6 +34,7 @@ package javax.time;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 import javax.time.calendar.Clock;
 import javax.time.calendar.OffsetDateTime;
@@ -409,6 +410,29 @@ public final class Instant
         return create(secs, nos);
     }
 
+    /**
+     * Returns a copy of this duration with the specified duration added.
+     * <p>
+     * The duration to be added is measured in terms of the specified unit.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the duration to add, positive or negative
+     * @param unit  the unit that the duration is measured in, not null
+     * @return a {@code Duration} based on this duration with the specified duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     */
+    public Instant plus(long amount, TimeUnit unit) {
+        if (unit == TimeUnit.SECONDS) {
+            return plusSeconds(amount);
+        } else if (unit == TimeUnit.MILLISECONDS) {
+            return plusMillis(amount);
+        } else if (unit == TimeUnit.NANOSECONDS) {
+            return plusNanos(amount);
+        }
+        return plus(Duration.of(amount, unit));
+     }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified number of seconds added.
@@ -427,7 +451,6 @@ public final class Instant
         return create(secs , nanos);
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified number of milliseconds added.
      * <p>
@@ -456,7 +479,6 @@ public final class Instant
         return create(MathUtils.safeAdd(seconds, secondsToAdd) , nos);
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified number of nanoseconds added.
      * <p>
@@ -510,6 +532,29 @@ public final class Instant
         return create(secs, nos);
     }
 
+    /**
+     * Returns a copy of this duration with the specified duration subtracted.
+     * <p>
+     * The duration to be subtracted is measured in terms of the specified unit.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the duration to subtract, positive or negative
+     * @param unit  the unit that the duration is measured in, not null
+     * @return a {@code Duration} based on this duration with the specified duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     */
+    public Instant minus(long amount, TimeUnit unit) {
+        if (unit == TimeUnit.SECONDS) {
+            return minusSeconds(amount);
+        } else if (unit == TimeUnit.MILLISECONDS) {
+            return minusMillis(amount);
+        } else if (unit == TimeUnit.NANOSECONDS) {
+            return minusNanos(amount);
+        }
+        return minus(Duration.of(amount, unit));
+     }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified number of seconds subtracted.
@@ -528,7 +573,6 @@ public final class Instant
         return create(secs , nanos);
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified number of milliseconds subtracted.
      * <p>
@@ -558,7 +602,6 @@ public final class Instant
         return create(MathUtils.safeSubtract(seconds, secondsToSubtract) , nos);
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this instant with the specified number of nanoseconds subtracted.
      * <p>
