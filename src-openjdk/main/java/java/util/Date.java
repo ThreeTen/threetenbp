@@ -220,7 +220,7 @@ public class Date
      * @since ?
      */
     public Date(InstantProvider instantProvider) {
-        Instant instant = Instant.from(instantProvider);
+        Instant instant = Instant.of(instantProvider);
         try {
             fastTime = instant.toEpochMillisLong();
         } catch (ArithmeticException ex) {
@@ -1412,7 +1412,7 @@ public class Date
      * @since ?
      */
     public final void setInstant(InstantProvider instantProvider) {
-        Instant instant = Instant.from(instantProvider);
+        Instant instant = Instant.of(instantProvider);
         long millis;
         try {
             millis = instant.toEpochMillisLong();

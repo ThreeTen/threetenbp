@@ -347,8 +347,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public static Duration between(InstantProvider startInclusive, InstantProvider endExclusive) {
-        Instant start = Instant.from(startInclusive);
-        Instant end = Instant.from(endExclusive);
+        Instant start = Instant.of(startInclusive);
+        Instant end = Instant.of(endExclusive);
         long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
         int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
         if (nanos < 0) {

@@ -339,27 +339,27 @@ public class TestInstant {
                 return Instant.ofSeconds(1, 2);
             }
         };
-        Instant test = Instant.from(provider);
+        Instant test = Instant.of(provider);
         assertEquals(test.getEpochSeconds(), 1);
         assertEquals(test.getNanoOfSecond(), 2);
     }
 
     public void factory_from_provider_same() {
         InstantProvider provider = Instant.ofSeconds(1, 2);
-        Instant test = Instant.from(provider);
+        Instant test = Instant.of(provider);
         assertSame(test, provider);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_provider_null() {
         InstantProvider provider = null;
-        Instant.from(provider);
+        Instant.of(provider);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_badProvider() {
         InstantProvider provider = new MockInstantProviderReturnsNull();
-        Instant.from(provider);
+        Instant.of(provider);
     }
 
     //-----------------------------------------------------------------------

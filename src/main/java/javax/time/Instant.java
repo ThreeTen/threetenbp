@@ -136,7 +136,7 @@ public final class Instant
      */
     public static Instant now(TimeSource timeSource) {
         checkNotNull(timeSource, "TimeSource must not be null");
-        return from(timeSource.instant());
+        return of(timeSource.instant());
     }
 
     /**
@@ -284,7 +284,7 @@ public final class Instant
      * @param instantProvider  a provider of instant information, not null
      * @return an {@code Instant}, never null
      */
-    public static Instant from(InstantProvider instantProvider) {
+    public static Instant of(InstantProvider instantProvider) {
         checkNotNull(instantProvider, "InstantProvider must not be null");
         Instant provided = instantProvider.toInstant();
         checkNotNull(provided, "The implementation of InstantProvider must not return null");

@@ -48,7 +48,7 @@ package javax.time;
  * mutable and changes in value between two calls to {@code toInstant()}.
  * <p>
  * The recommended way to convert an {@code InstantProvider} to a {@code Instant} is using
- * {@link Instant#from(InstantProvider)} as this method provides additional null checking.
+ * {@link Instant#of(InstantProvider)} as this method provides additional null checking.
  * <p>
  * The implementation of {@code InstantProvider} may provide more
  * information than just an instant. For example,

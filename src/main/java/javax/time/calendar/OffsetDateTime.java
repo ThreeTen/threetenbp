@@ -348,7 +348,7 @@ public final class OffsetDateTime
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
     public static OffsetDateTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
-        Instant instant = Instant.from(instantProvider);
+        Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());

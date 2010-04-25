@@ -121,7 +121,7 @@ class UTC implements TimeScale, Serializable {
 
     /** {@inheritDoc} */
     public TimeScaleInstant toTimeScaleInstant(InstantProvider instantProvider) {
-        Instant t = Instant.from(instantProvider);
+        Instant t = Instant.of(instantProvider);
         return TimeScaleInstant.seconds(this, t.getEpochSeconds(), t.getNanoOfSecond());
     }
 

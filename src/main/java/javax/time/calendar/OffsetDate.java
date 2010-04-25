@@ -164,7 +164,7 @@ public final class OffsetDate
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
     public static OffsetDate fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
-        Instant instant = Instant.from(instantProvider);
+        Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         
         long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later

@@ -152,7 +152,7 @@ class TAI implements TimeScale, Serializable {
 
     /** {@inheritDoc} */
     public TimeScaleInstant toTimeScaleInstant(InstantProvider provider) {
-        Instant t = Instant.from(provider);
+        Instant t = Instant.of(provider);
         return ScaleUtil.tai(t.getEpochSeconds(), t.getNanoOfSecond());
     }
 
