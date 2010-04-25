@@ -668,18 +668,18 @@ public class TestLocalDateTime {
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_DateProvider_TimeProvider() {
-        LocalDateTime dateTime = LocalDateTime.from(LocalDate.of(2007, 7, 15), LocalTime.of(12, 30, 40, 987654321));
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2007, 7, 15), LocalTime.of(12, 30, 40, 987654321));
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_nullDateProvider() {
-        LocalDateTime.from(null, LocalTime.of(12, 30, 40, 987654321));
+        LocalDateTime.of(null, LocalTime.of(12, 30, 40, 987654321));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_null_toLocalDate() {
-        LocalDateTime.from(new DateProvider() {
+        LocalDateTime.of(new DateProvider() {
             public LocalDate toLocalDate() {
                 return null;
             }
@@ -688,12 +688,12 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_nullTimeProvider() {
-        LocalDateTime.from(LocalDate.of(2007, 7, 15), null);
+        LocalDateTime.of(LocalDate.of(2007, 7, 15), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_null_toLocalTime() {
-        LocalDateTime.from(LocalDate.of(2007, 7, 15), new TimeProvider() {
+        LocalDateTime.of(LocalDate.of(2007, 7, 15), new TimeProvider() {
             public LocalTime toLocalTime() {
                 return null;
             }
@@ -702,23 +702,23 @@ public class TestLocalDateTime {
 
     //-----------------------------------------------------------------------
     public void factory_date_DateTimeProvider() {
-        assertSame(LocalDateTime.from(TEST_2007_07_15_12_30_40_987654321), TEST_2007_07_15_12_30_40_987654321);
+        assertSame(LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321), TEST_2007_07_15_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateTimeProvider_null() {
-        LocalDateTime.from(null);
+        LocalDateTime.of(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateTimeProvider_null_toLocalDateTime() {
-        LocalDateTime.from(new MockDateTimeProviderReturnsNull());
+        LocalDateTime.of(new MockDateTimeProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDateTime test = LocalDateTime.from(mmp);
+        LocalDateTime test = LocalDateTime.of(mmp);
         check(test, 2008, 6, 30, 11, 30, 10, 500);
     }
 
@@ -860,7 +860,7 @@ public class TestLocalDateTime {
 
     @Test(dataProvider="sampleTimes")
     public void test_get(int h, int m, int s, int ns) {
-        LocalDateTime a = LocalDateTime.from(TEST_2007_07_15_12_30_40_987654321, LocalTime.of(h, m, s, ns));
+        LocalDateTime a = LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321, LocalTime.of(h, m, s, ns));
         assertEquals(a.getHourOfDay(), h);
         assertEquals(a.getMinuteOfHour(), m);
         assertEquals(a.getSecondOfMinute(), s);
@@ -875,7 +875,7 @@ public class TestLocalDateTime {
         for (MonthOfYear month : MonthOfYear.values()) {
             int length = month.lengthInDays(false);
             for (int i = 1; i <= length; i++) {
-                LocalDateTime d = LocalDateTime.from(LocalDate.of(2007, month, i),
+                LocalDateTime d = LocalDateTime.of(LocalDate.of(2007, month, i),
                         TEST_2007_07_15_12_30_40_987654321);
                 assertSame(d.getDayOfWeek(), dow);
                 dow = dow.next();
@@ -3197,7 +3197,7 @@ public class TestLocalDateTime {
     @Test(dataProvider="sampleTimes")
     public void test_toLocalTime(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.of(h, m, s, ns);
-        LocalDateTime dt = LocalDateTime.from(TEST_2007_07_15_12_30_40_987654321, t);
+        LocalDateTime dt = LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321, t);
         assertSame(dt.toLocalTime(), t);
     }
 
@@ -3262,7 +3262,7 @@ public class TestLocalDateTime {
 
         for (LocalDate localDate : localDates) {
             for (LocalTime localTime : localTimes) {
-                localDateTimes[i++] = LocalDateTime.from(localDate, localTime);
+                localDateTimes[i++] = LocalDateTime.of(localDate, localTime);
             }
         }
 

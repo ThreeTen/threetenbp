@@ -430,7 +430,7 @@ public class TestOffsetDateTime {
     public void test_get(int y, int o, int d, int h, int m, int s, int n, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, o, d);
         LocalTime localTime = LocalTime.of(h, m, s, n);
-        LocalDateTime localDateTime = LocalDateTime.from(localDate, localTime);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         OffsetDateTime a = OffsetDateTime.from(localDateTime, offset);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);

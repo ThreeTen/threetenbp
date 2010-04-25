@@ -164,7 +164,7 @@ public final class OffsetTime
      * @return the offset time, never null
      */
     public static OffsetTime from(TimeProvider timeProvider, ZoneOffset offset) {
-        LocalTime time = LocalTime.from(timeProvider);
+        LocalTime time = LocalTime.of(timeProvider);
         return new OffsetTime(time, offset);
     }
 
@@ -189,7 +189,7 @@ public final class OffsetTime
         if (secsOfDay < 0) {
             secsOfDay += ISOChronology.SECONDS_PER_DAY;
         }
-        LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
+        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, instant.getNanoOfSecond());
         return new OffsetTime(time, offset);
     }
 
@@ -275,7 +275,7 @@ public final class OffsetTime
      * @return a new updated OffsetTime, never null
      */
     public OffsetTime withTime(TimeProvider timeProvider) {
-        LocalTime localTime = LocalTime.from(timeProvider);
+        LocalTime localTime = LocalTime.of(timeProvider);
         return localTime.equals(this.time) ? this : new OffsetTime(localTime, offset);
     }
 

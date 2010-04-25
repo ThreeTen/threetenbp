@@ -837,7 +837,7 @@ public final class HijrahDate
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
     public LocalDate toLocalDate() {
-        return LocalDate.fromEpochDays(this.gregorianEpochDays);
+        return LocalDate.ofEpochDays(this.gregorianEpochDays);
     }
 
     //-----------------------------------------------------------------------

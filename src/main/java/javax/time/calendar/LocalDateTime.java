@@ -127,9 +127,9 @@ public final class LocalDateTime
             secsOfDay += ISOChronology.SECONDS_PER_DAY;
             yearZeroDays--;  // overflow caught later
         }
-        LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
-        LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, nanoOfSecond);
-        return LocalDateTime.from(date, time);
+        LocalDate date = LocalDate.ofYearZeroDays(yearZeroDays);
+        LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
+        return LocalDateTime.of(date, time);
     }
 
     //-----------------------------------------------------------------------
@@ -185,7 +185,7 @@ public final class LocalDateTime
      * @return the local date-time, never null
      */
     public static LocalDateTime ofMidnight(DateProvider dateProvider) {
-        LocalDate date = LocalDate.from(dateProvider);
+        LocalDate date = LocalDate.of(dateProvider);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -351,9 +351,9 @@ public final class LocalDateTime
      * @param timeProvider  the time provider to use, not null
      * @return the local date-time, never null
      */
-    public static LocalDateTime from(DateProvider dateProvider, TimeProvider timeProvider) {
-        LocalDate date = LocalDate.from(dateProvider);
-        LocalTime time = LocalTime.from(timeProvider);
+    public static LocalDateTime of(DateProvider dateProvider, TimeProvider timeProvider) {
+        LocalDate date = LocalDate.of(dateProvider);
+        LocalTime time = LocalTime.of(timeProvider);
         return new LocalDateTime(date, time);
     }
 
@@ -368,7 +368,7 @@ public final class LocalDateTime
      * @param dateTimeProvider  the date-time provider to use, not null
      * @return the local date-time, never null
      */
-    public static LocalDateTime from(DateTimeProvider dateTimeProvider) {
+    public static LocalDateTime of(DateTimeProvider dateTimeProvider) {
         ISOChronology.checkNotNull(dateTimeProvider, "DateTimeProvider must not be null");
         LocalDateTime result = dateTimeProvider.toLocalDateTime();
         ISOChronology.checkNotNull(result, "DateTimeProvider implementation must not return null");

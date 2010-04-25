@@ -220,7 +220,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime from(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.from(dateProvider, timeProvider);
+        LocalDateTime dt = LocalDateTime.of(dateProvider, timeProvider);
         return resolve(dt, null, zone, resolver);
     }
 
@@ -257,7 +257,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime from(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.from(dateTimeProvider);
+        LocalDateTime dt = LocalDateTime.of(dateTimeProvider);
         return resolve(dt, null, zone, resolver);
     }
 
@@ -481,7 +481,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withDateTime(DateTimeProvider dateTimeProvider) {
-        LocalDateTime localDateTime = LocalDateTime.from(dateTimeProvider);
+        LocalDateTime localDateTime = LocalDateTime.of(dateTimeProvider);
         return localDateTime.equals(this.dateTime.toLocalDateTime()) ?
                 this : ZonedDateTime.resolve(localDateTime, this, zone, ZoneResolvers.retainOffset());
     }

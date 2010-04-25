@@ -110,7 +110,7 @@ public final class LocalDate
         if (secsOfDay < 0) {
             yearZeroDays--;  // overflow caught later
         }
-        return LocalDate.fromYearZeroDays(yearZeroDays);
+        return LocalDate.ofYearZeroDays(yearZeroDays);
     }
 
     /**
@@ -177,7 +177,7 @@ public final class LocalDate
      * @return the local date, never null
      * @throws NullPointerException if the provider is null or returns null
      */
-    public static LocalDate from(DateProvider dateProvider) {
+    public static LocalDate of(DateProvider dateProvider) {
         ISOChronology.checkNotNull(dateProvider, "DateProvider must not be null");
         LocalDate result = dateProvider.toLocalDate();
         ISOChronology.checkNotNull(result, "DateProvider implementation must not return null");
@@ -195,8 +195,8 @@ public final class LocalDate
      * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
-    public static LocalDate fromEpochDays(long epochDays) {
-        return fromYearZeroDays(epochDays + ISOChronology.DAYS_0000_TO_1970);
+    public static LocalDate ofEpochDays(long epochDays) {
+        return ofYearZeroDays(epochDays + ISOChronology.DAYS_0000_TO_1970);
     }
 
     /**
@@ -209,8 +209,8 @@ public final class LocalDate
      * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the modified julian days value is outside the supported range
      */
-    public static LocalDate fromModifiedJulianDays(long mjDays) {
-        return fromYearZeroDays(mjDays + ISOChronology.DAYS_0000_TO_MJD_EPOCH);
+    public static LocalDate ofModifiedJulianDays(long mjDays) {
+        return ofYearZeroDays(mjDays + ISOChronology.DAYS_0000_TO_MJD_EPOCH);
     }
 
     /**
@@ -223,7 +223,7 @@ public final class LocalDate
      * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
-    static LocalDate fromYearZeroDays(long epochDays) {
+    static LocalDate ofYearZeroDays(long epochDays) {
         // find the march-based year
         epochDays -= 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
         long adjust = 0;
@@ -809,16 +809,13 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-
         long mjDays = toModifiedJulianDays();
-
         try {
             mjDays = MathUtils.safeAdd(mjDays, days);
         } catch (ArithmeticException ae) {
             throw new CalendricalException(this + " + " + days + " days exceeds the current capacity");
         }
-
-        return LocalDate.fromModifiedJulianDays(mjDays);
+        return LocalDate.ofModifiedJulianDays(mjDays);
     }
 
     //-----------------------------------------------------------------------
@@ -998,16 +995,13 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-
         long mjDays = toModifiedJulianDays();
-
         try {
             mjDays = MathUtils.safeSubtract(mjDays, days);
         } catch (ArithmeticException ae) {
             throw new CalendricalException(this + " - " + days + " days exceeds the current capacity");
         }
-
-        return LocalDate.fromModifiedJulianDays(mjDays);
+        return LocalDate.ofModifiedJulianDays(mjDays);
     }
 
     //-----------------------------------------------------------------------
@@ -1060,7 +1054,7 @@ public final class LocalDate
      * @return the local date-time formed from this date and the specified time, never null
      */
     public LocalDateTime atTime(LocalTime time) {
-        return LocalDateTime.from(this, time);
+        return LocalDateTime.of(this, time);
     }
 
     /**
@@ -1128,7 +1122,7 @@ public final class LocalDate
      * @return the local date-time formed from this date and the time of midnight, never null
      */
     public LocalDateTime atMidnight() {
-        return LocalDateTime.from(this, LocalTime.MIDNIGHT);
+        return LocalDateTime.of(this, LocalTime.MIDNIGHT);
     }
 
     /**

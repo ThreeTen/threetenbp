@@ -499,7 +499,7 @@ public final class TZDBZoneRulesCompiler {
                     mdt.endOfDay = true;
                     secsOfDay = 0;
                 }
-                LocalTime time = deduplicate(LocalTime.fromSecondOfDay(secsOfDay));
+                LocalTime time = deduplicate(LocalTime.ofSecondOfDay(secsOfDay));
                 mdt.time = time;
                 mdt.timeDefinition = parseTimeDefinition(timeStr.charAt(timeStr.length() - 1));
             }
@@ -795,7 +795,7 @@ public final class TZDBZoneRulesCompiler {
                 }
             }
             date = deduplicate(date);
-            LocalDateTime ldt = LocalDateTime.from(date, time);
+            LocalDateTime ldt = LocalDateTime.of(date, time);
             if (endOfDay) {
                 ldt = ldt.plusDays(1);
             }

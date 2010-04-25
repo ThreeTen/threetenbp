@@ -441,7 +441,7 @@ public final class CopticDate
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
     public LocalDate toLocalDate() {
-        return LocalDate.fromModifiedJulianDays(epochDays - MJD_TO_COPTIC);
+        return LocalDate.ofModifiedJulianDays(epochDays - MJD_TO_COPTIC);
     }
 
     //-----------------------------------------------------------------------

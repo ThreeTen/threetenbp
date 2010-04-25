@@ -143,7 +143,7 @@ public final class LocalTime
         if (secsOfDay < 0) {
             secsOfDay += ISOChronology.SECONDS_PER_DAY;
         }
-        return LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
+        return LocalTime.ofSecondOfDay(secsOfDay, instant.getNanoOfSecond());
     }
 
     /**
@@ -258,7 +258,7 @@ public final class LocalTime
      * @param timeProvider  the time provider to use, not null
      * @return the local time, never null
      */
-    public static LocalTime from(TimeProvider timeProvider) {
+    public static LocalTime of(TimeProvider timeProvider) {
         ISOChronology.checkNotNull(timeProvider, "TimeProvider must not be null");
         LocalTime result = timeProvider.toLocalTime();
         ISOChronology.checkNotNull(result, "TimeProvider implementation must not return null");
@@ -275,7 +275,7 @@ public final class LocalTime
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
      */
-    public static LocalTime fromSecondOfDay(long secondOfDay) {
+    public static LocalTime ofSecondOfDay(long secondOfDay) {
         ISOChronology.secondOfDayRule().checkValue(secondOfDay);
         int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
         secondOfDay -= hours * SECONDS_PER_HOUR;
@@ -295,7 +295,7 @@ public final class LocalTime
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the either input value is invalid
      */
-    public static LocalTime fromSecondOfDay(long secondOfDay, int nanoOfSecond) {
+    public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
         ISOChronology.secondOfDayRule().checkValue(secondOfDay);
         ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
         int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
@@ -314,7 +314,7 @@ public final class LocalTime
      * @return the local time, never null
      * @throws CalendricalException if the nanos of day value is invalid
      */
-    public static LocalTime fromNanoOfDay(long nanoOfDay) {
+    public static LocalTime ofNanoOfDay(long nanoOfDay) {
         if (nanoOfDay < 0) {
             throw new CalendricalException("Cannot create LocalTime from nanos of day as value " +
                     nanoOfDay + " must not be negative");
@@ -755,7 +755,7 @@ public final class LocalTime
             totDays--;
             totNanos += NANOS_PER_DAY;
         }
-        LocalTime newTime = (totNanos == thisNanos ? this : fromNanoOfDay(totNanos));
+        LocalTime newTime = (totNanos == thisNanos ? this : ofNanoOfDay(totNanos));
         return new Overflow(newTime, totDays);
     }
 
@@ -1281,7 +1281,7 @@ public final class LocalTime
          * @return the combination of the date, time and overflow in days, never null
          */
         public LocalDateTime toLocalDateTime(LocalDate date) {
-            return LocalDateTime.from(date.plusDays(getOverflowDays()), time);
+            return LocalDateTime.of(date.plusDays(getOverflowDays()), time);
         }
 
         /**

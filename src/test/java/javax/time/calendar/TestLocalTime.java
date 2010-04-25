@@ -342,13 +342,13 @@ public class TestLocalTime {
 
     //-----------------------------------------------------------------------
     public void factory_time_TimeProvider() {
-        LocalTime localTime = LocalTime.from(TEST_12_30_40_987654321);
+        LocalTime localTime = LocalTime.of(TEST_12_30_40_987654321);
         check(localTime, 12, 30, 40, 987654321);
     }
 
     public void factory_time_TimeProvider_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.from(LocalTime.of(i, 0));
+            LocalTime test1 = LocalTime.of(LocalTime.of(i, 0));
             LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
@@ -356,12 +356,12 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_time_TimeProvider_null() {
-        LocalTime.from(null);
+        LocalTime.of(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_time_TimeProvider_null_toLocalTime() {
-        LocalTime.from(new TimeProvider() {
+        LocalTime.of(new TimeProvider() {
             public LocalTime toLocalTime() {
                 return null;
             }
@@ -371,7 +371,7 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     public void factory_time_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalTime test = LocalTime.from(mmp);
+        LocalTime test = LocalTime.of(mmp);
         check(test, 11, 30, 10, 500);
     }
 
@@ -379,13 +379,13 @@ public class TestLocalTime {
     // fromSecondOfDay(long)
     //-----------------------------------------------------------------------
     public void factory_fromSecondOfDay() {
-        LocalTime localTime = LocalTime.fromSecondOfDay(2 * 60 * 60 + 17 * 60 + 23);
+        LocalTime localTime = LocalTime.ofSecondOfDay(2 * 60 * 60 + 17 * 60 + 23);
         check(localTime, 2, 17, 23, 0);
     }
 
     public void factory_fromSecondOfDay_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.fromSecondOfDay(i * 60L * 60L);
+            LocalTime test1 = LocalTime.ofSecondOfDay(i * 60L * 60L);
             LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
@@ -394,7 +394,7 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromSecondOfDay_tooLow() {
         try {
-            LocalTime.fromSecondOfDay(-1);
+            LocalTime.ofSecondOfDay(-1);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
@@ -404,7 +404,7 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromSecondOfDay_tooHigh() {
         try {
-            LocalTime.fromSecondOfDay(24 * 60 * 60);
+            LocalTime.ofSecondOfDay(24 * 60 * 60);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
@@ -415,13 +415,13 @@ public class TestLocalTime {
     // fromSecondOfDay(long, int)
     //-----------------------------------------------------------------------
     public void factory_fromSecondOfDay_long_int() {
-        LocalTime localTime = LocalTime.fromSecondOfDay(2 * 60 * 60 + 17 * 60 + 23, 987);
+        LocalTime localTime = LocalTime.ofSecondOfDay(2 * 60 * 60 + 17 * 60 + 23, 987);
         check(localTime, 2, 17, 23, 987);
     }
 
     public void factory_fromSecondOfDay7_long_int_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.fromSecondOfDay(i * 60L * 60L, 0);
+            LocalTime test1 = LocalTime.ofSecondOfDay(i * 60L * 60L, 0);
             LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
@@ -430,7 +430,7 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromSecondOfDay_long_int_tooLowSecs() {
         try {
-            LocalTime.fromSecondOfDay(-1, 0);
+            LocalTime.ofSecondOfDay(-1, 0);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
@@ -440,7 +440,7 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromSecondOfDay_long_int_tooHighSecs() {
         try {
-            LocalTime.fromSecondOfDay(24 * 60 * 60, 0);
+            LocalTime.ofSecondOfDay(24 * 60 * 60, 0);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
@@ -450,7 +450,7 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromSecondOfDay_long_int_tooLowNanos() {
         try {
-            LocalTime.fromSecondOfDay(0, -1);
+            LocalTime.ofSecondOfDay(0, -1);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.nanoOfSecondRule());
             throw ex;
@@ -460,7 +460,7 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromSecondOfDay_long_int_tooHighNanos() {
         try {
-            LocalTime.fromSecondOfDay(0, 1000000000);
+            LocalTime.ofSecondOfDay(0, 1000000000);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.nanoOfSecondRule());
             throw ex;
@@ -471,13 +471,13 @@ public class TestLocalTime {
     // fromNanoOfDay(long)
     //-----------------------------------------------------------------------
     public void factory_fromNanoOfDay() {
-        LocalTime localTime = LocalTime.fromNanoOfDay(60 * 60 * 1000000000L + 17);
+        LocalTime localTime = LocalTime.ofNanoOfDay(60 * 60 * 1000000000L + 17);
         check(localTime, 1, 0, 0, 17);
     }
 
     public void factory_fromNanoOfDay_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.fromNanoOfDay(i * 1000000000L * 60L * 60L);
+            LocalTime test1 = LocalTime.ofNanoOfDay(i * 1000000000L * 60L * 60L);
             LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
@@ -485,12 +485,12 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void factory_fromNanoOfDay_tooLow() {
-        LocalTime.fromNanoOfDay(-1);
+        LocalTime.ofNanoOfDay(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void factory_fromNanoOfDay_tooHigh() {
-        LocalTime.fromNanoOfDay(24 * 60 * 60 * 1000000000L);
+        LocalTime.ofNanoOfDay(24 * 60 * 60 * 1000000000L);
     }
 
     //-----------------------------------------------------------------------
@@ -1858,7 +1858,7 @@ public class TestLocalTime {
     public void test_toSecondOfDay_fromNanoOfDay_symmetry() {
         LocalTime t = LocalTime.of(0, 0);
         for (int i = 0; i < 24 * 60 * 60; i++) {
-            assertEquals(LocalTime.fromSecondOfDay(t.toSecondOfDay()), t);
+            assertEquals(LocalTime.ofSecondOfDay(t.toSecondOfDay()), t);
             t = t.plusSeconds(1);
         }
     }
@@ -1882,13 +1882,13 @@ public class TestLocalTime {
     public void test_toNanoOfDay_fromNanoOfDay_symmetry() {
         LocalTime t = LocalTime.of(0, 0);
         for (int i = 0; i < 1000000; i++) {
-            assertEquals(LocalTime.fromNanoOfDay(t.toNanoOfDay()), t);
+            assertEquals(LocalTime.ofNanoOfDay(t.toNanoOfDay()), t);
             t = t.plusNanos(1);
         }
         t = LocalTime.of(0, 0);
         for (int i = 1; i <= 1000000; i++) {
             t = t.minusNanos(1);
-            assertEquals(LocalTime.fromNanoOfDay(t.toNanoOfDay()), t);
+            assertEquals(LocalTime.ofNanoOfDay(t.toNanoOfDay()), t);
         }
     }
 

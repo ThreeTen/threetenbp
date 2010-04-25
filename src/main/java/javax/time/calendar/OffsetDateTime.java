@@ -322,7 +322,7 @@ public final class OffsetDateTime
      * @return the offset date-time, never null
      */
     public static OffsetDateTime from(DateProvider dateProvider, TimeProvider timeProvider, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.from(dateProvider, timeProvider);
+        LocalDateTime dt = LocalDateTime.of(dateProvider, timeProvider);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -334,7 +334,7 @@ public final class OffsetDateTime
      * @return the offset date-time, never null
      */
     public static OffsetDateTime from(DateTimeProvider dateTimeProvider, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.from(dateTimeProvider);
+        LocalDateTime dt = LocalDateTime.of(dateTimeProvider);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -477,7 +477,7 @@ public final class OffsetDateTime
      * @return a new updated OffsetDateTime, never null
      */
     public OffsetDateTime withDateTime(DateTimeProvider dateTimeProvider) {
-        LocalDateTime localDateTime = LocalDateTime.from(dateTimeProvider);
+        LocalDateTime localDateTime = LocalDateTime.of(dateTimeProvider);
         return localDateTime.equals(this.dateTime) ? this : new OffsetDateTime(localDateTime, offset);
     }
 

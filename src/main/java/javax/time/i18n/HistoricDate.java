@@ -473,7 +473,7 @@ public final class HistoricDate
         LocalDate possible = LocalDate.of(year, month, day);
         if (possible.isBefore(chrono.getCutover())) {
             long julYear1Days = (year - 1) * 365 + (year / 4) + chrono.getDayOfYear(this) - 1;
-            return LocalDate.fromModifiedJulianDays(julYear1Days + 0);  // TODO
+            return LocalDate.ofModifiedJulianDays(julYear1Days + 0);  // TODO
         } else {
             return possible;
         }

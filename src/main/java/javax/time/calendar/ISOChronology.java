@@ -946,7 +946,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         // milli-of-day
         Integer modVal = merger.getValue(ISOChronology.milliOfDayRule());
         if (modVal != null) {
-            merger.storeMerged(LocalTime.rule(), LocalTime.fromNanoOfDay(modVal * 1000000L));
+            merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(modVal * 1000000L));
             merger.removeProcessed(ISOChronology.milliOfDayRule());
         }
         
@@ -955,15 +955,15 @@ public final class ISOChronology extends Chronology implements Serializable {
         if (modVal != null) {
             Integer nosVal = merger.getValue(ISOChronology.nanoOfSecondRule());
             if (nosVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.fromSecondOfDay(sodVal, nosVal));
+                merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal, nosVal));
                 merger.removeProcessed(ISOChronology.nanoOfSecondRule());
             } else {
                 Integer mosVal = merger.getValue(ISOChronology.milliOfSecondRule());
                 if (mosVal != null) {
-                    merger.storeMerged(LocalTime.rule(), LocalTime.fromSecondOfDay(sodVal, mosVal * 1000000));
+                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal, mosVal * 1000000));
                     merger.removeProcessed(ISOChronology.milliOfSecondRule());
                 } else {
-                    merger.storeMerged(LocalTime.rule(), LocalTime.fromSecondOfDay(sodVal));
+                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal));
                 }
             }
             merger.removeProcessed(ISOChronology.secondOfDayRule());
@@ -1099,7 +1099,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         ZoneOffset offset = merger.getValue(ZoneOffset.rule());
         TimeZone zone = merger.getValue(TimeZone.rule());
         if (date != null && time != null) {
-            merger.storeMerged(LocalDateTime.rule(), LocalDateTime.from(date, time));
+            merger.storeMerged(LocalDateTime.rule(), LocalDateTime.of(date, time));
             merger.removeProcessed(LocalDate.rule());
             merger.removeProcessed(LocalTime.rule());
         }

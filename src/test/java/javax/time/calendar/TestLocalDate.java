@@ -294,23 +294,23 @@ public class TestLocalDate {
     // from(DateProvider)
     //-----------------------------------------------------------------------
     public void factory_from_DateProvider() {
-        assertSame(LocalDate.from(TEST_2007_07_15), TEST_2007_07_15);
+        assertSame(LocalDate.of(TEST_2007_07_15), TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProvider_null() {
-        LocalDate.from(null);
+        LocalDate.of(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProvider_null_toLocalDate() {
-        LocalDate.from(new MockDateProviderReturnsNull());
+        LocalDate.of(new MockDateProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDate test = LocalDate.from(mmp);
+        LocalDate test = LocalDate.of(mmp);
         check(test, 2008, 6, 30);
     }
 
@@ -345,32 +345,32 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void factory_fromEpochDays() {
         long date_0000_01_01 = -678941 - 40587;
-        assertEquals(LocalDate.fromEpochDays(0), LocalDate.of(1970, 1, 1));
-        assertEquals(LocalDate.fromEpochDays(date_0000_01_01), LocalDate.of(0, 1, 1));
-        assertEquals(LocalDate.fromEpochDays(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
-        assertEquals(LocalDate.fromEpochDays(MAX_VALID_EPOCHDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
-        assertEquals(LocalDate.fromEpochDays(MIN_VALID_EPOCHDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
+        assertEquals(LocalDate.ofEpochDays(0), LocalDate.of(1970, 1, 1));
+        assertEquals(LocalDate.ofEpochDays(date_0000_01_01), LocalDate.of(0, 1, 1));
+        assertEquals(LocalDate.ofEpochDays(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
+        assertEquals(LocalDate.ofEpochDays(MAX_VALID_EPOCHDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
+        assertEquals(LocalDate.ofEpochDays(MIN_VALID_EPOCHDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
         
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
-            assertEquals(LocalDate.fromEpochDays(i), test);
+            assertEquals(LocalDate.ofEpochDays(i), test);
             test = next(test);
         }
         test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
-            assertEquals(LocalDate.fromEpochDays(i), test);
+            assertEquals(LocalDate.ofEpochDays(i), test);
             test = previous(test);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromEpochDays_aboveMax() {
-        LocalDate.fromEpochDays(MAX_VALID_EPOCHDAYS + 1);
+        LocalDate.ofEpochDays(MAX_VALID_EPOCHDAYS + 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromEpochDays_belowMin() {
-        LocalDate.fromEpochDays(MIN_VALID_EPOCHDAYS - 1);
+        LocalDate.ofEpochDays(MIN_VALID_EPOCHDAYS - 1);
     }
 
     //-----------------------------------------------------------------------
@@ -378,32 +378,32 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void factory_fromModifiedJulianDays() {
         long date_0000_01_01 = -678941;
-        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.of(1970, 1, 1));
-        assertEquals(LocalDate.fromModifiedJulianDays(date_0000_01_01), LocalDate.of(0, 1, 1));
-        assertEquals(LocalDate.fromModifiedJulianDays(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
-        assertEquals(LocalDate.fromModifiedJulianDays(MAX_VALID_MJDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
-        assertEquals(LocalDate.fromModifiedJulianDays(MIN_VALID_MJDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
+        assertEquals(LocalDate.ofModifiedJulianDays(40587), LocalDate.of(1970, 1, 1));
+        assertEquals(LocalDate.ofModifiedJulianDays(date_0000_01_01), LocalDate.of(0, 1, 1));
+        assertEquals(LocalDate.ofModifiedJulianDays(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
+        assertEquals(LocalDate.ofModifiedJulianDays(MAX_VALID_MJDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
+        assertEquals(LocalDate.ofModifiedJulianDays(MIN_VALID_MJDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
         
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
-            assertEquals(LocalDate.fromModifiedJulianDays(i), test);
+            assertEquals(LocalDate.ofModifiedJulianDays(i), test);
             test = next(test);
         }
         test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
-            assertEquals(LocalDate.fromModifiedJulianDays(i), test);
+            assertEquals(LocalDate.ofModifiedJulianDays(i), test);
             test = previous(test);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromModifiedJulianDays_aboveMax() {
-        LocalDate.fromModifiedJulianDays(MAX_VALID_MJDAYS + 1);
+        LocalDate.ofModifiedJulianDays(MAX_VALID_MJDAYS + 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromModifiedJulianDays_belowMin() {
-        LocalDate.fromModifiedJulianDays(MIN_VALID_MJDAYS - 1);
+        LocalDate.ofModifiedJulianDays(MIN_VALID_MJDAYS - 1);
     }
 
     //-----------------------------------------------------------------------
@@ -2012,12 +2012,12 @@ public class TestLocalDate {
         
         LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
-            assertEquals(LocalDate.fromEpochDays(test.toEpochDays()), test);
+            assertEquals(LocalDate.ofEpochDays(test.toEpochDays()), test);
             test = next(test);
         }
         test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
-            assertEquals(LocalDate.fromEpochDays(test.toEpochDays()), test);
+            assertEquals(LocalDate.ofEpochDays(test.toEpochDays()), test);
             test = previous(test);
         }
     }
@@ -2048,13 +2048,13 @@ public class TestLocalDate {
     public void test_toModifiedJulianDays_fromMJDays_symmetry() {
         LocalDate test = LocalDate.of(0, 1, 1);
         for (int i = -678941; i < 700000; i++) {
-            assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
+            assertEquals(LocalDate.ofModifiedJulianDays(test.toModifiedJulianDays()), test);
             test = next(test);
         }
 
         test = LocalDate.of(0, 1, 1);
         for (int i = -678941; i > -2000000; i--) {
-            assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
+            assertEquals(LocalDate.ofModifiedJulianDays(test.toModifiedJulianDays()), test);
             test = previous(test);
         }
     }

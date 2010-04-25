@@ -148,7 +148,7 @@ public final class OffsetDate
      * @return the offset date, never null
      */
     public static OffsetDate from(DateProvider dateProvider, ZoneOffset offset) {
-        LocalDate date = LocalDate.from(dateProvider);
+        LocalDate date = LocalDate.of(dateProvider);
         return new OffsetDate(date, offset);
     }
 
@@ -173,7 +173,7 @@ public final class OffsetDate
         if (secsOfDay < 0) {
             yearZeroDays--;  // overflow caught later
         }
-        LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
+        LocalDate date = LocalDate.ofYearZeroDays(yearZeroDays);
         return new OffsetDate(date, offset);
     }
 
@@ -391,7 +391,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withDate(DateProvider dateProvider) {
-        LocalDate newDate = LocalDate.from(dateProvider);
+        LocalDate newDate = LocalDate.of(dateProvider);
         if (newDate.equals(date)) {  // need .equals() for this case
             return this;
         }

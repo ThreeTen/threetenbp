@@ -746,7 +746,7 @@ public class ZoneRulesBuilder {
                 date = date.plusDays(1);
             }
             date = deduplicate(date);
-            LocalDateTime ldt = deduplicate(LocalDateTime.from(date, time));
+            LocalDateTime ldt = deduplicate(LocalDateTime.of(date, time));
             ZoneOffset wallOffset = deduplicate(standardOffset.plus(savingsBefore));
             OffsetDateTime dt = deduplicate(timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
             ZoneOffset offsetAfter = deduplicate(standardOffset.plus(savingAmount));

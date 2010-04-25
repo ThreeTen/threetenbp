@@ -108,7 +108,7 @@ public final class ThaiBuddhistDate
      * @return the created ThaiBuddhistDate instance, never null
      */
     public static ThaiBuddhistDate from(DateProvider dateProvider) {
-        LocalDate date = LocalDate.from(dateProvider);
+        LocalDate date = LocalDate.of(dateProvider);
         int yearOfEra = date.getYear() - ThaiBuddhistChronology.YEAR_OFFSET;
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;

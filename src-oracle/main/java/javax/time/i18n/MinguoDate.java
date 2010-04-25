@@ -127,7 +127,7 @@ public final class MinguoDate
      * @return the created MinguoDate instance, never null
      */
     public static MinguoDate from(DateProvider dateProvider) {
-        LocalDate date = LocalDate.from(dateProvider);
+        LocalDate date = LocalDate.of(dateProvider);
         int yearOfEra = date.getYear() - MinguoChronology.YEAR_OFFSET;
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;

@@ -692,7 +692,7 @@ public class TestZonedDateTime {
     public void test_get(int y, int o, int d, int h, int m, int s, int n, TimeZone zone) {
         LocalDate localDate = LocalDate.of(y, o, d);
         LocalTime localTime = LocalTime.of(h, m, s, n);
-        LocalDateTime localDateTime = LocalDateTime.from(localDate, localTime);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getEstimatedOffset();
         ZonedDateTime a = ZonedDateTime.from(localDateTime, zone);
         assertSame(a.getOffset(), offset);

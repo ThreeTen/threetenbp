@@ -104,7 +104,7 @@ public final class JapaneseDate
      * @return the created JapaneseDate instance, never null
      */
     public static JapaneseDate from(DateProvider dateProvider) {
-        LocalDate date = LocalDate.from(dateProvider);
+        LocalDate date = LocalDate.of(dateProvider);
         int yearOfEra = getYearOfEra(date);
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
