@@ -1795,15 +1795,23 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // isAfter() / isBefore()
+    // isBefore()
     //-----------------------------------------------------------------------
-    public void test_isBeforeIsAfter() {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30, 58), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30, 59), ZONE_0100);  // a is before b due to time
-        assertEquals(a.isBefore(b), true);
-        assertEquals(a.isAfter(b), false);
+    @DataProvider(name="IsBefore")
+    Object[][] data_isBefore() {
+        return new Object[][] {
+            {11, 30, ZONE_0100, 11, 31, ZONE_0100, true}, // a is before b due to time
+            {11, 30, ZONE_0200, 11, 30, ZONE_0100, true}, // a is before b due to offset
+            {11, 30, ZONE_0200, 10, 30, ZONE_0100, false}, // a is equal b due to same instant
+        };
+    }
+
+    @Test(dataProvider="IsBefore")
+    public void test_isBefore(int hour1, int minute1, TimeZone zone1, int hour2, int minute2, TimeZone zone2, boolean expected) {
+        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
+        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
+        assertEquals(a.isBefore(b), expected);
         assertEquals(b.isBefore(a), false);
-        assertEquals(b.isAfter(a), true);
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
     }
@@ -1813,6 +1821,57 @@ public class TestZonedDateTime {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime a = ZonedDateTime.from(ldt, ZONE_0100);
         a.isBefore(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // equalInstant()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="equalInstant")
+    Object[][] data_equalInstant() {
+        return new Object[][] {
+            {11, 31, ZONE_0100, 11, 30, ZONE_0100, false}, // a is after b due to time
+            {11, 30, ZONE_0100, 11, 30, ZONE_0200, false}, // a is after b due to offset
+            {11, 30, ZONE_0200, 10, 30, ZONE_0100, true}, // a is equal b due to same instant
+        };
+    }
+
+    @Test(dataProvider="equalInstant")
+    public void test_equalInstant(int hour1, int minute1, TimeZone zone1, int hour2, int minute2, TimeZone zone2, boolean expected) {
+        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
+        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
+        assertEquals(a.equalInstant(b), expected);
+        assertEquals(b.equalInstant(a), expected);
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_equalInstant_null() {
+        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime a = ZonedDateTime.from(ldt, ZONE_0100);
+        a.equalInstant(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // isAfter()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="IsAfter")
+    Object[][] data_isAfter() {
+        return new Object[][] {
+            {11, 31, ZONE_0100, 11, 30, ZONE_0100, true}, // a is after b due to time
+            {11, 30, ZONE_0100, 11, 30, ZONE_0200, true}, // a is after b due to offset
+            {11, 30, ZONE_0200, 10, 30, ZONE_0100, false}, // a is equal b due to same instant
+        };
+    }
+
+    @Test(dataProvider="IsAfter")
+    public void test_isAfter(int hour1, int minute1, TimeZone zone1, int hour2, int minute2, TimeZone zone2, boolean expected) {
+        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
+        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
+        assertEquals(a.isAfter(b), expected);
+        assertEquals(b.isAfter(a), false);
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
