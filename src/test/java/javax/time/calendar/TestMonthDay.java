@@ -187,23 +187,23 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     public void factory_Calendrical() {
         Calendrical cal = new MockSimpleCalendrical(RULE_MONTH, MonthOfYear.JULY, RULE_DOM, 15);
-        assertEquals(MonthDay.from(cal), TEST_07_15);
+        assertEquals(MonthDay.of(cal), TEST_07_15);
     }
 
     public void factory_Calendrical_otherFieldsIgnored() {
         Calendrical cal = LocalDate.of(2007, 7, 15);
-        assertEquals(MonthDay.from(cal), TEST_07_15);
+        assertEquals(MonthDay.of(cal), TEST_07_15);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void factory_Calendrical_unsupportedField() {
         Calendrical cal = LocalTime.of(12, 30);
-        MonthDay.from(cal);
+        MonthDay.of(cal);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_Calendrical_null() {
-        MonthDay.from((Calendrical) null);
+        MonthDay.of((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

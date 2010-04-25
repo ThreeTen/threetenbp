@@ -146,7 +146,7 @@ public final class MonthDay
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
-    public static MonthDay from(Calendrical calendrical) {
+    public static MonthDay of(Calendrical calendrical) {
         MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
         Integer dom = ISOChronology.dayOfMonthRule().getValueChecked(calendrical);
         return of(month, dom);

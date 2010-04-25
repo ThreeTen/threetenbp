@@ -126,7 +126,7 @@ public final class YearMonth
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
-    public static YearMonth from(Calendrical calendrical) {
+    public static YearMonth of(Calendrical calendrical) {
         Integer year = ISOChronology.yearRule().getValueChecked(calendrical);
         MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
         return of(year, month);
