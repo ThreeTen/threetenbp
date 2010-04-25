@@ -65,19 +65,19 @@ public class TestOffsetDateTime_instants {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullInstant() {
-        OffsetDateTime.fromInstant((Instant) null, OFFSET_PONE);
+        OffsetDateTime.ofInstant((Instant) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullOffset() {
         Instant instant = Instant.ofSeconds(0L);
-        OffsetDateTime.fromInstant(instant, (ZoneOffset) null);
+        OffsetDateTime.ofInstant(instant, (ZoneOffset) null);
     }
 
     public void factory_fromInstant_InstantProvider_allSecsInDay() {
         for (int i = 0; i < (24 * 60 * 60); i++) {
             Instant instant = Instant.ofSeconds(i);
-            OffsetDateTime test = OffsetDateTime.fromInstant(instant, OFFSET_PONE);
+            OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
             assertEquals(test.getDayOfMonth(), 1 + (i >= 23 * 60 * 60 ? 1 : 0));
@@ -92,7 +92,7 @@ public class TestOffsetDateTime_instants {
         OffsetDateTime expected = OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         for (long i = 0; i < 146097; i++) {
             Instant instant = Instant.ofSeconds(i * 24L * 60L * 60L);
-            OffsetDateTime test = OffsetDateTime.fromInstant(instant, ZoneOffset.UTC);
+            OffsetDateTime test = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
             assertEquals(test, expected);
             expected = expected.plusDays(1);
         }
@@ -116,7 +116,7 @@ public class TestOffsetDateTime_instants {
         int year = Year.MIN_YEAR - 1;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofSeconds(days * 24L * 60L * 60L);
-        OffsetDateTime.fromInstant(instant, ZoneOffset.UTC);
+        OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
     public void factory_fromInstant_InstantProvider_maxYear() {
@@ -129,7 +129,7 @@ public class TestOffsetDateTime_instants {
         long year = Year.MAX_YEAR + 1L;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofSeconds(days * 24L * 60L * 60L);
-        OffsetDateTime.fromInstant(instant, ZoneOffset.UTC);
+        OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
 
     //-----------------------------------------------------------------------
@@ -138,7 +138,7 @@ public class TestOffsetDateTime_instants {
         int year = Year.MIN_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofSeconds(days * 24L * 60L * 60L - OFFSET_MIN.getAmountSeconds());
-        OffsetDateTime test = OffsetDateTime.fromInstant(instant, OFFSET_MIN);
+        OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MIN);
         assertEquals(test.getYear(), Year.MIN_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
@@ -154,7 +154,7 @@ public class TestOffsetDateTime_instants {
         int year = Year.MIN_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.ofSeconds(days * 24L * 60L * 60L - OFFSET_MAX.getAmountSeconds());
-        OffsetDateTime test = OffsetDateTime.fromInstant(instant, OFFSET_MAX);
+        OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MAX);
         assertEquals(test.getYear(), Year.MIN_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 1);
         assertEquals(test.getDayOfMonth(), 1);
@@ -170,7 +170,7 @@ public class TestOffsetDateTime_instants {
         int year = Year.MAX_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
         Instant instant = Instant.ofSeconds((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getAmountSeconds());
-        OffsetDateTime test = OffsetDateTime.fromInstant(instant, OFFSET_MIN);
+        OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MIN);
         assertEquals(test.getYear(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
@@ -186,7 +186,7 @@ public class TestOffsetDateTime_instants {
         int year = Year.MAX_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
         Instant instant = Instant.ofSeconds((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getAmountSeconds());
-        OffsetDateTime test = OffsetDateTime.fromInstant(instant, OFFSET_MAX);
+        OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MAX);
         assertEquals(test.getYear(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
         assertEquals(test.getDayOfMonth(), 31);
@@ -201,13 +201,13 @@ public class TestOffsetDateTime_instants {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromInstant_InstantProvider_maxInstantWithMaxOffset() {
         Instant instant = Instant.ofSeconds(Long.MAX_VALUE);
-        OffsetDateTime.fromInstant(instant, OFFSET_MAX);
+        OffsetDateTime.ofInstant(instant, OFFSET_MAX);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromInstant_InstantProvider_maxInstantWithMinOffset() {
         Instant instant = Instant.ofSeconds(Long.MAX_VALUE);
-        OffsetDateTime.fromInstant(instant, OFFSET_MIN);
+        OffsetDateTime.ofInstant(instant, OFFSET_MIN);
     }
 
     //-----------------------------------------------------------------------
@@ -222,7 +222,7 @@ public class TestOffsetDateTime_instants {
         for (long i = minDays; i < maxDays; i++) {
             Instant instant = Instant.ofSeconds(i * 24L * 60L * 60L);
             try {
-                OffsetDateTime test = OffsetDateTime.fromInstant(instant, ZoneOffset.UTC);
+                OffsetDateTime test = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
                 assertEquals(test, expected);
                 expected = expected.plusDays(1);
             } catch (RuntimeException ex) {
@@ -267,7 +267,7 @@ public class TestOffsetDateTime_instants {
     //-----------------------------------------------------------------------
     public void factory_fromInstant_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.fromInstant(mmp, ZoneOffset.UTC);
+        OffsetDateTime test = OffsetDateTime.ofInstant(mmp, ZoneOffset.UTC);
         check(test, 2008, 6, 30, 11, 30, 10, 500, ZoneOffset.UTC);
     }
 

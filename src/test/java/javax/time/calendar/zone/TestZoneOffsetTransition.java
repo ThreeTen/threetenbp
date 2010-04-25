@@ -160,9 +160,9 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         Instant i = Instant.ofSeconds(23875287L);
-        ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.fromInstant(i.minusSeconds(1), OFFSET_0200), OFFSET_0300);
-        ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.fromInstant(i, OFFSET_0300), OFFSET_0200);
-        ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.fromInstant(i.plusSeconds(1), OFFSET_0100), OFFSET_0400);
+        ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i.minusSeconds(1), OFFSET_0200), OFFSET_0300);
+        ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0300), OFFSET_0200);
+        ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i.plusSeconds(1), OFFSET_0100), OFFSET_0400);
         
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(a.compareTo(b) < 0, true);
@@ -179,9 +179,9 @@ public class TestZoneOffsetTransition {
 
     public void test_compareTo_sameInstant() {
         Instant i = Instant.ofSeconds(23875287L);
-        ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.fromInstant(i, OFFSET_0200), OFFSET_0300);
-        ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.fromInstant(i, OFFSET_0300), OFFSET_0200);
-        ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.fromInstant(i, OFFSET_0100), OFFSET_0400);
+        ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0200), OFFSET_0300);
+        ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0300), OFFSET_0200);
+        ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0100), OFFSET_0400);
         
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(a.compareTo(b) == 0, true);

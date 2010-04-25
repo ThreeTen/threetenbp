@@ -1106,14 +1106,14 @@ public final class ISOChronology extends Chronology implements Serializable {
         
         // OffsetDate
         if (date != null && offset != null) {
-            merger.storeMerged(OffsetDate.rule(), OffsetDate.from(date, offset));
+            merger.storeMerged(OffsetDate.rule(), OffsetDate.of(date, offset));
             merger.removeProcessed(LocalDate.rule());
             merger.removeProcessed(ZoneOffset.rule());
         }
         
         // OffsetTime
         if (time != null && offset != null) {
-            merger.storeMerged(OffsetTime.rule(), OffsetTime.from(time, offset));
+            merger.storeMerged(OffsetTime.rule(), OffsetTime.of(time, offset));
             merger.removeProcessed(LocalTime.rule());
             merger.removeProcessed(ZoneOffset.rule());
         }
@@ -1121,7 +1121,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         // OffsetDateTime
         LocalDateTime ldt = merger.getValue(LocalDateTime.rule());
         if (ldt != null && offset != null) {
-            merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.from(ldt, offset));
+            merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.of(ldt, offset));
             merger.removeProcessed(LocalDateTime.rule());
             merger.removeProcessed(ZoneOffset.rule());
         } else {
@@ -1136,7 +1136,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                         ot = ot.adjustLocalTime(od.getOffset());
                     }
                 }
-                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.from(od, ot, od.getOffset()));
+                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.of(od, ot, od.getOffset()));
                 merger.removeProcessed(OffsetDate.rule());
                 merger.removeProcessed(OffsetTime.rule());
             }

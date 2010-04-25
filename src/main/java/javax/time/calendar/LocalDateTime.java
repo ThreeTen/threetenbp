@@ -1433,7 +1433,7 @@ public final class LocalDateTime
      * @return the offset date-time formed from this date-time and the specified offset, never null
      */
     public OffsetDateTime atOffset(ZoneOffset offset) {
-        return OffsetDateTime.from(this, offset);
+        return OffsetDateTime.of(this, offset);
     }
 
     /**
@@ -1649,7 +1649,7 @@ public final class LocalDateTime
             ZoneOffset offset = merger.getValue(ZoneOffset.rule());
             if (offset != null) {
                 LocalDateTime dateTime = merger.getValue(this);
-                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.from(dateTime, offset));
+                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.of(dateTime, offset));
                 merger.removeProcessed(this);
                 merger.removeProcessed(ZoneOffset.rule());
             }

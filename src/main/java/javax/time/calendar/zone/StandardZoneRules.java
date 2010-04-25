@@ -275,7 +275,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         // check if using last rules
         if (lastRules.length > 0 &&
                 epochSecs > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
-            OffsetDateTime dt = OffsetDateTime.fromInstant(instant, wallOffsets[wallOffsets.length - 1]);
+            OffsetDateTime dt = OffsetDateTime.ofInstant(instant, wallOffsets[wallOffsets.length - 1]);
             ZoneOffsetTransition[] transArray = findTransitionArray(dt.toYear());
             ZoneOffsetTransition trans = null;
             for (int i = 0; i < transArray.length; i++) {
@@ -336,10 +336,10 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             ZoneOffset offsetAfter = wallOffsets[index / 2 + 1];
             if (offsetAfter.getAmountSeconds() > offsetBefore.getAmountSeconds()) {
                 // gap
-                return createOffsetInfo(dt, OffsetDateTime.from(dtBefore, offsetBefore), offsetAfter);
+                return createOffsetInfo(dt, OffsetDateTime.of(dtBefore, offsetBefore), offsetAfter);
             } else {
                 // overlap
-                return createOffsetInfo(dt, OffsetDateTime.from(dtAfter, offsetBefore), offsetAfter);
+                return createOffsetInfo(dt, OffsetDateTime.of(dtAfter, offsetBefore), offsetAfter);
             }
         } else {
             // normal (neither gap or overlap)
@@ -431,7 +431,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             if (lastRules.length == 0) {
                 return null;
             }
-            OffsetDateTime dt = OffsetDateTime.fromInstant(instant, wallOffsets[wallOffsets.length - 1]);
+            OffsetDateTime dt = OffsetDateTime.ofInstant(instant, wallOffsets[wallOffsets.length - 1]);
             for (Year year = dt.toYear(); true; year = year.next()) {
                 ZoneOffsetTransition[] transArray = findTransitionArray(year);
                 for (ZoneOffsetTransition trans : transArray) {
@@ -453,7 +453,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             index += 1;  // exact match, so need to add one to get the next
         }
         Instant transitionInstant = Instant.ofSeconds(savingsInstantTransitions[index]);
-        OffsetDateTime trans = OffsetDateTime.fromInstant(transitionInstant, wallOffsets[index]);
+        OffsetDateTime trans = OffsetDateTime.ofInstant(transitionInstant, wallOffsets[index]);
         return createTransition(trans, wallOffsets[index + 1]);
     }
 
@@ -475,8 +475,8 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         long lastHistoric = savingsInstantTransitions[savingsInstantTransitions.length - 1];
         if (lastRules.length > 0 && epochSecs > lastHistoric) {
             ZoneOffset lastHistoricOffset = wallOffsets[wallOffsets.length - 1];
-            OffsetDateTime dt = OffsetDateTime.fromInstant(instant, lastHistoricOffset);
-            OffsetDateTime lastHistoricDT = OffsetDateTime.fromInstant(Instant.ofSeconds(lastHistoric), lastHistoricOffset);
+            OffsetDateTime dt = OffsetDateTime.ofInstant(instant, lastHistoricOffset);
+            OffsetDateTime lastHistoricDT = OffsetDateTime.ofInstant(Instant.ofSeconds(lastHistoric), lastHistoricOffset);
             for (Year year = dt.toYear(); year.getValue() > lastHistoricDT.getYear(); year = year.previous()) {
                 ZoneOffsetTransition[] transArray = findTransitionArray(year);
                 for (int i = transArray.length - 1; i >= 0; i--) {
@@ -496,7 +496,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             return null;
         }
         Instant transitionInstant = Instant.ofSeconds(savingsInstantTransitions[index - 1]);
-        OffsetDateTime trans = OffsetDateTime.fromInstant(transitionInstant, wallOffsets[index - 1]);
+        OffsetDateTime trans = OffsetDateTime.ofInstant(transitionInstant, wallOffsets[index - 1]);
         return createTransition(trans, wallOffsets[index]);
     }
 
@@ -514,7 +514,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         List<ZoneOffsetTransition> list = new ArrayList<ZoneOffsetTransition>();
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
             Instant instant = Instant.ofSeconds(savingsInstantTransitions[i]);
-            OffsetDateTime trans = OffsetDateTime.fromInstant(instant, wallOffsets[i]);
+            OffsetDateTime trans = OffsetDateTime.ofInstant(instant, wallOffsets[i]);
             list.add(createTransition(trans, wallOffsets[i + 1]));
         }
         return list;

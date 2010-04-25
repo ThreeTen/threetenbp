@@ -88,7 +88,7 @@ public abstract class ZoneResolver {
         
         ZoneOffsetInfo info = rules.getOffsetInfo(newDateTime);
         if (info.isTransition() == false) {
-            return OffsetDateTime.from(newDateTime, info.getOffset());
+            return OffsetDateTime.of(newDateTime, info.getOffset());
         }
         ZoneOffsetTransition discontinuity = info.getTransition();
         OffsetDateTime result = discontinuity.isGap() ?

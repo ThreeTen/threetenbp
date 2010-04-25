@@ -320,7 +320,7 @@ public final class ZonedDateTime
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
-        OffsetDateTime offsetDT = OffsetDateTime.fromInstant(instant, rules.getOffset(instant));
+        OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
         return new ZonedDateTime(offsetDT, zone);
     }
 

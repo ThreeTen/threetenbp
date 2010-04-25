@@ -713,9 +713,9 @@ public class TestZonedDateTime {
         assertSame(a.toLocalDate(), localDate);
         assertSame(a.toLocalTime(), localTime);
         assertSame(a.toLocalDateTime(), localDateTime);
-        assertEquals(a.toOffsetDate(), OffsetDate.from(localDate, offset));
-        assertEquals(a.toOffsetTime(), OffsetTime.from(localTime, offset));
-        assertEquals(a.toOffsetDateTime(), OffsetDateTime.from(localDateTime, offset));
+        assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
+        assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
+        assertEquals(a.toOffsetDateTime(), OffsetDateTime.of(localDateTime, offset));
         assertEquals(a.toString(), a.toOffsetDateTime().toString() + "[" + zone.toString() + "]");
     }
 

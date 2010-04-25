@@ -953,7 +953,7 @@ public final class LocalTime
      * @return the offset time formed from this time and the specified offset, never null
      */
     public OffsetTime atOffset(ZoneOffset offset) {
-        return OffsetTime.from(this, offset);
+        return OffsetTime.of(this, offset);
     }
 
     //-----------------------------------------------------------------------

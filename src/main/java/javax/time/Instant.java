@@ -771,7 +771,7 @@ public final class Instant
     public String toString() {
         // TODO: optimize and handle big instants
         // TODO: Consider epoch plus offset format instead
-        return OffsetDateTime.fromInstant(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
+        return OffsetDateTime.ofInstant(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
     }
 
 }

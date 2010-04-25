@@ -200,14 +200,14 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void factory_TimeProvider() {
         TimeProvider localTime = LocalTime.of(11, 30, 10, 500);
-        OffsetTime test = OffsetTime.from(localTime, OFFSET_PONE);
+        OffsetTime test = OffsetTime.of(localTime, OFFSET_PONE);
         check(test, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_time_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetTime test = OffsetTime.from(mmp, OFFSET_PTWO);
+        OffsetTime test = OffsetTime.of(mmp, OFFSET_PTWO);
         check(test, 11, 30, 10, 500, OFFSET_PTWO);
     }
 
@@ -216,25 +216,25 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void factory_fromInstant_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetTime test = OffsetTime.fromInstant(mmp, ZoneOffset.UTC);
+        OffsetTime test = OffsetTime.ofInstant(mmp, ZoneOffset.UTC);
         check(test, 11, 30, 10, 500, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullInstant() {
-        OffsetTime.fromInstant((Instant) null, ZoneOffset.UTC);
+        OffsetTime.ofInstant((Instant) null, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullOffset() {
         Instant instant = Instant.ofSeconds(0L);
-        OffsetTime.fromInstant(instant, (ZoneOffset) null);
+        OffsetTime.ofInstant(instant, (ZoneOffset) null);
     }
 
     public void factory_fromInstant_InstantProvider_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofSeconds(i, 8);
-            OffsetTime test = OffsetTime.fromInstant(instant, ZoneOffset.UTC);
+            OffsetTime test = OffsetTime.ofInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
             assertEquals(test.getSecondOfMinute(), i % 60);
@@ -245,7 +245,7 @@ public class TestOffsetTime {
     public void factory_fromInstant_InstantProvider_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofSeconds(i, 8);
-            OffsetTime test = OffsetTime.fromInstant(instant, ZoneOffset.UTC);
+            OffsetTime test = OffsetTime.ofInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
             assertEquals(test.getSecondOfMinute(), (i + 24 * 60 * 60) % 60);
@@ -255,7 +255,7 @@ public class TestOffsetTime {
 
     //-----------------------------------------------------------------------
     public void factory_fromInstant_InstantProvider_maxYear() {
-        OffsetTime test = OffsetTime.fromInstant(Instant.ofSeconds(Long.MAX_VALUE), ZoneOffset.UTC);
+        OffsetTime test = OffsetTime.ofInstant(Instant.ofSeconds(Long.MAX_VALUE), ZoneOffset.UTC);
         int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
         int min = (int) ((Long.MAX_VALUE / 60) % 60);
         int sec = (int) (Long.MAX_VALUE % 60);
@@ -269,7 +269,7 @@ public class TestOffsetTime {
         long oneDay = 24 * 60 * 60;
         long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
         
-        OffsetTime test = OffsetTime.fromInstant(Instant.ofSeconds(Long.MIN_VALUE), ZoneOffset.UTC);
+        OffsetTime test = OffsetTime.ofInstant(Instant.ofSeconds(Long.MIN_VALUE), ZoneOffset.UTC);
         long added = Long.MIN_VALUE + addition;
         int hour = (int) ((added / (60 * 60)) % 24);
         int min = (int) ((added / 60) % 60);
@@ -370,7 +370,7 @@ public class TestOffsetTime {
     @Test(dataProvider="sampleTimes")
     public void test_get(int h, int m, int s, int n, ZoneOffset offset) {
         LocalTime localTime = LocalTime.of(h, m, s, n);
-        OffsetTime a = OffsetTime.from(localTime, offset);
+        OffsetTime a = OffsetTime.of(localTime, offset);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
@@ -519,7 +519,7 @@ public class TestOffsetTime {
 
     public void test_with_noChange() {
         LocalTime time = LocalTime.of(11, 30, 59);
-        OffsetTime base = OffsetTime.from(time, OFFSET_PONE);
+        OffsetTime base = OffsetTime.of(time, OFFSET_PONE);
         OffsetTime test = base.with(time);
         assertSame(test, base);
     }

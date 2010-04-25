@@ -88,7 +88,7 @@ public final class OffsetTime
      */
     public static OffsetTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
-        return fromInstant(clock.instant(), clock.getZone().getRules().getOffset(clock.instant()));
+        return ofInstant(clock.instant(), clock.getZone().getRules().getOffset(clock.instant()));
     }
 
     /**
@@ -163,7 +163,7 @@ public final class OffsetTime
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      */
-    public static OffsetTime from(TimeProvider timeProvider, ZoneOffset offset) {
+    public static OffsetTime of(TimeProvider timeProvider, ZoneOffset offset) {
         LocalTime time = LocalTime.of(timeProvider);
         return new OffsetTime(time, offset);
     }
@@ -180,7 +180,7 @@ public final class OffsetTime
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      */
-    public static OffsetTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
+    public static OffsetTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         

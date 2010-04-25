@@ -1137,7 +1137,7 @@ public final class LocalDate
      * @return the offset date formed from this date and the specified offset, never null
      */
     public OffsetDate atOffset(ZoneOffset offset) {
-        return OffsetDate.from(this, offset);
+        return OffsetDate.of(this, offset);
     }
 
     /**

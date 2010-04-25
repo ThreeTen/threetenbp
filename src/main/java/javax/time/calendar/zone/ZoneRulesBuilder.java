@@ -477,11 +477,11 @@ public class ZoneRulesBuilder {
         public OffsetDateTime createDateTime(LocalDateTime dateTime, ZoneOffset standardOffset, ZoneOffset wallOffset) {
             switch (this) {
                 case UTC:
-                    return OffsetDateTime.from(dateTime, ZoneOffset.UTC).withOffsetSameInstant(wallOffset);
+                    return OffsetDateTime.of(dateTime, ZoneOffset.UTC).withOffsetSameInstant(wallOffset);
                 case STANDARD:
-                    return OffsetDateTime.from(dateTime, standardOffset).withOffsetSameInstant(wallOffset);
+                    return OffsetDateTime.of(dateTime, standardOffset).withOffsetSameInstant(wallOffset);
                 default:  // WALL
-                    return OffsetDateTime.from(dateTime, wallOffset);
+                    return OffsetDateTime.of(dateTime, wallOffset);
             }
         }
     }

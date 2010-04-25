@@ -89,7 +89,7 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
-        return fromInstant(clock.instant(), clock.getZone().getRules().getOffset(clock.instant()));
+        return ofInstant(clock.instant(), clock.getZone().getRules().getOffset(clock.instant()));
     }
 
     /**
@@ -321,7 +321,7 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      * @return the offset date-time, never null
      */
-    public static OffsetDateTime from(DateProvider dateProvider, TimeProvider timeProvider, ZoneOffset offset) {
+    public static OffsetDateTime of(DateProvider dateProvider, TimeProvider timeProvider, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.of(dateProvider, timeProvider);
         return new OffsetDateTime(dt, offset);
     }
@@ -333,7 +333,7 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      * @return the offset date-time, never null
      */
-    public static OffsetDateTime from(DateTimeProvider dateTimeProvider, ZoneOffset offset) {
+    public static OffsetDateTime of(DateTimeProvider dateTimeProvider, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.of(dateTimeProvider);
         return new OffsetDateTime(dt, offset);
     }
@@ -347,7 +347,7 @@ public final class OffsetDateTime
      * @return the offset date-time, never null
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
-    public static OffsetDateTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
+    public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
@@ -1600,7 +1600,7 @@ public final class OffsetDateTime
      * @return an OffsetDate representing the date and offset, never null
      */
     public OffsetDate toOffsetDate() {
-        return OffsetDate.from(dateTime, offset);
+        return OffsetDate.of(dateTime, offset);
     }
 
     /**
@@ -1609,7 +1609,7 @@ public final class OffsetDateTime
      * @return an OffsetTime representing the time and offset, never null
      */
     public OffsetTime toOffsetTime() {
-        return OffsetTime.from(dateTime, offset);
+        return OffsetTime.of(dateTime, offset);
     }
 
     /**

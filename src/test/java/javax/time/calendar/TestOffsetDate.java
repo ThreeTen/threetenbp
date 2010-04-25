@@ -270,24 +270,24 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     public void factory_date_DateProvider() {
         DateProvider localDate = LocalDate.of(2008, 6, 30);
-        OffsetDate test = OffsetDate.from(localDate, OFFSET_PONE);
+        OffsetDate test = OffsetDate.of(localDate, OFFSET_PONE);
         check(test, 2008, 6, 30, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateProvider_null() {
-        OffsetDate.from(null, OFFSET_PONE);
+        OffsetDate.of(null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateProvider_null_toLocalDate() {
-        OffsetDate.from(new MockDateProviderReturnsNull(), OFFSET_PONE);
+        OffsetDate.of(new MockDateProviderReturnsNull(), OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDate test = OffsetDate.from(mmp, OFFSET_PTWO);
+        OffsetDate test = OffsetDate.of(mmp, OFFSET_PTWO);
         check(test, 2008, 6, 30, OFFSET_PTWO);
     }
 
@@ -296,25 +296,25 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     public void factory_fromInstant_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDate test = OffsetDate.fromInstant(mmp, ZoneOffset.UTC);
+        OffsetDate test = OffsetDate.ofInstant(mmp, ZoneOffset.UTC);
         check(test, 2008, 6, 30, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullInstant() {
-        OffsetDate.fromInstant((Instant) null, ZoneOffset.UTC);
+        OffsetDate.ofInstant((Instant) null, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_InstantProvider_nullOffset() {
         Instant instant = Instant.ofSeconds(0L);
-        OffsetDate.fromInstant(instant, (ZoneOffset) null);
+        OffsetDate.ofInstant(instant, (ZoneOffset) null);
     }
 
     public void factory_fromInstant_InstantProvider_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofSeconds(i);
-            OffsetDate test = OffsetDate.fromInstant(instant, ZoneOffset.UTC);
+            OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
@@ -324,7 +324,7 @@ public class TestOffsetDate {
     public void factory_fromInstant_InstantProvider_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofSeconds(i);
-            OffsetDate test = OffsetDate.fromInstant(instant.minusSeconds(OFFSET_PONE.getAmountSeconds()), OFFSET_PONE);
+            OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getAmountSeconds()), OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
@@ -334,7 +334,7 @@ public class TestOffsetDate {
     public void factory_fromInstant_InstantProvider_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofSeconds(i);
-            OffsetDate test = OffsetDate.fromInstant(instant, ZoneOffset.UTC);
+            OffsetDate test = OffsetDate.ofInstant(instant, ZoneOffset.UTC);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
             assertEquals(test.getDayOfMonth(), 31);
@@ -343,14 +343,14 @@ public class TestOffsetDate {
 
     //-----------------------------------------------------------------------
     public void factory_fromInstant_InstantProvider_maxYear() {
-        OffsetDate test = OffsetDate.fromInstant(MAX_INSTANT, ZoneOffset.UTC);
+        OffsetDate test = OffsetDate.ofInstant(MAX_INSTANT, ZoneOffset.UTC);
         assertEquals(test, MAX_DATE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromInstant_InstantProvider_tooBig() {
         try {
-            OffsetDate.fromInstant(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneOffset.UTC);
+            OffsetDate.ofInstant(MAX_INSTANT.plusSeconds(24 * 60 * 60), ZoneOffset.UTC);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.yearRule());
             throw ex;
@@ -358,14 +358,14 @@ public class TestOffsetDate {
     }
 
     public void factory_fromInstant_InstantProvider_minYear() {
-        OffsetDate test = OffsetDate.fromInstant(MIN_INSTANT, ZoneOffset.UTC);
+        OffsetDate test = OffsetDate.ofInstant(MIN_INSTANT, ZoneOffset.UTC);
         assertEquals(test, MIN_DATE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromInstant_InstantProvider_tooLow() {
         try {
-            OffsetDate.fromInstant(MIN_INSTANT.minusNanos(1), ZoneOffset.UTC);
+            OffsetDate.ofInstant(MIN_INSTANT.minusNanos(1), ZoneOffset.UTC);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), ISOChronology.yearRule());
             throw ex;
@@ -475,7 +475,7 @@ public class TestOffsetDate {
     @Test(dataProvider="sampleDates")
     public void test_get(int y, int m, int d, ZoneOffset offset) {
         LocalDate localDate = LocalDate.of(y, m, d);
-        OffsetDate a = OffsetDate.from(localDate, offset);
+        OffsetDate a = OffsetDate.of(localDate, offset);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
@@ -629,7 +629,7 @@ public class TestOffsetDate {
 
     public void test_with_noChange() {
         LocalDate date = LocalDate.of(2008, 6, 30);
-        OffsetDate base = OffsetDate.from(date, OFFSET_PONE);
+        OffsetDate base = OffsetDate.of(date, OFFSET_PONE);
         OffsetDate test = base.with(date);
         assertSame(test, base);
     }

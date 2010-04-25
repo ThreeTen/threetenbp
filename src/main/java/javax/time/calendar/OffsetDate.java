@@ -89,7 +89,7 @@ public final class OffsetDate
      */
     public static OffsetDate now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
-        return fromInstant(clock.instant(), clock.getZone().getRules().getOffset(clock.instant()));
+        return ofInstant(clock.instant(), clock.getZone().getRules().getOffset(clock.instant()));
     }
 
     /**
@@ -147,7 +147,7 @@ public final class OffsetDate
      * @param offset  the zone offset, not null
      * @return the offset date, never null
      */
-    public static OffsetDate from(DateProvider dateProvider, ZoneOffset offset) {
+    public static OffsetDate of(DateProvider dateProvider, ZoneOffset offset) {
         LocalDate date = LocalDate.of(dateProvider);
         return new OffsetDate(date, offset);
     }
@@ -163,7 +163,7 @@ public final class OffsetDate
      * @return the offset date, never null
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
-    public static OffsetDate fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
+    public static OffsetDate ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         
@@ -898,7 +898,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the specified time, never null
      */
     public OffsetDateTime atTime(LocalTime time) {
-        return OffsetDateTime.from(this, time, getOffset());
+        return OffsetDateTime.of(this, time, getOffset());
     }
 
     /**
@@ -966,7 +966,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the time of midnight, never null
      */
     public OffsetDateTime atMidnight() {
-        return OffsetDateTime.from(this, LocalTime.MIDNIGHT, getOffset());
+        return OffsetDateTime.of(this, LocalTime.MIDNIGHT, getOffset());
     }
 
     /**

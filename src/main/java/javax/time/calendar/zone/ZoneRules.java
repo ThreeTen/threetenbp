@@ -156,7 +156,7 @@ public abstract class ZoneRules {
      */
     public ZoneOffsetInfo getOffsetInfo(Instant instant) {
         ZoneOffset offset = getOffset(instant);
-        OffsetDateTime odt = OffsetDateTime.fromInstant(instant, offset);
+        OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);
         return getOffsetInfo(odt.toLocalDateTime());
     }
 

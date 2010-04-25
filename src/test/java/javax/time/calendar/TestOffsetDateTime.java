@@ -280,50 +280,50 @@ public class TestOffsetDateTime {
     public void factory_dateTime_DateProviderTimeProvider() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.from(dateProvider, timeProvider, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(dateProvider, timeProvider, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProviderTimeProvider_nullDateProvider() {
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        OffsetDateTime.from((DateProvider) null, timeProvider, OFFSET_PONE);
+        OffsetDateTime.of((DateProvider) null, timeProvider, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProviderTimeProvider_nullTimeProvider() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        OffsetDateTime.from(dateProvider, (TimeProvider) null, OFFSET_PONE);
+        OffsetDateTime.of(dateProvider, (TimeProvider) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProviderTimeProvider_nullOffset() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime.from(provider, (ZoneOffset) null);
+        OffsetDateTime.of(provider, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_DateTimeProvider() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.from(provider, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(provider, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateTimeProvider_nullProvider() {
-        OffsetDateTime.from((DateTimeProvider) null, OFFSET_PONE);
+        OffsetDateTime.of((DateTimeProvider) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateTimeProvider_nullOffset() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime.from(provider, (ZoneOffset) null);
+        OffsetDateTime.of(provider, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.from(mmp, OFFSET_PTWO);
+        OffsetDateTime test = OffsetDateTime.of(mmp, OFFSET_PTWO);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PTWO);
     }
 
@@ -431,7 +431,7 @@ public class TestOffsetDateTime {
         LocalDate localDate = LocalDate.of(y, o, d);
         LocalTime localTime = LocalTime.of(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        OffsetDateTime a = OffsetDateTime.from(localDateTime, offset);
+        OffsetDateTime a = OffsetDateTime.of(localDateTime, offset);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
@@ -449,8 +449,8 @@ public class TestOffsetDateTime {
         assertSame(a.toLocalDate(), localDate);
         assertSame(a.toLocalTime(), localTime);
         assertSame(a.toLocalDateTime(), localDateTime);
-        assertEquals(a.toOffsetDate(), OffsetDate.from(localDate, offset));
-        assertEquals(a.toOffsetTime(), OffsetTime.from(localTime, offset));
+        assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
+        assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
         assertEquals(a.toYear(), localDate.toYear());
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }

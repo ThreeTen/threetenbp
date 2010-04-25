@@ -3058,7 +3058,7 @@ public class GregorianCalendar
         if (getClass() == GregorianCalendar.class) {
             Instant instant = Instant.ofMillis(getTimeInMillis());
             ZoneOffset offset = ZoneOffset.fromTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
-            return OffsetDateTime.fromInstant(instant, offset);
+            return OffsetDateTime.ofInstant(instant, offset);
         }
         return toZonedDateTime().toOffsetDateTime();
     }
