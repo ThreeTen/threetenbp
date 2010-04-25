@@ -214,27 +214,27 @@ public class TestOffsetDateTime {
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_intMonthInt() {
-        OffsetDateTime test = OffsetDateTime.midnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.ofMidnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_ints() {
-        OffsetDateTime test = OffsetDateTime.midnight(2008, 6, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.ofMidnight(2008, 6, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_DateProvider() {
         DateProvider provider = LocalDate.of(2008, 6, 30);
-        OffsetDateTime test = OffsetDateTime.midnightFrom(provider, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.ofMidnight(provider, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.midnightFrom(mmp, OFFSET_PTWO);
+        OffsetDateTime test = OffsetDateTime.ofMidnight(mmp, OFFSET_PTWO);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PTWO);
     }
 
@@ -1558,7 +1558,7 @@ public class TestOffsetDateTime {
     }
 
     public void test_adjustDate_same() {
-        assertSame(OffsetDateTime.midnight(2008, 6, 30, OFFSET_PONE).adjustDate(TEST_2008_6_30_11_30_59_000000500.toLocalDate()), 
+        assertSame(OffsetDateTime.ofMidnight(2008, 6, 30, OFFSET_PONE).adjustDate(TEST_2008_6_30_11_30_59_000000500.toLocalDate()), 
                 TEST_2008_6_30_11_30_59_000000500.toLocalDate());
     }
 

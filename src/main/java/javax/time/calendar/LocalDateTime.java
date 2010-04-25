@@ -148,7 +148,7 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime midnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+    public static LocalDateTime ofMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
@@ -168,7 +168,7 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime midnight(int year, int monthOfYear, int dayOfMonth) {
+    public static LocalDateTime ofMidnight(int year, int monthOfYear, int dayOfMonth) {
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
@@ -184,7 +184,7 @@ public final class LocalDateTime
      * @param dateProvider  the date provider to use, not null
      * @return the local date-time, never null
      */
-    public static LocalDateTime midnightFrom(DateProvider dateProvider) {
+    public static LocalDateTime ofMidnight(DateProvider dateProvider) {
         LocalDate date = LocalDate.from(dateProvider);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }

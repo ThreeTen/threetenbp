@@ -122,9 +122,9 @@ public final class OffsetDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static OffsetDateTime midnight(
+    public static OffsetDateTime ofMidnight(
             int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.midnight(year, monthOfYear, dayOfMonth);
+        LocalDateTime dt = LocalDateTime.ofMidnight(year, monthOfYear, dayOfMonth);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -142,9 +142,9 @@ public final class OffsetDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static OffsetDateTime midnight(
+    public static OffsetDateTime ofMidnight(
             int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.midnight(year, monthOfYear, dayOfMonth);
+        LocalDateTime dt = LocalDateTime.ofMidnight(year, monthOfYear, dayOfMonth);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -158,8 +158,8 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      * @return the offset date-time, never null
      */
-    public static OffsetDateTime midnightFrom(DateProvider dateProvider, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.midnightFrom(dateProvider);
+    public static OffsetDateTime ofMidnight(DateProvider dateProvider, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.ofMidnight(dateProvider);
         return new OffsetDateTime(dt, offset);
     }
 

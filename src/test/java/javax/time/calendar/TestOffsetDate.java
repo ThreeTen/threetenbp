@@ -78,8 +78,8 @@ public class TestOffsetDate {
     public void setUp() {
         TEST_2007_07_15_PONE = OffsetDate.of(2007, 7, 15, OFFSET_PONE);
         
-        OffsetDateTime max = OffsetDateTime.midnight(Year.MAX_YEAR, 12, 31, ZoneOffset.UTC);
-        OffsetDateTime min = OffsetDateTime.midnight(Year.MIN_YEAR, 1, 1, ZoneOffset.UTC);
+        OffsetDateTime max = OffsetDateTime.ofMidnight(Year.MAX_YEAR, 12, 31, ZoneOffset.UTC);
+        OffsetDateTime min = OffsetDateTime.ofMidnight(Year.MIN_YEAR, 1, 1, ZoneOffset.UTC);
         MAX_DATE = max.toOffsetDate();
         MIN_DATE = min.toOffsetDate();
         MAX_INSTANT = max.toInstant();
