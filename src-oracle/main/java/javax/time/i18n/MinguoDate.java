@@ -126,7 +126,7 @@ public final class MinguoDate
      * @param dateProvider  the date provider to use, not null
      * @return the created MinguoDate instance, never null
      */
-    public static MinguoDate from(DateProvider dateProvider) {
+    public static MinguoDate of(DateProvider dateProvider) {
         LocalDate date = LocalDate.of(dateProvider);
         int yearOfEra = date.getYear() - MinguoChronology.YEAR_OFFSET;
         if (yearOfEra < 0) {
@@ -258,7 +258,7 @@ public final class MinguoDate
             year = 1 - yearOfEra;
         }
         year += MinguoChronology.YEAR_OFFSET;
-        return MinguoDate.from(date.withYear(year));
+        return MinguoDate.of(date.withYear(year));
     }
 
     /**
@@ -291,7 +291,7 @@ public final class MinguoDate
      */
     public MinguoDate withMonthOfYear(MonthOfYear monthOfYear) {
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return MinguoDate.from(date.with(monthOfYear));
+        return MinguoDate.of(date.with(monthOfYear));
     }
 
     /**
@@ -306,7 +306,7 @@ public final class MinguoDate
      */
     public MinguoDate withDayOfMonth(int dayOfMonth) {
         MinguoChronology.dayOfMonthRule().checkValue(dayOfMonth);
-        return MinguoDate.from(date.withDayOfMonth(dayOfMonth));
+        return MinguoDate.of(date.withDayOfMonth(dayOfMonth));
     }
 
     /**
@@ -321,7 +321,7 @@ public final class MinguoDate
      */
     public MinguoDate withDayOfYear(int dayOfYear) {
         MinguoChronology.dayOfYearRule().checkValue(dayOfYear);
-        return MinguoDate.from(date.withDayOfYear(dayOfYear));
+        return MinguoDate.of(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------
@@ -341,7 +341,7 @@ public final class MinguoDate
         if (years == 0) {
             return this;
         }
-        return MinguoDate.from(date.plusYears(years));
+        return MinguoDate.of(date.plusYears(years));
     }
 
     /**
@@ -360,7 +360,7 @@ public final class MinguoDate
         if (months == 0) {
             return this;
         }
-        return MinguoDate.from(date.plusMonths(months));
+        return MinguoDate.of(date.plusMonths(months));
     }
 
     /**
@@ -389,7 +389,7 @@ public final class MinguoDate
         if (days == 0) {
             return this;
         }
-        return MinguoDate.from(date.plusDays(days));
+        return MinguoDate.of(date.plusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -409,7 +409,7 @@ public final class MinguoDate
         if (years == 0) {
             return this;
         }
-        return MinguoDate.from(date.minusYears(years));
+        return MinguoDate.of(date.minusYears(years));
     }
 
     /**
@@ -428,7 +428,7 @@ public final class MinguoDate
         if (months == 0) {
             return this;
         }
-        return MinguoDate.from(date.minusMonths(months));
+        return MinguoDate.of(date.minusMonths(months));
     }
 
     /**
@@ -457,7 +457,7 @@ public final class MinguoDate
         if (days == 0) {
             return this;
         }
-        return MinguoDate.from(date.minusDays(days));
+        return MinguoDate.of(date.minusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -584,7 +584,7 @@ public final class MinguoDate
         @Override
         protected MinguoDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
-            return ld != null ? MinguoDate.from(ld) : null;
+            return ld != null ? MinguoDate.of(ld) : null;
         }
         @Override
         protected void merge(CalendricalMerger merger) {

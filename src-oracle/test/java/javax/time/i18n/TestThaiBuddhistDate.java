@@ -76,13 +76,13 @@ public class TestThaiBuddhistDate {
 
     @Test
     public void testThaiBuddhistDateDateProvider() throws Exception {
-        assertEquals(ThaiBuddhistDate.from(testDate), testDate);
+        assertEquals(ThaiBuddhistDate.of(testDate), testDate);
         assertThaiBuddhistDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test(expectedExceptions=NullPointerException.class)
     public void testThaiBuddhistDateDateProviderNull() throws Exception {
-        ThaiBuddhistDate.from(null);
+        ThaiBuddhistDate.of(null);
     }
 
     @Test

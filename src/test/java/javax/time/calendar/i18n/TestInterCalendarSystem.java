@@ -50,7 +50,7 @@ public class TestInterCalendarSystem {
     public void test_factory_Coptic_with_Other() {
         LocalDate baseDate = LocalDate.of(2009, 6, 30);
         MockOtherDate otherDate = new MockOtherDate(baseDate);
-        CopticDate test = CopticDate.from(otherDate);
+        CopticDate test = CopticDate.of(otherDate);
         assertEquals(test.toLocalDate(), otherDate.toLocalDate());
     }
 
@@ -58,12 +58,12 @@ public class TestInterCalendarSystem {
         LocalDate baseDate = LocalDate.of(2009, 6, 30);
         MockOtherDate otherDate = new MockOtherDate(baseDate);
         Integer test = otherDate.get(CopticChronology.yearRule());
-        assertEquals(test.intValue(), CopticDate.from(baseDate).getYear());
+        assertEquals(test.intValue(), CopticDate.of(baseDate).getYear());
     }
 
     public void test_get_ISO_quarterOfYear_with_Coptic() {
         LocalDate baseDate = LocalDate.of(2009, 6, 30);
-        CopticDate copticDate = CopticDate.from(baseDate);
+        CopticDate copticDate = CopticDate.of(baseDate);
         QuarterOfYear test = copticDate.get(ISOChronology.quarterOfYearRule());
         assertEquals(test, QuarterOfYear.Q2);
     }

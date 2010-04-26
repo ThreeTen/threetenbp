@@ -76,13 +76,13 @@ public class TestMinguoDate {
 
     @Test
     public void testMinguoDateDateProvider() throws Exception {
-        assertEquals(MinguoDate.from(testDate), testDate);
+        assertEquals(MinguoDate.of(testDate), testDate);
         assertMinguoDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test(expectedExceptions=NullPointerException.class)
     public void testMinguoDateDateProviderNull() throws Exception {
-        MinguoDate.from(null);
+        MinguoDate.of(null);
     }
 
     @Test

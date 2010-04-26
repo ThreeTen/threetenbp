@@ -460,7 +460,7 @@ public final class HijrahDate
      * @param dateProvider  the date provider to use, not null
      * @return the created HijrahDate instance, never null
      */
-    public static HijrahDate from(DateProvider dateProvider) {
+    public static HijrahDate of(DateProvider dateProvider) {
         long gregorianDays = dateProvider.toLocalDate().toEpochDays();
         return new HijrahDate(gregorianDays);
     }
@@ -1931,7 +1931,7 @@ public final class HijrahDate
         @Override
         protected HijrahDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
-            return ld != null ? HijrahDate.from(ld) : null;
+            return ld != null ? HijrahDate.of(ld) : null;
         }
         @Override
         protected void merge(CalendricalMerger merger) {

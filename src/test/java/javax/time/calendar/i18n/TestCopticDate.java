@@ -154,18 +154,18 @@ public class TestCopticDate {
 
     //-----------------------------------------------------------------------
     public void factory_date_Calendrical() throws Exception {
-        assertEquals(CopticDate.from(TEST_1234_7_15), TEST_1234_7_15);
-        assertCopticDate(CopticDate.from(TEST_1234_7_15), 1234, 7, 15);
+        assertEquals(CopticDate.of(TEST_1234_7_15), TEST_1234_7_15);
+        assertCopticDate(CopticDate.of(TEST_1234_7_15), 1234, 7, 15);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void factory_date_Calendrical_noData() throws Exception {
-        CopticDate.from(new MockSimpleCalendrical());
+        CopticDate.of(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_Calendrical_null() throws Exception {
-        CopticDate.from(null);
+        CopticDate.of(null);
     }
 
     //-----------------------------------------------------------------------

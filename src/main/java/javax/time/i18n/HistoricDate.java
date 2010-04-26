@@ -155,7 +155,7 @@ public final class HistoricDate
      * @return the Historic date, never null
      * @throws UnsupportedRuleException if the day-of-week cannot be obtained
      */
-    public static HistoricDate from(Calendrical calendrical) {
+    public static HistoricDate of(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
     }
 
@@ -460,7 +460,7 @@ public final class HistoricDate
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public HistoricDate plusDays(int days) {
-        return from(toLocalDate().plusDays(days));  // TODO: better
+        return of(toLocalDate().plusDays(days));  // TODO: better
     }
 
     //-----------------------------------------------------------------------
