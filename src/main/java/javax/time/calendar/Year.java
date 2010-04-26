@@ -131,7 +131,7 @@ public final class Year
      * @return the Year instance, never null
      * @throws UnsupportedRuleException if the year cannot be obtained
      */
-    public static Year from(Calendrical calendrical) {
+    public static Year of(Calendrical calendrical) {
         return Year.of(rule().getInt(calendrical));
     }
 

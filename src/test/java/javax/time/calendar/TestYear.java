@@ -100,18 +100,18 @@ public class TestYear {
     //-----------------------------------------------------------------------
     public void test_factory_Calendrical() {
         for (int i = -4; i <= 2104; i++) {  // Jan
-            assertEquals(Year.from(LocalDate.of(i, 1, 1)).getValue(), i);
+            assertEquals(Year.of(LocalDate.of(i, 1, 1)).getValue(), i);
         }
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_factory_Calendrical_unsupported() {
-        Year.from(DateTimeFields.fields());
+        Year.of(DateTimeFields.fields());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullCalendrical() {
-        Year.from((Calendrical) null);
+        Year.of((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
