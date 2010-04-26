@@ -86,7 +86,7 @@ public final class ZoneOffset
     /**
      * The time-zone offset for UTC, with an id of 'Z'.
      */
-    public static final ZoneOffset UTC = hoursMinutesSeconds(0, 0, 0);
+    public static final ZoneOffset UTC = ofHoursMinutesSeconds(0, 0, 0);
     /**
      * The number of seconds per hour.
      */
@@ -193,9 +193,9 @@ public final class ZoneOffset
             throw new IllegalArgumentException("Zone offset id '" + offsetID + "' is invalid: Plus/minus not found when expected");
         }
         if (first == '-') {
-            return hoursMinutesSeconds(-hours, -minutes, -seconds);
+            return ofHoursMinutesSeconds(-hours, -minutes, -seconds);
         } else {
-            return hoursMinutesSeconds(hours, minutes, seconds);
+            return ofHoursMinutesSeconds(hours, minutes, seconds);
         }
     }
 
@@ -227,8 +227,8 @@ public final class ZoneOffset
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
-    public static ZoneOffset hours(int hours) {
-        return hoursMinutesSeconds(hours, 0, 0);
+    public static ZoneOffset ofHours(int hours) {
+        return ofHoursMinutesSeconds(hours, 0, 0);
     }
 
     /**
@@ -244,8 +244,8 @@ public final class ZoneOffset
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
-    public static ZoneOffset hoursMinutes(int hours, int minutes) {
-        return hoursMinutesSeconds(hours, minutes, 0);
+    public static ZoneOffset ofHoursMinutes(int hours, int minutes) {
+        return ofHoursMinutesSeconds(hours, minutes, 0);
     }
 
     /**
@@ -261,10 +261,10 @@ public final class ZoneOffset
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
-    public static ZoneOffset hoursMinutesSeconds(int hours, int minutes, int seconds) {
+    public static ZoneOffset ofHoursMinutesSeconds(int hours, int minutes, int seconds) {
         validate(hours, minutes, seconds);
         int totalSeconds = totalSeconds(hours, minutes, seconds);
-        return fromTotalSeconds(totalSeconds);
+        return ofTotalSeconds(totalSeconds);
     }
 
 //    /**
@@ -343,7 +343,7 @@ public final class ZoneOffset
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
-    public static ZoneOffset fromTotalSeconds(int totalSeconds) {
+    public static ZoneOffset ofTotalSeconds(int totalSeconds) {
         if (Math.abs(totalSeconds) > (18 * SECONDS_PER_HOUR)) {
             throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
         }
@@ -408,7 +408,7 @@ public final class ZoneOffset
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ZoneOffset.fromTotalSeconds(amountSeconds);
+        return ZoneOffset.ofTotalSeconds(amountSeconds);
     }
 
     //-----------------------------------------------------------------------
@@ -517,7 +517,7 @@ public final class ZoneOffset
         otherPeriod = Period.hoursMinutesSeconds(otherPeriod.getHours(), otherPeriod.getMinutes(), otherPeriod.getSeconds());
         Period thisPeriod = toPeriod();
         Period combined = thisPeriod.plus(otherPeriod).normalized();
-        return hoursMinutesSeconds(combined.getHours(), combined.getMinutes(), combined.getSeconds());
+        return ofHoursMinutesSeconds(combined.getHours(), combined.getMinutes(), combined.getSeconds());
     }
 
     //-----------------------------------------------------------------------

@@ -56,8 +56,8 @@ import org.testng.annotations.Test;
 public class TestZoneOffsetTransitionRule {
 
     private static final LocalTime TIME_0100 = LocalTime.of(1, 0);
-    private static final ZoneOffset OFFSET_0200 = ZoneOffset.hours(2);
-    private static final ZoneOffset OFFSET_0300 = ZoneOffset.hours(3);
+    private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
+    private static final ZoneOffset OFFSET_0300 = ZoneOffset.ofHours(3);
 
     //-----------------------------------------------------------------------
     // constructor
@@ -186,9 +186,9 @@ public class TestZoneOffsetTransitionRule {
     public void test_serialization_unusualOffsets() throws Exception {
         ZoneOffsetTransitionRule test = new ZoneOffsetTransitionRule(
                 MonthOfYear.MARCH, 20, null, TIME_0100, false, TimeDefinition.STANDARD,
-                ZoneOffset.hoursMinutesSeconds(-12, -20, -50),
-                ZoneOffset.hoursMinutesSeconds(-4, -10, -34),
-                ZoneOffset.hours(-18));
+                ZoneOffset.ofHoursMinutesSeconds(-12, -20, -50),
+                ZoneOffset.ofHoursMinutesSeconds(-4, -10, -34),
+                ZoneOffset.ofHours(-18));
         assertSerializable(test);
     }
 

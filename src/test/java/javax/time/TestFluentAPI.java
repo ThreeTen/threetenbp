@@ -187,7 +187,7 @@ public class TestFluentAPI {
 //        secondOfMinute(sec);
 //        minuteOfHour(min);
         
-        ZoneOffset offset = ZoneOffset.hours(1);
+        ZoneOffset offset = ZoneOffset.ofHours(1);
         TimeZone paris = TimeZone.of("Europe/Paris");
         
         for (ZoneOffsetTransition trans : paris.getRules().getTransitions()) {

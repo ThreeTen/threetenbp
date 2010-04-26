@@ -70,8 +70,8 @@ public class TestLocalDate {
 
 //    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
 //    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
     private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
     

@@ -63,8 +63,8 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestOffsetDate {
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
     private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
     
@@ -153,7 +153,7 @@ public class TestOffsetDate {
     public void now_Clock_offsets() {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
-            ZoneOffset offset = ZoneOffset.hours(i);
+            ZoneOffset offset = ZoneOffset.ofHours(i);
             Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -1892,8 +1892,8 @@ public class TestOffsetDate {
     }
 
     public void test_compareTo_24hourDifference() {
-        OffsetDate a = OffsetDate.of(2008, 6, 29, ZoneOffset.hours(-12));
-        OffsetDate b = OffsetDate.of(2008, 6, 30, ZoneOffset.hours(12));  // a is before b despite being same time-line time
+        OffsetDate a = OffsetDate.of(2008, 6, 29, ZoneOffset.ofHours(-12));
+        OffsetDate b = OffsetDate.of(2008, 6, 30, ZoneOffset.ofHours(12));  // a is before b despite being same time-line time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);

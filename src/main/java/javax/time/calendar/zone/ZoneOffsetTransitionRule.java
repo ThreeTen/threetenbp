@@ -230,9 +230,9 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         int beforeByte = (data & (3 << 2)) >>> 2;
         int afterByte = (data & 3);
         LocalTime time = (timeByte == 31 ? LocalTime.ofSecondOfDay(in.readInt()) : LocalTime.of(timeByte % 24, 0));
-        ZoneOffset std = (stdByte == 255 ? ZoneOffset.fromTotalSeconds(in.readInt()) : ZoneOffset.fromTotalSeconds((stdByte - 128) * 900));
-        ZoneOffset before = (beforeByte == 3 ? ZoneOffset.fromTotalSeconds(in.readInt()) : ZoneOffset.fromTotalSeconds(std.getAmountSeconds() + beforeByte * 1800));
-        ZoneOffset after = (afterByte == 3 ? ZoneOffset.fromTotalSeconds(in.readInt()) : ZoneOffset.fromTotalSeconds(std.getAmountSeconds() + afterByte * 1800));
+        ZoneOffset std = (stdByte == 255 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds((stdByte - 128) * 900));
+        ZoneOffset before = (beforeByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getAmountSeconds() + beforeByte * 1800));
+        ZoneOffset after = (afterByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getAmountSeconds() + afterByte * 1800));
         return new ZoneOffsetTransitionRule(month, dom, dow, time, timeByte == 24, defn, std, before, after);
     }
 

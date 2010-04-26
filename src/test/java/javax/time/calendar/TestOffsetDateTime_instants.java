@@ -46,9 +46,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestOffsetDateTime_instants {
 
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_MAX = ZoneOffset.hours(18);
-    private static final ZoneOffset OFFSET_MIN = ZoneOffset.hours(-18);
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_MAX = ZoneOffset.ofHours(18);
+    private static final ZoneOffset OFFSET_MIN = ZoneOffset.ofHours(-18);
 
     //-----------------------------------------------------------------------
     private void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {

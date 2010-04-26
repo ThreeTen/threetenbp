@@ -81,7 +81,7 @@ public class TestClock {
     static class MockClockNoOverrides extends Clock {
     }
 
-    private static final ZoneOffset OFFSET = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET = ZoneOffset.ofHours(2);
     private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET);
     private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
     private static final TimeZone ZONE = TimeZone.of("Europe/Paris");

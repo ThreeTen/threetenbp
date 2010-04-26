@@ -60,7 +60,7 @@ public class TestZoneOffsetParser {
         try {
             int result = pp.parse((DateTimeParseContext) null, "+01:00", 0);
             assertEquals(result, 6);
-            assertParsed(ZoneOffset.hours(1));
+            assertParsed(ZoneOffset.ofHours(1));
             // NPE is optional, but parse must still succeed
         } catch (NullPointerException ex) {
             // NPE is optional
@@ -149,25 +149,25 @@ public class TestZoneOffsetParser {
         return new Object[][] {
             {true, true, "+00:00", ZoneOffset.UTC},
             {true, true, "-00:00", ZoneOffset.UTC},
-            {true, true, "+01:00", ZoneOffset.hoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+01:02", ZoneOffset.hoursMinutesSeconds(1, 2, 0)},
-            {true, true, "+01:59", ZoneOffset.hoursMinutesSeconds(1, 59, 0)},
-            {true, true, "+02:00", ZoneOffset.hoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+18:00", ZoneOffset.hoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-01:00", ZoneOffset.hoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-02:00", ZoneOffset.hoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-18:00", ZoneOffset.hoursMinutesSeconds(-18, 0, 0)},
+            {true, true, "+01:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {true, true, "+01:02", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
+            {true, true, "+01:59", ZoneOffset.ofHoursMinutesSeconds(1, 59, 0)},
+            {true, true, "+02:00", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {true, true, "+18:00", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {true, true, "-01:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {true, true, "-02:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {true, true, "-18:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
             
             {true, true, "+00:00:00", ZoneOffset.UTC},
             {true, true, "-00:00:00", ZoneOffset.UTC},
-            {true, true, "+01:00:00", ZoneOffset.hoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+01:02:03", ZoneOffset.hoursMinutesSeconds(1, 2, 3)},
-            {true, true, "+01:59:59", ZoneOffset.hoursMinutesSeconds(1, 59, 59)},
-            {true, true, "+02:00:00", ZoneOffset.hoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+18:00:00", ZoneOffset.hoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-01:00:00", ZoneOffset.hoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-02:00:00", ZoneOffset.hoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-18:00:00", ZoneOffset.hoursMinutesSeconds(-18, 0, 0)},
+            {true, true, "+01:00:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {true, true, "+01:02:03", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
+            {true, true, "+01:59:59", ZoneOffset.ofHoursMinutesSeconds(1, 59, 59)},
+            {true, true, "+02:00:00", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {true, true, "+18:00:00", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {true, true, "-01:00:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {true, true, "-02:00:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {true, true, "-18:00:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
         };
     }
 
@@ -241,25 +241,25 @@ public class TestZoneOffsetParser {
         return new Object[][] {
             {true, true, "+0000", ZoneOffset.UTC},
             {true, true, "-0000", ZoneOffset.UTC},
-            {true, true, "+0100", ZoneOffset.hoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+0102", ZoneOffset.hoursMinutesSeconds(1, 2, 0)},
-            {true, true, "+0159", ZoneOffset.hoursMinutesSeconds(1, 59, 0)},
-            {true, true, "+0200", ZoneOffset.hoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+1800", ZoneOffset.hoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-0100", ZoneOffset.hoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-0200", ZoneOffset.hoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-1800", ZoneOffset.hoursMinutesSeconds(-18, 0, 0)},
+            {true, true, "+0100", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {true, true, "+0102", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
+            {true, true, "+0159", ZoneOffset.ofHoursMinutesSeconds(1, 59, 0)},
+            {true, true, "+0200", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {true, true, "+1800", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {true, true, "-0100", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {true, true, "-0200", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {true, true, "-1800", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
             
             {true, true, "+000000", ZoneOffset.UTC},
             {true, true, "-000000", ZoneOffset.UTC},
-            {true, true, "+010000", ZoneOffset.hoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+010203", ZoneOffset.hoursMinutesSeconds(1, 2, 3)},
-            {true, true, "+015959", ZoneOffset.hoursMinutesSeconds(1, 59, 59)},
-            {true, true, "+020000", ZoneOffset.hoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+180000", ZoneOffset.hoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-010000", ZoneOffset.hoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-020000", ZoneOffset.hoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-180000", ZoneOffset.hoursMinutesSeconds(-18, 0, 0)},
+            {true, true, "+010000", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {true, true, "+010203", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
+            {true, true, "+015959", ZoneOffset.ofHoursMinutesSeconds(1, 59, 59)},
+            {true, true, "+020000", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {true, true, "+180000", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {true, true, "-010000", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {true, true, "-020000", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {true, true, "-180000", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
         };
     }
 

@@ -89,7 +89,7 @@ public class PerformanceZone {
 
     //-----------------------------------------------------------------------
     private static void jsrInstantGetOffset() {
-        OffsetDateTime dt = OffsetDateTime.of(YEAR, 6, 1, 12, 0, ZoneOffset.hours(1));
+        OffsetDateTime dt = OffsetDateTime.of(YEAR, 6, 1, 12, 0, ZoneOffset.ofHours(1));
         Instant instant = dt.toInstant();
         TimeZone tz = TimeZone.of("Europe/London");
         ZoneOffset[] list = new ZoneOffset[SIZE];

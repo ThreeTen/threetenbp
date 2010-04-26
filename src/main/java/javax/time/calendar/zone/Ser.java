@@ -151,7 +151,7 @@ final class Ser implements Externalizable {
      */
     static ZoneOffset readOffset(ObjectInput in) throws IOException {
         int offsetByte = in.readByte();
-        return (offsetByte == 127 ? ZoneOffset.fromTotalSeconds(in.readInt()) : ZoneOffset.fromTotalSeconds(offsetByte * 900));
+        return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
     }
 
     //-------------------------------------------------------------------------

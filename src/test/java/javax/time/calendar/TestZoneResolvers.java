@@ -51,8 +51,8 @@ public class TestZoneResolvers {
 
     private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
 //    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
-    private static final ZoneOffset OFFSET_0100 = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_0200 = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
     private static final LocalDateTime DT_PARIS_OVERLAP = dateTime(2008, 10, 26, 2, 30, 0, 0);
     private static final LocalDateTime DT_PARIS_GAP = dateTime(2008, 3, 30, 2, 30, 0, 0);
     private static final LocalDateTime DT_WINTER = dateTime(2008, 1, 1, 2, 30, 0, 0);

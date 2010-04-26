@@ -59,8 +59,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestFixedZoneRules {
 
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final LocalDateTime LDT = LocalDateTime.of(2010, 12, 3, 11, 30);
     private static final OffsetDateTime ODT = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE);
     private static final Instant INSTANT = ODT.toInstant();

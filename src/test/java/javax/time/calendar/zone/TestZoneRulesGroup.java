@@ -246,7 +246,7 @@ public class TestZoneRulesGroup {
 
     public void test_getRulesValidFor_floatingSearch() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
-        OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.hours(1));
+        OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.ofHours(1));
         assertEquals(group.getRulesValidFor("Europe/London", "", odt), group.getRulesValidFor("Europe/London", "2008i", odt));
     }
 
@@ -295,13 +295,13 @@ public class TestZoneRulesGroup {
 
     public void test_getLatestVersionIDValidFor_mock_latest() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
-        OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.hoursMinutes(2, 45));
+        OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.ofHoursMinutes(2, 45));
         assertEquals(group.getLatestVersionIDValidFor("RulesChange", odt), "v2");
     }
 
     public void test_getLatestVersionIDValidFor_mock_notLatest() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
-        OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.hoursMinutes(1, 45));
+        OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.ofHoursMinutes(1, 45));
         assertEquals(group.getLatestVersionIDValidFor("RulesChange", odt), "v1");
     }
 

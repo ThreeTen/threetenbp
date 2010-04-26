@@ -66,7 +66,7 @@ public class TestZoneParser {
             int result = pp.parse((DateTimeParseContext) null, AMERICA_DENVER, 0);
             assertEquals(result, AMERICA_DENVER.length());
             assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
-            assertEquals(context.toCalendricalMerger().getInputMap().get(TimeZone.rule()), ZoneOffset.hours(1));
+            assertEquals(context.toCalendricalMerger().getInputMap().get(TimeZone.rule()), ZoneOffset.ofHours(1));
             // NPE is optional, but parse must still succeed
         } catch (NullPointerException ex) {
             // NPE is optional

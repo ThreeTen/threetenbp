@@ -167,26 +167,26 @@ public class TestDateTimeParseContext {
     public void test_offset() throws Exception {
         assertEquals(context.getParsed(ZoneOffset.rule()), null);
         
-        context.setParsed(ZoneOffset.rule(), ZoneOffset.hours(18));
+        context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(18));
         
-        assertEquals(context.getParsed(ZoneOffset.rule()), ZoneOffset.hours(18));
+        assertEquals(context.getParsed(ZoneOffset.rule()), ZoneOffset.ofHours(18));
     }
 
     //-----------------------------------------------------------------------
     public void test_zone() throws Exception {
         assertEquals(context.getParsed(TimeZone.rule()), null);
         
-        context.setParsed(TimeZone.rule(), TimeZone.of(ZoneOffset.hours(18)));
+        context.setParsed(TimeZone.rule(), TimeZone.of(ZoneOffset.ofHours(18)));
         
-        assertEquals(context.getParsed(TimeZone.rule()), TimeZone.of(ZoneOffset.hours(18)));
+        assertEquals(context.getParsed(TimeZone.rule()), TimeZone.of(ZoneOffset.ofHours(18)));
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
         context.setParsed(RULE_YEAR, 2008);
         context.setParsed(RULE_MOY, 6);
-        context.setParsed(ZoneOffset.rule(), ZoneOffset.hours(16));
-        context.setParsed(TimeZone.rule(),TimeZone.of(ZoneOffset.hours(18)));
+        context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(16));
+        context.setParsed(TimeZone.rule(),TimeZone.of(ZoneOffset.ofHours(18)));
         
         assertEquals(context.toString(), "{ISO.MonthOfYear=6, ISO.Year=2008, ISO.TimeZone=UTC+18:00, ISO.ZoneOffset=+16:00}");
     }

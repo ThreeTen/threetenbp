@@ -142,7 +142,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             if (total > 18 * 60 * 60) {  // max +18:00:00
                 return ~position;
             }
-            offset = ZoneOffset.hoursMinutesSeconds(negative * array[1], negative * array[2], negative * array[3]);
+            offset = ZoneOffset.ofHoursMinutesSeconds(negative * array[1], negative * array[2], negative * array[3]);
             context.setParsed(ZoneOffset.rule(), offset);
             return array[0];
         } else {

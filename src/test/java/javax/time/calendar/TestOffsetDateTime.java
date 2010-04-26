@@ -66,10 +66,10 @@ public class TestOffsetDateTime {
 
     private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
     private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
-    private static final ZoneOffset OFFSET_MONE = ZoneOffset.hours(-1);
-    private static final ZoneOffset OFFSET_MTWO = ZoneOffset.hours(-2);
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
+    private static final ZoneOffset OFFSET_MONE = ZoneOffset.ofHours(-1);
+    private static final ZoneOffset OFFSET_MTWO = ZoneOffset.ofHours(-2);
     private OffsetDateTime TEST_2008_6_30_11_30_59_000000500;
 
     @BeforeMethod
@@ -171,7 +171,7 @@ public class TestOffsetDateTime {
     public void now_Clock_offsets() {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
-            ZoneOffset offset = ZoneOffset.hours(i);
+            ZoneOffset offset = ZoneOffset.ofHours(i);
             Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getHourOfDay(), (12 + i) % 24);

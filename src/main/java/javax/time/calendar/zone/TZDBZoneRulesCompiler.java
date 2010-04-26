@@ -572,7 +572,7 @@ public final class TZDBZoneRulesCompiler {
 
     private ZoneOffset parseOffset(String str) {
         int secs = parseSecs(str);
-        return ZoneOffset.fromTotalSeconds(secs);
+        return ZoneOffset.ofTotalSeconds(secs);
     }
 
     private Period parsePeriod(String str) {

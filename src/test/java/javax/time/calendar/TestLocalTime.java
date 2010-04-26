@@ -65,7 +65,7 @@ import org.testng.annotations.Test;
 @Test(timeOut=5000)
 public class TestLocalTime {
 
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
 
     private LocalTime TEST_12_30_40_987654321;
 

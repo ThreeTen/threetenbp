@@ -64,8 +64,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestOffsetTime {
 
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private OffsetTime TEST_TIME;
 
     @BeforeMethod
@@ -143,7 +143,7 @@ public class TestOffsetTime {
     public void now_Clock_offsets() {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
-            ZoneOffset offset = ZoneOffset.hours(i);
+            ZoneOffset offset = ZoneOffset.ofHours(i);
             Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (12 + i) % 24);

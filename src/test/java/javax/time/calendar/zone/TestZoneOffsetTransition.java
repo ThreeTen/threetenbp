@@ -54,11 +54,11 @@ import org.testng.annotations.Test;
 @Test
 public class TestZoneOffsetTransition {
 
-    private static final ZoneOffset OFFSET_0100 = ZoneOffset.hours(1);
-    private static final ZoneOffset OFFSET_0200 = ZoneOffset.hours(2);
-    private static final ZoneOffset OFFSET_0230 = ZoneOffset.hoursMinutes(2, 30);
-    private static final ZoneOffset OFFSET_0300 = ZoneOffset.hours(3);
-    private static final ZoneOffset OFFSET_0400 = ZoneOffset.hours(4);
+    private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
+    private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
+    private static final ZoneOffset OFFSET_0230 = ZoneOffset.ofHoursMinutes(2, 30);
+    private static final ZoneOffset OFFSET_0300 = ZoneOffset.ofHours(3);
+    private static final ZoneOffset OFFSET_0400 = ZoneOffset.ofHours(4);
 
     //-----------------------------------------------------------------------
     // constructor
