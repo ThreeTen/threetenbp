@@ -35,7 +35,6 @@ Utils
 - simplify TimeSource to InstantProvider and Clock to Calendrical, merging
 
 Duration
-- integrate TimeUnit
 
 Instant
 - toString/parse
@@ -109,6 +108,7 @@ Time zones
 # Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
 
 Periods
+- ofXxx factory rename
 - formatting (defer?)
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - PeriodFields.normalize(Unit...)
@@ -211,5 +211,6 @@ EDR
 - OffsetDateTime.fromEpochSeconds()
 - ZonedDateTime.fromEpochSeconds()
 - Duration/Instant rename millis() to ofMillis() etc
-
+- Duration/Instant integrate TimeUnit
+- Rename factory methods to start with 'of'
 
