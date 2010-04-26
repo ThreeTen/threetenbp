@@ -802,12 +802,12 @@ public class TestDateTimeFormatters {
     }
 
     public void test_print_isoOrdinalDate_zoned() {
-        Calendrical test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[UTC]");
     }
 
     public void test_print_isoOrdinalDate_zoned_largeYear() {
-        Calendrical test = ZonedDateTime.from(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[UTC]");
     }
 
@@ -852,14 +852,14 @@ public class TestDateTimeFormatters {
     }
 
     public void test_print_basicIsoDate_zoned() {
-        Calendrical test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[UTC]");
     }
 
     @Test(expectedExceptions=CalendricalPrintFieldException.class)
     public void test_print_basicIsoDate_largeYear() {
         try {
-            Calendrical test = ZonedDateTime.from(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
+            Calendrical test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
             DateTimeFormatters.basicIsoDate().print(test);
         } catch (CalendricalPrintFieldException ex) {
             assertEquals(ex.getRule(), ISOChronology.yearRule());
@@ -907,7 +907,7 @@ public class TestDateTimeFormatters {
     @DataProvider(name="weekDate")
     Iterator<Object[]> weekDate() {
         return new Iterator<Object[]>() {
-            private ZonedDateTime date = ZonedDateTime.from(LocalDateTime.of(2003, 12, 29, 11, 5, 30), TimeZone.UTC);
+            private ZonedDateTime date = ZonedDateTime.of(LocalDateTime.of(2003, 12, 29, 11, 5, 30), TimeZone.UTC);
             private ZonedDateTime endDate = date.withDate(2005, 1, 2);
             private int week = 1;
             private int day = 1;
@@ -942,7 +942,7 @@ public class TestDateTimeFormatters {
     }
 
     public void test_print_isoWeekDate_zoned_largeYear() {
-        Calendrical test = ZonedDateTime.from(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[UTC]");
     }
 
@@ -986,7 +986,7 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_print_rfc1123() {
-        Calendrical test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.rfc1123().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
     }
 

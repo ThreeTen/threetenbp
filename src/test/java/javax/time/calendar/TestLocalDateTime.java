@@ -3129,13 +3129,13 @@ public class TestLocalDateTime {
     public void test_atZone() {
         LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         assertEquals(t.atZone(ZONE_PARIS),
-                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
+                ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
     }
 
     public void test_atZone_dstGap() {
         LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         assertEquals(t.atZone(ZONE_GAZA),
-                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -3148,19 +3148,19 @@ public class TestLocalDateTime {
     public void test_atZone_resolver() {
         LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         assertEquals(t.atZone(ZONE_PARIS, ZoneResolvers.postTransition()),
-                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
+                ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
     }
 
     public void test_atZone_resolver_dstGap() {
         LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         assertEquals(t.atZone(ZONE_GAZA, ZoneResolvers.postTransition()),
-                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     public void test_atZone_resolver_dstGap_pre() {
         LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         assertEquals(t.atZone(ZONE_GAZA, ZoneResolvers.preTransition()),
-                ZonedDateTime.from(LocalDateTime.of(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
+                ZonedDateTime.of(LocalDateTime.of(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

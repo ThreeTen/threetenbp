@@ -68,7 +68,7 @@ public class TestZonedDateTime {
     @BeforeMethod
     public void setUp() {
         LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 59, 500);
-        TEST_DATE_TIME = ZonedDateTime.from(dt, ZONE_0100);
+        TEST_DATE_TIME = ZonedDateTime.of(dt, ZONE_0100);
     }
 
     //-----------------------------------------------------------------------
@@ -118,7 +118,7 @@ public class TestZonedDateTime {
         TimeZone zone = TimeZone.of("Europe/London");
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofSeconds(i).plusNanos(123456789L);
-            ZonedDateTime expected = ZonedDateTime.fromInstant(instant, zone);
+            ZonedDateTime expected = ZonedDateTime.ofInstant(instant, zone);
             Clock clock = Clock.clock(TimeSource.fixed(expected.toInstant()), zone);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test, expected);
@@ -342,27 +342,27 @@ public class TestZonedDateTime {
     public void factory_from_DateProviderTimeProvider() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.from(dateProvider, timeProvider, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProviderTimeProvider_nullDate() {
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.from((DateProvider) null, timeProvider, ZONE_PARIS);
+        ZonedDateTime.of((DateProvider) null, timeProvider, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProviderTimeProvider_nullTime() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.from(dateProvider, (TimeProvider) null, ZONE_PARIS);
+        ZonedDateTime.of(dateProvider, (TimeProvider) null, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProviderTimeProvider_nullZone() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.from(dateProvider, timeProvider, null);
+        ZonedDateTime.of(dateProvider, timeProvider, null);
     }
 
     //-----------------------------------------------------------------------
@@ -371,53 +371,53 @@ public class TestZonedDateTime {
     public void factory_from_DateProviderTimeProviderResolver() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.from(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
+        ZonedDateTime test = ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     public void factory_from_DateProviderTimeProviderResolver_resolverUsed() {
         DateProvider dateProvider = LocalDate.of(2008, 3, 30);
         TimeProvider timeProvider = LocalTime.of(2, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.from(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
+        ZonedDateTime test = ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProviderTimeProviderResolver_nullDate() {
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.from((DateProvider) null, timeProvider, ZONE_PARIS, ZoneResolvers.strict());
+        ZonedDateTime.of((DateProvider) null, timeProvider, ZONE_PARIS, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProviderTimeProviderResolver_nullTime() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.from(dateProvider, (TimeProvider) null, ZONE_PARIS, ZoneResolvers.strict());
+        ZonedDateTime.of(dateProvider, (TimeProvider) null, ZONE_PARIS, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProviderTimeProviderResolver_nullZone() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.from(dateProvider, timeProvider, null, ZoneResolvers.strict());
+        ZonedDateTime.of(dateProvider, timeProvider, null, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateProviderTimeProviderResolver_nullResolver() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.from(dateProvider, timeProvider, ZONE_PARIS, (ZoneResolver) null);
+        ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS, (ZoneResolver) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProviderResolver_badDateProvider() {
         TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.from(new MockDateProviderReturnsNull(), timeProvider, ZONE_PARIS, ZoneResolvers.strict());
+        ZonedDateTime.of(new MockDateProviderReturnsNull(), timeProvider, ZONE_PARIS, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProviderResolver_badTimeProvider() {
         DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.from(dateProvider, new MockTimeProviderReturnsNull(), ZONE_PARIS, ZoneResolvers.strict());
+        ZonedDateTime.of(dateProvider, new MockTimeProviderReturnsNull(), ZONE_PARIS, ZoneResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -425,24 +425,24 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void factory_from_DateTimeProvider() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.from(provider, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProvider_nullDateTime() {
-        ZonedDateTime.from((DateTimeProvider) null, ZONE_PARIS);
+        ZonedDateTime.of((DateTimeProvider) null, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProvider_nullZone() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime.from(provider, null);
+        ZonedDateTime.of(provider, null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProvider_badProvider() {
-        ZonedDateTime.from(new MockDateTimeProviderReturnsNull(), ZONE_PARIS);
+        ZonedDateTime.of(new MockDateTimeProviderReturnsNull(), ZONE_PARIS);
     }
 
     //-----------------------------------------------------------------------
@@ -450,36 +450,36 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void factory_from_DateTimeProviderResolver() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.from(provider, ZONE_PARIS, ZoneResolvers.postTransition());
+        ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     public void factory_from_DateTimeProviderResolver_resolverUsed() {
         DateTimeProvider provider = LocalDateTime.of(2008, 3, 30, 2, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.from(provider, ZONE_PARIS, ZoneResolvers.postTransition());
+        ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProviderResolver_nullDateTime() {
-        ZonedDateTime.from((DateTimeProvider) null, ZONE_PARIS, ZoneResolvers.strict());
+        ZonedDateTime.of((DateTimeProvider) null, ZONE_PARIS, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProviderResolver_nullZone() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime.from(provider, null, ZoneResolvers.strict());
+        ZonedDateTime.of(provider, null, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProviderResolver_nullResolver() {
         DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        ZonedDateTime.from(provider, null, (ZoneResolver) null);
+        ZonedDateTime.of(provider, null, (ZoneResolver) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_DateTimeProviderResolver_badProvider() {
-        ZonedDateTime.from(new MockDateTimeProviderReturnsNull(), ZONE_PARIS, ZoneResolvers.strict());
+        ZonedDateTime.of(new MockDateTimeProviderReturnsNull(), ZONE_PARIS, ZoneResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -538,7 +538,7 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void factory_from_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.from(mmp, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.of(mmp, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
@@ -546,67 +546,67 @@ public class TestZonedDateTime {
     public void factory_fromInstant_InstantProvider() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
         InstantProvider provider = odt.toInstant();
-        ZonedDateTime test = ZonedDateTime.fromInstant(provider, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.ofInstant(provider, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fromInstant_InstantProvider_nullProvider() {
-        ZonedDateTime.fromInstant((InstantProvider) null, ZONE_0100);
+        ZonedDateTime.ofInstant((InstantProvider) null, ZONE_0100);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fromInstant_InstantProvider_nullZone() {
         InstantProvider provider = Instant.ofSeconds(0L);
-        ZonedDateTime.fromInstant(provider, null);
+        ZonedDateTime.ofInstant(provider, null);
     }
 
     //-----------------------------------------------------------------------
     public void factory_fromInstant_OffsetDateTime() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     public void factory_fromInstant_OffsetDateTime_inGap() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 3, 30, 2, 30, OFFSET_0100);  // DST gap
-        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
         check(test, 2008, 3, 30, 3, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // one hour later in summer offset
     }
 
     public void factory_fromInstant_OffsetDateTime_inOverlap_earlier() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0200);  // DST overlap
-        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
         check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // same time and offset
     }
 
     public void factory_fromInstant_OffsetDateTime_inOverlap_later() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0100);  // DST overlap
-        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
         check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0100, ZONE_PARIS);  // same time and offset
     }
 
     public void factory_fromInstant_OffsetDateTime_invalidOffset() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0130);
-        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.ofInstant(odt, ZONE_PARIS);
         check(test, 2008, 6, 30, 12, 0, 10, 500, OFFSET_0200, ZONE_PARIS);  // corrected offset, thus altered time
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fromInstant_OffsetDateTime_nullDateTime() {
-        ZonedDateTime.fromInstant((OffsetDateTime) null, ZONE_0100);
+        ZonedDateTime.ofInstant((OffsetDateTime) null, ZONE_0100);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fromInstant_OffsetDateTime_nullZone() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
-        ZonedDateTime.fromInstant(odt, null);
+        ZonedDateTime.ofInstant(odt, null);
     }
 
     //-----------------------------------------------------------------------
     public void factory_fromInstant_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.fromInstant(mmp, ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.ofInstant(mmp, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
@@ -617,7 +617,7 @@ public class TestZonedDateTime {
         for (int i = 0; i < 100000; i++) {
             ZonedDateTime test = ZonedDateTime.ofEpochSeconds(i, ZONE_0200);
             OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).plusSeconds(i);
-            assertEquals(test, ZonedDateTime.fromInstant(odt, ZONE_0200));
+            assertEquals(test, ZonedDateTime.ofInstant(odt, ZONE_0200));
         }
     }
 
@@ -625,7 +625,7 @@ public class TestZonedDateTime {
         for (int i = 0; i < 100000; i++) {
             ZonedDateTime test = ZonedDateTime.ofEpochSeconds(-i, ZONE_0200);
             OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).minusSeconds(i);
-            assertEquals(test, ZonedDateTime.fromInstant(odt, ZONE_0200));
+            assertEquals(test, ZonedDateTime.ofInstant(odt, ZONE_0200));
         }
     }
 
@@ -694,7 +694,7 @@ public class TestZonedDateTime {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getEstimatedOffset();
-        ZonedDateTime a = ZonedDateTime.from(localDateTime, zone);
+        ZonedDateTime a = ZonedDateTime.of(localDateTime, zone);
         assertSame(a.getOffset(), offset);
         assertSame(a.getZone(), zone);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
@@ -724,7 +724,7 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
-        ZonedDateTime test = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime test = ZonedDateTime.of(ldt, ZONE_0100);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
@@ -757,14 +757,14 @@ public class TestZonedDateTime {
 
     public void test_get_CalendricalRule_unsupported() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime test = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime test = ZonedDateTime.of(ldt, ZONE_0100);
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_get_CalendricalRule_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime test = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime test = ZonedDateTime.of(ldt, ZONE_0100);
         test.get((CalendricalRule<?>) null);
     }
 
@@ -773,7 +773,7 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withDateTime() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 31, 0);
         ZonedDateTime test = base.withDateTime(dt);
         assertEquals(test.toLocalDateTime(), dt);
@@ -782,7 +782,7 @@ public class TestZonedDateTime {
 
     public void test_withDateTime_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 23, 30, 59);
         ZonedDateTime test = base.withDateTime(dt);
         assertSame(test, base);
@@ -791,7 +791,7 @@ public class TestZonedDateTime {
     public void test_withDateTime_retainOffsetResolver1() {
         TimeZone newYork = TimeZone.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, newYork, ZoneResolvers.preTransition());
+        ZonedDateTime base = ZonedDateTime.of(ldt, newYork, ZoneResolvers.preTransition());
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
         ZonedDateTime test = base.withDateTime(LocalDateTime.of(2008, 11, 2, 1, 25));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-4));
@@ -800,7 +800,7 @@ public class TestZonedDateTime {
     public void test_withDateTime_retainOffsetResolver2() {
         TimeZone newYork = TimeZone.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, newYork, ZoneResolvers.postTransition());
+        ZonedDateTime base = ZonedDateTime.of(ldt, newYork, ZoneResolvers.postTransition());
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
         ZonedDateTime test = base.withDateTime(LocalDateTime.of(2008, 11, 2, 1, 25));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-5));
@@ -809,14 +809,14 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withDateTime_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withDateTime(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withDateTime_badProvider() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withDateTime(new MockDateTimeProviderReturnsNull());
     }
 
@@ -841,14 +841,14 @@ public class TestZonedDateTime {
 
     public void test_withEarlierOffsetAtOverlap_notAtOverlap() {
         LocalDateTime ldt = LocalDateTime.of(2008, 10, 26, 1, 59);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_PARIS);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_PARIS);
         ZonedDateTime test = base.withEarlierOffsetAtOverlap();
         assertSame(test, base);
     }
 
     public void test_withEarlierOffsetAtOverlap_fixedZone() {
         LocalDateTime ldt = LocalDateTime.of(2008, 10, 26, 2, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withEarlierOffsetAtOverlap();
         assertSame(test, base);
     }
@@ -874,14 +874,14 @@ public class TestZonedDateTime {
 
     public void test_withLaterOffsetAtOverlap_notAtOverlap() {
         LocalDateTime ldt = LocalDateTime.of(2008, 10, 26, 1, 59);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_PARIS);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_PARIS);
         ZonedDateTime test = base.withLaterOffsetAtOverlap();
         assertSame(test, base);
     }
 
     public void test_withLaterOffsetAtOverlap_fixedZone() {
         LocalDateTime ldt = LocalDateTime.of(2008, 10, 26, 2, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withLaterOffsetAtOverlap();
         assertSame(test, base);
     }
@@ -891,7 +891,7 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withZoneSameLocal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200);
         assertEquals(test.toLocalTime(), base.toLocalTime());
         assertSame(test.getZone(), ZONE_0200);
@@ -899,14 +899,14 @@ public class TestZonedDateTime {
 
     public void test_withZoneSameLocal_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0100);
         assertSame(test, base);
     }
 
     public void test_withZoneSameLocal_retainOffsetResolver1() {
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, TimeZone.of("UTC-04:00") );
+        ZonedDateTime base = ZonedDateTime.of(ldt, TimeZone.of("UTC-04:00") );
         ZonedDateTime test = base.withZoneSameLocal(TimeZone.of("America/New_York"));
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-4));
@@ -914,7 +914,7 @@ public class TestZonedDateTime {
 
     public void test_withZoneSameLocal_retainOffsetResolver2() {
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, TimeZone.of("UTC-05:00") );
+        ZonedDateTime base = ZonedDateTime.of(ldt, TimeZone.of("UTC-05:00") );
         ZonedDateTime test = base.withZoneSameLocal(TimeZone.of("America/New_York"));
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-5));
@@ -923,7 +923,7 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withZoneSameLocal_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withZoneSameLocal(null);
     }
 
@@ -932,7 +932,7 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withZoneSameLocal_ZoneResolver() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200, ZoneResolvers.retainOffset());
         assertEquals(test.toLocalTime(), base.toLocalTime());
         assertSame(test.getZone(), ZONE_0200);
@@ -940,14 +940,14 @@ public class TestZonedDateTime {
 
     public void test_withZoneSameLocal_ZoneResolver_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0100, ZoneResolvers.retainOffset());
         assertSame(test, base);
     }
 
     public void test_withZoneSameLocal_ZoneResolver_retainOffsetResolver1() {
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, TimeZone.of("UTC-04:00") );
+        ZonedDateTime base = ZonedDateTime.of(ldt, TimeZone.of("UTC-04:00") );
         ZonedDateTime test = base.withZoneSameLocal(TimeZone.of("America/New_York"), ZoneResolvers.retainOffset());
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-4));
@@ -955,7 +955,7 @@ public class TestZonedDateTime {
 
     public void test_withZoneSameLocal_ZoneResolver_retainOffsetResolver2() {
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, TimeZone.of("UTC-05:00") );
+        ZonedDateTime base = ZonedDateTime.of(ldt, TimeZone.of("UTC-05:00") );
         ZonedDateTime test = base.withZoneSameLocal(TimeZone.of("America/New_York"), ZoneResolvers.retainOffset());
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-5));
@@ -964,14 +964,14 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withZoneSameLocal_ZoneResolver_nullZone() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withZoneSameLocal(null, ZoneResolvers.retainOffset());
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withZoneSameLocal_ZoneResolver_nullResolver() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withZoneSameLocal(ZONE_0100, (ZoneResolver) null);
     }
 
@@ -980,15 +980,15 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withZoneSameInstant() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameInstant(ZONE_0200);
-        ZonedDateTime expected = ZonedDateTime.from(ldt.plusHours(1), ZONE_0200);
+        ZonedDateTime expected = ZonedDateTime.of(ldt.plusHours(1), ZONE_0200);
         assertEquals(test, expected);
     }
 
     public void test_withZoneSameInstant_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameInstant(ZONE_0100);
         assertSame(test, base);
     }
@@ -996,7 +996,7 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withZoneSameInstant_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withZoneSameInstant(null);
     }
 
@@ -1005,14 +1005,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_with_DateAdjuster() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(Year.of(2007));
-        assertEquals(test, ZonedDateTime.from(ldt.withYear(2007), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withYear(2007), ZONE_0100));
     }
 
     public void test_with_DateAdjuster_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         DateAdjuster adjuster = LocalDate.of(2008, 6, 30);
         ZonedDateTime test = base.with(adjuster);
         assertSame(test, base);
@@ -1021,7 +1021,7 @@ public class TestZonedDateTime {
     public void test_with_DateAdjuster_retainOffsetResolver1() {
         TimeZone newYork = TimeZone.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 1, 1, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, newYork);
+        ZonedDateTime base = ZonedDateTime.of(ldt, newYork);
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
         ZonedDateTime test = base.with(LocalDate.of(2008, 11, 2));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-4));
@@ -1030,7 +1030,7 @@ public class TestZonedDateTime {
     public void test_with_DateAdjuster_retainOffsetResolver2() {
         TimeZone newYork = TimeZone.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 3, 1, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, newYork);
+        ZonedDateTime base = ZonedDateTime.of(ldt, newYork);
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
         ZonedDateTime test = base.with(LocalDate.of(2008, 11, 2));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-5));
@@ -1039,14 +1039,14 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_DateAdjuster_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.with((DateAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_DateAdjuster_badAdjuster() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.with(new MockDateAdjusterReturnsNull());
     }
 
@@ -1055,18 +1055,18 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_with_TimeAdjuster() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.with(new TimeAdjuster() {
             public LocalTime adjustTime(LocalTime time) {
                 return time.withHourOfDay(1);
             }
         });
-        assertEquals(test, ZonedDateTime.from(ldt.withHourOfDay(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withHourOfDay(1), ZONE_0100));
     }
 
     public void test_with_TimeAdjuster_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         TimeAdjuster adjuster = LocalTime.of(23, 30, 59, 0);
         ZonedDateTime test = base.with(adjuster);
         assertSame(test, base);
@@ -1075,7 +1075,7 @@ public class TestZonedDateTime {
     public void test_with_TimeAdjuster_retainOffsetResolver1() {
         TimeZone newYork = TimeZone.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, newYork, ZoneResolvers.preTransition());
+        ZonedDateTime base = ZonedDateTime.of(ldt, newYork, ZoneResolvers.preTransition());
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-4));
         ZonedDateTime test = base.with(LocalTime.of(1, 25));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-4));
@@ -1084,7 +1084,7 @@ public class TestZonedDateTime {
     public void test_with_TimeAdjuster_retainOffsetResolver2() {
         TimeZone newYork = TimeZone.of("America/New_York");
         LocalDateTime ldt = LocalDateTime.of(2008, 11, 2, 1, 30);
-        ZonedDateTime base = ZonedDateTime.from(ldt, newYork, ZoneResolvers.postTransition());
+        ZonedDateTime base = ZonedDateTime.of(ldt, newYork, ZoneResolvers.postTransition());
         assertEquals(base.getOffset(), ZoneOffset.ofHours(-5));
         ZonedDateTime test = base.with(LocalTime.of(1, 25));
         assertEquals(test.getOffset(), ZoneOffset.ofHours(-5));
@@ -1093,14 +1093,14 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_TimeAdjuster_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.with((TimeAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_TimeAdjuster_badAdjuster() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.with(new MockTimeAdjusterReturnsNull());
     }
 
@@ -1109,14 +1109,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withYear_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withYear(2007);
-        assertEquals(test, ZonedDateTime.from(ldt.withYear(2007), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withYear(2007), ZONE_0100));
     }
 
     public void test_withYear_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withYear(2008);
         assertSame(test, base);
     }
@@ -1126,14 +1126,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withMonthOfYearr_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withMonthOfYear(1);
-        assertEquals(test, ZonedDateTime.from(ldt.withMonthOfYear(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withMonthOfYear(1), ZONE_0100));
     }
 
     public void test_withMonthOfYear_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withMonthOfYear(6);
         assertSame(test, base);
     }
@@ -1143,14 +1143,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withDayOfMonth_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withDayOfMonth(15);
-        assertEquals(test, ZonedDateTime.from(ldt.withDayOfMonth(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withDayOfMonth(15), ZONE_0100));
     }
 
     public void test_withDayOfMonth_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withDayOfMonth(30);
         assertSame(test, base);
     }
@@ -1160,14 +1160,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withDayOfYear_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withDayOfYear(33);
-        assertEquals(test, ZonedDateTime.from(ldt.withDayOfYear(33), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withDayOfYear(33), ZONE_0100));
     }
 
     public void test_withDayOfYear_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withDayOfYear(31 + 29 + 31 + 30 + 31 + 30);
         assertSame(test, base);
     }
@@ -1177,15 +1177,15 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withDate() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withDate(2007, 1, 1);
-        ZonedDateTime expected = ZonedDateTime.from(ldt.withDate(2007, 1, 1), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(ldt.withDate(2007, 1, 1), ZONE_0100);
         assertEquals(test, expected);
     }
 
     public void test_withDate_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withDate(2008, 6, 30);
         assertSame(test, base);
     }
@@ -1195,14 +1195,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withHourOfDayr_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withHourOfDay(15);
-        assertEquals(test, ZonedDateTime.from(ldt.withHourOfDay(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withHourOfDay(15), ZONE_0100));
     }
 
     public void test_withHourOfDay_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withHourOfDay(23);
         assertSame(test, base);
     }
@@ -1212,14 +1212,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withMinuteOfHour_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withMinuteOfHour(15);
-        assertEquals(test, ZonedDateTime.from(ldt.withMinuteOfHour(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withMinuteOfHour(15), ZONE_0100));
     }
 
     public void test_withMinuteOfHour_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withMinuteOfHour(30);
         assertSame(test, base);
     }
@@ -1229,14 +1229,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withSecondOfMinute_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withSecondOfMinute(15);
-        assertEquals(test, ZonedDateTime.from(ldt.withSecondOfMinute(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withSecondOfMinute(15), ZONE_0100));
     }
 
     public void test_withSecondOfMinute_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withSecondOfMinute(59);
         assertSame(test, base);
     }
@@ -1246,14 +1246,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withNanoOfSecond_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 1);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withNanoOfSecond(15);
-        assertEquals(test, ZonedDateTime.from(ldt.withNanoOfSecond(15), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.withNanoOfSecond(15), ZONE_0100));
     }
 
     public void test_withNanoOfSecond_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 1);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withNanoOfSecond(1);
         assertSame(test, base);
     }
@@ -1263,15 +1263,15 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withTime_HM() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 0, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withTime(12, 10);
-        ZonedDateTime expected = ZonedDateTime.from(ldt.withTime(12, 10), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(ldt.withTime(12, 10), ZONE_0100);
         assertEquals(test, expected);
     }
 
     public void test_withTime_HM_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 0, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withTime(23, 30);
         assertSame(test, base);
     }
@@ -1279,15 +1279,15 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withTime_HMS() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withTime(12, 10, 9);
-        ZonedDateTime expected = ZonedDateTime.from(ldt.withTime(12, 10, 9), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(ldt.withTime(12, 10, 9), ZONE_0100);
         assertEquals(test, expected);
     }
 
     public void test_withTime_HMS_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withTime(23, 30, 59);
         assertSame(test, base);
     }
@@ -1295,15 +1295,15 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_withTime_HMSN() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withTime(12, 10, 9, 8);
-        ZonedDateTime expected = ZonedDateTime.from(ldt.withTime(12, 10, 9, 8), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(ldt.withTime(12, 10, 9, 8), ZONE_0100);
         assertEquals(test, expected);
     }
 
     public void test_withTime_HMSN_noChange() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 500);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withTime(23, 30, 59, 500);
         assertSame(test, base);
     }
@@ -1313,8 +1313,8 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
         PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-        ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.from(LocalDateTime.of(2009, 8, 4, 16, 36, 5, 507), ZONE_0100);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2009, 8, 4, 16, 36, 5, 507), ZONE_0100);
         assertEquals(t.plus(provider), expected);
     }
 
@@ -1333,14 +1333,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusYears() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusYears(1);
-        assertEquals(test, ZonedDateTime.from(ldt.plusYears(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusYears(1), ZONE_0100));
     }
 
     public void test_plusYears_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusYears(0);
         assertSame(test, base);
     }
@@ -1350,14 +1350,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusMonths() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusMonths(1);
-        assertEquals(test, ZonedDateTime.from(ldt.plusMonths(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusMonths(1), ZONE_0100));
     }
 
     public void test_plusMonths_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusMonths(0);
         assertSame(test, base);
     }
@@ -1367,14 +1367,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusWeeks() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusWeeks(1);
-        assertEquals(test, ZonedDateTime.from(ldt.plusWeeks(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusWeeks(1), ZONE_0100));
     }
 
     public void test_plusWeeks_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusWeeks(0);
         assertSame(test, base);
     }
@@ -1384,14 +1384,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusDays() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusDays(1);
-        assertEquals(test, ZonedDateTime.from(ldt.plusDays(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusDays(1), ZONE_0100));
     }
 
     public void test_plusDays_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusDays(0);
         assertSame(test, base);
     }
@@ -1401,14 +1401,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusHours() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusHours(13);
-        assertEquals(test, ZonedDateTime.from(ldt.plusHours(13), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusHours(13), ZONE_0100));
     }
 
     public void test_plusHours_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusHours(0);
         assertSame(test, base);
     }
@@ -1418,14 +1418,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusMinutes() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusMinutes(30);
-        assertEquals(test, ZonedDateTime.from(ldt.plusMinutes(30), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusMinutes(30), ZONE_0100));
     }
 
     public void test_plusMinutes_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusMinutes(0);
         assertSame(test, base);
     }
@@ -1435,14 +1435,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusSeconds() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusSeconds(1);
-        assertEquals(test, ZonedDateTime.from(ldt.plusSeconds(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusSeconds(1), ZONE_0100));
     }
 
     public void test_plusSeconds_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusSeconds(0);
         assertSame(test, base);
     }
@@ -1452,14 +1452,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusNanos() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusNanos(1);
-        assertEquals(test, ZonedDateTime.from(ldt.plusNanos(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.plusNanos(1), ZONE_0100));
     }
 
     public void test_plusNanos_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.plusNanos(0);
         assertSame(test, base);
     }
@@ -1469,8 +1469,8 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_plusDuration_PeriodProvider() {
         PeriodProvider provider = Period.hoursMinutesSeconds(4, 5, 6);
-        ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
         assertEquals(t.plusDuration(provider), expected);
     }
 
@@ -1488,8 +1488,8 @@ public class TestZonedDateTime {
     // plusDuration(int,int,int,long)
     //-----------------------------------------------------------------------
     public void test_plusDuration_intintintlong() {
-        ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 507), ZONE_0100);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 507), ZONE_0100);
         assertEquals(t.plusDuration(4, 5, 6, 7), expected);
     }
 
@@ -1503,8 +1503,8 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
         PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-        ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.from(LocalDateTime.of(2007, 3, 29, 8, 25, 53, 493), ZONE_0100);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2007, 3, 29, 8, 25, 53, 493), ZONE_0100);
         assertEquals(t.minus(provider), expected);
     }
 
@@ -1523,14 +1523,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusYears() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusYears(1);
-        assertEquals(test, ZonedDateTime.from(ldt.minusYears(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusYears(1), ZONE_0100));
     }
 
     public void test_minusYears_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusYears(0);
         assertSame(test, base);
     }
@@ -1540,14 +1540,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusMonths() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusMonths(1);
-        assertEquals(test, ZonedDateTime.from(ldt.minusMonths(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusMonths(1), ZONE_0100));
     }
 
     public void test_minusMonths_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusMonths(0);
         assertSame(test, base);
     }
@@ -1557,14 +1557,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusWeeks() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusWeeks(1);
-        assertEquals(test, ZonedDateTime.from(ldt.minusWeeks(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusWeeks(1), ZONE_0100));
     }
 
     public void test_minusWeeks_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusWeeks(0);
         assertSame(test, base);
     }
@@ -1574,14 +1574,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusDays() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusDays(1);
-        assertEquals(test, ZonedDateTime.from(ldt.minusDays(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusDays(1), ZONE_0100));
     }
 
     public void test_minusDays_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusDays(0);
         assertSame(test, base);
     }
@@ -1591,14 +1591,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusHours() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusHours(13);
-        assertEquals(test, ZonedDateTime.from(ldt.minusHours(13), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusHours(13), ZONE_0100));
     }
 
     public void test_minusHours_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusHours(0);
         assertSame(test, base);
     }
@@ -1608,14 +1608,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusMinutes() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusMinutes(30);
-        assertEquals(test, ZonedDateTime.from(ldt.minusMinutes(30), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusMinutes(30), ZONE_0100));
     }
 
     public void test_minusMinutes_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusMinutes(0);
         assertSame(test, base);
     }
@@ -1625,14 +1625,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusSeconds() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusSeconds(1);
-        assertEquals(test, ZonedDateTime.from(ldt.minusSeconds(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusSeconds(1), ZONE_0100));
     }
 
     public void test_minusSeconds_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusSeconds(0);
         assertSame(test, base);
     }
@@ -1642,14 +1642,14 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusNanos() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusNanos(1);
-        assertEquals(test, ZonedDateTime.from(ldt.minusNanos(1), ZONE_0100));
+        assertEquals(test, ZonedDateTime.of(ldt.minusNanos(1), ZONE_0100));
     }
 
     public void test_minusNanos_zero() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.minusNanos(0);
         assertSame(test, base);
     }
@@ -1659,8 +1659,8 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_minusDuration_PeriodProvider() {
         PeriodProvider provider = Period.hoursMinutesSeconds(4, 5, 6);
-        ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
         assertEquals(t.minusDuration(provider), expected);
     }
 
@@ -1678,8 +1678,8 @@ public class TestZonedDateTime {
     // minusDuration(int,int,int,long)
     //-----------------------------------------------------------------------
     public void test_minusDuration_intintintlong() {
-        ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.from(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 493), ZONE_0100);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 493), ZONE_0100);
         assertEquals(t.minusDuration(4, 5, 6, 7), expected);
     }
 
@@ -1713,21 +1713,21 @@ public class TestZonedDateTime {
     // matchesCalendrical()
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_true() {
-        ZonedDateTime test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
-        ZonedDateTime cal = ZonedDateTime.from(test, ZONE_0100);
+        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
+        ZonedDateTime cal = ZonedDateTime.of(test, ZONE_0100);
         assertEquals(test.matchesCalendrical(cal), true);
     }
 
     public void test_matchesCalendrical_false() {
-        ZonedDateTime test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
-        ZonedDateTime cal = ZonedDateTime.from(test.plusHours(1), ZONE_0100);
+        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
+        ZonedDateTime cal = ZonedDateTime.of(test.plusHours(1), ZONE_0100);
         assertEquals(test.matchesCalendrical(cal), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_matchesCalendrical_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.matchesCalendrical((Calendrical) null);
     }
 
@@ -1752,8 +1752,8 @@ public class TestZonedDateTime {
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_time() {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 29), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0100);  // a is before b due to time
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 29), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0100);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1761,8 +1761,8 @@ public class TestZonedDateTime {
     }
 
     public void test_compareTo_offset() {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0200);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0100);  // a is before b due to offset
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0200);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0100);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1770,8 +1770,8 @@ public class TestZonedDateTime {
     }
 
     public void test_compareTo_both() {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 50), ZONE_0200);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 20), ZONE_0100);  // a is before b on instant scale
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 50), ZONE_0200);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 20), ZONE_0100);  // a is before b on instant scale
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1779,8 +1779,8 @@ public class TestZonedDateTime {
     }
 
     public void test_compareTo_hourDifference() {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 10, 0), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 0), ZONE_0200);  // a is before b despite being same time-line time
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 10, 0), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 0), ZONE_0200);  // a is before b despite being same time-line time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1790,7 +1790,7 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime a = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_0100);
         a.compareTo(null);
     }
 
@@ -1808,8 +1808,8 @@ public class TestZonedDateTime {
 
     @Test(dataProvider="IsBefore")
     public void test_isBefore(int hour1, int minute1, TimeZone zone1, int hour2, int minute2, TimeZone zone2, boolean expected) {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
         assertEquals(a.isBefore(b), expected);
         assertEquals(b.isBefore(a), false);
         assertEquals(a.isBefore(a), false);
@@ -1819,7 +1819,7 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isBefore_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime a = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_0100);
         a.isBefore(null);
     }
 
@@ -1837,8 +1837,8 @@ public class TestZonedDateTime {
 
     @Test(dataProvider="equalInstant")
     public void test_equalInstant(int hour1, int minute1, TimeZone zone1, int hour2, int minute2, TimeZone zone2, boolean expected) {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
         assertEquals(a.equalInstant(b), expected);
         assertEquals(b.equalInstant(a), expected);
         assertEquals(a.equalInstant(a), true);
@@ -1848,7 +1848,7 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_equalInstant_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime a = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_0100);
         a.equalInstant(null);
     }
 
@@ -1866,8 +1866,8 @@ public class TestZonedDateTime {
 
     @Test(dataProvider="IsAfter")
     public void test_isAfter(int hour1, int minute1, TimeZone zone1, int hour2, int minute2, TimeZone zone2, boolean expected) {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour1, minute1), zone1);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, hour2, minute2), zone2);
         assertEquals(a.isAfter(b), expected);
         assertEquals(b.isAfter(a), false);
         assertEquals(a.isAfter(a), false);
@@ -1877,7 +1877,7 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isAfter_null() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime a = ZonedDateTime.from(ldt, ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(ldt, ZONE_0100);
         a.isAfter(null);
     }
 
@@ -1886,49 +1886,49 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_equals_true(int y, int o, int d, int h, int m, int s, int n, TimeZone ignored) {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_year_differs(int y, int o, int d, int h, int m, int s, int n, TimeZone ignored) {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(y + 1, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(y + 1, o, d, h, m, s, n), ZONE_0100);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_hour_differs(int y, int o, int d, int h, int m, int s, int n, TimeZone ignored) {
         h = (h == 23 ? 22 : h);
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(y, o, d, h + 1, m, s, n), ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(y, o, d, h + 1, m, s, n), ZONE_0100);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_minute_differs(int y, int o, int d, int h, int m, int s, int n, TimeZone ignored) {
         m = (m == 59 ? 58 : m);
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m + 1, s, n), ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m + 1, s, n), ZONE_0100);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_second_differs(int y, int o, int d, int h, int m, int s, int n, TimeZone ignored) {
         s = (s == 59 ? 58 : s);
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s + 1, n), ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s + 1, n), ZONE_0100);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_nano_differs(int y, int o, int d, int h, int m, int s, int n, TimeZone ignored) {
         n = (n == 999999999 ? 999999998 : n);
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n + 1), ZONE_0100);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n + 1), ZONE_0100);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_offset_differs(int y, int o, int d, int h, int m, int s, int n, TimeZone ignored) {
-        ZonedDateTime a = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0200);
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), ZONE_0200);
         assertEquals(a.equals(b), false);
     }
 
@@ -1962,7 +1962,7 @@ public class TestZonedDateTime {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int y, int o, int d, int h, int m, int s, int n, String zoneId, String expected) {
-        ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(y, o, d, h, m, s, n), TimeZone.of(zoneId));
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), TimeZone.of(zoneId));
         String str = t.toString();
         assertEquals(str, expected);
     }

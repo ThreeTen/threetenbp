@@ -101,7 +101,7 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
-        return fromInstant(clock.instant(), clock.getZone());
+        return ofInstant(clock.instant(), clock.getZone());
     }
 
     /**
@@ -199,8 +199,8 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime from(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
-        return from(dateProvider, timeProvider, zone, ZoneResolvers.strict());
+    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
+        return of(dateProvider, timeProvider, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -219,7 +219,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime from(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
+    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.of(dateProvider, timeProvider);
         return resolve(dt, null, zone, resolver);
     }
@@ -237,8 +237,8 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime from(DateTimeProvider dateTimeProvider, TimeZone zone) {
-        return from(dateTimeProvider, zone, ZoneResolvers.strict());
+    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, TimeZone zone) {
+        return of(dateTimeProvider, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -256,7 +256,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime from(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
+    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.of(dateTimeProvider);
         return resolve(dt, null, zone, resolver);
     }
@@ -272,7 +272,7 @@ public final class ZonedDateTime
      * If the time-zone has a floating version, then this conversion will use the
      * latest time-zone rules that are valid for the input date-time.
      * <p>
-     * An alternative to this method is {@link #fromInstant(OffsetDateTime, TimeZone)}.
+     * An alternative to this method is {@link #ofInstant(OffsetDateTime, TimeZone)}.
      * This method will retain the date and time and throw an exception if
      * the offset is invalid. The {@code fromInstant} method will change the
      * date and time if necessary to retain the same instant.
@@ -316,7 +316,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime fromInstant(InstantProvider instantProvider, TimeZone zone) {
+    public static ZonedDateTime ofInstant(InstantProvider instantProvider, TimeZone zone) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
@@ -330,7 +330,7 @@ public final class ZonedDateTime
      * This factory creates a {@code ZonedDateTime} from an offset date-time and time-zone.
      * This is an optimized implementation of:
      * <pre>
-     * ZonedDateTime.fromInstant(offsetDateTime.toInstant(), zone);
+     * ZonedDateTime.ofInstant(offsetDateTime.toInstant(), zone);
      * </pre>
      * If the offset date-time is in the wrong offset for the zone at the gap, then the
      * date, time and offset will be adjusted to ensure that the result has the same instant.
@@ -347,7 +347,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime fromInstant(OffsetDateTime dateTime, TimeZone zone) {
+    public static ZonedDateTime ofInstant(OffsetDateTime dateTime, TimeZone zone) {
         ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
@@ -372,7 +372,7 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime ofEpochSeconds(long epochSeconds, TimeZone zone) {
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
-        return ZonedDateTime.fromInstant(Instant.ofSeconds(epochSeconds), zone);
+        return ZonedDateTime.ofInstant(Instant.ofSeconds(epochSeconds), zone);
     }
 
     //-----------------------------------------------------------------------
@@ -628,7 +628,7 @@ public final class ZonedDateTime
      * @throws CalendarConversionException if the result exceeds the supported date range
      */
     public ZonedDateTime withZoneSameInstant(TimeZone zone) {
-        return zone == this.zone ? this : fromInstant(dateTime, zone);
+        return zone == this.zone ? this : ofInstant(dateTime, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1358,7 +1358,7 @@ public final class ZonedDateTime
     public ZonedDateTime plusDuration(PeriodProvider periodProvider) {
         PeriodFields period = PeriodFields.from(periodProvider);
         Duration duration = period.toDuration();
-        return duration.isZero() ? this : fromInstant(toInstant().plus(duration), zone);
+        return duration.isZero() ? this : ofInstant(toInstant().plus(duration), zone);
     }
 
     /**
@@ -1386,7 +1386,7 @@ public final class ZonedDateTime
             return this;
         }
         Instant instant = toInstant().plusSeconds(hours * 3600L + minutes * 60L + seconds).plusNanos(nanos);
-        return fromInstant(instant, zone);
+        return ofInstant(instant, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1639,7 +1639,7 @@ public final class ZonedDateTime
     public ZonedDateTime minusDuration(PeriodProvider periodProvider) {
         PeriodFields period = PeriodFields.from(periodProvider);
         Duration duration = period.toDuration();
-        return duration.isZero() ? this : fromInstant(toInstant().minus(duration), zone);
+        return duration.isZero() ? this : ofInstant(toInstant().minus(duration), zone);
     }
 
     /**
@@ -1667,7 +1667,7 @@ public final class ZonedDateTime
             return this;
         }
         Instant instant = toInstant().minusSeconds(hours * 3600L + minutes * 60L + seconds).minusNanos(nanos);
-        return fromInstant(instant, zone);
+        return ofInstant(instant, zone);
     }
 
     //-----------------------------------------------------------------------

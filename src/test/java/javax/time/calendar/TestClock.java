@@ -175,9 +175,9 @@ public class TestClock {
         assertEquals(MOCK.offsetDateTimeToSecond(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, OFFSET));
         assertEquals(MOCK.offsetDateTimeToMinute(), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET));
         
-        assertEquals(MOCK.zonedDateTime(), ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500), ZONE));
-        assertEquals(MOCK.zonedDateTimeToSecond(), ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30, 10), ZONE));
-        assertEquals(MOCK.zonedDateTimeToMinute(), ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE));
+        assertEquals(MOCK.zonedDateTime(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500), ZONE));
+        assertEquals(MOCK.zonedDateTimeToSecond(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10), ZONE));
+        assertEquals(MOCK.zonedDateTimeToMinute(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE));
     }
 
 }

@@ -1148,7 +1148,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (merger.getContext().isStrict()) {
                 merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.of(odt, zone));
             } else {
-                merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.fromInstant(odt, zone));
+                merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.ofInstant(odt, zone));
             }
             merger.removeProcessed(OffsetDateTime.rule());
             merger.removeProcessed(TimeZone.rule());

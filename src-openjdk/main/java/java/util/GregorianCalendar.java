@@ -3117,7 +3117,7 @@ public class GregorianCalendar
     public ZonedDateTime toZonedDateTime() {
         Instant instant = Instant.ofMillis(getTimeInMillis());
         javax.time.calendar.TimeZone zone = javax.time.calendar.TimeZone.of(getZone().getID());
-        return ZonedDateTime.fromInstant(instant, zone);
+        return ZonedDateTime.ofInstant(instant, zone);
     }
 
     /**

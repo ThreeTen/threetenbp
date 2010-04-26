@@ -1950,13 +1950,13 @@ public class TestLocalDate {
     public void test_atStartOfDayInZone() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         assertEquals(t.atStartOfDayInZone(ZONE_PARIS),
-                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 0, 0), ZONE_PARIS));
+                ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 0, 0), ZONE_PARIS));
     }
 
     public void test_atStartOfDayInZone_dstGap() {
         LocalDate t = LocalDate.of(2007, 4, 1);
         assertEquals(t.atStartOfDayInZone(ZONE_GAZA),
-                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

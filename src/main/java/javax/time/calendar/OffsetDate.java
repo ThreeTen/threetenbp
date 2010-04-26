@@ -993,7 +993,7 @@ public final class OffsetDate
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
      */
     public ZonedDateTime atStartOfDayInZone(TimeZone zone) {
-        return ZonedDateTime.from(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
+        return ZonedDateTime.of(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
     }
 
     //-----------------------------------------------------------------------

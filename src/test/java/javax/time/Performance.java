@@ -153,7 +153,7 @@ public class Performance {
         List<ZonedDateTime> list = new ArrayList<ZonedDateTime>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(
+            ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(
                     2008/*random.nextInt(10000)*/, random.nextInt(12) + 1, random.nextInt(28) + 1,
                     random.nextInt(24), random.nextInt(60), random.nextInt(60)),
                     tz, ZoneResolvers.postTransition());

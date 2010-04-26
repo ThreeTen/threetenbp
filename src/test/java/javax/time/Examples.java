@@ -119,7 +119,7 @@ public class Examples {
         LocalDateTime dt = LocalDateTime.of(2008, 3, 30, 1, 30);
         System.out.println("Local date-time in Spring DST gap: " + dt);
         
-        ZonedDateTime resolved = ZonedDateTime.from(dt, TimeZone.of("Europe/London"), ZoneResolvers.postTransition());
+        ZonedDateTime resolved = ZonedDateTime.of(dt, TimeZone.of("Europe/London"), ZoneResolvers.postTransition());
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
         
         String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);

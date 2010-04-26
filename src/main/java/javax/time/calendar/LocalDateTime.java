@@ -1455,7 +1455,7 @@ public final class LocalDateTime
      * @return the zoned date-time formed from this date-time, never null
      */
     public ZonedDateTime atZone(TimeZone zone) {
-        return ZonedDateTime.from(this, zone, ZoneResolvers.postTransition());
+        return ZonedDateTime.of(this, zone, ZoneResolvers.postTransition());
     }
 
     /**
@@ -1474,7 +1474,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime atZone(TimeZone zone, ZoneResolver resolver) {
-        return ZonedDateTime.from(this, zone, resolver);
+        return ZonedDateTime.of(this, zone, resolver);
     }
 
     //-----------------------------------------------------------------------

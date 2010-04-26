@@ -1502,7 +1502,7 @@ public final class OffsetDateTime
      * @return the zoned date-time formed from this date-time, never null
      */
     public ZonedDateTime atZoneSameInstant(TimeZone zone) {
-        return ZonedDateTime.fromInstant(this, zone);
+        return ZonedDateTime.ofInstant(this, zone);
     }
 
     /**
@@ -1530,7 +1530,7 @@ public final class OffsetDateTime
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
      */
     public ZonedDateTime atZoneSimilarLocal(TimeZone zone) {
-        return ZonedDateTime.from(this, zone, ZoneResolvers.postTransition());
+        return ZonedDateTime.of(this, zone, ZoneResolvers.postTransition());
     }
 
     /**
@@ -1554,7 +1554,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime atZoneSimilarLocal(TimeZone zone, ZoneResolver resolver) {
-        return ZonedDateTime.from(this, zone, resolver);
+        return ZonedDateTime.of(this, zone, resolver);
     }
 
     //-----------------------------------------------------------------------

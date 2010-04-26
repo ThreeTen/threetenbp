@@ -530,7 +530,7 @@ public abstract class Clock {
      * @throws CalendricalException if the date-time cannot be created
      */
     public ZonedDateTime zonedDateTime() {
-        return ZonedDateTime.fromInstant(instant(), getZone());
+        return ZonedDateTime.ofInstant(instant(), getZone());
     }
 
     /**
