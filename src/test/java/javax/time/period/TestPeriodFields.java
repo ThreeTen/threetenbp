@@ -972,6 +972,11 @@ public class TestPeriodFields {
         assertEquals(test, PeriodFields.of(5 * 12, MONTHS));
     }
 
+    public void test_toEquivalentPeriod_units_monthsToYearsMonths() {
+        PeriodFields test = PeriodFields.of(14, MONTHS).toEquivalentPeriod(YEARS, MONTHS);
+        assertEquals(test, PeriodFields.of(14, MONTHS));  // no normalization
+    }
+
     public void test_toEquivalentPeriod_units_hoursToMinutesOrSeconds() {
         PeriodFields test = PeriodFields.of(5, HOURS).toEquivalentPeriod(MINUTES, SECONDS);
         assertEquals(test, PeriodFields.of(5 * 60, MINUTES));

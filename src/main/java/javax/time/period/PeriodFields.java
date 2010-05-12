@@ -705,8 +705,7 @@ public final class PeriodFields
      * <p>
      * This will attempt to convert this period to each of the specified units
      * in turn. It is recommended to specify the units from largest to smallest.
-     * If this period is already one of the specified units, then {@code this}
-     * is returned.
+     * If this period is already one of the specified units, then {@code this} is returned.
      * <p>
      * For example, '3 Hours' can normally be converted to both minutes and seconds.
      * If the units array contains both 'Minutes' and 'Seconds', then the result will
