@@ -527,4 +527,65 @@ public class TestMathUtils {
             }
         }
     }
+
+    //-------------------------------------------------------------------------
+    @DataProvider(name="FloorDiv")
+    Object[][] data_floorDiv() {
+        return new Object[][] {
+            {5L, 4, 1L},
+            {4L, 4, 1L},
+            {3L, 4, 0L},
+            {2L, 4, 0L},
+            {1L, 4, 0L},
+            {0L, 4, 0L},
+            {-1L, 4, -1L},
+            {-2L, 4, -1L},
+            {-3L, 4, -1L},
+            {-4L, 4, -1L},
+            {-5L, 4, -2L},
+        };
+    }
+
+    @Test(dataProvider="FloorDiv")
+    public void test_floorDiv_long(long a, int b, long expected) {
+        assertEquals(MathUtils.floorDiv(a, b), expected);
+    }
+
+    @Test(dataProvider="FloorDiv")
+    public void test_floorDiv_int(long a, int b, long expected) {
+        if (a <= Integer.MAX_VALUE && a >= Integer.MIN_VALUE) {
+            assertEquals(MathUtils.floorDiv((int) a, b), (int) expected);
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    @DataProvider(name="FloorMod")
+    Object[][] data_floorMod() {
+        return new Object[][] {
+            {5L, 4, 1},
+            {4L, 4, 0},
+            {3L, 4, 3},
+            {2L, 4, 2},
+            {1L, 4, 1},
+            {0L, 4, 0},
+            {-1L, 4, 3},
+            {-2L, 4, 2},
+            {-3L, 4, 1},
+            {-4L, 4, 0},
+            {-5L, 4, 3},
+        };
+    }
+
+    @Test(dataProvider="FloorMod")
+    public void test_floorMod_long(long a, int b, int expected) {
+        assertEquals(MathUtils.floorMod(a, b), expected);
+    }
+
+    @Test(dataProvider="FloorMod")
+    public void test_floorMod_int(long a, int b, int expected) {
+        if (a <= Integer.MAX_VALUE && a >= Integer.MIN_VALUE) {
+            assertEquals(MathUtils.floorMod((int) a, b), expected);
+        }
+    }
+
 }

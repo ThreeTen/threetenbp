@@ -318,4 +318,91 @@ public final class MathUtils {
         return 0;
     }
 
+    //-------------------------------------------------------------------------
+//    /**
+//     * Returns the floor division and modulus.
+//     *
+//     * @param a  the dividend
+//     * @param b  the divisor
+//     * @return an array, size two, of the division and modulus
+//     */
+//    public static long[] floorDivMod(long a, int b) {
+//        if (a >= 0) {
+//            return new long[] {a / b, a % b};
+//        } else {
+//            long r = ((a + 1) / b) - 1;
+//            return new long[] {a / b, a - r * b};
+//        }
+//    }
+
+    /**
+     * Returns the floor division.
+     * <p>
+     * This returns {@code 0} for {@code floorDiv(0, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-1, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-2, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-3, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-4, 4)}.<br />
+     * This returns {@code -2} for {@code floorDiv(-5, 4)}.<br />
+     *
+     * @param a  the dividend
+     * @param b  the divisor
+     * @return the floor division
+     */
+    public static long floorDiv(long a, int b) {
+        return (a >= 0 ? a / b : ((a + 1) / b) - 1);
+    }
+
+    /**
+     * Returns the floor modulus.
+     * <p>
+     * This returns {@code 0} for {@code floorMod(0, 4)}.<br />
+     * This returns {@code 1} for {@code floorMod(-1, 4)}.<br />
+     * This returns {@code 2} for {@code floorMod(-2, 4)}.<br />
+     * This returns {@code 3} for {@code floorMod(-3, 4)}.<br />
+     * This returns {@code 0} for {@code floorMod(-4, 4)}.<br />
+     *
+     * @param a  the dividend
+     * @param b  the divisor
+     * @return the floor modulus (positive)
+     */
+    public static int floorMod(long a, int b) {
+        return (int) (((a % b) + b) % b);
+    }
+
+    /**
+     * Returns the floor division.
+     * <p>
+     * This returns {@code 0} for {@code floorDiv(0, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-1, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-2, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-3, 4)}.<br />
+     * This returns {@code -1} for {@code floorDiv(-4, 4)}.<br />
+     * This returns {@code -2} for {@code floorDiv(-5, 4)}.<br />
+     *
+     * @param a  the dividend
+     * @param b  the divisor
+     * @return the floor division
+     */
+    public static int floorDiv(int a, int b) {
+        return (a >= 0 ? a / b : ((a + 1) / b) - 1);
+    }
+
+    /**
+     * Returns the floor modulus.
+     * <p>
+     * This returns {@code 0} for {@code floorMod(0, 4)}.<br />
+     * This returns {@code 1} for {@code floorMod(-1, 4)}.<br />
+     * This returns {@code 2} for {@code floorMod(-2, 4)}.<br />
+     * This returns {@code 3} for {@code floorMod(-3, 4)}.<br />
+     * This returns {@code 0} for {@code floorMod(-4, 4)}.<br />
+     *
+     * @param a  the dividend
+     * @param b  the divisor
+     * @return the floor modulus (positive)
+     */
+    public static int floorMod(int a, int b) {
+        return ((a % b) + b) % b;
+    }
+
 }
