@@ -319,22 +319,6 @@ public final class MathUtils {
     }
 
     //-------------------------------------------------------------------------
-//    /**
-//     * Returns the floor division and modulus.
-//     *
-//     * @param a  the dividend
-//     * @param b  the divisor
-//     * @return an array, size two, of the division and modulus
-//     */
-//    public static long[] floorDivMod(long a, int b) {
-//        if (a >= 0) {
-//            return new long[] {a / b, a % b};
-//        } else {
-//            long r = ((a + 1) / b) - 1;
-//            return new long[] {a / b, a - r * b};
-//        }
-//    }
-
     /**
      * Returns the floor division.
      * <p>
