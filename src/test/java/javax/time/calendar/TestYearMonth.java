@@ -398,13 +398,13 @@ public class TestYearMonth {
     }
 
     public void test_plus_PeriodProvider_previousValidResolver_oneMonth() {
-        PeriodProvider provider = Period.months(1);
+        PeriodProvider provider = Period.ofMonths(1);
         YearMonth test = YearMonth.of(2008, 6).plus(provider);
         assertEquals(test, YearMonth.of(2008, 7));
     }
 
     public void test_plus_PeriodProvider_previousValidResolver_oneYear() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         YearMonth test = YearMonth.of(2008, 6).plus(provider);
         assertEquals(test, YearMonth.of(2009, 6));
     }
@@ -421,13 +421,13 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         YearMonth.of(Year.MAX_YEAR, 6).plus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.years(-1);
+        PeriodProvider provider = Period.ofYears(-1);
         YearMonth.of(Year.MIN_YEAR, 6).plus(provider);
     }
 
@@ -523,13 +523,13 @@ public class TestYearMonth {
     }
 
     public void test_minus_PeriodProvider_previousValidResolver_oneMonth() {
-        PeriodProvider provider = Period.months(1);
+        PeriodProvider provider = Period.ofMonths(1);
         YearMonth test = YearMonth.of(2008, 6).minus(provider);
         assertEquals(test, YearMonth.of(2008, 5));
     }
 
     public void test_minus_PeriodProvider_previousValidResolver_oneYear() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         YearMonth test = YearMonth.of(2008, 6).minus(provider);
         assertEquals(test, YearMonth.of(2007, 6));
     }
@@ -546,13 +546,13 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.years(-1);
+        PeriodProvider provider = Period.ofYears(-1);
         YearMonth.of(Year.MAX_YEAR, 6).minus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         YearMonth.of(Year.MIN_YEAR, 6).minus(provider);
     }
 

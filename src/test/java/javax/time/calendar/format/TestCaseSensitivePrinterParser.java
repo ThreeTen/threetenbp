@@ -67,7 +67,7 @@ public class TestCaseSensitivePrinterParser {
         CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
         StringBuilder buf = new StringBuilder();
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-        pp.print(DateTimeFields.fields(), buf, symbols);
+        pp.print(DateTimeFields.EMPTY, buf, symbols);
         assertEquals(buf.toString(), "");
     }
 
@@ -79,7 +79,7 @@ public class TestCaseSensitivePrinterParser {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable() throws Exception {
         CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), true);
     }
 
     public void test_isPrintDataAvailable_nulls() throws Exception {

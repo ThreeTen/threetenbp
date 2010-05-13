@@ -47,7 +47,7 @@ package javax.time.period;
  * mutable and changes in value between two calls to {@code toPeriodFields()}.
  * <p>
  * The recommended way to convert a DateProvider to a LocalDate is using
- * {@link PeriodFields#from(PeriodProvider)} as this method provides additional null checking.
+ * {@link PeriodFields#of(PeriodProvider)} as this method provides additional null checking.
  * <p>
  * PeriodProvider makes no guarantees about the thread-safety or
  * immutability of implementations.

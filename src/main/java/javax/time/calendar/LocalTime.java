@@ -588,7 +588,7 @@ public final class LocalTime
      * @throws CalendricalException if the provider contains date period units
      */
     public LocalTime plus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
         if ((period.getYears() | period.getMonths() | period.getDays()) != 0) {
             throw new CalendricalException("Unable to add to date as the period contains date units");
         }
@@ -773,7 +773,7 @@ public final class LocalTime
      * @throws CalendricalException if the provider contains date period units
      */
     public LocalTime minus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
         if ((period.getYears() | period.getMonths() | period.getDays()) != 0) {
             throw new CalendricalException("Unable to add to date as the period contains date units");
         }

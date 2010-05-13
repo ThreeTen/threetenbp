@@ -98,9 +98,9 @@ public class TestStandardZoneRules {
     public void test_serialization_simple() throws Exception {
         ZoneRulesBuilder b = new ZoneRulesBuilder()
             .addWindow(OFFSET_PONE, LocalDateTime.of(1980, 3, 1, 1, 0), TimeDefinition.STANDARD)
-            .setFixedSavingsToWindow(Period.hours(1))
+            .setFixedSavingsToWindow(Period.ofHours(1))
             .addWindowForever(OFFSET_PONE)
-            .setFixedSavingsToWindow(Period.hours(2));
+            .setFixedSavingsToWindow(Period.ofHours(2));
         ZoneRules test = b.toRules("Test");
         assertSerialization(test);
     }
@@ -108,9 +108,9 @@ public class TestStandardZoneRules {
     public void test_serialization_unusual() throws Exception {
         ZoneRulesBuilder b = new ZoneRulesBuilder()
             .addWindow(ZoneOffset.of("-17:49:23"), LocalDateTime.of(1980, 3, 1, 1, 34, 56), TimeDefinition.WALL)
-            .setFixedSavingsToWindow(Period.hoursMinutesSeconds(1, 34, 23))
+            .setFixedSavingsToWindow(Period.ofHoursMinutesSeconds(1, 34, 23))
             .addWindowForever(ZoneOffset.of("+04:23"))
-            .setFixedSavingsToWindow(Period.hoursMinutesSeconds(13, 22, 9));
+            .setFixedSavingsToWindow(Period.ofHoursMinutesSeconds(13, 22, 9));
         ZoneRules test = b.toRules("Test");
         assertSerialization(test);
     }

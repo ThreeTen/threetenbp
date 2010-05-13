@@ -513,8 +513,8 @@ public final class ZoneOffset
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public ZoneOffset plus(PeriodProvider periodProvider) {
-        Period otherPeriod = Period.from(periodProvider);
-        otherPeriod = Period.hoursMinutesSeconds(otherPeriod.getHours(), otherPeriod.getMinutes(), otherPeriod.getSeconds());
+        Period otherPeriod = Period.of(periodProvider);
+        otherPeriod = Period.ofHoursMinutesSeconds(otherPeriod.getHours(), otherPeriod.getMinutes(), otherPeriod.getSeconds());
         Period thisPeriod = toPeriod();
         Period combined = thisPeriod.plus(otherPeriod).normalized();
         return ofHoursMinutesSeconds(combined.getHours(), combined.getMinutes(), combined.getSeconds());
@@ -535,7 +535,7 @@ public final class ZoneOffset
      * @return the period equivalent to the zone offset amount, never null
      */
     public Period toPeriod() {
-        return Period.hoursMinutesSeconds(getHoursField(), getMinutesField(), getSecondsField());
+        return Period.ofHoursMinutesSeconds(getHoursField(), getMinutesField(), getSecondsField());
     }
 
     /**

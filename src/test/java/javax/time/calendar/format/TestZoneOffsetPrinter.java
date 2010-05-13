@@ -63,7 +63,7 @@ public class TestZoneOffsetPrinter {
     public void setUp() {
         buf = new StringBuilder("EXISTING");
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = DateTimeFields.fields();
+        emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
@@ -182,7 +182,7 @@ public class TestZoneOffsetPrinter {
 
     public void test_isPrintDataAvailable_false() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, false);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), false);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), false);
     }
 
     //-----------------------------------------------------------------------

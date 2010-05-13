@@ -880,7 +880,7 @@ public class TestLocalDate {
 
     @Test(dataProvider="PlusPeriodProvider")
     public void test_plus_PeriodProvider(LocalDate base, int years, int months, int days, LocalDate expected) {
-        PeriodProvider provider = Period.yearsMonthsDays(years, months, days);
+        PeriodProvider provider = Period.ofYearsMonthsDays(years, months, days);
         LocalDate t = base.plus(provider);
         assertEquals(t, expected);
     }
@@ -897,13 +897,13 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         LocalDate.of(Year.MAX_YEAR, 1, 1).plus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.years(-1);
+        PeriodProvider provider = Period.ofYears(-1);
         LocalDate.of(Year.MIN_YEAR, 1, 1).plus(provider);
     }
 
@@ -1479,7 +1479,7 @@ public class TestLocalDate {
 
     @Test(dataProvider="MinusPeriodProvider")
     public void test_minus_PeriodProvider(LocalDate base, int years, int months, int days, LocalDate expected) {
-        PeriodProvider provider = Period.yearsMonthsDays(years, months, days);
+        PeriodProvider provider = Period.ofYearsMonthsDays(years, months, days);
         LocalDate t = base.minus(provider);
         assertEquals(t, expected);
     }
@@ -1496,13 +1496,13 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.years(-1);
+        PeriodProvider provider = Period.ofYears(-1);
         LocalDate.of(Year.MAX_YEAR, 1, 1).minus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         LocalDate.of(Year.MIN_YEAR, 1, 1).minus(provider);
     }
 

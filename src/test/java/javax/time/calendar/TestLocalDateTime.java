@@ -1523,7 +1523,7 @@ public class TestLocalDateTime {
     }
 
     public void test_plus_PeriodProvider_daysOverflow() {
-        PeriodProvider provider = Period.hours(1);
+        PeriodProvider provider = Period.ofHours(1);
         LocalDateTime t = LocalDateTime.of(2008, 6, 30, 23, 30).plus(provider);
         assertEquals(t, LocalDateTime.of(2008, 7, 1, 0, 30));
     }
@@ -2303,7 +2303,7 @@ public class TestLocalDateTime {
     }
 
     public void test_minus_PeriodProvider_daysOverflow() {
-        PeriodProvider provider = Period.hours(1);
+        PeriodProvider provider = Period.ofHours(1);
         LocalDateTime t = LocalDateTime.of(2008, 6, 1, 0, 30).minus(provider);
         assertEquals(t, LocalDateTime.of(2008, 5, 31, 23, 30));
     }

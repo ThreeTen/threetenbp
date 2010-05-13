@@ -61,14 +61,14 @@ public class TestPadPrinterDecorator {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = DateTimeFields.fields();
+        emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(ISOChronology.dayOfMonthRule(), 3);
+        Calendrical calendrical = DateTimeFields.of(ISOChronology.dayOfMonthRule(), 3);
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, (Appendable) null, symbols);
     }

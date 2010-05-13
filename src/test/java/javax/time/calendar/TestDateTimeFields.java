@@ -85,9 +85,9 @@ public class TestDateTimeFields {
     @DataProvider(name="simple")
     Object[][] data_simple() {
         return new Object[][] {
-            {DateTimeFields.fields()},
-            {DateTimeFields.fields(YEAR_RULE, 2008)},
-            {DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6)},
+            {DateTimeFields.EMPTY},
+            {DateTimeFields.of(YEAR_RULE, 2008)},
+            {DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6)},
         };
     }
 
@@ -123,27 +123,24 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
+    public void singleton_empty() {
+        DateTimeFields test = DateTimeFields.EMPTY;
+        assertEquals(test.toFieldValueMap().size(), 0);
+        assertSame(DateTimeFields.EMPTY, DateTimeFields.EMPTY);
+    }
+
+    //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
-    public void factory_fields_empty() {
-        DateTimeFields test = DateTimeFields.fields();
-        assertEquals(test.toFieldValueMap().size(), 0);
-    }
-
-    public void factory_fields_empty_singleton() {
-        assertSame(DateTimeFields.fields(), DateTimeFields.fields());
-    }
-
-    //-----------------------------------------------------------------------
     public void factory_fields_onePair() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008);
         assertFields(test, YEAR_RULE, 2008);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fields_onePair_invalidValue() {
         try {
-            DateTimeFields.fields(MOY_RULE, -1);
+            DateTimeFields.of(MOY_RULE, -1);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), MOY_RULE);
             throw ex;
@@ -152,29 +149,29 @@ public class TestDateTimeFields {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fields_onePair_null() {
-        DateTimeFields.fields(NULL_RULE, 1);
+        DateTimeFields.of(NULL_RULE, 1);
     }
 
     //-----------------------------------------------------------------------
     public void factory_fields_twoPairs() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void factory_fields_twoPairs_orderNotSignificant() {
-        DateTimeFields test = DateTimeFields.fields(MOY_RULE, 6, YEAR_RULE, 2008);
+        DateTimeFields test = DateTimeFields.of(MOY_RULE, 6, YEAR_RULE, 2008);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void factory_fields_twoPairs_sameFieldOverwrites() {
-        DateTimeFields test = DateTimeFields.fields(MOY_RULE, 6, MOY_RULE, 7);
+        DateTimeFields test = DateTimeFields.of(MOY_RULE, 6, MOY_RULE, 7);
         assertFields(test, MOY_RULE, 7);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fields_twoPairs_invalidValue() {
         try {
-            DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, -1);
+            DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, -1);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), MOY_RULE);
             throw ex;
@@ -183,17 +180,17 @@ public class TestDateTimeFields {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fields_twoPairs_nullFirst() {
-        DateTimeFields.fields(NULL_RULE, 1, MOY_RULE, 6);
+        DateTimeFields.of(NULL_RULE, 1, MOY_RULE, 6);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fields_twoPairs_nullSecond() {
-        DateTimeFields.fields(MOY_RULE, 6, NULL_RULE, 1);
+        DateTimeFields.of(MOY_RULE, 6, NULL_RULE, 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fields_twoPairs_nullBoth() {
-        DateTimeFields.fields(NULL_RULE, 1, NULL_RULE, 6);
+        DateTimeFields.of(NULL_RULE, 1, NULL_RULE, 6);
     }
 
     //-----------------------------------------------------------------------
@@ -202,14 +199,14 @@ public class TestDateTimeFields {
         Map<DateTimeFieldRule<?>, Integer> map = new Hashtable<DateTimeFieldRule<?>, Integer>();
         map.put(YEAR_RULE, 2008);
         map.put(MOY_RULE, 6);
-        DateTimeFields test = DateTimeFields.fields(map);
+        DateTimeFields test = DateTimeFields.of(map);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void factory_fields_map_cloned() {
         Map<DateTimeFieldRule<?>, Integer> map = new HashMap<DateTimeFieldRule<?>, Integer>();
         map.put(YEAR_RULE, 2008);
-        DateTimeFields test = DateTimeFields.fields(map);
+        DateTimeFields test = DateTimeFields.of(map);
         assertFields(test, YEAR_RULE, 2008);
         map.put(MOY_RULE, 6);
         assertFields(test, YEAR_RULE, 2008);
@@ -217,12 +214,12 @@ public class TestDateTimeFields {
 
     public void factory_fields_map_empty_singleton() {
         Map<DateTimeFieldRule<?>, Integer> map = new HashMap<DateTimeFieldRule<?>, Integer>();
-        assertSame(DateTimeFields.fields(map), DateTimeFields.fields());
+        assertSame(DateTimeFields.of(map), DateTimeFields.EMPTY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fields_map_null() {
-        DateTimeFields.fields(NULL_MAP);
+        DateTimeFields.of(NULL_MAP);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -230,7 +227,7 @@ public class TestDateTimeFields {
         Map<DateTimeFieldRule<?>, Integer> map = new HashMap<DateTimeFieldRule<?>, Integer>();
         map.put(YEAR_RULE, 2008);
         map.put(null, 6);
-        DateTimeFields.fields(map);
+        DateTimeFields.of(map);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -238,24 +235,24 @@ public class TestDateTimeFields {
         Map<DateTimeFieldRule<?>, Integer> map = new HashMap<DateTimeFieldRule<?>, Integer>();
         map.put(YEAR_RULE, 2008);
         map.put(MOY_RULE, null);
-        DateTimeFields.fields(map);
+        DateTimeFields.of(map);
     }
 
     //-----------------------------------------------------------------------
     // size()
     //-----------------------------------------------------------------------
     public void test_size0() {
-        DateTimeFields test = DateTimeFields.fields();
+        DateTimeFields test = DateTimeFields.EMPTY;
         assertEquals(test.size(), 0);
     }
 
     public void test_size1() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008);
         assertEquals(test.size(), 1);
     }
 
     public void test_size2() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.size(), 2);
     }
 
@@ -263,13 +260,13 @@ public class TestDateTimeFields {
     // iterator()
     //-----------------------------------------------------------------------
     public void test_iterator0() {
-        DateTimeFields test = DateTimeFields.fields();
+        DateTimeFields test = DateTimeFields.EMPTY;
         Iterator<DateTimeFieldRule<?>> iterator = test.iterator();
         assertEquals(iterator.hasNext(), false);
     }
 
     public void test_iterator2() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         Iterator<DateTimeFieldRule<?>> iterator = test.iterator();
         assertEquals(iterator.hasNext(), true);
         assertEquals(iterator.next(), YEAR_RULE);
@@ -282,18 +279,18 @@ public class TestDateTimeFields {
     // contains()
     //-----------------------------------------------------------------------
     public void test_contains() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.contains(YEAR_RULE), true);
         assertEquals(test.contains(MOY_RULE), true);
     }
 
     public void test_contains_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.contains(NULL_RULE), false);
     }
 
     public void test_contains_fieldNotPresent() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.contains(DOM_RULE), false);
     }
 
@@ -301,19 +298,19 @@ public class TestDateTimeFields {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.get(YEAR_RULE), (Integer) 2008);
         assertEquals(test.get(MOY_RULE), MonthOfYear.JUNE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_get_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         test.get((CalendricalRule<?>) null);
     }
 
     public void test_get_fieldNotPresent() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.get(DOM_RULE), null);
     }
 
@@ -321,20 +318,20 @@ public class TestDateTimeFields {
     // getInt()
     //-----------------------------------------------------------------------
     public void test_getInt() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.getInt(YEAR_RULE), 2008);
         assertEquals(test.getInt(MOY_RULE), 6);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getInt_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         test.getInt(NULL_RULE);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_getInt_fieldNotPresent() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         try {
             test.getInt(DOM_RULE);
         } catch (UnsupportedRuleException ex) {
@@ -347,18 +344,18 @@ public class TestDateTimeFields {
     // getQuiet()
     //-----------------------------------------------------------------------
     public void test_getQuiet() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.getQuiet(YEAR_RULE), Integer.valueOf(2008));
         assertEquals(test.getQuiet(MOY_RULE), Integer.valueOf(6));
     }
 
     public void test_getQuiet_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.getQuiet(NULL_RULE), null);
     }
 
     public void test_getQuiet_fieldNotPresent() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.getQuiet(DOM_RULE), null);
     }
 
@@ -366,7 +363,7 @@ public class TestDateTimeFields {
     // with()
     //-----------------------------------------------------------------------
     public void test_with() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.with(DOM_RULE, 30);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
         // check original immutable
@@ -375,7 +372,7 @@ public class TestDateTimeFields {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_with_invalidValue() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         try {
             base.with(DOM_RULE, -1);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -385,14 +382,14 @@ public class TestDateTimeFields {
     }
 
     public void test_with_sameFieldOverwrites() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.with(MOY_RULE, 1);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         test.with(NULL_RULE, 30);
     }
 
@@ -473,8 +470,8 @@ public class TestDateTimeFields {
     // with(DateTimeFields)
     //-----------------------------------------------------------------------
     public void test_with_fields() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        DateTimeFields fields = DateTimeFields.fields(DOM_RULE, 30);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields fields = DateTimeFields.of(DOM_RULE, 30);
         DateTimeFields test = base.with(fields);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
         // check original immutable
@@ -482,27 +479,27 @@ public class TestDateTimeFields {
     }
 
     public void test_with_fields_sameFieldOverwrites() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        DateTimeFields fields = DateTimeFields.fields(MOY_RULE, 1);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields fields = DateTimeFields.of(MOY_RULE, 1);
         DateTimeFields test = base.with(fields);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 1);
     }
 
     public void test_with_fields_self() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.with(base);
         assertSame(test, base);
     }
 
     public void test_with_fields_emptyAdd() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        DateTimeFields test = base.with(DateTimeFields.fields());
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = base.with(DateTimeFields.EMPTY);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_fields_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields fields = null;
         test.with(fields);
     }
@@ -511,7 +508,7 @@ public class TestDateTimeFields {
     // withFieldRemoved()
     //-----------------------------------------------------------------------
     public void test_withFieldRemoved() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.withFieldRemoved(MOY_RULE);
         assertFields(test, YEAR_RULE, 2008);
         // check original immutable
@@ -519,20 +516,20 @@ public class TestDateTimeFields {
     }
 
     public void test_withFieldRemoved_fieldNotPresent() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.withFieldRemoved(DOM_RULE);
         assertSame(test, base);
     }
 
     public void test_withFieldRemoved_emptySingleton() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008);
         DateTimeFields test = base.withFieldRemoved(YEAR_RULE);
-        assertSame(test, DateTimeFields.fields());
+        assertSame(test, DateTimeFields.EMPTY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_withFieldRemoved_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         test.withFieldRemoved(NULL_RULE);
     }
 
@@ -540,7 +537,7 @@ public class TestDateTimeFields {
     // matchesCalendrical()
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_ymd_date() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30);
@@ -551,7 +548,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_dowMatches() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30)
@@ -561,7 +558,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_dowNotMatches() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30)
@@ -571,7 +568,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_ym_date_partialMatch() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
@@ -579,7 +576,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_timeIgnored() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30)
@@ -589,7 +586,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_invalidDay() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 31);
@@ -598,7 +595,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_hm_time() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30);
         LocalTime time = LocalTime.of(11, 30);
@@ -608,7 +605,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_amPmMatches() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30)
             .with(AMPM_RULE, 0);
@@ -617,7 +614,7 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_amPmNotMatches() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30)
             .with(AMPM_RULE, 1);  // time is 11:30, but this says PM
@@ -626,14 +623,14 @@ public class TestDateTimeFields {
     }
 
     public void test_matchesCalendrical_h_time_partialMatch() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_RULE, 11);
         LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), true);
     }
 
     public void test_matchesCalendrical_dateIgnored() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30)
             .with(YEAR_RULE, 2008);
@@ -643,7 +640,7 @@ public class TestDateTimeFields {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matchesCalendrical_null() {
-        DateTimeFields test = DateTimeFields.fields()
+        DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30);
         test.matchesCalendrical(null);
@@ -651,7 +648,7 @@ public class TestDateTimeFields {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matchesCalendrical_null_emptyFields() {
-        DateTimeFields test = DateTimeFields.fields();
+        DateTimeFields test = DateTimeFields.EMPTY;
         test.matchesCalendrical((LocalTime) null);
     }
 
@@ -659,7 +656,7 @@ public class TestDateTimeFields {
     // toFieldValueMap()
     //-----------------------------------------------------------------------
     public void test_toFieldValueMap() {
-        DateTimeFields base = DateTimeFields.fields()
+        DateTimeFields base = DateTimeFields.EMPTY
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30);
@@ -681,8 +678,8 @@ public class TestDateTimeFields {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals0() {
-        DateTimeFields a = DateTimeFields.fields();
-        DateTimeFields b = DateTimeFields.fields();
+        DateTimeFields a = DateTimeFields.EMPTY;
+        DateTimeFields b = DateTimeFields.EMPTY;
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
         assertEquals(a.equals(a), true);
@@ -690,8 +687,8 @@ public class TestDateTimeFields {
     }
 
     public void test_equals1_equal() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008);
-        DateTimeFields b = DateTimeFields.fields(YEAR_RULE, 2008);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008);
+        DateTimeFields b = DateTimeFields.of(YEAR_RULE, 2008);
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
         assertEquals(a.equals(a), true);
@@ -699,8 +696,8 @@ public class TestDateTimeFields {
     }
 
     public void test_equals1_notEqualValue() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008);
-        DateTimeFields b = DateTimeFields.fields(YEAR_RULE, 2007);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008);
+        DateTimeFields b = DateTimeFields.of(YEAR_RULE, 2007);
         assertEquals(a.equals(b), false);
         //assertEquals(a.hashCode() == b.hashCode(), false);  // doesn't have to be so
         assertEquals(a.equals(a), true);
@@ -708,8 +705,8 @@ public class TestDateTimeFields {
     }
 
     public void test_equals1_notEqualField() {
-        DateTimeFields a = DateTimeFields.fields(MOY_RULE, 3);
-        DateTimeFields b = DateTimeFields.fields(DOM_RULE, 3);
+        DateTimeFields a = DateTimeFields.of(MOY_RULE, 3);
+        DateTimeFields b = DateTimeFields.of(DOM_RULE, 3);
         assertEquals(a.equals(b), false);
         //assertEquals(a.hashCode() == b.hashCode(), false);  // doesn't have to be so
         assertEquals(a.equals(a), true);
@@ -717,8 +714,8 @@ public class TestDateTimeFields {
     }
 
     public void test_equals2_equal() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        DateTimeFields b = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields b = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
         assertEquals(a.equals(a), true);
@@ -726,8 +723,8 @@ public class TestDateTimeFields {
     }
 
     public void test_equals2_notEqualOneValue() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        DateTimeFields b = DateTimeFields.fields(YEAR_RULE, 2007, MOY_RULE, 6);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields b = DateTimeFields.of(YEAR_RULE, 2007, MOY_RULE, 6);
         assertEquals(a.equals(b), false);
         //assertEquals(a.hashCode() == b.hashCode(), false);  // doesn't have to be so
         assertEquals(a.equals(a), true);
@@ -735,8 +732,8 @@ public class TestDateTimeFields {
     }
 
     public void test_equals2_notEqualTwoValues() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        DateTimeFields b = DateTimeFields.fields(YEAR_RULE, 2007, MOY_RULE, 5);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields b = DateTimeFields.of(YEAR_RULE, 2007, MOY_RULE, 5);
         assertEquals(a.equals(b), false);
         //assertEquals(a.hashCode() == b.hashCode(), false);  // doesn't have to be so
         assertEquals(a.equals(a), true);
@@ -744,8 +741,8 @@ public class TestDateTimeFields {
     }
 
     public void test_equals2_notEqualField() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        DateTimeFields b = DateTimeFields.fields(YEAR_RULE, 2008, DOM_RULE, 6);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields b = DateTimeFields.of(YEAR_RULE, 2008, DOM_RULE, 6);
         assertEquals(a.equals(b), false);
         //assertEquals(a.hashCode() == b.hashCode(), false);  // doesn't have to be so
         assertEquals(a.equals(a), true);
@@ -753,12 +750,12 @@ public class TestDateTimeFields {
     }
 
     public void test_equals_otherType() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(a.equals("Rubbish"), false);
     }
 
     public void test_equals_null() {
-        DateTimeFields a = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields a = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(a.equals(null), false);
     }
 
@@ -766,19 +763,19 @@ public class TestDateTimeFields {
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString0() {
-        DateTimeFields base = DateTimeFields.fields();
+        DateTimeFields base = DateTimeFields.EMPTY;
         String test = base.toString();
         assertEquals(test, "{}");
     }
 
     public void test_toString1() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008);
         String test = base.toString();
         assertEquals(test, "{ISO.Year=2008}");
     }
 
     public void test_toString2() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields base = DateTimeFields.of(YEAR_RULE, 2008, MOY_RULE, 6);
         String test = base.toString();
         assertEquals(test, "{ISO.Year=2008, ISO.MonthOfYear=6}");
     }

@@ -61,26 +61,17 @@ public final class DateTimeFields
         implements Calendrical,
             CalendricalMatcher, Iterable<DateTimeFieldRule<?>>, Serializable {
 
+    /**
+     * A singleton empty {@code DateTimeFields}, placing no restrictions on the date-time.
+     */
+    public static final DateTimeFields EMPTY = new DateTimeFields(createMap());
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
-    /** A singleton empty field set, placing no restrictions on the date-time. */
-    private static final DateTimeFields EMPTY = new DateTimeFields(createMap());
 
     /**
      * The date time map, never null, may be empty.
      */
     private final TreeMap<DateTimeFieldRule<?>, Integer> fieldValueMap;
-
-    /**
-     * Obtains an empty instance of {@code DateTimeFields}.
-     * <p>
-     * This factory simply returns the {@code EMPTY} constant.
-     *
-     * @return an empty fields instance, never null
-     */
-    public static DateTimeFields fields() {
-        return EMPTY;
-    }
 
     /**
      * Obtains an instance of {@code DateTimeFields} from a field-value pair.
@@ -94,7 +85,7 @@ public final class DateTimeFields
      * @throws NullPointerException if the field rule is null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public static DateTimeFields fields(DateTimeFieldRule<?> fieldRule, int value) {
+    public static DateTimeFields of(DateTimeFieldRule<?> fieldRule, int value) {
         ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         fieldRule.checkValue(value);
         TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
@@ -119,7 +110,7 @@ public final class DateTimeFields
      * @throws NullPointerException if either field rule is null
      * @throws IllegalCalendarFieldValueException if either value is invalid
      */
-    public static DateTimeFields fields(DateTimeFieldRule<?> fieldRule1, int value1, DateTimeFieldRule<?> fieldRule2, int value2) {
+    public static DateTimeFields of(DateTimeFieldRule<?> fieldRule1, int value1, DateTimeFieldRule<?> fieldRule2, int value2) {
         ISOChronology.checkNotNull(fieldRule1, "First DateTimeFieldRule must not be null");
         ISOChronology.checkNotNull(fieldRule2, "Second DateTimeFieldRule must not be null");
         fieldRule1.checkValue(value1);
@@ -145,7 +136,7 @@ public final class DateTimeFields
      * @throws NullPointerException if the map contains null keys or values
      * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static DateTimeFields fields(Map<DateTimeFieldRule<?>, Integer> fieldValueMap) {
+    public static DateTimeFields of(Map<DateTimeFieldRule<?>, Integer> fieldValueMap) {
         ISOChronology.checkNotNull(fieldValueMap, "Field-value map must not be null");
         if (fieldValueMap.isEmpty()) {
             return EMPTY;

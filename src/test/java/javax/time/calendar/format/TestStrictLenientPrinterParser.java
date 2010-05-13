@@ -67,7 +67,7 @@ public class TestStrictLenientPrinterParser {
         StrictLenientPrinterParser pp = StrictLenientPrinterParser.STRICT;
         StringBuilder buf = new StringBuilder();
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-        pp.print(DateTimeFields.fields(), buf, symbols);
+        pp.print(DateTimeFields.EMPTY, buf, symbols);
         assertEquals(buf.toString(), "");
     }
 
@@ -79,7 +79,7 @@ public class TestStrictLenientPrinterParser {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable() throws Exception {
         StrictLenientPrinterParser pp = StrictLenientPrinterParser.STRICT;
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), true);
     }
 
     public void test_isPrintDataAvailable_nulls() throws Exception {

@@ -202,7 +202,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      */
     public Period getTransitionSize() {
         int secs = getOffsetAfter().getAmountSeconds() - getOffsetBefore().getAmountSeconds();
-        return Period.seconds(secs).normalized();
+        return Period.ofSeconds(secs).normalized();
     }
 
     /**

@@ -65,7 +65,7 @@ public class TestNumberPrinter {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = DateTimeFields.fields();
+        emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 

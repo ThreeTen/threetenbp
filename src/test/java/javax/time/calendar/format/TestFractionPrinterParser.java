@@ -66,7 +66,7 @@ public class TestFractionPrinterParser {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = DateTimeFields.fields();
+        emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
@@ -75,7 +75,7 @@ public class TestFractionPrinterParser {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.of(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -88,7 +88,7 @@ public class TestFractionPrinterParser {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.of(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, buf, (DateTimeFormatSymbols) null);
     }
@@ -101,7 +101,7 @@ public class TestFractionPrinterParser {
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.of(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -110,7 +110,7 @@ public class TestFractionPrinterParser {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.of(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -194,7 +194,7 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Nanos")
     public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, value);
+        Calendrical calendrical = DateTimeFields.of(NANO_RULE, value);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, minWidth, maxWidth);
         pp.print(calendrical, buf, symbols);
         if (result == null) {
@@ -229,7 +229,7 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Seconds")
     public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(SECOND_RULE, value);
+        Calendrical calendrical = DateTimeFields.of(SECOND_RULE, value);
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_RULE, minWidth, maxWidth);
         pp.print(calendrical, buf, symbols);
         if (result == null) {
@@ -241,12 +241,12 @@ public class TestFractionPrinterParser {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields(NANO_RULE, 4)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.of(NANO_RULE, 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), false);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), false);
     }
 
     //-----------------------------------------------------------------------

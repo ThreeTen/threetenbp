@@ -577,7 +577,7 @@ public final class TZDBZoneRulesCompiler {
 
     private Period parsePeriod(String str) {
         int secs = parseSecs(str);
-        return deduplicate(Period.seconds(secs).normalized());
+        return deduplicate(Period.ofSeconds(secs).normalized());
     }
 
     private TimeDefinition parseTimeDefinition(char c) {

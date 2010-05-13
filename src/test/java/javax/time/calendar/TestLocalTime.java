@@ -826,7 +826,7 @@ public class TestLocalTime {
     }
 
     public void test_plus_PeriodProvider_overflowIgnored() {
-        PeriodProvider provider = Period.hours(1);
+        PeriodProvider provider = Period.ofHours(1);
         LocalTime t = LocalTime.of(23, 30).plus(provider);
         assertEquals(t, LocalTime.of(0, 30));
     }
@@ -1319,7 +1319,7 @@ public class TestLocalTime {
     }
 
     public void test_minus_PeriodProvider_overflowIgnored() {
-        PeriodProvider provider = Period.hours(1);
+        PeriodProvider provider = Period.ofHours(1);
         LocalTime t = LocalTime.of(0, 30).minus(provider);
         assertEquals(t, LocalTime.of(23, 30));
     }

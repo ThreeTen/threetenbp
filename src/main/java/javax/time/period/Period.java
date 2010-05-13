@@ -135,12 +135,12 @@ public final class Period
      * @throws CalendricalException if the provided period cannot be converted to the supported units
      * @throws ArithmeticException if any provided amount, except nanos, exceeds an {@code int}
      */
-    public static Period from(PeriodProvider periodProvider) {
+    public static Period of(PeriodProvider periodProvider) {
         PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
         if (periodProvider instanceof Period) {
             return (Period) periodProvider;
         }
-        PeriodFields periodFields = PeriodFields.from(periodProvider);
+        PeriodFields periodFields = PeriodFields.of(periodProvider);
         periodFields = periodFields.toEquivalentPeriod(UNITS);
         int years = periodFields.getAmountInt(ISOChronology.periodYears());
         int months = periodFields.getAmountInt(ISOChronology.periodMonths());
@@ -196,7 +196,7 @@ public final class Period
      * @param months  the amount of months, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period yearsMonths(int years, int months) {
+    public static Period ofYearsMonths(int years, int months) {
         if ((years | months) == 0) {
             return ZERO;
         }
@@ -211,7 +211,7 @@ public final class Period
      * @param days  the amount of days, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period yearsMonthsDays(int years, int months, int days) {
+    public static Period ofYearsMonthsDays(int years, int months, int days) {
         if ((years | months | days) == 0) {
             return ZERO;
         }
@@ -226,7 +226,7 @@ public final class Period
      * @param seconds  the amount of seconds, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period hoursMinutesSeconds(int hours, int minutes, int seconds) {
+    public static Period ofHoursMinutesSeconds(int hours, int minutes, int seconds) {
         if ((hours | minutes | seconds) == 0) {
             return ZERO;
         }
@@ -240,7 +240,7 @@ public final class Period
      * @param years  the amount of years, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period years(int years) {
+    public static Period ofYears(int years) {
         if (years == 0) {
             return ZERO;
         }
@@ -253,7 +253,7 @@ public final class Period
      * @param months  the amount of months, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period months(int months) {
+    public static Period ofMonths(int months) {
         if (months == 0) {
             return ZERO;
         }
@@ -266,7 +266,7 @@ public final class Period
      * @param days  the amount of days, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period days(int days) {
+    public static Period ofDays(int days) {
         if (days == 0) {
             return ZERO;
         }
@@ -279,7 +279,7 @@ public final class Period
      * @param hours  the amount of hours, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period hours(int hours) {
+    public static Period ofHours(int hours) {
         if (hours == 0) {
             return ZERO;
         }
@@ -292,7 +292,7 @@ public final class Period
      * @param minutes  the amount of minutes, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period minutes(int minutes) {
+    public static Period ofMinutes(int minutes) {
         if (minutes == 0) {
             return ZERO;
         }
@@ -305,7 +305,7 @@ public final class Period
      * @param seconds  the amount of seconds, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period seconds(int seconds) {
+    public static Period ofSeconds(int seconds) {
         if (seconds == 0) {
             return ZERO;
         }
@@ -318,7 +318,7 @@ public final class Period
      * @param nanos  the amount of nanos, may be negative
      * @return the {@code Period} instance, never null
      */
-    public static Period nanos(long nanos) {
+    public static Period ofNanos(long nanos) {
         if (nanos == 0) {
             return ZERO;
         }
@@ -623,7 +623,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public Period plus(PeriodProvider periodProvider) {
-        Period other = from(periodProvider);
+        Period other = of(periodProvider);
         return of(
                 MathUtils.safeAdd(years, other.years),
                 MathUtils.safeAdd(months, other.months),
@@ -759,7 +759,7 @@ public final class Period
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public Period minus(PeriodProvider periodProvider) {
-        Period other = from(periodProvider);
+        Period other = of(periodProvider);
         return of(
                 MathUtils.safeSubtract(years, other.years),
                 MathUtils.safeSubtract(months, other.months),

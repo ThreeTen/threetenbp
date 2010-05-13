@@ -1356,7 +1356,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime plusDuration(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.from(periodProvider);
+        PeriodFields period = PeriodFields.of(periodProvider);
         Duration duration = period.toDuration();
         return duration.isZero() ? this : ofInstant(toInstant().plus(duration), zone);
     }
@@ -1637,7 +1637,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the calculation exceeds the capacity of {@code ZonedDateTime}
      */
     public ZonedDateTime minusDuration(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.from(periodProvider);
+        PeriodFields period = PeriodFields.of(periodProvider);
         Duration duration = period.toDuration();
         return duration.isZero() ? this : ofInstant(toInstant().minus(duration), zone);
     }

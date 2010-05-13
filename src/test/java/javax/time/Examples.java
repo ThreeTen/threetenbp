@@ -35,7 +35,7 @@ import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendar.DayOfWeek.FRIDAY;
 import static javax.time.calendar.ISOChronology.*;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
-import static javax.time.period.Period.yearsMonthsDays;
+import static javax.time.period.Period.ofYearsMonthsDays;
 
 import java.util.Locale;
 
@@ -100,7 +100,7 @@ public class Examples {
         LocalDate later = clock.today().plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
-        Period period = yearsMonthsDays(1, 3, 5);
+        Period period = ofYearsMonthsDays(1, 3, 5);
         LocalDate moreLater = clock.today().plus(period);
         System.out.println("Period " + period + " after today : " + moreLater);
         
@@ -111,7 +111,7 @@ public class Examples {
         System.out.println("Last day of month: " + lastDayOfMonth);
         
         LocalDate tempDate = clock.today();
-        DateTimeFields fri13matcher = DateTimeFields.fields(
+        DateTimeFields fri13matcher = DateTimeFields.of(
                 ISOChronology.dayOfWeekRule(), FRIDAY.getValue(), ISOChronology.dayOfMonthRule(), 13);
         boolean fri13 = tempDate.matches(fri13matcher);
         System.out.println("Is Friday the Thirteenth: " + fri13);

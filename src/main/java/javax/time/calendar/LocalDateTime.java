@@ -939,7 +939,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
         // TODO: correct algorithm
         LocalDate date = this.date.plusYears(period.getYears())
                 .plusMonths(period.getMonths()).plusDays(period.getDays());
@@ -1163,7 +1163,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
+        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
         // TODO: correct algorithm
         LocalDate date = this.date.minusYears(period.getYears())
                 .minusMonths(period.getMonths()).minusDays(period.getDays());

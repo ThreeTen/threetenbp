@@ -68,14 +68,14 @@ public class TestFluentAPI {
         
         LocalTime tod = clock.time();
         tod.plusHours(6).plusMinutes(2);
-        tod.plus(hours(6)).plus(minutes(2));
+        tod.plus(ofHours(6)).plus(ofMinutes(2));
 //        if (tod.toHourOfDay().getAmPm().isAm()) {
 //            tod = tod.withHourOfDay(9);
 //        }
         
         LocalDate date = null;
         date = clock.today().plusDays(3);
-        date = clock.today().plus(days(3));
+        date = clock.today().plus(ofDays(3));
 //        date = Clock.system().today().plus(Days.days(3));
         
         date = LocalDate.of(2007, 3, 20);
@@ -105,7 +105,7 @@ public class TestFluentAPI {
         date = date.with(MonthOfYear.AUGUST);
         date.with(MonthOfYear.DECEMBER, DateResolvers.strict());
         
-        DateTimeFields fri13 = DateTimeFields.fields(
+        DateTimeFields fri13 = DateTimeFields.of(
                 dayOfWeekRule(), FRIDAY.getValue(), dayOfMonthRule(), 13);
         if (date.matches(fri13)) {
             System.out.println("Spooky");
@@ -115,12 +115,12 @@ public class TestFluentAPI {
 //        date = date.with(MONDAY.adjustToNext());
         
         // different ways to build/use periods
-        date = date.plus(yearsMonthsDays(2, 3, 1));
+        date = date.plus(ofYearsMonthsDays(2, 3, 1));
 //        date = date.plus(3, YEARS).plus(2, MONTHS).plus(1, DAYS);
-        date = date.plus(years(3)).plus(months(2)).plus(days(1));
+        date = date.plus(ofYears(3)).plus(ofMonths(2)).plus(ofDays(1));
 //        PeriodFields d1 = periodBuilder().hours(2).seconds(3).build();
-        Period d2 = hours(2).withSeconds(3);
-        Period d3 = hours(2).plus(seconds(3));
+        Period d2 = ofHours(2).withSeconds(3);
+        Period d3 = ofHours(2).plus(ofSeconds(3));
         System.out.println(d2);
         System.out.println(d3);
         

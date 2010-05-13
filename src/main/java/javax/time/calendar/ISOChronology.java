@@ -983,7 +983,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (chapVal != null) {
                 int hourOfDay = amPm.getValue() * 12 + chapVal;
                 if (hourOfDay == 24) {
-                    merger.addToOverflow(Period.days(1));
+                    merger.addToOverflow(Period.ofDays(1));
                     hourOfDay = 0;
                 }
                 merger.storeMerged(ISOChronology.hourOfDayRule(), hourOfDay);
@@ -1247,7 +1247,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (value instanceof Integer) {
                 int val = (Integer) value;
                 if (val < 1 || val > 12) {
-                    merger.addToOverflow(Period.months(val - 1));  // TODO: MIN_VALUE overflow
+                    merger.addToOverflow(Period.ofMonths(val - 1));  // TODO: MIN_VALUE overflow
                     val = 1;
                 }
                 return MonthOfYear.of(val);
@@ -1456,7 +1456,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (value instanceof Integer) {
                 int val = (Integer) value;
                 if (val < 1 || val > 7) {
-                    merger.addToOverflow(Period.days(val - 1));  // TODO: MIN_VALUE overflow
+                    merger.addToOverflow(Period.ofDays(val - 1));  // TODO: MIN_VALUE overflow
                     val = 1;
                 }
                 return DayOfWeek.of(val);
@@ -1803,7 +1803,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 int val = (Integer) value;
                 if (val < 0 || val > 1) {  // TODO: check this logic
                     int days = val > 0 ? val / 2 : ((val + 1) / 2) - 1;
-                    merger.addToOverflow(Period.days(days));
+                    merger.addToOverflow(Period.ofDays(days));
                     val = (val > 0 ? val % 2 : -(val % 2));
                 }
                 return AmPmOfDay.of(val);

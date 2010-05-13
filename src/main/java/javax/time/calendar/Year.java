@@ -264,7 +264,7 @@ public final class Year
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year plus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
+        Period period = Period.of(periodProvider);
         return plusYears(period.getYears());
     }
 
@@ -302,7 +302,7 @@ public final class Year
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year minus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);
+        Period period = Period.of(periodProvider);
         return minusYears(period.getYears());
     }
 

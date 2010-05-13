@@ -70,14 +70,14 @@ public class TestTextPrinter {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = DateTimeFields.fields();
+        emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -90,7 +90,7 @@ public class TestTextPrinter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, buf, null);
     }
@@ -103,7 +103,7 @@ public class TestTextPrinter {
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -112,7 +112,7 @@ public class TestTextPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -163,7 +163,7 @@ public class TestTextPrinter {
 
     @Test(dataProvider="print") 
     public void test_print(DateTimeFieldRule<?> rule, TextStyle style, int dow, String expected) throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(rule, dow);
+        Calendrical calendrical = DateTimeFields.of(rule, dow);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), expected);
@@ -172,12 +172,12 @@ public class TestTextPrinter {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields(RULE_MOY, 4)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.of(RULE_MOY, 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), false);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), false);
     }
 
     //-----------------------------------------------------------------------

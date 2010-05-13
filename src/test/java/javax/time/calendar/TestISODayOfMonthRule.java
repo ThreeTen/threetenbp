@@ -129,7 +129,7 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getValue_Calendrical_dateTimeFields() {
-        Calendrical cal = DateTimeFields.fields(rule(), 20);
+        Calendrical cal = DateTimeFields.of(rule(), 20);
         assertEquals(rule().getValue(cal), (Integer) 20);
     }
 

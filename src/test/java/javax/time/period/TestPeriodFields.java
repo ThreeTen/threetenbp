@@ -253,7 +253,7 @@ public class TestPeriodFields {
     //-----------------------------------------------------------------------
     public void factory_from_provider() {
         PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
-        PeriodFields test = PeriodFields.from(provider);
+        PeriodFields test = PeriodFields.of(provider);
         assertEquals(test.size(), 7);
         assertEquals(test.getAmount(YEARS), 1);
         assertEquals(test.getAmount(MONTHS), 2);
@@ -266,23 +266,23 @@ public class TestPeriodFields {
 
     public void factory_from_provider_zeroesRemoved() {
         PeriodProvider provider = Period.of(1, 0, 2, 0, 0, 0, 0);
-        assertPeriodFields(PeriodFields.from(provider), 1, YEARS, 2, DAYS);
+        assertPeriodFields(PeriodFields.of(provider), 1, YEARS, 2, DAYS);
     }
 
     public void factory_from_provider_zero() {
         PeriodProvider provider = Period.ZERO;
-        assertSame(PeriodFields.from(provider), PeriodFields.ZERO);
+        assertSame(PeriodFields.of(provider), PeriodFields.ZERO);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_provider_null() {
-        PeriodFields.from((PeriodProvider) null);
+        PeriodFields.of((PeriodProvider) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_badProvider() {
         PeriodProvider provider = new MockPeriodProviderReturnsNull();
-        PeriodFields.from(provider);
+        PeriodFields.of(provider);
     }
 
     //-----------------------------------------------------------------------
@@ -290,13 +290,13 @@ public class TestPeriodFields {
     //-----------------------------------------------------------------------
     public void factory_total_providers_empty() {
         PeriodProvider[] array = new PeriodProvider[0];
-        PeriodFields test = PeriodFields.total(array);
+        PeriodFields test = PeriodFields.ofTotal(array);
         assertSame(test, PeriodFields.ZERO);
     }
 
     public void factory_total_providers_singleElement() {
         PeriodProvider[] array = new PeriodProvider[] {Period.of(1, 2, 3, 4, 5, 6, 7)};
-        PeriodFields test = PeriodFields.total(array);
+        PeriodFields test = PeriodFields.ofTotal(array);
         assertEquals(test.size(), 7);
         assertEquals(test.getAmount(YEARS), 1);
         assertEquals(test.getAmount(MONTHS), 2);
@@ -309,15 +309,15 @@ public class TestPeriodFields {
 
     public void factory_total_providers_multipleElements_noAddition() {
         PeriodProvider[] array = new PeriodProvider[] {PeriodField.of(1, YEARS), PeriodField.of(2, MONTHS)};
-        PeriodFields test = PeriodFields.total(array);
+        PeriodFields test = PeriodFields.ofTotal(array);
         assertEquals(test.size(), 2);
         assertEquals(test.getAmount(YEARS), 1);
         assertEquals(test.getAmount(MONTHS), 2);
     }
 
     public void factory_total_providers_multipleElements_addition() {
-        PeriodProvider[] array = new PeriodProvider[] {PeriodField.of(1, YEARS), Period.yearsMonthsDays(2, 3, 4)};
-        PeriodFields test = PeriodFields.total(array);
+        PeriodProvider[] array = new PeriodProvider[] {PeriodField.of(1, YEARS), Period.ofYearsMonthsDays(2, 3, 4)};
+        PeriodFields test = PeriodFields.ofTotal(array);
         assertEquals(test.size(), 3);
         assertEquals(test.getAmount(YEARS), 3);
         assertEquals(test.getAmount(MONTHS), 3);
@@ -326,42 +326,42 @@ public class TestPeriodFields {
 
     public void factory_total_providers_singleElement_zeroesRemoved() {
         PeriodProvider[] array = new PeriodProvider[] {Period.of(1, 0, 2, 0, 0, 0, 0)};
-        assertPeriodFields(PeriodFields.total(array), 1, YEARS, 2, DAYS);
+        assertPeriodFields(PeriodFields.ofTotal(array), 1, YEARS, 2, DAYS);
     }
 
     public void factory_total_providers_singleElement_zero() {
         PeriodProvider[] array = new PeriodProvider[] {Period.ZERO};
-        assertSame(PeriodFields.total(array), PeriodFields.ZERO);
+        assertSame(PeriodFields.ofTotal(array), PeriodFields.ZERO);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_total_providers_nullArray() {
         PeriodProvider[] array = null;
-        PeriodFields.total(array);
+        PeriodFields.ofTotal(array);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_total_providers_nullSingleElement() {
         PeriodProvider[] array = new PeriodProvider[] {null};
-        PeriodFields.total(array);
+        PeriodFields.ofTotal(array);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_total_providers_nullSecondElement() {
         PeriodProvider[] array = new PeriodProvider[] {PeriodField.of(5, DAYS), null};
-        PeriodFields.total(array);
+        PeriodFields.ofTotal(array);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_total_badProviderSingleElement() {
         PeriodProvider[] array = new PeriodProvider[] {new MockPeriodProviderReturnsNull()};
-        PeriodFields.total(array);
+        PeriodFields.ofTotal(array);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_total_badProviderSecondElement() {
         PeriodProvider[] array = new PeriodProvider[] {PeriodField.of(5, DAYS), new MockPeriodProviderReturnsNull()};
-        PeriodFields.total(array);
+        PeriodFields.ofTotal(array);
     }
 
     //-----------------------------------------------------------------------
@@ -369,7 +369,7 @@ public class TestPeriodFields {
     //-----------------------------------------------------------------------
     public void factory_from_Duration() {
         Duration dur = Duration.ofStandardHours(2).plusSeconds(32).plusNanos(345);
-        PeriodFields test = PeriodFields.from(dur);
+        PeriodFields test = PeriodFields.of(dur);
         assertEquals(test.size(), 2);
         assertEquals(test.getAmount(SECONDS), 2 * 3600 + 32);
         assertEquals(test.getAmount(NANOS), 345);
@@ -377,7 +377,7 @@ public class TestPeriodFields {
 
     public void factory_from_Duration_zero() {
         Duration dur = Duration.ZERO;
-        PeriodFields test = PeriodFields.from(dur);
+        PeriodFields test = PeriodFields.of(dur);
         assertEquals(test.size(), 2);
         assertEquals(test.getAmount(SECONDS), 0);
         assertEquals(test.getAmount(NANOS), 0);
@@ -385,7 +385,7 @@ public class TestPeriodFields {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_from_Duration_null() {
-        PeriodFields.from((Duration) null);
+        PeriodFields.of((Duration) null);
     }
 
     //-----------------------------------------------------------------------

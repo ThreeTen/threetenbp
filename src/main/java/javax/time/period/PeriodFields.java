@@ -193,7 +193,7 @@ public final class PeriodFields
      * @return the {@code PeriodFields} instance, never null
      * @throws NullPointerException if the period provider is null or returns null
      */
-    public static PeriodFields from(PeriodProvider periodProvider) {
+    public static PeriodFields of(PeriodProvider periodProvider) {
         checkNotNull(periodProvider, "PeriodProvider must not be null");
         PeriodFields result = periodProvider.toPeriodFields();
         checkNotNull(result, "PeriodProvider implementation must not return null");
@@ -212,14 +212,14 @@ public final class PeriodFields
      * @return the {@code PeriodFields} instance, never null
      * @throws NullPointerException if any period provider is null or returns null
      */
-    public static PeriodFields total(PeriodProvider... periodProviders) {
+    public static PeriodFields ofTotal(PeriodProvider... periodProviders) {
         checkNotNull(periodProviders, "PeriodProvider[] must not be null");
         if (periodProviders.length == 1) {
-            return from(periodProviders[0]);
+            return of(periodProviders[0]);
         }
         TreeMap<PeriodUnit, PeriodField> map = createMap();
         for (PeriodProvider periodProvider : periodProviders) {
-            PeriodFields periods = from(periodProvider);
+            PeriodFields periods = of(periodProvider);
             for (PeriodField period : periods.unitFieldMap.values()) {
                 PeriodField old = map.get(period.getUnit());
                 period = (old != null ? old.plus(period) : period);
@@ -245,7 +245,7 @@ public final class PeriodFields
      * @param duration  the duration to create from, not null
      * @return the {@code PeriodFields} instance, never null
      */
-    public static PeriodFields from(Duration duration) {
+    public static PeriodFields of(Duration duration) {
         checkNotNull(duration, "Duration must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         internalMap.put(ISOChronology.periodSeconds(), PeriodField.of(duration.getSeconds(), ISOChronology.periodSeconds()));
@@ -545,7 +545,7 @@ public final class PeriodFields
             return (PeriodFields) periodProvider;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        PeriodFields periods = from(periodProvider);
+        PeriodFields periods = of(periodProvider);
         for (PeriodField period : periods.unitFieldMap.values()) {
             PeriodField old = copy.get(period.getUnit());
             period = (old != null ? old.plus(period) : period);
@@ -602,7 +602,7 @@ public final class PeriodFields
             return (PeriodFields) periodProvider;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        PeriodFields periods = from(periodProvider);
+        PeriodFields periods = of(periodProvider);
         for (PeriodField period : periods.unitFieldMap.values()) {
             PeriodField old = copy.get(period.getUnit());
             period = (old != null ? old.minus(period) : period.negated());

@@ -61,7 +61,7 @@ public class TestCharLiteralPrinter {
     public void setUp() {
         buf = new StringBuilder("EXISTING");
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = DateTimeFields.fields();
+        emptyCalendrical = DateTimeFields.EMPTY;
         calendrical = LocalDateTime.of(2008, 12, 3, 10, 15);
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }

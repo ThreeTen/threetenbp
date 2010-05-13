@@ -106,7 +106,7 @@ public class TestYear {
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_factory_Calendrical_unsupported() {
-        Year.of(DateTimeFields.fields());
+        Year.of(DateTimeFields.EMPTY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -281,13 +281,13 @@ public class TestYear {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         Year.of(Year.MAX_YEAR).plus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.years(-1);
+        PeriodProvider provider = Period.ofYears(-1);
         Year.of(Year.MIN_YEAR).plus(provider);
     }
 
@@ -362,13 +362,13 @@ public class TestYear {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooLarge() {
-        PeriodProvider provider = Period.years(-1);
+        PeriodProvider provider = Period.ofYears(-1);
         Year.of(Year.MAX_YEAR).minus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooSmall() {
-        PeriodProvider provider = Period.years(1);
+        PeriodProvider provider = Period.ofYears(1);
         Year.of(Year.MIN_YEAR).minus(provider);
     }
 
