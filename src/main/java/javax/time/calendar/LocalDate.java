@@ -38,7 +38,7 @@ import javax.time.Instant;
 import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.period.Period;
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -636,23 +636,63 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period added.
      * <p>
-     * This adds the amount in years, months and days from the specified period to this date.
-     * If the period contains time amounts then an exception is thrown.
+     * This method add the specified amount to the year, month and day fields.
+     * The rules are a little complex due to the difficulties of variable length months.
+     * The effect is to match the code for {@code plusYears().plusMonths().plusDays()}
+     * in most cases.
+     * <p>
+     * The principle case of difference is best expressed by example:
+     * {@code 2010-01-31} plus {@code P1M-1M} yields {@code 2010-02-28} whereas
+     * {@code plusMonths(1).plusDays(-1)} gives {@code 2010-02-27}.
+     * <p>
+     * The rules are expressed in five steps:
+     * <ol>
+     * <li>Add the input years and months to calculate the resulting year-month</li>
+     * <li>Form an imaginary date from the year-month and the original day-of-month,
+     *  a date that may be invalid, such as February 30th</li>
+     * <li>Add the input days to the imaginary date treating the first move to a later date
+     *  from an invalid date as a move to the 1st of the next month</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day-of-month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, this table shows what happens when for various inputs and periods:
+     * <pre>
+     *   2010-01-30 plus P1M2D  = 2010-03-02
+     *   2010-01-30 plus P1M1D  = 2010-03-01
+     *   2010-01-30 plus P1M    = 2010-02-28
+     *   2010-01-30 plus P1M-1D = 2010-02-28
+     *   2010-01-30 plus P1M-2D = 2010-02-28
+     *   2010-01-30 plus P1M-3D = 2010-02-27
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code LocalDateTime} with the period added, never null
-     * @throws CalendricalException if the provider contains time period units
+     * @return a {@code LocalDate} with the period added, never null
+     * @throws CalendricalException if the period cannot be converted to year, month and day units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
-        if ((period.getHours() | period.getMinutes() | period.getSeconds() | period.getNanos()) != 0) {
-            throw new CalendricalException("Unable to add to date as the period contains time units");
+        PeriodFields period = PeriodFields.from(periodProvider);
+        period = period.toEquivalentPeriod(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
+        long periodMonths = period.getAmount(ISOChronology.periodMonths());
+        long periodYears = period.getAmount(ISOChronology.periodYears());
+        long periodDays = period.getAmount(ISOChronology.periodDays());
+        if ((periodYears | periodMonths) == 0) {
+            return plusDays(periodDays);  // optimization that also returns this for zero
         }
-        // TODO: calculate in one go - 31st Mar plus P1M-1D should be 30th Apr
-        return plusYears(period.getYears()).plusMonths(period.getMonths()).plusDays(period.getDays());
+        long plusMonths = MathUtils.safeAdd(MathUtils.safeMultiply(periodYears, 12), periodMonths);
+        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
+        long calcMonths = MathUtils.safeAdd(monthCount, plusMonths);
+        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
+        int newDay = Math.min(day, newMonthLen);
+        if (periodDays < 0 && day > newMonthLen) {
+            periodDays = Math.min(periodDays + (day - newMonthLen), 0);  // adjust for invalid days
+        }
+        return LocalDate.of(newYear, newMonth, newDay).plusDays(periodDays);
     }
 
     //-----------------------------------------------------------------------
@@ -675,7 +715,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a {@code LocalDateTime} with the years added, never null
+     * @return a {@code LocalDate} with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
@@ -697,7 +737,7 @@ public final class LocalDate
      *
      * @param years  the years to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the years added, never null
+     * @return a {@code LocalDate} with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusYears(int years, DateResolver dateResolver) {
@@ -728,7 +768,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a {@code LocalDateTime} with the months added, never null
+     * @return a {@code LocalDate} with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
@@ -750,7 +790,7 @@ public final class LocalDate
      *
      * @param months  the months to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the months added, never null
+     * @return a {@code LocalDate} with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusMonths(int months, DateResolver dateResolver) {
@@ -758,16 +798,10 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long newMonth0 = month.getValue() - 1;
-        newMonth0 = newMonth0 + months;
-        int years = (int) (newMonth0 / 12);
-        newMonth0 = newMonth0 % 12;
-        if (newMonth0 < 0) {
-            newMonth0 += 12;
-            years--;
-        }
-        int newYear = ISOChronology.addYears(year, years);
-        MonthOfYear newMonth = MonthOfYear.of((int) ++newMonth0);
+        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
+        long calcMonths = monthCount + months;
+        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return resolveDate(dateResolver, newYear, newMonth, day);
     }
 
@@ -783,7 +817,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a {@code LocalDateTime} with the weeks added, never null
+     * @return a {@code LocalDate} with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusWeeks(int weeks) {
@@ -802,7 +836,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a {@code LocalDateTime} with the days added, never null
+     * @return a {@code LocalDate} with the days added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusDays(long days) {
@@ -822,23 +856,63 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period subtracted.
      * <p>
-     * This subtracts the amount in years, months and days from the specified period from this date.
-     * If the period contains time amounts then an exception is thrown.
+     * This method subtracts the specified amount to the year, month and day fields.
+     * The rules are a little complex due to the difficulties of variable length months.
+     * The effect is to match the code for {@code minusYears().minusMonths().minusDays()}
+     * in most cases.
+     * <p>
+     * The principle case of difference is best expressed by example:
+     * {@code 2010-03-31} minus {@code P1M1M} yields {@code 2010-02-28} whereas
+     * {@code minusMonths(1).minusDays(1)} gives {@code 2010-02-27}.
+     * <p>
+     * The rules are expressed in five steps:
+     * <ol>
+     * <li>Subtract the input years and months to calculate the resulting year-month</li>
+     * <li>Form an imaginary date from the year-month and the original day-of-month,
+     *  a date that may be invalid, such as February 30th</li>
+     * <li>Subtract the input days from the imaginary date treating the first move to a later date
+     *  from an invalid date as a move to the 1st of the next month</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day-of-month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, this table shows what happens when for various inputs and periods:
+     * <pre>
+     *   2010-03-30 minus P1M3D  = 2010-02-27
+     *   2010-03-30 minus P1M2D  = 2010-02-28
+     *   2010-03-30 minus P1M1D  = 2010-02-28
+     *   2010-03-30 minus P1M    = 2010-02-28
+     *   2010-03-30 minus P1M-1D = 2010-03-01
+     *   2010-03-30 minus P1M-2D = 2010-03-02
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalDateTime} with the period subtracted, never null
-     * @throws CalendricalException if the provider contains time period units
+     * @return a {@code LocalDate} with the period subtracted, never null
+     * @throws CalendricalException if the period cannot be converted to year, month and day units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {
-        Period period = Period.from(periodProvider);  // TODO: overflows long->int PeriodFields
-        if ((period.getHours() | period.getMinutes() | period.getSeconds() | period.getNanos()) != 0) {
-            throw new CalendricalException("Unable to subtract from date as the period contains time units");
+        PeriodFields period = PeriodFields.from(periodProvider);
+        period = period.toEquivalentPeriod(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
+        long periodMonths = period.getAmount(ISOChronology.periodMonths());
+        long periodYears = period.getAmount(ISOChronology.periodYears());
+        long periodDays = period.getAmount(ISOChronology.periodDays());
+        if ((periodYears | periodMonths) == 0) {
+            return minusDays(periodDays);  // optimization that also returns this for zero
         }
-        // TODO: calculate in one go
-        return minusYears(period.getYears()).minusMonths(period.getMonths()).minusDays(period.getDays());
+        long minusMonths = MathUtils.safeAdd(MathUtils.safeMultiply(periodYears, 12), periodMonths);
+        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
+        long calcMonths = MathUtils.safeSubtract(monthCount, minusMonths);
+        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
+        int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
+        int newDay = Math.min(day, newMonthLen);
+        if (periodDays > 0 && day > newMonthLen) {
+            periodDays = Math.max(periodDays - (day - newMonthLen), 0);  // adjust for invalid days
+        }
+        return LocalDate.of(newYear, newMonth, newDay).minusDays(periodDays);
     }
 
     //-----------------------------------------------------------------------
@@ -861,7 +935,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a {@code LocalDateTime} with the years subtracted, never null
+     * @return a {@code LocalDate} with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusYears(int, javax.time.calendar.DateResolver)
      */
@@ -883,7 +957,7 @@ public final class LocalDate
      *
      * @param years  the years to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the years subtracted, never null
+     * @return a {@code LocalDate} with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusYears(int years, DateResolver dateResolver) {
@@ -914,7 +988,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a {@code LocalDateTime} with the months subtracted, never null
+     * @return a {@code LocalDate} with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusMonths(int, javax.time.calendar.DateResolver)
      */
@@ -936,7 +1010,7 @@ public final class LocalDate
      *
      * @param months  the months to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the months subtracted, never null
+     * @return a {@code LocalDate} with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusMonths(int months, DateResolver dateResolver) {
@@ -944,16 +1018,10 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long newMonth0 = month.getValue() - 1;
-        newMonth0 = newMonth0 - months;
-        int years = (int) (newMonth0 / 12);
-        newMonth0 = newMonth0 % 12;
-        if (newMonth0 < 0) {
-            newMonth0 += 12;
-            years--;
-        }
-        int newYear = ISOChronology.subtractYears(year, -years);
-        MonthOfYear newMonth = MonthOfYear.of((int) ++newMonth0);
+        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
+        long calcMonths = monthCount - months;
+        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return resolveDate(dateResolver, newYear, newMonth, day);
     }
 
@@ -969,7 +1037,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a {@code LocalDateTime} with the weeks subtracted, never null
+     * @return a {@code LocalDate} with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusWeeks(int weeks) {
@@ -988,7 +1056,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a {@code LocalDateTime} with the days subtracted, never null
+     * @return a {@code LocalDate} with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusDays(long days) {
