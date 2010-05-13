@@ -188,6 +188,7 @@ public final class DateResolvers {
         public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
             int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
             if (dayOfMonth > len) {
+                // this line works because December is never invalid assuming the input is from 1-31
                 return LocalDate.of(year, monthOfYear.next(), dayOfMonth - len);
             }
             return LocalDate.of(year, monthOfYear, dayOfMonth);
