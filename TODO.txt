@@ -47,7 +47,6 @@ Time scales
 
 Date/Time classes
 - factories from Calendrical...
-- LocalDate.plus(PeriodProvider) needs correct algorithm
 - toString(pattern)
 - parse(str, pattern)
 - ZDT int factories
@@ -213,4 +212,5 @@ EDR
 - Duration/Instant rename millis() to ofMillis() etc
 - Duration/Instant integrate TimeUnit
 - Rename factory methods to start with 'of'
+- LocalDate.plus(PeriodProvider) needs correct algorithm
 
