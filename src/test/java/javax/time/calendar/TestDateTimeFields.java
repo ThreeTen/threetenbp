@@ -113,8 +113,10 @@ public class TestDateTimeFields {
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
-            assertTrue(Modifier.isPrivate(field.getModifiers()));
-            assertTrue(Modifier.isFinal(field.getModifiers()));
+            assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+            if (Modifier.isStatic(field.getModifiers()) == false) {
+                assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
+            }
         }
         Constructor<?>[] cons = cls.getDeclaredConstructors();
         for (Constructor<?> con : cons) {
