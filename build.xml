@@ -17,6 +17,7 @@
     <property name="version.full" value="0.6.1" /><!-- -${DSTAMP} -->
 
     <property name="jarName" value="jsr-310-ri-${version.full}.jar" />
+    <property name="jarNameSources" value="jsr-310-ri-sources-${version.full}.jar" />
     <property name="jarCoreName" value="jsr-310-ri-core-${version.full}.jar" />
     <property name="jarExtraName" value="jsr-310-ri-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="jsr-310-ri-openjdk-${version.full}.jar" />
@@ -251,7 +252,15 @@
         </jar>
     </target>
 
-    <target name="jar" depends="jar-core,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main" description="build jar files" />
+    <target name="jar-main-sources">
+        <jar jarfile="${build}/${jarNameSources}">
+          <fileset dir="${core.main}"/>
+          <fileset dir="${ojdk.main}"/>
+          <fileset dir="${oracle.main}"/>
+        </jar>
+    </target>
+
+    <target name="jar" depends="jar-core,jar-extra,jar-openjdk,jar-oracle,jar-all,jar-main,jar-main-sources" description="build jar files" />
 
     <!-- ==================================================================== -->
     <target name="dist" depends="jar" description="generate the distribution">
