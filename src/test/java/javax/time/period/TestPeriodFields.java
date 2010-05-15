@@ -41,9 +41,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.SortedMap;
 
 import javax.time.CalendricalException;
@@ -505,11 +503,6 @@ public class TestPeriodFields {
     // withZeroesRemoved()
     //-----------------------------------------------------------------------
     public void test_withZeroesRemoved() {
-        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
-        map.put(YEARS, 2L);
-        map.put(DAYS, 0L);
-        map.put(HOURS, -3L);
-        map.put(SECONDS, 0L);
         PeriodFields test = PeriodFields.of(
                 PeriodField.of(2, YEARS), PeriodField.of(0, DAYS),
                 PeriodField.of(-3, HOURS), PeriodField.of(0, SECONDS));
@@ -528,36 +521,51 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // with(PeriodFields)
+    // with(PeriodProvider)
     //-----------------------------------------------------------------------
-    public void test_with_PeriodFields() {
-        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
-        map.put(YEARS, 4L);
-        map.put(MONTHS, 8L);
+    public void test_with_PeriodProvider() {
         PeriodFields test = PeriodFields.of(PeriodField.of(4, YEARS), PeriodField.of(8, MONTHS));
         assertPeriodFields(test.with(fixtureP2Y5D), 2, YEARS, 8, MONTHS, 5, DAYS);
     }
 
-    public void test_with_PeriodFields_zeroYearsBase() {
+    public void test_with_PeriodProvider_PeriodField_add() {
+        PeriodFields test = PeriodFields.of(PeriodField.of(4, YEARS), PeriodField.of(8, MONTHS));
+        assertPeriodFields(test.with(PeriodField.of(5, DAYS)), 4, YEARS, 8, MONTHS, 5, DAYS);
+    }
+
+    public void test_with_PeriodProvider_PeriodField_replace() {
+        PeriodFields test = PeriodFields.of(PeriodField.of(4, YEARS), PeriodField.of(8, MONTHS));
+        assertPeriodFields(test.with(PeriodField.of(5, MONTHS)), 4, YEARS, 5, MONTHS);
+    }
+
+    public void test_with_PeriodProvider_zeroYearsBase() {
         PeriodFields test = PeriodFields.of(PeriodField.of(4, MONTHS), PeriodField.of(8, DAYS));
         assertPeriodFields(fixtureZeroYears.with(test), 0, YEARS, 4, MONTHS, 8, DAYS);
     }
 
-    public void test_with_PeriodFields_zeroYearsParam() {
+    public void test_with_PeriodProvider_zeroYearsParam() {
         PeriodFields test = PeriodFields.of(PeriodField.of(4, MONTHS), PeriodField.of(8, DAYS));
         assertPeriodFields(test.with(fixtureZeroYears), 0, YEARS, 4, MONTHS, 8, DAYS);
     }
 
-    public void test_with_PeriodFields_zeroBase() {
+    public void test_with_PeriodProvider_zeroBase() {
         assertSame(PeriodFields.ZERO.with(fixtureP2Y5D), fixtureP2Y5D);
     }
 
-    public void test_with_PeriodFields_zeroParam() {
+    public void test_with_PeriodProvider_zeroParam1() {
         assertSame(fixtureP2Y5D.with(PeriodFields.ZERO), fixtureP2Y5D);
     }
 
+    public void test_with_PeriodProvider_zeroParam2() {
+        assertPeriodFields(fixtureP2Y5D.with(PeriodFields.of(0, DAYS)), 0, DAYS);
+    }
+
+    public void test_with_PeriodProvider_zeroParam3() {
+        assertPeriodFields(fixtureP2Y5D.with(PeriodField.of(0, DAYS)), 0, DAYS);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_with_PeriodFields_null() {
+    public void test_with_PeriodProvider_null() {
         fixtureP2Y5D.with((PeriodFields) null);
     }
 
@@ -613,9 +621,6 @@ public class TestPeriodFields {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
-        map.put(YEARS, 4L);
-        map.put(MONTHS, 8L);
         PeriodFields base = PeriodFields.of(PeriodField.of(4, YEARS), PeriodField.of(8, MONTHS));
         PeriodFields test = base.plus(fixtureP2Y5D);
         assertPeriodFields(test, 6, YEARS, 8, MONTHS, 5, DAYS);
@@ -699,9 +704,6 @@ public class TestPeriodFields {
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
-        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
-        map.put(YEARS, 9L);
-        map.put(MONTHS, 8L);
         PeriodFields base = PeriodFields.of(PeriodField.of(9, YEARS), PeriodField.of(8, MONTHS));
         PeriodFields test = base.minus(fixtureP2Y5D);
         assertPeriodFields(test, 7, YEARS, 8, MONTHS, -5, DAYS);
@@ -821,9 +823,6 @@ public class TestPeriodFields {
     // dividedBy()
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
-        map.put(YEARS, 12L);
-        map.put(MONTHS, 15L);
         PeriodFields test = PeriodFields.of(PeriodField.of(12, YEARS), PeriodField.of(15, MONTHS));
         assertPeriodFields(test.dividedBy(2), 6, YEARS, 7, MONTHS);
         assertPeriodFields(test.dividedBy(-3), -4, YEARS, -5, MONTHS);

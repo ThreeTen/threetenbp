@@ -457,20 +457,24 @@ public final class PeriodFields
      * If this period already contains an amount for the unit then the amount
      * is replaced. Otherwise, the unit-amount pair is added.
      * <p>
+     * For example, '6 Years, 7 Months' with '2 Months 3 Days' will return
+     * '6 Years, 2 Months, 3 Days'.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to store, not null
+     * @param periodProvider  the period to merge over this period, not null
      * @return a {@code PeriodField} based on this period with the specified period overlaid, never null
      */
-    public PeriodFields with(PeriodFields period) {
+    public PeriodFields with(PeriodProvider periodProvider) {
+        PeriodFields periods = of(periodProvider);
         if (this == ZERO) {
-            return period;
+            return periods;
         }
-        if (period == ZERO) {
+        if (periods == ZERO) {
             return this;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        copy.putAll(period.unitFieldMap);
+        copy.putAll(periods.unitFieldMap);
         return create(copy);
     }
 
@@ -512,12 +516,11 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(PeriodProvider periodProvider) {
-        checkNotNull(periodProvider, "PeriodProvider must not be null");
-        if (this == ZERO && periodProvider instanceof PeriodFields) {
-            return (PeriodFields) periodProvider;
+        PeriodFields periods = of(periodProvider);
+        if (this == ZERO) {
+            return periods;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        PeriodFields periods = of(periodProvider);
         for (PeriodField period : periods.unitFieldMap.values()) {
             PeriodField old = copy.get(period.getUnit());
             period = (old != null ? old.plus(period) : period);
@@ -569,12 +572,11 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(PeriodProvider periodProvider) {
-        checkNotNull(periodProvider, "PeriodProvider must not be null");
-        if (this == ZERO && periodProvider instanceof PeriodFields) {
-            return (PeriodFields) periodProvider;
+        PeriodFields periods = of(periodProvider);
+        if (this == ZERO) {
+            return periods;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        PeriodFields periods = of(periodProvider);
         for (PeriodField period : periods.unitFieldMap.values()) {
             PeriodField old = copy.get(period.getUnit());
             period = (old != null ? old.minus(period) : period.negated());
