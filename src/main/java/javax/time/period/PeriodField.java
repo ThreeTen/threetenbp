@@ -83,6 +83,7 @@ public final class PeriodField
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, not null
+     * @return the {@code PeriodField} instance, never null
      */
     public static PeriodField of(long amount, PeriodUnit unit) {
         PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
