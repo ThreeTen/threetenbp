@@ -187,7 +187,7 @@ public final class PeriodFields
     /**
      * Obtains a {@code PeriodFields} from a {@code PeriodProvider}.
      * <p>
-     * This factory returns an instance with all the unit-amount pairs from the provider.
+     * This method provides null-checking around {@link PeriodProvider#toPeriodFields()}.
      *
      * @param periodProvider  the provider to create from, not null
      * @return the {@code PeriodFields} instance, never null
@@ -701,6 +701,30 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
+     * Totals this period in terms of a single unit.
+     * <p>
+     * This will take each of the stored {@code PeriodField} instances and
+     * convert them to the specified unit. The result will be the total of these
+     * converted periods.
+     * <p>
+     * For example, '3 Hours, 34 Minutes' can be totalled to minutes resulting
+     * in '214 Minutes'.
+     *
+     * @param units  the required unit array, not altered, not null
+     * @return a {@code PeriodField} equivalent to this period, never null
+     * @throws CalendricalException if this period cannot be converted to the unit
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public PeriodField toTotal(PeriodUnit unit) {
+        PeriodField result = null;
+        for (PeriodField period : unitFieldMap.values()) {
+            period = period.toEquivalentPeriod(unit);
+            result = (result != null ? result.plus(period) : period);
+        }
+        return result;
+    }
+
+    /**
      * Converts this period to one containing only the units specified.
      * <p>
      * This will attempt to convert this period to each of the specified units
@@ -710,17 +734,13 @@ public final class PeriodFields
      * For example, '3 Hours' can normally be converted to both minutes and seconds.
      * If the units array contains both 'Minutes' and 'Seconds', then the result will
      * be measured in whichever is first in the array.
-     * <p>
-     * A total of a compound period can also be obtained.
-     * For example, '3 Hours, 34 Minutes' can be totalled to minutes by passing the
-     * single unit of minutes, resulting in '214 Minutes'.
      *
      * @param units  the required unit array, not altered, not null
      * @return a {@code PeriodField} equivalent to this period, never null
-     * @throws CalendricalException if the period cannot be converted to any of the units
+     * @throws CalendricalException if this period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields toEquivalentPeriod(PeriodUnit... units) {
+    public PeriodFields toEquivalent(PeriodUnit... units) {
         TreeMap<PeriodUnit, PeriodField> map = createMap();
         for (PeriodField period : unitFieldMap.values()) {
             period = period.toEquivalentPeriod(units);
@@ -785,7 +805,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
-        PeriodFields period = toEquivalentPeriod(ISOChronology.periodSeconds(), ISOChronology.periodNanos());
+        PeriodFields period = toEquivalent(ISOChronology.periodSeconds(), ISOChronology.periodNanos());
         return Duration.ofSeconds(period.getAmount(ISOChronology.periodSeconds()), period.getAmount(ISOChronology.periodNanos()));
     }
 

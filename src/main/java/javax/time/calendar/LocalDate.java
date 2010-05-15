@@ -675,7 +675,7 @@ public final class LocalDate
      */
     public LocalDate plus(PeriodProvider periodProvider) {
         PeriodFields period = PeriodFields.of(periodProvider);
-        period = period.toEquivalentPeriod(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
+        period = period.toEquivalent(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
         long periodMonths = period.getAmount(ISOChronology.periodMonths());
         long periodYears = period.getAmount(ISOChronology.periodYears());
         long periodDays = period.getAmount(ISOChronology.periodDays());
@@ -895,7 +895,7 @@ public final class LocalDate
      */
     public LocalDate minus(PeriodProvider periodProvider) {
         PeriodFields period = PeriodFields.of(periodProvider);
-        period = period.toEquivalentPeriod(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
+        period = period.toEquivalent(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
         long periodMonths = period.getAmount(ISOChronology.periodMonths());
         long periodYears = period.getAmount(ISOChronology.periodYears());
         long periodDays = period.getAmount(ISOChronology.periodDays());
