@@ -34,10 +34,7 @@ package javax.time.period;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
@@ -156,32 +153,6 @@ public final class PeriodFields
 //        }
 //        return create(internalMap);
 //    }
-
-    /**
-     * Obtains a {@code PeriodFields} from a set of unit-amount pairs.
-     * <p>
-     * The amount to store for each unit is obtained by calling {@link Number#longValue()}.
-     * This will lose any decimal places for instances of {@code Double} and {@code Float}.
-     * It may also silently lose precision for instances of {@code BigInteger} or {@code BigDecimal}.
-     *
-     * @param unitAmountMap  a map of periods that will be used to create this
-     *  period, not updated by this method, not null, contains no nulls
-     * @return the {@code PeriodFields} instance, never null
-     * @throws NullPointerException if the map is null or contains nulls
-     */
-    public static PeriodFields of(Map<PeriodUnit, ? extends Number> unitAmountMap) {
-        checkNotNull(unitAmountMap, "Map must not be null");
-        // don't use contains() as tree map and others can throw NPE
-        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
-        for (Entry<PeriodUnit, ? extends Number> entry : unitAmountMap.entrySet()) {
-            PeriodUnit unit = entry.getKey();
-            Number amount = entry.getValue();
-            checkNotNull(unit, "Null keys are not permitted in unit-amount map");
-            checkNotNull(amount, "Null amounts are not permitted in unit-amount map");
-            internalMap.put(unit, PeriodField.of(amount.longValue(), unit));
-        }
-        return create(internalMap);
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -757,23 +728,6 @@ public final class PeriodFields
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this object to a map of units to amounts.
-     * <p>
-     * The returned map will never be null, however it may be empty.
-     * It is sorted by the unit, returning the largest first.
-     * It is independent of this object - changes will not be reflected back.
-     *
-     * @return the independent, modifiable map of periods, never null, never contains null
-     */
-    public SortedMap<PeriodUnit, Long> toRuleAmountMap() {
-        SortedMap<PeriodUnit, Long> map = new TreeMap<PeriodUnit, Long>(Collections.reverseOrder());
-        for (PeriodField field : this) {
-            map.put(field.getUnit(), field.getAmount());
-        }
-        return map;
-    }
-
     /**
      * Converts this period to an estimated duration.
      * <p>
