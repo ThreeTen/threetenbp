@@ -350,7 +350,7 @@ public class TestPeriodFields {
     // isPositive()
     //-----------------------------------------------------------------------
     public void test_isPositive() {
-        assertEquals(fixtureZeroYears.isPositive(), true);
+        assertEquals(fixtureZeroYears.isPositive(), false);
         assertEquals(PeriodFields.of(1, YEARS).isPositive(), true);
         assertEquals(PeriodFields.of(-1, YEARS).isPositive(), false);
         
@@ -358,6 +358,20 @@ public class TestPeriodFields {
         assertEquals(PeriodFields.of(1, YEARS).with(-2, DAYS).isPositive(), false);
         assertEquals(PeriodFields.of(-1, YEARS).with(2, DAYS).isPositive(), false);
         assertEquals(PeriodFields.of(-1, YEARS).with(-2, DAYS).isPositive(), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // isPositiveOrZero()
+    //-----------------------------------------------------------------------
+    public void test_isPositiveOrZero() {
+        assertEquals(fixtureZeroYears.isPositiveOrZero(), true);
+        assertEquals(PeriodFields.of(1, YEARS).isPositiveOrZero(), true);
+        assertEquals(PeriodFields.of(-1, YEARS).isPositiveOrZero(), false);
+        
+        assertEquals(PeriodFields.of(1, YEARS).with(2, DAYS).isPositiveOrZero(), true);
+        assertEquals(PeriodFields.of(1, YEARS).with(-2, DAYS).isPositiveOrZero(), false);
+        assertEquals(PeriodFields.of(-1, YEARS).with(2, DAYS).isPositiveOrZero(), false);
+        assertEquals(PeriodFields.of(-1, YEARS).with(-2, DAYS).isPositiveOrZero(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -1202,7 +1216,8 @@ public class TestPeriodFields {
         assertEquals(test.get(unit1), PeriodField.of(amount1, unit1));
         assertEquals(test.getAmount(unit1), amount1);
         assertEquals(test.isZero(), amount1 == 0);
-        assertEquals(test.isPositive(), amount1 >= 0);
+        assertEquals(test.isPositive(), amount1 > 0);
+        assertEquals(test.isPositiveOrZero(), amount1 >= 0);
         SortedMap<PeriodUnit, PeriodField> map = test.toMap();
         assertEquals(map.size(), 1);
         assertEquals(map.get(unit1), PeriodField.of(amount1, unit1));
@@ -1217,7 +1232,8 @@ public class TestPeriodFields {
         assertEquals(test.getAmount(unit1), amount1);
         assertEquals(test.getAmount(unit2), amount2);
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0);
-        assertEquals(test.isPositive(), amount1 >= 0 && amount2 >= 0);
+        assertEquals(test.isPositive(), amount1 > 0 && amount2 > 0);
+        assertEquals(test.isPositiveOrZero(), amount1 >= 0 && amount2 >= 0);
         SortedMap<PeriodUnit, PeriodField> map = test.toMap();
         assertEquals(map.size(), 2);
         assertEquals(map.get(unit1), PeriodField.of(amount1, unit1));
@@ -1236,7 +1252,8 @@ public class TestPeriodFields {
         assertEquals(test.getAmount(unit2), amount2);
         assertEquals(test.getAmount(unit3), amount3);
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0 && amount3 == 0);
-        assertEquals(test.isPositive(), amount1 >= 0 && amount2 >= 0 && amount3 >= 0);
+        assertEquals(test.isPositive(), amount1 > 0 && amount2 > 0 && amount3 > 0);
+        assertEquals(test.isPositiveOrZero(), amount1 >= 0 && amount2 >= 0 && amount3 >= 0);
         SortedMap<PeriodUnit, PeriodField> map = test.toMap();
         assertEquals(map.size(), 3);
         assertEquals(map.get(unit1), PeriodField.of(amount1, unit1));

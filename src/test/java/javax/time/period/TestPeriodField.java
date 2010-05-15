@@ -111,24 +111,6 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
-    // isPositive()
-    //-----------------------------------------------------------------------
-    public void test_isPositive() {
-        assertEquals(PeriodField.of(0, DAYS).isPositive(), false);
-        assertEquals(PeriodField.of(1, DAYS).isPositive(), true);
-        assertEquals(PeriodField.of(-1, DAYS).isPositive(), false);
-    }
-
-    //-----------------------------------------------------------------------
-    // isNegative()
-    //-----------------------------------------------------------------------
-    public void test_isNegative() {
-        assertEquals(PeriodField.of(0, DAYS).isNegative(), false);
-        assertEquals(PeriodField.of(1, DAYS).isNegative(), false);
-        assertEquals(PeriodField.of(-1, DAYS).isNegative(), true);
-    }
-
-    //-----------------------------------------------------------------------
     // getAmount()
     //-----------------------------------------------------------------------
     public void test_getAmount() {
@@ -184,22 +166,22 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
-    // withRule()
+    // withUnit()
     //-----------------------------------------------------------------------
-    public void test_withRule() {
-        assertEquals(PeriodField.of(0, DAYS).withRule(MONTHS), PeriodField.of(0, MONTHS));
-        assertEquals(PeriodField.of(1, DAYS).withRule(MONTHS), PeriodField.of(1, MONTHS));
-        assertEquals(PeriodField.of(-1, DAYS).withRule(MONTHS), PeriodField.of(-1, MONTHS));
+    public void test_withUnit() {
+        assertEquals(PeriodField.of(0, DAYS).withUnit(MONTHS), PeriodField.of(0, MONTHS));
+        assertEquals(PeriodField.of(1, DAYS).withUnit(MONTHS), PeriodField.of(1, MONTHS));
+        assertEquals(PeriodField.of(-1, DAYS).withUnit(MONTHS), PeriodField.of(-1, MONTHS));
     }
 
-    public void test_withRule_same() {
+    public void test_withUnit_same() {
         PeriodField base = PeriodField.of(1, DAYS);
-        assertSame(base.withRule(DAYS), base);
+        assertSame(base.withUnit(DAYS), base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_withAmount_null() {
-        PeriodField.of(1, DAYS).withRule(null);
+    public void test_withUnit_null() {
+        PeriodField.of(1, DAYS).withUnit(null);
     }
 
     //-----------------------------------------------------------------------

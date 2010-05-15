@@ -303,16 +303,33 @@ public final class PeriodFields
     }
 
     /**
+     * Checks if this period is fully positive, excluding zero.
+     * <p>
+     * This checks whether all the amounts in this period are positive,
+     * defined as greater than zero.
+     *
+     * @return true if this period is fully positive excluding zero
+     */
+    public boolean isPositive() {
+        for (PeriodField field : unitFieldMap.values()) {
+            if (field.getAmount() <= 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Checks if this period is fully positive, including zero.
      * <p>
      * This checks whether all the amounts in this period are positive,
      * defined as greater than or equal to zero.
      *
-     * @return true if this period is fully positive
+     * @return true if this period is fully positive including zero
      */
-    public boolean isPositive() {
+    public boolean isPositiveOrZero() {
         for (PeriodField field : unitFieldMap.values()) {
-            if (field.isNegative()) {
+            if (field.getAmount() < 0) {
                 return false;
             }
         }

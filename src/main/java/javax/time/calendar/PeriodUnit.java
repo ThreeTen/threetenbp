@@ -129,7 +129,7 @@ public abstract class PeriodUnit
     protected PeriodUnit(String name, PeriodField equivalentPeriod) {
         ISOChronology.checkNotNull(name, "Name must not be null");
         ISOChronology.checkNotNull(equivalentPeriod, "Equivalent period must not be null");
-        if (equivalentPeriod.isNegative() || equivalentPeriod.isZero()) {
+        if (equivalentPeriod.getAmount() <= 0) {
             throw new IllegalArgumentException("Equivalent period must not be negative or zero");
         }
         this.name = name;

@@ -317,6 +317,58 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
+    // isPositive()
+    //-----------------------------------------------------------------------
+    public void test_isPositive() {
+        assertEquals(Period.of(1, 2, 3, 4, 5, 6, 7).isPositive(), true);
+        assertEquals(Period.of(1, 2, 3, 0, 0, 0, 0).isPositive(), true);
+        assertEquals(Period.of(0, 0, 0, 4, 5, 6, 7).isPositive(), true);
+        assertEquals(Period.of(1, 0, 0, 0, 0, 0, 0).isPositive(), true);
+        assertEquals(Period.of(0, 2, 0, 0, 0, 0, 0).isPositive(), true);
+        assertEquals(Period.of(0, 0, 3, 0, 0, 0, 0).isPositive(), true);
+        assertEquals(Period.of(0, 0, 0, 4, 0, 0, 0).isPositive(), true);
+        assertEquals(Period.of(0, 0, 0, 0, 5, 0, 0).isPositive(), true);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 6, 0).isPositive(), true);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 0, 7).isPositive(), true);
+        assertEquals(Period.of(-1, -2, -3, -4, -5, -6, -7).isPositive(), false);
+        assertEquals(Period.of(-1, -2, 3, 4, -5, -6, -7).isPositive(), false);
+        assertEquals(Period.of(-1, 0, 0, 0, 0, 0, 0).isPositive(), false);
+        assertEquals(Period.of(0, -2, 0, 0, 0, 0, 0).isPositive(), false);
+        assertEquals(Period.of(0, 0, -3, 0, 0, 0, 0).isPositive(), false);
+        assertEquals(Period.of(0, 0, 0, -4, 0, 0, 0).isPositive(), false);
+        assertEquals(Period.of(0, 0, 0, 0, -5, 0, 0).isPositive(), false);
+        assertEquals(Period.of(0, 0, 0, 0, 0, -6, 0).isPositive(), false);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 0, -7).isPositive(), false);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 0).isPositive(), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // isPositiveOrZero()
+    //-----------------------------------------------------------------------
+    public void test_isPositiveOrZero() {
+        assertEquals(Period.of(1, 2, 3, 4, 5, 6, 7).isPositiveOrZero(), true);
+        assertEquals(Period.of(1, 2, 3, 0, 0, 0, 0).isPositiveOrZero(), true);
+        assertEquals(Period.of(0, 0, 0, 4, 5, 6, 7).isPositiveOrZero(), true);
+        assertEquals(Period.of(1, 0, 0, 0, 0, 0, 0).isPositiveOrZero(), true);
+        assertEquals(Period.of(0, 2, 0, 0, 0, 0, 0).isPositiveOrZero(), true);
+        assertEquals(Period.of(0, 0, 3, 0, 0, 0, 0).isPositiveOrZero(), true);
+        assertEquals(Period.of(0, 0, 0, 4, 0, 0, 0).isPositiveOrZero(), true);
+        assertEquals(Period.of(0, 0, 0, 0, 5, 0, 0).isPositiveOrZero(), true);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 6, 0).isPositiveOrZero(), true);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 0, 7).isPositiveOrZero(), true);
+        assertEquals(Period.of(-1, -2, -3, -4, -5, -6, -7).isPositiveOrZero(), false);
+        assertEquals(Period.of(-1, -2, 3, 4, -5, -6, -7).isPositiveOrZero(), false);
+        assertEquals(Period.of(-1, 0, 0, 0, 0, 0, 0).isPositiveOrZero(), false);
+        assertEquals(Period.of(0, -2, 0, 0, 0, 0, 0).isPositiveOrZero(), false);
+        assertEquals(Period.of(0, 0, -3, 0, 0, 0, 0).isPositiveOrZero(), false);
+        assertEquals(Period.of(0, 0, 0, -4, 0, 0, 0).isPositiveOrZero(), false);
+        assertEquals(Period.of(0, 0, 0, 0, -5, 0, 0).isPositiveOrZero(), false);
+        assertEquals(Period.of(0, 0, 0, 0, 0, -6, 0).isPositiveOrZero(), false);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 0, -7).isPositiveOrZero(), false);
+        assertEquals(Period.of(0, 0, 0, 0, 0, 0).isPositiveOrZero(), true);
+    }
+
+    //-----------------------------------------------------------------------
     // getNanosInt()
     //-----------------------------------------------------------------------
     public void test_getNanosInt() {

@@ -116,30 +116,6 @@ public final class PeriodField
         return amount == 0;
     }
 
-    /**
-     * Checks if this period is positive, excluding zero.
-     * <p>
-     * A {@code PeriodField} can be positive, zero or negative.
-     * This method checks whether the length is greater than zero.
-     *
-     * @return true if this period is positive or zero
-     */
-    public boolean isPositive() {
-        return amount > 0;
-    }
-
-    /**
-     * Checks if this period is negative, excluding zero.
-     * <p>
-     * A {@code PeriodField} can be positive, zero or negative.
-     * This method checks whether the length is less than zero.
-     *
-     * @return true if this period is negative
-     */
-    public boolean isNegative() {
-        return amount < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the amount of this period.
@@ -201,7 +177,7 @@ public final class PeriodField
      * @param unit  the unit to set in the returned period, positive or negative
      * @return a {@code PeriodField} based on this period with the specified unit, never null
      */
-    public PeriodField withRule(PeriodUnit unit) {
+    public PeriodField withUnit(PeriodUnit unit) {
         PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit.equals(this.unit)) {
             return this;
@@ -323,7 +299,7 @@ public final class PeriodField
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField abs() {
-        return isNegative() ? negated() : this;
+        return amount < 0 ? negated() : this;
     }
 
     //-----------------------------------------------------------------------
