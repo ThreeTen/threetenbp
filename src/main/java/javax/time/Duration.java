@@ -293,7 +293,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Duration} from a duration in a specifed time unit.
+     * Obtains an instance of {@code Duration} from a duration in a specified time unit.
      * <p>
      * The duration amount is measured in terms of the specified unit. For example:
      * <pre>
