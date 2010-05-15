@@ -123,6 +123,23 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains a {@code Period} from an amount and unit.
+     * <p>
+     * The parameters represent the two parts of a phrase like '6 Days'.
+     * <p>
+     * A {@code Period} supports 7 units, ISO years, months, days, hours,
+     * minutes, seconds and nanoseconds. The unit must be one of these, or be
+     * able to be converted to one of these.
+     *
+     * @param amount  the amount of the period, measured in terms of the unit, positive or negative
+     * @param unit  the unit that the period is measured in, not null
+     * @return the {@code Period} instance, never null
+     */
+    public static Period of(int amount, PeriodUnit unit) {
+        return of(PeriodFields.of(amount, unit));
+    }
+
+    /**
      * Obtains a {@code Period} from a provider of periods.
      * <p>
      * A {@code Period} supports 7 units, ISO years, months, days, hours,

@@ -43,11 +43,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodUnit;
+import javax.time.i18n.HistoricChronology;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -60,6 +61,16 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestPeriod {
+
+    private static final PeriodUnit YEARS = ISOChronology.periodYears();
+    private static final PeriodUnit QUARTERS = ISOChronology.periodQuarters();
+    private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
+    private static final PeriodUnit DAYS = ISOChronology.periodDays();
+    private static final PeriodUnit HOURS = ISOChronology.periodHours();
+    private static final PeriodUnit MINUTES = ISOChronology.periodMinutes();
+    private static final PeriodUnit SECONDS = ISOChronology.periodSeconds();
+    private static final PeriodUnit NANOS = ISOChronology.periodNanos();
+    private static final PeriodUnit HISTORIC_MONTHS = HistoricChronology.periodMonths();
 
     private static final BigInteger MAX_BINT = BigInteger.valueOf(Integer.MAX_VALUE);
     private static final BigInteger BINT_24 = BigInteger.valueOf(24);
@@ -115,6 +126,33 @@ public class TestPeriod {
         for (Constructor<?> con : cons) {
             assertTrue(Modifier.isPrivate(con.getModifiers()));
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // factories
+    //-----------------------------------------------------------------------
+    public void test_factory_of_intPeriodUnit() {
+        assertEquals(Period.of(1, YEARS), Period.ofYears(1));
+        assertEquals(Period.of(2, MONTHS), Period.ofMonths(2));
+        assertEquals(Period.of(3, DAYS), Period.ofDays(3));
+        assertEquals(Period.of(Integer.MAX_VALUE, HOURS), Period.ofHours(Integer.MAX_VALUE));
+        assertEquals(Period.of(-1, MINUTES), Period.ofMinutes(-1));
+        assertEquals(Period.of(-2, SECONDS), Period.ofSeconds(-2));
+        assertEquals(Period.of(Integer.MIN_VALUE, NANOS), Period.ofNanos(Integer.MIN_VALUE));
+    }
+
+    public void test_factory_of_intPeriodUnit_convert() {
+        assertEquals(Period.of(2, QUARTERS), Period.ofMonths(6));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_of_intPeriodUnit_noConvert() {
+        Period.of(1, HISTORIC_MONTHS);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_of_intPeriodUnit_null() {
+        Period.of(1, null);
     }
 
     //-----------------------------------------------------------------------
