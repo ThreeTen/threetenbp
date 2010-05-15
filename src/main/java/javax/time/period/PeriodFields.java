@@ -642,7 +642,7 @@ public final class PeriodFields
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return a {@code PeriodField} based on this period with the amount multiplied by the scalar, never null
+     * @return a {@code PeriodField} based on this period with the amounts multiplied by the scalar, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields multipliedBy(long scalar) {
@@ -661,7 +661,7 @@ public final class PeriodFields
      * by the specified value.
      *
      * @param divisor  the value to divide by, not null, not zero
-     * @return a {@code PeriodField} based on this period with the amount divided by the divisor, never null
+     * @return a {@code PeriodField} based on this period with the amounts divided by the divisor, never null
      * @throws ArithmeticException if dividing by zero
      */
     public PeriodFields dividedBy(long divisor) {
@@ -681,7 +681,7 @@ public final class PeriodFields
     /**
      * Returns a new instance with each amount in this period negated.
      *
-     * @return a {@code PeriodField} based on this period with the amount negated, never null
+     * @return a {@code PeriodField} based on this period with the amounts negated, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields negated() {
