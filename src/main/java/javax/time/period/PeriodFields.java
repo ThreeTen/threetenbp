@@ -718,7 +718,7 @@ public final class PeriodFields
     public PeriodField toTotal(PeriodUnit unit) {
         PeriodField result = null;
         for (PeriodField period : unitFieldMap.values()) {
-            period = period.toEquivalentPeriod(unit);
+            period = period.toEquivalent(unit);
             result = (result != null ? result.plus(period) : period);
         }
         return result;
@@ -727,9 +727,14 @@ public final class PeriodFields
     /**
      * Converts this period to one containing only the units specified.
      * <p>
-     * This will attempt to convert this period to each of the specified units
-     * in turn. It is recommended to specify the units from largest to smallest.
-     * If this period is already one of the specified units, then {@code this} is returned.
+     * This converts this period to one measured in the specified units.
+     * It operates by looping through the individual parts of this period,
+     * converting each in turn to one of the specified units.
+     * These converted periods are then combined to form the result.
+     * No normalization is performed on the result.
+     * <p>
+     * This method uses {@link PeriodField#toEquivalent(PeriodUnit...)} and as such,
+     * it is recommended to specify the units from largest to smallest.
      * <p>
      * For example, '3 Hours' can normally be converted to both minutes and seconds.
      * If the units array contains both 'Minutes' and 'Seconds', then the result will
@@ -743,7 +748,7 @@ public final class PeriodFields
     public PeriodFields toEquivalent(PeriodUnit... units) {
         TreeMap<PeriodUnit, PeriodField> map = createMap();
         for (PeriodField period : unitFieldMap.values()) {
-            period = period.toEquivalentPeriod(units);
+            period = period.toEquivalent(units);
             PeriodField old = map.get(period.getUnit());
             period = (old != null ? old.plus(period) : period);
             map.put(period.getUnit(), period);

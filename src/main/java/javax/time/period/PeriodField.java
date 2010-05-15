@@ -327,21 +327,22 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this period to the specified unit.
+     * Converts this period to an equivalent in the specified unit.
      * <p>
      * This converts this period to one measured in the specified unit.
      * This uses {@link PeriodUnit#getEquivalentPeriod(PeriodUnit)} to lookup
      * the equivalent period for the unit.
      * <p>
-     * For example, '3 Hours' could be converted to '180 Minutes' assuming the
-     * 'Hours' unit has an equivalent of '60 Minutes'.
+     * For example, '3 Hours' could be converted to '180 Minutes'.
+     * <p>
+     * This method is equivalent to {@link #toEquivalent(PeriodUnit...)} with a single parameter.
      *
      * @param unit  the unit to convert to, not null
      * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to the specified unit
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField toEquivalentPeriod(PeriodUnit requiredUnit) {
+    public PeriodField toEquivalent(PeriodUnit requiredUnit) {
         PeriodField equivalent = unit.getEquivalentPeriod(requiredUnit);
         if (equivalent != null) {
             return equivalent.multipliedBy(amount);
@@ -350,23 +351,22 @@ public final class PeriodField
     }
 
     /**
-     * Converts this period to one of the units specified.
+     * Converts this period to an equivalent in <i>one</i> of the units specified.
      * <p>
-     * This will attempt to convert this period to each of the specified units
-     * in turn. It is recommended to specify the units from largest to smallest.
-     * If this period is already one of the specified units, then {@code this}
-     * is returned.
+     * This converts this period to one measured in one of the specified units.
+     * It operates by trying to convert to each unit in turn until one succeeds.
+     * As such, it is recommended to specify the units from largest to smallest.
      * <p>
      * For example, '3 Hours' can normally be converted to both minutes and seconds.
      * If the units array contains both 'Minutes' and 'Seconds', then the result will
-     * be measured in whichever is first in the array.
+     * be measured in whichever is first in the array, either '180 Minutes' or '10800 Seconds'.
      *
      * @param requiredUnits  the required unit array, not altered, not null
      * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField toEquivalentPeriod(PeriodUnit... requiredUnits) {
+    public PeriodField toEquivalent(PeriodUnit... requiredUnits) {
         for (PeriodUnit requiredUnit : requiredUnits) {
             PeriodField equivalent = unit.getEquivalentPeriod(requiredUnit);
             if (equivalent != null) {
