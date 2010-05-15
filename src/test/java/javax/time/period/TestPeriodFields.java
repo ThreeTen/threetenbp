@@ -44,6 +44,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
@@ -1011,6 +1012,25 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
+    // toMap()
+    //-----------------------------------------------------------------------
+    public void test_toMap() {
+        SortedMap<PeriodUnit, PeriodField> test = fixtureP2Y5D.toMap();
+        assertEquals(test.size(), 2);
+        Iterator<PeriodUnit> iterator = test.keySet().iterator();
+        assertEquals(iterator.next(), YEARS);
+        assertEquals(iterator.next(), DAYS);
+        assertEquals(test.get(YEARS), PeriodField.of(2, YEARS));
+        assertEquals(test.get(DAYS), PeriodField.of(5, DAYS));
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_toMap_unmodifiable() {
+        SortedMap<PeriodUnit, PeriodField> test = fixtureP2Y5D.toMap();
+        test.clear();
+    }
+
+    //-----------------------------------------------------------------------
     // toEstimatedDuration()
     //-----------------------------------------------------------------------
     public void test_toEstimatedDuration() {
@@ -1184,6 +1204,9 @@ public class TestPeriodFields {
         assertEquals(test.getAmount(unit1), amount1);
         assertEquals(test.isZero(), amount1 == 0);
         assertEquals(test.isPositive(), amount1 >= 0);
+        SortedMap<PeriodUnit, PeriodField> map = test.toMap();
+        assertEquals(map.size(), 1);
+        assertEquals(map.get(unit1), PeriodField.of(amount1, unit1));
     }
 
     private void assertPeriodFields(PeriodFields test, long amount1, PeriodUnit unit1, long amount2, PeriodUnit unit2) {
@@ -1196,6 +1219,10 @@ public class TestPeriodFields {
         assertEquals(test.getAmount(unit2), amount2);
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0);
         assertEquals(test.isPositive(), amount1 >= 0 && amount2 >= 0);
+        SortedMap<PeriodUnit, PeriodField> map = test.toMap();
+        assertEquals(map.size(), 2);
+        assertEquals(map.get(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(map.get(unit2), PeriodField.of(amount2, unit2));
     }
 
     private void assertPeriodFields(PeriodFields test, long amount1, PeriodUnit unit1, long amount2, PeriodUnit unit2, long amount3, PeriodUnit unit3) {
@@ -1211,6 +1238,11 @@ public class TestPeriodFields {
         assertEquals(test.getAmount(unit3), amount3);
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0 && amount3 == 0);
         assertEquals(test.isPositive(), amount1 >= 0 && amount2 >= 0 && amount3 >= 0);
+        SortedMap<PeriodUnit, PeriodField> map = test.toMap();
+        assertEquals(map.size(), 3);
+        assertEquals(map.get(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(map.get(unit2), PeriodField.of(amount2, unit2));
+        assertEquals(map.get(unit3), PeriodField.of(amount3, unit3));
     }
 
 }

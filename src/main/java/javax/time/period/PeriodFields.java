@@ -34,6 +34,7 @@ package javax.time.period;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.time.CalendricalException;
@@ -769,6 +770,18 @@ public final class PeriodFields
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a {@code Map} equivalent to this period.
+     * <p>
+     * The map will connect the unit to the single field period.
+     * The sort order is from largest unit to smallest unit.
+     *
+     * @return the map equivalent to this period, unmodifiable, never null
+     */
+    public SortedMap<PeriodUnit, PeriodField> toMap() {
+        return Collections.unmodifiableSortedMap(unitFieldMap);
+    }
+
     /**
      * Converts this period to a {@code PeriodFields}, trivially
      * returning {@code this}.
