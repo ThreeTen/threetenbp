@@ -716,7 +716,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
-    public LocalDate plusYears(int years) {
+    public LocalDate plusYears(long years) {
         return plusYears(years, DateResolvers.previousValid());
     }
 
@@ -737,12 +737,12 @@ public final class LocalDate
      * @return a {@code LocalDate} with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate plusYears(int years, DateResolver dateResolver) {
+    public LocalDate plusYears(long years, DateResolver dateResolver) {
         ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
         if (years == 0) {
             return this;
         }
-        int newYear = ISOChronology.addYears(year, years);
+        int newYear = ISOChronology.yearRule().checkValue(year + years);  // safe overflow
         return resolveDate(dateResolver, newYear, month, day);
     }
 
@@ -933,7 +933,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusYears(int, javax.time.calendar.DateResolver)
      */
-    public LocalDate minusYears(int years) {
+    public LocalDate minusYears(long years) {
         return minusYears(years, DateResolvers.previousValid());
     }
 
@@ -954,12 +954,12 @@ public final class LocalDate
      * @return a {@code LocalDate} with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate minusYears(int years, DateResolver dateResolver) {
+    public LocalDate minusYears(long years, DateResolver dateResolver) {
         ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
         if (years == 0) {
             return this;
         }
-        int newYear = ISOChronology.subtractYears(year, years);
+        int newYear = ISOChronology.yearRule().checkValue(year - years);  // safe overflow
         return resolveDate(dateResolver, newYear, month, day);
     }
 

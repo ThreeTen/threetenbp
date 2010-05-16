@@ -909,114 +909,107 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
-    public void test_plusYears_int_normal() {
+    public void test_plusYears_long_normal() {
         LocalDate t = TEST_2007_07_15.plusYears(1);
         assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
-    public void test_plusYears_int_noChange() {
+    public void test_plusYears_long_noChange() {
         LocalDate t = TEST_2007_07_15.plusYears(0);
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_plusYears_int_negative() {
+    public void test_plusYears_long_negative() {
         LocalDate t = TEST_2007_07_15.plusYears(-1);
         assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
-    public void test_plusYears_int_adjustDay() {
+    public void test_plusYears_long_adjustDay() {
         LocalDate t = LocalDate.of(2008, 2, 29).plusYears(1);
         LocalDate expected = LocalDate.of(2009, 2, 28);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_invalidTooLarge() {
-        try {
-            LocalDate.of(Year.MAX_YEAR, 1, 1).plusYears(1);
-            fail();
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_plusYears_long_big() {
+        long years = 20L + Year.MAX_YEAR;
+        LocalDate test = LocalDate.of(-40, 6, 1).plusYears(years);
+        assertEquals(test, LocalDate.of((int) (-40L + years), 6, 1));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_invalidTooSmall_validInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1);
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_plusYears_long_invalidTooLarge() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 6, 1);
+        test.plusYears(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_invalidTooSmall_invalidInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10);
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_plusYears_long_invalidTooLargeMaxAddMax() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.plusYears(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusYears_long_invalidTooLargeMaxAddMin() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.plusYears(Long.MIN_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusYears_long_invalidTooSmall_validInt() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusYears_long_invalidTooSmall_invalidInt() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10);
     }
 
     //-----------------------------------------------------------------------
-    public void test_plusYears_int_DateResolver_normal() {
+    public void test_plusYears_long_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.plusYears(1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
-    public void test_plusYears_int_DateResolver_noChange() {
+    public void test_plusYears_long_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.plusYears(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_plusYears_int_DateResolver_negative() {
+    public void test_plusYears_long_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.plusYears(-1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
-    public void test_plusYears_int_DateResolver_adjustDay() {
+    public void test_plusYears_long_DateResolver_adjustDay() {
         LocalDate t = LocalDate.of(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
         LocalDate expected = LocalDate.of(2009, 3, 1);
         assertEquals(t, expected);
     }
 
+    public void test_plusYears_long_DateResolver_big() {
+        long years = 20L + Year.MAX_YEAR;
+        LocalDate test = LocalDate.of(-40, 6, 1).plusYears(years, DateResolvers.nextValid());
+        assertEquals(test, LocalDate.of((int) (-40L + years), 6, 1));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_plusYears_int_DateResolver_null_adjustDay() {
+    public void test_plusYears_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15.plusYears(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_DateResolver_invalidTooLarge() {
-        try {
-            LocalDate.of(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
-            fail();
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_plusYears_long_DateResolver_invalidTooLarge() {
+        LocalDate.of(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_DateResolver_invalidTooSmall_validInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_plusYears_long_DateResolver_invalidTooSmall_validInt() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_DateResolver_invalidTooSmall_invalidInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10, DateResolvers.nextValid());
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_plusYears_long_DateResolver_invalidTooSmall_invalidInt() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1507,114 +1500,102 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
-    public void test_minusYears_int_normal() {
+    public void test_minusYears_long_normal() {
         LocalDate t = TEST_2007_07_15.minusYears(1);
         assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
-    public void test_minusYears_int_noChange() {
+    public void test_minusYears_long_noChange() {
         LocalDate t = TEST_2007_07_15.minusYears(0);
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_minusYears_int_negative() {
+    public void test_minusYears_long_negative() {
         LocalDate t = TEST_2007_07_15.minusYears(-1);
         assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
-    public void test_minusYears_int_adjustDay() {
+    public void test_minusYears_long_adjustDay() {
         LocalDate t = LocalDate.of(2008, 2, 29).minusYears(1);
         LocalDate expected = LocalDate.of(2007, 2, 28);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_invalidTooLarge() {
-        try {
-            LocalDate.of(Year.MAX_YEAR, 1, 1).minusYears(-1);
-            fail();
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_minusYears_long_big() {
+        long years = 20L + Year.MAX_YEAR;
+        LocalDate test = LocalDate.of(40, 6, 1).minusYears(years);
+        assertEquals(test, LocalDate.of((int) (40L - years), 6, 1));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_invalidTooSmall_validInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1);
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_minusYears_long_invalidTooLarge() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 6, 1);
+        test.minusYears(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_invalidTooSmall_invalidInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(10);
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_minusYears_long_invalidTooLargeMaxAddMax() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.minusYears(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusYears_long_invalidTooLargeMaxAddMin() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.minusYears(Long.MIN_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusYears_long_invalidTooSmall() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1);
     }
 
     //-----------------------------------------------------------------------
-    public void test_minusYears_int_DateResolver_normal() {
+    public void test_minusYears_long_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.minusYears(1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
-    public void test_minusYears_int_DateResolver_noChange() {
+    public void test_minusYears_long_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.minusYears(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_minusYears_int_DateResolver_negative() {
+    public void test_minusYears_long_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.minusYears(-1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
-    public void test_minusYears_int_DateResolver_adjustDay() {
+    public void test_minusYears_long_DateResolver_adjustDay() {
         LocalDate t = LocalDate.of(2008, 2, 29).minusYears(1, DateResolvers.nextValid());
         LocalDate expected = LocalDate.of(2007, 3, 1);
         assertEquals(t, expected);
     }
 
+    public void test_minusYears_long_DateResolver_big() {
+        long years = 20L + Year.MAX_YEAR;
+        LocalDate test = LocalDate.of(40, 6, 1).minusYears(years, DateResolvers.nextValid());
+        assertEquals(test, LocalDate.of((int) (40L - years), 6, 1));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_minusYears_int_DateResolver_null_adjustDay() {
+    public void test_minusYears_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15.minusYears(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_DateResolver_invalidTooLarge() {
-        try {
-            LocalDate.of(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
-            fail();
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_minusYears_long_DateResolver_invalidTooLarge() {
+        LocalDate.of(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_DateResolver_invalidTooSmall_validInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_minusYears_long_DateResolver_invalidTooSmall_validInt() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_DateResolver_invalidTooSmall_invalidInt() {
-        try {
-            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(10, DateResolvers.nextValid());
-        } catch (CalendricalException ex) {
-            assertTrue(ex.getMessage().contains("exceeds the supported year range"));
-            throw ex;
-        }
+    public void test_minusYears_long_DateResolver_invalidTooSmall_invalidInt() {
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(10, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
