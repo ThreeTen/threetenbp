@@ -39,7 +39,6 @@ import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
-import javax.time.period.Period;
 import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
