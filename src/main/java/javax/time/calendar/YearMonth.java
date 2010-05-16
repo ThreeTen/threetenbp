@@ -90,7 +90,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearMonth}.
+     * Obtains an instance of {@code YearMonth} from a year and month.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -104,7 +104,7 @@ public final class YearMonth
     }
 
     /**
-     * Obtains an instance of {@code YearMonth}.
+     * Obtains an instance of {@code YearMonth} from a year and month.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -118,7 +118,7 @@ public final class YearMonth
     /**
      * Obtains an instance of {@code YearMonth} from a Calendrical.
      * <p>
-     * This method will create a YearMonth from the Calendrical by extracting
+     * This method will create a year-month from the Calendrical by extracting
      * the year and month-of-year fields.
      *
      * @param calendrical  the calendrical to use, not null

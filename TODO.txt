@@ -58,6 +58,7 @@ Date/Time classes
 ? getMonthOfYear() -> getMonth(), etc
 ? getAmPm()
 ? with(rule, value)
+? YearMonth.with(Year)
 
 Rules
 - ensure can merge MonthDay and Year
