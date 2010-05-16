@@ -446,8 +446,15 @@ public final class YearMonth
     /**
      * Adjusts a date to have the value of this year-month, returning a new date.
      * <p>
-     * If the day-of-month is invalid for the new year then the
-     * {@link DateResolvers#previousValid()} resolver is used.
+     * This method implements the {@link DateAdjuster} interface.
+     * It is intended that, instead of calling this method directly, it is used from
+     * an instance of {@code LocalDate}:
+     * <pre>
+     *   date = date.with(yearMonth);
+     * </pre>
+     * <p>
+     * This implementation handles the case where the day-of-month is invalid for the new
+     * month and year using the {@link DateResolvers#previousValid()} resolver.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

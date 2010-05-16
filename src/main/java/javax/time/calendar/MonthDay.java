@@ -379,7 +379,15 @@ public final class MonthDay
     /**
      * Adjusts a date to have the value of this month-day, returning a new date.
      * <p>
-     * If the day-of-month is invalid for the new year then an exception is thrown.
+     * This method implements the {@link DateAdjuster} interface.
+     * It is intended that, instead of calling this method directly, it is used from
+     * an instance of {@code LocalDate}:
+     * <pre>
+     *   date = date.with(monthDay);
+     * </pre>
+     * <p>
+     * This implementation handles the case where this represents February 29 and
+     * the year is not a leap year by throwing an exception.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

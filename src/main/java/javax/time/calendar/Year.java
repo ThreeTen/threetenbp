@@ -333,10 +333,15 @@ public final class Year
     /**
      * Adjusts a date to have the value of this year, returning a new date.
      * <p>
-     * If the day-of-month is invalid for the new year then the
-     * {@link DateResolvers#previousValid()} resolver is used.
-     * This occurs if the input date is 29th February in a leap year, and this
-     * object represents a non-leap year.
+     * This method implements the {@link DateAdjuster} interface.
+     * It is intended that, instead of calling this method directly, it is used from
+     * an instance of {@code LocalDate}:
+     * <pre>
+     *   date = date.with(year);
+     * </pre>
+     * <p>
+     * This implementation handles the case where the date represents February 29 and
+     * this is not a leap year using the {@link DateResolvers#previousValid()} resolver.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
