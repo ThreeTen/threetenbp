@@ -40,6 +40,7 @@ import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.period.Period;
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -281,7 +282,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned year-month, from MIN_YEAR to MAX_YEAR
-     * @return a {@code YearMonth} based on this one with the requested year, never null
+     * @return a {@code YearMonth} based on this year-month with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
@@ -295,7 +296,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned year-month, from 1 (January) to 12 (December)
-     * @return a {@code YearMonth} based on this one with the requested month, never null
+     * @return a {@code YearMonth} based on this year-month with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
@@ -306,18 +307,18 @@ public final class YearMonth
     /**
      * Returns a copy of this YearMonth with the specified period added.
      * <p>
-     * This adds the amount in years and months in the specified period to this year-month.
-     * Any other amounts, such as days, hours, minutes or seconds are ignored.
+     * The period is normalized to ISO Months before being added to this year-month.
+     * Any amounts that are not normalized to months, such as hours, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated YearMonth, never null
+     * @return a {@code YearMonth} based on this year-month with the period added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth plus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        return plusYears(period.getYears()).plusMonths(period.getMonths());
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths());
+        return plusMonths(period.getAmount(ISOChronology.periodMonths()));
     }
 
     //-----------------------------------------------------------------------
@@ -327,14 +328,14 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, positive or negative
-     * @return a new updated YearMonth, never null
+     * @return a {@code YearMonth} based on this year-month with the period added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public YearMonth plusYears(int years) {
+    public YearMonth plusYears(long years) {
         if (years == 0) {
             return this;
         }
-        int newYear = ISOChronology.addYears(year, years);
+        int newYear = ISOChronology.yearRule().checkValue(year + years);  // safe overflow
         return with(newYear, month);
     }
 
@@ -344,23 +345,17 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, positive or negative
-     * @return a new updated YearMonth, never null
+     * @return a {@code YearMonth} based on this year-month with the period added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public YearMonth plusMonths(int months) {
+    public YearMonth plusMonths(long months) {
         if (months == 0) {
             return this;
         }
-        long newMonth0 = month.getValue() - 1;
-        newMonth0 = newMonth0 + months;
-        int years = (int) (newMonth0 / 12);
-        newMonth0 = newMonth0 % 12;
-        if (newMonth0 < 0) {
-            newMonth0 += 12;
-            years--;
-        }
-        int newYear = ISOChronology.addYears(year, years);
-        MonthOfYear newMonth = MonthOfYear.of((int) ++newMonth0);
+        long monthCount = year * 12L + (month.getValue() - 1);
+        long calcMonths = monthCount + months;  // safe overflow
+        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
 
@@ -368,18 +363,18 @@ public final class YearMonth
     /**
      * Returns a copy of this YearMonth with the specified period subtracted.
      * <p>
-     * This subtracts the amount in years and months in the specified period from this year-month.
-     * Any other amounts, such as days, hours, minutes or seconds are ignored.
+     * The period is normalized to ISO Months before being added to this year-month.
+     * Any amounts that are not normalized to months, such as hours, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a new updated YearMonth, never null
+     * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth minus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        return minusYears(period.getYears()).minusMonths(period.getMonths());
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths());
+        return minusMonths(period.getAmount(ISOChronology.periodMonths()));
     }
 
     //-----------------------------------------------------------------------
@@ -389,14 +384,14 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, positive or negative
-     * @return a new updated YearMonth, never null
+     * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public YearMonth minusYears(int years) {
+    public YearMonth minusYears(long years) {
         if (years == 0) {
             return this;
         }
-        int newYear = ISOChronology.subtractYears(year, years);
+        int newYear = ISOChronology.yearRule().checkValue(year - years);  // safe overflow
         return with(newYear, month);
     }
 
@@ -406,23 +401,17 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, positive or negative
-     * @return a new updated YearMonth, never null
+     * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public YearMonth minusMonths(int months) {
+    public YearMonth minusMonths(long months) {
         if (months == 0) {
             return this;
         }
-        long newMonth0 = month.getValue() - 1;
-        newMonth0 = newMonth0 - months;
-        int years = (int) (newMonth0 / 12);
-        newMonth0 = newMonth0 % 12;
-        if (newMonth0 < 0) {
-            newMonth0 += 12;
-            years--;
-        }
-        int newYear = ISOChronology.subtractYears(year, -years);
-        MonthOfYear newMonth = MonthOfYear.of((int) ++newMonth0);
+        long monthCount = year * 12L + (month.getValue() - 1);
+        long calcMonths = monthCount - months;  // safe overflow
+        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
 
@@ -438,7 +427,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return a {@code YearMonth} based on this one with the month rolled, never null
+     * @return a {@code YearMonth} based on this year-month with the month rolled, never null
      */
     public YearMonth rollMonthOfYear(int months) {
         return with(month.roll(months));
