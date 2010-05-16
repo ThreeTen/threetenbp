@@ -313,12 +313,14 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * The implementation uses {@link #isValidValue(int)}.
      *
      * @param value  the value to check
+     * @return the value
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public void checkValue(int value) {
+    public int checkValue(int value) {
         if (isValidValue(value) == false) {
             throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
         }
+        return value;
     }
 
     /**
