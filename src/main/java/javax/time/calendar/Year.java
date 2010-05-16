@@ -255,7 +255,7 @@ public final class Year
      * Returns a copy of this Year with the specified period added.
      * <p>
      * The period is normalized to ISO Years before being added to this year.
-     * Any amounts not normalized, such as hours, are ignored.
+     * Any amounts that are not normalized to years, such as hours, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -289,7 +289,7 @@ public final class Year
      * Returns a copy of this Year with the specified period subtracted.
      * <p>
      * The period is normalized to ISO Years before being subtracted from this year.
-     * Any amounts not normalized, such as hours, are ignored.
+     * Any amounts that are not normalized to years, such as hours, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
