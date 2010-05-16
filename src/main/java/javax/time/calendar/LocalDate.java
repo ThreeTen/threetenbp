@@ -636,11 +636,11 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period added.
      * <p>
-     * This method add the specified amount to the year, month and day fields.
-     * The rules are a little complex due to the difficulties of variable length months.
-     * The effect is to match the code for {@code plusYears().plusMonths().plusDays()}
-     * in most cases.
+     * The period is normalized to ISO Months and Days before being added to this date.
+     * Any amounts that are not normalized to months or days, such as hours, are ignored.
      * <p>
+     * The detailed rules for the addition have some complexity due to variable length months.
+     * The goal is to match the code for {@code plusYears().plusMonths().plusDays()} in most cases.
      * The principle case of difference is best expressed by example:
      * {@code 2010-01-31} plus {@code P1M-1M} yields {@code 2010-02-28} whereas
      * {@code plusMonths(1).plusDays(-1)} gives {@code 2010-02-27}.
@@ -674,17 +674,14 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider);
-        period = period.toEquivalent(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths(), ISOChronology.periodDays());
         long periodMonths = period.getAmount(ISOChronology.periodMonths());
-        long periodYears = period.getAmount(ISOChronology.periodYears());
         long periodDays = period.getAmount(ISOChronology.periodDays());
-        if ((periodYears | periodMonths) == 0) {
+        if (periodMonths == 0) {
             return plusDays(periodDays);  // optimization that also returns this for zero
         }
-        long plusMonths = MathUtils.safeAdd(MathUtils.safeMultiply(periodYears, 12), periodMonths);
         long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = MathUtils.safeAdd(monthCount, plusMonths);
+        long calcMonths = monthCount + periodMonths;  // safe overflow
         int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
@@ -856,11 +853,11 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period subtracted.
      * <p>
-     * This method subtracts the specified amount to the year, month and day fields.
-     * The rules are a little complex due to the difficulties of variable length months.
-     * The effect is to match the code for {@code minusYears().minusMonths().minusDays()}
-     * in most cases.
+     * The period is normalized to ISO Months and Days before being subtracted from this date.
+     * Any amounts that are not normalized to months or days, such as hours, are ignored.
      * <p>
+     * The detailed rules for the addition have some complexity due to variable length months.
+     * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
      * The principle case of difference is best expressed by example:
      * {@code 2010-03-31} minus {@code P1M1M} yields {@code 2010-02-28} whereas
      * {@code minusMonths(1).minusDays(1)} gives {@code 2010-02-27}.
@@ -894,17 +891,14 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider);
-        period = period.toEquivalent(ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays());
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths(), ISOChronology.periodDays());
         long periodMonths = period.getAmount(ISOChronology.periodMonths());
-        long periodYears = period.getAmount(ISOChronology.periodYears());
         long periodDays = period.getAmount(ISOChronology.periodDays());
-        if ((periodYears | periodMonths) == 0) {
+        if (periodMonths == 0) {
             return minusDays(periodDays);  // optimization that also returns this for zero
         }
-        long minusMonths = MathUtils.safeAdd(MathUtils.safeMultiply(periodYears, 12), periodMonths);
         long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = MathUtils.safeSubtract(monthCount, minusMonths);
+        long calcMonths = monthCount - periodMonths;  // safe overflow
         int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));

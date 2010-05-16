@@ -755,7 +755,6 @@ public class TestLocalDate {
         assertEquals(t, LocalDate.of(2008, 9, 18));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_timeIgnored() {
         PeriodProvider provider = Period.of(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
         LocalDate t = TEST_2007_07_15.plus(provider);
@@ -1367,8 +1366,7 @@ public class TestLocalDate {
         assertEquals(t, LocalDate.of(2006, 5, 12));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_minus_PeriodProvider_timeError() {
+    public void test_minus_PeriodProvider_timeIgnored() {
         PeriodProvider provider = Period.of(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
         LocalDate t = TEST_2007_07_15.minus(provider);
         assertEquals(t, LocalDate.of(2006, 5, 12));
