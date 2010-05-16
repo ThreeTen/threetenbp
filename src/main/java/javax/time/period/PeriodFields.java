@@ -32,10 +32,12 @@
 package javax.time.period;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
@@ -629,7 +631,7 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with each amount in this period multiplied
+     * Returns a copy of this period with each amount in this period multiplied
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
@@ -648,7 +650,7 @@ public final class PeriodFields
     }
 
     /**
-     * Returns a new instance with each amount in this period divided
+     * Returns a copy of this period with each amount in this period divided
      * by the specified value.
      *
      * @param divisor  the value to divide by, not null, not zero
@@ -670,13 +672,68 @@ public final class PeriodFields
     }
 
     /**
-     * Returns a new instance with each amount in this period negated.
+     * Returns a copy of this period with each amount in this period negated.
      *
      * @return a {@code PeriodField} based on this period with the amounts negated, never null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields negated() {
         return multipliedBy(-1);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this period with the amounts normalized using the specified units.
+     * <p>
+     * This will normalize the period around the specified units.
+     * The calculation works by examining each pair of units that have a fixed conversion factor.
+     * Each pair is adjusted so that the amount in the smaller unit does not exceed
+     * the amount of the fixed conversion factor.
+     * and ensures that the amount smaller unit does not exceed the 
+     * At least two units must be specified for this method to have any effect.
+     * <p>
+     * For example, a period of '2 Years, 17 Months' normalized using
+     * 'Years' and 'Months' will return '3 Years, 5 Months'.
+     * <p>
+     * Any part of this period that cannot be converted to one of the specified units
+     * will be unaffected in the result.
+     *
+     * @param units  the unit array to normalize to, not altered, not null
+     * @return a {@code PeriodField} equivalent to this period with the amounts normalized, never null
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public PeriodFields normalized(PeriodUnit... units) {
+        checkNotNull(units, "PeriodUnit array must not be null");
+        PeriodFields result = this;
+        TreeSet<PeriodUnit> allUnits = new TreeSet<PeriodUnit>(Collections.reverseOrder());
+        allUnits.addAll(Arrays.asList(units));
+        // algorithm works by finding pairs to check
+        // the first rule is to avoid numeric overflow wherever possible, such as when
+        // Seconds and Minutes are both MAX_VALUE -
+        // eg. the Hour-Minute and Hour-Second pair must be processed before the Minute-Second pair
+        // the second rule is to handle the case where processing two pairs causes a knock on
+        // effect on a pair that has already been processed according to the first rule -
+        // eg. when the Hour-Minute pair is 59 and the Minute-Second pair is 61
+        // this is achieved by restarting the whole algorithm (the process loop)
+        for (boolean process = true; process; ) {
+            process = false;
+            for (PeriodUnit biggerUnit : allUnits) {
+                for (PeriodUnit smallerUnit : allUnits.tailSet(biggerUnit, false)) {
+                    if (result.contains(smallerUnit)) {
+                        PeriodField conversion = biggerUnit.getEquivalentPeriod(smallerUnit);
+                        if (conversion != null) {
+                            long convertAmount = conversion.getAmount();
+                            long amount = result.getAmount(smallerUnit);
+                            if (amount >= convertAmount || amount <= -convertAmount) {
+                                result = result.with(amount % convertAmount, smallerUnit).plus(amount /convertAmount, biggerUnit);
+                                process = (units.length > 2);  // need to re-check from start
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -707,6 +764,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField toTotal(PeriodUnit unit) {
+        checkNotNull(unit, "PeriodUnit must not be null");
         PeriodField result = null;
         for (PeriodField period : unitFieldMap.values()) {
             period = period.toEquivalent(unit);
@@ -737,6 +795,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields toEquivalent(PeriodUnit... units) {
+        checkNotNull(units, "PeriodUnit array must not be null");
         TreeMap<PeriodUnit, PeriodField> map = createMap();
         for (PeriodField period : unitFieldMap.values()) {
             period = period.toEquivalent(units);

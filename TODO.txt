@@ -47,6 +47,7 @@ Time scales
 
 Date/Time classes
 - factories from Calendrical...
+- LocalDateTime/LocalTime/Year/YearMonth.plus(PeriodProvider) needs correct algorithm
 - toString(pattern)
 - parse(str, pattern)
 - ZDT int factories
@@ -110,7 +111,6 @@ Periods
 - rename classes
 - formatting (defer?)
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
-- PeriodFields.normalize(Unit...)
 - Period.toString is not output of state
 - Period parsing
 - Days between, and similar
@@ -213,5 +213,6 @@ EDR
 - Rename factory methods to start with 'of'
 - LocalDate.plus(PeriodProvider) needs correct algorithm
 - Period.ofXxx factory rename
+0.6.1
 - PeriodFields.toTotal(Unit)
-
+- PeriodFields.normalize(Unit...)
