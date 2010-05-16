@@ -38,6 +38,8 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
+import javax.time.period.PeriodField;
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
@@ -52,6 +54,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestYear {
 
+    private static final PeriodUnit DECADES = ISOChronology.periodDecades();
+    private static final PeriodUnit YEARS = ISOChronology.periodYears();
+    private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
     private static final DateTimeFieldRule<Integer> RULE = ISOChronology.yearRule();
 
     @BeforeMethod
@@ -259,14 +264,25 @@ public class TestYear {
         assertEquals(Year.of(2007).plus(provider), Year.of(2008));
     }
 
+    public void test_plus_PeriodProvider_normalized() {
+        PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
+        assertEquals(Year.of(2007).plus(provider), Year.of(2007 + 50 + 3 + 2));
+    }
+
     public void test_plus_PeriodProvider_otherFieldsIgnored() {
-        PeriodProvider provider = Period.of(1, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 5, 6, 7);
-        assertEquals(Year.of(2007).plus(provider), Year.of(2008));
+        PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
+        assertEquals(Year.of(2007).plus(provider), Year.of(2010));
     }
 
     public void test_plus_PeriodProvider_zero() {
         Year base = Year.of(2007);
         assertSame(base.plus(Period.ZERO), base);
+    }
+
+    public void test_plus_PeriodProvider_bigPeriod() {
+        long years = 20L + Integer.MAX_VALUE;
+        PeriodProvider provider = PeriodField.of(years, YEARS);
+        assertEquals(Year.of(-40).plus(provider), Year.of((int) (-40L + years)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -312,6 +328,11 @@ public class TestYear {
         assertSame(base.plusYears(0), base);
     }
 
+    public void test_plusYears_big() {
+        long years = 20L + Integer.MAX_VALUE;
+        assertEquals(Year.of(-40).plusYears(years), Year.of((int) (-40L + years)));
+    }
+
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_max() {
         Year.of(Year.MAX_YEAR).plusYears(1);
@@ -340,9 +361,14 @@ public class TestYear {
         assertEquals(Year.of(2007).minus(provider), Year.of(2006));
     }
 
+    public void test_minus_PeriodProvider_normalized() {
+        PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
+        assertEquals(Year.of(2007).minus(provider), Year.of(2007 - 50 - 3 - 2));
+    }
+
     public void test_minus_PeriodProvider_otherFieldsIgnored() {
-        PeriodProvider provider = Period.of(1, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 5, 6, 7);
-        assertEquals(Year.of(2007).minus(provider), Year.of(2006));
+        PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
+        assertEquals(Year.of(2007).minus(provider), Year.of(2004));
     }
 
     public void test_minus_PeriodProvider_zero() {
@@ -358,6 +384,12 @@ public class TestYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_PeriodProvider_badProvider() {
         Year.of(2007).minus(new MockPeriodProviderReturnsNull());
+    }
+
+    public void test_minus_PeriodProvider_bigPeriod() {
+        long years = 20L + Integer.MAX_VALUE;
+        PeriodProvider provider = PeriodField.of(years, YEARS);
+        assertEquals(Year.of(40).minus(provider), Year.of((int) (40L - years)));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
@@ -391,6 +423,11 @@ public class TestYear {
     public void test_minusYear_zero() {
         Year base = Year.of(2007);
         assertSame(base.minusYears(0), base);
+    }
+
+    public void test_minusYears_big() {
+        long years = 20L + Integer.MAX_VALUE;
+        assertEquals(Year.of(40).minusYears(years), Year.of((int) (40L - years)));
     }
 
     @Test(expectedExceptions=CalendricalException.class)

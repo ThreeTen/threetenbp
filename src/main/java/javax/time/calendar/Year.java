@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.period.Period;
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -254,18 +254,18 @@ public final class Year
     /**
      * Returns a copy of this Year with the specified period added.
      * <p>
-     * This adds the amount in years from the specified period to this year.
-     * Any other amounts, such as months or hours are ignored.
+     * The period is normalized to ISO Years before being added to this year.
+     * Any amounts not normalized, such as hours, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated Year, never null
+     * @return a {@code Year} based on this year with the period added, never null
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year plus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        return plusYears(period.getYears());
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodYears());
+        return plusYears(period.getAmount(ISOChronology.periodYears()));
     }
 
     /**
@@ -274,36 +274,32 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add
-     * @return a new updated Year, never null
+     * @return a {@code Year} based on this year with the period added, never null
      * @throws CalendricalException if the result exceeds the supported year range
      */
-    public Year plusYears(int years) {
+    public Year plusYears(long years) {
         if (years == 0) {
             return this;
         }
-        int result = year + years;
-        if (((year ^ result) < 0 && (year ^ years) >= 0) || rule().isValidValue(result) == false) {
-            throw new CalendricalException("Addition exceeds the supported year range: " + year + " + " + years);
-        }
-        return of(result);
+        return of(rule().checkValue(year + years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this Year with the specified period subtracted.
      * <p>
-     * This subtracts the amount in years extracted the specified period from this year.
-     * Any other amounts, such as months or hours are ignored.
+     * The period is normalized to ISO Years before being subtracted from this year.
+     * Any amounts not normalized, such as hours, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a new updated Year, never null
+     * @return a {@code Year} based on this year with the period subtracted, never null
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year minus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);
-        return minusYears(period.getYears());
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodYears());
+        return minusYears(period.getAmount(ISOChronology.periodYears()));
     }
 
     /**
@@ -312,18 +308,14 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract
-     * @return a new updated Year, never null
+     * @return a {@code Year} based on this year with the period subtracted, never null
      * @throws CalendricalException if the result exceeds the supported year range
      */
-    public Year minusYears(int years) {
+    public Year minusYears(long years) {
         if (years == 0) {
             return this;
         }
-        int result = year - years;
-        if (((year ^ result) < 0 && (year ^ years) < 0) || rule().isValidValue(result) == false) {
-            throw new CalendricalException("Subtraction exceeds the supported year range: " + year + " + " + years);
-        }
-        return of(result);
+        return of(rule().checkValue(year - years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
