@@ -62,6 +62,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodFields {
 
+    private static final PeriodUnit DECADES = ISOChronology.periodDecades();
     private static final PeriodUnit YEARS = ISOChronology.periodYears();
     private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
     private static final PeriodUnit DAYS = ISOChronology.periodDays();
@@ -876,12 +877,69 @@ public class TestPeriodFields {
         assertEquals(test, PeriodFields.of(1, YEARS).with(2, MONTHS));
     }
 
+    //-----------------------------------------------------------------------
+    public void test_normalized_units_decadesYearsMonths_yearsMonths() {
+        PeriodFields base = PeriodFields.of(3, DECADES).with(5, YEARS).with(27, MONTHS);
+        PeriodFields test = base.normalized(YEARS, MONTHS);
+        assertEquals(test, PeriodFields.of(37, YEARS).with(3, MONTHS));
+    }
+
+    public void test_normalized_units_decadesYearsMonths_years() {
+        PeriodFields base = PeriodFields.of(3, DECADES).with(5, YEARS).with(27, MONTHS);
+        PeriodFields test = base.normalized(YEARS);
+        assertEquals(test, PeriodFields.of(37, YEARS).with(3, MONTHS));
+    }
+
+    public void test_normalized_units_decadesYearsMonths_months() {
+        PeriodFields base = PeriodFields.of(2, DECADES).with(5, YEARS).with(27, MONTHS);
+        PeriodFields test = base.normalized(MONTHS);
+        assertEquals(test, PeriodFields.of(25 * 12 + 27, MONTHS));
+    }
+
+    //-----------------------------------------------------------------------
     public void test_normalized_units_hoursMinutesSeconds() {
         PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
         PeriodFields test = base.normalized(HOURS, MINUTES, SECONDS);
         assertEquals(test, PeriodFields.of(8, HOURS).with(15, MINUTES).with(7, SECONDS));
     }
 
+    public void test_normalized_units_hoursMinutesSeconds_backwardsOrder() {
+        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
+        PeriodFields test = base.normalized(SECONDS, MINUTES, HOURS);
+        assertEquals(test, PeriodFields.of(8, HOURS).with(15, MINUTES).with(7, SECONDS));
+    }
+
+    public void test_normalized_units_hoursMinutesSeconds_hoursNotSpecified() {
+        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
+        PeriodFields test = base.normalized(MINUTES, SECONDS);
+        assertEquals(test, PeriodFields.of(5 * 60 + 74 + 7267 / 60, MINUTES).with(7, SECONDS));
+    }
+
+    public void test_normalized_units_hoursMinutesSeconds_minutesNotSpecified() {
+        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
+        PeriodFields test = base.normalized(HOURS, SECONDS);
+        assertEquals(test, PeriodFields.of(8, HOURS).with(14 * 60 + 67, SECONDS));
+    }
+
+    public void test_normalized_units_hoursMinutesSeconds_secondsNotSpecified() {
+        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
+        PeriodFields test = base.normalized(HOURS, MINUTES);
+        assertEquals(test, PeriodFields.of(8, HOURS).with(15, MINUTES).with(7, SECONDS));
+    }
+
+    public void test_normalized_units_hoursMinutesSeconds_onlyHours() {
+        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
+        PeriodFields test = base.normalized(HOURS);
+        assertEquals(test, PeriodFields.of(8, HOURS).with(14, MINUTES).with(67, SECONDS));
+    }
+
+    public void test_normalized_units_hoursMinutesSeconds_onlyMinutes() {
+        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
+        PeriodFields test = base.normalized(MINUTES);
+        assertEquals(test, PeriodFields.of(8 * 60 + 15, MINUTES).with(7, SECONDS));
+    }
+
+    //-----------------------------------------------------------------------
     public void test_normalized_units_hoursMinutesSeconds_multiOverflow1() {
         PeriodFields base = PeriodFields.of(23, HOURS).with(131, MINUTES).with(3667, SECONDS);
         PeriodFields test = base.normalized(HOURS24, HOURS, MINUTES, SECONDS);
@@ -903,18 +961,7 @@ public class TestPeriodFields {
                 .with(1, HOURS).with(14, MINUTES).with(0, SECONDS).with(1, MILLIS).with(9, MICROS));
     }
 
-    public void test_normalized_units_hoursMinutesSeconds_backwardsOrder() {
-        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
-        PeriodFields test = base.normalized(SECONDS, MINUTES, HOURS);
-        assertEquals(test, PeriodFields.of(8, HOURS).with(15, MINUTES).with(7, SECONDS));
-    }
-
-    public void test_normalized_units_hoursMinutesSeconds_hoursNotSpecified() {
-        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
-        PeriodFields test = base.normalized(MINUTES, SECONDS);
-        assertEquals(test, PeriodFields.of(5, HOURS).with(74 + 7267 / 60, MINUTES).with(7, SECONDS));
-    }
-
+    //-----------------------------------------------------------------------
     public void test_normalized_units_hoursMinutesSeconds_negative() {
         PeriodFields base = PeriodFields.of(-5, HOURS).with(74, MINUTES).with(-7267, SECONDS);
         PeriodFields test = base.normalized(HOURS, MINUTES, SECONDS);
@@ -930,12 +977,6 @@ public class TestPeriodFields {
         assertEquals(test, PeriodFields.of(5 + hours, HOURS).with(mins, MINUTES).with(secs, SECONDS));
     }
 
-    public void test_normalized_units_oneUnit_noEffect() {
-        PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
-        PeriodFields test = base.normalized(MINUTES);
-        assertEquals(test, PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS));
-    }
-
     public void test_normalized_units_noUnits_noEffect() {
         PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
         PeriodFields test = base.normalized();
@@ -944,8 +985,8 @@ public class TestPeriodFields {
 
     public void test_normalized_units_noOverlappingUnits_noEffect() {
         PeriodFields base = PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS);
-        PeriodFields test = base.normalized(YEARS, MINUTES);
-        assertEquals(test, PeriodFields.of(5, HOURS).with(74, MINUTES).with(7267, SECONDS));
+        PeriodFields test = base.normalized(YEARS, MONTHS);
+        assertEquals(test, PeriodFields.of(0, YEARS).with(0, MONTHS).with(5, HOURS).with(74, MINUTES).with(7267, SECONDS));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

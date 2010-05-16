@@ -690,13 +690,16 @@ public final class PeriodFields
      * Each pair is adjusted so that the amount in the smaller unit does not exceed
      * the amount of the fixed conversion factor.
      * and ensures that the amount smaller unit does not exceed the 
-     * At least two units must be specified for this method to have any effect.
+     * At least one unit must be specified for this method to have any effect.
      * <p>
-     * For example, a period of '2 Years, 17 Months' normalized using
-     * 'Years' and 'Months' will return '3 Years, 5 Months'.
+     * For example, a period of '2 Decades, 2 Years, 17 Months' normalized using
+     * 'Years' and 'Months' will return '23 Years, 5 Months'.
      * <p>
      * Any part of this period that cannot be converted to one of the specified units
      * will be unaffected in the result.
+     * <p>
+     * The result will always contain all the specified units, even if they are zero.
+     * It will be equivalent to this period.
      *
      * @param units  the unit array to normalize to, not altered, not null
      * @return a {@code PeriodField} equivalent to this period with the amounts normalized, never null
@@ -705,8 +708,23 @@ public final class PeriodFields
     public PeriodFields normalized(PeriodUnit... units) {
         checkNotNull(units, "PeriodUnit array must not be null");
         PeriodFields result = this;
-        TreeSet<PeriodUnit> allUnits = new TreeSet<PeriodUnit>(Collections.reverseOrder());
-        allUnits.addAll(Arrays.asList(units));
+        TreeSet<PeriodUnit> targetUnits = new TreeSet<PeriodUnit>(Collections.reverseOrder());
+        targetUnits.addAll(Arrays.asList(units));
+        // normalize any fields in this period that have a unit greater than the
+        // largest unit in the target set that can be normalized
+        // eg. normalize Years-Months when the target set only contains Months
+        for (PeriodUnit loopUnit : unitFieldMap.keySet()) {
+            for (PeriodUnit targetUnit : targetUnits) {
+                if (targetUnits.contains(loopUnit) == false) {
+                    PeriodField conversion = loopUnit.getEquivalentPeriod(targetUnit);
+                    if (conversion != null) {
+                        long amount = result.getAmount(loopUnit);
+                        result = result.plus(conversion.multipliedBy(amount)).without(loopUnit);
+                        break;
+                    }
+                }
+            }
+        }
         // algorithm works by finding pairs to check
         // the first rule is to avoid numeric overflow wherever possible, such as when
         // Seconds and Minutes are both MAX_VALUE -
@@ -717,20 +735,21 @@ public final class PeriodFields
         // this is achieved by restarting the whole algorithm (the process loop)
         for (boolean process = true; process; ) {
             process = false;
-            for (PeriodUnit biggerUnit : allUnits) {
-                for (PeriodUnit smallerUnit : allUnits.tailSet(biggerUnit, false)) {
-                    if (result.contains(smallerUnit)) {
-                        PeriodField conversion = biggerUnit.getEquivalentPeriod(smallerUnit);
+            for (PeriodUnit targetUnit : targetUnits) {
+                for (PeriodUnit loopUnit : result.unitFieldMap.keySet()) {
+                    if (targetUnit.equals(loopUnit) == false) {
+                        PeriodField conversion = targetUnit.getEquivalentPeriod(loopUnit);
                         if (conversion != null) {
                             long convertAmount = conversion.getAmount();
-                            long amount = result.getAmount(smallerUnit);
+                            long amount = result.getAmount(loopUnit);
                             if (amount >= convertAmount || amount <= -convertAmount) {
-                                result = result.with(amount % convertAmount, smallerUnit).plus(amount /convertAmount, biggerUnit);
+                                result = result.with(amount % convertAmount, loopUnit).plus(amount /convertAmount, targetUnit);
                                 process = (units.length > 2);  // need to re-check from start
                             }
                         }
                     }
                 }
+                result = result.plus(0, targetUnit);  // ensure unit is in the result
             }
         }
         return result;
