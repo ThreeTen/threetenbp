@@ -769,7 +769,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
-    public LocalDate plusMonths(int months) {
+    public LocalDate plusMonths(long months) {
         return plusMonths(months, DateResolvers.previousValid());
     }
 
@@ -790,13 +790,13 @@ public final class LocalDate
      * @return a {@code LocalDate} with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate plusMonths(int months, DateResolver dateResolver) {
+    public LocalDate plusMonths(long months, DateResolver dateResolver) {
         ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
         if (months == 0) {
             return this;
         }
-        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = monthCount + months;
+        long monthCount = year * 12L + (month.getValue() - 1);
+        long calcMonths = monthCount + months;  // safe overflow
         int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return resolveDate(dateResolver, newYear, newMonth, day);
@@ -986,7 +986,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusMonths(int, javax.time.calendar.DateResolver)
      */
-    public LocalDate minusMonths(int months) {
+    public LocalDate minusMonths(long months) {
         return minusMonths(months, DateResolvers.previousValid());
     }
 
@@ -1007,13 +1007,13 @@ public final class LocalDate
      * @return a {@code LocalDate} with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate minusMonths(int months, DateResolver dateResolver) {
+    public LocalDate minusMonths(long months, DateResolver dateResolver) {
         ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
         if (months == 0) {
             return this;
         }
-        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = monthCount - months;
+        long monthCount = year * 12L + (month.getValue() - 1);
+        long calcMonths = monthCount - months;  // safe overflow
         int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return resolveDate(dateResolver, newYear, newMonth, day);

@@ -31,12 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1015,112 +1010,149 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     // plusMonths()
     //-----------------------------------------------------------------------
-    public void test_plusMonths_int_normal() {
+    public void test_plusMonths_long_normal() {
         LocalDate t = TEST_2007_07_15.plusMonths(1);
         assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
-    public void test_plusMonths_int_noChange() {
+    public void test_plusMonths_long_noChange() {
         LocalDate t = TEST_2007_07_15.plusMonths(0);
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_plusMonths_int_overYears() {
+    public void test_plusMonths_long_overYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(25);
         assertEquals(t, LocalDate.of(2009, 8, 15));
     }
 
-    public void test_plusMonths_int_negative() {
+    public void test_plusMonths_long_negative() {
         LocalDate t = TEST_2007_07_15.plusMonths(-1);
         assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
-    public void test_plusMonths_int_negativeAcrossYear() {
+    public void test_plusMonths_long_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.plusMonths(-7);
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
-    public void test_plusMonths_int_negativeOverYears() {
+    public void test_plusMonths_long_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(-31);
         assertEquals(t, LocalDate.of(2004, 12, 15));
     }
 
-    public void test_plusMonths_int_adjustDayFromLeapYear() {
+    public void test_plusMonths_long_adjustDayFromLeapYear() {
         LocalDate t = LocalDate.of(2008, 2, 29).plusMonths(12);
         LocalDate expected = LocalDate.of(2009, 2, 28);
         assertEquals(t, expected);
     }
 
-    public void test_plusMonths_int_adjustDayFromMonthLength() {
+    public void test_plusMonths_long_adjustDayFromMonthLength() {
         LocalDate t = LocalDate.of(2007, 3, 31).plusMonths(1);
         LocalDate expected = LocalDate.of(2007, 4, 30);
         assertEquals(t, expected);
     }
 
+    public void test_plusMonths_long_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        LocalDate test = LocalDate.of(-40, 6, 1).plusMonths(months);
+        assertEquals(test, LocalDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1));
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_invalidTooLarge() {
+    public void test_plusMonths_long_invalidTooLarge() {
         LocalDate.of(Year.MAX_YEAR, 12, 1).plusMonths(1);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_invalidTooLargeMaxAddMax() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.plusMonths(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_invalidTooLargeMaxAddMin() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.plusMonths(Long.MIN_VALUE);
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_invalidTooSmall() {
+    public void test_plusMonths_long_invalidTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).plusMonths(-1);
     }
 
-    public void test_plusMonths_int_DateResolver_normal() {
+    //-----------------------------------------------------------------------
+    public void test_plusMonths_long_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.plusMonths(1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
-    public void test_plusMonths_int_DateResolver_noChange() {
+    public void test_plusMonths_long_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.plusMonths(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_plusMonths_int_DateResolver_overYears() {
+    public void test_plusMonths_long_DateResolver_overYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(25, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2009, 8, 15));
     }
 
-    public void test_plusMonths_int_DateResolver_negative() {
+    public void test_plusMonths_long_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.plusMonths(-1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
-    public void test_plusMonths_int_DateResolver_negativeAcrossYear() {
+    public void test_plusMonths_long_DateResolver_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.plusMonths(-7, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
-    public void test_plusMonths_int_DateResolver_negativeOverYears() {
+    public void test_plusMonths_long_DateResolver_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(-31, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2004, 12, 15));
     }
 
-    public void test_plusMonths_int_DateResolver_adjustDayFromLeapYear() {
+    public void test_plusMonths_long_DateResolver_adjustDayFromLeapYear() {
         LocalDate t = LocalDate.of(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
         LocalDate expected = LocalDate.of(2009, 3, 1);
         assertEquals(t, expected);
     }
 
-    public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
+    public void test_plusMonths_long_DateResolver_adjustDayFromMonthLength() {
         LocalDate t = LocalDate.of(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
         LocalDate expected = LocalDate.of(2007, 5, 1);
         assertEquals(t, expected);
     }
 
+    public void test_plusMonths_long_DateResolver_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        LocalDate test = LocalDate.of(-40, 6, 1).plusMonths(months, DateResolvers.nextValid());
+        assertEquals(test, LocalDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_plusMonths_int_DateResolver_null_adjustDay() {
+    public void test_plusMonths_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15.plusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_DateResolver_invalidTooLarge() {
+    public void test_plusMonths_long_DateResolver_invalidTooLarge() {
         LocalDate.of(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.plusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.plusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_DateResolver_invalidTooSmall() {
+    public void test_plusMonths_long_DateResolver_invalidTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
     }
 
@@ -1601,112 +1633,149 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     // minusMonths()
     //-----------------------------------------------------------------------
-    public void test_minusMonths_int_normal() {
+    public void test_minusMonths_long_normal() {
         LocalDate t = TEST_2007_07_15.minusMonths(1);
         assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
-    public void test_minusMonths_int_noChange() {
+    public void test_minusMonths_long_noChange() {
         LocalDate t = TEST_2007_07_15.minusMonths(0);
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_minusMonths_int_overYears() {
+    public void test_minusMonths_long_overYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(25);
         assertEquals(t, LocalDate.of(2005, 6, 15));
     }
 
-    public void test_minusMonths_int_negative() {
+    public void test_minusMonths_long_negative() {
         LocalDate t = TEST_2007_07_15.minusMonths(-1);
         assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
-    public void test_minusMonths_int_negativeAcrossYear() {
+    public void test_minusMonths_long_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.minusMonths(-7);
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
-    public void test_minusMonths_int_negativeOverYears() {
+    public void test_minusMonths_long_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(-31);
         assertEquals(t, LocalDate.of(2010, 2, 15));
     }
 
-    public void test_minusMonths_int_adjustDayFromLeapYear() {
+    public void test_minusMonths_long_adjustDayFromLeapYear() {
         LocalDate t = LocalDate.of(2008, 2, 29).minusMonths(12);
         LocalDate expected = LocalDate.of(2007, 2, 28);
         assertEquals(t, expected);
     }
 
-    public void test_minusMonths_int_adjustDayFromMonthLength() {
+    public void test_minusMonths_long_adjustDayFromMonthLength() {
         LocalDate t = LocalDate.of(2007, 3, 31).minusMonths(1);
         LocalDate expected = LocalDate.of(2007, 2, 28);
         assertEquals(t, expected);
     }
 
+    public void test_minusMonths_long_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        LocalDate test = LocalDate.of(40, 6, 1).minusMonths(months);
+        assertEquals(test, LocalDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1));
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_invalidTooLarge() {
+    public void test_minusMonths_long_invalidTooLarge() {
         LocalDate.of(Year.MAX_YEAR, 12, 1).minusMonths(-1);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_invalidTooLargeMaxAddMax() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.minusMonths(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_invalidTooLargeMaxAddMin() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.minusMonths(Long.MIN_VALUE);
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_invalidTooSmall() {
+    public void test_minusMonths_long_invalidTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
 
-    public void test_minusMonths_int_DateResolver_normal() {
+    //-----------------------------------------------------------------------
+    public void test_minusMonths_long_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.minusMonths(1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
-    public void test_minusMonths_int_DateResolver_noChange() {
+    public void test_minusMonths_long_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.minusMonths(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15);
     }
 
-    public void test_minusMonths_int_DateResolver_overYears() {
+    public void test_minusMonths_long_DateResolver_overYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(25, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2005, 6, 15));
     }
 
-    public void test_minusMonths_int_DateResolver_negative() {
+    public void test_minusMonths_long_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.minusMonths(-1, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
-    public void test_minusMonths_int_DateResolver_negativeAcrossYear() {
+    public void test_minusMonths_long_DateResolver_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.minusMonths(-7, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
-    public void test_minusMonths_int_DateResolver_negativeOverYears() {
+    public void test_minusMonths_long_DateResolver_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(-31, DateResolvers.nextValid());
         assertEquals(t, LocalDate.of(2010, 2, 15));
     }
 
-    public void test_minusMonths_int_DateResolver_adjustDayFromLeapYear() {
+    public void test_minusMonths_long_DateResolver_adjustDayFromLeapYear() {
         LocalDate t = LocalDate.of(2008, 2, 29).minusMonths(12, DateResolvers.nextValid());
         LocalDate expected = LocalDate.of(2007, 3, 1);
         assertEquals(t, expected);
     }
 
-    public void test_minusMonths_int_DateResolver_adjustDayFromMonthLength() {
+    public void test_minusMonths_long_DateResolver_adjustDayFromMonthLength() {
         LocalDate t = LocalDate.of(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
         LocalDate expected = LocalDate.of(2007, 3, 1);
         assertEquals(t, expected);
     }
 
+    public void test_minusMonths_long_DateResolver_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        LocalDate test = LocalDate.of(40, 6, 1).minusMonths(months, DateResolvers.nextValid());
+        assertEquals(test, LocalDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_minusMonths_int_DateResolver_null_adjustDay() {
+    public void test_minusMonths_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15.minusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_DateResolver_invalidTooLarge() {
+    public void test_minusMonths_long_DateResolver_invalidTooLarge() {
         LocalDate.of(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.minusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
+        LocalDate test = LocalDate.of(Year.MAX_YEAR, 12, 1);
+        test.minusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_DateResolver_invalidTooSmall() {
+    public void test_minusMonths_long_DateResolver_invalidTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
     }
 
