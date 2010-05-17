@@ -817,8 +817,12 @@ public final class LocalDate
      * @return a {@code LocalDate} with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate plusWeeks(int weeks) {
-        return plusDays(7L * weeks);
+    public LocalDate plusWeeks(long weeks) {
+        try {
+            return plusDays(MathUtils.safeMultiply(weeks, 7));
+        } catch (ArithmeticException ae) {
+            throw new CalendricalException(this + " + " + weeks + " weeks exceeds capacity");
+        }
     }
 
     /**
@@ -844,7 +848,7 @@ public final class LocalDate
         try {
             mjDays = MathUtils.safeAdd(mjDays, days);
         } catch (ArithmeticException ae) {
-            throw new CalendricalException(this + " + " + days + " days exceeds the current capacity");
+            throw new CalendricalException(this + " + " + days + " days exceeds capacity");
         }
         return LocalDate.ofModifiedJulianDays(mjDays);
     }
@@ -1034,8 +1038,12 @@ public final class LocalDate
      * @return a {@code LocalDate} with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate minusWeeks(int weeks) {
-        return minusDays(7L * weeks);
+    public LocalDate minusWeeks(long weeks) {
+        try {
+            return minusDays(MathUtils.safeMultiply(weeks, 7));
+        } catch (ArithmeticException ae) {
+            throw new CalendricalException(this + " - " + weeks + " weeks exceeds capacity");
+        }
     }
 
     /**
@@ -1061,7 +1069,7 @@ public final class LocalDate
         try {
             mjDays = MathUtils.safeSubtract(mjDays, days);
         } catch (ArithmeticException ae) {
-            throw new CalendricalException(this + " - " + days + " days exceeds the current capacity");
+            throw new CalendricalException(this + " - " + days + " days exceeds capacity");
         }
         return LocalDate.ofModifiedJulianDays(mjDays);
     }
