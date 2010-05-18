@@ -577,6 +577,11 @@ public class TestMathUtils {
     }
 
     @Test(dataProvider="FloorMod")
+    public void test_floorMod_long(long a, long b, int expected) {
+        assertEquals(MathUtils.floorMod(a, b), expected);
+    }
+
+    @Test(dataProvider="FloorMod")
     public void test_floorMod_long(long a, int b, int expected) {
         assertEquals(MathUtils.floorMod(a, b), expected);
     }

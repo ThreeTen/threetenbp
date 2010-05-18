@@ -333,8 +333,25 @@ public final class MathUtils {
      * @param b  the divisor
      * @return the floor division
      */
-    public static long floorDiv(long a, int b) {
+    public static long floorDiv(long a, long b) {
         return (a >= 0 ? a / b : ((a + 1) / b) - 1);
+    }
+
+    /**
+     * Returns the floor modulus.
+     * <p>
+     * This returns {@code 0} for {@code floorMod(0, 4)}.<br />
+     * This returns {@code 1} for {@code floorMod(-1, 4)}.<br />
+     * This returns {@code 2} for {@code floorMod(-2, 4)}.<br />
+     * This returns {@code 3} for {@code floorMod(-3, 4)}.<br />
+     * This returns {@code 0} for {@code floorMod(-4, 4)}.<br />
+     *
+     * @param a  the dividend
+     * @param b  the divisor
+     * @return the floor modulus (positive)
+     */
+    public static long floorMod(long a, long b) {
+        return ((a % b) + b) % b;
     }
 
     /**
