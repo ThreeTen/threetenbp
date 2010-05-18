@@ -883,6 +883,12 @@ public class TestLocalTime {
         assertSame(t, LocalTime.MIDDAY);
     }
 
+    public void test_plusHours_big() {
+        LocalTime t = LocalTime.of(2, 30).plusHours(Long.MAX_VALUE);
+        int hours = (int) (Long.MAX_VALUE % 24L);
+        assertEquals(t, LocalTime.of(2, 30).plusHours(hours));
+    }
+
     //-----------------------------------------------------------------------
     // plusMinutes()
     //-----------------------------------------------------------------------
@@ -944,6 +950,12 @@ public class TestLocalTime {
     public void test_plusMinutes_toMidday() {
         LocalTime t = LocalTime.of(11, 59).plusMinutes(1);
         assertSame(t, LocalTime.MIDDAY);
+    }
+
+    public void test_plusMinutes_big() {
+        LocalTime t = LocalTime.of(2, 30).plusMinutes(Long.MAX_VALUE);
+        int mins = (int) (Long.MAX_VALUE % (24L * 60L));
+        assertEquals(t, LocalTime.of(2, 30).plusMinutes(mins));
     }
 
     //-----------------------------------------------------------------------
@@ -1040,6 +1052,12 @@ public class TestLocalTime {
     public void test_plusSeconds_toMidday() {
         LocalTime t = LocalTime.of(11, 59, 59).plusSeconds(1);
         assertSame(t, LocalTime.MIDDAY);
+    }
+
+    public void test_plusSeconds_big() {
+        LocalTime t = LocalTime.of(2, 30).plusSeconds(Long.MAX_VALUE);
+        int secs = (int) (Long.MAX_VALUE % (24L * 60L * 60L));
+        assertEquals(t, LocalTime.of(2, 30).plusSeconds(secs));
     }
 
     //-----------------------------------------------------------------------
@@ -1376,6 +1394,12 @@ public class TestLocalTime {
         assertSame(t, LocalTime.MIDDAY);
     }
 
+    public void test_minusHours_big() {
+        LocalTime t = LocalTime.of(2, 30).minusHours(Long.MAX_VALUE);
+        int hours = (int) (Long.MAX_VALUE % 24L);
+        assertEquals(t, LocalTime.of(2, 30).minusHours(hours));
+    }
+
     //-----------------------------------------------------------------------
     // minusMinutes()
     //-----------------------------------------------------------------------
@@ -1439,6 +1463,12 @@ public class TestLocalTime {
     public void test_minusMinutes_toMidday() {
         LocalTime t = LocalTime.of(12, 1).minusMinutes(1);
         assertSame(t, LocalTime.MIDDAY);
+    }
+
+    public void test_minusMinutes_big() {
+        LocalTime t = LocalTime.of(2, 30).minusMinutes(Long.MAX_VALUE);
+        int mins = (int) (Long.MAX_VALUE % (24L * 60L));
+        assertEquals(t, LocalTime.of(2, 30).minusMinutes(mins));
     }
 
     //-----------------------------------------------------------------------
@@ -1540,6 +1570,12 @@ public class TestLocalTime {
     public void test_minusSeconds_toMidday() {
         LocalTime t = LocalTime.of(12, 0, 1).minusSeconds(1);
         assertSame(t, LocalTime.MIDDAY);
+    }
+
+    public void test_minusSeconds_big() {
+        LocalTime t = LocalTime.of(2, 30).minusSeconds(Long.MAX_VALUE);
+        int secs = (int) (Long.MAX_VALUE % (24L * 60L * 60L));
+        assertEquals(t, LocalTime.of(2, 30).minusSeconds(secs));
     }
 
     //-----------------------------------------------------------------------

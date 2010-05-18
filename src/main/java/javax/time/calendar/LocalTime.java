@@ -611,11 +611,11 @@ public final class LocalTime
      * @param hours  the hours to add, may be negative
      * @return a {@code LocalTime} with the hours added, never null
      */
-    public LocalTime plusHours(int hours) {
+    public LocalTime plusHours(long hours) {
         if (hours == 0) {
             return this;
         }
-        int newHour = ((hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
+        int newHour = ((int) (hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
         return create(newHour, minute, second, nano);
     }
 
@@ -630,12 +630,12 @@ public final class LocalTime
      * @param minutes  the minutes to add, may be negative
      * @return a {@code LocalTime} with the minutes added, never null
      */
-    public LocalTime plusMinutes(int minutes) {
+    public LocalTime plusMinutes(long minutes) {
         if (minutes == 0) {
             return this;
         }
         int mofd = hour * MINUTES_PER_HOUR + minute;
-        int newMofd = ((minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+        int newMofd = ((int) (minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
         if (mofd == newMofd) {
             return this;
         }
@@ -655,13 +655,13 @@ public final class LocalTime
      * @param seconds  the seconds to add, may be negative
      * @return a {@code LocalTime} with the seconds added, never null
      */
-    public LocalTime plusSeconds(int seconds) {
+    public LocalTime plusSeconds(long seconds) {
         if (seconds == 0) {
             return this;
         }
         int sofd = hour * SECONDS_PER_HOUR +
                     minute * SECONDS_PER_MINUTE + second;
-        int newSofd = ((seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
+        int newSofd = ((int) (seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
         if (sofd == newSofd) {
             return this;
         }
@@ -796,11 +796,11 @@ public final class LocalTime
      * @param hours  the hours to subtract, may be negative
      * @return a {@code LocalTime} with the hours subtracted, never null
      */
-    public LocalTime minusHours(int hours) {
+    public LocalTime minusHours(long hours) {
         if (hours == 0) {
             return this;
         }
-        int newHour = (-(hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
+        int newHour = ((int) -(hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
         return create(newHour, minute, second, nano);
     }
 
@@ -815,12 +815,12 @@ public final class LocalTime
      * @param minutes  the minutes to subtract, may be negative
      * @return a {@code LocalTime} with the minutes subtracted, never null
      */
-    public LocalTime minusMinutes(int minutes) {
+    public LocalTime minusMinutes(long minutes) {
         if (minutes == 0) {
             return this;
         }
         int mofd = hour * MINUTES_PER_HOUR + minute;
-        int newMofd = (-(minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+        int newMofd = ((int) -(minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
         if (mofd == newMofd) {
             return this;
         }
@@ -840,13 +840,13 @@ public final class LocalTime
      * @param seconds  the seconds to subtract, may be negative
      * @return a {@code LocalTime} with the seconds subtracted, never null
      */
-    public LocalTime minusSeconds(int seconds) {
+    public LocalTime minusSeconds(long seconds) {
         if (seconds == 0) {
             return this;
         }
         int sofd = hour * SECONDS_PER_HOUR +
                     minute * SECONDS_PER_MINUTE + second;
-        int newSofd = (-(seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
+        int newSofd = ((int) -(seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
         if (sofd == newSofd) {
             return this;
         }
