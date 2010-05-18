@@ -50,6 +50,7 @@ import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
+import javax.time.period.PeriodField;
 import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
@@ -814,10 +815,10 @@ public class TestLocalTime {
         assertEquals(t, TEST_12_30_40_987654321.plusHours(Integer.MAX_VALUE).plusMinutes(Integer.MAX_VALUE).plusSeconds(Integer.MAX_VALUE).plusNanos(Long.MAX_VALUE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_dateIgnored() {
         PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
-        TEST_12_30_40_987654321.plus(provider);
+        LocalTime t = TEST_12_30_40_987654321.plus(provider);
+        assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -839,6 +840,11 @@ public class TestLocalTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PeriodProvider_badProvider() {
         TEST_12_30_40_987654321.plus(new MockPeriodProviderReturnsNull());
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_plus_PeriodProvider_big() {
+        TEST_12_30_40_987654321.plus(PeriodField.of(Long.MAX_VALUE, ISOChronology.period12Hours()));
     }
 
     //-----------------------------------------------------------------------
@@ -1325,10 +1331,10 @@ public class TestLocalTime {
         assertEquals(t, TEST_12_30_40_987654321.minusHours(Integer.MAX_VALUE).minusMinutes(Integer.MAX_VALUE).minusSeconds(Integer.MAX_VALUE).minusNanos(Long.MAX_VALUE));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_dateIgnored() {
         PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
-        TEST_12_30_40_987654321.minus(provider);
+        LocalTime t = TEST_12_30_40_987654321.minus(provider);
+        assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
     }
 
     public void test_minus_PeriodProvider_zero() {
@@ -1350,6 +1356,11 @@ public class TestLocalTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_PeriodProvider_badProvider() {
         TEST_12_30_40_987654321.minus(new MockPeriodProviderReturnsNull());
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_minus_PeriodProvider_big() {
+        TEST_12_30_40_987654321.minus(PeriodField.of(Long.MAX_VALUE, ISOChronology.period12Hours()));
     }
 
     //-----------------------------------------------------------------------

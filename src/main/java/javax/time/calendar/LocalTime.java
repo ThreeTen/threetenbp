@@ -38,7 +38,7 @@ import javax.time.Instant;
 import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.period.Period;
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -578,24 +578,28 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period added.
      * <p>
-     * This adds the amount in hours, minutes and seconds from the specified period to this time.
-     * If the period contains date amounts then an exception is thrown.
+     * The period is normalized to ISO Hours, Minutes, Seconds and Nanoseconds
+     * before being added to this time.
+     * Any amounts that are not normalized to these fields, such as months, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code LocalTime} with the period added, never null
-     * @throws CalendricalException if the provider contains date period units
+     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public LocalTime plus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
-        if ((period.getYears() | period.getMonths() | period.getDays()) != 0) {
-            throw new CalendricalException("Unable to add to date as the period contains date units");
-        }
-        long totNanos = period.getNanos() % NANOS_PER_DAY +                    //   max  86400000000000
-                (period.getSeconds() % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
-                (period.getMinutes() % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
-                (period.getHours() % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(
+                ISOChronology.periodHours(), ISOChronology.periodMinutes(),
+                ISOChronology.periodSeconds(), ISOChronology.periodNanos());
+        long periodHours = period.getAmount(ISOChronology.periodHours());
+        long periodMinutes = period.getAmount(ISOChronology.periodMinutes());
+        long periodSeconds = period.getAmount(ISOChronology.periodSeconds());
+        long periodNanos = period.getAmount(ISOChronology.periodNanos());
+        long totNanos = periodNanos % NANOS_PER_DAY +                    //   max  86400000000000
+                (periodSeconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
+                (periodMinutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
+                (periodHours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
         return plusNanos(totNanos);
     }
 
@@ -759,24 +763,28 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period subtracted.
      * <p>
-     * This subtracts the amount in hours, minutes and seconds from the specified period from this time.
-     * If the period contains date amounts then an exception is thrown.
+     * The period is normalized to ISO Hours, Minutes, Seconds and Nanoseconds
+     * before being subtracted from this time.
+     * Any amounts that are not normalized to these fields, such as months, are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code LocalTime} with the period subtracted, never null
-     * @throws CalendricalException if the provider contains date period units
+     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public LocalTime minus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
-        if ((period.getYears() | period.getMonths() | period.getDays()) != 0) {
-            throw new CalendricalException("Unable to add to date as the period contains date units");
-        }
-        long totNanos = period.getNanos() % NANOS_PER_DAY +                    //   max  86400000000000
-                (period.getSeconds() % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
-                (period.getMinutes() % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
-                (period.getHours() % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
+        PeriodFields period = PeriodFields.of(periodProvider).normalized(
+                ISOChronology.periodHours(), ISOChronology.periodMinutes(),
+                ISOChronology.periodSeconds(), ISOChronology.periodNanos());
+        long periodHours = period.getAmount(ISOChronology.periodHours());
+        long periodMinutes = period.getAmount(ISOChronology.periodMinutes());
+        long periodSeconds = period.getAmount(ISOChronology.periodSeconds());
+        long periodNanos = period.getAmount(ISOChronology.periodNanos());
+        long totNanos = periodNanos % NANOS_PER_DAY +                    //   max  86400000000000
+                (periodSeconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
+                (periodMinutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
+                (periodHours % HOURS_PER_DAY) * NANOS_PER_HOUR;          //   max  86400000000000
         return minusNanos(totNanos);
     }
 

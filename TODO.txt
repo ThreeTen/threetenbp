@@ -51,6 +51,7 @@ Date/Time classes
 - toString(pattern)
 - parse(str, pattern)
 - ZDT int factories
+- LocalTime plus/minus shouldn't throw ArithmeticException
 ? DateResolver takes int or MonthOfDay or calendricals
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
@@ -64,6 +65,7 @@ Rules
 - ensure can merge MonthDay and Year
 - test min/max year for week-based-year
 - remove Chronology and share
+- nanoOfDay rule (use in LocalTime factory)
 ? parse()
 ? merge -> normalize
 ? deriveInt for fields
