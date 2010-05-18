@@ -639,6 +639,10 @@ public final class LocalDate
      * The period is normalized to ISO Months and Days before being added to this date.
      * Any amounts that are not normalized to months or days, such as hours, are ignored.
      * <p>
+     * The approach used only adds years, months and days which may not be exactly what you expect.
+     * For example, adding a period of 48 hours will have no effect on the date because hours cannot
+     * be converted into days. Use {@code LocalDateTime} to perform such a calculation.
+     * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code plusYears().plusMonths().plusDays()} in most cases.
      * The principle case of difference is best expressed by example:
@@ -713,7 +717,7 @@ public final class LocalDate
      * @param years  the years to add, may be negative
      * @return a {@code LocalDate} with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(int, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendar.DateResolver)
      */
     public LocalDate plusYears(long years) {
         return plusYears(years, DateResolvers.previousValid());
@@ -766,7 +770,7 @@ public final class LocalDate
      * @param months  the months to add, may be negative
      * @return a {@code LocalDate} with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(int, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendar.DateResolver)
      */
     public LocalDate plusMonths(long months) {
         return plusMonths(months, DateResolvers.previousValid());
@@ -859,6 +863,10 @@ public final class LocalDate
      * The period is normalized to ISO Months and Days before being subtracted from this date.
      * Any amounts that are not normalized to months or days, such as hours, are ignored.
      * <p>
+     * The approach used only subtracts years, months and days which may not be exactly what you expect.
+     * For example, subtracting a period of 48 hours will have no effect on the date because hours cannot
+     * be converted into days. Use {@code LocalDateTime} to perform such a calculation.
+     * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
      * The principle case of difference is best expressed by example:
@@ -933,7 +941,7 @@ public final class LocalDate
      * @param years  the years to subtract, may be negative
      * @return a {@code LocalDate} with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(int, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendar.DateResolver)
      */
     public LocalDate minusYears(long years) {
         return minusYears(years, DateResolvers.previousValid());
@@ -986,7 +994,7 @@ public final class LocalDate
      * @param months  the months to subtract, may be negative
      * @return a {@code LocalDate} with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(int, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendar.DateResolver)
      */
     public LocalDate minusMonths(long months) {
         return minusMonths(months, DateResolvers.previousValid());
