@@ -749,12 +749,8 @@ public final class LocalTime
         }
         long thisNanos = toNanoOfDay();                            //   max  86400000000000
         totNanos = totNanos * sign + thisNanos;                    // total 432000000000000
-        totDays += (int) (totNanos / NANOS_PER_DAY);
-        totNanos = totNanos % NANOS_PER_DAY;
-        if (totNanos < 0) {
-            totDays--;
-            totNanos += NANOS_PER_DAY;
-        }
+        totDays += (int) MathUtils.floorDiv(totNanos, NANOS_PER_DAY);
+        totNanos = MathUtils.floorMod(totNanos, NANOS_PER_DAY);
         LocalTime newTime = (totNanos == thisNanos ? this : ofNanoOfDay(totNanos));
         return new Overflow(newTime, totDays);
     }
