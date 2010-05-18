@@ -670,7 +670,6 @@ public final class LocalDate
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code LocalDate} with the period added, never null
-     * @throws CalendricalException if the period cannot be converted to year, month and day units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
@@ -891,7 +890,6 @@ public final class LocalDate
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code LocalDate} with the period subtracted, never null
-     * @throws CalendricalException if the period cannot be converted to year, month and day units
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {
