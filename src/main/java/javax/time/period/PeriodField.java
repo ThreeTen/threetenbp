@@ -338,7 +338,7 @@ public final class PeriodField
      * If the units array contains both 'Minutes' and 'Seconds', then the result will
      * be measured in whichever is first in the array, either '180 Minutes' or '10800 Seconds'.
      *
-     * @param requiredUnits  the required unit array, not altered, not null
+     * @param requiredUnits  the required unit array, not altered, not null, no nulls
      * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
