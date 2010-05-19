@@ -245,6 +245,34 @@ public class TestPeriodUnit {
     }
 
     //-----------------------------------------------------------------------
+    // isConvertibleTo(PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_isConvertibleTo_unit_basic() {
+        assertEquals(BASIC.isConvertibleTo(BASIC), true);
+        assertEquals(BASIC.isConvertibleTo(DERIVED1), false);
+        assertEquals(BASIC.isConvertibleTo(DERIVED2), false);
+    }
+
+    public void test_isConvertibleTo_unit_derived() {
+        assertEquals(DERIVED2.isConvertibleTo(BASIC), true);
+        assertEquals(DERIVED2.isConvertibleTo(DERIVED1), true);
+        assertEquals(DERIVED2.isConvertibleTo(DERIVED2), true);
+    }
+
+    public void test_isConvertibleTo_null() {
+        assertEquals(BASIC.isConvertibleTo((PeriodUnit) null), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // getBaseUnit()
+    //-----------------------------------------------------------------------
+    public void test_getBaseUnit_unit_basic() {
+        assertEquals(BASIC.getBaseUnit(), BASIC);
+        assertEquals(DERIVED1.getBaseUnit(), BASIC);
+        assertEquals(DERIVED2.getBaseUnit(), BASIC);
+    }
+
+    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_basic() {

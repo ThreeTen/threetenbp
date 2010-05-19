@@ -198,6 +198,10 @@ public abstract class PeriodUnit
      * Thus, if this is the 'Hour' unit, then this method would return a list
      * including both '60 Minutes', '3600 Seconds' and any other equivalent periods.
      * <p>
+     * Registered conversion is stored from larger units to smaller units.
+     * Thus, {@code monthsUnit.getEquivalentPeriods()} will not contain the unit for years.
+     * Note that the returned list does <i>not</i> contain this unit.
+     * <p>
      * The list will be unmodifiable and sorted, from largest unit to smallest.
      *
      * @return the equivalent periods, may be empty, never null
@@ -214,12 +218,15 @@ public abstract class PeriodUnit
      * Thus, if this is the 'Hour' unit and the 'Seconds' unit is requested,
      * then this method would return '3600 Seconds'.
      * <p>
-     * If the unit specified is this unit, then a period of 1 of this unit is returned.
+     * Registered conversion is stored from larger units to smaller units.
+     * Thus, {@code monthsUnit.getEquivalentPeriod(yearsUnit)} will return null.
+     * Note that if the unit specified is this unit, then a period of 1 of this unit is returned.
      *
      * @param requiredUnit  the required unit, not null
      * @return the equivalent period, null if no equivalent in that unit
      */
     public PeriodField getEquivalentPeriod(PeriodUnit requiredUnit) {
+        ISOChronology.checkNotNull(requiredUnit, "PeriodUnit must not be null");
         for (PeriodField equivalent : equivalentPeriods) {
             if (equivalent.getUnit().equals(requiredUnit)) {
                 return equivalent;
@@ -229,6 +236,48 @@ public abstract class PeriodUnit
             return PeriodField.of(1, this);  // cannot be cached in constructor, as would be unsafe publication
         }
         return null;
+    }
+
+    /**
+     * Checks whether this unit can be converted to the specified unit.
+     * <p>
+     * Most units are related to other units.
+     * For example, an hour might be represented as 60 minutes or 3600 seconds.
+     * This method checks if this unit has a registered conversion to the specified unit.
+     * <p>
+     * Registered conversion is stored from larger units to smaller units.
+     * Thus, {@code monthsUnit.isConvertibleTo(yearsUnit)} will return false.
+     * Note that this unit is convertible to itself.
+     *
+     * @param unit  the unit, null returns false
+     * @return true if this unit is convertible or equal to the specified unit
+     */
+    public boolean isConvertibleTo(PeriodUnit unit) {
+        for (PeriodField equivalent : equivalentPeriods) {
+            if (equivalent.getUnit().equals(unit)) {
+                return true;
+            }
+        }
+        return this.equals(unit);
+    }
+
+    /**
+     * Gets the base unit of this unit.
+     * <p>
+     * Most units are related to other units.
+     * For example, an hour might be represented as 60 minutes or 3600 seconds.
+     * The base unit is the smallest unit that this unit defines an equivalence to.
+     * <p>
+     * For example, most time units are ultimately convertible to nanoseconds,
+     * thus nanoseconds is the base unit.
+     *
+     * @return the base unit, never null
+     */
+    public PeriodUnit getBaseUnit() {
+        if (equivalentPeriods.isEmpty()) {
+            return this;
+        }
+        return equivalentPeriods.get(equivalentPeriods.size() - 1).getUnit();
     }
 
     //-----------------------------------------------------------------------
