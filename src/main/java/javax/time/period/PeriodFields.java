@@ -521,62 +521,6 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with the specified units retained.
-     * <p>
-     * This method will return a new period that only has the specified units.
-     * All units not present in the input will not be present in the result.
-     * In most cases, the result will not be equivalent to this period.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param units  the units to retain, not altered, not null, no nulls
-     * @return a {@code PeriodField} based on this period with the specified units retained, never null
-     */
-    public PeriodFields retain(PeriodUnit... units) {
-        checkNotNull(units, "PeriodUnit array must not be null");
-        TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-        List<PeriodUnit> unitList = Arrays.asList(units);
-        if (unitList.contains(null)) {
-            throw new NullPointerException("PeriodUnit array must not contain null");
-        }
-        copy.keySet().retainAll(unitList);
-        return create(copy);
-    }
-
-    /**
-     * Returns a copy of this period with only those units that can be converted to
-     * the specified units.
-     * <p>
-     * This method will return a new period where every field can be converted to one
-     * of the specified units.
-     * <p>
-     * For example, if this period is '2 Days, 5 Hours, 7 Minutes' and the specified
-     * unit array contains 'Seconds' then the output will be '5 Hours, 7 Minutes'.
-     * This is because the unit 'Days' cannot be converted to the unit 'Seconds'.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param units  the units to retain, not altered, not null, no nulls
-     * @return a {@code PeriodField} based on this period with the specified units retained, never null
-     */
-    public PeriodFields retainConvertible(PeriodUnit... units) {
-        checkNotNull(units, "PeriodUnit array must not be null");
-        TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
-    outer:
-        for (Iterator<PeriodUnit> it = copy.keySet().iterator(); it.hasNext(); ) {
-            PeriodUnit loopUnit = it.next();
-            for (PeriodUnit unit : units) {
-                if (loopUnit.getEquivalentPeriod(unit) != null) {
-                    continue outer;
-                }
-            }
-            it.remove();
-        }
-        return create(copy);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this period with the specified period added.
      * <p>
      * The returned period will take each unit in the provider and add the value
@@ -736,6 +680,62 @@ public final class PeriodFields
      */
     public PeriodFields negated() {
         return multipliedBy(-1);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this period with the specified units retained.
+     * <p>
+     * This method will return a new period that only has the specified units.
+     * All units not present in the input will not be present in the result.
+     * In most cases, the result will not be equivalent to this period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param units  the units to retain, not altered, not null, no nulls
+     * @return a {@code PeriodField} based on this period with the specified units retained, never null
+     */
+    public PeriodFields retain(PeriodUnit... units) {
+        checkNotNull(units, "PeriodUnit array must not be null");
+        TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
+        List<PeriodUnit> unitList = Arrays.asList(units);
+        if (unitList.contains(null)) {
+            throw new NullPointerException("PeriodUnit array must not contain null");
+        }
+        copy.keySet().retainAll(unitList);
+        return create(copy);
+    }
+
+    /**
+     * Returns a copy of this period with only those units that can be converted to
+     * the specified units.
+     * <p>
+     * This method will return a new period where every field can be converted to one
+     * of the specified units.
+     * <p>
+     * For example, if this period is '2 Days, 5 Hours, 7 Minutes' and the specified
+     * unit array contains 'Seconds' then the output will be '5 Hours, 7 Minutes'.
+     * This is because the unit 'Days' cannot be converted to the unit 'Seconds'.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param units  the units to retain, not altered, not null, no nulls
+     * @return a {@code PeriodField} based on this period with the specified units retained, never null
+     */
+    public PeriodFields retainConvertible(PeriodUnit... units) {
+        checkNotNull(units, "PeriodUnit array must not be null");
+        TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
+    outer:
+        for (Iterator<PeriodUnit> it = copy.keySet().iterator(); it.hasNext(); ) {
+            PeriodUnit loopUnit = it.next();
+            for (PeriodUnit unit : units) {
+                if (loopUnit.getEquivalentPeriod(unit) != null) {
+                    continue outer;
+                }
+            }
+            it.remove();
+        }
+        return create(copy);
     }
 
     //-----------------------------------------------------------------------

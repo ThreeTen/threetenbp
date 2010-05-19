@@ -589,62 +589,6 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // retain(PeriodUnit...)
-    //-----------------------------------------------------------------------
-    public void test_retain() {
-        assertPeriodFields(fixtureP2Y5D.retain(DAYS), 5, DAYS);
-        assertPeriodFields(fixtureP2Y5D.retain(YEARS), 2, YEARS);
-        assertPeriodFields(fixtureP2Y5D.retain(DAYS, YEARS), 2, YEARS, 5, DAYS);
-        assertPeriodFields(fixtureP2Y5D.retain(DAYS, MONTHS, YEARS), 2, YEARS, 5, DAYS);
-    }
-
-    public void test_retain_toZero() {
-        assertSame(fixtureZeroYears.retain(DAYS), PeriodFields.ZERO);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_retain_nullArray() {
-        fixtureP2Y5D.retain((PeriodUnit[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_retain_nullItem() {
-        fixtureP2Y5D.retain(DAYS, null);
-    }
-
-    //-----------------------------------------------------------------------
-    // retainConvertible(PeriodUnit...)
-    //-----------------------------------------------------------------------
-    public void test_retainConvertible() {
-        PeriodFields test = PeriodFields.of(2, DAYS).with(6, HOURS);
-        assertPeriodFields(test.retainConvertible(SECONDS), 6, HOURS);
-        assertPeriodFields(test.retainConvertible(MINUTES), 6, HOURS);
-        assertPeriodFields(test.retainConvertible(HOURS), 6, HOURS);
-        assertPeriodFields(test.retainConvertible(DAYS, SECONDS), 2, DAYS, 6, HOURS);
-    }
-
-    public void test_retainConvertible_noConversions() {
-        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS), 5, DAYS);
-        assertPeriodFields(fixtureP2Y5D.retainConvertible(YEARS), 2, YEARS);
-        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS, YEARS), 2, YEARS, 5, DAYS);
-        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS, MONTHS, YEARS), 2, YEARS, 5, DAYS);
-    }
-
-    public void test_retainConvertible_toZero() {
-        assertSame(fixtureZeroYears.retainConvertible(DAYS), PeriodFields.ZERO);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_retainConvertible_nullArray() {
-        fixtureP2Y5D.retainConvertible((PeriodUnit[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_retainConvertible_nullItem() {
-        fixtureP2Y5D.retainConvertible(DAYS, null);
-    }
-
-    //-----------------------------------------------------------------------
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
@@ -904,6 +848,62 @@ public class TestPeriodFields {
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_negated_overflow() {
         PeriodFields.of(Long.MIN_VALUE, YEARS).negated();
+    }
+
+    //-----------------------------------------------------------------------
+    // retain(PeriodUnit...)
+    //-----------------------------------------------------------------------
+    public void test_retain() {
+        assertPeriodFields(fixtureP2Y5D.retain(DAYS), 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retain(YEARS), 2, YEARS);
+        assertPeriodFields(fixtureP2Y5D.retain(DAYS, YEARS), 2, YEARS, 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retain(DAYS, MONTHS, YEARS), 2, YEARS, 5, DAYS);
+    }
+
+    public void test_retain_toZero() {
+        assertSame(fixtureZeroYears.retain(DAYS), PeriodFields.ZERO);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retain_nullArray() {
+        fixtureP2Y5D.retain((PeriodUnit[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retain_nullItem() {
+        fixtureP2Y5D.retain(DAYS, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // retainConvertible(PeriodUnit...)
+    //-----------------------------------------------------------------------
+    public void test_retainConvertible() {
+        PeriodFields test = PeriodFields.of(2, DAYS).with(6, HOURS);
+        assertPeriodFields(test.retainConvertible(SECONDS), 6, HOURS);
+        assertPeriodFields(test.retainConvertible(MINUTES), 6, HOURS);
+        assertPeriodFields(test.retainConvertible(HOURS), 6, HOURS);
+        assertPeriodFields(test.retainConvertible(DAYS, SECONDS), 2, DAYS, 6, HOURS);
+    }
+
+    public void test_retainConvertible_noConversions() {
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS), 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(YEARS), 2, YEARS);
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS, YEARS), 2, YEARS, 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS, MONTHS, YEARS), 2, YEARS, 5, DAYS);
+    }
+
+    public void test_retainConvertible_toZero() {
+        assertSame(fixtureZeroYears.retainConvertible(DAYS), PeriodFields.ZERO);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retainConvertible_nullArray() {
+        fixtureP2Y5D.retainConvertible((PeriodUnit[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retainConvertible_nullItem() {
+        fixtureP2Y5D.retainConvertible(DAYS, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1247,61 +1247,6 @@ public class TestPeriodFields {
         PeriodFields base = PeriodFields.of(5, YEARS);
         assertSame(base.toPeriodFields(), base);
     }
-
-//    //-----------------------------------------------------------------------
-//    // toPeriod()
-//    //-----------------------------------------------------------------------
-//    public void test_toPeriod1() {
-//        Period period = fixtureP2Y5D.toPeriod();
-//        assertEquals(period.getYears(), 2);
-//        assertEquals(period.getMonths(), 0);
-//        assertEquals(period.getDays(), 5);
-//        assertEquals(period.getHours(), 0);
-//        assertEquals(period.getMinutes(), 0);
-//        assertEquals(period.getSeconds(), 0);
-//        assertEquals(period.getNanos(), 0);
-//    }
-//
-//    public void test_toPeriod2() {  // different set of fields to complete coverage
-//        PeriodFields test = PeriodFields.of(1, MONTHS).with(2, HOURS);
-//        Period period = test.toPeriod();
-//        assertEquals(period.getYears(), 0);
-//        assertEquals(period.getMonths(), 1);
-//        assertEquals(period.getDays(), 0);
-//        assertEquals(period.getHours(), 2);
-//        assertEquals(period.getMinutes(), 0);
-//        assertEquals(period.getSeconds(), 0);
-//        assertEquals(period.getNanos(), 0);
-//    }
-//
-//    public void test_toPeriod_allNonZero() {
-//        PeriodFields test = PeriodFields.of(1, YEARS).with(2, MONTHS).with(3, DAYS)
-//            .with(4, HOURS).with(5, MINUTES).with(6, SECONDS).with(7, NANOS);
-//        Period period = test.toPeriod();
-//        assertEquals(period.getYears(), 1);
-//        assertEquals(period.getMonths(), 2);
-//        assertEquals(period.getDays(), 3);
-//        assertEquals(period.getHours(), 4);
-//        assertEquals(period.getMinutes(), 5);
-//        assertEquals(period.getSeconds(), 6);
-//        assertEquals(period.getNanos(), 7);
-//    }
-//
-//    public void test_toPeriod_zeroYearsBase() {
-//        Period period = fixtureZeroYears.toPeriod();
-//        assertSame(period, Period.ZERO);
-//    }
-//
-//    public void test_toPeriod_zeroBase() {
-//        Period period = PeriodFields.ZERO.toPeriod();
-//        assertSame(period, Period.ZERO);
-//    }
-//
-//    @Test(expectedExceptions=CalendricalException.class)
-//    public void test_toPeriod_invalidField() {
-//        PeriodFields test = fixtureP2Y5D.with(3, QUARTERS);
-//        test.toPeriod();
-//    }
 
     //-----------------------------------------------------------------------
     // equals() / hashCode()
