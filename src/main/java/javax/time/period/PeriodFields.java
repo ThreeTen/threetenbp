@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -520,6 +521,30 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this period with the specified units retained.
+     * <p>
+     * This method will return a new period that only has the specified units.
+     * All units not present in the input will not be present in the result.
+     * In most cases, the result will not be equivalent to this period.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param units  the units to retain, not altered, not null, no nulls
+     * @return a {@code PeriodField} based on this period with the specified units retained, never null
+     */
+    public PeriodFields retain(PeriodUnit... units) {
+        checkNotNull(units, "PeriodUnit array must not be null");
+        TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
+        List<PeriodUnit> unitList = Arrays.asList(units);
+        if (unitList.contains(null)) {
+            throw new NullPointerException("PeriodUnit array must not contain null");
+        }
+        copy.keySet().retainAll(unitList);
+        return create(copy);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this period with the specified period added.
      * <p>
      * The returned period will take each unit in the provider and add the value
@@ -701,7 +726,7 @@ public final class PeriodFields
      * The result will always contain all the specified units, even if they are zero.
      * It will be equivalent to this period.
      *
-     * @param units  the unit array to normalize to, not altered, not null
+     * @param units  the unit array to normalize to, not altered, not null, no nulls
      * @return a {@code PeriodField} equivalent to this period with the amounts normalized, never null
      * @throws ArithmeticException if the calculation overflows
      */
@@ -808,7 +833,7 @@ public final class PeriodFields
      * If the units array contains both 'Minutes' and 'Seconds', then the result will
      * be measured in whichever is first in the array.
      *
-     * @param units  the required unit array, not altered, not null
+     * @param units  the required unit array, not altered, not null, no nulls
      * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows

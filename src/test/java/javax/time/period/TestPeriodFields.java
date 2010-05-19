@@ -589,6 +589,30 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
+    // retain(PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_retain() {
+        assertPeriodFields(fixtureP2Y5D.retain(DAYS), 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retain(YEARS), 2, YEARS);
+        assertPeriodFields(fixtureP2Y5D.retain(DAYS, YEARS), 2, YEARS, 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retain(DAYS, MONTHS, YEARS), 2, YEARS, 5, DAYS);
+    }
+
+    public void test_retain_toZero() {
+        assertSame(fixtureZeroYears.retain(DAYS), PeriodFields.ZERO);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retain_nullArray() {
+        fixtureP2Y5D.retain((PeriodUnit[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retain_nullItem() {
+        fixtureP2Y5D.retain(DAYS, null);
+    }
+
+    //-----------------------------------------------------------------------
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
