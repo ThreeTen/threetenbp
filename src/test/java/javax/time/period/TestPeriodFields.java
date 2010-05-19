@@ -589,7 +589,7 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // retain(PeriodUnit)
+    // retain(PeriodUnit...)
     //-----------------------------------------------------------------------
     public void test_retain() {
         assertPeriodFields(fixtureP2Y5D.retain(DAYS), 5, DAYS);
@@ -610,6 +610,38 @@ public class TestPeriodFields {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_retain_nullItem() {
         fixtureP2Y5D.retain(DAYS, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // retainConvertible(PeriodUnit...)
+    //-----------------------------------------------------------------------
+    public void test_retainConvertible() {
+        PeriodFields test = PeriodFields.of(2, DAYS).with(6, HOURS);
+        assertPeriodFields(test.retainConvertible(SECONDS), 6, HOURS);
+        assertPeriodFields(test.retainConvertible(MINUTES), 6, HOURS);
+        assertPeriodFields(test.retainConvertible(HOURS), 6, HOURS);
+        assertPeriodFields(test.retainConvertible(DAYS, SECONDS), 2, DAYS, 6, HOURS);
+    }
+
+    public void test_retainConvertible_noConversions() {
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS), 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(YEARS), 2, YEARS);
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS, YEARS), 2, YEARS, 5, DAYS);
+        assertPeriodFields(fixtureP2Y5D.retainConvertible(DAYS, MONTHS, YEARS), 2, YEARS, 5, DAYS);
+    }
+
+    public void test_retainConvertible_toZero() {
+        assertSame(fixtureZeroYears.retainConvertible(DAYS), PeriodFields.ZERO);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retainConvertible_nullArray() {
+        fixtureP2Y5D.retainConvertible((PeriodUnit[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_retainConvertible_nullItem() {
+        fixtureP2Y5D.retainConvertible(DAYS, null);
     }
 
     //-----------------------------------------------------------------------
