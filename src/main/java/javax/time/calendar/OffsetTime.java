@@ -36,7 +36,8 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.CalendricalPrintException;
+import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.PeriodProvider;
 
@@ -213,11 +214,26 @@ public final class OffsetTime
      *
      * @param text  the text to parse such as '10:15:30+01:00', not null
      * @return the parsed local time, never null
-     * @throws CalendricalParseException if the text cannot be parsed
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the text cannot be parsed
      */
     public static OffsetTime parse(String text) {
         return DateTimeFormatters.isoOffsetTime().parse(text, rule());
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetTime} from a text string using a specific formatter.
+     * <p>
+     * The text is parsed using the formatter, returning a time.
+     *
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
+     * @return the parsed offset time, never null
+     * @throws UnsupportedOperationException if the formatter cannot parse
+     * @throws CalendricalException if the text cannot be parsed
+     */
+    public static OffsetTime parse(String text, DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -723,7 +739,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the time as a {@code String}, such as '10:15:30+01:00'.
+     * Outputs this time as a {@code String}, such as '10:15:30+01:00'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
@@ -742,6 +758,19 @@ public final class OffsetTime
     @Override
     public String toString() {
         return time.toString() + offset.toString();
+    }
+
+    /**
+     * Outputs this time as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted time string, never null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws CalendricalPrintException if an error occurs during printing
+     */
+    public String toString(DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.print(this);
     }
 
     //-----------------------------------------------------------------------

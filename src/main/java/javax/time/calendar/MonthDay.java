@@ -33,8 +33,9 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 
@@ -165,12 +166,26 @@ public final class MonthDay
      *
      * @param text  the text to parse such as '--12-03', not null
      * @return the parsed month-day, never null
-     * @throws CalendricalParseException if the text cannot be parsed to MonthDay
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
+     * @throws CalendricalException if the text cannot be parsed
      */
     public static MonthDay parse(String text) {
         return PARSER.parse(text, rule());
+    }
+
+    /**
+     * Obtains an instance of {@code MonthDay} from a text string using a specific formatter.
+     * <p>
+     * The text is parsed using the formatter, returning a month-day.
+     *
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
+     * @return the parsed month-day, never null
+     * @throws UnsupportedOperationException if the formatter cannot parse
+     * @throws CalendricalException if the text cannot be parsed
+     */
+    public static MonthDay parse(String text, DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -525,7 +540,7 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the month-day as a {@code String}.
+     * Outputs this month-day as a {@code String}.
      * <p>
      * The output will be in the format '--MM-dd':
      *
@@ -539,6 +554,19 @@ public final class MonthDay
             .append(monthValue < 10 ? "0" : "").append(monthValue)
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
             .toString();
+    }
+
+    /**
+     * Outputs this month-day as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted month-day string, never null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws CalendricalPrintException if an error occurs during printing
+     */
+    public String toString(DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.print(this);
     }
 
     //-----------------------------------------------------------------------

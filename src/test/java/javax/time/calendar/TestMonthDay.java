@@ -31,7 +31,10 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,6 +48,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
@@ -206,6 +210,112 @@ public class TestMonthDay {
         MonthDay.of((Calendrical) null);
     }
 
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="goodParseData")
+    Object[][] provider_goodParseData() {
+        return new Object[][] {
+                {"--01-01", MonthDay.of(1, 1)},
+                {"--01-31", MonthDay.of(1, 31)},
+                {"--02-01", MonthDay.of(2, 1)},
+                {"--02-29", MonthDay.of(2, 29)},
+                {"--03-01", MonthDay.of(3, 1)},
+                {"--03-31", MonthDay.of(3, 31)},
+                {"--04-01", MonthDay.of(4, 1)},
+                {"--04-30", MonthDay.of(4, 30)},
+                {"--05-01", MonthDay.of(5, 1)},
+                {"--05-31", MonthDay.of(5, 31)},
+                {"--06-01", MonthDay.of(6, 1)},
+                {"--06-30", MonthDay.of(6, 30)},
+                {"--07-01", MonthDay.of(7, 1)},
+                {"--07-31", MonthDay.of(7, 31)},
+                {"--08-01", MonthDay.of(8, 1)},
+                {"--08-31", MonthDay.of(8, 31)},
+                {"--09-01", MonthDay.of(9, 1)},
+                {"--09-30", MonthDay.of(9, 30)},
+                {"--10-01", MonthDay.of(10, 1)},
+                {"--10-31", MonthDay.of(10, 31)},
+                {"--11-01", MonthDay.of(11, 1)},
+                {"--11-30", MonthDay.of(11, 30)},
+                {"--12-01", MonthDay.of(12, 1)},
+                {"--12-31", MonthDay.of(12, 31)},
+        };
+    }
+
+    @Test(dataProvider="goodParseData")
+    public void factory_parse_success(String text, MonthDay expected) {
+        MonthDay monthDay = MonthDay.parse(text);
+        assertEquals(monthDay, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="badParseData")
+    Object[][] provider_badParseData() {
+        return new Object[][] {
+                {"", 0},
+                {"-00", 0},
+                {"--FEB-23", 2},
+                {"--01-0", 5},
+                {"--01-3A", 5},
+        };
+    }
+
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+    public void factory_parse_fail(String text, int pos) {
+        try {
+            MonthDay.parse(text);
+            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+        }
+        catch (CalendricalParseException ex) {
+            assertEquals(ex.getParsedString(), text);
+            assertEquals(ex.getErrorIndex(), pos);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_parse_illegalValue_Day() {
+        MonthDay.parse("--06-32");
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_parse_invalidValue_Day() {
+        MonthDay.parse("--06-31");
+    }
+
+    // TODO: Fix code
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void factory_parse_illegalValue_Month() {
+//        MonthDay.parse("--13-25");
+//    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        MonthDay.parse(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        MonthDay t = MonthDay.parse("12 03", DateTimeFormatters.pattern("MM dd"));
+        assertEquals(t, MonthDay.of(12, 3));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        MonthDay.parse((String) null, DateTimeFormatters.basicIsoDate());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        MonthDay.parse("12 03", null);
+    }
+
+    //-----------------------------------------------------------------------
+    // getChronology()
     //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertEquals(ISOChronology.INSTANCE, TEST_07_15.getChronology());
@@ -698,91 +808,18 @@ public class TestMonthDay {
         String str = test.toString();
         assertEquals(str, expected);
     }
-    
-    //-----------------------------------------------------------------------
-    // parse()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="goodParseData")
-    Object[][] provider_goodParseData() {
-    	return new Object[][] {
-    			{"--01-01", MonthDay.of(1, 1)},
-    			{"--01-31", MonthDay.of(1, 31)},
-    			{"--02-01", MonthDay.of(2, 1)},
-    			{"--02-29", MonthDay.of(2, 29)},
-    			{"--03-01", MonthDay.of(3, 1)},
-    			{"--03-31", MonthDay.of(3, 31)},
-    			{"--04-01", MonthDay.of(4, 1)},
-    			{"--04-30", MonthDay.of(4, 30)},
-    			{"--05-01", MonthDay.of(5, 1)},
-    			{"--05-31", MonthDay.of(5, 31)},
-    			{"--06-01", MonthDay.of(6, 1)},
-    			{"--06-30", MonthDay.of(6, 30)},
-    			{"--07-01", MonthDay.of(7, 1)},
-    			{"--07-31", MonthDay.of(7, 31)},
-    			{"--08-01", MonthDay.of(8, 1)},
-    			{"--08-31", MonthDay.of(8, 31)},
-    			{"--09-01", MonthDay.of(9, 1)},
-    			{"--09-30", MonthDay.of(9, 30)},
-    			{"--10-01", MonthDay.of(10, 1)},
-    			{"--10-31", MonthDay.of(10, 31)},
-    			{"--11-01", MonthDay.of(11, 1)},
-    			{"--11-30", MonthDay.of(11, 30)},
-    			{"--12-01", MonthDay.of(12, 1)},
-    			{"--12-31", MonthDay.of(12, 31)},
-    	};
-    }
-
-    @Test(dataProvider="goodParseData")
-    public void factory_parse_success(String text, MonthDay expected) {
-    	MonthDay monthDay = MonthDay.parse(text);
-    	assertEquals(monthDay, expected);
-    }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="badParseData")
-    Object[][] provider_badParseData() {
-    	return new Object[][] {
-    			{"", 0},
-    			{"-00", 0},
-    			{"--FEB-23", 2},
-    			{"--01-0", 5},
-    			{"--01-3A", 5},
-    	};
-    }
-
-    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-    public void factory_parse_fail(String text, int pos) {
-    	try {
-    		MonthDay.parse(text);
-    		fail(String.format("Parse should have failed for %s at position %d", text, pos));
-    	}
-    	catch (CalendricalParseException ex) {
-    		assertEquals(ex.getParsedString(), text);
-    		assertEquals(ex.getErrorIndex(), pos);
-    		throw ex;
-    	}
-    }
-
+    // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_parse_illegalValue_Day() {
-        MonthDay.parse("--06-32");
+    public void test_toString_formatter() {
+        String t = MonthDay.of(12, 3).toString(DateTimeFormatters.pattern("MM dd"));
+        assertEquals(t, "12 03");
     }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void factory_parse_invalidValue_Day() {
-        MonthDay.parse("--06-31");
-    }
-
-    // TODO: Fix code
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void factory_parse_illegalValue_Month() {
-//        MonthDay.parse("--13-25");
-//    }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_nullText() {
-    	MonthDay.parse(null);
+    public void test_toString_formatter_null() {
+        MonthDay.of(12, 3).toString(null);
     }
 
 }

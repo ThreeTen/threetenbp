@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -147,11 +147,26 @@ public final class YearMonth
      *
      * @param text  the text to parse such as '2007-12', not null
      * @return the parsed year-month, never null
-     * @throws CalendricalParseException if the text cannot be parsed to YearMonth
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws CalendricalException if the text cannot be parsed
      */
     public static YearMonth parse(String text) {
         return PARSER.parse(text, rule());
+    }
+
+    /**
+     * Obtains an instance of {@code YearMonth} from a text string using a specific formatter.
+     * <p>
+     * The text is parsed using the formatter, returning a year-month.
+     *
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
+     * @return the parsed year-month, never null
+     * @throws UnsupportedOperationException if the formatter cannot parse
+     * @throws CalendricalException if the text cannot be parsed
+     */
+    public static YearMonth parse(String text, DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -618,7 +633,7 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the year-month as a {@code String}.
+     * Outputs this year-month as a {@code String}.
      * <p>
      * The output will be in the format 'yyyy-MM':
      *
@@ -642,6 +657,19 @@ public final class YearMonth
         return buf.append(monthValue < 10 ? "-0" : "-")
             .append(monthValue)
             .toString();
+    }
+
+    /**
+     * Outputs this year-month as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted year-month string, never null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws CalendricalPrintException if an error occurs during printing
+     */
+    public String toString(DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.print(this);
     }
 
     //-----------------------------------------------------------------------

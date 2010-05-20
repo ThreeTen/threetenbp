@@ -41,6 +41,7 @@ import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.TimeSource;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -673,6 +674,24 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         ZonedDateTime.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        ZonedDateTime t = ZonedDateTime.parse("201012031130+00:00 Europe/London", DateTimeFormatters.pattern("yyyyMMddHHmmZZ z"));
+        assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), TimeZone.of("Europe/London")));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        ZonedDateTime.parse((String) null, DateTimeFormatters.pattern("yyyyMMddHHmmz"));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        ZonedDateTime.parse("", null);
     }
 
     //-----------------------------------------------------------------------
@@ -1965,6 +1984,19 @@ public class TestZonedDateTime {
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(y, o, d, h, m, s, n), TimeZone.of(zoneId));
         String str = t.toString();
         assertEquals(str, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS).toString(DateTimeFormatters.basicIsoDate());
+        assertEquals(t, "20101203+0100[Europe/Paris]");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZONE_PARIS).toString(null);
     }
 
 }

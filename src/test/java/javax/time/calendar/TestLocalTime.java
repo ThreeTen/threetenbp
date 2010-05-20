@@ -48,6 +48,7 @@ import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodField;
@@ -547,6 +548,24 @@ public class TestLocalTime {
     @Test(expectedExceptions = {NullPointerException.class})
     public void factory_parse_nullTest() {
         LocalTime.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        LocalTime t = LocalTime.parse("113045", DateTimeFormatters.pattern("HHmmss"));
+        assertEquals(t, LocalTime.of(11, 30, 45));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        LocalTime.parse((String) null, DateTimeFormatters.pattern("HHmmss"));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        LocalTime.parse("113045", null);
     }
 
     //-----------------------------------------------------------------------
@@ -2142,6 +2161,19 @@ public class TestLocalTime {
         LocalTime t = LocalTime.of(h, m, s, n);
         String str = t.toString();
         assertEquals(str, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = LocalTime.of(11, 30, 45).toString(DateTimeFormatters.pattern("HHmmss"));
+        assertEquals(t, "113045");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        LocalTime.of(11, 30, 45).toString(null);
     }
 
     //-----------------------------------------------------------------------

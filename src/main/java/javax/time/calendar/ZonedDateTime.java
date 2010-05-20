@@ -37,7 +37,8 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.CalendricalPrintException;
+import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneRules;
@@ -405,12 +406,26 @@ public final class ZonedDateTime
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30+01:00[Europe/Paris]', not null
      * @return the parsed zoned date-time, never null
-     * @throws CalendricalParseException if the text cannot be parsed
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the text cannot be parsed
      */
     public static ZonedDateTime parse(String text) {
         return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from a text string using a specific formatter.
+     * <p>
+     * The text is parsed using the formatter, returning a date-time.
+     *
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
+     * @return the parsed zoned date-time, never null
+     * @throws UnsupportedOperationException if the formatter cannot parse
+     * @throws CalendricalException if the text cannot be parsed
+     */
+    public static ZonedDateTime parse(String text, DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -1892,7 +1907,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this {@code ZonedDateTime} as a {@code String}, such as
+     * Outputs this date-time as a {@code String}, such as
      * '2007-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * The output will be one of the following formats:
@@ -1911,6 +1926,19 @@ public final class ZonedDateTime
     @Override
     public String toString() {
         return dateTime.toString() + '[' + zone.toString() + ']';
+    }
+
+    /**
+     * Outputs this date-time as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted date-time string, never null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws CalendricalPrintException if an error occurs during printing
+     */
+    public String toString(DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.print(this);
     }
 
     //-----------------------------------------------------------------------

@@ -46,6 +46,7 @@ import java.util.Iterator;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -752,6 +753,26 @@ public class TestLocalDateTime {
         LocalDateTime.parse((String) null);
     }
 
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        LocalDateTime t = LocalDateTime.parse("20101203113045", DateTimeFormatters.pattern("yyyyMMddHHmmss"));
+        assertEquals(t, LocalDateTime.of(2010, 12, 3, 11, 30, 45));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        LocalDateTime.parse((String) null, DateTimeFormatters.pattern("yyyyMMddHHmmss"));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        LocalDateTime.parse("20101203113045", null);
+    }
+
+    //-----------------------------------------------------------------------
+    // getChronology()
     //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertSame(ISOChronology.INSTANCE, TEST_2007_07_15_12_30_40_987654321.getChronology());
@@ -3453,7 +3474,20 @@ public class TestLocalDateTime {
         String str = t.toString();
         assertEquals(str, expected);
     }
-    
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = LocalDateTime.of(2010, 12, 3, 11, 30, 45).toString(DateTimeFormatters.pattern("yyyyMMddHHmmss"));
+        assertEquals(t, "20101203113045");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        LocalDateTime.of(2010, 12, 3, 11, 30, 45).toString(null);
+    }
+
     //-----------------------------------------------------------------------
     // matchesCalendrical() - parameter is larger calendrical
     //-----------------------------------------------------------------------

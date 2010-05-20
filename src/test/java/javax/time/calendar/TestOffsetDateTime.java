@@ -48,6 +48,7 @@ import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.TimeSource;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -388,6 +389,24 @@ public class TestOffsetDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         OffsetDateTime.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        OffsetDateTime t = OffsetDateTime.parse("201012031130+0100", DateTimeFormatters.pattern("yyyyMMddHHmmZ"));
+        assertEquals(t, OffsetDateTime.of(2010, 12, 3, 11, 30, ZoneOffset.ofHours(1)));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        OffsetDateTime.parse((String) null, DateTimeFormatters.pattern("yyyyMMddHHmmZ"));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        OffsetDateTime.parse("", null);
     }
 
     //-----------------------------------------------------------------------
@@ -1521,6 +1540,19 @@ public class TestOffsetDateTime {
         OffsetDateTime t = OffsetDateTime.of(y, o, d, h, m, s, n, ZoneOffset.of(offsetId));
         String str = t.toString();
         assertEquals(str, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE).toString(DateTimeFormatters.basicIsoDate());
+        assertEquals(t, "20101203+0100");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE).toString(null);
     }
 
     //-----------------------------------------------------------------------

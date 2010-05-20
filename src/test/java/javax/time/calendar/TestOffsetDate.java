@@ -48,6 +48,7 @@ import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -425,6 +426,24 @@ public class TestOffsetDate {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         OffsetDate.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        OffsetDate t = OffsetDate.parse("20101203+0100", DateTimeFormatters.pattern("yyyyMMddZ"));
+        assertEquals(t, OffsetDate.of(2010, 12, 3, ZoneOffset.ofHours(1)));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        OffsetDate.parse((String) null, DateTimeFormatters.pattern("yyyyMMddZ"));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        OffsetDate.parse("", null);
     }
 
     //-----------------------------------------------------------------------
@@ -2021,6 +2040,19 @@ public class TestOffsetDate {
         OffsetDate t = OffsetDate.of(y, m, d, ZoneOffset.of(offsetId));
         String str = t.toString();
         assertEquals(str, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = OffsetDate.of(2010, 12, 3, OFFSET_PONE).toString(DateTimeFormatters.pattern("yyyyMMdd"));
+        assertEquals(t, "20101203");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        OffsetDate.of(2010, 12, 3, OFFSET_PONE).toString(null);
     }
 
     //-----------------------------------------------------------------------

@@ -36,7 +36,8 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.MathUtils;
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.CalendricalPrintException;
+import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.PeriodFields;
 import javax.time.period.PeriodProvider;
@@ -272,12 +273,26 @@ public final class LocalDate
      *
      * @param text  the text to parse such as '2007-12-03', not null
      * @return the parsed local date, never null
-     * @throws CalendricalParseException if the text cannot be parsed
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the text cannot be parsed
      */
     public static LocalDate parse(String text) {
         return DateTimeFormatters.isoLocalDate().parse(text, rule());
+    }
+
+    /**
+     * Obtains an instance of {@code LocalDate} from a text string using a specific formatter.
+     * <p>
+     * The text is parsed using the formatter, returning a date.
+     *
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
+     * @return the parsed local date, never null
+     * @throws UnsupportedOperationException if the formatter cannot parse
+     * @throws CalendricalException if the text cannot be parsed
+     */
+    public static LocalDate parse(String text, DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -1414,7 +1429,7 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this {@code LocalDate} as a {@code String}, such as '2007-12-03'.
+     * Outputs this date as a {@code String}, such as '2007-12-03'.
      * <p>
      * The output will be in the format 'yyyy-MM-dd'.
      *
@@ -1444,6 +1459,19 @@ public final class LocalDate
             .append(dayValue < 10 ? "-0" : "-")
             .append(dayValue)
             .toString();
+    }
+
+    /**
+     * Outputs this date as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted date string, never null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws CalendricalPrintException if an error occurs during printing
+     */
+    public String toString(DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.print(this);
     }
 
     //-----------------------------------------------------------------------

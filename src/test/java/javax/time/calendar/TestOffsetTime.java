@@ -47,6 +47,7 @@ import java.lang.reflect.Modifier;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -328,6 +329,24 @@ public class TestOffsetTime {
     @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
     public void factory_parse_illegalSecond() {
         OffsetTime.parse("12:12:60+01:00");
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        OffsetTime t = OffsetTime.parse("11 30+0100", DateTimeFormatters.pattern("HH mmZ"));
+        assertEquals(t, OffsetTime.of(11, 30, ZoneOffset.ofHours(1)));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        OffsetTime.parse((String) null, DateTimeFormatters.pattern("HM mmZ"));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        OffsetTime.parse("", null);
     }
 
     //-----------------------------------------------------------------------
@@ -942,6 +961,19 @@ public class TestOffsetTime {
         OffsetTime t = OffsetTime.of(h, m, s, n, ZoneOffset.of(offsetId));
         String str = t.toString();
         assertEquals(str, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = OffsetTime.of(11, 30, OFFSET_PONE).toString(DateTimeFormatters.pattern("HH mm"));
+        assertEquals(t, "11 30");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        OffsetTime.of(11, 30, OFFSET_PONE).toString(null);
     }
 
     //-----------------------------------------------------------------------

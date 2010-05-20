@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,6 +50,7 @@ import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -448,6 +453,24 @@ public class TestLocalDate {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         LocalDate.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        LocalDate t = LocalDate.parse("20101203", DateTimeFormatters.basicIsoDate());
+        assertEquals(t, LocalDate.of(2010, 12, 3));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        LocalDate.parse((String) null, DateTimeFormatters.basicIsoDate());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        LocalDate.parse("20101203", null);
     }
 
     //-----------------------------------------------------------------------
@@ -2467,6 +2490,19 @@ public class TestLocalDate {
         LocalDate t = LocalDate.of(y, m, d);
         String str = t.toString();
         assertEquals(str, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = LocalDate.of(2010, 12, 3).toString(DateTimeFormatters.basicIsoDate());
+        assertEquals(t, "20101203");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        LocalDate.of(2010, 12, 3).toString(null);
     }
 
     //-----------------------------------------------------------------------

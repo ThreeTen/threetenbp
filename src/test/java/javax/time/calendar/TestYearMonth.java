@@ -46,6 +46,7 @@ import java.util.Set;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
@@ -223,6 +224,133 @@ public class TestYearMonth {
         YearMonth.of((Calendrical) null);
     }
 
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="goodParseData")
+    Object[][] provider_goodParseData() {
+        return new Object[][] {
+                {"0000-01", YearMonth.of(0, 1)},
+                {"0000-12", YearMonth.of(0, 12)},
+                {"9999-12", YearMonth.of(9999, 12)},
+                {"2000-01", YearMonth.of(2000, 1)},
+                {"2000-02", YearMonth.of(2000, 2)},
+                {"2000-03", YearMonth.of(2000, 3)},
+                {"2000-04", YearMonth.of(2000, 4)},
+                {"2000-05", YearMonth.of(2000, 5)},
+                {"2000-06", YearMonth.of(2000, 6)},
+                {"2000-07", YearMonth.of(2000, 7)},
+                {"2000-08", YearMonth.of(2000, 8)},
+                {"2000-09", YearMonth.of(2000, 9)},
+                {"2000-10", YearMonth.of(2000, 10)},
+                {"2000-11", YearMonth.of(2000, 11)},
+                {"2000-12", YearMonth.of(2000, 12)},
+                
+                {"+12345678-03", YearMonth.of(12345678, 3)},
+                {"+123456-03", YearMonth.of(123456, 3)},
+                {"0000-03", YearMonth.of(0, 3)},
+                {"-1234-03", YearMonth.of(-1234, 3)},
+                {"-12345678-03", YearMonth.of(-12345678, 3)},
+                
+                {"+" + Year.MAX_YEAR + "-03", YearMonth.of(Year.MAX_YEAR, 3)},
+                {Year.MIN_YEAR + "-03", YearMonth.of(Year.MIN_YEAR, 3)},
+        };
+    }
+
+    @Test(dataProvider="goodParseData")
+    public void factory_parse_success(String text, YearMonth expected) {
+        YearMonth yearMonth = YearMonth.parse(text);
+        assertEquals(yearMonth, expected);
+    }
+
+//    @Test(dataProvider="goodParseData")
+//    public void factory_parse_success_noDash(String text, YearMonth expected) {
+//        text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
+//        YearMonth yearMonth = YearMonth.parse(text);
+//        assertEquals(yearMonth, expected);
+//    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="badParseData")
+    Object[][] provider_badParseData() {
+        return new Object[][] {
+                {"", 0},
+                {"-00", 1},
+                {"--01-0", 1},
+                {"A01-3", 0},
+                {"200-01", 0},
+                {"2009/12", 4},
+                
+                {"-0000-10", 0},
+                {"-12345678901-10", 11},
+                {"+1-10", 1},
+                {"+12-10", 1},
+                {"+123-10", 1},
+                {"+1234-10", 0},
+                {"12345-10", 0},
+                {"+12345678901-10", 11},
+        };
+    }
+
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+    public void factory_parse_fail(String text, int pos) {
+        try {
+            YearMonth.parse(text);
+            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getParsedString(), text);
+            assertEquals(ex.getErrorIndex(), pos);
+            throw ex;
+        }
+    }
+
+//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+//    public void factory_parse_fail_noDash(String text, int pos) {
+//        if (text.lastIndexOf('-') >= 0) {
+//            text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
+//        }
+//        try {
+//            YearMonth.parse(text);
+//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+//        } catch (CalendricalParseException ex) {
+//            assertEquals(ex.getParsedString(), text);
+//            assertEquals(ex.getErrorIndex(), pos);
+//            throw ex;
+//        }
+//    }
+
+    //-----------------------------------------------------------------------
+    // TODO: Fix code
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void factory_parse_illegalValue_Month() {
+//        YearMonth.parse("2008-13");
+//    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        YearMonth.parse(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        YearMonth t = YearMonth.parse("2010 12", DateTimeFormatters.pattern("yyyy MM"));
+        assertEquals(t, YearMonth.of(2010, 12));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        YearMonth.parse((String) null, DateTimeFormatters.basicIsoDate());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        YearMonth.parse("2010 12", null);
+    }
+
+    //-----------------------------------------------------------------------
+    // getChronology()
     //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertEquals(ISOChronology.INSTANCE, TEST_2008_06.getChronology());
@@ -1057,111 +1185,17 @@ public class TestYearMonth {
         assertEquals(str, expected);
     }
 
-	//-----------------------------------------------------------------------
-    // parse()
     //-----------------------------------------------------------------------
-    @DataProvider(name="goodParseData")
-    Object[][] provider_goodParseData() {
-    	return new Object[][] {
-    			{"0000-01", YearMonth.of(0, 1)},
-    			{"0000-12", YearMonth.of(0, 12)},
-    			{"9999-12", YearMonth.of(9999, 12)},
-    			{"2000-01", YearMonth.of(2000, 1)},
-    			{"2000-02", YearMonth.of(2000, 2)},
-    			{"2000-03", YearMonth.of(2000, 3)},
-    			{"2000-04", YearMonth.of(2000, 4)},
-    			{"2000-05", YearMonth.of(2000, 5)},
-    			{"2000-06", YearMonth.of(2000, 6)},
-    			{"2000-07", YearMonth.of(2000, 7)},
-    			{"2000-08", YearMonth.of(2000, 8)},
-    			{"2000-09", YearMonth.of(2000, 9)},
-    			{"2000-10", YearMonth.of(2000, 10)},
-    			{"2000-11", YearMonth.of(2000, 11)},
-    			{"2000-12", YearMonth.of(2000, 12)},
-    			
-                {"+12345678-03", YearMonth.of(12345678, 3)},
-                {"+123456-03", YearMonth.of(123456, 3)},
-                {"0000-03", YearMonth.of(0, 3)},
-                {"-1234-03", YearMonth.of(-1234, 3)},
-                {"-12345678-03", YearMonth.of(-12345678, 3)},
-                
-                {"+" + Year.MAX_YEAR + "-03", YearMonth.of(Year.MAX_YEAR, 3)},
-                {Year.MIN_YEAR + "-03", YearMonth.of(Year.MIN_YEAR, 3)},
-    	};
-    }
-
-    @Test(dataProvider="goodParseData")
-    public void factory_parse_success(String text, YearMonth expected) {
-    	YearMonth yearMonth = YearMonth.parse(text);
-    	assertEquals(yearMonth, expected);
-    }
-
-//    @Test(dataProvider="goodParseData")
-//    public void factory_parse_success_noDash(String text, YearMonth expected) {
-//        text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
-//        YearMonth yearMonth = YearMonth.parse(text);
-//        assertEquals(yearMonth, expected);
-//    }
-
+    // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
-    @DataProvider(name="badParseData")
-    Object[][] provider_badParseData() {
-    	return new Object[][] {
-    			{"", 0},
-    			{"-00", 1},
-    			{"--01-0", 1},
-    			{"A01-3", 0},
-    			{"200-01", 0},
-    			{"2009/12", 4},
-    			
-                {"-0000-10", 0},
-                {"-12345678901-10", 11},
-                {"+1-10", 1},
-                {"+12-10", 1},
-                {"+123-10", 1},
-                {"+1234-10", 0},
-                {"12345-10", 0},
-                {"+12345678901-10", 11},
-    	};
+    public void test_toString_formatter() {
+        String t = YearMonth.of(2010, 12).toString(DateTimeFormatters.pattern("yyyy MM"));
+        assertEquals(t, "2010 12");
     }
-
-    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-    public void factory_parse_fail(String text, int pos) {
-    	try {
-    		YearMonth.parse(text);
-    		fail(String.format("Parse should have failed for %s at position %d", text, pos));
-    	} catch (CalendricalParseException ex) {
-    		assertEquals(ex.getParsedString(), text);
-    		assertEquals(ex.getErrorIndex(), pos);
-    		throw ex;
-    	}
-    }
-
-//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-//    public void factory_parse_fail_noDash(String text, int pos) {
-//        if (text.lastIndexOf('-') >= 0) {
-//            text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
-//        }
-//        try {
-//            YearMonth.parse(text);
-//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getParsedString(), text);
-//            assertEquals(ex.getErrorIndex(), pos);
-//            throw ex;
-//        }
-//    }
-
-    //-----------------------------------------------------------------------
-    // TODO: Fix code
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void factory_parse_illegalValue_Month() {
-//        YearMonth.parse("2008-13");
-//    }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_nullText() {
-    	YearMonth.parse(null);
+    public void test_toString_formatter_null() {
+        YearMonth.of(2010, 12).toString(null);
     }
 
 }
