@@ -403,7 +403,7 @@ public final class ZonedDateTime
      * <p>
      * The zone ID is the normalized form as defined in {@link TimeZone#getID()}.
      *
-     * @param text  the text to parse such as '2007-12-03T10:15:30+01:00', not null
+     * @param text  the text to parse such as '2007-12-03T10:15:30+01:00[Europe/Paris]', not null
      * @return the parsed zoned date-time, never null
      * @throws CalendricalParseException if the text cannot be parsed
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
