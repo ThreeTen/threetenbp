@@ -349,6 +349,35 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
+    // remainder(long)
+    //-----------------------------------------------------------------------
+    public void test_remainder() {
+        PeriodField test12 = PeriodField.of(13, DAYS);
+        assertEquals(test12.remainder(1), PeriodField.of(0, DAYS));
+        assertEquals(test12.remainder(2), PeriodField.of(1, DAYS));
+        assertEquals(test12.remainder(3), PeriodField.of(1, DAYS));
+        assertEquals(test12.remainder(4), PeriodField.of(1, DAYS));
+        assertEquals(test12.remainder(5), PeriodField.of(3, DAYS));
+        assertEquals(test12.remainder(6), PeriodField.of(1, DAYS));
+        assertEquals(test12.remainder(-3), PeriodField.of(1, DAYS));
+    }
+
+    public void test_remainder_negate() {
+        PeriodField test12 = PeriodField.of(-14, DAYS);
+        assertEquals(test12.remainder(-5), PeriodField.of(-4, DAYS));
+    }
+
+    public void test_remainder_same() {
+        PeriodField base = PeriodField.of(12, DAYS);
+        assertSame(base.remainder(15), base);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_remainder_divideByZero() {
+        PeriodField.of(1, DAYS).remainder(0);
+    }
+
+    //-----------------------------------------------------------------------
     // negated()
     //-----------------------------------------------------------------------
     public void test_negated() {

@@ -265,7 +265,9 @@ public final class PeriodField
 
     /**
      * Returns a copy of this period with the amount divided by the specified divisor.
-     * The calculation uses integer division, thus 3 divided by 2 is 1.
+     * <p>
+     * This uses the {@code /} operator and integer division to provide the result.
+     * For example, the result of '11 Days' divided by 4 is '2 Days'.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -275,6 +277,23 @@ public final class PeriodField
      */
     public PeriodField dividedBy(long divisor) {
         return withAmount(amount / divisor);
+    }
+
+    /**
+     * Returns a copy of this period with the amount as the remainder following
+     * division by the specified divisor.
+     * <p>
+     * This uses the {@code %} operator to provide the result, which may be negative.
+     * For example, the remainder of '11 Days' divided by 4 is '3 Days'.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param divisor  the value to divide by, positive or negative
+     * @return a {@code PeriodField} based on this period divided by the specified divisor, never null
+     * @throws ArithmeticException if the divisor is zero
+     */
+    public PeriodField remainder(long divisor) {
+        return withAmount(amount % divisor);
     }
 
     //-----------------------------------------------------------------------

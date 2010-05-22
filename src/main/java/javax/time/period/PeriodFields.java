@@ -711,11 +711,12 @@ public final class PeriodFields
      * the specified units.
      * <p>
      * This method will return a new period where every field can be converted to one
-     * of the specified units.
+     * of the specified units. In the result, each of the retained periods will have the
+     * same amount as they do in this period - no conversion or normalization occurs.
      * <p>
      * For example, if this period is '2 Days, 5 Hours, 7 Minutes' and the specified
      * unit array contains 'Seconds' then the output will be '5 Hours, 7 Minutes'.
-     * This is because the unit 'Days' cannot be converted to the unit 'Seconds'.
+     * The 'Days' unit is not retained as it cannot be converted to 'Seconds'.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -729,11 +730,53 @@ public final class PeriodFields
         for (Iterator<PeriodUnit> it = copy.keySet().iterator(); it.hasNext(); ) {
             PeriodUnit loopUnit = it.next();
             for (PeriodUnit unit : units) {
-                if (loopUnit.getEquivalentPeriod(unit) != null) {
+                checkNotNull(unit, "PeriodUnit array must not contain null");
+                if (loopUnit.isConvertibleTo(unit)) {
                     continue outer;
                 }
             }
             it.remove();
+        }
+        return create(copy);
+    }
+
+    /**
+     * Returns a copy of this period with the modular division remainder of each field
+     * calculated with respect to the specified period.
+     * <p>
+     * This method will return a new period where every field represents a period less
+     * than the specified period. If this period contains a period that cannot be converted
+     * to the specified unit then an exception is thrown.
+     * <p>
+     * For example, if this period is '37 Hours, 7 Minutes' and the specified period is
+     * '24 Hours' then the output will be '13 Hours, 7 Minutes'.
+     * <p>
+     * This method requires this period to be convertible to the specified period.
+     * To ensure this is true, call {@link #retainConvertible}, with the base unit of the
+     * period passed into this method, before calling this method.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to calculate the remainder against, not null
+     * @return a {@code PeriodField} based on this period with the remainder, never null
+     * @throws CalendricalException if any field cannot be converted to the unit of the period
+     */
+    public PeriodFields remainder(PeriodField period) {
+        checkNotNull(period, "PeriodField must not be null");
+        TreeMap<PeriodUnit, PeriodField> copy = createMap();
+        for (PeriodField loopField : unitFieldMap.values()) {
+            if (loopField.getUnit().equals(period.getUnit())) {
+                copy.put(loopField.getUnit(), loopField.remainder(period.getAmount()));
+            } else {
+                for (PeriodField equivalent : period.getUnit().getEquivalentPeriods()) {
+                    if (loopField.getUnit().equals(equivalent.getUnit())) {
+                        copy.put(loopField.getUnit(), loopField.remainder(equivalent.getAmount()));
+                    }
+                }
+            }
+        }
+        if (copy.size() < size()) {
+            throw new CalendricalException("Unable to calculate remainder as some fields cannot be converted");
         }
         return create(copy);
     }

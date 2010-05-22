@@ -907,6 +907,31 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
+    // remainder(PeriodField)
+    //-----------------------------------------------------------------------
+    public void test_remainder() {
+        PeriodFields test = PeriodFields.of(37, HOURS).with(6, MINUTES);
+        assertPeriodFields(test.remainder(PeriodField.of(1, HOURS24)), 13, HOURS, 6, MINUTES);
+        assertPeriodFields(test.remainder(PeriodField.of(5, HOURS)), 2, HOURS, 6, MINUTES);
+    }
+
+    public void test_remainder_smallerField() {
+        PeriodFields test = PeriodFields.of(2, HOURS).with(190, MINUTES);
+        assertPeriodFields(test.remainder(PeriodField.of(1, HOURS)), 0, HOURS, 10, MINUTES);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_remainder_nonConvertible() {
+        PeriodFields test = PeriodFields.of(3, DAYS).with(6, MINUTES);
+        test.remainder(PeriodField.of(1, HOURS));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_remainder_null() {
+        fixtureP2Y5D.remainder(null);
+    }
+
+    //-----------------------------------------------------------------------
     // normalized(PeriodUnit...)
     //-----------------------------------------------------------------------
     public void test_normalized_units() {
