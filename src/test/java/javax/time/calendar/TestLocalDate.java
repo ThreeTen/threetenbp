@@ -171,13 +171,13 @@ public class TestLocalDate {
     }
 
     public void now_Clock_allSecsInDay_beforeEpoch() {
-        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+        for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofSeconds(i);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
-            assertEquals(test.getDayOfMonth(), 31);
+            assertEquals(test.getDayOfMonth(), (i >= -24 * 60 * 60 ? 31 : 30));
         }
     }
 

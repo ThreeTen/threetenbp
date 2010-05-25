@@ -106,11 +106,7 @@ public final class LocalDate
         Instant instant = clock.instant();
         ZoneOffset offset = clock.getZone().getRules().getOffset(instant);
         long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
-        long yearZeroDays = (epochSecs / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        long secsOfDay = epochSecs % ISOChronology.SECONDS_PER_DAY;
-        if (secsOfDay < 0) {
-            yearZeroDays--;  // overflow caught later
-        }
+        long yearZeroDays = MathUtils.floorDiv(epochSecs, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
         return LocalDate.ofYearZeroDays(yearZeroDays);
     }
 

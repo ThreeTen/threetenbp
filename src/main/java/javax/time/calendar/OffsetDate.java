@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
@@ -169,11 +170,7 @@ public final class OffsetDate
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         
         long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
-        long yearZeroDays = (epochSecs / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        long secsOfDay = epochSecs % ISOChronology.SECONDS_PER_DAY;
-        if (secsOfDay < 0) {
-            yearZeroDays--;  // overflow caught later
-        }
+        long yearZeroDays = MathUtils.floorDiv(epochSecs, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
         LocalDate date = LocalDate.ofYearZeroDays(yearZeroDays);
         return new OffsetDate(date, offset);
     }
