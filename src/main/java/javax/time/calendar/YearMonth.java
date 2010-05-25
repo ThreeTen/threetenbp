@@ -90,6 +90,35 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current year-month from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current year-month.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current year-month, never null
+     */
+    public static YearMonth now(Clock clock) {
+        LocalDate date = LocalDate.now(clock);
+        return YearMonth.of(date.getYear(), date.getMonthOfYear());
+    }
+
+    /**
+     * Obtains the current year-month from the system clock in the default time-zone.
+     * <p>
+     * This will query the system clock in the default time-zone to obtain the current year-month.
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current year-month using the system clock, never null
+     */
+    public static YearMonth nowSystemClock() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code YearMonth} from a year and month.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR

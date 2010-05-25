@@ -31,11 +31,15 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
+import javax.time.TimeSource;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodField;
@@ -75,6 +79,37 @@ public class TestYear {
     //-----------------------------------------------------------------------
     public void test_rule() {
         assertEquals(Year.rule(), RULE);
+    }
+
+    //-----------------------------------------------------------------------
+    // nowClock()
+    //-----------------------------------------------------------------------
+    public void now_Clock() {
+        Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
+        Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+        Year test = Year.now(clock);
+        assertEquals(test.getValue(), 2010);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        Year.now(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    public void nowSystemClock() {
+        Year expected = Year.now(Clock.systemDefaultZone());
+        Year test = Year.nowSystemClock();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = Year.now(Clock.systemDefaultZone());
+            test = Year.nowSystemClock();
+        }
+        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

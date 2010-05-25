@@ -45,6 +45,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
+import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.format.MockSimpleCalendrical;
@@ -117,6 +119,38 @@ public class TestYearMonth {
     void check(YearMonth test, int y, int m) {
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonthOfYear().getValue(), m);
+    }
+
+    //-----------------------------------------------------------------------
+    // nowClock()
+    //-----------------------------------------------------------------------
+    public void now_Clock() {
+        Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
+        Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+        YearMonth test = YearMonth.now(clock);
+        assertEquals(test.getYear(), 2010);
+        assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void now_Clock_nullClock() {
+        YearMonth.now(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // nowSystemClock()
+    //-----------------------------------------------------------------------
+    public void nowSystemClock() {
+        YearMonth expected = YearMonth.now(Clock.systemDefaultZone());
+        YearMonth test = YearMonth.nowSystemClock();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = YearMonth.now(Clock.systemDefaultZone());
+            test = YearMonth.nowSystemClock();
+        }
+        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

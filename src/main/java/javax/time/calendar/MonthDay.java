@@ -91,6 +91,35 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current month-day from the specified clock.
+     * <p>
+     * This will query the specified clock to obtain the current month-day.
+     * Using this method allows the use of an alternate clock for testing.
+     * The alternate clock may be introduced using {@link Clock dependency injection}.
+     *
+     * @param clock  the clock to use, not null
+     * @return the current month-day, never null
+     */
+    public static MonthDay now(Clock clock) {
+        LocalDate date = LocalDate.now(clock);
+        return MonthDay.of(date.getMonthOfYear(), date.getDayOfMonth());
+    }
+
+    /**
+     * Obtains the current month-day from the system clock in the default time-zone.
+     * <p>
+     * This will query the system clock in the default time-zone to obtain the current month-day.
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current month-day using the system clock, never null
+     */
+    public static MonthDay nowSystemClock() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code MonthDay}.
      * <p>
      * The day-of-month must be valid for the month within a leap year.
