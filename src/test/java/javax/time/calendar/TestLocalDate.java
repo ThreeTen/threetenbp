@@ -571,24 +571,24 @@ public class TestLocalDate {
         }
     }
 
-//    //-----------------------------------------------------------------------
-//    // isLeapYear()
-//    //-----------------------------------------------------------------------
-//    public void test_isLeapYear() {
-//        assertEquals(LocalDate.date(1999, 1, 1).isLeapYear(), false);
-//        assertEquals(LocalDate.date(2000, 1, 1).isLeapYear(), true);
-//        assertEquals(LocalDate.date(2001, 1, 1).isLeapYear(), false);
-//        assertEquals(LocalDate.date(2002, 1, 1).isLeapYear(), false);
-//        assertEquals(LocalDate.date(2003, 1, 1).isLeapYear(), false);
-//        assertEquals(LocalDate.date(2004, 1, 1).isLeapYear(), true);
-//        assertEquals(LocalDate.date(2005, 1, 1).isLeapYear(), false);
-//        
-//        assertEquals(LocalDate.date(1500, 1, 1).isLeapYear(), false);
-//        assertEquals(LocalDate.date(1600, 1, 1).isLeapYear(), true);
-//        assertEquals(LocalDate.date(1700, 1, 1).isLeapYear(), false);
-//        assertEquals(LocalDate.date(1800, 1, 1).isLeapYear(), false);
-//        assertEquals(LocalDate.date(1900, 1, 1).isLeapYear(), false);
-//    }
+    //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    public void test_isLeapYear() {
+        assertEquals(LocalDate.of(1999, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.of(2000, 1, 1).isLeapYear(), true);
+        assertEquals(LocalDate.of(2001, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.of(2002, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.of(2003, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.of(2004, 1, 1).isLeapYear(), true);
+        assertEquals(LocalDate.of(2005, 1, 1).isLeapYear(), false);
+        
+        assertEquals(LocalDate.of(1500, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.of(1600, 1, 1).isLeapYear(), true);
+        assertEquals(LocalDate.of(1700, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.of(1800, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.of(1900, 1, 1).isLeapYear(), false);
+    }
 
     //-----------------------------------------------------------------------
     // with()
