@@ -46,9 +46,9 @@ import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.Period;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
-import javax.time.period.Period;
 
 /**
  * A mutable builder used to create all the rules for a historic time-zone.

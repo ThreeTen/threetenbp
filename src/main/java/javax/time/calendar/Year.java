@@ -35,8 +35,6 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.period.PeriodFields;
-import javax.time.period.PeriodProvider;
 
 /**
  * A year in the ISO-8601 calendar system, such as '2007'.

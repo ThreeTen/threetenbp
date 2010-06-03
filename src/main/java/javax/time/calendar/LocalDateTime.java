@@ -39,8 +39,6 @@ import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.period.Period;
-import javax.time.period.PeriodProvider;
 
 /**
  * A date-time without a time-zone in the ISO-8601 calendar system,

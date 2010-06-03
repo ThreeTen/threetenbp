@@ -48,9 +48,6 @@ import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.period.MockPeriodProviderReturnsNull;
-import javax.time.period.Period;
-import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

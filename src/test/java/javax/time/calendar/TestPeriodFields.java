@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.period;
+package javax.time.calendar;
 
 import static org.testng.Assert.*;
 
@@ -47,6 +47,10 @@ import java.util.SortedMap;
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.Period;
+import javax.time.calendar.PeriodField;
+import javax.time.calendar.PeriodFields;
+import javax.time.calendar.PeriodProvider;
 import javax.time.calendar.PeriodUnit;
 
 import org.testng.annotations.BeforeTest;

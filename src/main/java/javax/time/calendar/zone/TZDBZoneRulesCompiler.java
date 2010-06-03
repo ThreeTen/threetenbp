@@ -54,13 +54,13 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.Period;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeParseContext;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
-import javax.time.period.Period;
 
 /**
  * A builder that can read the TZDB TimeZone files and build ZoneRules instances.

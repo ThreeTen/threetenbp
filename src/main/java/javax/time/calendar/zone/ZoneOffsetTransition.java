@@ -38,8 +38,8 @@ import java.io.Serializable;
 import javax.time.Instant;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.Period;
 import javax.time.calendar.ZoneOffset;
-import javax.time.period.Period;
 
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.

@@ -42,8 +42,6 @@ import java.util.Map;
 import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
-import javax.time.period.Period;
-import javax.time.period.PeriodField;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current

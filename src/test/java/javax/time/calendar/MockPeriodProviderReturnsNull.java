@@ -29,7 +29,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.period;
+package javax.time.calendar;
+
+import javax.time.calendar.PeriodFields;
+import javax.time.calendar.PeriodProvider;
 
 /**
  * Mock PeriodProvider that returns null.

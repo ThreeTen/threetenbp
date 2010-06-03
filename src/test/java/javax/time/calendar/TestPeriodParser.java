@@ -29,10 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.period;
+package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
+import javax.time.calendar.Period;
+import javax.time.calendar.PeriodParser;
 import javax.time.calendar.format.CalendricalParseException;
 
 import org.testng.annotations.DataProvider;

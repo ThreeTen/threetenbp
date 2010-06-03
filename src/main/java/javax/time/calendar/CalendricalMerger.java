@@ -37,7 +37,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.time.CalendricalException;
-import javax.time.period.Period;
 
 /**
  * Stateful class used to merge calendrical information.

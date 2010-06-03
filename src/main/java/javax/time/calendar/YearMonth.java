@@ -39,8 +39,6 @@ import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
-import javax.time.period.PeriodFields;
-import javax.time.period.PeriodProvider;
 
 /**
  * A year-month in the ISO-8601 calendar system, such as '2007-12'.

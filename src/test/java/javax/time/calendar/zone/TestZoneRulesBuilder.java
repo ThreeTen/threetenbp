@@ -40,10 +40,10 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.Period;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
-import javax.time.period.Period;
 
 import org.testng.annotations.Test;
 

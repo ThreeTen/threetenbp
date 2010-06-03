@@ -64,6 +64,11 @@ import javax.time.calendar.TestOffsetDate;
 import javax.time.calendar.TestOffsetDateTime;
 import javax.time.calendar.TestOffsetDateTime_instants;
 import javax.time.calendar.TestOffsetTime;
+import javax.time.calendar.TestPeriod;
+import javax.time.calendar.TestPeriodField;
+import javax.time.calendar.TestPeriodFields;
+import javax.time.calendar.TestPeriodParser;
+import javax.time.calendar.TestPeriodUnit;
 import javax.time.calendar.TestQuarterOfYear;
 import javax.time.calendar.TestTimeZone;
 import javax.time.calendar.TestYear;
@@ -102,11 +107,6 @@ import javax.time.calendar.zone.TestZoneOffsetTransition;
 import javax.time.calendar.zone.TestZoneOffsetTransitionRule;
 import javax.time.calendar.zone.TestZoneRulesBuilder;
 import javax.time.calendar.zone.TestZoneRulesGroup;
-import javax.time.period.TestPeriod;
-import javax.time.period.TestPeriodField;
-import javax.time.period.TestPeriodFields;
-import javax.time.period.TestPeriodParser;
-import javax.time.period.TestPeriodUnit;
 import javax.time.scales.TestEarlyUTC_TAI;
 import javax.time.scales.TestLeapSeconds;
 import javax.time.scales.TestTAI;
@@ -167,6 +167,11 @@ public class AllTest {
             TestOffsetDateTime.class,
             TestOffsetDateTime_instants.class,
             TestOffsetTime.class,
+            TestPeriod.class,
+            TestPeriodParser.class,
+            TestPeriodField.class,
+            TestPeriodFields.class,
+            TestPeriodUnit.class,
             TestQuarterOfYear.class,
             TestTimeZone.class,
             TestYear.class,
@@ -209,12 +214,6 @@ public class AllTest {
             TestZoneOffsetTransitionRule.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
-            // periods
-            TestPeriod.class,
-            TestPeriodParser.class,
-            TestPeriodField.class,
-            TestPeriodFields.class,
-            TestPeriodUnit.class,
             // scales
             TestEarlyUTC_TAI.class,
             TestLeapSeconds.class,

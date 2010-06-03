@@ -42,8 +42,6 @@ import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneRules;
-import javax.time.period.PeriodFields;
-import javax.time.period.PeriodProvider;
 
 /**
  * A date-time with a time-zone in the ISO-8601 calendar system,

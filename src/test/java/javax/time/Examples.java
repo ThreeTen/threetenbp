@@ -35,7 +35,7 @@ import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendar.DayOfWeek.FRIDAY;
 import static javax.time.calendar.ISOChronology.*;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
-import static javax.time.period.Period.ofYearsMonthsDays;
+import static javax.time.calendar.Period.ofYearsMonthsDays;
 
 import java.util.Locale;
 
@@ -46,6 +46,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.Period;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneResolvers;
@@ -54,7 +55,6 @@ import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
-import javax.time.period.Period;
 
 /**
  * Examples for JSR-310.

@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.period;
+package javax.time.calendar;
 
 import java.io.Serializable;
 import java.util.TreeMap;
@@ -37,8 +37,6 @@ import java.util.TreeMap;
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.MathUtils;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.format.CalendricalParseException;
 
 /**

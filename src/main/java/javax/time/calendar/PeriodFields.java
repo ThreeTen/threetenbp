@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.period;
+package javax.time.calendar;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -42,8 +42,6 @@ import java.util.TreeSet;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.PeriodUnit;
 
 /**
  * A period of time measured using a number of different units,

@@ -40,7 +40,6 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.period.PeriodProvider;
 
 /**
  * A date-time with a zone offset from UTC in the ISO-8601 calendar system,

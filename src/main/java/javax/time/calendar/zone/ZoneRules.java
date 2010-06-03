@@ -42,11 +42,11 @@ import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
+import javax.time.calendar.Period;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
-import javax.time.period.Period;
 
 /**
  * The rules defining how the zone offset varies for a single time-zone.

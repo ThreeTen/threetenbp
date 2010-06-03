@@ -37,8 +37,6 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.time.period.Period;
-import javax.time.period.PeriodProvider;
 
 /**
  * A time-zone offset from UTC, such as '+02:00'.

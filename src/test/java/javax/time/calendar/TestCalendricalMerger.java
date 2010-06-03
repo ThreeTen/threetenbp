@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.time.CalendricalException;
-import javax.time.period.Period;
 
 import org.testng.annotations.Test;
 

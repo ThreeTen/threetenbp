@@ -40,11 +40,6 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
-import javax.time.period.MockPeriodProviderReturnsNull;
-import javax.time.period.Period;
-import javax.time.period.PeriodField;
-import javax.time.period.PeriodFields;
-import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

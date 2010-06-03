@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.time.Duration;
-import javax.time.period.PeriodField;
 
 /**
  * A unit of time for measuring a period, such as 'Days' or 'Minutes'.
