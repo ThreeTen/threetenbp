@@ -1579,7 +1579,7 @@ public final class OffsetDateTime
      * @return an Instant representing the same instant, never null
      */
     public Instant toInstant() {
-        return Instant.ofSeconds(toEpochSeconds(), getNanoOfSecond());
+        return Instant.ofEpochSeconds(toEpochSeconds(), getNanoOfSecond());
     }
 
     /**

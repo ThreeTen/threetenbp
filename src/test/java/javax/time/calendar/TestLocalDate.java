@@ -150,7 +150,7 @@ public class TestLocalDate {
 
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofSeconds(i);
+            Instant instant = Instant.ofEpochSeconds(i);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -161,7 +161,7 @@ public class TestLocalDate {
 
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofSeconds(i);
+            Instant instant = Instant.ofEpochSeconds(i);
             Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), TimeZone.of(OFFSET_PONE));
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -172,7 +172,7 @@ public class TestLocalDate {
 
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
-            Instant instant = Instant.ofSeconds(i);
+            Instant instant = Instant.ofEpochSeconds(i);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1969);

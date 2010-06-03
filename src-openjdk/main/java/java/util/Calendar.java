@@ -2751,6 +2751,6 @@ public abstract class Calendar
      * @since ?
      */
     public final Instant toInstant() {
-        return Instant.ofMillis(getTimeInMillis());
+        return Instant.ofEpochMillis(getTimeInMillis());
     }
 }

@@ -109,7 +109,7 @@ class TAI implements TimeScale, Serializable {
             return toEarlyInstant(tsi);
         }
         // finally ancient history
-        return Instant.ofSeconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
+        return Instant.ofEpochSeconds(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
     }
 
     private Instant toModernInstant(TimeScaleInstant tsi) {
@@ -119,7 +119,7 @@ class TAI implements TimeScale, Serializable {
             // repeat the last second
             s--;
         }
-        return Instant.ofSeconds(s, tsi.getNanoOfSecond());
+        return Instant.ofEpochSeconds(s, tsi.getNanoOfSecond());
     }
 
     private Instant toEarlyInstant(TimeScaleInstant tsi) {
@@ -139,7 +139,7 @@ class TAI implements TimeScale, Serializable {
                 nanos += ScaleUtil.NANOS_PER_SECOND;
             }
         }
-        return Instant.ofSeconds(s, (int)nanos);
+        return Instant.ofEpochSeconds(s, (int)nanos);
     }
 
     /** {@inheritDoc} */

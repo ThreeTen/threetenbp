@@ -56,7 +56,7 @@ public class TestTAI {
     }
 
     private void testFromInstant(int year, int month, int day, long delta) {
-        Instant t = Instant.ofSeconds(ScaleUtil.epochSeconds(year, month, day));
+        Instant t = Instant.ofEpochSeconds(ScaleUtil.epochSeconds(year, month, day));
         TimeScaleInstant ts = TimeScaleInstant.from(TimeScales.tai(), t);
         long z = (ts.getEpochSeconds()-t.getEpochSeconds())*NANOS_PER_SECOND + (ts.getNanoOfSecond()-t.getNanoOfSecond());
         if (delta == -1) {
@@ -115,7 +115,7 @@ public class TestTAI {
     }
 
     private void cvtFromInstant(long epochSeconds, int nanoOfSecond, long taiEpochSeconds, int taiNanoOfSecond) {
-        Instant t = Instant.ofSeconds(epochSeconds, nanoOfSecond);
+        Instant t = Instant.ofEpochSeconds(epochSeconds, nanoOfSecond);
         TimeScaleInstant ts = TimeScaleInstant.from(TimeScales.tai(), t);
         assertEquals(ts.getEpochSeconds(), taiEpochSeconds);
         assertEquals(ts.getNanoOfSecond(), taiNanoOfSecond);

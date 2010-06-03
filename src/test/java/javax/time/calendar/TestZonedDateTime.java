@@ -100,7 +100,7 @@ public class TestZonedDateTime {
 
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofSeconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -118,7 +118,7 @@ public class TestZonedDateTime {
     public void now_Clock_allSecsInDay_zone() {
         TimeZone zone = TimeZone.of("Europe/London");
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofSeconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
             ZonedDateTime expected = ZonedDateTime.ofInstant(instant, zone);
             Clock clock = Clock.clock(TimeSource.fixed(expected.toInstant()), zone);
             ZonedDateTime test = ZonedDateTime.now(clock);
@@ -129,7 +129,7 @@ public class TestZonedDateTime {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.ofSeconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
             ZonedDateTime test = ZonedDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
@@ -558,7 +558,7 @@ public class TestZonedDateTime {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_fromInstant_InstantProvider_nullZone() {
-        InstantProvider provider = Instant.ofSeconds(0L);
+        InstantProvider provider = Instant.ofEpochSeconds(0L);
         ZonedDateTime.ofInstant(provider, null);
     }
 

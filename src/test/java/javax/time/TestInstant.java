@@ -77,7 +77,7 @@ public class TestInstant {
 
     public void now_TimeSource_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant expected = Instant.ofSeconds(i).plusNanos(123456789L);
+            Instant expected = Instant.ofEpochSeconds(i).plusNanos(123456789L);
             TimeSource clock = TimeSource.fixed(expected);
             Instant test = Instant.now(clock);
             assertEquals(test, expected);
@@ -86,7 +86,7 @@ public class TestInstant {
 
     public void now_TimeSource_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant expected = Instant.ofSeconds(i).plusNanos(123456789L);
+            Instant expected = Instant.ofEpochSeconds(i).plusNanos(123456789L);
             TimeSource clock = TimeSource.fixed(expected);
             Instant test = Instant.now(clock);
             assertEquals(test, expected);
@@ -110,33 +110,33 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    // ofSeconds(long)
+    // ofEpochSeconds(long)
     //-----------------------------------------------------------------------
     public void factory_seconds_long() {
         for (long i = -2; i <= 2; i++) {
-            Instant t = Instant.ofSeconds(i);
+            Instant t = Instant.ofEpochSeconds(i);
             assertEquals(t.getEpochSeconds(), i);
             assertEquals(t.getNanoOfSecond(), 0);
         }
     }
 
     //-----------------------------------------------------------------------
-    // ofSeconds(long,long)
+    // ofEpochSeconds(long,long)
     //-----------------------------------------------------------------------
     public void factory_seconds_long_long() {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
-                Instant t = Instant.ofSeconds(i, j);
+                Instant t = Instant.ofEpochSeconds(i, j);
                 assertEquals(t.getEpochSeconds(), i);
                 assertEquals(t.getNanoOfSecond(), j);
             }
             for (int j = -10; j < 0; j++) {
-                Instant t = Instant.ofSeconds(i, j);
+                Instant t = Instant.ofEpochSeconds(i, j);
                 assertEquals(t.getEpochSeconds(), i - 1);
                 assertEquals(t.getNanoOfSecond(), j + 1000000000);
             }
             for (int j = 999999990; j < 1000000000; j++) {
-                Instant t = Instant.ofSeconds(i, j);
+                Instant t = Instant.ofEpochSeconds(i, j);
                 assertEquals(t.getEpochSeconds(), i);
                 assertEquals(t.getNanoOfSecond(), j);
             }
@@ -144,14 +144,14 @@ public class TestInstant {
     }
 
     public void factory_seconds_long_long_nanosNegativeAdjusted() {
-        Instant test = Instant.ofSeconds(2L, -1);
+        Instant test = Instant.ofEpochSeconds(2L, -1);
         assertEquals(test.getEpochSeconds(), 1);
         assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_seconds_long_long_tooBig() {
-        Instant.ofSeconds(Long.MAX_VALUE, 1000000000);
+        Instant.ofEpochSeconds(Long.MAX_VALUE, 1000000000);
     }
 
     //-----------------------------------------------------------------------
@@ -159,35 +159,35 @@ public class TestInstant {
     //-----------------------------------------------------------------------
     public void factory_seconds_BigDecimal_secs() {
         BigDecimal val = BigDecimal.valueOf(1);
-        Instant test = Instant.ofSeconds(val);
+        Instant test = Instant.ofEpochSeconds(val);
         assertEquals(test.getEpochSeconds(), 1);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
     public void factory_seconds_BigDecimal_nanosSecs() {
         BigDecimal val = BigDecimal.valueOf(1.000000002);
-        Instant test = Instant.ofSeconds(val);
+        Instant test = Instant.ofEpochSeconds(val);
         assertEquals(test.getEpochSeconds(), 1);
         assertEquals(test.getNanoOfSecond(), 2);
     }
 
     public void factory_seconds_BigDecimal_negative() {
         BigDecimal val = BigDecimal.valueOf(-2.000000001);
-        Instant test = Instant.ofSeconds(val);
+        Instant test = Instant.ofEpochSeconds(val);
         assertEquals(test.getEpochSeconds(), -3);
         assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
     public void factory_seconds_BigDecimal_max() {
         BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).movePointRight(9).add(BigDecimal.valueOf(999999999)).movePointLeft(9);
-        Instant test = Instant.ofSeconds(val);
+        Instant test = Instant.ofEpochSeconds(val);
         assertEquals(test.getEpochSeconds(), Long.MAX_VALUE);
         assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
     public void factory_seconds_BigDecimal_min() {
         BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE);
-        Instant test = Instant.ofSeconds(val);
+        Instant test = Instant.ofEpochSeconds(val);
         assertEquals(test.getEpochSeconds(), Long.MIN_VALUE);
         assertEquals(test.getNanoOfSecond(), 0);
     }
@@ -195,28 +195,28 @@ public class TestInstant {
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_seconds_BigDecimal_tooBig() {
         BigDecimal val = BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.valueOf(1));
-        Instant.ofSeconds(val);
+        Instant.ofEpochSeconds(val);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_seconds_BigDecimal_tooSmall() {
         BigDecimal val = BigDecimal.valueOf(Long.MIN_VALUE).movePointRight(9).subtract(BigDecimal.valueOf(1)).movePointLeft(9);
-        Instant.ofSeconds(val);
+        Instant.ofEpochSeconds(val);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_seconds_BigDecimal_tooDetailed() {
         BigDecimal val = new BigDecimal("0.0000000001");
-        Instant.ofSeconds(val);
+        Instant.ofEpochSeconds(val);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_seconds_BigDecimal_null() {
-        Instant.ofSeconds((BigDecimal) null);
+        Instant.ofEpochSeconds((BigDecimal) null);
     }
 
     //-----------------------------------------------------------------------
-    // ofMillis(long)
+    // ofEpochMillis(long)
     //-----------------------------------------------------------------------
     @DataProvider(name="MillisInstantNoNanos")
     Object[][] provider_factory_millis_long() {
@@ -237,78 +237,78 @@ public class TestInstant {
 
     @Test(dataProvider="MillisInstantNoNanos")
     public void factory_millis_long(long millis, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.ofMillis(millis);
+        Instant t = Instant.ofEpochMillis(millis);
         assertEquals(t.getEpochSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
-    // ofNanos(long)
+    // ofEpochNanos(long)
     //-----------------------------------------------------------------------
     public void factory_nanos_nanos() {
-        Instant test = Instant.ofNanos(1);
+        Instant test = Instant.ofEpochNanos(1);
         assertEquals(test.getEpochSeconds(), 0);
         assertEquals(test.getNanoOfSecond(), 1);
     }
 
     public void factory_nanos_nanosSecs() {
-        Instant test = Instant.ofNanos(1000000002);
+        Instant test = Instant.ofEpochNanos(1000000002);
         assertEquals(test.getEpochSeconds(), 1);
         assertEquals(test.getNanoOfSecond(), 2);
     }
 
     public void factory_nanos_negative() {
-        Instant test = Instant.ofNanos(-2000000001);
+        Instant test = Instant.ofEpochNanos(-2000000001);
         assertEquals(test.getEpochSeconds(), -3);
         assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
     public void factory_nanos_max() {
-        Instant test = Instant.ofNanos(Long.MAX_VALUE);
+        Instant test = Instant.ofEpochNanos(Long.MAX_VALUE);
         assertEquals(test.getEpochSeconds(), Long.MAX_VALUE / 1000000000);
         assertEquals(test.getNanoOfSecond(), Long.MAX_VALUE % 1000000000);
     }
 
     public void factory_nanos_min() {
-        Instant test = Instant.ofNanos(Long.MIN_VALUE);
+        Instant test = Instant.ofEpochNanos(Long.MIN_VALUE);
         assertEquals(test.getEpochSeconds(), Long.MIN_VALUE / 1000000000 - 1);
         assertEquals(test.getNanoOfSecond(), Long.MIN_VALUE % 1000000000 + 1000000000);
     }
 
     //-----------------------------------------------------------------------
-    // ofNanos(BigInteger)
+    // ofEpochNanos(BigInteger)
     //-----------------------------------------------------------------------
     public void factory_nanos_BigInteger_nanos() {
         BigInteger val = BigInteger.valueOf(1);
-        Instant test = Instant.ofNanos(val);
+        Instant test = Instant.ofEpochNanos(val);
         assertEquals(test.getEpochSeconds(), 0);
         assertEquals(test.getNanoOfSecond(), 1);
     }
 
     public void factory_nanos_BigInteger_nanosSecs() {
         BigInteger val = BigInteger.valueOf(1000000002);
-        Instant test = Instant.ofNanos(val);
+        Instant test = Instant.ofEpochNanos(val);
         assertEquals(test.getEpochSeconds(), 1);
         assertEquals(test.getNanoOfSecond(), 2);
     }
 
     public void factory_nanos_BigInteger_negative() {
         BigInteger val = BigInteger.valueOf(-2000000001);
-        Instant test = Instant.ofNanos(val);
+        Instant test = Instant.ofEpochNanos(val);
         assertEquals(test.getEpochSeconds(), -3);
         assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
     public void factory_nanos_BigInteger_max() {
         BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(999999999));
-        Instant test = Instant.ofNanos(val);
+        Instant test = Instant.ofEpochNanos(val);
         assertEquals(test.getEpochSeconds(), Long.MAX_VALUE);
         assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
     public void factory_nanos_BigInteger_min() {
         BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
-        Instant test = Instant.ofNanos(val);
+        Instant test = Instant.ofEpochNanos(val);
         assertEquals(test.getEpochSeconds(), Long.MIN_VALUE);
         assertEquals(test.getNanoOfSecond(), 0);
     }
@@ -316,27 +316,27 @@ public class TestInstant {
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_nanos_BigInteger_tooBig() {
         BigInteger val = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(1000000000));
-        Instant.ofNanos(val);
+        Instant.ofEpochNanos(val);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_nanos_BigInteger_tooSmall() {
         BigInteger val = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000)).subtract(BigInteger.valueOf(1));
-        Instant.ofNanos(val);
+        Instant.ofEpochNanos(val);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_nanos_BigInteger_null() {
-        Instant.ofNanos((BigInteger) null);
+        Instant.ofEpochNanos((BigInteger) null);
     }
 
     //-----------------------------------------------------------------------
-    // from(InstantProvider)
+    // of(InstantProvider)
     //-----------------------------------------------------------------------
     public void factory_from_provider() {
         InstantProvider provider = new InstantProvider() {
             public Instant toInstant() {
-                return Instant.ofSeconds(1, 2);
+                return Instant.ofEpochSeconds(1, 2);
             }
         };
         Instant test = Instant.of(provider);
@@ -345,7 +345,7 @@ public class TestInstant {
     }
 
     public void factory_from_provider_same() {
-        InstantProvider provider = Instant.ofSeconds(1, 2);
+        InstantProvider provider = Instant.ofEpochSeconds(1, 2);
         Instant test = Instant.of(provider);
         assertSame(test, provider);
     }
@@ -378,7 +378,7 @@ public class TestInstant {
     }
 
     public void test_deserialization() throws Exception {
-        Instant orginal = Instant.ofSeconds(2);
+        Instant orginal = Instant.ofEpochSeconds(2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
@@ -386,7 +386,7 @@ public class TestInstant {
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
         Instant ser = (Instant) in.readObject();
-        assertEquals(Instant.ofSeconds(2), ser);
+        assertEquals(Instant.ofEpochSeconds(2), ser);
     }
 
     //-----------------------------------------------------------------------
@@ -577,47 +577,47 @@ public class TestInstant {
     
     @Test(dataProvider="Plus") 
     public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
-       Instant i = Instant.ofSeconds(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
+       Instant i = Instant.ofEpochSeconds(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(i.getEpochSeconds(), expectedSeconds);
        assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void plusOverflowTooBig() {
-       Instant i = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
+       Instant i = Instant.ofEpochSeconds(Long.MAX_VALUE, 999999999);
        i.plus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void plusOverflowTooSmall() {
-       Instant i = Instant.ofSeconds(Long.MIN_VALUE);
+       Instant i = Instant.ofEpochSeconds(Long.MIN_VALUE);
        i.plus(Duration.ofSeconds(-1, 999999999));
     }
 
     //-----------------------------------------------------------------------
     public void plus_long_TimeUnit_seconds() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.plus(1, TimeUnit.SECONDS);
         assertEquals(2, t.getEpochSeconds());
         assertEquals(0, t.getNanoOfSecond());
      }
 
     public void plus_long_TimeUnit_millis() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.plus(1, TimeUnit.MILLISECONDS);
         assertEquals(1, t.getEpochSeconds());
         assertEquals(1000000, t.getNanoOfSecond());
      }
 
     public void plus_long_TimeUnit_micros() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.plus(1, TimeUnit.MICROSECONDS);
         assertEquals(1, t.getEpochSeconds());
         assertEquals(1000, t.getNanoOfSecond());
      }
 
     public void plus_long_TimeUnit_nanos() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.plus(1, TimeUnit.NANOSECONDS);
         assertEquals(1, t.getEpochSeconds());
         assertEquals(1, t.getNanoOfSecond());
@@ -625,7 +625,7 @@ public class TestInstant {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void plus_long_TimeUnit_null() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
        t.plus(1, null);
     }
 
@@ -658,7 +658,7 @@ public class TestInstant {
 
     @Test(dataProvider="PlusSeconds")
     public void plusSeconds_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.ofSeconds(seconds, nanos);
+        Instant t = Instant.ofEpochSeconds(seconds, nanos);
         t = t.plusSeconds(amount);
         assertEquals(t.getEpochSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
@@ -666,13 +666,13 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void plusSeconds_long_overflowTooBig() {
-        Instant t = Instant.ofSeconds(1, 0);
+        Instant t = Instant.ofEpochSeconds(1, 0);
         t.plusSeconds(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void plusSeconds_long_overflowTooSmall() {
-        Instant t = Instant.ofSeconds(-1, 0);
+        Instant t = Instant.ofEpochSeconds(-1, 0);
         t.plusSeconds(Long.MIN_VALUE);
     }
 
@@ -734,28 +734,28 @@ public class TestInstant {
 
     @Test(dataProvider="PlusMillis")
     public void plusMillis_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.ofSeconds(seconds, nanos);
+        Instant t = Instant.ofEpochSeconds(seconds, nanos);
         t = t.plusMillis(amount);
         assertEquals(t.getEpochSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
     @Test(dataProvider="PlusMillis")
     public void plusMillis_long_oneMore(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.ofSeconds(seconds + 1, nanos);
+        Instant t = Instant.ofEpochSeconds(seconds + 1, nanos);
         t = t.plusMillis(amount);
         assertEquals(t.getEpochSeconds(), expectedSeconds + 1);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
     @Test(dataProvider="PlusMillis")
     public void plusMillis_long_minusOneLess(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.ofSeconds(seconds - 1, nanos);
+        Instant t = Instant.ofEpochSeconds(seconds - 1, nanos);
         t = t.plusMillis(amount);
         assertEquals(t.getEpochSeconds(), expectedSeconds - 1);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     public void plusMillis_long_max() {
-        Instant t = Instant.ofSeconds(Long.MAX_VALUE, 998999999);
+        Instant t = Instant.ofEpochSeconds(Long.MAX_VALUE, 998999999);
         t = t.plusMillis(1);
         assertEquals(t.getEpochSeconds(), Long.MAX_VALUE);
         assertEquals(t.getNanoOfSecond(), 999999999);
@@ -763,12 +763,12 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void plusMillis_long_overflowTooBig() {
-        Instant t = Instant.ofSeconds(Long.MAX_VALUE, 999000000);
+        Instant t = Instant.ofEpochSeconds(Long.MAX_VALUE, 999000000);
         t.plusMillis(1);
     }
 
     public void plusMillis_long_min() {
-        Instant t = Instant.ofSeconds(Long.MIN_VALUE, 1000000);
+        Instant t = Instant.ofEpochSeconds(Long.MIN_VALUE, 1000000);
         t = t.plusMillis(-1);
         assertEquals(t.getEpochSeconds(), Long.MIN_VALUE);
         assertEquals(t.getNanoOfSecond(), 0);
@@ -776,7 +776,7 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void plusMillis_long_overflowTooSmall() {
-        Instant t = Instant.ofSeconds(Long.MIN_VALUE, 0);
+        Instant t = Instant.ofEpochSeconds(Long.MIN_VALUE, 0);
         t.plusMillis(-1);
     }
 
@@ -858,7 +858,7 @@ public class TestInstant {
 
     @Test(dataProvider="PlusNanos")
     public void plusNanos_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant t = Instant.ofSeconds(seconds, nanos);
+        Instant t = Instant.ofEpochSeconds(seconds, nanos);
         t = t.plusNanos(amount);
         assertEquals(t.getEpochSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
@@ -866,13 +866,13 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void plusNanos_long_overflowTooBig() {
-        Instant t = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
+        Instant t = Instant.ofEpochSeconds(Long.MAX_VALUE, 999999999);
         t.plusNanos(1);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void plusNanos_long_overflowTooSmall() {
-        Instant t = Instant.ofSeconds(Long.MIN_VALUE, 0);
+        Instant t = Instant.ofEpochSeconds(Long.MIN_VALUE, 0);
         t.plusNanos(-1);
     }
 
@@ -1064,47 +1064,47 @@ public class TestInstant {
     
     @Test(dataProvider="Minus") 
     public void minus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
-       Instant i = Instant.ofSeconds(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
+       Instant i = Instant.ofEpochSeconds(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
        assertEquals(i.getEpochSeconds(), expectedSeconds);
        assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void minusOverflowTooSmall() {
-       Instant i = Instant.ofSeconds(Long.MIN_VALUE);
+       Instant i = Instant.ofEpochSeconds(Long.MIN_VALUE);
        i.minus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void minusOverflowTooBig() {
-       Instant i = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
+       Instant i = Instant.ofEpochSeconds(Long.MAX_VALUE, 999999999);
        i.minus(Duration.ofSeconds(-1, 999999999));
     }
 
     //-----------------------------------------------------------------------
     public void minus_long_TimeUnit_seconds() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.minus(1, TimeUnit.SECONDS);
         assertEquals(0, t.getEpochSeconds());
         assertEquals(0, t.getNanoOfSecond());
      }
 
     public void minus_long_TimeUnit_millis() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.minus(1, TimeUnit.MILLISECONDS);
         assertEquals(0, t.getEpochSeconds());
         assertEquals(999000000, t.getNanoOfSecond());
      }
 
     public void minus_long_TimeUnit_micros() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.minus(1, TimeUnit.MICROSECONDS);
         assertEquals(0, t.getEpochSeconds());
         assertEquals(999999000, t.getNanoOfSecond());
      }
 
     public void minus_long_TimeUnit_nanos() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
         t = t.minus(1, TimeUnit.NANOSECONDS);
         assertEquals(0, t.getEpochSeconds());
         assertEquals(999999999, t.getNanoOfSecond());
@@ -1112,7 +1112,7 @@ public class TestInstant {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void minus_long_TimeUnit_null() {
-        Instant t = Instant.ofSeconds(1);
+        Instant t = Instant.ofEpochSeconds(1);
        t.minus(1, null);
     }
 
@@ -1145,7 +1145,7 @@ public class TestInstant {
 
     @Test(dataProvider="MinusSeconds")
     public void minusSeconds_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant i = Instant.ofSeconds(seconds, nanos);
+        Instant i = Instant.ofEpochSeconds(seconds, nanos);
         i = i.minusSeconds(amount);
         assertEquals(i.getEpochSeconds(), expectedSeconds);
         assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
@@ -1153,13 +1153,13 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void minusSeconds_long_overflowTooBig() {
-        Instant i = Instant.ofSeconds(1, 0);
+        Instant i = Instant.ofEpochSeconds(1, 0);
         i.minusSeconds(Long.MIN_VALUE + 1);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void minusSeconds_long_overflowTooSmall() {
-        Instant i = Instant.ofSeconds(-2, 0);
+        Instant i = Instant.ofEpochSeconds(-2, 0);
         i.minusSeconds(Long.MAX_VALUE);
     }
 
@@ -1221,28 +1221,28 @@ public class TestInstant {
 
     @Test(dataProvider="MinusMillis")
     public void minusMillis_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant i = Instant.ofSeconds(seconds, nanos);
+        Instant i = Instant.ofEpochSeconds(seconds, nanos);
         i = i.minusMillis(amount);
         assertEquals(i.getEpochSeconds(), expectedSeconds);
         assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
     @Test(dataProvider="MinusMillis")
     public void minusMillis_long_oneMore(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant i = Instant.ofSeconds(seconds + 1, nanos);
+        Instant i = Instant.ofEpochSeconds(seconds + 1, nanos);
         i = i.minusMillis(amount);
         assertEquals(i.getEpochSeconds(), expectedSeconds + 1);
         assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
     @Test(dataProvider="MinusMillis")
     public void minusMillis_long_minusOneLess(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant i = Instant.ofSeconds(seconds - 1, nanos);
+        Instant i = Instant.ofEpochSeconds(seconds - 1, nanos);
         i = i.minusMillis(amount);
         assertEquals(i.getEpochSeconds(), expectedSeconds - 1);
         assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     public void minusMillis_long_max() {
-        Instant i = Instant.ofSeconds(Long.MAX_VALUE, 998999999);
+        Instant i = Instant.ofEpochSeconds(Long.MAX_VALUE, 998999999);
         i = i.minusMillis(-1);
         assertEquals(i.getEpochSeconds(), Long.MAX_VALUE);
         assertEquals(i.getNanoOfSecond(), 999999999);
@@ -1250,12 +1250,12 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void minusMillis_long_overflowTooBig() {
-        Instant i = Instant.ofSeconds(Long.MAX_VALUE, 999000000);
+        Instant i = Instant.ofEpochSeconds(Long.MAX_VALUE, 999000000);
         i.minusMillis(-1);
     }
 
     public void minusMillis_long_min() {
-        Instant i = Instant.ofSeconds(Long.MIN_VALUE, 1000000);
+        Instant i = Instant.ofEpochSeconds(Long.MIN_VALUE, 1000000);
         i = i.minusMillis(1);
         assertEquals(i.getEpochSeconds(), Long.MIN_VALUE);
         assertEquals(i.getNanoOfSecond(), 0);
@@ -1263,7 +1263,7 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void minusMillis_long_overflowTooSmall() {
-        Instant i = Instant.ofSeconds(Long.MIN_VALUE, 0);
+        Instant i = Instant.ofEpochSeconds(Long.MIN_VALUE, 0);
         i.minusMillis(1);
     }
 
@@ -1345,7 +1345,7 @@ public class TestInstant {
 
     @Test(dataProvider="MinusNanos")
     public void minusNanos_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant i = Instant.ofSeconds(seconds, nanos);
+        Instant i = Instant.ofEpochSeconds(seconds, nanos);
         i = i.minusNanos(amount);
         assertEquals(i.getEpochSeconds(), expectedSeconds);
         assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
@@ -1353,13 +1353,13 @@ public class TestInstant {
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void minusNanos_long_overflowTooBig() {
-        Instant i = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
+        Instant i = Instant.ofEpochSeconds(Long.MAX_VALUE, 999999999);
         i.minusNanos(-1);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void minusNanos_long_overflowTooSmall() {
-        Instant i = Instant.ofSeconds(Long.MIN_VALUE, 0);
+        Instant i = Instant.ofEpochSeconds(Long.MIN_VALUE, 0);
         i.minusNanos(1);
     }
 
@@ -1367,19 +1367,19 @@ public class TestInstant {
     // toEpochSeconds()
     //-----------------------------------------------------------------------
     public void test_toEpochSeconds() {
-        Instant test = Instant.ofSeconds(321, 123456789);
+        Instant test = Instant.ofEpochSeconds(321, 123456789);
         assertEquals(test.toEpochSeconds(), new BigDecimal("321.123456789"));
     }
 
     public void test_toEpochSeconds_max() {
-        Instant test = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
+        Instant test = Instant.ofEpochSeconds(Long.MAX_VALUE, 999999999);
         BigDecimal expected = BigDecimal.valueOf(Long.MAX_VALUE);
         expected = expected.add(BigDecimal.valueOf(999999999, 9));
         assertEquals(test.toEpochSeconds(), expected);
     }
 
     public void test_toEpochSeconds_min() {
-        Instant test = Instant.ofSeconds(Long.MIN_VALUE, 0);
+        Instant test = Instant.ofEpochSeconds(Long.MIN_VALUE, 0);
         BigDecimal expected = BigDecimal.valueOf(Long.MIN_VALUE);
         expected = expected.setScale(9);
         assertEquals(test.toEpochSeconds(), expected);
@@ -1389,19 +1389,19 @@ public class TestInstant {
     // toEpochNanos()
     //-----------------------------------------------------------------------
     public void test_toEpochNanos() {
-        Instant test = Instant.ofSeconds(321, 123456789);
+        Instant test = Instant.ofEpochSeconds(321, 123456789);
         assertEquals(test.toEpochNanos(), BigInteger.valueOf(321123456789L));
     }
 
     public void test_toEpochNanos_max() {
-        Instant test = Instant.ofSeconds(Long.MAX_VALUE, 999999999);
+        Instant test = Instant.ofEpochSeconds(Long.MAX_VALUE, 999999999);
         BigInteger expected = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(1000000000))
                                     .add(BigInteger.valueOf(999999999));
         assertEquals(test.toEpochNanos(), expected);
     }
 
     public void test_toNanos_min() {
-        Instant test = Instant.ofSeconds(Long.MIN_VALUE, 0);
+        Instant test = Instant.ofEpochSeconds(Long.MIN_VALUE, 0);
         BigInteger expected = BigInteger.valueOf(Long.MIN_VALUE).multiply(BigInteger.valueOf(1000000000));
         assertEquals(test.toEpochNanos(), expected);
     }
@@ -1410,21 +1410,21 @@ public class TestInstant {
     // toEpochMillisLong()
     //-----------------------------------------------------------------------
     public void test_toEpochMillisLong() {
-        assertEquals(Instant.ofSeconds(1L, 1000000).toEpochMillisLong(), 1001L);
-        assertEquals(Instant.ofSeconds(1L, 2000000).toEpochMillisLong(), 1002L);
-        assertEquals(Instant.ofSeconds(1L, 567).toEpochMillisLong(), 1000L);
-        assertEquals(Instant.ofSeconds(Long.MAX_VALUE / 1000).toEpochMillisLong(), (Long.MAX_VALUE / 1000) * 1000);
-        assertEquals(Instant.ofSeconds(Long.MIN_VALUE / 1000).toEpochMillisLong(), (Long.MIN_VALUE / 1000) * 1000);
+        assertEquals(Instant.ofEpochSeconds(1L, 1000000).toEpochMillisLong(), 1001L);
+        assertEquals(Instant.ofEpochSeconds(1L, 2000000).toEpochMillisLong(), 1002L);
+        assertEquals(Instant.ofEpochSeconds(1L, 567).toEpochMillisLong(), 1000L);
+        assertEquals(Instant.ofEpochSeconds(Long.MAX_VALUE / 1000).toEpochMillisLong(), (Long.MAX_VALUE / 1000) * 1000);
+        assertEquals(Instant.ofEpochSeconds(Long.MIN_VALUE / 1000).toEpochMillisLong(), (Long.MIN_VALUE / 1000) * 1000);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_toEpochMillisLong_tooBig() {
-        Instant.ofSeconds(Long.MAX_VALUE / 1000 + 1).toEpochMillisLong();
+        Instant.ofEpochSeconds(Long.MAX_VALUE / 1000 + 1).toEpochMillisLong();
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_toEpochMillisLong_tooSmall() {
-        Instant.ofSeconds(Long.MIN_VALUE / 1000 - 1).toEpochMillisLong();
+        Instant.ofEpochSeconds(Long.MIN_VALUE / 1000 - 1).toEpochMillisLong();
     }
 
     //-----------------------------------------------------------------------
@@ -1432,19 +1432,19 @@ public class TestInstant {
     //-----------------------------------------------------------------------
     public void test_comparisons() {
         doTest_comparisons_Instant(
-            Instant.ofSeconds(-2L, 0),
-            Instant.ofSeconds(-2L, 999999998),
-            Instant.ofSeconds(-2L, 999999999),
-            Instant.ofSeconds(-1L, 0),
-            Instant.ofSeconds(-1L, 1),
-            Instant.ofSeconds(-1L, 999999998),
-            Instant.ofSeconds(-1L, 999999999),
-            Instant.ofSeconds(0L, 0),
-            Instant.ofSeconds(0L, 1),
-            Instant.ofSeconds(0L, 2),
-            Instant.ofSeconds(0L, 999999999),
-            Instant.ofSeconds(1L, 0),
-            Instant.ofSeconds(2L, 0)
+            Instant.ofEpochSeconds(-2L, 0),
+            Instant.ofEpochSeconds(-2L, 999999998),
+            Instant.ofEpochSeconds(-2L, 999999999),
+            Instant.ofEpochSeconds(-1L, 0),
+            Instant.ofEpochSeconds(-1L, 1),
+            Instant.ofEpochSeconds(-1L, 999999998),
+            Instant.ofEpochSeconds(-1L, 999999999),
+            Instant.ofEpochSeconds(0L, 0),
+            Instant.ofEpochSeconds(0L, 1),
+            Instant.ofEpochSeconds(0L, 2),
+            Instant.ofEpochSeconds(0L, 999999999),
+            Instant.ofEpochSeconds(1L, 0),
+            Instant.ofEpochSeconds(2L, 0)
         );
     }
 
@@ -1475,26 +1475,26 @@ public class TestInstant {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_ObjectNull() {
-        Instant a = Instant.ofSeconds(0L, 0);
+        Instant a = Instant.ofEpochSeconds(0L, 0);
         a.compareTo(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isBefore_ObjectNull() {
-        Instant a = Instant.ofSeconds(0L, 0);
+        Instant a = Instant.ofEpochSeconds(0L, 0);
         a.isBefore(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isAfter_ObjectNull() {
-        Instant a = Instant.ofSeconds(0L, 0);
+        Instant a = Instant.ofEpochSeconds(0L, 0);
         a.isAfter(null);
     }
 
     @Test(expectedExceptions=ClassCastException.class)
     @SuppressWarnings("unchecked")
     public void compareToNonInstant() {
-       Comparable c = Instant.ofSeconds(0L);
+       Comparable c = Instant.ofEpochSeconds(0L);
        c.compareTo(new Object());
     }
 
@@ -1502,10 +1502,10 @@ public class TestInstant {
     // equals()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        Instant test5a = Instant.ofSeconds(5L, 20);
-        Instant test5b = Instant.ofSeconds(5L, 20);
-        Instant test5n = Instant.ofSeconds(5L, 30);
-        Instant test6 = Instant.ofSeconds(6L, 20);
+        Instant test5a = Instant.ofEpochSeconds(5L, 20);
+        Instant test5b = Instant.ofEpochSeconds(5L, 20);
+        Instant test5n = Instant.ofEpochSeconds(5L, 30);
+        Instant test6 = Instant.ofEpochSeconds(6L, 20);
         
         assertEquals(test5a.equals(test5a), true);
         assertEquals(test5a.equals(test5b), true);
@@ -1529,12 +1529,12 @@ public class TestInstant {
     }
 
     public void test_equals_null() {
-        Instant test5 = Instant.ofSeconds(5L, 20);
+        Instant test5 = Instant.ofEpochSeconds(5L, 20);
         assertEquals(test5.equals(null), false);
     }
 
     public void test_equals_otherClass() {
-        Instant test5 = Instant.ofSeconds(5L, 20);
+        Instant test5 = Instant.ofEpochSeconds(5L, 20);
         assertEquals(test5.equals(""), false);
     }
 
@@ -1542,10 +1542,10 @@ public class TestInstant {
     // hashCode()
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        Instant test5a = Instant.ofSeconds(5L, 20);
-        Instant test5b = Instant.ofSeconds(5L, 20);
-        Instant test5n = Instant.ofSeconds(5L, 30);
-        Instant test6 = Instant.ofSeconds(6L, 20);
+        Instant test5a = Instant.ofEpochSeconds(5L, 20);
+        Instant test5b = Instant.ofEpochSeconds(5L, 20);
+        Instant test5n = Instant.ofEpochSeconds(5L, 30);
+        Instant test6 = Instant.ofEpochSeconds(6L, 20);
         
         assertEquals(test5a.hashCode() == test5a.hashCode(), true);
         assertEquals(test5a.hashCode() == test5b.hashCode(), true);
@@ -1560,7 +1560,7 @@ public class TestInstant {
     //-----------------------------------------------------------------------
     @Test
     public void test_toString() {
-        Instant t = Instant.ofSeconds(0L, 567);
+        Instant t = Instant.ofEpochSeconds(0L, 567);
         assertEquals(t.toString(), "1970-01-01T00:00:00.000000567Z");
     }
 

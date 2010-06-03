@@ -3056,7 +3056,7 @@ public class GregorianCalendar
      */
     public OffsetDateTime toOffsetDateTime() {
         if (getClass() == GregorianCalendar.class) {
-            Instant instant = Instant.ofMillis(getTimeInMillis());
+            Instant instant = Instant.ofEpochMillis(getTimeInMillis());
             ZoneOffset offset = ZoneOffset.ofTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
             return OffsetDateTime.ofInstant(instant, offset);
         }
@@ -3115,7 +3115,7 @@ public class GregorianCalendar
      * @since ?
      */
     public ZonedDateTime toZonedDateTime() {
-        Instant instant = Instant.ofMillis(getTimeInMillis());
+        Instant instant = Instant.ofEpochMillis(getTimeInMillis());
         javax.time.calendar.TimeZone zone = javax.time.calendar.TimeZone.of(getZone().getID());
         return ZonedDateTime.ofInstant(instant, zone);
     }

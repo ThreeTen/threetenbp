@@ -108,7 +108,7 @@ class UTC implements TimeScale, Serializable {
         if (tsInstant.getTimeScale() != this) {
             return tsInstant.getTimeScale().toInstant(tsInstant);
         }
-        return Instant.ofSeconds(tsInstant.getEpochSeconds(), tsInstant.getNanoOfSecond());
+        return Instant.ofEpochSeconds(tsInstant.getEpochSeconds(), tsInstant.getNanoOfSecond());
     }
 
     /** {@inheritDoc} */
