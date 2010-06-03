@@ -216,7 +216,7 @@ public final class LocalDate
      * The year zero day count is a simple incrementing count of days
      * where day 0 is 0000-01-01.
      *
-     * @param epochDays  the Epoch Day to convert, based on the epoch 1970-01-01
+     * @param epochDays  the Epoch Day to convert, based on the epoch 0000-01-01
      * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
