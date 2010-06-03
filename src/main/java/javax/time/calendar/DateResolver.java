@@ -34,9 +34,9 @@ package javax.time.calendar;
 /**
  * Strategy for resolving an invalid year-month-day to a valid one.
  * <p>
- * DateResolver is an abstract class and must be implemented with care
+ * DateResolver is an interface and must be implemented with care
  * to ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe.
+ * All implementations must be final, immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
