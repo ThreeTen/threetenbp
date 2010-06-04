@@ -40,6 +40,7 @@ import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
 import javax.time.calendar.TestDateAdjusters;
+import javax.time.calendar.TestDatePeriod;
 import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestDateTimeFields;
 import javax.time.calendar.TestDayOfWeek;
@@ -143,6 +144,7 @@ public class AllTest {
             TestClock.class,
             TestClock_TimeSourceClock.class,
             TestDateAdjusters.class,
+            TestDatePeriod.class,
             TestDateResolvers.class,
             TestDateTimeFields.class,
             TestDayOfWeek.class,
