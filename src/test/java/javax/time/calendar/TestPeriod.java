@@ -148,7 +148,7 @@ public class TestPeriod {
         assertEquals(Period.of(2, QUARTERS), Period.ofMonths(6));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_of_intPeriodUnit_noConvert() {
         Period.of(1, HISTORIC_MONTHS);
     }
