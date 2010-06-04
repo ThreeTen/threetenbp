@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
+import javax.time.MathUtils;
 import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
@@ -120,12 +121,8 @@ public final class LocalDateTime
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
-        long yearZeroDays = (localSeconds / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        int secsOfDay = (int) (localSeconds % ISOChronology.SECONDS_PER_DAY);
-        if (secsOfDay < 0) {
-            secsOfDay += ISOChronology.SECONDS_PER_DAY;
-            yearZeroDays--;  // overflow caught later
-        }
+        long yearZeroDays = MathUtils.floorDiv(localSeconds, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        int secsOfDay = MathUtils.floorMod(localSeconds, ISOChronology.SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofYearZeroDays(yearZeroDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
         return LocalDateTime.of(date, time);
