@@ -653,6 +653,9 @@ public class TestInstant {
             {-1, 1, -1, -2, 1},
             {-1, 1, Long.MAX_VALUE, Long.MAX_VALUE - 1, 1},
             {-1, 1, Long.MIN_VALUE + 1, Long.MIN_VALUE, 1},
+            
+            {Long.MAX_VALUE, 2, Long.MIN_VALUE, -1, 2},
+            {Long.MIN_VALUE, 2, Long.MAX_VALUE, -1, 2},
         };
     }
 
@@ -729,6 +732,9 @@ public class TestInstant {
             {0, 999999999, -1,    0, 998999999},
             {0, 999999999, -1000, -1, 999999999},
             {0, 999999999, -1001, -1, 998999999},
+            
+            {0, 0, Long.MAX_VALUE, Long.MAX_VALUE / 1000, (int) (Long.MAX_VALUE % 1000) * 1000000},
+            {0, 0, Long.MIN_VALUE, Long.MIN_VALUE / 1000 - 1, (int) (Long.MIN_VALUE % 1000) * 1000000 + 1000000000},
         };
     }
 
@@ -853,6 +859,9 @@ public class TestInstant {
             {Long.MAX_VALUE - 1, 0, 1999999999, Long.MAX_VALUE, 999999999},
             {Long.MIN_VALUE, 1, -1, Long.MIN_VALUE, 0},
             {Long.MIN_VALUE + 1, 1, -1000000001, Long.MIN_VALUE, 0},
+            
+            {0, 0, Long.MAX_VALUE, Long.MAX_VALUE / 1000000000, (int) (Long.MAX_VALUE % 1000000000)},
+            {0, 0, Long.MIN_VALUE, Long.MIN_VALUE / 1000000000 - 1, (int) (Long.MIN_VALUE % 1000000000) + 1000000000},
         };
     }
 
@@ -1140,6 +1149,12 @@ public class TestInstant {
             {-1, 1, -1, 0, 1},
             {-1, 1, Long.MAX_VALUE, Long.MIN_VALUE, 1},
             {-1, 1, Long.MIN_VALUE + 1, Long.MAX_VALUE - 1, 1},
+            {-1, 1, Long.MIN_VALUE, Long.MAX_VALUE, 1},
+            
+            {Long.MAX_VALUE, 2, Long.MAX_VALUE, 0, 2},
+            {Long.MAX_VALUE - 1, 2, Long.MAX_VALUE, -1, 2},
+            {Long.MIN_VALUE, 2, Long.MIN_VALUE, 0, 2},
+            {Long.MIN_VALUE + 1, 2, Long.MIN_VALUE, 1, 2},
         };
     }
 
@@ -1216,6 +1231,9 @@ public class TestInstant {
             {0, 999999999, -1,    1, 999999},
             {0, 999999999, -1000, 1, 999999999},
             {0, 999999999, -1001, 2, 999999},
+            
+            {0, 0, Long.MAX_VALUE, -(Long.MAX_VALUE / 1000) - 1, (int) -(Long.MAX_VALUE % 1000) * 1000000 + 1000000000},
+            {0, 0, Long.MIN_VALUE, -(Long.MIN_VALUE / 1000), (int) -(Long.MIN_VALUE % 1000) * 1000000},
         };
     }
 
@@ -1340,6 +1358,9 @@ public class TestInstant {
             {Long.MAX_VALUE - 1, 0, -1999999999, Long.MAX_VALUE, 999999999},
             {Long.MIN_VALUE, 1, 1, Long.MIN_VALUE, 0},
             {Long.MIN_VALUE + 1, 1, 1000000001, Long.MIN_VALUE, 0},
+            
+            {0, 0, Long.MAX_VALUE, -(Long.MAX_VALUE / 1000000000) - 1, (int) -(Long.MAX_VALUE % 1000000000) + 1000000000},
+            {0, 0, Long.MIN_VALUE, -(Long.MIN_VALUE / 1000000000), (int) -(Long.MIN_VALUE % 1000000000)},
         };
     }
 
@@ -1415,6 +1436,15 @@ public class TestInstant {
         assertEquals(Instant.ofEpochSeconds(1L, 567).toEpochMillisLong(), 1000L);
         assertEquals(Instant.ofEpochSeconds(Long.MAX_VALUE / 1000).toEpochMillisLong(), (Long.MAX_VALUE / 1000) * 1000);
         assertEquals(Instant.ofEpochSeconds(Long.MIN_VALUE / 1000).toEpochMillisLong(), (Long.MIN_VALUE / 1000) * 1000);
+        assertEquals(Instant.ofEpochSeconds(0L, -1000000).toEpochMillisLong(), -1L);
+        assertEquals(Instant.ofEpochSeconds(0L, 1000000).toEpochMillisLong(), 1);
+        assertEquals(Instant.ofEpochSeconds(0L, 999999).toEpochMillisLong(), 0);
+        assertEquals(Instant.ofEpochSeconds(0L, 1).toEpochMillisLong(), 0);
+        assertEquals(Instant.ofEpochSeconds(0L, 0).toEpochMillisLong(), 0);
+        assertEquals(Instant.ofEpochSeconds(0L, -1).toEpochMillisLong(), -1L);
+        assertEquals(Instant.ofEpochSeconds(0L, -999999).toEpochMillisLong(), -1L);
+        assertEquals(Instant.ofEpochSeconds(0L, -1000000).toEpochMillisLong(), -1L);
+        assertEquals(Instant.ofEpochSeconds(0L, -1000001).toEpochMillisLong(), -2L);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
@@ -1425,6 +1455,14 @@ public class TestInstant {
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_toEpochMillisLong_tooSmall() {
         Instant.ofEpochSeconds(Long.MIN_VALUE / 1000 - 1).toEpochMillisLong();
+    }
+
+    //-----------------------------------------------------------------------
+    // toInstant()
+    //-----------------------------------------------------------------------
+    public void test_toInstant() {
+        Instant base = Instant.ofEpochSeconds(1L, 1000000);
+        assertSame(base.toInstant(), base);
     }
 
     //-----------------------------------------------------------------------

@@ -40,23 +40,19 @@ import javax.time.calendar.Clock;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.CalendricalParseException;
-import javax.time.scales.TimeScaleInstant;
-import javax.time.scales.TimeScales;
 
 /**
  * An instantaneous point on the time-line.
  * <p>
  * The Time Framework for Java models time as a series of instantaneous events,
- * known as instants, along a single time-line. This class represents one
- * of those instants.
+ * known as instants, along a single time-line.
+ * This class represents one of those instants.
  * <p>
- * A physical instant is an instantaneous event.
- * However, for practicality the API and this class uses a precision of nanoseconds.
- * <p>
- * A physical instant could be at any point on an infinite time-line.
- * However, for practicality the API and this class limits the measurable time-line
- * to the number of seconds that can be held in a {@code long}. This is greater
- * than the current estimated age of the universe.
+ * An instant is in reality an instantaneous event on an infinite time-line.
+ * However, for practicality this API uses a precision of nanoseconds.
+ * In addition, this API limits the measurable time-line to the number of seconds
+ * that can be held in a {@code long}.
+ * This is greater than the current estimated age of the universe.
  * <p>
  * In order to represent the data a 96 bit number is required. To achieve this the
  * data is stored as seconds, measured using a {@code long}, and nanoseconds,
@@ -65,13 +61,35 @@ import javax.time.scales.TimeScales;
  * <p>
  * The seconds are measured from the standard Java epoch of 1970-01-01T00:00:00Z.
  * Instants on the time-line after the epoch are positive, earlier are negative.
+ * 
+ * <h3>Time-scale</h3>
  * <p>
- * This class uses the {@link TimeScales#simplifiedUtc() simplified UTC} time scale.
- * The scale keeps in step with true UTC by simply ignoring leap seconds.
- * This scale has been chosen as the default because it is simple to understand
- * and is what most users of the API expect. If the application needs an accurate
- * time scale that is aware of leap seconds then {@link TimeScaleInstant} should
- * be used.
+ * {@code Instant} uses the <a href="http://www.cl.cam.ac.uk/~mgk25/time/utc-sls/">UTC-SLS</a>
+ * time-scale which always has 86400 seconds in a day.
+ * Essentially, UTC-SLS is a consistent mechanism of converting an accurate UTC time
+ * (potentially with leap seconds) to a 86400 second day.
+ * Its main benefit is that in an accurate implementation, the UTC-SLS time never experiences
+ * any gaps or overlaps.
+ * <p>
+ * UTC-SLS is defined as spreading any leap second evenly over the last 1000 seconds of the day.
+ * This corresponds to times after 23:43:21 on a day with an added leap second, or
+ * times after 23:43:19 on a day with a removed leap second.
+ * <p>
+ * The UTC-SLS conversion only matters to users of this class with high precision requirements.
+ * To keep full track of an instant using an accurate time-scale use the {@link UTCInstant} or
+ * {@link TAIInstant} class.
+ * For most applications, the behavior where each day has exactly 84000 seconds is the desired one.
+ * The UTC-SLS time-scale is also used for all human-scale date-time classes,
+ * such as {@code OffsetDateTime} and {@code ZonedDateTime}.
+ * <p>
+ * The standard Java epoch of 1970 is prior to the introduction of whole leap seconds into UTC in 1972.
+ * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
+ * The chosen definition is that there are no leap seconds or rate changes in the Java version
+ * of UTC prior to 1972, thus it remains 10 seconds offset from TAI.
+ * This differs from an accurate UTC implementation, but is relatively easy to handle if accuracy is required.
+ * <p>
+ * Operations to add or subtract durations will ignore leap seconds.
+ * Use {@code UTCInstant} or {@code TAIInstant} if accurate duration calculations are required.
  * <p>
  * Instant is immutable and thread-safe.
  *
@@ -90,13 +108,13 @@ public final class Instant
      */
     private static final long serialVersionUID = 1L;
     /**
-     * BigInteger constant for a billion.
-     */
-    static final BigInteger BILLION = BigInteger.valueOf(1000000000);
-    /**
      * Constant for nanos per second.
      */
     private static final int NANOS_PER_SECOND = 1000000000;
+    /**
+     * BigInteger constant for a billion.
+     */
+    static final BigInteger BILLION = BigInteger.valueOf(NANOS_PER_SECOND);
 
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -161,7 +179,7 @@ public final class Instant
      * The nanosecond field is set to zero.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      */
     public static Instant ofEpochSeconds(long epochSeconds) {
         return create(epochSeconds, 0);
@@ -171,7 +189,7 @@ public final class Instant
      * Obtains an instance of {@code Instant} using seconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
      * <p>
-     * This methods allows an arbitrary number of nanoseconds to be passed in.
+     * This method allows an arbitrary number of nanoseconds to be passed in.
      * The factory will alter the values of the second and nanosecond in order
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
      * For example, the following will result in the exactly the same instant:
@@ -183,16 +201,12 @@ public final class Instant
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Instant}
      */
     public static Instant ofEpochSeconds(long epochSeconds, long nanoAdjustment) {
-        long secs = MathUtils.safeAdd(epochSeconds, nanoAdjustment / NANOS_PER_SECOND);
-        int nos = (int) (nanoAdjustment % NANOS_PER_SECOND);
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = MathUtils.safeDecrement(secs);
-        }
+        long secs = MathUtils.safeAdd(epochSeconds, MathUtils.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
+        int nos = MathUtils.floorMod(nanoAdjustment, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -205,7 +219,7 @@ public final class Instant
      * places then an exception is thrown.
      *
      * @param epochSeconds  the number of seconds, up to scale 9
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Instant}
      */
     public static Instant ofEpochSeconds(BigDecimal epochSeconds) {
@@ -221,15 +235,11 @@ public final class Instant
      * The seconds and nanoseconds are extracted from the specified milliseconds.
      *
      * @param epochMillis  the number of milliseconds
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      */
     public static Instant ofEpochMillis(long epochMillis) {
-        long secs = epochMillis / 1000;
-        int mos = (int) (epochMillis % 1000);
-        if (mos < 0) {
-            mos += 1000;
-            secs--;
-        }
+        long secs = MathUtils.floorDiv(epochMillis, 1000);
+        int mos = MathUtils.floorMod(epochMillis, 1000);
         return create(secs, mos * 1000000);
     }
 
@@ -241,15 +251,11 @@ public final class Instant
      * The seconds and nanoseconds are extracted from the specified nanoseconds.
      *
      * @param epochNanos  the number of nanoseconds
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      */
     public static Instant ofEpochNanos(long epochNanos) {
-        long secs = epochNanos / NANOS_PER_SECOND;
-        int nos = (int) (epochNanos % NANOS_PER_SECOND);
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs--;
-        }
+        long secs = MathUtils.floorDiv(epochNanos, NANOS_PER_SECOND);
+        int nos = MathUtils.floorMod(epochNanos, NANOS_PER_SECOND);
         return create(secs, nos);
     }
 
@@ -262,7 +268,7 @@ public final class Instant
      * exception is thrown.
      *
      * @param epochNanos  the number of nanoseconds, not null
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Instant}
      */
     public static Instant ofEpochNanos(BigInteger epochNanos) {
@@ -282,7 +288,7 @@ public final class Instant
      * also checks the validity of the result of the provider.
      *
      * @param instantProvider  a provider of instant information, not null
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      */
     public static Instant of(InstantProvider instantProvider) {
         checkNotNull(instantProvider, "InstantProvider must not be null");
@@ -304,7 +310,7 @@ public final class Instant
      * The decimal point may be either a dot or a comma.
      *
      * @param text  the text to parse, not null
-     * @return an {@code Instant}, never null
+     * @return an instant, never null
      * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
      */
     public static Instant parse(final String text) {
@@ -318,13 +324,13 @@ public final class Instant
      * Obtains an instance of {@code Instant} using seconds and nanoseconds.
      *
      * @param seconds  the length of the duration in seconds
-     * @param nanoAdjustment  the nanosecond adjustment within the second, from 0 to 999,999,999
+     * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
      */
-    private static Instant create(long seconds, int nanoAdjustment) {
-        if ((seconds | nanoAdjustment) == 0) {
+    private static Instant create(long seconds, int nanoOfSecond) {
+        if ((seconds | nanoOfSecond) == 0) {
             return EPOCH;
         }
-        return new Instant(seconds, nanoAdjustment);
+        return new Instant(seconds, nanoOfSecond);
     }
 
     /**
@@ -351,16 +357,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * in this instant.
+     * Gets the number of seconds from the Java epoch of 1970-01-01T00:00:00Z.
      * <p>
-     * The instant is stored using two fields - seconds and nanoseconds.
-     * The seconds are relative to the epoch of 1970-01-01T00:00:00Z.
-     * The nanoseconds are a value from 0 to 999,999,999 adjusting the epoch
-     * seconds to be later along the time-line.
-     * The total instant is defined by calling this method and {@link #getNanoOfSecond()}.
+     * The epoch second count is a simple incrementing count of seconds where
+     * second 0 is 1970-01-01T00:00:00Z.
+     * The nanosecond part of the day is returned by {@code getNanosOfSecond}.
      *
-     * @return the seconds from the epoch
+     * @return the seconds from the epoch of 1970-01-01T00:00:00Z
      */
     public long getEpochSeconds() {
         return seconds;
@@ -368,13 +371,10 @@ public final class Instant
 
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
-     * of the second returned by {@link #getEpochSeconds()}.
+     * of the second.
      * <p>
-     * The instant is stored using two fields - seconds and nanoseconds.
-     * The seconds are relative to the epoch of 1970-01-01T00:00:00Z.
-     * The nanoseconds are a value from 0 to 999,999,999 adjusting the epoch
-     * seconds to be later along the time-line.
-     * The total instant is defined by calling this method and {@link #getEpochSeconds()}.
+     * The nanosecond-of-second value measures the total number of nanoseconds from
+     * the second returned by {@code getEpochSeconds}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
@@ -395,19 +395,10 @@ public final class Instant
     public Instant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
         int nanosToAdd = duration.getNanoOfSecond();
-        if (secsToAdd == 0 && nanosToAdd == 0) {
+        if ((secsToAdd | nanosToAdd) == 0) {
             return this;
         }
-
-        long secs = MathUtils.safeAdd(seconds, secsToAdd);
-        int nos = nanos + nanosToAdd;
-
-        if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secs = MathUtils.safeIncrement(secs);
-        }
-
-        return create(secs, nos);
+        return plus(secsToAdd, nanosToAdd);
     }
 
     /**
@@ -447,8 +438,7 @@ public final class Instant
         if (secondsToAdd == 0) {
             return this;
         }
-        long secs = MathUtils.safeAdd(seconds, secondsToAdd);
-        return create(secs , nanos);
+        return plus(secondsToAdd, 0);
     }
 
     /**
@@ -461,22 +451,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusMillis(long millisToAdd) {
-        if (millisToAdd == 0) {
-            return this;
-        }
-        long secondsToAdd = millisToAdd / 1000;
-        // add: 0 to 999,000,000, subtract: 0 to -999,000,000
-        int nos = ((int) (millisToAdd % 1000)) * 1000000;
-        // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
-        nos += nanos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
-            secondsToAdd--;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
-            secondsToAdd++;
-        }
-        return create(MathUtils.safeAdd(seconds, secondsToAdd) , nos);
+        return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000000);
     }
 
     /**
@@ -489,22 +464,28 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant plusNanos(long nanosToAdd) {
-        if (nanosToAdd == 0) {
+        return plus(0, nanosToAdd);
+    }
+
+    /**
+     * Returns a copy of this instant with the specified duration added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param secondsToAdd  the seconds to add, positive or negative
+     * @param nanosToAdd  the nanos to add, positive or negative
+     * @return an {@code Instant} based on this instant with the specified seconds added, never null
+     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     */
+    private Instant plus(long secondsToAdd, long nanosToAdd) {
+        if ((secondsToAdd |nanosToAdd) == 0) {
             return this;
         }
-        long secondsToAdd = nanosToAdd / NANOS_PER_SECOND;
-        // add: 0 to 999,999,999, subtract: 0 to -999,999,999
-        int nos = (int) (nanosToAdd % NANOS_PER_SECOND);
-        // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
-        nos += nanos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
-            secondsToAdd--;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
-            secondsToAdd++;
-        }
-        return create(MathUtils.safeAdd(seconds, secondsToAdd) , nos);
+        long epochSecs = MathUtils.safeAdd(seconds, secondsToAdd);
+        epochSecs = MathUtils.safeAdd(epochSecs, nanosToAdd / NANOS_PER_SECOND);
+        nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
+        long nanoAdjustment = nanos + nanosToAdd;  // safe int+NANOS_PER_SECOND
+        return ofEpochSeconds(epochSecs, nanoAdjustment);
     }
 
     //-----------------------------------------------------------------------
@@ -520,16 +501,12 @@ public final class Instant
     public Instant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
         int nanosToSubtract = duration.getNanoOfSecond();
-        if (secsToSubtract == 0 && nanosToSubtract == 0) {
+        if ((secsToSubtract | nanosToSubtract) == 0) {
             return this;
         }
         long secs = MathUtils.safeSubtract(seconds, secsToSubtract);
-        int nos = nanos - nanosToSubtract;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = MathUtils.safeDecrement(secs);
-        }
-        return create(secs, nos);
+        long nanoAdjustment = ((long) nanos) - nanosToSubtract;  // safe int+int
+        return ofEpochSeconds(secs, nanoAdjustment);
     }
 
     /**
@@ -566,11 +543,10 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusSeconds(long secondsToSubtract) {
-        if (secondsToSubtract == 0) {
-            return this;
+        if (secondsToSubtract == Long.MIN_VALUE) {
+            return plusSeconds(Long.MAX_VALUE).plusSeconds(1);
         }
-        long secs = MathUtils.safeSubtract(seconds, secondsToSubtract);
-        return create(secs , nanos);
+        return plusSeconds(-secondsToSubtract);
     }
 
     /**
@@ -583,23 +559,10 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusMillis(long millisToSubtract) {
-        if (millisToSubtract == 0) {
-            return this;
+        if (millisToSubtract == Long.MIN_VALUE) {
+            return plusMillis(Long.MAX_VALUE).plusMillis(1);
         }
-
-        long secondsToSubtract = millisToSubtract / 1000;
-        // add: 0 to 999,000,000, subtract: 0 to -999,000,000
-        int nos = ((int) (millisToSubtract % 1000)) * 1000000;
-        // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
-        nos = nanos - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
-            secondsToSubtract--;
-        }
-        return create(MathUtils.safeSubtract(seconds, secondsToSubtract) , nos);
+        return plusMillis(-millisToSubtract);
     }
 
     /**
@@ -612,23 +575,10 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
      */
     public Instant minusNanos(long nanosToSubtract) {
-        if (nanosToSubtract == 0) {
-            return this;
+        if (nanosToSubtract == Long.MIN_VALUE) {
+            return plusNanos(Long.MAX_VALUE).plusNanos(1);
         }
-
-        long secondsToSubtract = nanosToSubtract / NANOS_PER_SECOND;
-        // add: 0 to 999,999,999, subtract: 0 to -999,999,999
-        int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);
-        // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
-        nos = nanos - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
-            secondsToSubtract--;
-        }
-        return create(MathUtils.safeSubtract(seconds, secondsToSubtract) , nos);
+        return plusNanos(-nanosToSubtract);
     }
 
     //-----------------------------------------------------------------------
@@ -750,7 +700,7 @@ public final class Instant
     }
 
     /**
-     * A hash code for this instant.
+     * Returns a hash code for this instant.
      *
      * @return a suitable hash code
      */
