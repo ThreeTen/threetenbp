@@ -157,12 +157,14 @@ public abstract class LeapSecondRules implements Serializable {
      * <p>
      * The default conversion is performed using {@link #getTAIOffset(long)}.
      *
+     * @param utcInstant  the UTC instant to convert, not null
      * @return the converted TAI instant, not null
      */
     public TAIInstant convertToTAI(UTCInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long nod = utcInstant.getNanoOfDay();
-        long taiSecs = (mjd - OFFSET_MJD_TAI) * SECS_PER_DAY + nod / NANOS_PER_SECOND + getTAIOffset(mjd);
+        long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
+        long taiSecs = MathUtils.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
         int nos = (int) (nod % NANOS_PER_SECOND);
         return TAIInstant.ofTAISeconds(taiSecs, nos);
     }
@@ -172,11 +174,25 @@ public abstract class LeapSecondRules implements Serializable {
      * <p>
      * The default conversion is performed using {@link #getTAIOffset(long)}.
      *
+     * @param taiInstant  the TAI instant to convert, not null
      * @return the converted UTC instant, not null
      */
     public UTCInstant convertToUTC(TAIInstant taiInstant) {
         long[] mjds = getLeapSecondDates();
         TAIInstant[] tais = new TAIInstant[mjds.length];
+//        for (int i = 0; i < mjds.length; i++) {
+//            UTCInstant utc = UTCInstant.ofModifiedJulianDay(mjds[i] + 1, 0);
+//            tais[i] = convertToTAI(utc);
+//        }
+//        int pos = Arrays.binarySearch(tais, taiInstant);
+//        if (pos >= 0) {
+//            
+//        }
+//        
+//        pos = (pos < 0 ? -(pos + 1) : pos);
+//        long mjdRegionStart = (pos > 0 ? mjds[pos - 1] + 1 : Long.MIN_VALUE);
+//        long mjdNextRegionStart = (pos < mjds.length ? mjds[pos] + 1 : Long.MAX_VALUE);
+        
         for (int i = 0; i < mjds.length; i++) {
             long nod = (SECS_PER_DAY + getLeapSecondAdjustment(mjds[i])) * NANOS_PER_SECOND - 1;
             UTCInstant utc = UTCInstant.ofModifiedJulianDay(mjds[i], nod);
@@ -184,21 +200,17 @@ public abstract class LeapSecondRules implements Serializable {
         }
         int pos = Arrays.binarySearch(tais, taiInstant);
         pos = (pos < 0 ? -(pos + 1) : pos);
-//        TAIInstant regionStart = tais[pos];
-        long mjdRegionStart = (pos > 0 ? mjds[pos - 1] : Long.MIN_VALUE);
+        long mjdRegionStart = (pos > 0 ? mjds[pos - 1] + 1 : Long.MIN_VALUE);
+        long mjdNextRegionStart = (pos < mjds.length ? mjds[pos] + 1 : Long.MAX_VALUE);
         int taiOffset = getTAIOffset(mjdRegionStart);
-        long taiSecs = taiInstant.getTAISeconds();
-        long utcSecsTaiEpoch = taiSecs - taiOffset;
-        long mjd = MathUtils.floorDiv(utcSecsTaiEpoch, SECS_PER_DAY) + OFFSET_MJD_TAI;
-        long nod = MathUtils.floorMod(taiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNanoOfSecond();
+        long adjustedTaiSecs = taiInstant.getTAISeconds() - taiOffset;
+        long mjd = MathUtils.floorDiv(adjustedTaiSecs, SECS_PER_DAY) + OFFSET_MJD_TAI;
+        long nod = MathUtils.floorMod(adjustedTaiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNanoOfSecond();
+        if (mjd == mjdNextRegionStart) {
+            mjd--;
+            nod = SECS_PER_DAY * NANOS_PER_SECOND + nod / NANOS_PER_SECOND + nod % NANOS_PER_SECOND;
+        }
         return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
-        
-//        long taiSecs = taiInstant.getTAISeconds();
-//        long mjDayEst = MathUtils.floorDiv(taiSecs, SECS_PER_DAY);
-//        mjDayEst = (taiSecs - getTAIOffset(mjDayEst)) / SECS_PER_DAY;
-//        long mjDay = mjDayEst + OFFSET_MJD_TAI;
-//        long nod = MathUtils.floorMod(taiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNanoOfSecond();
-//        return UTCInstant.ofModifiedJulianDay(mjDay, nod, this);
     }
 
     //-----------------------------------------------------------------------

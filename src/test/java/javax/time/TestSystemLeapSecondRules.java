@@ -214,41 +214,111 @@ public class TestSystemLeapSecondRules {
     }
 
     //-----------------------------------------------------------------------
-    // convertToUTC(TAIInstant)
+    // convertToUTC(TAIInstant)/convertToTAI(UTCInstant)
     //-----------------------------------------------------------------------
-    public void convertToTAI() {
+    private static final long SECS_PER_DAY = 24 * 60 * 60L;
+    private static final long NANOS_PER_SEC = 1000000000L;
+    private static final long MJD_1800 = -21504L;
+    private static final long MJD_1900 = 15020L;
+    private static final long MJD_1958 = 36204L;
+    private static final long MJD_1980 = 44239L;
+    private static final long MJD_2100 = 88069L;
+    private static final long TAI_SECS_UTC1800 = (MJD_1800 - MJD_1958) * SECS_PER_DAY + 10;
+    private static final long TAI_SECS_UTC1900 = (MJD_1900 - MJD_1958) * SECS_PER_DAY + 10;
+    private static final long TAI_SECS_UTC1958 = 10;
+    private static final long TAI_SECS_UTC1980 = (MJD_1980 - MJD_1958) * SECS_PER_DAY + 19;
+    private static final long TAI_SECS_UTC2100 = (MJD_2100 - MJD_1958) * SECS_PER_DAY + 34;  // change this as leap secs added
+
+    public void test_convertToUTC_TAIInstant_startUtcPeriod() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980, 0);  // 1980-01-01 (19 leap secs added)
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1980, 0);
         LeapSecondRules rules = LeapSecondRules.system();
-        for (int i = -1000; i < 1000; i++) {
-            for (int j = 0; j < 10; j++) {
-                UTCInstant utc = UTCInstant.ofModifiedJulianDay(36204 + i, j * 1000000000L + 2L);
-                TAIInstant test = rules.convertToTAI(utc);
-                assertEquals(test.getTAISeconds(), i * 24 * 60 * 60 + j + 10);
-                assertEquals(test.getNanoOfSecond(), 2);
-                assertEquals(rules.convertToUTC(test), utc);
-            }
+        for (int i = -10; i < 10; i++) {
+            Duration duration = Duration.ofNanos(i);
+            assertEquals(rules.convertToUTC(tai.plus(duration)), expected.plus(duration));
+            assertEquals(rules.convertToTAI(expected.plus(duration)), tai.plus(duration)); // check reverse
+        }
+        for (int i = -10; i < 10; i++) {
+            Duration duration = Duration.ofSeconds(i);
+            assertEquals(rules.convertToUTC(tai.plus(duration)), expected.plus(duration));
+            assertEquals(rules.convertToTAI(expected.plus(duration)), tai.plus(duration)); // check reverse
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void convertToTAI_null() {
-        LeapSecondRules rules = LeapSecondRules.system();
-        rules.convertToTAI((UTCInstant) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // convertToUTC(TAIInstant)
-    //-----------------------------------------------------------------------
-    public void test_convertToUTC_TAIInstant() {
-        TAIInstant tai = TAIInstant.ofTAISeconds((44239L - 36204) * 24 * 60 * 60, 0);
-        UTCInstant expected = UTCInstant.ofModifiedJulianDay(44239L, 0);
+    public void test_convertToUTC_TAIInstant_furtherAfterLeap() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980 + 1, 0);  // 1980-01-01 (19 leap secs added)
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1980, NANOS_PER_SEC);
         LeapSecondRules rules = LeapSecondRules.system();
         assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
+    }
+
+    public void test_convertToUTC_TAIInstant_justAfterLeap() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980, 0);  // 1980-01-01 (19 leap secs added)
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1980, 0);
+        LeapSecondRules rules = LeapSecondRules.system();
+        assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
+    }
+
+    public void test_convertToUTC_TAIInstant_inLeap() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980 - 1, 0);  // 1980-01-01 (1 second before 1980)
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1980 - 1, SECS_PER_DAY * NANOS_PER_SEC);
+        LeapSecondRules rules = LeapSecondRules.system();
+        assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
+    }
+
+    public void test_convertToUTC_TAIInstant_justBeforeLeap() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980 - 2, 0);  // 1980-01-01 (2 seconds before 1980)
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1980 - 1, (SECS_PER_DAY - 1) * NANOS_PER_SEC);
+        LeapSecondRules rules = LeapSecondRules.system();
+        assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
+    }
+
+    public void test_convertToUTC_TAIInstant_1800() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1800, 0);  // 1800-01-01
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1800, 0);
+        LeapSecondRules rules = LeapSecondRules.system();
+        assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
+    }
+
+    public void test_convertToUTC_TAIInstant_1900() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1900, 0);  // 1900-01-01
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1900, 0);
+        LeapSecondRules rules = LeapSecondRules.system();
+        assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
+    }
+
+    public void test_convertToUTC_TAIInstant_1958() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1958, 0);  // 1958-01-01
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1958, 0);
+        LeapSecondRules rules = LeapSecondRules.system();
+        assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
+    }
+
+    public void test_convertToUTC_TAIInstant_2100() {
+        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC2100, 0);  // 2100-01-01
+        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_2100, 0);
+        LeapSecondRules rules = LeapSecondRules.system();
+        assertEquals(rules.convertToUTC(tai), expected);
+        assertEquals(rules.convertToTAI(expected), tai); // check reverse
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void convertToUTC_null() {
+    public void test_convertToUTC_TAIInstant_null() {
         LeapSecondRules rules = LeapSecondRules.system();
         rules.convertToUTC((TAIInstant) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_convertToTAI_UTCInstant_null() {
+        LeapSecondRules rules = LeapSecondRules.system();
+        rules.convertToTAI((UTCInstant) null);
     }
 
     //-----------------------------------------------------------------------

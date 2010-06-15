@@ -90,10 +90,6 @@ public final class UTCInstant
      */
     private static final int SECS_PER_DAY = 24 * 60 * 60;
     /**
-     * Constant for the offset from MJD day 0 to TAI day 0.
-     */
-    private static final int OFFSET_MJD_TAI = 36204;
-    /**
      * Constant for nanos per second.
      */
     private static final long NANOS_PER_SECOND = 1000000000;
@@ -211,15 +207,6 @@ public final class UTCInstant
      */
     public static UTCInstant of(TAIInstant taiInstant, LeapSecondRules rules) {
         return rules.convertToUTC(taiInstant);
-        
-//        long taiSecs = taiInstant.getTAISeconds();
-//        long mjDayEst = taiSecs / SECS_PER_DAY;
-//        mjDayEst = (taiSecs - rules.getTAIOffset(mjDayEst)) / SECS_PER_DAY;
-//        return null;  // TODO
-        
-//         s = mjDay * SECS_PER_DAY + nanos / NANOS_PER_SECOND + rules.getTAIOffset(mjDay);
-//        long nanos = taiInstant.getNanoOfSecond();
-//        return new UTCInstant(mjDay, nanos, rules);
     }
 
     //-----------------------------------------------------------------------
@@ -338,9 +325,6 @@ public final class UTCInstant
      */
     public TAIInstant toTAIInstant() {
         return rules.convertToTAI(this);
-//        long taiSecs = (mjDay - OFFSET_MJD_TAI) * SECS_PER_DAY + nanos / NANOS_PER_SECOND + rules.getTAIOffset(mjDay);
-//        int nos = (int) (nanos % NANOS_PER_SECOND);
-//        return TAIInstant.ofTAISeconds(taiSecs, nos);
     }
 
     /**
