@@ -53,7 +53,7 @@ import javax.time.scales.LeapSeconds;
  *
  * @author Stephen Colebourne
  */
-final class SystemLeapSecondRules extends LeapSecondRules {
+final class SystemLeapSecondRules extends LeapSecondRules implements Serializable {
 
     /**
      * Singleton.
@@ -64,6 +64,19 @@ final class SystemLeapSecondRules extends LeapSecondRules {
      */
     private static final long serialVersionUID = 1L;
     /**
+     * Constant for seconds per day.
+     */
+    private static final int SECS_PER_DAY = 24 * 60 * 60;
+    /**
+     * Constant for the offset from MJD day 0 to TAI day 0.
+     */
+    private static final int OFFSET_MJD_TAI = 36204;
+    /**
+     * Constant for nanos per second.
+     */
+    private static final long NANOS_PER_SECOND = 1000000000;
+
+    /**
      * The table of leap second dates.
      */
     private AtomicReference<Data> dataRef = new AtomicReference<Data>(loadLeapSeconds());
@@ -72,10 +85,19 @@ final class SystemLeapSecondRules extends LeapSecondRules {
     private static class Data implements Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
-        /** The table of leap second dates. */
+        /** Constructor. */
+        private Data(long[] dates, int[] offsets, long[] taiSeconds) {
+            super();
+            this.dates = dates;
+            this.offsets = offsets;
+            this.taiSeconds = taiSeconds;
+        }
+        /** The table of leap second date when the leap second occurs. */
         private long[] dates;
-        /** The table of TAI offsets. */
+        /** The table of TAI offset after the leap second. */
         private int[] offsets;
+        /** The table of TAI second when the new offset starts. */
+        private long[] taiSeconds;
     }
 
     //-----------------------------------------------------------------------
@@ -83,6 +105,15 @@ final class SystemLeapSecondRules extends LeapSecondRules {
      * Restricted constructor.
      */
     private SystemLeapSecondRules() {
+    }
+
+    /**
+     * Resolves singleton.
+     *
+     * @return the resolved instance, never null
+     */
+    private Object readResolve() {
+        return INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -108,11 +139,12 @@ final class SystemLeapSecondRules extends LeapSecondRules {
         }
         long[] dates = Arrays.copyOf(data.dates, data.dates.length + 1);
         int[] offsets = Arrays.copyOf(data.offsets, data.offsets.length + 1);
+        long[] taiSeconds = Arrays.copyOf(data.taiSeconds, data.taiSeconds.length + 1);
+        int offset = offsets[offsets.length - 2] + leapAdjustment;
         dates[dates.length - 1] = mjDay;
-        offsets[offsets.length - 1] = offsets[offsets.length - 2] + leapAdjustment;
-        Data newData = new Data();
-        newData.dates = dates;
-        newData.offsets = offsets;
+        offsets[offsets.length - 1] = offset;
+        taiSeconds[taiSeconds.length - 1] = tai(mjDay, offset);
+        Data newData = new Data(dates, offsets, taiSeconds);
         if (dataRef.compareAndSet(data, newData) == false) {
             throw new ConcurrentModificationException("Unable to update leap second rules as they have already been updated");
         }
@@ -135,7 +167,7 @@ final class SystemLeapSecondRules extends LeapSecondRules {
     public int getTAIOffset(long mjDay) {
         Data data = dataRef.get();
         int pos = Arrays.binarySearch(data.dates, mjDay);
-        pos = (pos < 0 ? -(pos + 1) : pos);
+        pos = (pos < 0 ? ~pos : pos);
         return pos > 0 ? data.offsets[pos - 1] : 10;
     }
 
@@ -145,6 +177,37 @@ final class SystemLeapSecondRules extends LeapSecondRules {
         return data.dates.clone();
     }
 
+    //-------------------------------------------------------------------------
+    @Override
+    public TAIInstant convertToTAI(UTCInstant utcInstant) {
+        long mjd = utcInstant.getModifiedJulianDay();
+        long nod = utcInstant.getNanoOfDay();
+        long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
+        long taiSecs = MathUtils.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
+        int nos = (int) (nod % NANOS_PER_SECOND);
+        return TAIInstant.ofTAISeconds(taiSecs, nos);
+    }
+
+    @Override
+    public UTCInstant convertToUTC(TAIInstant taiInstant) {
+        Data data = dataRef.get();
+        long[] mjds = data.dates;
+        long[] tais = data.taiSeconds;
+        int pos = Arrays.binarySearch(tais, taiInstant.getTAISeconds());
+        pos = (pos >= 0 ? pos : ~pos - 1);
+        int taiOffset = (pos >= 0 ? data.offsets[pos] : 10);
+        long adjustedTaiSecs = taiInstant.getTAISeconds() - taiOffset;
+        long mjd = MathUtils.floorDiv(adjustedTaiSecs, SECS_PER_DAY) + OFFSET_MJD_TAI;
+        long nod = MathUtils.floorMod(adjustedTaiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNanoOfSecond();
+        long mjdNextRegionStart = (pos + 1 < mjds.length ? mjds[pos + 1] + 1 : Long.MAX_VALUE);
+        if (mjd == mjdNextRegionStart) {  // in leap second
+            mjd--;
+            nod = SECS_PER_DAY * NANOS_PER_SECOND + (nod / NANOS_PER_SECOND) * NANOS_PER_SECOND + nod % NANOS_PER_SECOND;
+        }
+        return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Loads the leap seconds from file.
      * @return an array of two arrays - leap seconds dates and amounts
@@ -175,6 +238,7 @@ final class SystemLeapSecondRules extends LeapSecondRules {
             }
             long[] dates = new long[leaps.size()];
             int[] offsets = new int[leaps.size()];
+            long[] taiSeconds = new long[leaps.size()];
             int i = 0;
             for (Entry<Long, Integer> entry : leaps.entrySet()) {
                 long changeMjd = entry.getKey() - 1;  // subtract one to get date leap second is added
@@ -186,12 +250,10 @@ final class SystemLeapSecondRules extends LeapSecondRules {
                     }
                 }
                 dates[i] = changeMjd;
-                offsets[i++] = offset;
+                offsets[i] = offset;
+                taiSeconds[i++] = tai(changeMjd, offset);
             }
-            Data data = new Data();
-            data.dates = dates;
-            data.offsets = offsets;
-            return data;
+            return new Data(dates, offsets, taiSeconds);
         } catch (IOException ex) {
             try {
                 in.close();
@@ -200,6 +262,16 @@ final class SystemLeapSecondRules extends LeapSecondRules {
             }
             throw new CalendricalException("Exception reading LeapSeconds.txt", ex);
         }
+    }
+
+    /**
+     * Gets the TAI seconds for the start of the day following the day passed in.
+     * @param changeMjd  the MJD that the leap second is added to
+     * @param offset  the new offset after the leap
+     * @return the TAI seconds
+     */
+    private static long tai(long changeMjd, int offset) {
+        return (changeMjd + 1 - OFFSET_MJD_TAI) * SECS_PER_DAY + offset;
     }
 
 }

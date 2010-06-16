@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 
 /**
@@ -47,27 +45,12 @@ import java.util.ConcurrentModificationException;
  * LeapSecondRules is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All implementations must be final, immutable and thread-safe.
+ * It is only intended that the abstract methods are overridden.
+ * Subclasses should be Serializable wherever possible.
  *
  * @author Stephen Colebourne
  */
-public abstract class LeapSecondRules implements Serializable {
-
-    /**
-     * Serialization version.
-     */
-    private static final long serialVersionUID = 1L;
-    /**
-     * Constant for seconds per day.
-     */
-    private static final int SECS_PER_DAY = 24 * 60 * 60;
-    /**
-     * Constant for the offset from MJD day 0 to TAI day 0.
-     */
-    private static final int OFFSET_MJD_TAI = 36204;
-    /**
-     * Constant for nanos per second.
-     */
-    private static final long NANOS_PER_SECOND = 1000000000;
+public abstract class LeapSecondRules {
 
     /**
      * Gets the system default leap second rules.
@@ -155,63 +138,24 @@ public abstract class LeapSecondRules implements Serializable {
     /**
      * Converts a {@code UTCInstant} to a {@code TAIInstant}.
      * <p>
-     * The default conversion is performed using {@link #getTAIOffset(long)}.
+     * This method converts from the UTC to the TAI time-scale using the
+     * leap-second rules of the implementation.
      *
      * @param utcInstant  the UTC instant to convert, not null
      * @return the converted TAI instant, not null
      */
-    public TAIInstant convertToTAI(UTCInstant utcInstant) {
-        long mjd = utcInstant.getModifiedJulianDay();
-        long nod = utcInstant.getNanoOfDay();
-        long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
-        long taiSecs = MathUtils.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
-        int nos = (int) (nod % NANOS_PER_SECOND);
-        return TAIInstant.ofTAISeconds(taiSecs, nos);
-    }
+    public abstract TAIInstant convertToTAI(UTCInstant utcInstant);
 
     /**
      * Converts a {@code TAIInstant} to a {@code UTCInstant}.
      * <p>
-     * The default conversion is performed using {@link #getTAIOffset(long)}.
+     * This method converts from the TAI to the UTC time-scale using the
+     * leap-second rules of the implementation.
      *
      * @param taiInstant  the TAI instant to convert, not null
      * @return the converted UTC instant, not null
      */
-    public UTCInstant convertToUTC(TAIInstant taiInstant) {
-        long[] mjds = getLeapSecondDates();
-        TAIInstant[] tais = new TAIInstant[mjds.length];
-//        for (int i = 0; i < mjds.length; i++) {
-//            UTCInstant utc = UTCInstant.ofModifiedJulianDay(mjds[i] + 1, 0);
-//            tais[i] = convertToTAI(utc);
-//        }
-//        int pos = Arrays.binarySearch(tais, taiInstant);
-//        if (pos >= 0) {
-//            
-//        }
-//        
-//        pos = (pos < 0 ? -(pos + 1) : pos);
-//        long mjdRegionStart = (pos > 0 ? mjds[pos - 1] + 1 : Long.MIN_VALUE);
-//        long mjdNextRegionStart = (pos < mjds.length ? mjds[pos] + 1 : Long.MAX_VALUE);
-        
-        for (int i = 0; i < mjds.length; i++) {
-            long nod = (SECS_PER_DAY + getLeapSecondAdjustment(mjds[i])) * NANOS_PER_SECOND - 1;
-            UTCInstant utc = UTCInstant.ofModifiedJulianDay(mjds[i], nod);
-            tais[i] = convertToTAI(utc);
-        }
-        int pos = Arrays.binarySearch(tais, taiInstant);
-        pos = (pos < 0 ? -(pos + 1) : pos);
-        long mjdRegionStart = (pos > 0 ? mjds[pos - 1] + 1 : Long.MIN_VALUE);
-        long mjdNextRegionStart = (pos < mjds.length ? mjds[pos] + 1 : Long.MAX_VALUE);
-        int taiOffset = getTAIOffset(mjdRegionStart);
-        long adjustedTaiSecs = taiInstant.getTAISeconds() - taiOffset;
-        long mjd = MathUtils.floorDiv(adjustedTaiSecs, SECS_PER_DAY) + OFFSET_MJD_TAI;
-        long nod = MathUtils.floorMod(adjustedTaiSecs, SECS_PER_DAY) * NANOS_PER_SECOND + taiInstant.getNanoOfSecond();
-        if (mjd == mjdNextRegionStart) {
-            mjd--;
-            nod = SECS_PER_DAY * NANOS_PER_SECOND + nod / NANOS_PER_SECOND + nod % NANOS_PER_SECOND;
-        }
-        return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
-    }
+    public abstract UTCInstant convertToUTC(TAIInstant taiInstant);
 
     //-----------------------------------------------------------------------
     /**
