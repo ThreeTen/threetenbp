@@ -64,13 +64,13 @@ final class SystemLeapSecondRules extends LeapSecondRules implements Serializabl
      */
     private static final long serialVersionUID = 1L;
     /**
-     * Constant for seconds per day.
-     */
-    private static final int SECS_PER_DAY = 24 * 60 * 60;
-    /**
      * Constant for the offset from MJD day 0 to TAI day 0.
      */
     private static final int OFFSET_MJD_TAI = 36204;
+    /**
+     * Constant for seconds per day.
+     */
+    private static final int SECS_PER_DAY = 24 * 60 * 60;
     /**
      * Constant for nanos per second.
      */

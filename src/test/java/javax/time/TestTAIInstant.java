@@ -138,7 +138,7 @@ public class TestTAIInstant {
     //-----------------------------------------------------------------------
     public void factory_of_Instant() {
         TAIInstant test = TAIInstant.of(Instant.ofEpochSeconds(0, 2));
-        assertEquals(test.getTAISeconds(), (40587 - 36204) *  24 * 60 * 60 - 10); //((1970 - 1958) * 365 + 3) * 24 * 60 * 60 + 10);
+        assertEquals(test.getTAISeconds(), (40587L - 36204) *  24 * 60 * 60 + 10); //((1970 - 1958) * 365 + 3) * 24 * 60 * 60 + 10);
         assertEquals(test.getNanoOfSecond(), 2);
     }
 
@@ -588,6 +588,32 @@ public class TestTAIInstant {
     public void minusOverflowTooBig() {
        TAIInstant i = TAIInstant.ofTAISeconds(Long.MAX_VALUE, 999999999);
        i.minus(Duration.ofSeconds(-1, 999999999));
+    }
+
+    //-----------------------------------------------------------------------
+    // toUTCInstant()
+    //-----------------------------------------------------------------------
+    public void test_toUTCInstant() {
+        for (int i = -1000; i < 1000; i++) {
+            for (int j = 0; j < 10; j++) {
+                UTCInstant expected = UTCInstant.ofModifiedJulianDay(36204 + i, j * 1000000000L + 2L);
+                TAIInstant test = TAIInstant.ofTAISeconds(i * 24 * 60 * 60 + j + 10, 2);
+                assertEquals(test.toUTCInstant(), expected);
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // toInstant()
+    //-----------------------------------------------------------------------
+    public void test_toInstant() {
+        for (int i = -1000; i < 1000; i++) {
+            for (int j = 0; j < 10; j++) {
+                Instant expected = Instant.ofEpochSeconds(-378691200L + i * 24 * 60 * 60 + j).plusNanos(2);
+                TAIInstant test = TAIInstant.ofTAISeconds(i * 24 * 60 * 60 + j + 10, 2);
+                assertEquals(test.toInstant(), expected, "Loop " + i + " " + j);
+            }
+        }
     }
 
     //-----------------------------------------------------------------------

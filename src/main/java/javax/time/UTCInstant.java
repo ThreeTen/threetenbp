@@ -88,7 +88,7 @@ public final class UTCInstant
     /**
      * Constant for seconds per day.
      */
-    private static final int SECS_PER_DAY = 24 * 60 * 60;
+    private static final long SECS_PER_DAY = 24 * 60 * 60;
     /**
      * Constant for nanos per second.
      */
@@ -167,39 +167,41 @@ public final class UTCInstant
      * Obtains an instance of {@code UTCInstant} from a provider of instants
      * using the system default leap second rules.
      * <p>
-     * Converting a UTC-SLS instant to a UTC instant requires leap second rules.
-     * This method uses the latest available system rules.
-     * <p>
-     * Conversion from an {@code Instant} will not be completely accurate near
-     * a leap second in accordance with UTC-SLS.
+     * This method converts from the UTC-SLS to the UTC time-scale using the
+     * system default leap-second rules. This conversion will lose information
+     * around a leap second in accordance with UTC-SLS.
+     * Converting back to an {@code Instant} may result in a slightly different instant.
      *
      * @param instant  the instant to convert, not null
      * @return the UTC instant, never null
      */
     public static UTCInstant of(Instant instant) {
-        long mjd = MathUtils.floorDiv(instant.getEpochSeconds(), SECS_PER_DAY);
-        long nod = ((long) MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY)) + instant.getNanoOfSecond();
-        int leapAdjustment = LeapSecondRules.system().getLeapSecondAdjustment(mjd);
-        switch (leapAdjustment) {
-            case -1:
-                return null;
-            case 0:
-                return UTCInstant.ofModifiedJulianDay(mjd, nod);
-            case 1:
-                return null;
-        }
-        return null;  // TODO
+        LeapSecondRules rules = LeapSecondRules.system();
+        return rules.convertToUTC(instant);
     }
 
     /**
      * Obtains an instance of {@code UTCInstant} from a TAI instant
      * using the system default leap second rules.
      * <p>
-     * Converting a TAI instant to a UTC instant requires leap second rules.
-     * This method uses the latest available system rules.
+     * This method converts from the TAI to the UTC time-scale using the
+     * system default leap-second rules. This conversion does not lose information
+     * and the UTC instant may safely be converted back to a {@code TAIInstant}.
+     *
+     * @param taiInstant  the TAI instant to convert, not null
+     * @return the UTC instant, never null
+     */
+    public static UTCInstant of(TAIInstant taiInstant) {
+        return of(taiInstant, LeapSecondRules.system());
+    }
+
+    /**
+     * Obtains an instance of {@code UTCInstant} from a TAI instant
+     * using the specified leap second rules.
      * <p>
-     * This conversion does not lose information and the UTC instant may safely
-     * be converted back to a {@code TAIInstant}.
+     * This method converts from the TAI to the UTC time-scale using the
+     * specified leap-second rules. This conversion does not lose information
+     * and the UTC instant may safely be converted back to a {@code TAIInstant}.
      *
      * @param taiInstant  the TAI instant to convert, not null
      * @param rules  the leap second rules, not null
@@ -314,12 +316,10 @@ public final class UTCInstant
      * Converts this instant to a {@code TAIInstant} using the stored
      * leap second rules.
      * <p>
-     * Converting a UTC instant to a TAI instant requires leap second rules.
-     * This method uses the rules stored in this instant.
-     * <p>
+     * This method converts from the UTC to the TAI time-scale using the stored leap-second rules.
      * Conversion to a {@code TAIInstant} retains the same point on the time-line
-     * but loses the stored rules. If the TAI instant is converted back to a UTC
-     * instant with different rules then the calculated UTC instant may be different.
+     * but loses the stored rules. If the TAI instant is converted back to a UTC instant
+     * with different or updated rules then the calculated UTC instant may be different.
      *
      * @return a {@code TAIInstant} representing the same instant, never null
      */
@@ -331,28 +331,15 @@ public final class UTCInstant
      * Converts this instant to an {@code Instant} using the system default
      * leap second rules.
      * <p>
-     * Converting a UTC instant to a UTC-SLS instant requires leap second rules.
-     * This method uses the rules stored in this instant.
-     * <p>
-     * Conversion to an {@code Instant} will not be completely accurate near
-     * a leap second in accordance with UTC-SLS.
+     * This method converts this instant from the UTC to the UTC-SLS time-scale using the
+     * stored leap-second rules.
+     * This conversion will lose information around a leap second in accordance with UTC-SLS.
+     * Converting back to a {@code UTCInstant} may result in a slightly different instant.
      *
-     * @return an {@code Instant} representing the best current estimate of this instant in UTC-SLS, never null
+     * @return an {@code Instant} representing the best approximation of this instant, never null
      */
     public Instant toInstant() {
-        long epcohSecs = MathUtils.safeMultiply(mjDay, SECS_PER_DAY);  // TODO: overflow checks
-        long timeSecs = nanos / NANOS_PER_SECOND;
-        int leapSecs = rules.getLeapSecondAdjustment(mjDay);
-        if (leapSecs == 0 || timeSecs < SECS_PER_DAY - 1000) {
-            long nos = nanos % NANOS_PER_SECOND;
-            return Instant.ofEpochSeconds(epcohSecs, nos);
-        }
-        double rate = (1000d - leapSecs)/1000d;
-        long slsNanos = nanos - (SECS_PER_DAY - 1000) * NANOS_PER_SECOND;
-        slsNanos = Math.round(slsNanos * rate);
-        long sod = SECS_PER_DAY - 1000 + slsNanos / NANOS_PER_SECOND;
-        long nos = slsNanos % NANOS_PER_SECOND;
-        return Instant.ofEpochSeconds(epcohSecs + sod, nos);
+        return rules.convertToInstant(this);
     }
 
     //-----------------------------------------------------------------------

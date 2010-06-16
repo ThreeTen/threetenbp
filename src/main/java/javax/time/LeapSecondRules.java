@@ -53,6 +53,19 @@ import java.util.ConcurrentModificationException;
 public abstract class LeapSecondRules {
 
     /**
+     * Constant for the offset from MJD day 0 to 1970-01-01.
+     */
+    private static final int OFFSET_MJD_EPOCH = 40587;
+    /**
+     * Constant for seconds per day.
+     */
+    private static final long SECS_PER_DAY = 24 * 60 * 60;
+    /**
+     * Constant for nanos per second.
+     */
+    private static final long NANOS_PER_SECOND = 1000000000;
+
+    /**
      * Gets the system default leap second rules.
      * <p>
      * The returned rules will remain up to date, in a thread-safe manner, as new
@@ -143,6 +156,7 @@ public abstract class LeapSecondRules {
      *
      * @param utcInstant  the UTC instant to convert, not null
      * @return the converted TAI instant, not null
+     * @throws ArithmeticException if the capacity is exceeded
      */
     public abstract TAIInstant convertToTAI(UTCInstant utcInstant);
 
@@ -154,8 +168,77 @@ public abstract class LeapSecondRules {
      *
      * @param taiInstant  the TAI instant to convert, not null
      * @return the converted UTC instant, not null
+     * @throws ArithmeticException if the capacity is exceeded
      */
     public abstract UTCInstant convertToUTC(TAIInstant taiInstant);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts a {@code UTCInstant} to an {@code Instant}.
+     * <p>
+     * This method converts from the UTC time-scale to one with 86400 seconds per day
+     * using the leap-second rules of the implementation.
+     * <p>
+     * The standard implementation uses the UTC-SLS algorithm, amended to handle
+     * double leap seconds within the same 1000 second period.
+     * Overriding this algorithm is possible, however it will invalidate other parts
+     * of the specification.
+     *
+     * @param utcInstant  the UTC instant to convert, not null
+     * @return the converted instant, not null
+     * @throws ArithmeticException if the capacity is exceeded
+     */
+    public Instant convertToInstant(UTCInstant utcInstant) {
+        long mjd = utcInstant.getModifiedJulianDay();
+        long nanos = utcInstant.getNanoOfDay();
+        long epochDay = MathUtils.safeSubtract(mjd, OFFSET_MJD_EPOCH);
+        long epcohSecs = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
+        long timeSecs = nanos / NANOS_PER_SECOND;
+        int leapSecs = getLeapSecondAdjustment(mjd);
+        if (leapSecs == 0 || timeSecs < SECS_PER_DAY - 1000) {
+            long nos = nanos % NANOS_PER_SECOND;
+            return Instant.ofEpochSeconds(epcohSecs + timeSecs, nos);
+        }
+        double rate = (1000d - leapSecs)/1000d;
+        long slsNanos = nanos - (SECS_PER_DAY - 1000) * NANOS_PER_SECOND;
+        slsNanos = Math.round(slsNanos * rate);
+        long sod = SECS_PER_DAY - 1000 + slsNanos / NANOS_PER_SECOND;
+        long nos = slsNanos % NANOS_PER_SECOND;
+        return Instant.ofEpochSeconds(epcohSecs + sod, nos);
+    }
+
+    /**
+     * Converts an {@code Instant} to a {@code UTCInstant}.
+     * <p>
+     * This method converts from an instant with 86400 seconds per day to the UTC
+     * time-scale using the leap-second rules of the implementation.
+     * <p>
+     * The standard implementation uses the UTC-SLS algorithm, amended to handle
+     * double leap seconds within the same 1000 second period.
+     * Overriding this algorithm is possible, however it will invalidate other parts
+     * of the specification.
+     *
+     * @param instant  the instant to convert, not null
+     * @return the converted UTC instant, not null
+     * @throws ArithmeticException if the capacity is exceeded
+     */
+    public UTCInstant convertToUTC(Instant instant) {
+        long epochDay = MathUtils.floorDiv(instant.getEpochSeconds(), SECS_PER_DAY);
+        long mjd = epochDay + OFFSET_MJD_EPOCH;
+        long nod = ((long) MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY)) + instant.getNanoOfSecond();
+        int leapAdjustment = LeapSecondRules.system().getLeapSecondAdjustment(mjd);
+        switch (leapAdjustment) {
+            case -1:
+                return null;
+            case 0:
+                return UTCInstant.ofModifiedJulianDay(mjd, nod);
+            case 1:
+                return null;
+            case 2:
+                return null;
+        }
+        return null;  // TODO
+    }
 
     //-----------------------------------------------------------------------
     /**

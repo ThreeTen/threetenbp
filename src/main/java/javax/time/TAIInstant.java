@@ -237,12 +237,9 @@ public final class TAIInstant
      * Converts this instant to a {@code UTCInstant} using the system default
      * leap second rules.
      * <p>
-     * Converting a TAI instant to a UTC instant requires leap second rules.
-     * This method uses the latest available system rules.
-     * To control the rules, use the {@link UTCInstant#of(TAIInstant, LeapSecondRules) UTC factory}.
-     * <p>
-     * This conversion does not lose information and the UTC instant may safely
-     * be converted back to a {@code TAIInstant}.
+     * This method converts this instant from the TAI to the UTC time-scale using the
+     * system default leap-second rules. This conversion does not lose information
+     * and the UTC instant may safely be converted back to a {@code TAIInstant}.
      *
      * @return a {@code UTCInstant} representing the best current estimate of this instant in UTC, never null
      */
@@ -254,12 +251,10 @@ public final class TAIInstant
      * Converts this instant to an {@code Instant} using the system default
      * leap second rules.
      * <p>
-     * Converting a TAI instant to a UTC-SLS instant requires leap second rules.
-     * This method uses the latest available system rules.
-     * The conversion first converts TAI to UTC, then maps to UTC-SLS.
-     * <p>
-     * Conversion to an {@code Instant} will not be completely accurate near
-     * a leap second in accordance with UTC-SLS.
+     * This method converts this instant from the TAI to the UTC-SLS time-scale using the
+     * system default leap-second rules to convert to UTC.
+     * This conversion will lose information around a leap second in accordance with UTC-SLS.
+     * Converting back to a {@code TAIInstant} may result in a slightly different instant.
      *
      * @return an {@code Instant} representing the best current estimate of this instant in UTC-SLS, never null
      */
