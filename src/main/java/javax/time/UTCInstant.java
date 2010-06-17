@@ -119,7 +119,7 @@ public final class UTCInstant
      * <p>
      * This factory creates an instance of a UTC instant.
      * The nanosecond of day value includes any leap second and has a valid range from
-     * {@code 0} to {@code 86400,000,000,000 - 1} on days other than leap-second-days
+     * {@code 0} to {@code 86,400,000,000,000 - 1} on days other than leap-second-days
      * and other lengths on leap-second-days.
      * <p>
      * The nanosecond value must be positive even for negative values of Modified
@@ -141,7 +141,7 @@ public final class UTCInstant
      * <p>
      * This factory creates an instance of a UTC instant.
      * The nanosecond of day value includes any leap second and has a valid range from
-     * {@code 0} to {@code 86400,000,000,000 - 1} on days other than leap-second-days
+     * {@code 0} to {@code 86,400,000,000,000 - 1} on days other than leap-second-days
      * and other lengths on leap-second-days.
      * <p>
      * The nanosecond value must be positive even for negative values of Modified
@@ -176,7 +176,23 @@ public final class UTCInstant
      * @return the UTC instant, never null
      */
     public static UTCInstant of(Instant instant) {
-        LeapSecondRules rules = LeapSecondRules.system();
+        return of(instant, LeapSecondRules.system());
+    }
+
+    /**
+     * Obtains an instance of {@code UTCInstant} from a provider of instants
+     * using the specified leap second rules.
+     * <p>
+     * This method converts from the UTC-SLS to the UTC time-scale using the
+     * specified leap-second rules. This conversion will lose information
+     * around a leap second in accordance with UTC-SLS.
+     * Converting back to an {@code Instant} may result in a slightly different instant.
+     *
+     * @param instant  the instant to convert, not null
+     * @param rules  the leap second rules, not null
+     * @return the UTC instant, never null
+     */
+    public static UTCInstant of(Instant instant, LeapSecondRules rules) {
         return rules.convertToUTC(instant);
     }
 

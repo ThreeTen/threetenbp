@@ -133,6 +133,8 @@ public class AllTest {
             TestDuration.class,
             TestInstant.class,
             TestMathUtils.class,
+            TestSystemLeapSecondRules.class,
+            TestTAIInstant.class,
             TestTimeSource_Fixed.class,
             TestTimeSource_OffsetSystem.class,
             TestTimeSource_System.class,

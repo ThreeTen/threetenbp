@@ -194,12 +194,12 @@ public abstract class LeapSecondRules {
         long epochDay = MathUtils.safeSubtract(mjd, OFFSET_MJD_EPOCH);
         long epcohSecs = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
         long timeSecs = nanos / NANOS_PER_SECOND;
-        int leapSecs = getLeapSecondAdjustment(mjd);
-        if (leapSecs == 0 || timeSecs < SECS_PER_DAY - 1000) {
+        int leapAdj = getLeapSecondAdjustment(mjd);
+        if (leapAdj == 0 || timeSecs < SECS_PER_DAY - 1000) {
             long nos = nanos % NANOS_PER_SECOND;
             return Instant.ofEpochSeconds(epcohSecs + timeSecs, nos);
         }
-        double rate = (1000d - leapSecs)/1000d;
+        double rate = (1000d - leapAdj)/1000d;
         long slsNanos = nanos - (SECS_PER_DAY - 1000) * NANOS_PER_SECOND;
         slsNanos = Math.round(slsNanos * rate);
         long sod = SECS_PER_DAY - 1000 + slsNanos / NANOS_PER_SECOND;
@@ -225,9 +225,12 @@ public abstract class LeapSecondRules {
     public UTCInstant convertToUTC(Instant instant) {
         long epochDay = MathUtils.floorDiv(instant.getEpochSeconds(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
-        long nod = ((long) MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY)) + instant.getNanoOfSecond();
-        int leapAdjustment = LeapSecondRules.system().getLeapSecondAdjustment(mjd);
-        switch (leapAdjustment) {
+        long nod = MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
+        int leapAdj = LeapSecondRules.system().getLeapSecondAdjustment(mjd);
+        if (leapAdj == 0 || nod < (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND) {
+            return UTCInstant.ofModifiedJulianDay(mjd, nod);
+        }
+        switch (leapAdj) {
             case -1:
                 return null;
             case 0:
