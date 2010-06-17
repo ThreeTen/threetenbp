@@ -31,9 +31,9 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import javax.time.calendar.DateAdjusters;
@@ -179,7 +179,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    void writeExternal(ObjectOutput out) throws IOException {
+    void writeExternal(DataOutput out) throws IOException {
         final int timeSecs = (timeEndOfDay ? 86400 : time.toSecondOfDay());
         final int stdOffset = standardOffset.getAmountSeconds();
         final int beforeDiff = offsetBefore.getAmountSeconds() - stdOffset;
@@ -218,7 +218,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @return the created object, never null
      * @throws IOException if an error occurs
      */
-    static ZoneOffsetTransitionRule readExternal(ObjectInput in) throws IOException {
+    static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
         int data = in.readInt();
         MonthOfYear month = MonthOfYear.of(data >>> 28);
         int dom = ((data & (63 << 22)) >>> 22) -32;

@@ -31,9 +31,9 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,7 +211,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    void writeExternal(ObjectOutput out) throws IOException {
+    void writeExternal(DataOutput out) throws IOException {
         out.writeInt(standardTransitions.length);
         for (long trans : standardTransitions) {
             Ser.writeEpochSecs(trans, out);
@@ -238,7 +238,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @return the created object, never null
      * @throws IOException if an error occurs
      */
-    static StandardZoneRules readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    static StandardZoneRules readExternal(DataInput in) throws IOException, ClassNotFoundException {
         int stdSize = in.readInt();
         long[] stdTrans = new long[stdSize];
         for (int i = 0; i < stdSize; i++) {

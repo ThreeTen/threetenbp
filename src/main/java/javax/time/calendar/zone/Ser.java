@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InvalidClassException;
@@ -134,7 +136,7 @@ final class Ser implements Externalizable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    static void writeOffset(ZoneOffset offset, ObjectOutput out) throws IOException {
+    static void writeOffset(ZoneOffset offset, DataOutput out) throws IOException {
         final int offsetSecs = offset.getAmountSeconds();
         int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72
         out.writeByte(offsetByte);
@@ -149,7 +151,7 @@ final class Ser implements Externalizable {
      * @return the created object, never null
      * @throws IOException if an error occurs
      */
-    static ZoneOffset readOffset(ObjectInput in) throws IOException {
+    static ZoneOffset readOffset(DataInput in) throws IOException {
         int offsetByte = in.readByte();
         return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
     }
@@ -161,7 +163,7 @@ final class Ser implements Externalizable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    static void writeEpochSecs(long epochSecs, ObjectOutput out) throws IOException {
+    static void writeEpochSecs(long epochSecs, DataOutput out) throws IOException {
         if (epochSecs >= -4575744000L && epochSecs < 10413792000L && epochSecs % 900 == 0) {  // quarter hours between 1825 and 2300
             int store = (int) ((epochSecs + 4575744000L) / 900);
             out.writeByte((store >>> 16) & 255);
@@ -179,7 +181,7 @@ final class Ser implements Externalizable {
      * @return the epoch seconds, never null
      * @throws IOException if an error occurs
      */
-    static long readEpochSecs(ObjectInput in) throws IOException {
+    static long readEpochSecs(DataInput in) throws IOException {
         int hiByte = in.readByte() & 255;
         if (hiByte == 255) {
             return in.readLong();

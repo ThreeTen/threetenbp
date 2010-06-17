@@ -31,9 +31,9 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    void writeExternal(ObjectOutput out) throws IOException {
+    void writeExternal(DataOutput out) throws IOException {
         Ser.writeOffset(offset, out);
     }
 
@@ -93,7 +93,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
      * @return the created object, never null
      * @throws IOException if an error occurs
      */
-    static FixedZoneRules readExternal(ObjectInput in) throws IOException {
+    static FixedZoneRules readExternal(DataInput in) throws IOException {
         ZoneOffset offset = Ser.readOffset(in);
         return new FixedZoneRules(offset);
     }

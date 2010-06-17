@@ -30,9 +30,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package javax.time.calendar.zone;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.time.Instant;
@@ -102,7 +102,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    void writeExternal(ObjectOutput out) throws IOException {
+    void writeExternal(DataOutput out) throws IOException {
         Ser.writeEpochSecs(transition.toEpochSeconds(), out);
         Ser.writeOffset(transition.getOffset(), out);
         Ser.writeOffset(transitionAfter.getOffset(), out);
@@ -114,7 +114,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @return the created object, never null
      * @throws IOException if an error occurs
      */
-    static ZoneOffsetTransition readExternal(ObjectInput in) throws IOException {
+    static ZoneOffsetTransition readExternal(DataInput in) throws IOException {
         long epochSeconds = Ser.readEpochSecs(in);
         ZoneOffset before = Ser.readOffset(in);
         ZoneOffset after = Ser.readOffset(in);
