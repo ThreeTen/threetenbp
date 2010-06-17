@@ -31,7 +31,10 @@
  */
 package javax.time.period.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,8 +43,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.PeriodFields;
 import javax.time.calendar.PeriodUnit;
-import javax.time.period.PeriodFields;
 
 import org.testng.annotations.Test;
 
