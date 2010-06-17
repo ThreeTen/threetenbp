@@ -202,7 +202,7 @@ public final class Instant
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
      * @return an instant, never null
-     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSeconds(long epochSeconds, long nanoAdjustment) {
         long secs = MathUtils.safeAdd(epochSeconds, MathUtils.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
@@ -220,7 +220,7 @@ public final class Instant
      *
      * @param epochSeconds  the number of seconds, up to scale 9
      * @return an instant, never null
-     * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSeconds(BigDecimal epochSeconds) {
         checkNotNull(epochSeconds, "Seconds must not be null");
@@ -269,7 +269,7 @@ public final class Instant
      *
      * @param epochNanos  the number of nanoseconds, not null
      * @return an instant, never null
-     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochNanos(BigInteger epochNanos) {
         checkNotNull(epochNanos, "Nanos must not be null");
@@ -384,13 +384,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instant with the specified {@code Duration} added.
+     * Returns a copy of this instant with the specified duration added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, positive or negative, not null
      * @return an {@code Instant} based on this instant with the specified duration added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
@@ -410,8 +410,8 @@ public final class Instant
      *
      * @param amount  the duration to add, positive or negative
      * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration} based on this duration with the specified duration added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @return an {@code Instant} based on this duration with the specified duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plus(long amount, TimeUnit unit) {
         if (unit == TimeUnit.SECONDS) {
@@ -426,13 +426,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instant with the specified number of seconds added.
+     * Returns a copy of this instant with the specified duration in seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToAdd  the seconds to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified seconds added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusSeconds(long secondsToAdd) {
         if (secondsToAdd == 0) {
@@ -442,26 +442,26 @@ public final class Instant
     }
 
     /**
-     * Returns a copy of this instant with the specified number of milliseconds added.
+     * Returns a copy of this instant with the specified duration in milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToAdd  the milliseconds to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified milliseconds added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusMillis(long millisToAdd) {
         return plus(millisToAdd / 1000, (millisToAdd % 1000) * 1000000);
     }
 
     /**
-     * Returns a copy of this instant with the specified number of nanoseconds added.
+     * Returns a copy of this instant with the specified duration in nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToAdd  the nanoseconds to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified nanoseconds added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusNanos(long nanosToAdd) {
         return plus(0, nanosToAdd);
@@ -475,7 +475,7 @@ public final class Instant
      * @param secondsToAdd  the seconds to add, positive or negative
      * @param nanosToAdd  the nanos to add, positive or negative
      * @return an {@code Instant} based on this instant with the specified seconds added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     private Instant plus(long secondsToAdd, long nanosToAdd) {
         if ((secondsToAdd |nanosToAdd) == 0) {
@@ -490,13 +490,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instant with the specified {@code Duration} subtracted.
+     * Returns a copy of this instant with the specified duration subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, positive or negative, not null
      * @return an {@code Instant} based on this instant with the specified duration subtracted, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
@@ -519,7 +519,7 @@ public final class Instant
      * @param amount  the duration to subtract, positive or negative
      * @param unit  the unit that the duration is measured in, not null
      * @return a {@code Duration} based on this duration with the specified duration subtracted, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minus(long amount, TimeUnit unit) {
         if (unit == TimeUnit.SECONDS) {
@@ -534,13 +534,13 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instant with the specified number of seconds subtracted.
+     * Returns a copy of this instant with the specified duration in seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToSubtract  the seconds to subtract, positive or negative
      * @return an {@code Instant} based on this instant with the specified seconds subtracted, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minusSeconds(long secondsToSubtract) {
         if (secondsToSubtract == Long.MIN_VALUE) {
@@ -550,13 +550,13 @@ public final class Instant
     }
 
     /**
-     * Returns a copy of this instant with the specified number of milliseconds subtracted.
+     * Returns a copy of this instant with the specified duration in milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToSubtract  the milliseconds to subtract, positive or negative
      * @return an {@code Instant} based on this instant with the specified milliseconds subtracted, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minusMillis(long millisToSubtract) {
         if (millisToSubtract == Long.MIN_VALUE) {
@@ -566,13 +566,13 @@ public final class Instant
     }
 
     /**
-     * Returns a copy of this instant with the specified number of nanoseconds subtracted.
+     * Returns a copy of this instant with the specified duration in nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
      * @return an {@code Instant} based on this instant with the specified nanoseconds subtracted, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minusNanos(long nanosToSubtract) {
         if (nanosToSubtract == Long.MIN_VALUE) {
@@ -615,7 +615,7 @@ public final class Instant
      * was subject to integer division by one million.
      *
      * @return the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code long}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public long toEpochMillisLong() {
         long millis = MathUtils.safeMultiply(seconds, 1000);
@@ -624,8 +624,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this instant to an instant, trivially
-     * returning {@code this}.
+     * Converts this instant to an {@code Instant}, trivially returning {@code this}.
      *
      * @return {@code this}, never null
      */
@@ -635,7 +634,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this instant to the specified {@code Instant}.
+     * Compares this instant to the specified instant.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
@@ -652,7 +651,7 @@ public final class Instant
     }
 
     /**
-     * Checks if this instant is after the specified {@code Instant}.
+     * Checks if this instant is after the specified instant.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
@@ -665,7 +664,7 @@ public final class Instant
     }
 
     /**
-     * Checks if this instant is before the specified {@code Instant}.
+     * Checks if this instant is before the specified instant.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
@@ -679,7 +678,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instant is equal to the specified {@code Instant}.
+     * Checks if this instant is equal to the specified instant.
      * <p>
      * The comparison is based on the time-line position of the instants.
      *
