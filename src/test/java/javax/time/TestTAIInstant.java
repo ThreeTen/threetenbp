@@ -57,6 +57,21 @@ public class TestTAIInstant {
         assertTrue(Comparable.class.isAssignableFrom(Duration.class));
     }
 
+    //-----------------------------------------------------------------------
+    // serialization
+    //-----------------------------------------------------------------------
+    public void test_deserialization() throws Exception {
+        TAIInstant orginal = TAIInstant.ofTAISeconds(2, 3);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(orginal);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        TAIInstant ser = (TAIInstant) in.readObject();
+        assertEquals(TAIInstant.ofTAISeconds(2, 3), ser);
+    }
+
 //    //-----------------------------------------------------------------------
 //    // nowClock()
 //    //-----------------------------------------------------------------------
@@ -102,7 +117,7 @@ public class TestTAIInstant {
     //-----------------------------------------------------------------------
     // ofTAISeconds(long,long)
     //-----------------------------------------------------------------------
-    public void factory_seconds_long_long() {
+    public void factory_ofTAISecondslong_long() {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
                 TAIInstant t = TAIInstant.ofTAISeconds(i, j);
@@ -122,14 +137,14 @@ public class TestTAIInstant {
         }
     }
 
-    public void factory_seconds_long_long_nanosNegativeAdjusted() {
+    public void factory_ofTAISeconds_long_long_nanosNegativeAdjusted() {
         TAIInstant test = TAIInstant.ofTAISeconds(2L, -1);
         assertEquals(test.getTAISeconds(), 1);
         assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_seconds_long_long_tooBig() {
+    public void factory_ofTAISeconds_long_long_tooBig() {
         TAIInstant.ofTAISeconds(Long.MAX_VALUE, 1000000000);
     }
 
@@ -166,20 +181,7 @@ public class TestTAIInstant {
     }
 
     //-----------------------------------------------------------------------
-    // serialization
-    //-----------------------------------------------------------------------
-    public void test_deserialization() throws Exception {
-        TAIInstant orginal = TAIInstant.ofTAISeconds(2, 3);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(orginal);
-        out.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bais);
-        TAIInstant ser = (TAIInstant) in.readObject();
-        assertEquals(TAIInstant.ofTAISeconds(2, 3), ser);
-    }
-
+    // plus(Duration)
     //-----------------------------------------------------------------------
     @DataProvider(name="Plus")
     Object[][] provider_plus() {
@@ -367,24 +369,26 @@ public class TestTAIInstant {
     }
     
     @Test(dataProvider="Plus") 
-    public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
-       TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).plus(Duration.ofSeconds(otherSeconds, otherNanos));
+    public void test_plus(long seconds, int nanos, long plusSeconds, int plusNanos, long expectedSeconds, int expectedNanoOfSecond) {
+       TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).plus(Duration.ofSeconds(plusSeconds, plusNanos));
        assertEquals(i.getTAISeconds(), expectedSeconds);
        assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void plusOverflowTooBig() {
+    public void test_plus_overflowTooBig() {
        TAIInstant i = TAIInstant.ofTAISeconds(Long.MAX_VALUE, 999999999);
        i.plus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void plusOverflowTooSmall() {
+    public void test_plus_overflowTooSmall() {
        TAIInstant i = TAIInstant.ofTAISeconds(Long.MIN_VALUE, 0);
        i.plus(Duration.ofSeconds(-1, 999999999));
     }
 
+    //-----------------------------------------------------------------------
+    // minus(Duration)
     //-----------------------------------------------------------------------
     @DataProvider(name="Minus")
     Object[][] provider_minus() {
@@ -572,20 +576,20 @@ public class TestTAIInstant {
     }
     
     @Test(dataProvider="Minus") 
-    public void minus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
-       TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).minus(Duration.ofSeconds(otherSeconds, otherNanos));
+    public void test_minus(long seconds, int nanos, long minusSeconds, int minusNanos, long expectedSeconds, int expectedNanoOfSecond) {
+       TAIInstant i = TAIInstant.ofTAISeconds(seconds, nanos).minus(Duration.ofSeconds(minusSeconds, minusNanos));
        assertEquals(i.getTAISeconds(), expectedSeconds);
        assertEquals(i.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void minusOverflowTooSmall() {
+    public void test_minus_overflowTooSmall() {
        TAIInstant i = TAIInstant.ofTAISeconds(Long.MIN_VALUE, 0);
        i.minus(Duration.ofSeconds(0, 1));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void minusOverflowTooBig() {
+    public void test_minus_overflowTooBig() {
        TAIInstant i = TAIInstant.ofTAISeconds(Long.MAX_VALUE, 999999999);
        i.minus(Duration.ofSeconds(-1, 999999999));
     }
@@ -664,7 +668,7 @@ public class TestTAIInstant {
 
     @Test(expectedExceptions=ClassCastException.class)
     @SuppressWarnings("unchecked")
-    public void compareToNonTAIInstant() {
+    public void test_compareToNonTAIInstant() {
        Comparable c = TAIInstant.ofTAISeconds(0L, 2);
        c.compareTo(new Object());
     }

@@ -138,6 +138,7 @@ public class AllTest {
             TestTimeSource_Fixed.class,
             TestTimeSource_OffsetSystem.class,
             TestTimeSource_System.class,
+            TestUTCInstant.class,
             // calendar classes
             TestAmPmOfDay.class,
             TestCalendricalMerger.class,

@@ -33,6 +33,8 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.calendar.LocalDate;
+
 /**
  * An instantaneous point on the time-line measured in the UTC post-1972 time-scale.
  * <p>
@@ -282,8 +284,11 @@ public final class UTCInstant
     //-----------------------------------------------------------------------
     /**
      * Checks if the instant is within a leap second.
+     * <p>
+     * This method returns true when an accurate clock would return a seconds
+     * field of 60 or 61.
      *
-     * @return true if the time-of-day represents part of a leap second
+     * @return true if this instant is within a leap second
      */
     public boolean isLeapSecond() {
         return nanos > SECS_PER_DAY * NANOS_PER_SECOND;
@@ -302,7 +307,7 @@ public final class UTCInstant
      *
      * @param duration  the duration to add, not null
      * @return a {@code UTCInstant} with the duration added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public UTCInstant plus(Duration duration) {
         return UTCInstant.of(toTAIInstant().plus(duration), rules);
@@ -321,7 +326,7 @@ public final class UTCInstant
      *
      * @param duration  the duration to subtract, not null
      * @return a {@code UTCInstant} with the duration subtracted, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public UTCInstant minus(Duration duration) {
         return UTCInstant.of(toTAIInstant().minus(duration), rules);
@@ -338,6 +343,7 @@ public final class UTCInstant
      * with different or updated rules then the calculated UTC instant may be different.
      *
      * @return a {@code TAIInstant} representing the same instant, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public TAIInstant toTAIInstant() {
         return rules.convertToTAI(this);
@@ -353,6 +359,7 @@ public final class UTCInstant
      * Converting back to a {@code UTCInstant} may result in a slightly different instant.
      *
      * @return an {@code Instant} representing the best approximation of this instant, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant toInstant() {
         return rules.convertToInstant(this);
@@ -427,7 +434,26 @@ public final class UTCInstant
      */
     @Override
     public String toString() {
-        return mjDay + "MJD " + nanos + "ns(UTC)";  // TODO: as YMD HMS rules(if not system)
+        LocalDate date = LocalDate.ofModifiedJulianDays(mjDay);  // TODO: capacity/import issues
+        StringBuilder buf = new StringBuilder(18);
+        int sod = (int) (nanos / NANOS_PER_SECOND);
+        int hourValue = sod / (60 * 60);
+        int minuteValue = (sod / 60) % 60;
+        int secondValue = sod % 60;
+        if (hourValue == 24) {
+            hourValue = 23;
+            secondValue += 60;
+        }
+        int nanoValue = (int) (nanos % NANOS_PER_SECOND);
+        buf.append(date).append('T')
+            .append(hourValue < 10 ? "0" : "").append(hourValue)
+            .append(minuteValue < 10 ? ":0" : ":").append(minuteValue)
+            .append(secondValue < 10 ? ":0" : ":").append(secondValue);
+        int pos = buf.length();
+        buf.append(nanoValue + NANOS_PER_SECOND);
+        buf.setCharAt(pos, '.');
+        buf.append("(UTC)");
+        return buf.toString();
     }
 
 }

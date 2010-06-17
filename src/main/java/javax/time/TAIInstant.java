@@ -118,6 +118,7 @@ public final class TAIInstant
      *
      * @param instant  the instant to convert, not null
      * @return the TAI instant, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static TAIInstant of(Instant instant) {
         return UTCInstant.of(instant).toTAIInstant();
@@ -135,6 +136,7 @@ public final class TAIInstant
      *
      * @param instant  the instant to convert, not null
      * @return the TAI instant, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static TAIInstant of(UTCInstant instant) {
         return instant.toTAIInstant();
@@ -192,8 +194,8 @@ public final class TAIInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a {@code TAIInstant} with the duration added, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @return a {@code TAIInstant} based on this instant with the duration added, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public TAIInstant plus(Duration duration) {
         long secsToAdd = duration.getSeconds();
@@ -218,8 +220,8 @@ public final class TAIInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a {@code TAIInstant} with the duration subtracted, never null
-     * @throws ArithmeticException if the calculation exceeds the capacity of {@code Instant}
+     * @return a {@code TAIInstant} based on this instant with the duration subtracted, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public TAIInstant minus(Duration duration) {
         long secsToSubtract = duration.getSeconds();
@@ -241,7 +243,7 @@ public final class TAIInstant
      * system default leap-second rules. This conversion does not lose information
      * and the UTC instant may safely be converted back to a {@code TAIInstant}.
      *
-     * @return a {@code UTCInstant} representing the best current estimate of this instant in UTC, never null
+     * @return a {@code UTCInstant} representing the same instant using the system leap second rules, never null
      */
     public UTCInstant toUTCInstant() {
         return UTCInstant.of(this, LeapSecondRules.system());
@@ -256,7 +258,7 @@ public final class TAIInstant
      * This conversion will lose information around a leap second in accordance with UTC-SLS.
      * Converting back to a {@code TAIInstant} may result in a slightly different instant.
      *
-     * @return an {@code Instant} representing the best current estimate of this instant in UTC-SLS, never null
+     * @return an {@code Instant} representing the best approximation of this instant, never null
      */
     public Instant toInstant() {
         return toUTCInstant().toInstant();

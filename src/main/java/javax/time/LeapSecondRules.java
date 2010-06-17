@@ -228,7 +228,7 @@ public abstract class LeapSecondRules {
         long nod = MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
         int leapAdj = LeapSecondRules.system().getLeapSecondAdjustment(mjd);
         if (leapAdj == 0 || nod < (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND) {
-            return UTCInstant.ofModifiedJulianDay(mjd, nod);
+            return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
         }
         switch (leapAdj) {
             case -1:

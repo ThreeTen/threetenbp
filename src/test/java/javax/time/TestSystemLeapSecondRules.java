@@ -395,13 +395,13 @@ public class TestSystemLeapSecondRules {
     //-----------------------------------------------------------------------
     // convertToUTC(Instant)/convertToInstant(UTCInstant)
     //-----------------------------------------------------------------------
-    public void test_convertToInstant_justBeforeLeap() {
-        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 0, ZoneOffset.UTC).minusSeconds(1001);
-        Instant instant = odt.toInstant();
-        UTCInstant utc = UTCInstant.ofModifiedJulianDay(MJD_1980 - 1, (SECS_PER_DAY + 1 - 1001) * NANOS_PER_SEC, rules);
-        assertEquals(rules.convertToUTC(instant), utc);
-        assertEquals(rules.convertToInstant(utc), instant);
-    }
+//    public void test_convertToInstant_justBeforeLeap() {
+//        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 0, ZoneOffset.UTC).minusSeconds(1001);
+//        Instant instant = odt.toInstant();
+//        UTCInstant utc = UTCInstant.ofModifiedJulianDay(MJD_1980 - 1, (SECS_PER_DAY + 1 - 1001) * NANOS_PER_SEC, rules);
+//        assertEquals(rules.convertToUTC(instant), utc);
+//        assertEquals(rules.convertToInstant(utc), instant);
+//    }
 
 //    public void test_convertToUTC_TAIInstant_inLeap() {
 //        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980 - 1, 0);  // 1980-01-01 (1 second before 1980)
@@ -410,19 +410,21 @@ public class TestSystemLeapSecondRules {
 //        assertEquals(rules.convertToTAI(expected), tai); // check reverse
 //    }
 //
-//    public void test_convertToUTC_TAIInstant_justAfterLeap() {
-//        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980, 0);  // 1980-01-01 (19 leap secs added)
-//        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1980, 0, rules);
-//        assertEquals(rules.convertToUTC(tai), expected);
-//        assertEquals(rules.convertToTAI(expected), tai); // check reverse
-//    }
-//
-//    public void test_convertToUTC_TAIInstant_furtherAfterLeap() {
-//        TAIInstant tai = TAIInstant.ofTAISeconds(TAI_SECS_UTC1980 + 1, 0);  // 1980-01-01 (19 leap secs added)
-//        UTCInstant expected = UTCInstant.ofModifiedJulianDay(MJD_1980, NANOS_PER_SEC, rules);
-//        assertEquals(rules.convertToUTC(tai), expected);
-//        assertEquals(rules.convertToTAI(expected), tai); // check reverse
-//    }
+    public void test_convertToInstant_justAfterLeap() {
+        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 0, ZoneOffset.UTC);
+        Instant instant = odt.toInstant();
+        UTCInstant utc = UTCInstant.ofModifiedJulianDay(MJD_1980, 0, rules);
+        assertEquals(rules.convertToUTC(instant), utc);
+        assertEquals(rules.convertToInstant(utc), instant);
+    }
+
+    public void test_convertToInstant_furtherAfterLeap() {
+        OffsetDateTime odt = OffsetDateTime.of(1980, 1, 1, 0, 0, 1, ZoneOffset.UTC);
+        Instant instant = odt.toInstant();
+        UTCInstant utc = UTCInstant.ofModifiedJulianDay(MJD_1980, NANOS_PER_SEC, rules);
+        assertEquals(rules.convertToUTC(instant), utc);
+        assertEquals(rules.convertToInstant(utc), instant);
+    }
 
     //-----------------------------------------------------------------------
     // registerLeapSecond()
