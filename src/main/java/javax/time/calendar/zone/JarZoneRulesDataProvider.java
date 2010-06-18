@@ -38,60 +38,58 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 /**
- * Loads time-zone rules stored in a jar file.
+ * Loads time-zone rules stored in a file accessed via class loader.
  * <p>
  * JarZoneRulesDataProvider is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
+final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
 
     /**
      * The group ID.
      */
     private final String groupID;
     /**
-     * The version ID.
-     */
-    private final String versionID;
-    /**
      * Cache of time-zone data providers.
      */
     private final Map<String, ZoneRules> zones;
 
     /**
-     * Loads any time-zone rules data stored in jar files.
+     * Loads any time-zone rules data stored in files.
      *
      * @throws RuntimeException if the time-zone rules cannot be loaded
      */
     static void load() {
-        for (ZoneRulesDataProvider provider : loadJars()) {
+        for (ZoneRulesDataProvider provider : loadResources()) {
             ZoneRulesGroup.registerProvider(provider);
         }
     }
 
     /**
-     * Loads the rules from the jar files.
+     * Loads the rules from files in the class loader, often jar files.
      *
      * @return the list of loaded rules, never null
      * @throws Exception if an error occurs
      */
-    private static List<ZoneRulesDataProvider> loadJars() {
+    private static List<ZoneRulesDataProvider> loadResources() {
         List<ZoneRulesDataProvider> providers = new ArrayList<ZoneRulesDataProvider>();
         URL url = null;
         try {
-            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/calendar/zone/ZoneRuleInfo.dat");
+            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/calendar/zone/ZoneRules.dat");
             Set<String> loaded = new HashSet<String>();  // avoid equals() on URL
             while (en.hasMoreElements()) {
                 url = en.nextElement();
                 if (loaded.add(url.toExternalForm())) {
-                    loadJar(providers, url);
+                    loadResource(providers, url);
                 }
             }
         } catch (Exception ex) {
@@ -101,26 +99,50 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
     }
 
     /**
-     * Loads the rules from a jar file.
+     * Loads the rules from a URL, often in a jar file.
      *
      * @param providers  the list to add to, not null
      * @param url  the jar file to load, not null 
      * @throws Exception if an error occurs
      */
-    @SuppressWarnings("unchecked")
-    private static void loadJar(List<ZoneRulesDataProvider> providers, URL url) throws ClassNotFoundException, IOException {
+    private static void loadResource(List<ZoneRulesDataProvider> providers, URL url) throws ClassNotFoundException, IOException {
         boolean throwing = false;
         InputStream in = null;
         try {
             in = url.openStream();
             ObjectInputStream ois = new ObjectInputStream(in);
-            int dataSets = ois.readInt();
-            for (int i = 0; i < dataSets; i++) {
-                String groupID = ois.readUTF();
-                String versionID = ois.readUTF();
-                Map<String, ZoneRules> zones = (Map<String, ZoneRules>) ois.readObject();
-                providers.add(new JarZoneRulesDataProvider(groupID, versionID, zones));
+            String groupID = ois.readUTF();
+            int versionCount = ois.readShort();
+            String[] versionArray = new String[versionCount];
+            for (int i = 0; i < versionCount; i++) {
+                versionArray[i] = ois.readUTF();
             }
+            int regionCount = ois.readShort();
+            String[] regionArray = new String[regionCount];
+            for (int i = 0; i < regionCount; i++) {
+                regionArray[i] = ois.readUTF();
+            }
+            Map<String, Integer> ruleIndexMap = new HashMap<String, Integer>();
+            for (int i = 0; i < versionCount; i++) {
+                int versionRegionCount = ois.readShort();
+                for (int j = 0; j < versionRegionCount; j++) {
+                    int regionIndex = ois.readShort();
+                    int rulesIndex = ois.readInt();
+                    String id = regionArray[regionIndex] + '#' + versionArray[i];
+                    ruleIndexMap.put(id, rulesIndex);
+                }
+            }
+            int ruleCount = ois.readInt();
+            ZoneRules[] ruleArray = new ZoneRules[ruleCount];
+            for (int i = 0; i < ruleCount; i++) {
+                ruleArray[i] = (ZoneRules) Ser.read(ois);
+            }
+            Map<String, ZoneRules> ruleMap = new HashMap<String, ZoneRules>();
+            for (Entry<String, Integer> entry : ruleIndexMap.entrySet()) {
+                ruleMap.put(entry.getKey(), ruleArray[entry.getValue()]);
+            }
+            
+            providers.add(new JarZoneRulesDataProvider(groupID, ruleMap));
             
         } catch (IOException ex) {
             throwing = true;
@@ -142,12 +164,10 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * Loads the time-zone data.
      *
      * @param groupID  the group ID of the rules, not null
-     * @param versionID  the version ID of the rules, not null
      * @param zones  the loaded zones, not null
      */
-    public JarZoneRulesDataProvider(String groupID, String versionID, Map<String, ZoneRules> zones) {
+    public JarZoneRulesDataProvider(String groupID, Map<String, ZoneRules> zones) {
         this.groupID = groupID;
-        this.versionID = versionID;
         this.zones = zones;
     }
 
@@ -159,19 +179,12 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
 
     /** {@inheritDoc} */
     public Set<String> getIDs() {
-        Set<String> ids = new HashSet<String>(zones.size());
-        for (String id : zones.keySet()) {
-            ids.add(id + '#' + versionID);
-        }
-        return Collections.unmodifiableSet(ids);
+        return Collections.unmodifiableSet(zones.keySet());
     }
 
     /** {@inheritDoc} */
     public ZoneRules getZoneRules(String regionID, String versionID) {
-        if (regionID == null || versionID == null || versionID.equals(this.versionID) == false) {
-            return null;
-        }
-        return zones.get(regionID);
+        return zones.get(regionID + '#' + versionID);
     }
 
 }

@@ -43,8 +43,6 @@ import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.Year;
-import javax.time.calendar.ZonedDateTime;
-import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.TZDBMonthDayTime;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.TZDBRule;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
@@ -63,97 +61,97 @@ public class TestTZDBZoneRulesCompiler {
     // parseYear()
     //-----------------------------------------------------------------------
     public void test_parseYear_specific() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "2010", 2000), 2010);
     }
 
     public void test_parseYear_min() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "min", 2000), Year.MIN_YEAR);
     }
 
     public void test_parseYear_mini() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "mini", 2000), Year.MIN_YEAR);
     }
 
     public void test_parseYear_minim() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "minim", 2000), Year.MIN_YEAR);
     }
 
     public void test_parseYear_minimu() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "minimu", 2000), Year.MIN_YEAR);
     }
 
     public void test_parseYear_minimum() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "minimum", 2000), Year.MIN_YEAR);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
     public void test_parseYear_minTooShort() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         parseYear(test, "mi", 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
     public void test_parseYear_minTooLong() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         parseYear(test, "minimuma", 2000);
     }
 
     public void test_parseYear_max() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "max", 2000), Year.MAX_YEAR);
     }
 
     public void test_parseYear_maxi() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "maxi", 2000), Year.MAX_YEAR);
     }
 
     public void test_parseYear_maxim() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "maxim", 2000), Year.MAX_YEAR);
     }
 
     public void test_parseYear_maximu() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "maximu", 2000), Year.MAX_YEAR);
     }
 
     public void test_parseYear_maximum() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "maximum", 2000), Year.MAX_YEAR);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
     public void test_parseYear_maxTooShort() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         parseYear(test, "ma", 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
     public void test_parseYear_maxTooLong() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         parseYear(test, "maximuma", 2000);
     }
 
     public void test_parseYear_only() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "only", 2000), 2000);
     }
 
     public void test_parseYear_only_uppercase() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseYear(test, "ONLY", 2000), 2000);
     }
 
     @Test(expectedExceptions=NumberFormatException.class)
     public void test_parseYear_invalidYear() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         parseYear(test, "ABC", 2000);
     }
 
@@ -181,7 +179,7 @@ public class TestTZDBZoneRulesCompiler {
     // parseMonth()
     //-----------------------------------------------------------------------
     public void test_parseMonth() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseMonth(test, "Jan"), MonthOfYear.JANUARY);
         assertEquals(parseMonth(test, "Feb"), MonthOfYear.FEBRUARY);
         assertEquals(parseMonth(test, "Mar"), MonthOfYear.MARCH);
@@ -213,7 +211,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseMonth_invalidMonth() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         parseMonth(test, "ABC");
     }
 
@@ -241,7 +239,7 @@ public class TestTZDBZoneRulesCompiler {
     // parseDayOfWeek()
     //-----------------------------------------------------------------------
     public void test_parseDayOfWeek() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         assertEquals(parseDayOfWeek(test, "Mon"), DayOfWeek.MONDAY);
         assertEquals(parseDayOfWeek(test, "Tue"), DayOfWeek.TUESDAY);
         assertEquals(parseDayOfWeek(test, "Wed"), DayOfWeek.WEDNESDAY);
@@ -262,7 +260,7 @@ public class TestTZDBZoneRulesCompiler {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseDayOfWeek_invalidMonth() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         parseMonth(test, "ABC");
     }
 
@@ -290,7 +288,7 @@ public class TestTZDBZoneRulesCompiler {
     // parseMonthDayTime()
     //-----------------------------------------------------------------------
     public void test_parseMonthDayTime_marLastSun0220() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         TZDBRule mdt = parseMonthDayTime(test, "Mar lastSun 2:20");
         assertEquals(mdt.month, MonthOfYear.MARCH);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);
@@ -302,7 +300,7 @@ public class TestTZDBZoneRulesCompiler {
     }
 
     public void test_parseMonthDayTime_jun50220s() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         TZDBRule mdt = parseMonthDayTime(test, "Jun 5 2:20s");
         assertEquals(mdt.month, MonthOfYear.JUNE);
         assertEquals(mdt.dayOfWeek, null);
@@ -314,7 +312,7 @@ public class TestTZDBZoneRulesCompiler {
     }
 
     public void test_parseMonthDayTime_maySatAfter50220u() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat>=5 2:20u");
         assertEquals(mdt.month, MonthOfYear.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
@@ -326,7 +324,7 @@ public class TestTZDBZoneRulesCompiler {
     }
 
     public void test_parseMonthDayTime_maySatBefore50220u() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat<=5 24:00g");
         assertEquals(mdt.month, MonthOfYear.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
@@ -338,7 +336,7 @@ public class TestTZDBZoneRulesCompiler {
     }
 
     public void test_parseMonthDayTime_maySatBefore15Dash() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         TZDBRule mdt = parseMonthDayTime(test, "May Sat<=15 -");
         assertEquals(mdt.month, MonthOfYear.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SATURDAY);
@@ -350,7 +348,7 @@ public class TestTZDBZoneRulesCompiler {
     }
 
     public void test_parseMonthDayTime_maylastSunShortTime() throws Exception {
-        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
+        TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), false);
         TZDBRule mdt = parseMonthDayTime(test, "May lastSun 3z");
         assertEquals(mdt.month, MonthOfYear.MAY);
         assertEquals(mdt.dayOfWeek, DayOfWeek.SUNDAY);

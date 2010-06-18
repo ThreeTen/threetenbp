@@ -40,9 +40,13 @@ import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
@@ -185,59 +189,7 @@ public final class TZDBZoneRulesCompiler {
             System.out.println("Destination is not a directory: " + dstDir);
             return;
         }
-        
-        // build actual jar files
-        Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
-        Map<String, Map<String, ZoneRules>> allBuiltZones = new HashMap<String, Map<String, ZoneRules>>();
-        for (File srcDir : srcDirs) {
-            // source files in this directory
-            List<File> srcFiles = new ArrayList<File>();
-            for (String srcFileName : srcFileNames) {
-                File file = new File(srcDir, srcFileName);
-                if (file.exists()) {
-                    srcFiles.add(file);
-                }
-            }
-            if (srcFiles.isEmpty()) {
-                continue;  // nothing to process
-            }
-            
-            // compile
-            String loopVersion = srcDir.getName();
-            File dstFile = new File(dstDir, "ZoneRuleInfo-TZDB-" + loopVersion + ".jar");
-            TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(loopVersion, srcFiles, dstFile, verbose);
-            compiler.setDeduplicateMap(deduplicateMap);
-            try {
-                compiler.compile();
-                allBuiltZones.put(loopVersion, compiler.getBuiltZones());
-            } catch (Exception ex) {
-                System.out.println("Failed: " + ex.toString());
-                ex.printStackTrace();
-                System.exit(1);
-            }
-        }
-        
-        // output merged file
-        try {
-            File mergedFile = new File(dstDir, "ZoneRuleInfo-TZDB-all.jar");
-            JarOutputStream jos = new JarOutputStream(new FileOutputStream(mergedFile));
-            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRuleInfo.dat"));
-            
-            ObjectOutputStream out = new ObjectOutputStream(jos);
-            out.writeInt(allBuiltZones.size());
-            for (Entry<String, Map<String, ZoneRules>> entry : allBuiltZones.entrySet()) {
-                out.writeUTF("TZDB");
-                out.writeUTF(entry.getKey());
-                out.writeObject(entry.getValue());
-            }
-            
-            jos.closeEntry();
-            out.close();
-        } catch (Exception ex) {
-            System.out.println("Failed: " + ex.toString());
-            ex.printStackTrace();
-            System.exit(1);
-        }
+        process(srcDirs, srcFileNames, dstDir, verbose);
         System.exit(0);
     }
 
@@ -260,6 +212,182 @@ public final class TZDBZoneRulesCompiler {
         System.out.println(" If the version is specified, only that version is processed");
     }
 
+    /**
+     * Process to create the jar files.
+     */
+    private static void process(List<File> srcDirs, List<String> srcFileNames, File dstDir, boolean verbose) {
+        // build actual jar files
+        Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
+        Map<String, Map<String, ZoneRules>> allBuiltZones = new TreeMap<String, Map<String, ZoneRules>>();
+        Set<String> allRegionIds = new TreeSet<String>();
+        Set<ZoneRules> allRules = new HashSet<ZoneRules>();
+        for (File srcDir : srcDirs) {
+            // source files in this directory
+            List<File> srcFiles = new ArrayList<File>();
+            for (String srcFileName : srcFileNames) {
+                File file = new File(srcDir, srcFileName);
+                if (file.exists()) {
+                    srcFiles.add(file);
+                }
+            }
+            if (srcFiles.isEmpty()) {
+                continue;  // nothing to process
+            }
+            
+            // compile
+            String loopVersion = srcDir.getName();
+            TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(loopVersion, srcFiles, verbose);
+            compiler.setDeduplicateMap(deduplicateMap);
+            try {
+                // compile
+                Map<String, ZoneRules> builtZones = compiler.compile();
+                
+                // output version-specific file
+                File dstFile = new File(dstDir, "jsr-310-TZDB-" + loopVersion + ".jar");
+                if (verbose) {
+                    System.out.println("Outputting file: " + dstFile);
+                }
+                outputFile(dstFile, loopVersion, builtZones);
+                
+                // create totals
+                allBuiltZones.put(loopVersion, builtZones);
+                allRegionIds.addAll(builtZones.keySet());
+                allRules.addAll(builtZones.values());
+                
+            } catch (Exception ex) {
+                System.out.println("Failed: " + ex.toString());
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+        
+        // output merged file
+        File dstFile = new File(dstDir, "jsr-310-TZDB-all.jar");
+        if (verbose) {
+            System.out.println("Outputting combined file: " + dstFile);
+        }
+        outputFile(dstFile, allBuiltZones, allRegionIds, allRules);
+    }
+
+    /**
+     * Outputs the file.
+     */
+    private static void outputFile(File dstFile, String version, Map<String, ZoneRules> builtZones) {
+        Map<String, Map<String, ZoneRules>> loopAllBuiltZones = new TreeMap<String, Map<String, ZoneRules>>();
+        loopAllBuiltZones.put(version, builtZones);
+        Set<String> loopAllRegionIds = new TreeSet<String>(builtZones.keySet());
+        Set<ZoneRules> loopAllRules = new HashSet<ZoneRules>(builtZones.values());
+        outputFile(dstFile, loopAllBuiltZones, loopAllRegionIds, loopAllRules);
+    }
+
+    /**
+     * Outputs the file.
+     */
+    private static void outputFile(
+            File dstFile, Map<String, Map<String, ZoneRules>> allBuiltZones,
+            Set<String> allRegionIds, Set<ZoneRules> allRules) {
+        // this format is not part of the jsr-310 specification
+        try {
+            JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
+            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
+            
+            ObjectOutputStream out = new ObjectOutputStream(jos);
+            // group
+            out.writeUTF("TZDB");
+            // all versions and regions
+            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
+            out.writeShort(versionArray.length);
+            for (String version : versionArray) {
+                out.writeUTF(version);
+            }
+            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
+            out.writeShort(regionArray.length);
+            for (String regionId : regionArray) {
+                out.writeUTF(regionId);
+            }
+            // link version-region-rules
+            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
+            for (String version : allBuiltZones.keySet()) {
+                out.writeShort(allBuiltZones.get(version).size());
+                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
+                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
+                     int rulesIndex = rulesList.indexOf(entry.getValue());
+                     out.writeShort(regionIndex);
+                     out.writeInt(rulesIndex);
+                }
+            }
+            jos.closeEntry();
+            
+            // rules
+            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules2.dat"));
+            out.writeUTF("TZDB-RULES");
+            out.writeInt(rulesList.size());
+            for (ZoneRules rules : rulesList) {
+                Ser.write(rules, out);
+            }
+            out.writeObject(null);
+            jos.closeEntry();
+            
+            out.close();
+        } catch (Exception ex) {
+            System.out.println("Failed: " + ex.toString());
+            ex.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+//    /**
+//     * Outputs the file.
+//     */
+//    private static void outputFile(
+//            File dstFile, Map<String, Map<String, ZoneRules>> allBuiltZones,
+//            Set<String> allRegionIds, Set<ZoneRules> allRules) {
+//        // this format is not part of the jsr-310 specification
+//        try {
+//            JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
+//            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
+//            
+//            ObjectOutputStream out = new ObjectOutputStream(jos);
+//            // group
+//            out.writeUTF("TZDB");
+//            // all versions and regions
+//            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
+//            out.writeShort(versionArray.length);
+//            for (String version : versionArray) {
+//                out.writeUTF(version);
+//            }
+//            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
+//            out.writeShort(regionArray.length);
+//            for (String regionId : regionArray) {
+//                out.writeUTF(regionId);
+//            }
+//            // link version-region-rules
+//            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
+//            for (String version : allBuiltZones.keySet()) {
+//                out.writeShort(allBuiltZones.get(version).size());
+//                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
+//                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
+//                     int rulesIndex = rulesList.indexOf(entry.getValue());
+//                     out.writeShort(regionIndex);
+//                     out.writeInt(rulesIndex);
+//                }
+//            }
+//            // rules
+//            out.writeInt(rulesList.size());
+//            for (ZoneRules rules : rulesList) {
+//                Ser.write(rules, out);
+//            }
+//            out.writeObject(null);
+//            
+//            jos.closeEntry();
+//            out.close();
+//        } catch (Exception ex) {
+//            System.out.println("Failed: " + ex.toString());
+//            ex.printStackTrace();
+//            System.exit(1);
+//        }
+//    }
+
     //-----------------------------------------------------------------------
     /** The TZDB rules. */
     private final Map<String, List<TZDBRule>> rules = new HashMap<String, List<TZDBRule>>();
@@ -276,8 +404,6 @@ public final class TZDBZoneRulesCompiler {
     private final String version;
     /** The source files. */
     private final List<File> sourceFiles;
-    /** The destination file. */
-    private final File destFile;
     /** The version to produce. */
     private final boolean verbose;
 
@@ -286,26 +412,25 @@ public final class TZDBZoneRulesCompiler {
      *
      * @param version  the version, such as 2009a, not null
      * @param sourceFiles  the list of source files, not empty, not null
-     * @param destFile  the destination file, not null
      * @param verbose  whether to output verbose messages
      */
-    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, File destFile, boolean verbose) {
+    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, boolean verbose) {
         this.version = version;
         this.sourceFiles = sourceFiles;
-        this.destFile = destFile;
         this.verbose = verbose;
     }
 
     /**
      * Compile the rules file.
+     * @return the map of region ID to rules, not null
      * @throws Exception if an error occurs
      */
-    public void compile() throws Exception {
-        printVerbose("Compiling TZDB to directory " + destFile);
+    public Map<String, ZoneRules> compile() throws Exception {
+        printVerbose("Compiling TZDB version " + version);
         parseFiles();
         buildZoneRules();
-        outputFile();
-        printVerbose("Compiled TZDB to directory " + destFile);
+        printVerbose("Compiled TZDB version " + version);
+        return builtZones;
     }
 
     /**
@@ -313,13 +438,6 @@ public final class TZDBZoneRulesCompiler {
      */
     void setDeduplicateMap(Map<Object, Object> deduplicateMap) {
         this.deduplicateMap = deduplicateMap;
-    }
-
-    /**
-     * Gets the built time-zones.
-     */
-    public Map<String, ZoneRules> getBuiltZones() {
-        return builtZones;
     }
 
     //-----------------------------------------------------------------------
@@ -641,27 +759,6 @@ public final class TZDBZoneRulesCompiler {
         // remove UTC and GMT
         builtZones.remove("UTC");
         builtZones.remove("GMT");
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Outputs the jar file.
-     * @throws Exception if an error occurs
-     */
-    private void outputFile() throws Exception {
-        printVerbose("Outputting file: " + destFile);
-        
-        JarOutputStream jos = new JarOutputStream(new FileOutputStream(destFile));
-        jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRuleInfo.dat"));
-        
-        ObjectOutputStream out = new ObjectOutputStream(jos);
-        out.writeInt(1);
-        out.writeUTF("TZDB");
-        out.writeUTF(version);
-        out.writeObject(builtZones);
-        
-        jos.closeEntry();
-        out.close();
     }
 
     //-----------------------------------------------------------------------

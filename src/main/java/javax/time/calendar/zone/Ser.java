@@ -81,6 +81,18 @@ final class Ser implements Externalizable {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        writeInternal(type, object, out);
+    }
+
+    static void write(Object object, DataOutput out) throws IOException {
+        if (object instanceof StandardZoneRules) {
+            writeInternal(SZR, object, out);
+        } else {
+            writeInternal(FZR, object, out);
+        }
+    }
+
+    private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
             case FZR:
@@ -102,19 +114,24 @@ final class Ser implements Externalizable {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         type = in.readByte();
+        object = readInternal(type, in);
+    }
+
+    static Object read(DataInput in) throws IOException, ClassNotFoundException {
+        byte type = in.readByte();
+        return readInternal(type, in);
+    }
+
+    private static Object readInternal(byte type, DataInput in) throws IOException, ClassNotFoundException {
         switch (type) {
             case FZR:
-                object = FixedZoneRules.readExternal(in);
-                break;
+                return FixedZoneRules.readExternal(in);
             case SZR:
-                object = StandardZoneRules.readExternal(in);
-                break;
+                return StandardZoneRules.readExternal(in);
             case ZOT:
-                object = ZoneOffsetTransition.readExternal(in);
-                break;
+                return ZoneOffsetTransition.readExternal(in);
             case ZOTRULE:
-                object = ZoneOffsetTransitionRule.readExternal(in);
-                break;
+                return ZoneOffsetTransitionRule.readExternal(in);
             default:
                 throw new StreamCorruptedException("Unknown serialized type");
         }
