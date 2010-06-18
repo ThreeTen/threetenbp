@@ -372,6 +372,33 @@ public class TestUTCInstant {
     }
 
     //-----------------------------------------------------------------------
+    // durationUntil()
+    //-----------------------------------------------------------------------
+    public void test_durationUntil_oneDayNoLeap() {
+        UTCInstant utc1 = UTCInstant.ofModifiedJulianDay(41681, 0);  // 1972-12-30
+        UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
+        Duration test = utc1.durationUntil(utc2);
+        assertEquals(test.getSeconds(), 86400);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void test_durationUntil_oneDayLeap() {
+        UTCInstant utc1 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
+        UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41683, 0);  // 1973-01-01
+        Duration test = utc1.durationUntil(utc2);
+        assertEquals(test.getSeconds(), 86401);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void test_durationUntil_oneDayLeapNegative() {
+        UTCInstant utc1 = UTCInstant.ofModifiedJulianDay(41683, 0);  // 1973-01-01
+        UTCInstant utc2 = UTCInstant.ofModifiedJulianDay(41682, 0);  // 1972-12-31
+        Duration test = utc1.durationUntil(utc2);
+        assertEquals(test.getSeconds(), -86401);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    //-----------------------------------------------------------------------
     // toTAIInstant()
     //-----------------------------------------------------------------------
     public void test_toTAIInstant() {

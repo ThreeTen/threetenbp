@@ -236,6 +236,24 @@ public final class TAIInstant
 
     //-----------------------------------------------------------------------
     /**
+     * Returns the duration between this instant and the specified instant.
+     * <p>
+     * This calculates the duration between this instant and another based on
+     * the TAI time-scale. Adding the duration to this instant using {@link #plus}
+     * will always result in an instant equal to the specified instant.
+     *
+     * @param taiInstant  the instant to calculate the duration until, not null
+     * @return the duration until the specified instant, may be negative, never null
+     * @throws ArithmeticException if the calculation exceeds the supported range
+     */
+    public Duration durationUntil(TAIInstant taiInstant) {
+        long durSecs = MathUtils.safeSubtract(taiInstant.seconds, seconds);
+        long durNanos = taiInstant.nanos - nanos;
+        return Duration.ofSeconds(durSecs, durNanos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this instant to a {@code UTCInstant} using the system default
      * leap second rules.
      * <p>

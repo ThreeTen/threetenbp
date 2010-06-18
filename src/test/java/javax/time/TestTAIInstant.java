@@ -595,6 +595,33 @@ public class TestTAIInstant {
     }
 
     //-----------------------------------------------------------------------
+    // durationUntil()
+    //-----------------------------------------------------------------------
+    public void test_durationUntil_fifteenSeconds() {
+        TAIInstant tai1 = TAIInstant.ofTAISeconds(10, 0);
+        TAIInstant tai2 = TAIInstant.ofTAISeconds(25, 0);
+        Duration test = tai1.durationUntil(tai2);
+        assertEquals(test.getSeconds(), 15);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void test_durationUntil_twoNanos() {
+        TAIInstant tai1 = TAIInstant.ofTAISeconds(4, 5);
+        TAIInstant tai2 = TAIInstant.ofTAISeconds(4, 7);
+        Duration test = tai1.durationUntil(tai2);
+        assertEquals(test.getSeconds(), 0);
+        assertEquals(test.getNanoOfSecond(), 2);
+    }
+
+    public void test_durationUntil_twoNanosNegative() {
+        TAIInstant tai1 = TAIInstant.ofTAISeconds(4, 9);
+        TAIInstant tai2 = TAIInstant.ofTAISeconds(4, 7);
+        Duration test = tai1.durationUntil(tai2);
+        assertEquals(test.getSeconds(), -1);
+        assertEquals(test.getNanoOfSecond(), 999999998);
+    }
+
+    //-----------------------------------------------------------------------
     // toUTCInstant()
     //-----------------------------------------------------------------------
     public void test_toUTCInstant() {
