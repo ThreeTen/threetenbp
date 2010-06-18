@@ -35,12 +35,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.OffsetDateTime;
@@ -74,7 +74,7 @@ public final class ZoneRulesGroup {
      * The zone IDs.
      * Should not be empty.
      */
-    private static final Set<String> IDS = new CopyOnWriteArraySet<String>();
+    private static final Map<String, Object> IDS = new ConcurrentHashMap<String, Object>(100, 0.75f, 2);
     /**
      * The zone rule groups.
      * Should not be empty.
@@ -184,7 +184,7 @@ public final class ZoneRulesGroup {
      * @return an unmodifiable set of parsable IDs, never null
      */
     public static Set<String> getParsableIDs() {
-        return Collections.unmodifiableSet(IDS);
+        return Collections.unmodifiableSet(IDS.keySet());
     }
 
     //-----------------------------------------------------------------------
@@ -219,9 +219,7 @@ public final class ZoneRulesGroup {
      * @throws CalendricalException if the group ID is invalid
      */
     private ZoneRulesGroup(String groupID) {
-        if (groupID == null) {
-            throw new NullPointerException("Group ID must not be null");
-        }
+        ZoneRules.checkNotNull(groupID, "Group ID must not be null");
         if (groupID.matches("[A-Za-z0-9._-]+") == false) {
             throw new CalendricalException("Group ID must only contain alphanumerics, dot, underscore and dash");
         }
@@ -274,11 +272,13 @@ public final class ZoneRulesGroup {
                 regions.get(split[0]).put(split[1], provider);
             }
         }
-        IDS.addAll(fullIDs);
+        for (String fullID : fullIDs) {
+            IDS.put(fullID, "");
+        }
     }
 
     /**
-     * Gets the region from the ID.
+     * Gets the versions and providers from the region.
      *
      * @param regionID  the time-zone region ID, not null
      * @return the region map, never null
@@ -583,7 +583,7 @@ public final class ZoneRulesGroup {
     /**
      * Returns a string representation of the group using the group ID.
      *
-     * @return the group ID, never null
+     * @return the string representation, never null
      */
     @Override
     public String toString() {
