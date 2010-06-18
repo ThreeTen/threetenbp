@@ -62,7 +62,7 @@ public interface ZoneRulesDataProvider {
     String getGroupID();
 
     /**
-     * Gets the complete set of provided time-zone IDs.
+     * Gets the complete set of provided time-zone IDs, excluding the group ID.
      * <p>
      * The returned IDs specify the region ID, optionally followed by the version ID.
      * If the provider supports versions, then versions must be included.
