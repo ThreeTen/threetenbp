@@ -57,13 +57,13 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestSystemLeapSecondRules {
+public class TestUTCRules {
 
-    SystemLeapSecondRules rules;
+    SystemUTCRules rules;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        Constructor<SystemLeapSecondRules> con = SystemLeapSecondRules.class.getDeclaredConstructor();
+        Constructor<SystemUTCRules> con = SystemUTCRules.class.getDeclaredConstructor();
         con.setAccessible(true);
         rules = con.newInstance();
     }
@@ -77,7 +77,7 @@ public class TestSystemLeapSecondRules {
     // serialize
     //-----------------------------------------------------------------------
     public void test_serialize() throws Exception {
-        SystemLeapSecondRules test = SystemLeapSecondRules.INSTANCE;  // use real rules, not our hacked copy
+        SystemUTCRules test = SystemUTCRules.INSTANCE;  // use real rules, not our hacked copy
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -486,7 +486,7 @@ public class TestSystemLeapSecondRules {
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(rules.toString(), "LeapSecondRules[System]");
+        assertEquals(rules.toString(), "UTCRules[System]");
     }
 
 }

@@ -49,7 +49,7 @@ import javax.time.calendar.LocalDate;
  * When a leap second occurs, an accurate clock will show the time {@code 23:59:60} just before midnight.
  * <p>
  * Leap-seconds are announced in advance, typically at least six months.
- * The {@link LeapSecondRules} class models which dates have leap-seconds.
+ * The {@link UTCRules} class models which dates have leap-seconds.
  * Alternative implementations of the rules may be supplied.
  * <p>
  * It is intended that most applications will use the {@code Instant} class
@@ -112,7 +112,7 @@ public final class UTCInstant
     /**
      * The leap second rules.
      */
-    private final LeapSecondRules rules;
+    private final UTCRules rules;
 
     //-----------------------------------------------------------------------
     /**
@@ -134,7 +134,7 @@ public final class UTCInstant
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
     public static UTCInstant ofModifiedJulianDay(long mjDay, long nanoOfDay) {
-        return ofModifiedJulianDay(mjDay, nanoOfDay, LeapSecondRules.system());
+        return ofModifiedJulianDay(mjDay, nanoOfDay, UTCRules.system());
     }
 
     /**
@@ -155,7 +155,7 @@ public final class UTCInstant
      * @return the UTC instant, never null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
-    public static UTCInstant ofModifiedJulianDay(long mjDay, long nanoOfDay, LeapSecondRules rules) {
+    public static UTCInstant ofModifiedJulianDay(long mjDay, long nanoOfDay, UTCRules rules) {
         Instant.checkNotNull(rules, "LeapSecondRules must not be null");
         long leapSecs = rules.getLeapSecondAdjustment(mjDay);
         long maxNanos = (SECS_PER_DAY + leapSecs) * NANOS_PER_SECOND;
@@ -178,7 +178,7 @@ public final class UTCInstant
      * @return the UTC instant, never null
      */
     public static UTCInstant of(Instant instant) {
-        return of(instant, LeapSecondRules.system());
+        return of(instant, UTCRules.system());
     }
 
     /**
@@ -194,7 +194,7 @@ public final class UTCInstant
      * @param rules  the leap second rules, not null
      * @return the UTC instant, never null
      */
-    public static UTCInstant of(Instant instant, LeapSecondRules rules) {
+    public static UTCInstant of(Instant instant, UTCRules rules) {
         return rules.convertToUTC(instant);
     }
 
@@ -210,7 +210,7 @@ public final class UTCInstant
      * @return the UTC instant, never null
      */
     public static UTCInstant of(TAIInstant taiInstant) {
-        return of(taiInstant, LeapSecondRules.system());
+        return of(taiInstant, UTCRules.system());
     }
 
     /**
@@ -225,7 +225,7 @@ public final class UTCInstant
      * @param rules  the leap second rules, not null
      * @return the UTC instant, never null
      */
-    public static UTCInstant of(TAIInstant taiInstant, LeapSecondRules rules) {
+    public static UTCInstant of(TAIInstant taiInstant, UTCRules rules) {
         return rules.convertToUTC(taiInstant);
     }
 
@@ -237,7 +237,7 @@ public final class UTCInstant
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
      * @param rules  the leap second rules, not null
      */
-    private UTCInstant(long myDay, long nanoOfDay, LeapSecondRules rules) {
+    private UTCInstant(long myDay, long nanoOfDay, UTCRules rules) {
         super();
         this.mjDay = myDay;
         this.nanos = nanoOfDay;
@@ -250,7 +250,7 @@ public final class UTCInstant
      *
      * @return the leap seconds rules
      */
-    public LeapSecondRules getRules() {
+    public UTCRules getRules() {
         return rules;
     }
 

@@ -47,18 +47,18 @@ import javax.time.calendar.LocalDate;
 import javax.time.scales.LeapSeconds;
 
 /**
- * System default leap second rules.
+ * System default UTC rules.
  * <p>
- * SystemLeapSecondRules is immutable and thread-safe.
+ * SystemUTCRules is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-final class SystemLeapSecondRules extends LeapSecondRules implements Serializable {
+final class SystemUTCRules extends UTCRules implements Serializable {
 
     /**
      * Singleton.
      */
-    static SystemLeapSecondRules INSTANCE = new SystemLeapSecondRules();
+    static SystemUTCRules INSTANCE = new SystemUTCRules();
     /**
      * Serialization version.
      */
@@ -104,7 +104,7 @@ final class SystemLeapSecondRules extends LeapSecondRules implements Serializabl
     /**
      * Restricted constructor.
      */
-    private SystemLeapSecondRules() {
+    private SystemUTCRules() {
     }
 
     /**
@@ -179,7 +179,7 @@ final class SystemLeapSecondRules extends LeapSecondRules implements Serializabl
 
     //-------------------------------------------------------------------------
     @Override
-    public TAIInstant convertToTAI(UTCInstant utcInstant) {
+    protected TAIInstant convertToTAI(UTCInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long nod = utcInstant.getNanoOfDay();
         long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
@@ -189,7 +189,7 @@ final class SystemLeapSecondRules extends LeapSecondRules implements Serializabl
     }
 
     @Override
-    public UTCInstant convertToUTC(TAIInstant taiInstant) {
+    protected UTCInstant convertToUTC(TAIInstant taiInstant) {
         Data data = dataRef.get();
         long[] mjds = data.dates;
         long[] tais = data.taiSeconds;

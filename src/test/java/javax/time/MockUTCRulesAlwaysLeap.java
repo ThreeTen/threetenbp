@@ -32,11 +32,11 @@
 package javax.time;
 
 /**
- * Mock LeapSecondRules that always returns a leap second.
+ * Mock rules that always returns a leap second.
  *
  * @author Stephen Colebourne
  */
-public class MockLeapSecondRulesAlwaysLeap extends LeapSecondRules {
+public class MockUTCRulesAlwaysLeap extends UTCRules {
 
     @Override
     public String getName() {

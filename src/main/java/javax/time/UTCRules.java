@@ -34,15 +34,15 @@ package javax.time;
 import java.util.ConcurrentModificationException;
 
 /**
- * Rules defining when leap seconds occur.
+ * Rules defining the UTC time-scale, notably when leap seconds occur.
  * <p>
- * This class defines the rules for when leap seconds occur.
+ * This class defines the UTC time-scale including when leap seconds occur.
  * Subclasses obtain the data from a suitable source, such as TZDB or GPS.
  * <p>
  * The static methods on this class provide access to the system leap second rules.
  * These are used by default.
  * <p>
- * LeapSecondRules is an abstract class and must be implemented with care
+ * UTCRules is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All implementations must be final, immutable and thread-safe.
  * It is only intended that the abstract methods are overridden.
@@ -50,7 +50,7 @@ import java.util.ConcurrentModificationException;
  *
  * @author Stephen Colebourne
  */
-public abstract class LeapSecondRules {
+public abstract class UTCRules {
 
     /**
      * Constant for the offset from MJD day 0 to 1970-01-01.
@@ -68,13 +68,13 @@ public abstract class LeapSecondRules {
     /**
      * Gets the system default leap second rules.
      * <p>
-     * The returned rules will remain up to date, in a thread-safe manner, as new
-     * leap seconds are added.
+     * The system default rules are serializable, immutable and thread-safe.
+     * They will remain up to date as new leap seconds are added.
      *
      * @return the system rules, never null
      */
-    public static LeapSecondRules system() {
-        return SystemLeapSecondRules.INSTANCE;
+    public static UTCRules system() {
+        return SystemUTCRules.INSTANCE;
     }
 
     /**
@@ -92,14 +92,14 @@ public abstract class LeapSecondRules {
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
     public static void registerSystemLeapSecond(long mjDay, int leapAdjustment) {
-        SystemLeapSecondRules.INSTANCE.registerLeapSecond(mjDay, leapAdjustment);
+        SystemUTCRules.INSTANCE.registerLeapSecond(mjDay, leapAdjustment);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Creates an instance of the rules.
      */
-    protected LeapSecondRules() {
+    protected UTCRules() {
     }
 
     //-----------------------------------------------------------------------
@@ -159,7 +159,7 @@ public abstract class LeapSecondRules {
      * @return the converted TAI instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    public abstract TAIInstant convertToTAI(UTCInstant utcInstant);
+    protected abstract TAIInstant convertToTAI(UTCInstant utcInstant);
 
     /**
      * Converts a {@code TAIInstant} to a {@code UTCInstant}.
@@ -171,7 +171,7 @@ public abstract class LeapSecondRules {
      * @return the converted UTC instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    public abstract UTCInstant convertToUTC(TAIInstant taiInstant);
+    protected abstract UTCInstant convertToUTC(TAIInstant taiInstant);
 
     //-----------------------------------------------------------------------
     /**
@@ -194,7 +194,7 @@ public abstract class LeapSecondRules {
      * @return the converted instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    public Instant convertToInstant(UTCInstant utcInstant) {
+    protected Instant convertToInstant(UTCInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
         long utcNanos = utcInstant.getNanoOfDay();
         long epochDay = MathUtils.safeSubtract(mjd, OFFSET_MJD_EPOCH);
@@ -229,7 +229,7 @@ public abstract class LeapSecondRules {
      * @return the converted UTC instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    public UTCInstant convertToUTC(Instant instant) {
+    protected UTCInstant convertToUTC(Instant instant) {
         long epochDay = MathUtils.floorDiv(instant.getEpochSeconds(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
         long slsNanos = MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
@@ -250,7 +250,7 @@ public abstract class LeapSecondRules {
      */
     @Override
     public String toString() {
-        return "LeapSecondRules[" + getName() + ']';
+        return "UTCRules[" + getName() + ']';
     }
 
 }

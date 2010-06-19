@@ -264,7 +264,7 @@ public final class TAIInstant
      * @return a {@code UTCInstant} representing the same instant using the system leap second rules, never null
      */
     public UTCInstant toUTCInstant() {
-        return UTCInstant.of(this, LeapSecondRules.system());
+        return UTCInstant.of(this, UTCRules.system());
     }
 
     /**
