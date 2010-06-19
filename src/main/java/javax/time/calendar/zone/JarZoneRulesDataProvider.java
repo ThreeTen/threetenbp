@@ -45,6 +45,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.time.calendar.ZoneOffset;
+
 /**
  * Loads time-zone rules stored in a file accessed via class loader.
  * <p>

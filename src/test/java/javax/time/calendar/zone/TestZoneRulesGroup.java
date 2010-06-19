@@ -133,31 +133,66 @@ public class TestZoneRulesGroup {
     public void test_registerProvider() {
         List<ZoneRulesGroup> pre = ZoneRulesGroup.getAvailableGroups();
         for (ZoneRulesGroup group : pre) {
-            assertEquals(group.getID().equals("TEMPMOCK"), false);
+            assertEquals(group.getID().equals("TEMPMOCK.-_"), false);
         }
         
         ZoneRulesGroup.registerProvider(new MockTempProvider());
         
         for (ZoneRulesGroup group : pre) {
-            assertEquals(group.getID().equals("TEMPMOCK"), false);
+            assertEquals(group.getID().equals("TEMPMOCK.-_"), false);
         }
         List<ZoneRulesGroup> post = ZoneRulesGroup.getAvailableGroups();
-        assertEquals(post.contains(ZoneRulesGroup.getGroup("TEMPMOCK")), true);
+        assertEquals(post.contains(ZoneRulesGroup.getGroup("TEMPMOCK.-_")), true);
         
-        assertEquals(ZoneRulesGroup.getGroup("TEMPMOCK").getID(), "TEMPMOCK");
-        assertEquals(ZoneRulesGroup.getGroup("TEMPMOCK").getRules("World", "").isFixedOffset(), true);
+        assertEquals(ZoneRulesGroup.getGroup("TEMPMOCK.-_").getID(), "TEMPMOCK.-_");
+        assertEquals(ZoneRulesGroup.getGroup("TEMPMOCK.-_").getRules("World%@~.-_", "1.-_").isFixedOffset(), true);
+    }
+
+    static class MockTempProvider implements ZoneRulesDataProvider {
+        public String getGroupID() {
+            return "TEMPMOCK.-_";
+        }
+        public Set<String> getIDs() {
+            return Collections.singleton("World%@~.-_#1.-_");
+        }
+        public ZoneRules getZoneRules(String regionID, String versionID) {
+            return ZoneRules.fixed(ZoneOffset.of("+01:45"));
+        }
     }
 
     //-----------------------------------------------------------------------
-    static class MockTempProvider implements ZoneRulesDataProvider {
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_registerProvider_invalidGroupID() {
+        ZoneRulesGroup.registerProvider(new MockTempProviderInvalidGroupID());
+    }
+
+    static class MockTempProviderInvalidGroupID implements ZoneRulesDataProvider {
+        public String getGroupID() {
+            return "TEMPMOCK%";
+        }
+        public Set<String> getIDs() {
+            return Collections.emptySet();
+        }
+        public ZoneRules getZoneRules(String regionID, String versionID) {
+            return null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_registerProvider_invalidRegionVersionID() {
+        ZoneRulesGroup.registerProvider(new MockTempProviderInvalidGroupID());
+    }
+
+    static class MockTempProviderInvalidRegionVersionID implements ZoneRulesDataProvider {
         public String getGroupID() {
             return "TEMPMOCK";
         }
         public Set<String> getIDs() {
-            return Collections.singleton("World");
+            return Collections.singleton("World!#1%");
         }
         public ZoneRules getZoneRules(String regionID, String versionID) {
-            return ZoneRules.fixed(ZoneOffset.of("+01:45"));
+            return null;
         }
     }
 

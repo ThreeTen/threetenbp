@@ -41,6 +41,8 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.OffsetDateTime;
@@ -70,6 +72,14 @@ import javax.time.calendar.OffsetDateTime;
  */
 public final class ZoneRulesGroup {
 
+    /**
+     * Group ID pattern.
+     */
+    private static final Pattern PATTERN_GROUP = Pattern.compile("[A-Za-z0-9._-]+");
+    /**
+     * Region#version ID pattern.
+     */
+    private static final Pattern PATTERN_REGION_VERSION = Pattern.compile("([A-Za-z0-9%@~/+._-]+)#([A-Za-z0-9._-]+)");
     /**
      * The zone IDs.
      * Should not be empty.
@@ -220,8 +230,8 @@ public final class ZoneRulesGroup {
      */
     private ZoneRulesGroup(String groupID) {
         ZoneRules.checkNotNull(groupID, "Group ID must not be null");
-        if (groupID.matches("[A-Za-z0-9._-]+") == false) {
-            throw new CalendricalException("Group ID must only contain alphanumerics, dot, underscore and dash");
+        if (PATTERN_GROUP.matcher(groupID).matches() == false) {
+            throw new CalendricalException("Invalid group ID '" + groupID + "', must match regex [A-Za-z0-9._-]+");
         }
         this.groupID = groupID;
     }
@@ -236,20 +246,15 @@ public final class ZoneRulesGroup {
         Set<String> fullIDs = new HashSet<String>(ids.size());
         Set<String[]> splits = new HashSet<String[]>(ids.size());
         for (String id : ids) {
-            int pos = id.indexOf('#');
-            String regionID = id;
-            String versionID = "";
-            if (pos >= 0) {
-                regionID = id.substring(0, pos);
-                versionID = id.substring(pos + 1);
+            Matcher matcher = PATTERN_REGION_VERSION.matcher(id);
+            if (matcher.matches() == false) {
+                throw new CalendricalException("Invalid region#version ID '" + id + "', region must " +
+                		"match regex [A-Za-z0-9%@~/+._-]+, version must match [A-Za-z0-9._-]+");
             }
+            String regionID = matcher.group(1);
+            String versionID = matcher.group(2);
             TreeMap<String, ZoneRulesDataProvider> versions = regions.get(regionID);
             if (versions != null) {
-                if (versionID.length() > 0 && versions.containsKey("")) {
-                    throw new CalendricalException("Cannot register versioned provider '" +
-                            groupID + ":" + regionID + "#" + versionID + "' as an unversioned provider '" +
-                            groupID + ":" + regionID + "' is already registered");
-                }
                 if (versions.containsKey(versionID)) {
                     throw new CalendricalException("Cannot register provider '" +
                             groupID + ":" + regionID + "#" + versionID + "' as one is already registered with that ID");

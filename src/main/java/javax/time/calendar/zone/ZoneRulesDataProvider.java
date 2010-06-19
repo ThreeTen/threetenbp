@@ -34,17 +34,23 @@ package javax.time.calendar.zone;
 import java.util.Set;
 
 /**
- * Provides access to a versioned set of time-zone rules.
+ * Provides access to a versioned set of time-zone rules from a single group.
  * <p>
  * Multiple providers of time-zone rules may be registered.
  * Each provider will supply one to many zone IDs.
  * No two providers may overlap in the set of zone IDs that they provide.
  * <p>
- * A typical approach is for each provider to supply all the data for a single version.
- * This approach removes the possibility of two providers supplying the same zone ID.
+ * The values returned by the provider must never change over time.
+ * A new provider must be returned to return new regions or versions.
+ * <p>
+ * Many systems would like to receive new time-zone rules dynamically.
+ * This must be implemented separately from this interface, typically using a listener.
+ * Whenever the listener detects new rules it should call
+ * {@link ZoneRulesGroup#registerProvider(ZoneRulesDataProvider)} using a standard
+ * immutable provider implementation.
  * <p>
  * ZoneRulesDataProvider is a service provider interface that can be called
- * by multiple threads.
+ * by multiple threads. Implementations must be immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -53,31 +59,36 @@ public interface ZoneRulesDataProvider {
     /**
      * Gets the time-zone group ID of the data available via this provider, such as 'TZDB'.
      * <p>
-     * Group IDs may consist of alphanumeric characters, the dot, underscore and dash.
+     * Group IDs must match regex {@code [A-Za-z0-9._-]+}.
      * Group IDs should use reverse domain name notation, like packages.
-     * Group IDs without a dot are reserved.
+     * Group IDs without a dot are reserved for use by the JSR-310 expert group.
      *
      * @return the ID of the group, never null
      */
     String getGroupID();
 
     /**
-     * Gets the complete set of provided time-zone IDs, excluding the group ID.
+     * Gets the complete set of provided region#version IDs.
      * <p>
      * The returned IDs specify the region ID, optionally followed by the version ID.
      * If the provider supports versions, then versions must be included.
      * <p>
      * For example, if this provider supports versions '1.1' and '1.2' of 'France'
      * then the IDs returned might be 'France#1.1' and 'France#1.2'.
+     * <p>
+     * Both region and version must be provided for each ID, separated by '#'.
+     * Region IDs must match regex {@code [A-Za-z0-9%@~/+._-]+}.
+     * Version IDs must match regex {@code [A-Za-z0-9._-]+}.
      *
-     * @return the provided IDs, unmodifiable, never null
+     * @return the provided region#version IDs, unmodifiable, never null
      */
     Set<String> getIDs();
 
     /**
-     * Gets the zone rules for the specified time-zone ID.
+     * Gets the zone rules for the specified region#version ID.
      * <p>
-     * The combined time-zone ID must be one of those returned by {@link #getIDs()}.
+     * The region#version ID must be one of those returned by {@link #getIDs()}.
+     * Floating versions (no version part) are not permitted as arguments.
      *
      * @param regionID  the time-zone region ID, not null
      * @param versionID  the time-zone version ID, not null
