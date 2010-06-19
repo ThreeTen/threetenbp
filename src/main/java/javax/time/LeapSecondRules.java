@@ -87,7 +87,7 @@ public abstract class LeapSecondRules {
      * Calling the method is thread-safe and its effects are visible in all threads.
      *
      * @param mjDay  the modified julian date that the leap second occurs at the end of
-     * @param leapAdjustment  the leap seconds to add/remove at the end of the day, from -1 to 2, not 0
+     * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
      * @throws IllegalArgumentException if the day is before the last known leap second
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
@@ -113,14 +113,15 @@ public abstract class LeapSecondRules {
     /**
      * Gets the leap second adjustment on the specified date.
      * <p>
-     * While this is normally zero (no leap second) or one (one extra second),
-     * it is within the UTC specification to support minus one and plus two.
-     * Callers should be prepared to receive any of these values.
+     * The UTC standard restricts the adjustment to a day to {@code -1} or {@code 1}.
      * <p>
      * Any leap seconds are added to, or removed from, the end of the specified date.
+     * <p>
+     * NOTE: If the UTC specification is altered to allow multiple leap seconds at once,
+     * then the result of this method would change.
      *
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
-     * @return the number of seconds added, or removed, from the date, from -1 to 2
+     * @return the number of seconds added, or removed, from the date, either -1 or 1
      */
     public abstract int getLeapSecondAdjustment(long mjDay);
 
@@ -179,10 +180,15 @@ public abstract class LeapSecondRules {
      * This method converts from the UTC time-scale to one with 86400 seconds per day
      * using the leap-second rules of the implementation.
      * <p>
-     * The standard implementation uses the UTC-SLS algorithm, amended to handle
-     * double leap seconds within the same 1000 second period.
-     * Overriding this algorithm is possible, however it will invalidate other parts
+     * The standard implementation uses the UTC-SLS algorithm.
+     * Overriding this algorithm is possible, however doing so will conflict other parts
      * of the specification.
+     * <p>
+     * The algorithm calculates the UTC-SLS nanos-of-day {@code US} from the UTC nanos-of day {@code U}.<br />
+     * Let {@code L = getLeapAdjustment(mjd)}.<br />
+     * Let {@code B = 86400 + L - 1000}.<br />
+     * Let {@code US = U - L * (U - B) / 1000}.<br />
+     * Where the algorithm is applied while {@code U >= B}.
      *
      * @param utcInstant  the UTC instant to convert, not null
      * @return the converted instant, not null
@@ -190,21 +196,16 @@ public abstract class LeapSecondRules {
      */
     public Instant convertToInstant(UTCInstant utcInstant) {
         long mjd = utcInstant.getModifiedJulianDay();
-        long nanos = utcInstant.getNanoOfDay();
+        long utcNanos = utcInstant.getNanoOfDay();
         long epochDay = MathUtils.safeSubtract(mjd, OFFSET_MJD_EPOCH);
-        long epcohSecs = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
-        long timeSecs = nanos / NANOS_PER_SECOND;
+        long epochSecs = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
         int leapAdj = getLeapSecondAdjustment(mjd);
-        if (leapAdj == 0 || timeSecs < SECS_PER_DAY - 1000) {
-            long nos = nanos % NANOS_PER_SECOND;
-            return Instant.ofEpochSeconds(epcohSecs + timeSecs, nos);
+        long startSlsNanos = (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND;
+        long slsNanos = utcNanos;
+        if (leapAdj != 0 && utcNanos >= startSlsNanos) {
+            slsNanos = utcNanos - leapAdj * (utcNanos - startSlsNanos) / 1000;  // apply UTC-SLS mapping
         }
-        double rate = (1000d - leapAdj)/1000d;
-        long slsNanos = nanos - (SECS_PER_DAY - 1000) * NANOS_PER_SECOND;
-        slsNanos = Math.round(slsNanos * rate);
-        long sod = SECS_PER_DAY - 1000 + slsNanos / NANOS_PER_SECOND;
-        long nos = slsNanos % NANOS_PER_SECOND;
-        return Instant.ofEpochSeconds(epcohSecs + sod, nos);
+        return Instant.ofEpochSeconds(epochSecs + slsNanos / NANOS_PER_SECOND, slsNanos % NANOS_PER_SECOND);
     }
 
     /**
@@ -213,10 +214,16 @@ public abstract class LeapSecondRules {
      * This method converts from an instant with 86400 seconds per day to the UTC
      * time-scale using the leap-second rules of the implementation.
      * <p>
-     * The standard implementation uses the UTC-SLS algorithm, amended to handle
-     * double leap seconds within the same 1000 second period.
-     * Overriding this algorithm is possible, however it will invalidate other parts
+     * The standard implementation uses the UTC-SLS algorithm.
+     * Overriding this algorithm is possible, however doing so will conflict other parts
      * of the specification.
+     * <p>
+     * The algorithm calculates the UTC nanos-of-day {@code U} from the UTC-SLS nanos-of day {@code US}.<br />
+     * Let {@code L = getLeapAdjustment(mjd)}.<br />
+     * Let {@code B = 86400 + L - 1000}.<br />
+     * Let {@code U = B + ((US - B) * 1000) / (1000 - L)}.<br />
+     * Where the algorithm is applied while {@code US >= B}.<br />
+     * (This algorithm has been tuned for integer arithmetic from the UTC-SLS specification.)
      *
      * @param instant  the instant to convert, not null
      * @return the converted UTC instant, not null
@@ -225,22 +232,14 @@ public abstract class LeapSecondRules {
     public UTCInstant convertToUTC(Instant instant) {
         long epochDay = MathUtils.floorDiv(instant.getEpochSeconds(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
-        long nod = MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
-        int leapAdj = LeapSecondRules.system().getLeapSecondAdjustment(mjd);
-        if (leapAdj == 0 || nod < (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND) {
-            return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
+        long slsNanos = MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
+        int leapAdj = getLeapSecondAdjustment(mjd);
+        long startSlsNanos = (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND;
+        long utcNanos = slsNanos;
+        if (leapAdj != 0 && slsNanos >= startSlsNanos) {
+            utcNanos = startSlsNanos + ((slsNanos - startSlsNanos) * 1000) / (1000 - leapAdj);  // apply UTC-SLS mapping
         }
-        switch (leapAdj) {
-            case -1:
-                return null;
-            case 0:
-                return UTCInstant.ofModifiedJulianDay(mjd, nod);
-            case 1:
-                return null;
-            case 2:
-                return null;
-        }
-        return null;  // TODO
+        return UTCInstant.ofModifiedJulianDay(mjd, utcNanos, this);
     }
 
     //-----------------------------------------------------------------------

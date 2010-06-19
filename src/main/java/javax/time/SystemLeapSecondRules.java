@@ -125,7 +125,7 @@ final class SystemLeapSecondRules extends LeapSecondRules implements Serializabl
      * Calling the method is thread-safe and its effects are visible in all threads.
      *
      * @param mjDay  the modified julian date that the leap second occurs at the end of
-     * @param leapAdjustment  the leap seconds to add/remove at the end of the day
+     * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
      * @throws IllegalArgumentException if the day is before the last known leap second
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
@@ -134,8 +134,8 @@ final class SystemLeapSecondRules extends LeapSecondRules implements Serializabl
         if (mjDay <= data.dates[data.dates.length - 1]) {
             throw new IllegalArgumentException("Date must be after the last configured leap second date");
         }
-        if (leapAdjustment != -1 && leapAdjustment != 1 && leapAdjustment != 2) {
-            throw new IllegalArgumentException("Leap adjustment must be -1, 1 or 2");
+        if (leapAdjustment != -1 && leapAdjustment != 1) {
+            throw new IllegalArgumentException("Leap adjustment must be -1 or 1");
         }
         long[] dates = Arrays.copyOf(data.dates, data.dates.length + 1);
         int[] offsets = Arrays.copyOf(data.offsets, data.offsets.length + 1);
@@ -245,8 +245,8 @@ final class SystemLeapSecondRules extends LeapSecondRules implements Serializabl
                 int offset = entry.getValue();
                 if (i > 0) {
                     int adjust = offset - offsets[i - 1];
-                    if (adjust < -1 || adjust > 2 || adjust == 0) {
-                        throw new CalendricalException("Leap adjustment must be from -1 to 2 inclusive and not 0");
+                    if (adjust < -1 || adjust > 1) {
+                        throw new CalendricalException("Leap adjustment must be -1 or 1");
                     }
                 }
                 dates[i] = changeMjd;
