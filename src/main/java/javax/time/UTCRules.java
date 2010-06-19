@@ -87,12 +87,19 @@ public abstract class UTCRules {
      * This method registers a new leap second with the system leap second rules.
      * Once registered, there is no way to deregister the leap second.
      * <p>
-     * All calculations will be affected immediately that the method is called.
-     * Calling the method is thread-safe and its effects are visible in all threads.
+     * Calling this method is thread-safe.
+     * Its effects are immediately visible in all threads.
+     * Where possible, only call this method from a single thread to avoid the possibility of
+     * a {@code ConcurrentModificationException}.
+     * <p>
+     * If the leap second being added matches a previous definition, then the method returns normally.
+     * If the date is before the last registered date and doesn't match, then an exception is thrown.
      *
      * @param mjDay  the modified julian date that the leap second occurs at the end of
      * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
-     * @throws IllegalArgumentException if the day is before the last known leap second
+     * @throws IllegalArgumentException if the leap adjustment is invalid
+     * @throws IllegalArgumentException if the day is before or equal the last known leap second day
+     *  and the definition does not match a previously registered leap
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
     public static void registerSystemLeapSecond(long mjDay, int leapAdjustment) {

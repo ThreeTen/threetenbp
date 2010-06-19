@@ -106,24 +106,27 @@ final class SystemUTCRules extends UTCRules implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Adds a new leap second to the system.
-     * <p>
-     * This method registers a new leap second with the system leap second rules.
-     * All calculations will be affected immediately that the method is called.
-     * Calling the method is thread-safe and its effects are visible in all threads.
+     * Adds a new leap second to these rules.
      *
      * @param mjDay  the modified julian date that the leap second occurs at the end of
      * @param leapAdjustment  the leap seconds to add/remove at the end of the day, either -1 or 1
-     * @throws IllegalArgumentException if the day is before the last known leap second
+     * @throws IllegalArgumentException if the leap adjustment is invalid
+     * @throws IllegalArgumentException if the day is before or equal the last known leap second day
+     *  and the definition does not match a previously registered leap
      * @throws ConcurrentModificationException if another thread updates the rules at the same time
      */
     void registerLeapSecond(long mjDay, int leapAdjustment) {
-        Data data = dataRef.get();
-        if (mjDay <= data.dates[data.dates.length - 1]) {
-            throw new IllegalArgumentException("Date must be after the last configured leap second date");
-        }
         if (leapAdjustment != -1 && leapAdjustment != 1) {
             throw new IllegalArgumentException("Leap adjustment must be -1 or 1");
+        }
+        Data data = dataRef.get();
+        int pos = Arrays.binarySearch(data.dates, mjDay);
+        int currentAdj = pos > 0 ? data.offsets[pos] - data.offsets[pos - 1] : 0;
+        if (currentAdj == leapAdjustment) {
+            return;  // matches previous definition
+        }
+        if (mjDay <= data.dates[data.dates.length - 1]) {
+            throw new IllegalArgumentException("Date must be after the last configured leap second date");
         }
         long[] dates = Arrays.copyOf(data.dates, data.dates.length + 1);
         int[] offsets = Arrays.copyOf(data.offsets, data.offsets.length + 1);

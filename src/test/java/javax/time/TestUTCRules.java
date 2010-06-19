@@ -448,19 +448,66 @@ public class TestUTCRules {
     //-----------------------------------------------------------------------
     // registerLeapSecond()
     //-----------------------------------------------------------------------
-    public void test_registerLeapSecond_justAfterLastDate() {
+    public void test_registerLeapSecond_justAfterLastDate_plusOne() {
         long[] dates = rules.getLeapSecondDates();
         long mjd = dates[dates.length - 1] + 1;
         rules.registerLeapSecond(mjd, 1);
         long[] test = rules.getLeapSecondDates();
         assertEquals(test.length, dates.length + 1);
         assertEquals(test[test.length - 1], mjd);
+        assertEquals(rules.getLeapSecondAdjustment(mjd), 1);
+    }
+
+    public void test_registerLeapSecond_justAfterLastDate_minusOne() {
+        long[] dates = rules.getLeapSecondDates();
+        long mjd = dates[dates.length - 1] + 1;
+        rules.registerLeapSecond(mjd, -1);
+        long[] test = rules.getLeapSecondDates();
+        assertEquals(test.length, dates.length + 1);
+        assertEquals(test[test.length - 1], mjd);
+        assertEquals(rules.getLeapSecondAdjustment(mjd), -1);
+    }
+
+    public void test_registerLeapSecond_equalLastDate_sameLeap() {
+        long[] dates = rules.getLeapSecondDates();
+        long mjd = dates[dates.length - 1];
+        int adj = rules.getLeapSecondAdjustment(mjd);
+        rules.registerLeapSecond(mjd, adj);
+        long[] test = rules.getLeapSecondDates();
+        assertEquals(Arrays.equals(test, dates), true);
+        assertEquals(rules.getLeapSecondAdjustment(mjd), adj);
+    }
+
+    public void test_registerLeapSecond_equalEarlierDate_sameLeap() {
+        long[] dates = rules.getLeapSecondDates();
+        long mjd = dates[dates.length - 2];
+        int adj = rules.getLeapSecondAdjustment(mjd);
+        rules.registerLeapSecond(mjd, adj);
+        long[] test = rules.getLeapSecondDates();
+        assertEquals(Arrays.equals(test, dates), true);
+        assertEquals(rules.getLeapSecondAdjustment(mjd), adj);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_registerLeapSecond_equalLastDate_differentLeap() {
+        long[] dates = rules.getLeapSecondDates();
+        long mjd = dates[dates.length - 1];
+        int adj = rules.getLeapSecondAdjustment(mjd);
+        rules.registerLeapSecond(mjd, -adj);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_registerLeapSecond_equalEarlierDate_differentLeap() {
+        long[] dates = rules.getLeapSecondDates();
+        long mjd = dates[dates.length - 2];
+        int adj = rules.getLeapSecondAdjustment(mjd);
+        rules.registerLeapSecond(mjd, -adj);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_registerLeapSecond_beforeLastDate() {
         long[] dates = rules.getLeapSecondDates();
-        long mjd = dates[dates.length - 1];
+        long mjd = dates[dates.length - 1] - 1;
         rules.registerLeapSecond(mjd, 1);
     }
 
