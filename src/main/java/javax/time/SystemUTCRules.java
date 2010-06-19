@@ -63,18 +63,6 @@ final class SystemUTCRules extends UTCRules implements Serializable {
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
-    /**
-     * Constant for the offset from MJD day 0 to TAI day 0.
-     */
-    private static final int OFFSET_MJD_TAI = 36204;
-    /**
-     * Constant for seconds per day.
-     */
-    private static final int SECS_PER_DAY = 24 * 60 * 60;
-    /**
-     * Constant for nanos per second.
-     */
-    private static final long NANOS_PER_SECOND = 1000000000;
 
     /**
      * The table of leap second dates.
@@ -178,16 +166,6 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     }
 
     //-------------------------------------------------------------------------
-    @Override
-    protected TAIInstant convertToTAI(UTCInstant utcInstant) {
-        long mjd = utcInstant.getModifiedJulianDay();
-        long nod = utcInstant.getNanoOfDay();
-        long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
-        long taiSecs = MathUtils.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
-        int nos = (int) (nod % NANOS_PER_SECOND);
-        return TAIInstant.ofTAISeconds(taiSecs, nos);
-    }
-
     @Override
     protected UTCInstant convertToUTC(TAIInstant taiInstant) {
         Data data = dataRef.get();

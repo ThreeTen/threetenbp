@@ -53,17 +53,21 @@ import java.util.ConcurrentModificationException;
 public abstract class UTCRules {
 
     /**
-     * Constant for the offset from MJD day 0 to 1970-01-01.
+     * Constant for the offset from MJD day 0 to the Java Epoch - 1970-01-01.
      */
-    private static final int OFFSET_MJD_EPOCH = 40587;
+    protected static final int OFFSET_MJD_EPOCH = 40587;
     /**
-     * Constant for seconds per day.
+     * Constant for the offset from MJD day 0 to TAI day 0 - 1958-01-01.
      */
-    private static final long SECS_PER_DAY = 24 * 60 * 60;
+    protected static final int OFFSET_MJD_TAI = 36204;
     /**
-     * Constant for nanos per second.
+     * Constant for number of seconds per standard day - 86,400.
      */
-    private static final long NANOS_PER_SECOND = 1000000000;
+    protected static final long SECS_PER_DAY = 24 * 60 * 60;
+    /**
+     * Constant for nanos per standard second - 1,000,000,000.
+     */
+    protected static final long NANOS_PER_SECOND = 1000000000;
 
     /**
      * Gets the system default leap second rules.
@@ -154,12 +158,21 @@ public abstract class UTCRules {
      * <p>
      * This method converts from the UTC to the TAI time-scale using the
      * leap-second rules of the implementation.
+     * <p>
+     * The standard implementation uses {@code getTAIOffset}.
      *
      * @param utcInstant  the UTC instant to convert, not null
      * @return the converted TAI instant, not null
      * @throws ArithmeticException if the capacity is exceeded
      */
-    protected abstract TAIInstant convertToTAI(UTCInstant utcInstant);
+    protected TAIInstant convertToTAI(UTCInstant utcInstant) {
+        long mjd = utcInstant.getModifiedJulianDay();
+        long nod = utcInstant.getNanoOfDay();
+        long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
+        long taiSecs = MathUtils.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
+        int nos = (int) (nod % NANOS_PER_SECOND);
+        return TAIInstant.ofTAISeconds(taiSecs, nos);
+    }
 
     /**
      * Converts a {@code TAIInstant} to a {@code UTCInstant}.

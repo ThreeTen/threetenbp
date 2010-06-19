@@ -423,9 +423,6 @@ public class TestUTCRules {
             Instant instant = odt.toInstant();
             UTCInstant utc = UTCInstant.ofModifiedJulianDay(MJD_1980 - 1, utcNanos, rules);
             assertEquals(rules.convertToInstant(utc), instant);
-            
-            System.out.println(instant + " " + rules.convertToUTC(instant) + " "+ utc);
-            
             // not all instants can map back to the correct UTC value
             long reverseUtcNanos = startSls + ((slsNanos - startSls) * 1000L) / (1000L - 1);
             assertEquals(rules.convertToUTC(instant), UTCInstant.ofModifiedJulianDay(MJD_1980 - 1, reverseUtcNanos, rules));
