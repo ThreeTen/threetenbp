@@ -45,7 +45,6 @@ import java.util.ConcurrentModificationException;
  * UTCRules is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All implementations must be final, immutable and thread-safe.
- * It is only intended that the abstract methods are overridden.
  * Subclasses should be Serializable wherever possible.
  *
  * @author Stephen Colebourne
