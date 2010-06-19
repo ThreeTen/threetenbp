@@ -547,4 +547,10 @@ public class TestUTCInstant {
         assertEquals(UTCInstant.ofModifiedJulianDay(40621, 60L * 60L * 1000000000L).toString(), "1970-02-04T01:00:00.000000000(UTC)");
     }
 
+    public void test_toString_leap() {
+        assertEquals(UTCInstant.ofModifiedJulianDay(41682, 24L * 60L * 60L * 1000000000L - 1000000000L).toString(), "1972-12-31T23:59:59.000000000(UTC)");
+        assertEquals(UTCInstant.ofModifiedJulianDay(41682, 24L * 60L * 60L * 1000000000L).toString(), "1972-12-31T23:59:60.000000000(UTC)");
+        assertEquals(UTCInstant.ofModifiedJulianDay(41683, 0).toString(), "1973-01-01T00:00:00.000000000(UTC)");
+    }
+
 }

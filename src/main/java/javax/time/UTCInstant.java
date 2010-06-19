@@ -461,6 +461,7 @@ public final class UTCInstant
         int secondValue = sod % 60;
         if (hourValue == 24) {
             hourValue = 23;
+            minuteValue = 59;
             secondValue += 60;
         }
         int nanoValue = (int) (nanos % NANOS_PER_SECOND);
