@@ -280,62 +280,6 @@ public final class TZDBZoneRulesCompiler {
         outputFile(dstFile, loopAllBuiltZones, loopAllRegionIds, loopAllRules);
     }
 
-    /**
-     * Outputs the file.
-     */
-    private static void outputFile(
-            File dstFile, Map<String, Map<String, ZoneRules>> allBuiltZones,
-            Set<String> allRegionIds, Set<ZoneRules> allRules) {
-        // this format is not part of the jsr-310 specification
-        try {
-            JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
-            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
-            
-            ObjectOutputStream out = new ObjectOutputStream(jos);
-            // group
-            out.writeUTF("TZDB");
-            // all versions and regions
-            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
-            out.writeShort(versionArray.length);
-            for (String version : versionArray) {
-                out.writeUTF(version);
-            }
-            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
-            out.writeShort(regionArray.length);
-            for (String regionId : regionArray) {
-                out.writeUTF(regionId);
-            }
-            // link version-region-rules
-            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
-            for (String version : allBuiltZones.keySet()) {
-                out.writeShort(allBuiltZones.get(version).size());
-                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
-                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
-                     int rulesIndex = rulesList.indexOf(entry.getValue());
-                     out.writeShort(regionIndex);
-                     out.writeInt(rulesIndex);
-                }
-            }
-            jos.closeEntry();
-            
-            // rules
-            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules2.dat"));
-            out.writeUTF("TZDB-RULES");
-            out.writeInt(rulesList.size());
-            for (ZoneRules rules : rulesList) {
-                Ser.write(rules, out);
-            }
-            out.writeObject(null);
-            jos.closeEntry();
-            
-            out.close();
-        } catch (Exception ex) {
-            System.out.println("Failed: " + ex.toString());
-            ex.printStackTrace();
-            System.exit(1);
-        }
-    }
-
 //    /**
 //     * Outputs the file.
 //     */
@@ -372,14 +316,18 @@ public final class TZDBZoneRulesCompiler {
 //                     out.writeInt(rulesIndex);
 //                }
 //            }
+//            jos.closeEntry();
+//            
 //            // rules
+//            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules2.dat"));
+//            out.writeUTF("TZDB-RULES");
 //            out.writeInt(rulesList.size());
 //            for (ZoneRules rules : rulesList) {
 //                Ser.write(rules, out);
 //            }
 //            out.writeObject(null);
-//            
 //            jos.closeEntry();
+//            
 //            out.close();
 //        } catch (Exception ex) {
 //            System.out.println("Failed: " + ex.toString());
@@ -387,6 +335,67 @@ public final class TZDBZoneRulesCompiler {
 //            System.exit(1);
 //        }
 //    }
+
+    /**
+     * Outputs the file.
+     */
+    private static void outputFile(
+            File dstFile, Map<String, Map<String, ZoneRules>> allBuiltZones,
+            Set<String> allRegionIds, Set<ZoneRules> allRules) {
+        // this format is not part of the jsr-310 specification
+        try {
+            JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
+            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
+            
+            ObjectOutputStream out = new ObjectOutputStream(jos);
+            // group
+            out.writeUTF("TZDB");
+            Map<String, ZoneRules> output = new HashMap<String, ZoneRules>();
+            for (String version : allBuiltZones.keySet()) {
+                for (String region : allBuiltZones.get(version).keySet()) {
+                    ZoneRules rules = allBuiltZones.get(version).get(region);
+                    output.put(region + '#' + version, rules);
+                }
+            }
+            out.writeObject(output);
+            
+//            // all versions and regions
+//            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
+//            out.writeShort(versionArray.length);
+//            for (String version : versionArray) {
+//                out.writeUTF(version);
+//            }
+//            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
+//            out.writeShort(regionArray.length);
+//            for (String regionId : regionArray) {
+//                out.writeUTF(regionId);
+//            }
+//            // link version-region-rules
+//            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
+//            for (String version : allBuiltZones.keySet()) {
+//                out.writeShort(allBuiltZones.get(version).size());
+//                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
+//                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
+//                     int rulesIndex = rulesList.indexOf(entry.getValue());
+//                     out.writeShort(regionIndex);
+//                     out.writeInt(rulesIndex);
+//                }
+//            }
+//            // rules
+//            out.writeInt(rulesList.size());
+//            for (ZoneRules rules : rulesList) {
+//                Ser.write(rules, out);
+//            }
+//            out.writeObject(null);
+            
+            jos.closeEntry();
+            out.close();
+        } catch (Exception ex) {
+            System.out.println("Failed: " + ex.toString());
+            ex.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     //-----------------------------------------------------------------------
     /** The TZDB rules. */

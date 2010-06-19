@@ -112,38 +112,44 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
             in = url.openStream();
             ObjectInputStream ois = new ObjectInputStream(in);
             String groupID = ois.readUTF();
-            int versionCount = ois.readShort();
-            String[] versionArray = new String[versionCount];
-            for (int i = 0; i < versionCount; i++) {
-                versionArray[i] = ois.readUTF();
-            }
-            int regionCount = ois.readShort();
-            String[] regionArray = new String[regionCount];
-            for (int i = 0; i < regionCount; i++) {
-                regionArray[i] = ois.readUTF();
-            }
-            Map<String, Integer> ruleIndexMap = new HashMap<String, Integer>();
-            for (int i = 0; i < versionCount; i++) {
-                int versionRegionCount = ois.readShort();
-                for (int j = 0; j < versionRegionCount; j++) {
-                    int regionIndex = ois.readShort();
-                    int rulesIndex = ois.readInt();
-                    String id = regionArray[regionIndex] + '#' + versionArray[i];
-                    ruleIndexMap.put(id, rulesIndex);
-                }
-            }
-            int ruleCount = ois.readInt();
-            ZoneRules[] ruleArray = new ZoneRules[ruleCount];
-            for (int i = 0; i < ruleCount; i++) {
-                ruleArray[i] = (ZoneRules) Ser.read(ois);
-            }
-            Map<String, ZoneRules> ruleMap = new HashMap<String, ZoneRules>();
-            for (Entry<String, Integer> entry : ruleIndexMap.entrySet()) {
-                ruleMap.put(entry.getKey(), ruleArray[entry.getValue()]);
-            }
+            Map<String, ZoneRules> ruleMap = (Map<String, ZoneRules>) ois.readObject();
+            
+//            int versionCount = ois.readShort();
+//            String[] versionArray = new String[versionCount];
+//            for (int i = 0; i < versionCount; i++) {
+//                versionArray[i] = ois.readUTF();
+//            }
+//            int regionCount = ois.readShort();
+//            String[] regionArray = new String[regionCount];
+//            for (int i = 0; i < regionCount; i++) {
+//                regionArray[i] = ois.readUTF();
+//            }
+//            Map<String, Integer> ruleIndexMap = new HashMap<String, Integer>();
+//            for (int i = 0; i < versionCount; i++) {
+//                int versionRegionCount = ois.readShort();
+//                for (int j = 0; j < versionRegionCount; j++) {
+//                    int regionIndex = ois.readShort();
+//                    int rulesIndex = ois.readInt();
+//                    String id = regionArray[regionIndex] + '#' + versionArray[i];
+//                    ruleIndexMap.put(id, rulesIndex);
+//                }
+//            }
+//            int ruleCount = ois.readInt();
+//            ZoneRules[] ruleArray = new ZoneRules[ruleCount];
+//            for (int i = 0; i < ruleCount; i++) {
+//                ruleArray[i] = (ZoneRules) Ser.read(ois);
+//            }
+//            Map<String, ZoneRules> ruleMap = new HashMap<String, ZoneRules>();
+//            for (Entry<String, Integer> entry : ruleIndexMap.entrySet()) {
+//                ruleMap.put(entry.getKey(), ruleArray[entry.getValue()]);
+//            }
             
             providers.add(new JarZoneRulesDataProvider(groupID, ruleMap));
-            
+//            96717311574016  8
+//            550731776  5
+//            2147483648
+//            303305489096114176  10
+//            9223372036854775808
         } catch (IOException ex) {
             throwing = true;
             throw ex;
