@@ -44,7 +44,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.time.calendar.LocalDate;
-import javax.time.scales.LeapSeconds;
 
 /**
  * System default UTC rules.
@@ -194,7 +193,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
      * @return an array of two arrays - leap seconds dates and amounts
      */
     private static Data loadLeapSeconds() {
-        InputStream in = LeapSeconds.class.getResourceAsStream("/javax/time/LeapSeconds.txt");
+        InputStream in = SystemUTCRules.class.getResourceAsStream("/javax/time/LeapSeconds.txt");
         if (in == null) {
             throw new CalendricalException("LeapSeconds.txt resource missing");
         }
