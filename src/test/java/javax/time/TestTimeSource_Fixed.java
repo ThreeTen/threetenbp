@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -74,6 +74,18 @@ public class TestTimeSource_Fixed {
     public void test_fixed_instant() {
         TimeSource fixed = TimeSource.fixed(INSTANT);
         assertEquals(fixed.instant(), INSTANT);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_fixed_utcInstant() {
+        TimeSource fixed = TimeSource.fixed(INSTANT);
+        assertEquals(fixed.utcInstant(), UTCInstant.of(INSTANT));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_fixed_taiInstant() {
+        TimeSource fixed = TimeSource.fixed(INSTANT);
+        assertEquals(fixed.taiInstant(), TAIInstant.of(INSTANT));
     }
 
     //-----------------------------------------------------------------------

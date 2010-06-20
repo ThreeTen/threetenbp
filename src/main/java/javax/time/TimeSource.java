@@ -74,6 +74,18 @@ import java.io.Serializable;
  *   assert ...
  * }
  * </pre>
+ * 
+ * <h4>Accuracy</h4>
+ * The main method used by applications is {@link #instant()}.
+ * This returns the best value available for the current instant ignoring leap-seconds.
+ * To achieve this, the instant may not be fully accurate around a leap-second.
+ * <p>
+ * Two alternative methods are available and may return a more accurate instant depending
+ * on the implementation. The instant in UTC, taking into account leap seconds, can be
+ * obtained using {@link #utcInstant()}. The instant in TAI, which is a simple incrementing number
+ * ignoring all human time concepts, can be obtained using {@link #taiInstant()}.
+ * See the relevant classes for more detail.
+ * <p>
  * <p>
  * TimeSource is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
@@ -167,8 +179,49 @@ public abstract class TimeSource {
      */
     public abstract Instant instant();
 
+    /**
+     * Gets the current {@code UTCInstant} from this {@code TimeSource}.
+     * <p>
+     * The UTC time-scale differs from that used by {@code Instant} because it includes
+     * leap-seconds. An accurate implementation of this abstract class will return a
+     * UTC value that includes leap-second information.
+     * <p>
+     * The default implementation of this method converts the value from {@code instant()}
+     * and thus is no more accurate than that method.
+     * <p>
+     * Normally, this method will not throw an exception.
+     * However, one possible implementation would be to obtain the time from a
+     * central time server across the network. Obviously, in this case the lookup
+     * could fail, and so the method is permitted to throw an exception.
+     *
+     * @return the current {@code UTCInstant} from this time-source, never null
+     * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
+     */
+    public UTCInstant utcInstant() {
+        return UTCInstant.of(instant());
+    }
+
+    /**
+     * Gets the current {@code TAIInstant} from this {@code TimeSource}.
+     * <p>
+     * The TAI time-scale is a simple incrementing number of seconds from the TAI epoch of 1958-01-01(TAI).
+     * It ignores all human concepts of time such as days.
+     * An accurate implementation of this abstract class will return a TAI value in
+     * accordance with international standards.
+     * <p>
+     * The default implementation of this method converts the value from {@code instant()}
+     * and thus is no more accurate than that method.
+     * <p>
+     * Normally, this method will not throw an exception.
+     * However, one possible implementation would be to obtain the time from a
+     * central time server across the network. Obviously, in this case the lookup
+     * could fail, and so the method is permitted to throw an exception.
+     */
+    public TAIInstant taiInstant() {
+        return TAIInstant.of(instant());
+    }
+
     // TODO: implement InstantProvider?
-    // TODO: add timeScaleInstant overridable method
     // TODO: add long millis method?
     // TODO: add caching of instants ("get to second precision")
     // TODO: define equals/hashCode
