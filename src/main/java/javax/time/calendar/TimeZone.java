@@ -316,10 +316,13 @@ public abstract class TimeZone implements Calendrical, Serializable {
         if (hashPos >= 0) {
             versionID = zoneID.substring(hashPos + 1);
             zoneID = zoneID.substring(0, hashPos);
-        }
-        if (group.isValidRules(zoneID, versionID) == false) {
-            throw new CalendricalException("Unknown time-zone version: " + group.getID() + ":" +
-                    zoneID + (versionID.length() == 0 ? "" : "#" + versionID));
+            if (group.isValidRules(zoneID, versionID) == false) {
+                throw new CalendricalException("Unknown time-zone region or version: " + group.getID() + ":" + zoneID + '#' + versionID);
+            }
+        } else {
+            if (group.isValidRegionID(zoneID) == false) {
+                throw new CalendricalException("Unknown time-zone region: " + group.getID() + ":" + zoneID);
+            }
         }
         return new ID(group.getID(), zoneID, versionID);
     }
@@ -844,8 +847,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
         public TimeZone withVersion(String versionID) {
             ISOChronology.checkNotNull(versionID, "Version ID must not be null");
             if (getGroup().isValidRules(regionID, versionID) == false) {
-                throw new CalendricalException("Unknown version: " + groupID + ":" +
-                        regionID + (versionID.length() == 0 ? "" : '#' + versionID));
+                throw new CalendricalException("Unknown version: " + groupID + ":" + regionID + '#' + versionID);
             }
             if (versionID.equals(this.versionID)) {
                 return this;
