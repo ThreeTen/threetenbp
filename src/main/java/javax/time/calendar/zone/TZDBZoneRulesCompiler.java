@@ -145,7 +145,7 @@ public final class TZDBZoneRulesCompiler {
             System.out.println("Source directory must be specified using -srcdir: " + baseSrcDir);
             return;
         }
-        if (baseSrcDir == null || baseSrcDir.isDirectory() == false) {
+        if (baseSrcDir.isDirectory() == false) {
             System.out.println("Source does not exist or is not a directory: " + baseSrcDir);
             return;
         }
