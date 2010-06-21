@@ -321,38 +321,6 @@ public final class ZoneRulesGroup {
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Checks if the region#version ID combination is valid and that the rules
-//     * are valid for the specified date-time.
-//     * <p>
-//     * This method returns true if it is possible to obtain a set of rules for
-//     * the specified region and version that are valid for the date-time.
-//     * This checks both the region and version IDs for validity.
-//     * The floating version (an empty version ID) will search for any version of
-//     * the region rules that are valid for the date-time.
-//     * <p>
-//     * Any loaded rules remain available for the lifetime of the application as there is no
-//     * way to deregister time-zone information thus a {@code true} return value will remain true.
-//     * More information may be added during the lifetime of the application which may cause the
-//     * return value to change from {@code false} to {@code true}. 
-//     *
-//     * @param regionID  the time-zone region ID, null returns false
-//     * @param versionID  the time-zone version ID, empty means floating version, null returns false
-//     * @param dateTime  the date-time that must be valid, null returns false
-//     * @return true if the version ID is valid
-//     */
-//    public boolean isValidRulesFor(String regionID, String versionID, OffsetDateTime dateTime) {
-//        if (regionID == null || versionID == null || dateTime == null) {
-//            return false;
-//        }
-//        try {
-//            getRulesValidFor(regionID, versionID, dateTime);
-//            return true;
-//        } catch (CalendricalException ex) {
-//            return false;
-//        }
-//    }
-
     /**
      * Gets the rules for the specified region and version ensuring that the rules
      * are valid for the date-time.
@@ -441,7 +409,24 @@ public final class ZoneRulesGroup {
     /**
      * Gets the latest available version of the group's data.
      * <p>
-     * The latest available group is determined by a {@code String} based sort
+     * The latest available version is determined by a {@code String} based sort
+     * of the versions.
+     * <p>
+     * The returned version will remain available for the lifetime of the application as
+     * there is no way to deregister time-zone information. More information may be added during
+     * the lifetime of the application, causing a later version to be available.
+     *
+     * @return the latest version ID for the group, never null
+     * @throws CalendricalException if the region ID is not found
+     */
+    public String getLatestVersionID() {
+        return versions.firstKey();  // TODO: test, use as cache in TimeZone???
+    }
+
+    /**
+     * Gets the latest available version of the group's data for a region.
+     * <p>
+     * The latest available version is determined by a {@code String} based sort
      * of the versions.
      * <p>
      * The returned version will remain available for the lifetime of the application as

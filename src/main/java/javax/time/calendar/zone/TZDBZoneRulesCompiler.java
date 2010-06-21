@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -219,7 +220,7 @@ public final class TZDBZoneRulesCompiler {
     private static void process(List<File> srcDirs, List<String> srcFileNames, File dstDir, boolean verbose) {
         // build actual jar files
         Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
-        Map<String, Map<String, ZoneRules>> allBuiltZones = new TreeMap<String, Map<String, ZoneRules>>();
+        Map<String, SortedMap<String, ZoneRules>> allBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
         Set<String> allRegionIds = new TreeSet<String>();
         Set<ZoneRules> allRules = new HashSet<ZoneRules>();
         for (File srcDir : srcDirs) {
@@ -241,7 +242,7 @@ public final class TZDBZoneRulesCompiler {
             compiler.setDeduplicateMap(deduplicateMap);
             try {
                 // compile
-                Map<String, ZoneRules> builtZones = compiler.compile();
+                SortedMap<String, ZoneRules> builtZones = compiler.compile();
                 
                 // output version-specific file
                 File dstFile = new File(dstDir, "jsr-310-TZDB-" + loopVersion + ".jar");
@@ -273,8 +274,8 @@ public final class TZDBZoneRulesCompiler {
     /**
      * Outputs the file.
      */
-    private static void outputFile(File dstFile, String version, Map<String, ZoneRules> builtZones) {
-        Map<String, Map<String, ZoneRules>> loopAllBuiltZones = new TreeMap<String, Map<String, ZoneRules>>();
+    private static void outputFile(File dstFile, String version, SortedMap<String, ZoneRules> builtZones) {
+        Map<String, SortedMap<String, ZoneRules>> loopAllBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
         loopAllBuiltZones.put(version, builtZones);
         Set<String> loopAllRegionIds = new TreeSet<String>(builtZones.keySet());
         Set<ZoneRules> loopAllRules = new HashSet<ZoneRules>(builtZones.values());
@@ -285,7 +286,7 @@ public final class TZDBZoneRulesCompiler {
      * Outputs the file.
      */
     private static void outputFile(
-            File dstFile, Map<String, Map<String, ZoneRules>> allBuiltZones,
+            File dstFile, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
             Set<String> allRegionIds, Set<ZoneRules> allRules) {
         // this format is not part of the jsr-310 specification
         try {
@@ -293,29 +294,21 @@ public final class TZDBZoneRulesCompiler {
             jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
             DataOutputStream out = new DataOutputStream(jos);
             
-            // create header
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 32);
-            DataOutputStream headerOut = new DataOutputStream(baos);
+            // file version
+            out.writeByte(1);
             // group
-            headerOut.writeUTF("TZDB");
+            out.writeUTF("TZDB");
             // all versions and regions
             String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
-            headerOut.writeShort(versionArray.length);
+            out.writeShort(versionArray.length);
             for (String version : versionArray) {
-                headerOut.writeUTF(version);
+                out.writeUTF(version);
             }
             String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
-            headerOut.writeShort(regionArray.length);
+            out.writeShort(regionArray.length);
             for (String regionId : regionArray) {
-                headerOut.writeUTF(regionId);
+                out.writeUTF(regionId);
             }
-            headerOut.close();
-            byte[] headerBytes = baos.toByteArray();
-            
-            // header length
-            out.writeInt(headerBytes.length);
-            // header
-            out.write(headerBytes);
             // link version-region-rules
             List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
             for (String version : allBuiltZones.keySet()) {
@@ -329,8 +322,15 @@ public final class TZDBZoneRulesCompiler {
             }
             // rules
             out.writeShort(rulesList.size());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
             for (ZoneRules rules : rulesList) {
-                Ser.write(rules, out);
+                baos.reset();
+                DataOutputStream dataos = new DataOutputStream(baos);
+                Ser.write(rules, dataos);
+                dataos.close();
+                byte[] bytes = baos.toByteArray();
+                out.writeShort(bytes.length);
+                out.write(bytes);
             }
             
             jos.closeEntry();
@@ -350,7 +350,7 @@ public final class TZDBZoneRulesCompiler {
     /** The TZDB links. */
     private final Map<String, String> links = new HashMap<String, String>();
     /** The built zones. */
-    private final Map<String, ZoneRules> builtZones = new HashMap<String, ZoneRules>();
+    private final SortedMap<String, ZoneRules> builtZones = new TreeMap<String, ZoneRules>();
     /** A map to deduplicate object instances. */
     private Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
 
@@ -379,7 +379,7 @@ public final class TZDBZoneRulesCompiler {
      * @return the map of region ID to rules, not null
      * @throws Exception if an error occurs
      */
-    public Map<String, ZoneRules> compile() throws Exception {
+    public SortedMap<String, ZoneRules> compile() throws Exception {
         printVerbose("Compiling TZDB version " + version);
         parseFiles();
         buildZoneRules();

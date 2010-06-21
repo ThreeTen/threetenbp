@@ -31,18 +31,22 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StreamCorruptedException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReferenceArray;
+
+import javax.time.CalendricalException;
 
 /**
  * Loads time-zone rules stored in a file accessed via class loader.
@@ -61,6 +65,14 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * All the versions in the provider.
      */
     private final Set<ZoneRulesVersion> versions;
+    /**
+     * All the regions in the provider.
+     */
+    private final Set<String> regions;
+    /**
+     * The rules.
+     */
+    private final AtomicReferenceArray<Object> rules;
 
     /**
      * Loads any time-zone rules data stored in files.
@@ -110,7 +122,9 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
         try {
             in = url.openStream();
             DataInputStream dis = new DataInputStream(in);
-            dis.readInt();  // length of header (ignore for now)
+            if (dis.readByte() != 1) {
+                throw new StreamCorruptedException("File format not recognised");
+            }
             this.groupID = dis.readUTF();
             int versionCount = dis.readShort();
             String[] versionArray = new String[versionCount];
@@ -122,33 +136,28 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
             for (int i = 0; i < regionCount; i++) {
                 regionArray[i] = dis.readUTF();
             }
+            this.regions = new HashSet<String>(Arrays.asList(regionArray));
             // link version-region-rules
-            Object[] versionRuleTable = new Object[versionCount];
-            for (int i = 0; i < versionCount; i++) {
-                int versionRegionCount = dis.readShort();
-                short[] regionTable = new short[versionRegionCount * 2];
-                versionRuleTable[i] = regionTable;
-                for (int j = 0; j < versionRegionCount; j++) {
-                    regionTable[j * 2] = dis.readShort();
-                    regionTable[j * 2 + 1] = dis.readShort();
-                }
-            }
-            // rules
-            int ruleCount = dis.readShort();
-            ZoneRules[] ruleArray = new ZoneRules[ruleCount];
-            for (int i = 0; i < ruleCount; i++) {
-                ruleArray[i] = (ZoneRules) Ser.read(dis);
-            }
             Set<ZoneRulesVersion> versionSet = new HashSet<ZoneRulesVersion>(versionCount);
             for (int i = 0; i < versionCount; i++) {
-                short[] regionTable = (short[]) versionRuleTable[i];
-                Map<String, ZoneRules> ruleMap = new HashMap<String, ZoneRules>();
-                for (int j = 0; j < regionTable.length; j += 2) {
-                    ruleMap.put(regionArray[regionTable[j]], ruleArray[regionTable[j + 1]]);
+                int versionRegionCount = dis.readShort();
+                String[] versionRegionArray = new String[versionRegionCount];
+                short[] versionRulesArray = new short[versionRegionCount];
+                for (int j = 0; j < versionRegionCount; j++) {
+                    versionRegionArray[j] = regionArray[dis.readShort()];
+                    versionRulesArray[j] = dis.readShort();
                 }
-                versionSet.add(new ResourceZoneRulesVersion(versionArray[i], ruleMap));
+                versionSet.add(new ResourceZoneRulesVersion(this, versionArray[i], versionRegionArray, versionRulesArray));
             }
             this.versions = Collections.unmodifiableSet(versionSet);
+            // rules
+            int ruleCount = dis.readShort();
+            this.rules = new AtomicReferenceArray<Object>(ruleCount);
+            for (int i = 0; i < ruleCount; i++) {
+                byte[] bytes = new byte[dis.readShort()];
+                dis.readFully(bytes);
+                rules.set(i, bytes);
+            }
         } catch (IOException ex) {
             throwing = true;
             throw ex;
@@ -178,29 +187,69 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
 
     //-------------------------------------------------------------------------
     /**
+     * Loads the rule.
+     * @param index  the index to retrieve
+     * @return the rules, should not be null
+     */
+    ZoneRules loadRule(short index) throws Exception {
+        Object obj = rules.get(index);
+        if (obj instanceof byte[]) {
+            byte[] bytes = (byte[]) obj;
+            DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
+            obj = Ser.read(dis);
+            rules.set(index, obj);
+        }
+        return (ZoneRules) obj;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
      * Version.
      */
     static class ResourceZoneRulesVersion implements ZoneRulesVersion {
+        /** Provider. */
+        private final JarZoneRulesDataProvider provider;
         /** Version ID. */
         private final String versionID;
-        /** Version ID. */
-        private volatile Map<String, ZoneRules> ruleMap;
+        /** Region IDs. */
+        private final String[] regionArray;
+        /** Region IDs. */
+        private final short[] ruleIndices;
+        /** Region set. */
+        private volatile Set<String> regions;
         /** Constructor. */
-        ResourceZoneRulesVersion(String versionID, Map<String, ZoneRules> ruleMap) {
+        ResourceZoneRulesVersion(JarZoneRulesDataProvider provider, String versionID, String[] regions, short[] ruleIndices) {
+            this.provider = provider;
             this.versionID = versionID;
-            this.ruleMap = ruleMap;
+            this.regionArray = regions;
+            this.ruleIndices = ruleIndices;
         }
         public String getVersionID() {
             return versionID;
         }
         public boolean isRegionID(String regionID) {
-            return ruleMap.containsKey(regionID);
+            if (regions == null && provider.regions.contains(regionID) == false) {
+                return false;  // reduces need to setup region set for older versions
+            }
+            return getRegionIDs().contains(regionID);
         }
         public Set<String> getRegionIDs() {
-            return Collections.unmodifiableSet(ruleMap.keySet());
+            Set<String> set = regions;
+            if (set == null) {
+                regions = set = new HashSet<String>(Arrays.asList(regionArray));
+            }
+            return set;
         }
         public ZoneRules getZoneRules(String regionID) {
-            return ruleMap.get(regionID);
+            int index = Arrays.binarySearch(regionArray, regionID);
+            if (index < 0) {
+                return null;
+            }
+            try {
+                return provider.loadRule(ruleIndices[index]);
+            } catch (Exception ex) {
+                throw new CalendricalException("Unable to load rules: " + provider.groupID + ':' + regionID + '#' + versionID, ex);
+            }
         }
     }
 
