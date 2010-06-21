@@ -367,7 +367,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * the number of seconds with optional decimal part.
      * The number must consist of ASCII numerals.
      * There must only be a negative sign at the start of the number and it can
-     * only be present if the value is less then zero.
+     * only be present if the value is less than zero.
      * There must be at least one digit before any decimal point.
      * There must be between 1 and 9 inclusive digits after any decimal point.
      * The letters (P, T and S) will be accepted in upper or lower case.
