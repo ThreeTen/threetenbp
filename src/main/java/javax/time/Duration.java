@@ -392,6 +392,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
         try {
             if (dot == -1) {
                 // no decimal places
+                if (numberText.startsWith("-0")) {
+                    throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2);
+                }
                 return create(Long.parseLong(numberText), 0);
             }
             // decimal places

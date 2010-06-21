@@ -586,7 +586,11 @@ public class TestDuration {
             {"PTAS"},
             
             {"PT+0S"},
+            {"PT+00S"},
+            {"PT+000S"},
             {"PT-0S"},
+            {"PT-00S"},
+            {"PT-000S"},
             {"PT+1S"},
             {"PT-.S"},
             
