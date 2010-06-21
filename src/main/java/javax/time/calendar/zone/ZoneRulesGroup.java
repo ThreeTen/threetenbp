@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
@@ -115,8 +116,9 @@ public final class ZoneRulesGroup {
     /**
      * The versions and rules.
      */
-    private volatile TreeMap<String, ZoneRulesVersion> versions =
-            new TreeMap<String, ZoneRulesVersion>(Collections.reverseOrder());
+    private AtomicReference<TreeMap<String, ZoneRulesVersion>> versions =
+            new AtomicReference<TreeMap<String, ZoneRulesVersion>>(
+                    new TreeMap<String, ZoneRulesVersion>(Collections.reverseOrder()));
 
     //-----------------------------------------------------------------------
     /**
@@ -175,23 +177,17 @@ public final class ZoneRulesGroup {
     }
 
     /**
-     * Gets a view of the complete set of parsable time-zone IDs.
+     * Gets a view of the complete set of parsable group:region IDs.
      * <p>
-     * This returns the complete set of IDs that can be parsed.
-     * For each group and region, all the valid versions and the 'floating'
-     * version IDs will be included. Each 'TZDB' ID will be included twice
-     * as the 'TZDB:' prefix is optional in parsing.
+     * This returns the complete set of group:region IDs that can be parsed.
+     * The version is not included in the set for performance reasons.
+     * Each 'TZDB' ID will be included twice as the 'TZDB:' prefix is optional in parsing.
      * For more detailed control, use the instance methods on this class.
      * <p>
-     * For example, for the single time-zone of 'Europe/London' and two available
-     * versions, the set would contain:
+     * For example, for the single time-zone of 'Europe/London' would contain:
      * <ul>
      * <li>{@code Europe/London}</li>
-     * <li>{@code Europe/London#2009a}</li>
-     * <li>{@code Europe/London#2009b}</li>
      * <li>{@code TZDB:Europe/London}</li>
-     * <li>{@code TZDB:Europe/London#2009a}</li>
-     * <li>{@code TZDB:Europe/London#2009b}</li>
      * </ul>
      * <p>
      * The returned set is a view of underlying state that may be changed by another thread.
@@ -202,10 +198,10 @@ public final class ZoneRulesGroup {
      * This means that it the caller can cache the set and its current size to use
      * as an indication as to whether the contents have changed.
      *
-     * @return an unmodifiable set of parsable IDs, never null
+     * @return an unmodifiable set of parsable group:region IDs, never null
      */
     public static Set<String> getParsableIDs() {
-        return Collections.unmodifiableSet(IDS.keySet());  // TODO: regex?
+        return Collections.unmodifiableSet(IDS.keySet());
     }
 
     //-----------------------------------------------------------------------
@@ -255,8 +251,9 @@ public final class ZoneRulesGroup {
      * @param provider  the provider to register, not null
      */
     @SuppressWarnings("unchecked")
-    private synchronized void registerProvider0(ZoneRulesDataProvider provider) {
-        TreeMap<String, ZoneRulesVersion> newVersions = (TreeMap<String, ZoneRulesVersion>) versions.clone();
+    private void registerProvider0(ZoneRulesDataProvider provider) {
+        // synchronized by caller
+        TreeMap<String, ZoneRulesVersion> newVersions = (TreeMap<String, ZoneRulesVersion>) versions.get().clone();
         for (ZoneRulesVersion version : provider.getVersions()) {
             String versionID = version.getVersionID();
             ZoneRules.checkNotNull(versionID, "Version ID must not be null");
@@ -269,7 +266,15 @@ public final class ZoneRulesGroup {
             }
             newVersions.put(versionID, version);
         }
-        versions = newVersions;
+        versions.set(newVersions);
+        
+        Set<String> regionIDs = provider.getRegionIDs();
+        for (String regionID : regionIDs) {
+            IDS.put(groupID + ':' + regionID, "");
+            if (groupID.equals("TZDB")) {
+                IDS.put(regionID, "");
+            }
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -294,7 +299,7 @@ public final class ZoneRulesGroup {
         if (regionID == null || versionID == null) {
             return false;
         }
-        ZoneRulesVersion version = versions.get(versionID);
+        ZoneRulesVersion version = versions.get().get(versionID);
         return version != null && version.isRegionID(regionID);
     }
 
@@ -309,7 +314,7 @@ public final class ZoneRulesGroup {
     public ZoneRules getRules(String regionID, String versionID) {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");
         ZoneRules.checkNotNull(versionID, "Version ID must not be null");
-        ZoneRulesVersion version = versions.get(versionID);
+        ZoneRulesVersion version = versions.get().get(versionID);
         if (version == null) {
             throw new CalendricalException("Unknown version for group: " + groupID + ':' + regionID + '#' + versionID);
         }
@@ -371,7 +376,7 @@ public final class ZoneRulesGroup {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");
         ZoneRules.checkNotNull(dateTime, "OffsetDateTime must not be null");
         boolean foundRegion = false;
-        for (ZoneRulesVersion version : versions.values()) {
+        for (ZoneRulesVersion version : versions.get().values()) {
             if (version.isRegionID(regionID)) {
                 foundRegion = true;
                 ZoneRules rules = version.getZoneRules(regionID);  // not null if registered properly
@@ -403,7 +408,7 @@ public final class ZoneRulesGroup {
      * @throws CalendricalException if the region ID is not found
      */
     public Set<String> getAvailableVersionIDs() {
-        return Collections.unmodifiableSet(versions.keySet());
+        return Collections.unmodifiableSet(versions.get().keySet());
     }
 
     /**
@@ -420,7 +425,7 @@ public final class ZoneRulesGroup {
      * @throws CalendricalException if the region ID is not found
      */
     public String getLatestVersionID() {
-        return versions.firstKey();  // TODO: test, use as cache in TimeZone???
+        return versions.get().firstKey();  // TODO: test, use as cache in TimeZone???
     }
 
     /**
@@ -439,7 +444,7 @@ public final class ZoneRulesGroup {
      */
     public String getLatestVersionID(String regionID) {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");
-        for (ZoneRulesVersion version : versions.values()) {
+        for (ZoneRulesVersion version : versions.get().values()) {
             if (version.isRegionID(regionID)) {
                 return version.getVersionID();
             }
@@ -460,7 +465,7 @@ public final class ZoneRulesGroup {
      */
     public boolean isValidRegionID(String regionID) {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");
-        for (ZoneRulesVersion version : versions.values()) {
+        for (ZoneRulesVersion version : versions.get().values()) {
             if (version.isRegionID(regionID)) {
                 return true;
             }
@@ -469,23 +474,6 @@ public final class ZoneRulesGroup {
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Gets the set of available region IDs for this group.
-//     * <p>
-//     * Each returned region will have at least one associated version.
-//     * <p>
-//     * The returned regions will remain available for the lifetime of the application as
-//     * there is no way to deregister time-zone information. More regions may be added during
-//     * the lifetime of the application, however the returned list will not be dynamically updated.
-//     *
-//     * @return an independent, modifiable list of available regions sorted alphabetically, never null
-//     */
-//    public List<String> getAvailableRegionIDs() {
-//        List<String> list = new ArrayList<String>(versions.keySet());
-//        Collections.sort(list);
-//        return list;
-//    }
-
     /**
      * Gets the set of available region IDs for this group that are valid for the specified version.
      * <p>
@@ -503,7 +491,7 @@ public final class ZoneRulesGroup {
      */
     public Set<String> getRegionIDs(String versionID) {
         ZoneRules.checkNotNull(versionID, "Version ID must not be null");
-        ZoneRulesVersion version = versions.get(versionID);
+        ZoneRulesVersion version = versions.get().get(versionID);
         if (version == null) {
             throw new CalendricalException("Unknown time-zone version: " + groupID + '#' + versionID);
         }

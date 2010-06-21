@@ -170,9 +170,21 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
         }
         
         if (parsedZoneId != null && preparedIDs.contains(parsedZoneId)) {
+            // handle zone version
             TimeZone zone = TimeZone.of(parsedZoneId);
+            int pos = position + parsedZoneId.length();
+            if (pos + 1 < length && parseText.charAt(pos) == '#') {
+                Set<String> versions = zone.getGroup().getAvailableVersionIDs();
+                for (String version : versions) {
+                    if (parseText.regionMatches(pos + 1, version, 0, version.length())) {
+                        zone = zone.withVersion(version);
+                        pos += version.length() + 1;
+                        break;
+                    }
+                }
+            }
             context.setParsed(TimeZone.rule(), zone);
-            return position + parsedZoneId.length();
+            return pos;
         } else {
             return ~position;
         }

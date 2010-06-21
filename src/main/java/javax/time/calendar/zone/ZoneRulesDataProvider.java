@@ -70,8 +70,15 @@ public interface ZoneRulesDataProvider {
     /**
      * Gets the provided rules, version by version.
      *
-     * @return the provided rules, never null
+     * @return the provided rules, not to be modified, never null
      */
     Set<ZoneRulesVersion> getVersions();
+
+    /**
+     * Gets the provided region IDs.
+     *
+     * @return the provided region IDs, not to be modified, never null
+     */
+    Set<String> getRegionIDs();
 
 }

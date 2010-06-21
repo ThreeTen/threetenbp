@@ -106,9 +106,7 @@ public class TestZoneRulesGroup {
     public void test_getParsableIDs() {
         Set<String> parsableIDs = ZoneRulesGroup.getParsableIDs();
         assertEquals(parsableIDs.contains("Europe/London"), true);
-        assertEquals(parsableIDs.contains("Europe/London#2008i"), true);
         assertEquals(parsableIDs.contains("TZDB:Europe/London"), true);
-        assertEquals(parsableIDs.contains("TZDB:Europe/London#2008i"), true);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
@@ -168,6 +166,9 @@ public class TestZoneRulesGroup {
             };
             return new HashSet<ZoneRulesVersion>(Arrays.asList(version));
         }
+        public Set<String> getRegionIDs() {
+            return new HashSet<String>(Arrays.asList("World%@~.-_"));
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -183,7 +184,7 @@ public class TestZoneRulesGroup {
         public Set<ZoneRulesVersion> getVersions() {
             throw new UnsupportedOperationException();
         }
-        public ZoneRules getZoneRules(String regionID, String versionID) {
+        public Set<String> getRegionIDs() {
             throw new UnsupportedOperationException();
         }
     }
@@ -214,6 +215,9 @@ public class TestZoneRulesGroup {
                 }
             };
             return new HashSet<ZoneRulesVersion>(Arrays.asList(version));
+        }
+        public Set<String> getRegionIDs() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -407,32 +411,45 @@ public class TestZoneRulesGroup {
 //    }
 
     //-----------------------------------------------------------------------
-    // getLatestVersionID()
+    // getLatestVersionID(String)
     //-----------------------------------------------------------------------
     public void test_getLatestVersionID() {
+        ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
+        assertEquals(group.getLatestVersionID(), TestTimeZone.LATEST_TZDB);
+    }
+
+    public void test_getLatestVersionID_mock() {
+        ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
+        assertEquals(group.getLatestVersionID(), "v2");
+    }
+
+    //-----------------------------------------------------------------------
+    // getLatestVersionID(String)
+    //-----------------------------------------------------------------------
+    public void test_getLatestVersionID_String() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         assertEquals(group.getLatestVersionID("Europe/London"), TestTimeZone.LATEST_TZDB);
     }
 
-    public void test_getLatestVersionID_mock() {
+    public void test_getLatestVersionID_String_mock() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         assertEquals(group.getLatestVersionID("RulesChange"), "v2");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_getLatestVersionID_unknownRegion() {
+    public void test_getLatestVersionID_String_unknownRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getLatestVersionID("Europe/Lon");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_getLatestVersionID_unknownRegion_mock() {
+    public void test_getLatestVersionID_String_unknownRegion_mock() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         group.getLatestVersionID("Europe/Lon");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_getLatestVersionID_nullRegion() {
+    public void test_getLatestVersionID_String_nullRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getLatestVersionID(null);
     }
@@ -538,7 +555,10 @@ public class TestZoneRulesGroup {
                     }
                 }
             };
-            return Collections.unmodifiableSet(new HashSet<ZoneRulesVersion>(Arrays.asList(v1, v2)));
+            return new HashSet<ZoneRulesVersion>(Arrays.asList(v1, v2));
+        }
+        public Set<String> getRegionIDs() {
+            return new HashSet<String>(Arrays.asList("RulesChange", "NewPlace"));
         }
     }
     static {

@@ -149,7 +149,7 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
                 }
                 versionSet.add(new ResourceZoneRulesVersion(this, versionArray[i], versionRegionArray, versionRulesArray));
             }
-            this.versions = Collections.unmodifiableSet(versionSet);
+            this.versions = versionSet;
             // rules
             int ruleCount = dis.readShort();
             this.rules = new AtomicReferenceArray<Object>(ruleCount);
@@ -185,6 +185,11 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
         return versions;
     }
 
+    /** {@inheritDoc} */
+    public Set<String> getRegionIDs() {
+        return regions;
+    }
+
     //-------------------------------------------------------------------------
     /**
      * Loads the rule.
@@ -202,6 +207,12 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
         return (ZoneRules) obj;
     }
 
+    //-----------------------------------------------------------------------
+    @Override
+    public String toString() {
+        return groupID + ":#" + versions;
+    }
+
     //-------------------------------------------------------------------------
     /**
      * Version.
@@ -215,8 +226,6 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
         private final String[] regionArray;
         /** Region IDs. */
         private final short[] ruleIndices;
-        /** Region set. */
-        private volatile Set<String> regions;
         /** Constructor. */
         ResourceZoneRulesVersion(JarZoneRulesDataProvider provider, String versionID, String[] regions, short[] ruleIndices) {
             this.provider = provider;
@@ -228,17 +237,10 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
             return versionID;
         }
         public boolean isRegionID(String regionID) {
-            if (regions == null && provider.regions.contains(regionID) == false) {
-                return false;  // reduces need to setup region set for older versions
-            }
-            return getRegionIDs().contains(regionID);
+            return Arrays.binarySearch(regionArray, regionID) >= 0;
         }
         public Set<String> getRegionIDs() {
-            Set<String> set = regions;
-            if (set == null) {
-                regions = set = new HashSet<String>(Arrays.asList(regionArray));
-            }
-            return set;
+            return Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(regionArray)));
         }
         public ZoneRules getZoneRules(String regionID) {
             int index = Arrays.binarySearch(regionArray, regionID);
@@ -250,6 +252,10 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
             } catch (Exception ex) {
                 throw new CalendricalException("Unable to load rules: " + provider.groupID + ':' + regionID + '#' + versionID, ex);
             }
+        }
+        @Override
+        public String toString() {
+            return versionID;
         }
     }
 
