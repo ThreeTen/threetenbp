@@ -321,7 +321,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
             throw new CalendricalException("Unknown time-zone version: " + group.getID() + ":" +
                     zoneID + (versionID.length() == 0 ? "" : "#" + versionID));
         }
-        return new ID(group.getID(), zoneID, versionID, null);
+        return new ID(group.getID(), zoneID, versionID);
     }
 
     /**
@@ -757,8 +757,6 @@ public abstract class TimeZone implements Calendrical, Serializable {
         private final String regionID;
         /** The time-zone version ID, not null. */
         private final String versionID;
-        /** The cached time-zone rules. */
-        private transient volatile ZoneRules rules;
 
         /**
          * Constructor.
@@ -766,13 +764,11 @@ public abstract class TimeZone implements Calendrical, Serializable {
          * @param groupID  the time-zone rules group ID, not null
          * @param regionID  the time-zone region ID, not null
          * @param versionID  the time-zone rules version ID, not null
-         * @param rules  the rules to be cached, may be null
          */
-        ID(String groupID, String regionID, String versionID, ZoneRules rules) {
+        ID(String groupID, String regionID, String versionID) {
             this.groupID = groupID;
             this.regionID = regionID;
             this.versionID = versionID;
-            this.rules = rules;
         }
 
         /**
@@ -826,7 +822,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
             if (isFloatingVersion()) {
                 return this;
             }
-            return new ID(groupID, regionID, "", null);
+            return new ID(groupID, regionID, "");
         }
 
         @Override
@@ -841,20 +837,20 @@ public abstract class TimeZone implements Calendrical, Serializable {
             if (versionID.equals(this.versionID)) {
                 return this;
             }
-            return new ID(groupID, regionID, versionID, null);
+            return new ID(groupID, regionID, versionID);
         }
 
         @Override
         public TimeZone withVersion(String versionID) {
             ISOChronology.checkNotNull(versionID, "Version ID must not be null");
             if (getGroup().isValidRules(regionID, versionID) == false) {
-                throw new CalendricalException("Unknown time-zone version: " + groupID + ":" +
-                        regionID + (versionID.length() == 0 ? "" : "#" + versionID));
+                throw new CalendricalException("Unknown version: " + groupID + ":" +
+                        regionID + (versionID.length() == 0 ? "" : '#' + versionID));
             }
             if (versionID.equals(this.versionID)) {
                 return this;
             }
-            return new ID(groupID, regionID, versionID, null);
+            return new ID(groupID, regionID, versionID);
         }
 
         @Override
@@ -870,19 +866,19 @@ public abstract class TimeZone implements Calendrical, Serializable {
 
         @Override
         public boolean isValid() {
-            return ZoneRulesGroup.isValidGroup(groupID) && getGroup().isValidRules(regionID, versionID);
+            if (isFloatingVersion()) {
+                return ZoneRulesGroup.isValidGroupID(groupID) && getGroup().isValidRegionID(regionID);
+            }
+            return ZoneRulesGroup.isValidGroupID(groupID) && getGroup().isValidRules(regionID, versionID);
         }
 
         @Override
         public ZoneRules getRules() {
-            ZoneRules r = rules;
-            if (rules == null) {
-                r = getGroup().getRules(regionID, versionID);
-                if (isFloatingVersion() == false) {
-                    rules = r;
-                }
+            ZoneRulesGroup group = getGroup();
+            if (isFloatingVersion()) {
+                return group.getRules(regionID, group.getLatestVersionID(regionID));
             }
-            return r;
+            return group.getRules(regionID, versionID);
         }
 
         @Override
@@ -890,13 +886,22 @@ public abstract class TimeZone implements Calendrical, Serializable {
             if (dateTime == null) {
                 return false;
             }
-            return ZoneRulesGroup.isValidGroup(groupID) && getGroup().isValidRulesFor(regionID, versionID, dateTime);
+            try {
+                getRulesValidFor(dateTime);
+                return true;
+            } catch (CalendricalException ex) {
+                return false;
+            }
         }
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
             ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
-            return getGroup().getRulesValidFor(regionID, versionID, dateTime);
+            ZoneRulesGroup group = getGroup();
+            if (isFloatingVersion()) {
+                return group.getRules(regionID, group.getLatestVersionIDValidFor(regionID, dateTime));
+            }
+            return group.getRulesValidFor(regionID, versionID, dateTime);
         }
     }
 

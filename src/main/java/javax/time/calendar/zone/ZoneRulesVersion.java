@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,44 +34,55 @@ package javax.time.calendar.zone;
 import java.util.Set;
 
 /**
- * Provides access to a versioned set of time-zone rules from a single group.
+ * A version of time-zone rules from a single group.
  * <p>
- * Multiple providers of time-zone rules may be registered.
- * Each provider will supply one to many zone IDs.
- * No two providers may overlap in the set of zone IDs that they provide.
+ * Zone rule data is provided by organizations or groups.
+ * Each group provides multiple versions of their data over time.
+ * This interface models one version of data.
  * <p>
- * The values returned by the provider must never change over time.
- * A new provider must be returned to return new regions or versions.
- * <p>
- * Many systems would like to receive new time-zone rules dynamically.
- * This must be implemented separately from this interface, typically using a listener.
- * Whenever the listener detects new rules it should call
- * {@link ZoneRulesGroup#registerProvider(ZoneRulesDataProvider)} using a standard
- * immutable provider implementation.
- * <p>
- * ZoneRulesDataProvider is a service provider interface that can be called
+ * ZoneRulesVersion is a service provider interface that can be called
  * by multiple threads. Implementations must be immutable and thread-safe.
+ * <p>
+ * Implementations are responsible for caching.
  *
  * @author Stephen Colebourne
  */
-public interface ZoneRulesDataProvider {
+public interface ZoneRulesVersion {
 
     /**
-     * Gets the time-zone group ID of the data available via this provider, such as 'TZDB'.
+     * Gets the time-zone version ID of the data available via this provider, such as '2010e'.
      * <p>
-     * Group IDs must match regex {@code [A-Za-z0-9._-]+}.
-     * Group IDs should use reverse domain name notation, like packages.
-     * Group IDs without a dot are reserved for use by the JSR-310 expert group.
+     * Version IDs must match regex {@code [A-Za-z0-9._-]+}.
      *
      * @return the ID of the group, never null
      */
-    String getGroupID();
+    String getVersionID();
 
     /**
-     * Gets the provided rules, version by version.
+     * Checks if the region ID is valid.
      *
-     * @return the provided rules, never null
+     * @param regionID  the region ID, null returns false
+     * @return true if the specified region ID is valid for this group and version
      */
-    Set<ZoneRulesVersion> getVersions();
+    boolean isRegionID(String regionID);
+
+    /**
+     * Gets the complete set of provided region IDs, such as 'Europe/Paris'.
+     * <p>
+     * Region IDs must match regex {@code [A-Za-z0-9%@~/+._-]+}.
+     *
+     * @return the provided region IDs, unmodifiable, never null
+     */
+    Set<String> getRegionIDs();
+
+    /**
+     * Gets the zone rules for the specified region ID.
+     * <p>
+     * The region ID should be one of those returned by {@link #getIDs()}.
+     *
+     * @param regionID  the region ID, not null
+     * @return the matched zone rules, null if not found
+     */
+    ZoneRules getZoneRules(String regionID);
 
 }

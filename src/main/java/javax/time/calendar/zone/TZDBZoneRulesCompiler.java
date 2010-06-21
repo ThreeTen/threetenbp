@@ -32,10 +32,11 @@
 package javax.time.calendar.zone;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.ObjectOutputStream;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -280,62 +281,6 @@ public final class TZDBZoneRulesCompiler {
         outputFile(dstFile, loopAllBuiltZones, loopAllRegionIds, loopAllRules);
     }
 
-//    /**
-//     * Outputs the file.
-//     */
-//    private static void outputFile(
-//            File dstFile, Map<String, Map<String, ZoneRules>> allBuiltZones,
-//            Set<String> allRegionIds, Set<ZoneRules> allRules) {
-//        // this format is not part of the jsr-310 specification
-//        try {
-//            JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
-//            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
-//            
-//            ObjectOutputStream out = new ObjectOutputStream(jos);
-//            // group
-//            out.writeUTF("TZDB");
-//            // all versions and regions
-//            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
-//            out.writeShort(versionArray.length);
-//            for (String version : versionArray) {
-//                out.writeUTF(version);
-//            }
-//            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
-//            out.writeShort(regionArray.length);
-//            for (String regionId : regionArray) {
-//                out.writeUTF(regionId);
-//            }
-//            // link version-region-rules
-//            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
-//            for (String version : allBuiltZones.keySet()) {
-//                out.writeShort(allBuiltZones.get(version).size());
-//                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
-//                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
-//                     int rulesIndex = rulesList.indexOf(entry.getValue());
-//                     out.writeShort(regionIndex);
-//                     out.writeInt(rulesIndex);
-//                }
-//            }
-//            jos.closeEntry();
-//            
-//            // rules
-//            jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules2.dat"));
-//            out.writeUTF("TZDB-RULES");
-//            out.writeInt(rulesList.size());
-//            for (ZoneRules rules : rulesList) {
-//                Ser.write(rules, out);
-//            }
-//            out.writeObject(null);
-//            jos.closeEntry();
-//            
-//            out.close();
-//        } catch (Exception ex) {
-//            System.out.println("Failed: " + ex.toString());
-//            ex.printStackTrace();
-//            System.exit(1);
-//        }
-//    }
-
     /**
      * Outputs the file.
      */
@@ -346,47 +291,47 @@ public final class TZDBZoneRulesCompiler {
         try {
             JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
             jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
+            DataOutputStream out = new DataOutputStream(jos);
             
-            ObjectOutputStream out = new ObjectOutputStream(jos);
+            // create header
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 32);
+            DataOutputStream headerOut = new DataOutputStream(baos);
             // group
-            out.writeUTF("TZDB");
-            Map<String, ZoneRules> output = new HashMap<String, ZoneRules>();
+            headerOut.writeUTF("TZDB");
+            // all versions and regions
+            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
+            headerOut.writeShort(versionArray.length);
+            for (String version : versionArray) {
+                headerOut.writeUTF(version);
+            }
+            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
+            headerOut.writeShort(regionArray.length);
+            for (String regionId : regionArray) {
+                headerOut.writeUTF(regionId);
+            }
+            headerOut.close();
+            byte[] headerBytes = baos.toByteArray();
+            
+            // header length
+            out.writeInt(headerBytes.length);
+            // header
+            out.write(headerBytes);
+            // link version-region-rules
+            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
             for (String version : allBuiltZones.keySet()) {
-                for (String region : allBuiltZones.get(version).keySet()) {
-                    ZoneRules rules = allBuiltZones.get(version).get(region);
-                    output.put(region + '#' + version, rules);
+                out.writeShort(allBuiltZones.get(version).size());
+                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
+                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
+                     int rulesIndex = rulesList.indexOf(entry.getValue());
+                     out.writeShort(regionIndex);
+                     out.writeShort(rulesIndex);
                 }
             }
-            out.writeObject(output);
-            
-//            // all versions and regions
-//            String[] versionArray = allBuiltZones.keySet().toArray(new String[allBuiltZones.size()]);
-//            out.writeShort(versionArray.length);
-//            for (String version : versionArray) {
-//                out.writeUTF(version);
-//            }
-//            String[] regionArray = allRegionIds.toArray(new String[allRegionIds.size()]);
-//            out.writeShort(regionArray.length);
-//            for (String regionId : regionArray) {
-//                out.writeUTF(regionId);
-//            }
-//            // link version-region-rules
-//            List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
-//            for (String version : allBuiltZones.keySet()) {
-//                out.writeShort(allBuiltZones.get(version).size());
-//                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
-//                     int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
-//                     int rulesIndex = rulesList.indexOf(entry.getValue());
-//                     out.writeShort(regionIndex);
-//                     out.writeInt(rulesIndex);
-//                }
-//            }
-//            // rules
-//            out.writeInt(rulesList.size());
-//            for (ZoneRules rules : rulesList) {
-//                Ser.write(rules, out);
-//            }
-//            out.writeObject(null);
+            // rules
+            out.writeShort(rulesList.size());
+            for (ZoneRules rules : rulesList) {
+                Ser.write(rules, out);
+            }
             
             jos.closeEntry();
             out.close();
