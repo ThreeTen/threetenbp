@@ -846,6 +846,9 @@ public abstract class TimeZone implements Calendrical, Serializable {
         @Override
         public TimeZone withVersion(String versionID) {
             ISOChronology.checkNotNull(versionID, "Version ID must not be null");
+            if (versionID.length() == 0) {
+                return withFloatingVersion();
+            }
             if (getGroup().isValidRules(regionID, versionID) == false) {
                 throw new CalendricalException("Unknown version: " + groupID + ":" + regionID + '#' + versionID);
             }
