@@ -32,7 +32,6 @@
 
 Utils
 - MathUtils can't be public, can't put in java.math as we require JDK5 support
-- simplify TimeSource to InstantProvider and Clock to Calendrical, merging
 
 Duration
 
@@ -40,10 +39,7 @@ Instant
 - toString/parse
 
 Time scales
-- less public classes
-- simplified UTC should always have 86400 seconds per day
-? more implementations
-? gps
+- Obtain rules from TZDB rather than a file?
 
 Date/Time classes
 - factories from Calendrical...
@@ -88,10 +84,8 @@ Date/Time formatting
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
-- ZoneRulesGroup loads rules, whereas it should just load keys initially
+- Use public factories for ZOT and ZOTR rather than protected methods in ZRules
 - don't use Local Mean Time (or anything before 1900?)
-- specialised data format for rules
-- SPI and zone providers
 - SPI for names
 # some zones have transitions where only the name changes - America/Resolute
 # "resolvers need to use correct rules" what does this mean?
@@ -111,7 +105,7 @@ Time zones
 # Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
 
 Periods
-- rename classes
+- rename classes?
 - formatting (defer?)
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - Period.toString is not output of state
@@ -153,9 +147,11 @@ Possible items
 - intervals (defer completely?)
 - HalfDays period unit for AM/PM (more accurate than 12 hours)
 - InvalidDateException - better exception name?
+- simplify (TimeSource to InstantProvider, NO, due to UTC/TAI) and Clock to Calendrical, merging
 
 Document
 - requirement: non JDK extensible
+- null approach - nulls rejected except in isXxx() and in framework-level code
 - type-safe where sensible
 - many-headed problem
 -- Zone - Local/Offset/Zoned
@@ -219,3 +215,16 @@ EDR
 0.6.1
 - PeriodFields.toTotal(Unit)
 - PeriodFields.normalize(Unit...)
+- Rename/add methods on PeriodUnit
+- Add Year/YearMonth/MonthDay.now(Clock)
+- Add LocalDate.isLeapYear()
+- Rework time-scales
+ - less public classes
+ - simplified UTC should always have 86400 seconds per day
+ - TAI and UTC
+  - pluggable leap seconds
+- ZoneRulesGroup loads rules, whereas it should just load keys initially
+ - Specialised data format for zone-rules
+ - SPI and zone providers
+- TimeZone special factory to create unavailable instances
+ 
