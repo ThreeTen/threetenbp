@@ -14,7 +14,6 @@
     <property file="build.properties" />
     <property file="version.properties"/>
     <tstamp />
-    <property name="version.full" value="0.6.1" /><!-- -${DSTAMP} -->
 
     <property name="jarName" value="jsr-310-ri-${version.full}.jar" />
     <property name="jarNameSources" value="jsr-310-ri-sources-${version.full}.jar" />
