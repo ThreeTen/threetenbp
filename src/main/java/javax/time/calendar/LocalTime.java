@@ -1139,20 +1139,20 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this time as a {@code String}, such as '10:15'.
+     * Outputs this time as a {@code String}, such as {@code 10:15}.
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>'hh:mm'</li>
-     * <li>'hh:mm:ss'</li>
-     * <li>'hh:mm:ss.SSS'</li>
-     * <li>'hh:mm:ss.SSSSSS'</li>
-     * <li>'hh:mm:ss.SSSSSSSSS'</li>
+     * <li>{@code HH:mm}</li>
+     * <li>{@code HH:mm:ss}</li>
+     * <li>{@code HH:mm:ssfnnn}</li>
+     * <li>{@code HH:mm:ssfnnnnnn}</li>
+     * <li>{@code HH:mm:ssfnnnnnnnnn}</li>
      * </ul>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted time string, never null
+     * @return the formatted time, never null
      */
     @Override
     public String toString() {

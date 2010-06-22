@@ -569,11 +569,11 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this month-day as a {@code String}.
+     * Outputs this month-day as a {@code String}, such as {@code --12-03}.
      * <p>
-     * The output will be in the format '--MM-dd':
+     * The output will be in the format {@code --MM-dd}:
      *
-     * @return the string form of the month-day
+     * @return the formatted month-day, never null
      */
     @Override
     public String toString() {

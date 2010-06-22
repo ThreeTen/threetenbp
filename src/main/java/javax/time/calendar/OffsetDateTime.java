@@ -1778,22 +1778,20 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date-time as a {@code String}, such as
-     * '2007-12-03T10:15:30+01:00'.
+     * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>'yyyy-MM-ddThh:mmZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ssZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSSSSZ'</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mmZZZZ}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssZZZZ}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnZZZZ}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnZZZZ}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnZZZZ}</li>
      * </ul>
-     * where 'Z' is the id of the zone offset, such as '+02:30' or 'Z'.
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted date-time string, never null
+     * @return the formatted date-time, never null
      */
     @Override
     public String toString() {

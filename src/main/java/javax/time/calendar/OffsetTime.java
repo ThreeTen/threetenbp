@@ -738,21 +738,20 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this time as a {@code String}, such as '10:15:30+01:00'.
+     * Outputs this time as a {@code String}, such as {@code 10:15:30+01:00}.
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>'hh:mmZ'</li>
-     * <li>'hh:mm:ssZ'</li>
-     * <li>'hh:mm:ss.SSSZ'</li>
-     * <li>'hh:mm:ss.SSSSSSZ'</li>
-     * <li>'hh:mm:ss.SSSSSSSSSZ'</li>
+     * <li>{@code HH:mmZZZZ}</li>
+     * <li>{@code HH:mm:ssZZZZ}</li>
+     * <li>{@code HH:mm:ssfnnnZZZZ}</li>
+     * <li>{@code HH:mm:ssfnnnnnnZZZZ}</li>
+     * <li>{@code HH:mm:ssfnnnnnnnnnZZZZ}</li>
      * </ul>
-     * where 'Z' is the id of the zone offset, such as '+02:30' or 'Z'.
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted time string, never null
+     * @return the formatted time, never null
      */
     @Override
     public String toString() {

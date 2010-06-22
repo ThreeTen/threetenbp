@@ -1121,12 +1121,11 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date as a {@code String}, such as '2007-12-03+01:00'.
+     * Outputs this date as a {@code String}, such as {@code 2007-12-03+01:00}.
      * <p>
-     * The output will be in the format 'yyyy-MM-ddZ' where 'Z' is the id of
-     * the zone offset, such as '+02:30' or 'Z'.
+     * The output will be in the format {@code yyyy-MM-ddZZZZ}.
      *
-     * @return the formatted date string, never null
+     * @return the formatted date, never null
      */
     @Override
     public String toString() {

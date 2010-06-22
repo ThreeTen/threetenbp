@@ -660,11 +660,11 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this year-month as a {@code String}.
+     * Outputs this year-month as a {@code String}, such as {@code 2007-12}.
      * <p>
-     * The output will be in the format 'yyyy-MM':
+     * The output will be in the format {@code yyyy-MM}:
      *
-     * @return the string form of the year-month
+     * @return the formatted year-month, never null
      */
     @Override
     public String toString() {

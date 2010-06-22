@@ -1906,20 +1906,20 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Outputs this date-time as a {@code String}, such as
-     * '2007-12-03T10:15:30+01:00[Europe/Paris]'.
+     * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>{@code yyyy-MM-ddThh:mmZZ'['{ZoneId}']'}</li>
-     * <li>{@code yyyy-MM-ddThh:mm:ssZZ'['{ZoneId}']'}</li>
-     * <li>{@code yyyy-MM-ddThh:mm:ss.SSSZZ'['{ZoneId}']'}</li>
-     * <li>{@code yyyy-MM-ddThh:mm:ss.SSSSSSZZ'['{ZoneId}']'}</li>
-     * <li>{@code yyyy-MM-ddThh:mm:ss.SSSSSSSSSZZ'['{ZoneId}']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mmZZZZ'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssZZZZ'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnZZZZ'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnZZZZ'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnZZZZ'['I']'}</li>
      * </ul>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted date-time string, never null
+     * @return the formatted date-time, never null
      */
     @Override
     public String toString() {

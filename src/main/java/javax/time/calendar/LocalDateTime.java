@@ -1605,25 +1605,24 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this date-time as a {@code String}, such as
-     * '2007-12-03T10:15:30'.
+     * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30}.
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>'yyyy-MM-ddThh:mm'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSS'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSS'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSSSS'</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ss}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnn}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnn}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnn}</li>
      * </ul>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted date-time string, never null
+     * @return the formatted date-time, never null
      */
     @Override
     public String toString() {
-        return date + "T" + time;
+        return date.toString() + 'T' + time.toString();
     }
 
     /**
