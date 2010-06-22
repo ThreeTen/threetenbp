@@ -62,7 +62,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * The seconds are measured from the standard Java epoch of 1970-01-01T00:00:00Z.
  * Instants on the time-line after the epoch are positive, earlier are negative.
  * 
- * <h3>Time-scale</h3>
+ * <h4>Time-scale</h4>
  * <p>
  * {@code Instant} uses the <a href="http://www.cl.cam.ac.uk/~mgk25/time/utc-sls/">UTC-SLS</a>
  * time-scale which always has 86400 seconds in a day.

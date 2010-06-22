@@ -56,7 +56,7 @@ import javax.time.calendar.LocalDate;
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
  * 
- * <h3>Time-scale</h3>
+ * <h4>Time-scale</h4>
  * <p>
  * The length of the solar day is the standard way that humans measure time.
  * As the Earth's rotation changes, the length of the day varies.
