@@ -46,7 +46,7 @@ import java.io.Serializable;
  * <p>
  * As there are no leap seconds, or other discontinuities, in TAI, this time-scale
  * would make an excellent timestamp. While there are, at the time of writing, few
- * easy ways to obtain an accurate TAI instant it is relatively easy to obtain a GPS instant.
+ * easy ways to obtain an accurate TAI instant, it is relatively easy to obtain a GPS instant.
  * GPS and TAI differ by the fixed amount of 19 seconds.
  * <p>
  * It is intended that most applications will use the {@code Instant} class
