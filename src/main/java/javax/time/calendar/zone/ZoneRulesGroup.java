@@ -68,11 +68,6 @@ import javax.time.calendar.OffsetDateTime;
  * Rules may be registered at any time during the life of the application.
  * No rules may be removed however, thus any rules obtained will remain valid.
  * <p>
- * Any method that returns a positive result (an object or <code>true</code>)
- * will always return the same result for the lifetime of the application.
- * Any method that returns a negative result (<code>false</code> or an exception)
- * may change to return a different result later as more rules are registered.
- * <p>
  * The static methods of ZoneRulesGroup wrap a thread-safe map of groups.
  * New groups and providers may safely be added during the lifetime of the application.
  * To maintain data integrity, providers may not be removed during the lifetime of the application.
