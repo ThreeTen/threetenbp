@@ -399,7 +399,6 @@ public final class ZoneRulesGroup {
      * there is no way to deregister time-zone information. More regions may be added during
      * the lifetime of the application, however the returned list will not be dynamically updated.
      *
-     * @param regionID  the time-zone region ID, not null
      * @return the version IDs sorted from newest to oldest, unmodifiable, never null
      * @throws CalendricalException if the region ID is not found
      */

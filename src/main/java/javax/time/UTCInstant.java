@@ -341,7 +341,7 @@ public final class UTCInstant
      * Adding the duration to this instant using {@link #plus} will always result
      * in an instant equal to the specified instant.
      *
-     * @param taiInstant  the instant to calculate the duration until, not null
+     * @param utcInstant  the instant to calculate the duration until, not null
      * @return the duration until the specified instant, may be negative, never null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */

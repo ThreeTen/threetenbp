@@ -617,8 +617,6 @@ public final class ISOChronology extends Chronology implements Serializable {
      * <p>
      * This is a basic unit and has no equivalent period.
      * The estimated duration is equal to 2,000,000,000 years.
-     * <p>
-     * See {@link #eraRule()} for the main date-time field.
      *
      * @return the period unit for eras, never null
      */

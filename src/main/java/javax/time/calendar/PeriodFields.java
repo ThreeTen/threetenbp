@@ -585,7 +585,7 @@ public final class PeriodFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to subtract, not null
+     * @param periodProvider  the period to subtract, not null
      * @return a {@code PeriodField} based on this period with the specified period subtracted, never null
      * @throws ArithmeticException if the calculation overflows
      */
@@ -875,7 +875,7 @@ public final class PeriodFields
      * For example, '3 Hours, 34 Minutes' can be totalled to minutes resulting
      * in '214 Minutes'.
      *
-     * @param units  the required unit array, not altered, not null
+     * @param unit  the unit to total in, not null
      * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to the unit
      * @throws ArithmeticException if the calculation overflows

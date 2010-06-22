@@ -331,7 +331,7 @@ public final class PeriodField
      * <p>
      * This method is equivalent to {@link #toEquivalent(PeriodUnit...)} with a single parameter.
      *
-     * @param unit  the unit to convert to, not null
+     * @param requiredUnit  the unit to convert to, not null
      * @return a {@code PeriodField} equivalent to this period, never null
      * @throws CalendricalException if this period cannot be converted to the specified unit
      * @throws ArithmeticException if the calculation overflows
