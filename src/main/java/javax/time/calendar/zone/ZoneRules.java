@@ -79,7 +79,7 @@ public abstract class ZoneRules {
      * @param offset  the offset to get the fixed rules for, not null
      * @return the rules, never null
      */
-    public static ZoneRules fixed(ZoneOffset offset) {
+    public static ZoneRules ofFixed(ZoneOffset offset) {
         return new FixedZoneRules(offset);
     }
 

@@ -973,7 +973,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
          * @param offset  the offset, not null
          */
         Fixed(ZoneOffset offset) {
-            this.rules = ZoneRules.fixed(offset);
+            this.rules = ZoneRules.ofFixed(offset);
             this.id = rules.toString();
         }
 

@@ -106,6 +106,7 @@ import javax.time.calendar.zone.TestStandardZoneRules;
 import javax.time.calendar.zone.TestTZDBZoneRulesCompiler;
 import javax.time.calendar.zone.TestZoneOffsetTransition;
 import javax.time.calendar.zone.TestZoneOffsetTransitionRule;
+import javax.time.calendar.zone.TestZoneRules;
 import javax.time.calendar.zone.TestZoneRulesBuilder;
 import javax.time.calendar.zone.TestZoneRulesGroup;
 
@@ -212,6 +213,7 @@ public class AllTest {
             TestTZDBZoneRulesCompiler.class,
             TestZoneOffsetTransition.class,
             TestZoneOffsetTransitionRule.class,
+            TestZoneRules.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
         });

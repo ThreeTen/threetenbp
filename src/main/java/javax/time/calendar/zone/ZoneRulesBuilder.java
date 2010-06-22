@@ -344,7 +344,7 @@ public class ZoneRulesBuilder {
         if (windowList.size() == 1) {
             TZWindow window = windowList.get(0);
             if (window.isSingleWindowStandardOffset()) {
-                return ZoneRules.fixed(window.standardOffset);
+                return ZoneRules.ofFixed(window.standardOffset);
             }
         }
         

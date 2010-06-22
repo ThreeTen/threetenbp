@@ -631,7 +631,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_07_01).getOffset(), OFFSET_1);
-        assertEquals(test, ZoneRules.fixed(OFFSET_1));
+        assertEquals(test, ZoneRules.ofFixed(OFFSET_1));
     }
 
     public void test_addWindowForever_rules() {

@@ -161,7 +161,7 @@ public class TestZoneRulesGroup {
                     return new HashSet<String>(Arrays.asList("World%@~.-_"));
                 }
                 public ZoneRules getZoneRules(String regionID) {
-                    return ZoneRules.fixed(ZoneOffset.of("+01:45"));
+                    return ZoneRules.ofFixed(ZoneOffset.of("+01:45"));
                 }
             };
             return new HashSet<ZoneRulesVersion>(Arrays.asList(version));
@@ -534,7 +534,7 @@ public class TestZoneRulesGroup {
                     return Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("RulesChange")));
                 }
                 public ZoneRules getZoneRules(String regionID) {
-                    return ZoneRules.fixed(ZoneOffset.of("+01:45"));
+                    return ZoneRules.ofFixed(ZoneOffset.of("+01:45"));
                 }
             };
             ZoneRulesVersion v2 = new ZoneRulesVersion() {
@@ -549,9 +549,9 @@ public class TestZoneRulesGroup {
                 }
                 public ZoneRules getZoneRules(String regionID) {
                     if (regionID.equals("NewPlace")) {
-                        return ZoneRules.fixed(ZoneOffset.of("+01:00"));
+                        return ZoneRules.ofFixed(ZoneOffset.of("+01:00"));
                     } else {
-                        return ZoneRules.fixed(ZoneOffset.of("+02:45"));
+                        return ZoneRules.ofFixed(ZoneOffset.of("+02:45"));
                     }
                 }
             };
