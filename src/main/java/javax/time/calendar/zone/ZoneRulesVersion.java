@@ -69,7 +69,7 @@ public interface ZoneRulesVersion {
     /**
      * Gets the complete set of provided region IDs, such as 'Europe/Paris'.
      * <p>
-     * Region IDs must match regex {@code [A-Za-z0-9%@~/+._-]+}.
+     * Region IDs must match regex {@code [A-Za-z0-9%@~/._-]+}.
      *
      * @return the provided region IDs, unmodifiable, never null
      */

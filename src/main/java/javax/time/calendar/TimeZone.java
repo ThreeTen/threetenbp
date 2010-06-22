@@ -39,6 +39,8 @@ import java.io.StreamCorruptedException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
@@ -54,7 +56,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * <p>
  * There are a number of sources of time-zone information available,
  * each represented by an instance of {@link ZoneRulesGroup}.
- * One group is provided as standard - 'TZDB' - and more can be added.
+ * One group is provided as standard - 'TZDB' - and applications can add more as required.
  * <p>
  * Each group defines a naming scheme for the regions of the time-zone.
  * The format of the region is specific to the group.
@@ -73,7 +75,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * Applications will probably choose to use the floating version, as it guarantees
  * usage of the latest rules.
  * <p>
- * In addition to the group/region/version combinations, {@code TimeZone}
+ * In addition to the group:region#version combinations, {@code TimeZone}
  * can represent a fixed offset. This has an empty group and version ID.
  * It is not possible to have an invalid instance of a fixed time-zone.
  * <p>
@@ -91,8 +93,8 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * One difference is that serializing this class only stores the reference to the zone,
  * whereas serializing {@code ZoneRules} stores the entire set of rules.
  * <p>
- * After deserialization, or by using the special constructor, it is possible for the
- * time-zone to represent a group/region/version combination that is unavailable.
+ * After deserialization, or by using the special factory {@link #ofUnchecked(String) ofUnchecked},
+ * it is possible for the time-zone to represent a group/region/version combination that is unavailable.
  * Since this class can still be loaded even when the rules cannot, the application can
  * continue. For example, a {@link ZonedDateTime} instance could still be queried.
  * The application might also take appropriate corrective action.
@@ -104,6 +106,10 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  */
 public abstract class TimeZone implements Calendrical, Serializable {
 
+    /**
+     * The group:region#version ID pattern.
+     */
+    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/._-]+)([#]([A-Za-z0-9._-]+))?");
     /**
      * A serialization identifier for this class.
      */
@@ -238,7 +244,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
      *
      * @param timeZoneIdentifier  the time-zone id, not null
      * @param aliasMap  a map of time-zone IDs (typically abbreviations) to real time-zone IDs, not null
-     * @return the TimeZone, never null
+     * @return the time-zone, never null
      * @throws IllegalArgumentException if the time-zone cannot be found
      */
     public static TimeZone of(String timeZoneIdentifier, Map<String, String> aliasMap) {
@@ -250,7 +256,8 @@ public abstract class TimeZone implements Calendrical, Serializable {
     }
 
     /**
-     * Obtains an instance of {@code TimeZone} from an identifier.
+     * Obtains an instance of {@code TimeZone} from an identifier ensuring that the
+     * identifier is valid and available for use.
      * <p>
      * Six forms of identifier are recognized:
      * <ul>
@@ -261,10 +268,12 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * <li>{@code UTC{offset}} - fixed time-zone
      * <li>{@code GMT{offset}} - fixed time-zone
      * </ul>
+     * Group IDs must match regular expression {@code [A-Za-z0-9._-]+}.<br />
+     * Region IDs must match regular expression {@code [A-Za-z0-9%@~/._-]+}.<br />
+     * Version IDs must match regular expression {@code [A-Za-z0-9._-]+}.
      * <p>
      * Most of the formats are based around the group, version and region IDs.
      * The version and region ID formats are specific to the group.
-     * If a group does not support versioning, then the version must be an empty string.
      * <p>
      * The default group is 'TZDB' which has versions of the form {year}{letter}, such as '2009b'.
      * The region ID for the 'TZDB' group is generally of the form '{area}/{city}', such as 'Europe/Paris'.
@@ -272,8 +281,10 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * <p>
      * For example, if a provider is loaded with the ID 'MyProvider' containing a zone ID of
      * 'France', then the unique key for version 2.1 would be 'MyProvider:France#2.1'.
-     * A specific version of the TZDB provider can be specified using this format,
-     * for example 'TZDB:Asia/Tokyo#2008g'.
+     * A specific version of the TZDB provider is 'TZDB:Asia/Tokyo#2008g'.
+     * <p>
+     * Once parsed, this factory will ensure that the group, region and version combination is valid
+     * and rules can be obtained.
      * <p>
      * The alternate format is for fixed time-zones, where the offset never changes over time.
      * A fixed time-zone is returned if the first three characters are 'UTC' or 'GMT' and
@@ -281,13 +292,47 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * The result will have a normalized time-zone ID of 'UTC{offset}', or just 'UTC' if the offset is zero.
      * <p>
      * Note that it is intended that fixed offset time-zones are rarely used. Applications should use
-     * {@link ZoneOffset} and {@link OffsetDateTime} are in preference.
+     * {@link ZoneOffset} and {@link OffsetDateTime} in preference.
      *
      * @param zoneID  the time-zone identifier, not null
-     * @return the TimeZone, never null
+     * @return the time-zone, never null
      * @throws CalendricalException if the time-zone cannot be found
      */
     public static TimeZone of(String zoneID) {
+        return ofID(zoneID, true);
+    }
+
+    /**
+     * Obtains an instance of {@code TimeZone} from an identifier without checking
+     * if the time-zone has available rules.
+     * <p>
+     * The identifier is parsed in a similar manner to {@link #of(String)}.
+     * However, there is no check to ensure that the group, region and version resolve
+     * to a set of rules that can be loaded.
+     * This factory does however check that the identifier meets the acceptable format.
+     * <p>
+     * This method is intended for advanced use cases.
+     * One example might be a system that always retrieves time-zone rules from a remote server.
+     * Using this factory allows a {@code TimeZone}, and thus a {@code ZonedDateTime},
+     * to be created without loading the rules from the remote server.
+     *
+     * @param zoneID  the time-zone identifier, not null
+     * @return the time-zone, never null
+     * @throws CalendricalException if the time-zone cannot be found
+     */
+    public static TimeZone ofUnchecked(String zoneID) {
+        return ofID(zoneID, false);
+    }
+
+    /**
+     * Obtains an instance of {@code TimeZone} from an identifier.
+     *
+     * @param zoneID  the time-zone identifier, not null
+     * @param checkAvailable  whether to check if the time-zone ID is available
+     * @return the time-zone, never null
+     * @throws CalendricalException if the time-zone cannot be found
+     */
+    private static TimeZone ofID(String zoneID, boolean checkAvailable) {
         ISOChronology.checkNotNull(zoneID, "Time zone ID must not be null");
         
         // special fixed cases
@@ -302,29 +347,29 @@ public abstract class TimeZone implements Calendrical, Serializable {
             }
         }
         
-        // main parsing
-        ZoneRulesGroup group;
-        int colonPos = zoneID.indexOf(':');
-        if (colonPos >= 0) {
-            group = ZoneRulesGroup.getGroup(zoneID.substring(0, colonPos));  // validates group available
-            zoneID = zoneID.substring(colonPos + 1);
-        } else {
-            group = ZoneRulesGroup.getGroup("TZDB");  // validates group available
+        // normal non-fixed IDs
+        Matcher matcher = PATTERN.matcher(zoneID);
+        if (matcher.matches() == false) {
+            throw new CalendricalException("Invalid time-zone ID: " + zoneID);
         }
-        String versionID = "";
-        int hashPos = zoneID.indexOf('#');
-        if (hashPos >= 0) {
-            versionID = zoneID.substring(hashPos + 1);
-            zoneID = zoneID.substring(0, hashPos);
-            if (group.isValidRules(zoneID, versionID) == false) {
-                throw new CalendricalException("Unknown time-zone region or version: " + group.getID() + ":" + zoneID + '#' + versionID);
-            }
-        } else {
-            if (group.isValidRegionID(zoneID) == false) {
-                throw new CalendricalException("Unknown time-zone region: " + group.getID() + ":" + zoneID);
+        String groupID = matcher.group(2);
+        String regionID = matcher.group(3);
+        String versionID = matcher.group(5);
+        groupID = (groupID != null ? groupID : "TZDB");
+        versionID = (versionID != null ? versionID : "");
+        if (checkAvailable) {
+            ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
+            if (versionID.length() == 0) {
+                if (group.isValidRegionID(regionID) == false) {
+                    throw new CalendricalException("Unknown time-zone region: " + groupID + ':' + regionID);
+                }
+            } else {
+                if (group.isValidRules(regionID, versionID) == false) {
+                    throw new CalendricalException("Unknown time-zone region or version: " + groupID + ':' + regionID + '#' + versionID);
+                }
             }
         }
-        return new ID(group.getID(), zoneID, versionID);
+        return new ID(groupID, regionID, versionID);
     }
 
     /**
@@ -337,7 +382,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * Fixed time-zones are {@link #isValid() always valid}.
      *
      * @param offset  the zone offset to create a fixed zone for, not null
-     * @return the TimeZone for the offset, never null
+     * @return the time-zone for the offset, never null
      */
     public static TimeZone of(ZoneOffset offset) {
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");

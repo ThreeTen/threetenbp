@@ -256,7 +256,7 @@ public class TestTimeZone {
     //-----------------------------------------------------------------------
     // mapped factory
     //-----------------------------------------------------------------------
-    public void test_factory_string_Map() {
+    public void test_of_string_Map() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("LONDON", "Europe/London");
         map.put("PARIS", "Europe/Paris");
@@ -264,7 +264,7 @@ public class TestTimeZone {
         assertEquals(test.getID(), "Europe/London");
     }
 
-    public void test_factory_string_Map_lookThrough() {
+    public void test_of_string_Map_lookThrough() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("LONDON", "Europe/London");
         map.put("PARIS", "Europe/Paris");
@@ -272,14 +272,14 @@ public class TestTimeZone {
         assertEquals(test.getID(), "Europe/Madrid");
     }
 
-    public void test_factory_string_Map_emptyMap() {
+    public void test_of_string_Map_emptyMap() {
         Map<String, String> map = new HashMap<String, String>();
         TimeZone test = TimeZone.of("Europe/Madrid", map);
         assertEquals(test.getID(), "Europe/Madrid");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_string_Map_unknown() {
+    public void test_of_string_Map_unknown() {
         Map<String, String> map = new HashMap<String, String>();
         TimeZone.of("Unknown", map);
     }
@@ -288,7 +288,7 @@ public class TestTimeZone {
     // regular factory
     //-----------------------------------------------------------------------
     @DataProvider(name="String_UTC")
-    Object[][] data_factory_string_UTC() {
+    Object[][] data_of_string_UTC() {
         return new Object[][] {
             {""}, {"Z"},
             {"+00"},{"+0000"},{"+00:00"},{"+000000"},{"+00:00:00"},
@@ -297,14 +297,14 @@ public class TestTimeZone {
     }
 
     @Test(dataProvider="String_UTC")
-    public void test_factory_string_UTC(String id) {
+    public void test_of_string_UTC(String id) {
         TimeZone test = TimeZone.of("UTC" + id);
         assertSame(test, TimeZone.UTC);
     }
 
     //-----------------------------------------------------------------------
     @DataProvider(name="String_Fixed")
-    Object[][] data_factory_string_Fixed() {
+    Object[][] data_of_string_Fixed() {
         return new Object[][] {
             {"", "UTC"},
             {"+01", "UTC+01:00"},
@@ -320,7 +320,7 @@ public class TestTimeZone {
     }
 
     @Test(dataProvider="String_Fixed")
-    public void test_factory_string_Fixed(String input, String id) {
+    public void test_of_string_Fixed(String input, String id) {
         TimeZone test = TimeZone.of("UTC" + input);
         assertEquals(test.getID(), id);
         assertEquals(test.getGroupID(), "");
@@ -341,7 +341,7 @@ public class TestTimeZone {
 
     //-----------------------------------------------------------------------
     @DataProvider(name="String_UTC_Invalid")
-    Object[][] data_factory_string_UTC_invalid() {
+    Object[][] data_of_string_UTC_invalid() {
         return new Object[][] {
                 {"A"}, {"B"}, {"C"}, {"D"}, {"E"}, {"F"}, {"G"}, {"H"}, {"I"}, {"J"}, {"K"}, {"L"}, {"M"},
                 {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"},
@@ -360,12 +360,38 @@ public class TestTimeZone {
     }
 
     @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
-    public void test_factory_string_invalid(String id) {
+    public void test_of_string_UTC_invalid(String id) {
         TimeZone.of("UTC" + id);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_string_floatingGMT0() {
+    @DataProvider(name="String_Invalid")
+    Object[][] data_of_string_invalid() {
+        return new Object[][] {
+                {""}, {":"}, {"#"},
+                {"¬"}, {"`"}, {"!"}, {"\""}, {"£"}, {"$"}, {"^"}, {"&"}, {"*"}, {"("}, {")"}, {"="}, {"+"},
+                {"\\"}, {"|"}, {","}, {"<"}, {">"}, {"?"}, {";"}, {":"}, {"'"}, {"["}, {"]"}, {"{"}, {"}"},
+                {"¬:A"}, {"`:A"}, {"!:A"}, {"\":A"}, {"£:A"}, {"$:A"}, {"^:A"}, {"&:A"}, {"*:A"}, {"(:A"}, {"):A"}, {"=:A"}, {"+:A"},
+                {"\\:A"}, {"|:A"}, {",:A"}, {"<:A"}, {">:A"}, {"?:A"}, {";:A"}, {"::A"}, {"':A"}, {"@:A"}, {"~:A"}, {"[:A"}, {"]:A"}, {"{:A"}, {"}:A"},
+                {"A:B#¬"}, {"A:B#`"}, {"A:B#!"}, {"A:B#\""}, {"A:B#£"}, {"A:B#$"}, {"A:B#^"}, {"A:B#&"}, {"A:B#*"},
+                {"A:B#("}, {"A:B#)"}, {"A:B#="}, {"A:B#+"},
+                {"A:B#\\"}, {"A:B#|"}, {"A:B#,"}, {"A:B#<"}, {"A:B#>"}, {"A:B#?"}, {"A:B#;"}, {"A:B#:"},
+                {"A:B#'"}, {"A:B#@"}, {"A:B#~"}, {"A:B#["}, {"A:B#]"}, {"A:B#{"}, {"A:B#}"},
+        };
+    }
+
+    @Test(dataProvider="String_Invalid", expectedExceptions=CalendricalException.class)
+    public void test_of_string_invalid(String id) {
+        TimeZone.of(id);
+    }
+
+    @Test(dataProvider="String_Invalid", expectedExceptions=CalendricalException.class)
+    public void test_ofUnchecked_string_invalid(String id) {
+        TimeZone.ofUnchecked(id);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_of_string_floatingGMT0() {
         TimeZone test = TimeZone.of("GMT0");
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
@@ -376,7 +402,7 @@ public class TestTimeZone {
         assertEquals(test.isFixed(), false);
     }
 
-    public void test_factory_string_versionedGMT0() {
+    public void test_of_string_versionedGMT0() {
         TimeZone test = TimeZone.of("GMT0#2008i");
         assertEquals(test.getID(), "GMT0#2008i");
         assertEquals(test.getGroupID(), "TZDB");
@@ -387,7 +413,7 @@ public class TestTimeZone {
         assertEquals(test.isFixed(), false);
     }
 
-    public void test_factory_string_groupGMT0() {
+    public void test_of_string_groupGMT0() {
         TimeZone test = TimeZone.of("TZDB:GMT0");
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
@@ -398,7 +424,7 @@ public class TestTimeZone {
         assertEquals(test.isFixed(), false);
     }
 
-    public void test_factory_string_groupVersionedGMT0() {
+    public void test_of_string_groupVersionedGMT0() {
         TimeZone test = TimeZone.of("TZDB:GMT0#2008i");
         assertEquals(test.getID(), "GMT0#2008i");
         assertEquals(test.getGroupID(), "TZDB");
@@ -410,7 +436,7 @@ public class TestTimeZone {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_string_floatingLondon() {
+    public void test_of_string_floatingLondon() {
         TimeZone test = TimeZone.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
@@ -421,7 +447,7 @@ public class TestTimeZone {
         assertEquals(test.isFixed(), false);
     }
 
-    public void test_factory_string_versionedLondon() {
+    public void test_of_string_versionedLondon() {
         TimeZone test = TimeZone.of("Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2008i");
         assertEquals(test.getGroupID(), "TZDB");
@@ -432,7 +458,7 @@ public class TestTimeZone {
         assertEquals(test.isFixed(), false);
     }
 
-    public void test_factory_string_groupLondon() {
+    public void test_of_string_groupLondon() {
         TimeZone test = TimeZone.of("TZDB:Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
@@ -443,7 +469,7 @@ public class TestTimeZone {
         assertEquals(test.isFixed(), false);
     }
 
-    public void test_factory_string_groupVersionedLondon() {
+    public void test_of_string_groupVersionedLondon() {
         TimeZone test = TimeZone.of("TZDB:Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2008i");
         assertEquals(test.getGroupID(), "TZDB");
@@ -456,36 +482,41 @@ public class TestTimeZone {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_string_null() {
+    public void test_of_string_null() {
         TimeZone.of((String) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_string_unknown_simple() {
+    public void test_of_string_unknown_simple() {
         TimeZone.of("Unknown");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_string_unknown_group() {
+    public void test_of_string_unknown_group() {
         TimeZone.of("Unknown:Europe/London");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_string_unknown_version() {
+    public void test_of_string_unknown_version() {
         TimeZone.of("TZDB:Europe/London#Unknown");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_string_unknown_region() {
+    public void test_of_string_unknown_region() {
         TimeZone.of("TZDB:Unknown#2008i");
     }
 
-    //-----------------------------------------------------------------------
-//    public void test_factory_string_London_same() {
-//        // TODO
-//        TimeZone test = TimeZone.timeZone("Europe/London");
-//        assertSame(TimeZone.timeZone("Europe/London"), test);
-//    }
+    //-------------------------------------------------------------------------
+    public void test_ofUnchecked_string_invalidNotChecked() {
+        TimeZone test = TimeZone.ofUnchecked("UnknownGroup:UnknownRegion#UnknownVersion");
+        assertEquals(test.getID(), "UnknownGroup:UnknownRegion#UnknownVersion");
+        assertEquals(test.getGroupID(), "UnknownGroup");
+        assertEquals(test.getRegionID(), "UnknownRegion");
+        assertEquals(test.getVersionID(), "UnknownVersion");
+        assertEquals(test.getName(), "UnknownRegion");
+        assertEquals(test.getShortName(), "UnknownRegion");
+        assertEquals(test.isFixed(), false);
+    }
 
     //-----------------------------------------------------------------------
     // Europe/London

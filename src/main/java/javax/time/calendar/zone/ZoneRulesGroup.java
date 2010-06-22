@@ -89,10 +89,6 @@ public final class ZoneRulesGroup {
      * Version ID pattern.
      */
     private static final Pattern PATTERN_VERSION = Pattern.compile("[A-Za-z0-9._-]+");
-//    /**
-//     * Region#version ID pattern.
-//     */
-//    private static final Pattern PATTERN_REGION_VERSION = Pattern.compile("([A-Za-z0-9%@~/+._-]+)#([A-Za-z0-9._-]+)");
     /**
      * The zone IDs.
      * Should not be empty.
