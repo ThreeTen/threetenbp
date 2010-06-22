@@ -231,7 +231,7 @@ public abstract class TimeSource {
      * Implementation of a time-source that always returns the latest time from
      * {@link System#currentTimeMillis()}.
      */
-    private static final class SystemTimeSource extends TimeSource implements Serializable {
+    static final class SystemTimeSource extends TimeSource implements Serializable {
         /** Singleton instance. */
         static final SystemTimeSource INSTANCE = new SystemTimeSource();
         /** A serialization identifier for this class. */
@@ -261,7 +261,7 @@ public abstract class TimeSource {
      * Implementation of a time-source that always returns the same instant.
      * This is typically used for testing.
      */
-    private static final class FixedTimeSource extends TimeSource implements Serializable {
+    static final class FixedTimeSource extends TimeSource implements Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** The fixed instant to return. */
@@ -301,7 +301,7 @@ public abstract class TimeSource {
      * Implementation of a time-source that returns the latest time from
      * {@link System#currentTimeMillis()} plus an offset.
      */
-    private static final class OffsetSystemTimeSource extends TimeSource implements Serializable {
+    static final class OffsetSystemTimeSource extends TimeSource implements Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** The fixed offset to add. */
