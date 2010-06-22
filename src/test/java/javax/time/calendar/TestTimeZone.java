@@ -369,7 +369,7 @@ public class TestTimeZone {
     Object[][] data_of_string_invalid() {
         return new Object[][] {
                 {""}, {":"}, {"#"},
-                {"¬"}, {"`"}, {"!"}, {"\""}, {"£"}, {"$"}, {"^"}, {"&"}, {"*"}, {"("}, {")"}, {"="}, {"+"},
+                {"¬"}, {"`"}, {"!"}, {"\""}, {"£"}, {"$"}, {"^"}, {"&"}, {"*"}, {"("}, {")"}, {"="},
                 {"\\"}, {"|"}, {","}, {"<"}, {">"}, {"?"}, {";"}, {":"}, {"'"}, {"["}, {"]"}, {"{"}, {"}"},
                 {"¬:A"}, {"`:A"}, {"!:A"}, {"\":A"}, {"£:A"}, {"$:A"}, {"^:A"}, {"&:A"}, {"*:A"}, {"(:A"}, {"):A"}, {"=:A"}, {"+:A"},
                 {"\\:A"}, {"|:A"}, {",:A"}, {"<:A"}, {">:A"}, {"?:A"}, {";:A"}, {"::A"}, {"':A"}, {"@:A"}, {"~:A"}, {"[:A"}, {"]:A"}, {"{:A"}, {"}:A"},
@@ -516,6 +516,14 @@ public class TestTimeZone {
         assertEquals(test.getName(), "UnknownRegion");
         assertEquals(test.getShortName(), "UnknownRegion");
         assertEquals(test.isFixed(), false);
+    }
+
+    public void test_ofUnchecked_string_invalidNotChecked_unusualCharacters() {
+        TimeZone test = TimeZone.ofUnchecked("QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
+        assertEquals(test.getID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
+        assertEquals(test.getVersionID(), "");
     }
 
     //-----------------------------------------------------------------------

@@ -109,7 +109,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
     /**
      * The group:region#version ID pattern.
      */
-    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/._-]+)([#]([A-Za-z0-9._-]+))?");
+    private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)([#]([A-Za-z0-9._-]+))?");
     /**
      * A serialization identifier for this class.
      */
@@ -269,7 +269,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * <li>{@code GMT{offset}} - fixed time-zone
      * </ul>
      * Group IDs must match regular expression {@code [A-Za-z0-9._-]+}.<br />
-     * Region IDs must match regular expression {@code [A-Za-z0-9%@~/._-]+}.<br />
+     * Region IDs must match regular expression {@code [A-Za-z0-9%@~/+._-]+}.<br />
      * Version IDs must match regular expression {@code [A-Za-z0-9._-]+}.
      * <p>
      * Most of the formats are based around the group, version and region IDs.
