@@ -50,9 +50,9 @@ import javax.time.calendar.ZoneOffset;
  * <p>
  * There are two types of transition - a gap and an overlap.
  * Gaps occur where there are local date-times that simply do not not exist.
- * An example would be when the offset changes from +01:00 to +02:00.
+ * An example would be when the offset changes from {@code +01:00} to {@code +02:00}.
  * Overlaps occur where there are local date-times that exist twice.
- * An example would be when the offset changes from +02:00 to +01:00.
+ * An example would be when the offset changes from {@code +02:00} to {@code +01:00}.
  * <p>
  * ZoneOffsetTransition is immutable and thread-safe.
  *
