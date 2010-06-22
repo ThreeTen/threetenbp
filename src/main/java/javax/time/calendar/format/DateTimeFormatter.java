@@ -374,7 +374,7 @@ public final class DateTimeFormatter {
      * Implements the classic Java Format API.
      */
     @SuppressWarnings("serial")  // not actually serializable
-    private class ClassicFormat extends Format {
+    class ClassicFormat extends Format {
 
         /** {@inheritDoc} */
         @Override
