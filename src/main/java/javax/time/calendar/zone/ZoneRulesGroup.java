@@ -106,7 +106,7 @@ public final class ZoneRulesGroup {
             new ConcurrentHashMap<String, ZoneRulesGroup>(16, 0.75f, 2);
 
     static {
-        JarZoneRulesDataProvider.load();
+        ResourceZoneRulesDataProvider.load();
     }
 
     /**

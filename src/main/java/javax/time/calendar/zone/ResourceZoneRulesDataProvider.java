@@ -51,11 +51,11 @@ import javax.time.CalendricalException;
 /**
  * Loads time-zone rules stored in a file accessed via class loader.
  * <p>
- * JarZoneRulesDataProvider is thread-safe and immutable.
+ * ResourceZoneRulesDataProvider is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
+final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
 
     /**
      * The group ID.
@@ -80,7 +80,7 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @throws RuntimeException if the time-zone rules cannot be loaded
      */
     static void load() {
-        for (JarZoneRulesDataProvider provider : loadResources()) {
+        for (ResourceZoneRulesDataProvider provider : loadResources()) {
             ZoneRulesGroup.registerProvider(provider);
         }
     }
@@ -91,8 +91,8 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @return the list of loaded rules, never null
      * @throws Exception if an error occurs
      */
-    private static List<JarZoneRulesDataProvider> loadResources() {
-        List<JarZoneRulesDataProvider> providers = new ArrayList<JarZoneRulesDataProvider>();
+    private static List<ResourceZoneRulesDataProvider> loadResources() {
+        List<ResourceZoneRulesDataProvider> providers = new ArrayList<ResourceZoneRulesDataProvider>();
         URL url = null;
         try {
             Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/calendar/zone/ZoneRules.dat");
@@ -100,7 +100,7 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
             while (en.hasMoreElements()) {
                 url = en.nextElement();
                 if (loaded.add(url.toExternalForm())) {
-                    providers.add(new JarZoneRulesDataProvider(url));
+                    providers.add(new ResourceZoneRulesDataProvider(url));
                 }
             }
         } catch (Exception ex) {
@@ -116,7 +116,7 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
      * @param url  the jar file to load, not null 
      * @throws Exception if an error occurs
      */
-    private JarZoneRulesDataProvider(URL url) throws ClassNotFoundException, IOException {
+    private ResourceZoneRulesDataProvider(URL url) throws ClassNotFoundException, IOException {
         boolean throwing = false;
         InputStream in = null;
         try {
@@ -215,11 +215,13 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
 
     //-------------------------------------------------------------------------
     /**
-     * Version.
+     * Version of the rules.
+     * <p>
+     * ResourceZoneRulesVersion is thread-safe and immutable.
      */
     static class ResourceZoneRulesVersion implements ZoneRulesVersion {
         /** Provider. */
-        private final JarZoneRulesDataProvider provider;
+        private final ResourceZoneRulesDataProvider provider;
         /** Version ID. */
         private final String versionID;
         /** Region IDs. */
@@ -227,7 +229,7 @@ final class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
         /** Region IDs. */
         private final short[] ruleIndices;
         /** Constructor. */
-        ResourceZoneRulesVersion(JarZoneRulesDataProvider provider, String versionID, String[] regions, short[] ruleIndices) {
+        ResourceZoneRulesVersion(ResourceZoneRulesDataProvider provider, String versionID, String[] regions, short[] ruleIndices) {
             this.provider = provider;
             this.versionID = versionID;
             this.regionArray = regions;
