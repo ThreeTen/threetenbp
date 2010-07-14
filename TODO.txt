@@ -194,7 +194,7 @@ DONE
 - public access to transitions and transition rules
 - OffsetInfo, discontinuity rename to transition
 - parse zone
-EDR
+EDR released
 - OffsetDate.atTime(int...)
 - zone rule where time of day is 24:00
 - versions of zone data files
@@ -212,7 +212,7 @@ EDR
 - Rename factory methods to start with 'of'
 - LocalDate.plus(PeriodProvider) needs correct algorithm
 - Period.ofXxx factory rename
-0.6.1
+0.6.1 released
 - PeriodFields.toTotal(Unit)
 - PeriodFields.normalize(Unit...)
 - Rename/add methods on PeriodUnit
@@ -227,4 +227,5 @@ EDR
  - Specialised data format for zone-rules
  - SPI and zone providers
 - TimeZone special factory to create unavailable instances
+ 0.6.2 released
  
