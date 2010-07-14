@@ -314,7 +314,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the year field, never null
      */
     public static DateTimeFieldRule<Integer> yearRule() {
-        return YearRule.INSTANCE;
+        return YEAR;
     }
 
 //    /**
@@ -361,7 +361,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the day-of-month field, never null
      */
     public static DateTimeFieldRule<Integer> dayOfMonthRule() {
-        return DayOfMonthRule.INSTANCE;
+        return DAY_OF_MONTH;
     }
 
     /**
@@ -373,7 +373,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the day-of-year field, never null
      */
     public static DateTimeFieldRule<Integer> dayOfYearRule() {
-        return DayOfYearRule.INSTANCE;
+        return DAY_OF_YEAR;
     }
 
     /**
@@ -388,7 +388,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the week-based-year field, never null
      */
     public static DateTimeFieldRule<Integer> weekBasedYearRule() {
-        return WeekBasedYearRule.INSTANCE;
+        return WEEK_BASED_YEAR;
     }
 
     /**
@@ -404,7 +404,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the week-of-week-based-year field, never null
      */
     public static DateTimeFieldRule<Integer> weekOfWeekBasedYearRule() {
-        return WeekOfWeekBasedYearRule.INSTANCE;
+        return WEEK_OF_WEEK_BASED_YEAR;
     }
 
     /**
@@ -433,7 +433,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the week-of-year field, never null
      */
     public static DateTimeFieldRule<Integer> weekOfYearRule() {
-        return WeekOfYearRule.INSTANCE;
+        return WEEK_OF_YEAR;
     }
 
     /**
@@ -459,7 +459,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the month-of-quarter field, never null
      */
     public static DateTimeFieldRule<Integer> monthOfQuarterRule() {
-        return MonthOfQuarterRule.INSTANCE;
+        return MONTH_OF_QUARTER;
     }
 
     /**
@@ -476,7 +476,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the week-of-month field, never null
      */
     public static DateTimeFieldRule<Integer> weekOfMonthRule() {
-        return WeekOfMonthRule.INSTANCE;
+        return WEEK_OF_MONTH;
     }
 
     //-----------------------------------------------------------------------
@@ -489,7 +489,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the hour-of-day field, never null
      */
     public static DateTimeFieldRule<Integer> hourOfDayRule() {
-        return HourOfDayRule.INSTANCE;
+        return HOUR_OF_DAY;
     }
 
     /**
@@ -501,7 +501,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the minute-of-hour field, never null
      */
     public static DateTimeFieldRule<Integer> minuteOfHourRule() {
-        return MinuteOfHourRule.INSTANCE;
+        return MINUTE_OF_HOUR;
     }
 
     /**
@@ -513,7 +513,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the second-of-minute field, never null
      */
     public static DateTimeFieldRule<Integer> secondOfMinuteRule() {
-        return SecondOfMinuteRule.INSTANCE;
+        return SECOND_OF_MINUTE;
     }
 
     /**
@@ -525,7 +525,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the nano-of-second field, never null
      */
     public static DateTimeFieldRule<Integer> nanoOfSecondRule() {
-        return NanoOfSecondRule.INSTANCE;
+        return NANO_OF_SECOND;
     }
 
     //-----------------------------------------------------------------------
@@ -538,19 +538,19 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the second-of-day field, never null
      */
     public static DateTimeFieldRule<Integer> secondOfDayRule() {
-        return SecondOfDayRule.INSTANCE;
+        return SECOND_OF_DAY;
     }
 
     /**
      * Gets the rule for the milli-of-day field.
      * <p>
      * This field counts milliseconds sequentially from the start of the day.
-     * The values run from 0 to 86399999.
+     * The values run from 0 to 86,399,999.
      *
      * @return the rule for the milli-of-day field, never null
      */
     public static DateTimeFieldRule<Integer> milliOfDayRule() {
-        return MilliOfDayRule.INSTANCE;
+        return MILLI_OF_DAY;
     }
 
     /**
@@ -559,10 +559,10 @@ public final class ISOChronology extends Chronology implements Serializable {
      * This field counts milliseconds sequentially from the start of the second.
      * The values run from 0 to 999.
      *
-     * @return the rule for the nano-of-second field, never null
+     * @return the rule for the milli-of-second field, never null
      */
     public static DateTimeFieldRule<Integer> milliOfSecondRule() {
-        return MilliOfSecondRule.INSTANCE;
+        return MILLI_OF_SECOND;
     }
 
     //-----------------------------------------------------------------------
@@ -592,7 +592,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the hour of AM/PM field, never null
      */
     public static DateTimeFieldRule<Integer> hourOfAmPmRule() {
-        return HourOfAmPmRule.INSTANCE;
+        return HOUR_OF_AMPM;
     }
 
     /**
@@ -604,7 +604,43 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the hour of AM/PM field, never null
      */
     public static DateTimeFieldRule<Integer> clockHourOfAmPmRule() {
-        return ClockHourOfAmPmRule.INSTANCE;
+        return CLOCK_HOUR_OF_AMPM;
+    }
+
+    /**
+     * Gets the rule for the clock hour of AM/PM field from 1 to 24.
+     * <p>
+     * This field counts hours sequentially within the day starting from 1.
+     * The values run from 1 to 24.
+     *
+     * @return the rule for the clock-hour-of-day field, never null
+     */
+    public static DateTimeFieldRule<Integer> clockHourOfAmPmDay() {
+        return CLOCK_HOUR_OF_DAY;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for the epoch-days field.
+     * <p>
+     * This field counts seconds sequentially from the Java epoch of 1970-01-01.
+     *
+     * @return the rule for the epoch-days field, never null
+     */
+    public static CalendricalRule<Long> epocDays() {
+        return EpochDaysRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the nano-of-day field.
+     * <p>
+     * This field counts seconds sequentially from the start of the day.
+     * The values run from 0 to 86,399,999,999,999.
+     *
+     * @return the rule for the nano-of-day field, never null
+     */
+    public static CalendricalRule<Long> nanoOfDayRule() {
+        return NanoOfDayRule.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -1153,29 +1189,6 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new YearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private YearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? date.getYear() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
     static final class MonthOfYearRule extends DateTimeFieldRule<MonthOfYear> implements Serializable {
         /** Singleton instance. */
         static final DateTimeFieldRule<MonthOfYear> INSTANCE = new MonthOfYearRule();
@@ -1253,138 +1266,6 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new DayOfMonthRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DayOfMonthRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 31);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        public int getSmallestMaximumValue() {
-            return 28;
-        }
-        @Override
-        public int getMaximumValue(Calendrical calendrical) {
-            MonthOfYear moy = calendrical.get(monthOfYearRule());
-            if (moy == null) {
-                return 31;
-            }
-            Integer year = calendrical.get(yearRule());
-            return year != null ? moy.lengthInDays(isLeapYear(year)) : moy.maxLengthInDays();
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? date.getDayOfMonth() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new DayOfYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DayOfYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        public int getSmallestMaximumValue() {
-            return 365;
-        }
-        @Override
-        public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.get(yearRule());
-            return (year != null && isLeapYear(year) == false ? 365 : 366);
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? getDayOfYearFromDate(date) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class WeekBasedYearRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new WeekBasedYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private WeekBasedYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? getWeekBasedYearFromDate(date) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class WeekOfWeekBasedYearRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new WeekOfWeekBasedYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private WeekOfWeekBasedYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, 1, 53);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        public int getSmallestMaximumValue() {
-            return 52;
-        }
-        @Override
-        public int getMaximumValue(Calendrical calendrical) {
-            // TODO: derive from WeekBasedYear
-            LocalDate date = calendrical.get(LocalDate.rule());
-            if (date == null ) {
-                return 53;
-            }
-            date = date.withDayOfMonth(1).withMonthOfYear(1);
-            if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
-                    (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && isLeapYear(date.getYear()))) {
-                return 53;
-            }
-            return 52;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? getWeekOfWeekBasedYearFromDate(date) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
     static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
         /** Singleton instance. */
         static final DateTimeFieldRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
@@ -1452,29 +1333,6 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    static final class WeekOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new WeekOfYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private WeekOfYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "WeekOfYear", WEEKS, YEARS, 1, 53);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            Integer doyVal = calendrical.get(dayOfYearRule());
-            return doyVal != null ? (doyVal + 6) / 7 : null;
-       }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
     static final class QuarterOfYearRule extends DateTimeFieldRule<QuarterOfYear> implements Serializable {
         /** Singleton instance. */
         static final DateTimeFieldRule<QuarterOfYear> INSTANCE = new QuarterOfYearRule();
@@ -1499,226 +1357,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public QuarterOfYear convertIntToValue(int value) {
             return QuarterOfYear.of(value);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class MonthOfQuarterRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new MonthOfQuarterRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private MonthOfQuarterRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            MonthOfYear moy = calendrical.get(monthOfYearRule());
-            return moy != null ? (moy.ordinal() % 3 + 1) : null;
-       }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class WeekOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new WeekOfMonthRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private WeekOfMonthRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "WeekOfMonth", WEEKS, MONTHS, 1, 5);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        public int getSmallestMaximumValue() {
-            return 4;
-        }
-        @Override
-        public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.get(yearRule());
-            MonthOfYear moy = calendrical.get(monthOfYearRule());
-            if (year != null && moy == MonthOfYear.FEBRUARY) {
-                return Year.of(year).isLeap() ? 5 : 4;
-            }
-            return getMaximumValue();
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            Integer domVal = calendrical.get(dayOfMonthRule());
-            return domVal != null ? (domVal + 6) / 7 : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class HourOfDayRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new HourOfDayRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private HourOfDayRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "HourOfDay", HOURS, DAYS, 0, 23);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? time.getHourOfDay() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class MinuteOfHourRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new MinuteOfHourRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private MinuteOfHourRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "MinuteOfHour", MINUTES, HOURS, 0, 59);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? time.getMinuteOfHour() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class SecondOfMinuteRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new SecondOfMinuteRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private SecondOfMinuteRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "SecondOfMinute", SECONDS, MINUTES, 0, 59);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? time.getSecondOfMinute() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class NanoOfSecondRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new NanoOfSecondRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private NanoOfSecondRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "NanoOfSecond", NANOS, SECONDS, 0, 999999999);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? time.getNanoOfSecond() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class SecondOfDayRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new SecondOfDayRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private SecondOfDayRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "SecondOfDay", SECONDS, DAYS, 0, 86399);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? time.toSecondOfDay() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class MilliOfDayRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new MilliOfDayRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private MilliOfDayRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "MilliOfDay", MILLIS, DAYS, 0, 86399999);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? (int) (time.toNanoOfDay() / 1000000L) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class MilliOfSecondRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new MilliOfSecondRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private MilliOfSecondRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "MilliOfSecond", MILLIS, SECONDS, 0, 999);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? time.getNanoOfSecond() / 1000000 : null;
         }
     }
 
@@ -1786,28 +1424,28 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    static final class HourOfAmPmRule extends DateTimeFieldRule<Integer> implements Serializable {
+    static final class EpochDaysRule extends CalendricalRule<Long> implements Serializable {
         /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new HourOfAmPmRule();
+        static final CalendricalRule<Long> INSTANCE = new EpochDaysRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
-        private HourOfAmPmRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "HourOfAmPm", HOURS, _12_HOURS, 0, 11);
+        private EpochDaysRule() {
+            super(Long.class, ISOChronology.INSTANCE, "EpochDays", DAYS, null);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
-            Integer hourVal = calendrical.get(hourOfDayRule());
-            if (hourVal == null) {
-                return null;
-            }
-            long hour = hourVal;
-            // TODO: Remove overflow handling
-            hour = (hour < 0 ? hour + 2147483664L : hour) % 12;  // add multiple of 24 to make positive
-            return (int) hour;
+        protected Long derive(Calendrical calendrical) {
+            LocalDate date = calendrical.get(LocalDate.rule());
+            return date != null ? date.toEpochDays() : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            long epochDays = merger.getValue(this);
+            merger.storeMerged(LocalDate.rule(), LocalDate.ofEpochDays(epochDays));
+            merger.removeProcessed(this);
         }
     }
 
@@ -1815,28 +1453,28 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    static final class ClockHourOfAmPmRule extends DateTimeFieldRule<Integer> implements Serializable {
+    static final class NanoOfDayRule extends CalendricalRule<Long> implements Serializable {
         /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new ClockHourOfAmPmRule();
+        static final CalendricalRule<Long> INSTANCE = new NanoOfDayRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
-        private ClockHourOfAmPmRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "ClockHourOfAmPm", HOURS, _12_HOURS, 1, 12);
+        private NanoOfDayRule() {
+            super(Long.class, ISOChronology.INSTANCE, "NanoOfDay", NANOS, DAYS);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
-            Integer hourVal = calendrical.get(hourOfDayRule());
-            if (hourVal == null) {
-                return null;
-            }
-            long hour = hourVal;
-            // TODO: Remove overflow handling
-            hour = (hour < 0 ? hour + 2147483664L : hour) % 12;  // add multiple of 24 to make positive
-            return (int) (hour == 0 ? 12 : hour);
+        protected Long derive(Calendrical calendrical) {
+            LocalTime time = calendrical.get(LocalTime.rule());
+            return time != null ? time.toNanoOfDay() : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            long nod = merger.getValue(this);
+            merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(nod));
+            merger.removeProcessed(this);
         }
     }
 
@@ -1849,85 +1487,101 @@ public final class ISOChronology extends Chronology implements Serializable {
         private final int ordinal;
         private Unit(int ordinal, String name, PeriodField equivalentPeriod, Duration estimatedDuration) {
             super(name, equivalentPeriod, estimatedDuration);
-            this.ordinal = ordinal;
+            this.ordinal = ordinal;  // allow space for new units
         }
         private Object readResolve() {
-            return UNIT_CACHE[ordinal];
+            return UNIT_CACHE[ordinal / 16];
+        }
+        @Override
+        public int compareTo(PeriodUnit other) {
+            if (other instanceof Unit) {
+                return ordinal - ((Unit) other).ordinal;
+            }
+            return super.compareTo(other);
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Unit) {
+                return ordinal == ((Unit) obj).ordinal;
+            }
+            return super.equals(obj);
         }
     }
+
+    //-----------------------------------------------------------------------
     /**
      * Period unit for nanoseconds.
      */
-    private static final Unit NANOS = new Unit(0, "Nanos", null, Duration.ofNanos(1));
+    private static final Unit NANOS = new Unit(0 * 16, "Nanos", null, Duration.ofNanos(1));
     /**
      * Period unit for microseconds.
      */
-    private static final Unit MICROS = new Unit(1, "Micros", PeriodField.of(1000, NANOS), Duration.ofNanos(1000));
+    private static final Unit MICROS = new Unit(1 * 16, "Micros", PeriodField.of(1000, NANOS), Duration.ofNanos(1000));
     /**
      * Period unit for milliseconds.
      */
-    private static final Unit MILLIS = new Unit(2, "Millis", PeriodField.of(1000, MICROS), Duration.ofMillis(1));
+    private static final Unit MILLIS = new Unit(2 * 16, "Millis", PeriodField.of(1000, MICROS), Duration.ofMillis(1));
     /**
      * Period unit for seconds.
      */
-    private static final Unit SECONDS = new Unit(3, "Seconds", PeriodField.of(1000, MILLIS), Duration.ofSeconds(1));
+    private static final Unit SECONDS = new Unit(3 * 16, "Seconds", PeriodField.of(1000, MILLIS), Duration.ofSeconds(1));
     /**
      * Period unit for minutes.
      */
-    private static final Unit MINUTES = new Unit(4, "Minutes", PeriodField.of(60, SECONDS), Duration.ofSeconds(60));
+    private static final Unit MINUTES = new Unit(4 * 16, "Minutes", PeriodField.of(60, SECONDS), Duration.ofSeconds(60));
     /**
      * Period unit for hours.
      */
-    private static final Unit HOURS = new Unit(5, "Hours", PeriodField.of(60, MINUTES), Duration.ofSeconds(60 * 60));
+    private static final Unit HOURS = new Unit(5 * 16, "Hours", PeriodField.of(60, MINUTES), Duration.ofSeconds(60 * 60));
     /**
      * Period unit for 12 hours half-days, used by AM/PM.
      */
-    private static final Unit _12_HOURS = new Unit(6, "12Hours", PeriodField.of(12, HOURS), Duration.ofSeconds(12 * 60 * 60));
+    private static final Unit _12_HOURS = new Unit(6 * 16, "12Hours", PeriodField.of(12, HOURS), Duration.ofSeconds(12 * 60 * 60));
     /**
      * Period unit for 24 hour fixed length days.
      */
-    private static final Unit _24_HOURS = new Unit(7, "24Hours", PeriodField.of(2, _12_HOURS), Duration.ofSeconds(24 * 60 * 60));
+    private static final Unit _24_HOURS = new Unit(7 * 16, "24Hours", PeriodField.of(2, _12_HOURS), Duration.ofSeconds(24 * 60 * 60));
 
     /**
      * Period unit for days.
      */
-    private static final Unit DAYS = new Unit(8, "Days", null, Duration.ofSeconds(86400));
+    private static final Unit DAYS = new Unit(8 * 16, "Days", null, Duration.ofSeconds(86400));
     /**
      * Period unit for weeks.
      */
-    private static final Unit WEEKS = new Unit(9, "Weeks", PeriodField.of(7, DAYS), Duration.ofSeconds(7L * 86400L));
+    private static final Unit WEEKS = new Unit(9 * 16, "Weeks", PeriodField.of(7, DAYS), Duration.ofSeconds(7L * 86400L));
     /**
      * Period unit for months.
      */
-    private static final Unit MONTHS = new Unit(10, "Months", null, Duration.ofSeconds(31556952L / 12L));
+    private static final Unit MONTHS = new Unit(10 * 16, "Months", null, Duration.ofSeconds(31556952L / 12L));
     /**
      * Period unit for quarters.
      */
-    private static final Unit QUARTERS = new Unit(11, "Quarters", PeriodField.of(3, MONTHS), Duration.ofSeconds(31556952L / 4));
+    private static final Unit QUARTERS = new Unit(11 * 16, "Quarters", PeriodField.of(3, MONTHS), Duration.ofSeconds(31556952L / 4));
     /**
      * Period unit for week-based-years.
      */
-    private static final Unit WEEK_BASED_YEARS = new Unit(12, "WeekBasedYears", null, Duration.ofSeconds(364L * 86400L + 43200L));  // 364.5 days
+    private static final Unit WEEK_BASED_YEARS = new Unit(12 * 16, "WeekBasedYears", null, Duration.ofSeconds(364L * 86400L + 43200L));  // 364.5 days
     /**
      * Period unit for years.
      */
-    private static final Unit YEARS = new Unit(13, "Years", PeriodField.of(4, QUARTERS), Duration.ofSeconds(31556952L));  // 365.2425 days
+    private static final Unit YEARS = new Unit(13 * 16, "Years", PeriodField.of(4, QUARTERS), Duration.ofSeconds(31556952L));  // 365.2425 days
     /**
      * Period unit for decades.
      */
-    private static final Unit DECADES = new Unit(14, "Decades", PeriodField.of(10, YEARS), Duration.ofSeconds(10L * 31556952L));
+    private static final Unit DECADES = new Unit(14 * 16, "Decades", PeriodField.of(10, YEARS), Duration.ofSeconds(10L * 31556952L));
     /**
      * Period unit for centuries.
      */
-    private static final Unit CENTURIES = new Unit(15, "Centuries", PeriodField.of(10, DECADES), Duration.ofSeconds(100L * 31556952L));
+    private static final Unit CENTURIES = new Unit(15 * 16, "Centuries", PeriodField.of(10, DECADES), Duration.ofSeconds(100L * 31556952L));
     /**
      * Period unit for millennia.
      */
-    private static final Unit MILLENNIA = new Unit(16, "Millennia", PeriodField.of(10, CENTURIES), Duration.ofSeconds(1000L * 31556952L));
+    private static final Unit MILLENNIA = new Unit(16 * 16, "Millennia", PeriodField.of(10, CENTURIES), Duration.ofSeconds(1000L * 31556952L));
     /**
      * Period unit for eras.
      */
-    private static final Unit ERAS = new Unit(17, "Eras", null, Duration.ofSeconds(31556952L * 2000000000L));
+    private static final Unit ERAS = new Unit(17 * 16, "Eras", null, Duration.ofSeconds(31556952L * 2000000000L));
 
     /**
      * Cache of units for deserialization.
@@ -1937,6 +1591,219 @@ public final class ISOChronology extends Chronology implements Serializable {
         NANOS, MICROS, MILLIS, SECONDS, MINUTES, HOURS, _12_HOURS, _24_HOURS,
         DAYS, WEEKS, MONTHS, QUARTERS, WEEK_BASED_YEARS, YEARS,
         DECADES, CENTURIES, MILLENNIA, ERAS,
+    };
+
+    //-----------------------------------------------------------------------
+    /**
+     * Single rule subclass, which means fewer classes to load at startup.
+     */
+    static final class Rule extends DateTimeFieldRule<Integer> implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final int ordinal;
+        private transient final int smallestMaximum;
+        private Rule(int ordinal, 
+                String name,
+                PeriodUnit periodUnit,
+                PeriodUnit periodRange,
+                int minimumValue,
+                int maximumValue,
+                int smallestMaximum) {
+            super(Integer.class, ISOChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue);
+            this.ordinal = ordinal;  // allow space for new rules
+            this.smallestMaximum = smallestMaximum;
+        }
+        private Object readResolve() {
+            return RULE_CACHE[ordinal / 16];
+        }
+        @Override
+        protected Integer derive(Calendrical calendrical) {
+            switch (ordinal) {
+                case NANO_OF_SECOND_ORDINAL: {
+                    LocalTime time = calendrical.get(LocalTime.rule());
+                    return time != null ? time.getNanoOfSecond() : null;
+                }
+                case MILLI_OF_SECOND_ORDINAL: {
+                    LocalTime time = calendrical.get(LocalTime.rule());
+                    return time != null ? time.getNanoOfSecond() / 1000000 : null;
+                }
+                case MILLI_OF_DAY_ORDINAL: {
+                    LocalTime time = calendrical.get(LocalTime.rule());
+                    return time != null ? (int) (time.toNanoOfDay() / 1000000L) : null;
+                }
+                case SECOND_OF_MINUTE_ORDINAL: {
+                    LocalTime time = calendrical.get(LocalTime.rule());
+                    return time != null ? time.getSecondOfMinute() : null;
+                }
+                case SECOND_OF_DAY_ORDINAL: {
+                    LocalTime time = calendrical.get(LocalTime.rule());
+                    return time != null ? time.toSecondOfDay() : null;
+                }
+                case MINUTE_OF_HOUR_ORDINAL: {
+                    LocalTime time = calendrical.get(LocalTime.rule());
+                    return time != null ? time.getMinuteOfHour() : null;
+                }
+                case CLOCK_HOUR_OF_AMPM_ORDINAL: {
+                    Integer hourVal = calendrical.get(hourOfAmPmRule());
+                    return hourVal != null ? (hourVal + 12) % 13 : null;
+                }
+                case HOUR_OF_AMPM_ORDINAL: {
+                    Integer hourVal = calendrical.get(hourOfDayRule());
+                    return hourVal != null ? hourVal % 12 : null;
+                }
+                case CLOCK_HOUR_OF_DAY_ORDINAL: {
+                    Integer hourVal = calendrical.get(hourOfDayRule());
+                    return hourVal != null ? (hourVal + 24) % 25 : null;
+                }
+                case HOUR_OF_DAY_ORDINAL: {
+                    LocalTime time = calendrical.get(LocalTime.rule());
+                    return time != null ? time.getHourOfDay() : null;
+                }
+                case DAY_OF_MONTH_ORDINAL: {
+                    LocalDate date = calendrical.get(LocalDate.rule());
+                    return date != null ? date.getDayOfMonth() : null;
+                }
+                case DAY_OF_YEAR_ORDINAL: {
+                    LocalDate date = calendrical.get(LocalDate.rule());
+                    return date != null ? getDayOfYearFromDate(date) : null;
+                }
+                case MONTH_OF_QUARTER_ORDINAL: {
+                    MonthOfYear moy = calendrical.get(monthOfYearRule());
+                    return moy != null ? (moy.ordinal() % 3 + 1) : null;
+                }
+                case WEEK_OF_MONTH_ORDINAL: {
+                    Integer domVal = calendrical.get(dayOfMonthRule());
+                    return domVal != null ? (domVal + 6) / 7 : null;
+                }
+                case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: {
+                    LocalDate date = calendrical.get(LocalDate.rule());
+                    return date != null ? getWeekOfWeekBasedYearFromDate(date) : null;
+                }
+                case WEEK_OF_YEAR_ORDINAL: {
+                    Integer doyVal = calendrical.get(dayOfYearRule());
+                    return doyVal != null ? (doyVal + 6) / 7 : null;
+                }
+                case WEEK_BASED_YEAR_ORDINAL: {
+                    LocalDate date = calendrical.get(LocalDate.rule());
+                    return date != null ? getWeekBasedYearFromDate(date) : null;
+                }
+                case YEAR_ORDINAL: {
+                    LocalDate date = calendrical.get(LocalDate.rule());
+                    return date != null ? date.getYear() : null;
+                }
+            }
+            return null;
+        }
+        @Override
+        public int getSmallestMaximumValue() {
+            return smallestMaximum;
+        }
+        @Override
+        public int getMaximumValue(Calendrical calendrical) {
+            switch (ordinal) {
+                case DAY_OF_MONTH_ORDINAL: {
+                    MonthOfYear moy = calendrical.get(monthOfYearRule());
+                    if (moy == null) {
+                        return 31;
+                    }
+                    Integer year = calendrical.get(yearRule());
+                    return year != null ? moy.lengthInDays(isLeapYear(year)) : moy.maxLengthInDays();
+                }
+                case DAY_OF_YEAR_ORDINAL: {
+                    Integer year = calendrical.get(yearRule());
+                    return (year != null && isLeapYear(year) == false ? 365 : 366);
+                }
+                case WEEK_OF_MONTH_ORDINAL: {
+                    Integer year = calendrical.get(yearRule());
+                    MonthOfYear moy = calendrical.get(monthOfYearRule());
+                    if (year != null && moy == MonthOfYear.FEBRUARY) {
+                        return isLeapYear(year) ? 5 : 4;
+                    }
+                    return getMaximumValue();
+                }
+                case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: {
+                    // TODO: derive from WeekBasedYear
+                    LocalDate date = calendrical.get(LocalDate.rule());
+                    if (date == null ) {
+                        return 53;
+                    }
+                    date = date.withDayOfMonth(1).withMonthOfYear(1);
+                    if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
+                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && isLeapYear(date.getYear()))) {
+                        return 53;
+                    }
+                    return 52;
+                }
+            }
+            return super.getMaximumValue();
+        }
+        @Override
+        public int compareTo(CalendricalRule<Integer> other) {
+            if (other instanceof Rule) {
+                return ordinal - ((Rule) other).ordinal;
+            }
+            return super.compareTo(other);
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Rule) {
+                return ordinal == ((Rule) obj).ordinal;
+            }
+            return super.equals(obj);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    private static final int NANO_OF_SECOND_ORDINAL = 0 * 16;
+    private static final int MILLI_OF_SECOND_ORDINAL = 1 * 16;
+    private static final int MILLI_OF_DAY_ORDINAL = 2 * 16;
+    private static final int SECOND_OF_MINUTE_ORDINAL = 3 * 16;
+    private static final int SECOND_OF_DAY_ORDINAL = 4 * 16;
+    private static final int MINUTE_OF_HOUR_ORDINAL = 5 * 16;
+    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL = 6 * 16;
+    private static final int HOUR_OF_AMPM_ORDINAL = 7 * 16;
+    private static final int CLOCK_HOUR_OF_DAY_ORDINAL = 8 * 16;
+    private static final int HOUR_OF_DAY_ORDINAL = 9 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL = 10 * 16;
+    private static final int DAY_OF_YEAR_ORDINAL = 11 * 16;
+    private static final int WEEK_OF_MONTH_ORDINAL = 12 * 16;
+    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 13 * 16;
+    private static final int WEEK_OF_YEAR_ORDINAL = 14 * 16;
+    private static final int MONTH_OF_QUARTER_ORDINAL = 15 * 16;
+    private static final int WEEK_BASED_YEAR_ORDINAL = 16 * 16;
+    private static final int YEAR_ORDINAL = 17 * 16;
+    
+    //-----------------------------------------------------------------------
+    private static final Rule NANO_OF_SECOND = new Rule(NANO_OF_SECOND_ORDINAL, "NanoOfSecond", NANOS, SECONDS, 0, 999999999, 999999999);
+    private static final Rule MILLI_OF_SECOND = new Rule(MILLI_OF_SECOND_ORDINAL, "MilliOfSecond", MILLIS, SECONDS, 0, 999, 999);
+    private static final Rule MILLI_OF_DAY = new Rule(MILLI_OF_DAY_ORDINAL, "MilliOfDay", MILLIS, DAYS, 0, 86399999, 86399999);
+    private static final Rule SECOND_OF_MINUTE = new Rule(SECOND_OF_MINUTE_ORDINAL, "SecondOfMinute", SECONDS, MINUTES, 0, 59, 59);
+    private static final Rule SECOND_OF_DAY = new Rule(SECOND_OF_DAY_ORDINAL, "SecondOfDay", SECONDS, DAYS, 0, 86399, 86399);
+    private static final Rule MINUTE_OF_HOUR = new Rule(MINUTE_OF_HOUR_ORDINAL, "MinuteOfHour", MINUTES, HOURS, 0, 59, 59);
+    private static final Rule CLOCK_HOUR_OF_AMPM = new Rule(CLOCK_HOUR_OF_AMPM_ORDINAL, "ClockHourOfAmPm", HOURS, _12_HOURS, 1, 12, 12);
+    private static final Rule HOUR_OF_AMPM = new Rule(HOUR_OF_AMPM_ORDINAL, "HourOfAmPm", HOURS, _12_HOURS, 0, 11, 11);
+    private static final Rule CLOCK_HOUR_OF_DAY = new Rule(CLOCK_HOUR_OF_DAY_ORDINAL, "ClockHourOfDay", HOURS, DAYS, 1, 24, 24);
+    private static final Rule HOUR_OF_DAY = new Rule(HOUR_OF_DAY_ORDINAL, "HourOfDay", HOURS, DAYS, 0, 23, 23);
+    private static final Rule DAY_OF_MONTH = new Rule(DAY_OF_MONTH_ORDINAL, "DayOfMonth", DAYS, MONTHS, 1, 31, 28);
+    private static final Rule DAY_OF_YEAR = new Rule(DAY_OF_YEAR_ORDINAL, "DayOfYear", DAYS, YEARS, 1, 366, 365);
+    private static final Rule WEEK_OF_MONTH = new Rule(WEEK_OF_MONTH_ORDINAL, "WeekOfMonth", WEEKS, MONTHS, 1, 5, 4);
+    private static final Rule WEEK_OF_WEEK_BASED_YEAR = new Rule(WEEK_OF_WEEK_BASED_YEAR_ORDINAL, "WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, 1, 53, 52);
+    private static final Rule WEEK_OF_YEAR = new Rule(WEEK_OF_YEAR_ORDINAL, "WeekOfYear", WEEKS, YEARS, 1, 53, 53);
+    private static final Rule MONTH_OF_QUARTER = new Rule(MONTH_OF_QUARTER_ORDINAL, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3, 3);
+    private static final Rule WEEK_BASED_YEAR = new Rule(WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
+    private static final Rule YEAR = new Rule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR);
+
+    /**
+     * Cache of units for deserialization.
+     * Indices must match ordinal passed to rule constructor.
+     */
+    private static final Rule[] RULE_CACHE = new Rule[] {
+        NANO_OF_SECOND, MILLI_OF_SECOND, MILLI_OF_DAY,
+        SECOND_OF_MINUTE, SECOND_OF_DAY, MINUTE_OF_HOUR,
+        CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY,
+        DAY_OF_MONTH, DAY_OF_YEAR,
+        WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_YEAR,
+        MONTH_OF_QUARTER,
+        WEEK_BASED_YEAR, YEAR,
     };
 
 }
