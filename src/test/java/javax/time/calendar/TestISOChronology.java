@@ -522,7 +522,7 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     // compareTo
     //-----------------------------------------------------------------------
-    public void test_compareTo() {
+    public void test_compareTo_periodUnits() {
         List<PeriodUnit> list = new ArrayList<PeriodUnit>();
         list.add(ISOChronology.periodNanos());
         list.add(ISOChronology.periodMicros());
@@ -543,6 +543,42 @@ public class TestISOChronology {
         list.add(ISOChronology.periodEras());
         
         List<PeriodUnit> test = new ArrayList<PeriodUnit>(list);
+        Collections.shuffle(test);
+        Collections.sort(test);
+        assertEquals(test, list);
+        // repeat for more randomness
+        Collections.shuffle(test);
+        Collections.sort(test);
+        assertEquals(test, list);
+    }
+
+    public void test_compareTo_fields() {
+        List<CalendricalRule<?>> list = new ArrayList<CalendricalRule<?>>();
+        list.add(ISOChronology.nanoOfSecondRule());
+        list.add(ISOChronology.nanoOfDayRule());
+        list.add(ISOChronology.milliOfSecondRule());
+        list.add(ISOChronology.milliOfDayRule());
+        list.add(ISOChronology.secondOfMinuteRule());
+        list.add(ISOChronology.secondOfDayRule());
+        list.add(ISOChronology.minuteOfHourRule());
+        list.add(ISOChronology.clockHourOfAmPmRule());
+        list.add(ISOChronology.hourOfAmPmRule());
+        list.add(ISOChronology.clockHourOfAmPmDay());
+        list.add(ISOChronology.hourOfDayRule());
+        list.add(ISOChronology.amPmOfDayRule());
+        list.add(ISOChronology.dayOfWeekRule());
+        list.add(ISOChronology.dayOfMonthRule());
+        list.add(ISOChronology.dayOfYearRule());
+        list.add(ISOChronology.weekOfMonthRule());
+        list.add(ISOChronology.weekOfWeekBasedYearRule());
+        list.add(ISOChronology.weekOfYearRule());
+        list.add(ISOChronology.monthOfQuarterRule());
+        list.add(ISOChronology.monthOfYearRule());
+        list.add(ISOChronology.quarterOfYearRule());
+        list.add(ISOChronology.weekBasedYearRule());
+        list.add(ISOChronology.yearRule());
+        
+        List<CalendricalRule<?>> test = new ArrayList<CalendricalRule<?>>(list);
         Collections.shuffle(test);
         Collections.sort(test);
         assertEquals(test, list);
