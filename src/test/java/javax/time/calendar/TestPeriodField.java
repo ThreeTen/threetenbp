@@ -573,17 +573,17 @@ public class TestPeriodField {
     public void test_compareTo() {
         PeriodField a = PeriodField.of(5, DAYS);
         PeriodField b = PeriodField.of(6, DAYS);
-        assertEquals(0, a.compareTo(a));
-        assertEquals(-1, a.compareTo(b));
-        assertEquals(1, b.compareTo(a));
+        assertEquals(a.compareTo(a), 0);
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
     }
 
     public void test_compareTo_differentUnits() {
         PeriodField a = PeriodField.of(6 * 60, MINUTES);  // longer than 5 hours
         PeriodField b = PeriodField.of(5, HOURS);
-        assertEquals(0, a.compareTo(a));
-        assertEquals(-1, a.compareTo(b));
-        assertEquals(1, b.compareTo(a));
+        assertEquals(0, a.compareTo(a), 0);
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
@@ -598,19 +598,19 @@ public class TestPeriodField {
     public void test_equals() {
         PeriodField a = PeriodField.of(5, DAYS);
         PeriodField b = PeriodField.of(6, DAYS);
-        assertEquals(true, a.equals(a));
-        assertEquals(false, a.equals(b));
-        assertEquals(false, b.equals(a));
+        assertEquals(a.equals(a), true);
+        assertEquals(a.equals(b), false);
+        assertEquals(b.equals(a), false);
     }
 
     public void test_equals_null() {
         PeriodField test = PeriodField.of(5, DAYS);
-        assertEquals(false, test.equals(null));
+        assertEquals(test.equals(null), false);
     }
 
     public void test_equals_otherClass() {
         PeriodField test = PeriodField.of(5, DAYS);
-        assertEquals(false, test.equals(""));
+        assertEquals(test.equals(""), false);
     }
 
     //-----------------------------------------------------------------------
@@ -620,9 +620,9 @@ public class TestPeriodField {
         PeriodField a = PeriodField.of(5, DAYS);
         PeriodField b = PeriodField.of(6, DAYS);
         PeriodField c = PeriodField.of(5, HOURS);
-        assertEquals(true, a.hashCode() == a.hashCode());
-        assertEquals(false, a.hashCode() == b.hashCode());
-        assertEquals(false, a.hashCode() == c.hashCode());
+        assertEquals(a.hashCode() == a.hashCode(), true);
+        assertEquals(a.hashCode() == b.hashCode(), false);
+        assertEquals(a.hashCode() == c.hashCode(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -630,9 +630,9 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     public void test_toString() {
         PeriodField test5 = PeriodField.of(5, DAYS);
-        assertEquals("5 Days", test5.toString());
+        assertEquals(test5.toString(), "5 Days");
         PeriodField testM1 = PeriodField.of(-1, MONTHS);
-        assertEquals("-1 Months", testM1.toString());
+        assertEquals(testM1.toString(), "-1 Months");
     }
 
 }
