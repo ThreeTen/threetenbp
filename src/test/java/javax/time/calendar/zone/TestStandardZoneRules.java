@@ -334,7 +334,6 @@ public class TestStandardZoneRules {
         }
     }
 
-    @SuppressWarnings("null")
     public void test_London_getTransitions() {
         StandardZoneRules test = europeLondon();
         List<ZoneOffsetTransition> trans = test.getTransitions();
