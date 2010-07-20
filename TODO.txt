@@ -84,7 +84,6 @@ Date/Time formatting
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
-- Use public factories for ZOT and ZOTR rather than protected methods in ZRules
 - don't use Local Mean Time (or anything before 1900?)
 - SPI for names
 # some zones have transitions where only the name changes - America/Resolute
@@ -228,4 +227,5 @@ EDR released
  - SPI and zone providers
 - TimeZone special factory to create unavailable instances
  0.6.2 released
+- Use public factories for ZOT and ZOTR rather than protected methods in ZRules
  
