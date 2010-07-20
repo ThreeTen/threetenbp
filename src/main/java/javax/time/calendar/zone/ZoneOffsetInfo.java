@@ -32,7 +32,6 @@
 package javax.time.calendar.zone;
 
 import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
 
 /**
@@ -71,33 +70,41 @@ public final class ZoneOffsetInfo {
     private final ZoneOffsetTransition transition;
 
     /**
-     * Constructor for handling a simple single offset.
+     * Creates an instance handling a simple single offset.
+     * <p>
+     * Applications should normally obtain an instance from {@link ZoneRules}.
+     * This constructor is intended for use by implementors of {@code ZoneRules}.
+     * <p>
+     * One, and only one, of the {@code offset} or {@code transition} parameters must be specified.
      *
-     * @param dateTime  the date-time that this info applies to, not null
+     * @param dateTime  the local date-time that this info applies to, not null
+     * @param offset  the offset applicable at the date-time
+     * @param transition  the details of the transition including the offset before and after
+     */
+    public static ZoneOffsetInfo of(
+            LocalDateTime dateTime,
+            ZoneOffset offset,
+            ZoneOffsetTransition transition) {
+        ZoneRules.checkNotNull(dateTime, "LocalDateTime must not be null");
+        if ((offset == null && transition == null) || (offset != null && transition != null)) {
+            throw new IllegalArgumentException("One, but not both, of offset or transition must be specified");
+        }
+        return new ZoneOffsetInfo(dateTime, offset, transition);
+    }
+
+    /**
+     * Creates an instance handling a simple single offset.
+     *
+     * @param dateTime  the local date-time that this info applies to, not null
      * @param offset  the offset applicable at the date-time, not null
      */
     ZoneOffsetInfo(
             LocalDateTime dateTime,
-            ZoneOffset offset) {
+            ZoneOffset offset,
+            ZoneOffsetTransition transition) {
         this.dateTime = dateTime;
         this.offset = offset;
-        this.transition = null;
-    }
-
-    /**
-     * Constructor for handling a transition.
-     *
-     * @param dateTime  the date-time that this info applies to, not null
-     * @param cutoverDateTime  the date-time of the cutover with the offset before, not null
-     * @param offsetAfter  the offset applicable after the cutover gap/overlap, not null
-     */
-    ZoneOffsetInfo(
-            LocalDateTime dateTime,
-            OffsetDateTime cutoverDateTime,
-            ZoneOffset offsetAfter) {
-        this.dateTime = dateTime;
-        this.offset = null;
-        this.transition = new ZoneOffsetTransition(cutoverDateTime, offsetAfter);
+        this.transition = transition;
     }
 
     //-----------------------------------------------------------------------
@@ -150,12 +157,9 @@ public final class ZoneOffsetInfo {
     /**
      * Gets an estimated offset for the local date-time.
      * <p>
-     * The date-time will typically have a single valid offset.
-     * During a gap, there will be no valid offsets.
-     * During an overlap, there will be two valid offsets.
-     * This method returns the {@link #getOffset() single offset} in the normal
-     * case, and the {@link ZoneOffsetTransition#getOffsetAfter() offset after}
-     * when a transition is occurring.
+     * This returns an offset that applies at the local date-time or just after.
+     * During a gap the offset after the gap will be returned.
+     * During an overlap the offset after the transition will be returned.
      *
      * @return a suitable estimated offset, never null
      */
@@ -219,7 +223,7 @@ public final class ZoneOffsetInfo {
         StringBuilder buf = new StringBuilder();
         buf.append("OffsetInfo[")
             .append(dateTime)
-            .append(':')
+            .append(' ')
             .append(isTransition() ? transition : offset)
             .append(']');
         return buf.toString();

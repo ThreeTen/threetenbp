@@ -35,10 +35,7 @@ import java.util.List;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
@@ -46,7 +43,6 @@ import javax.time.calendar.Period;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
-import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 
 /**
  * The rules defining how the zone offset varies for a single time-zone.
@@ -320,84 +316,6 @@ public abstract class ZoneRules {
     public boolean isValidDateTime(OffsetDateTime dateTime) {
         ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
         return info.isValidOffset(dateTime.getOffset());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Creates an offset info for the normal case where only one offset is valid.
-     * <p>
-     * This protected method provides the means for subclasses to create instances
-     * of {@link ZoneOffsetInfo}. This is the only way to create that class.
-     *
-     * @param dateTime  the date-time that this info applies to, not null
-     * @param offset  the zone offset, not null
-     * @return the created offset info, never null
-     */
-    protected ZoneOffsetInfo createOffsetInfo(LocalDateTime dateTime, ZoneOffset offset) {
-        checkNotNull(dateTime, "LocalDateTime must not be null");
-        checkNotNull(offset, "ZoneOffset must not be null");
-        return new ZoneOffsetInfo(dateTime, offset);
-    }
-
-    /**
-     * Creates an offset info for a gap, where there are no valid offsets,
-     * or an overlap, where there are two valid offsets.
-     *
-     * @param dateTime  the date-time that this info applies to, not null
-     * @param cutoverDateTime  the date-time of the discontinuity using the offset before, not null
-     * @param offsetAfter  the offset after the transition, not null
-     * @return the created offset info, never null
-     */
-    protected ZoneOffsetInfo createOffsetInfo(
-            LocalDateTime dateTime,
-            OffsetDateTime cutoverDateTime,
-            ZoneOffset offsetAfter) {
-        
-        checkNotNull(dateTime, "LocalDateTime must not be null");
-        checkNotNull(cutoverDateTime, "OffsetDateTime must not be null");
-        checkNotNull(offsetAfter, "ZoneOffset must not be null");
-        return new ZoneOffsetInfo(dateTime, cutoverDateTime, offsetAfter);
-    }
-
-    /**
-     * Creates a zone offset transition.
-     *
-     * @param transition  the transition date-time with the offset before the discontinuity, not null
-     * @param offsetAfter  the offset at and after the discontinuity, not null
-     * @return the created transition, never null
-     */
-    protected ZoneOffsetTransition createTransition(OffsetDateTime transition, ZoneOffset offsetAfter) {
-        return new ZoneOffsetTransition(transition, offsetAfter);
-    }
-
-    /**
-     * Creates a zone offset transition rule.
-     *
-     * @param month  the month of the month-day of the first day of the cutover week, not null
-     * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
-     *  day or later, negative if the week is that day or earlier, counting from the last day of the month
-     * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
-     * @param time  the cutover time in the 'before' offset, not null
-     * @param timeEndOfDay  whether the time is midnight end of day
-     * @param timeDefnition  how to interpret the cutover
-     * @param standardOffset  the standard offset in force at the cutover, not null
-     * @param offsetBefore  the offset before the cutover, not null
-     * @param offsetAfter  the offset after the cutover, not null
-     * @return the created transition rule, never null
-     */
-    protected ZoneOffsetTransitionRule createTransitionRule(
-            MonthOfYear month,
-            int dayOfMonthIndicator,
-            DayOfWeek dayOfWeek,
-            LocalTime time,
-            boolean timeEndOfDay,
-            TimeDefinition timeDefnition,
-            ZoneOffset standardOffset,
-            ZoneOffset offsetBefore,
-            ZoneOffset offsetAfter) {
-        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek,
-                time, timeEndOfDay, timeDefnition,
-                standardOffset, offsetBefore, offsetAfter);
     }
 
     //-----------------------------------------------------------------------

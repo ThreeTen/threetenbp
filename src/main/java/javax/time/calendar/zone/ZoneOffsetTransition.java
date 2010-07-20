@@ -65,24 +65,40 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      */
     private static final long serialVersionUID = 1L;
     /**
-     * The transition date-time with the offset before the discontinuity.
+     * The transition date-time with the offset before the transition.
      */
     private final OffsetDateTime transition;
     /**
-     * The transition date-time with the offset after the discontinuity.
+     * The transition date-time with the offset after the transition.
      */
     private final OffsetDateTime transitionAfter;
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor.
+     * Obtains an instance defining a transition between two offsets.
+     * <p>
+     * Applications should normally obtain an instance from {@link ZoneRules}.
+     * This constructor is intended for use by implementors of {@code ZoneRules}.
      *
-     * @param transition  the transition date-time with the offset before the discontinuity, not null
-     * @param offsetAfter  the offset at and after the discontinuity, not null
+     * @param transition  the transition date-time with the offset before the transition, not null
+     * @param offsetAfter  the offset at and after the transition, not null
      */
-    ZoneOffsetTransition(OffsetDateTime transition, ZoneOffset offsetAfter) {
+    public static ZoneOffsetTransition of(OffsetDateTime transition, ZoneOffset offsetAfter) {
         ZoneRules.checkNotNull(transition, "OffsetDateTime must not be null");
         ZoneRules.checkNotNull(transition, "ZoneOffset must not be null");
+        if (transition.getOffset().equals(offsetAfter)) {
+            throw new IllegalArgumentException("Offsets must not be equal");
+        }
+        return new ZoneOffsetTransition(transition, offsetAfter);
+    }
+
+    /**
+     * Creates an instance defining a transition between two offsets.
+     *
+     * @param transition  the transition date-time with the offset before the transition, not null
+     * @param offsetAfter  the offset at and after the transition, not null
+     */
+    ZoneOffsetTransition(OffsetDateTime transition, ZoneOffset offsetAfter) {
         this.transition = transition;
         this.transitionAfter = transition.withOffsetSameInstant(offsetAfter);  // cached for performance
     }
@@ -118,7 +134,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
         long epochSeconds = Ser.readEpochSecs(in);
         ZoneOffset before = Ser.readOffset(in);
         ZoneOffset after = Ser.readOffset(in);
-        return new ZoneOffsetTransition(OffsetDateTime.ofEpochSeconds(epochSeconds, before), after);
+        return ZoneOffsetTransition.of(OffsetDateTime.ofEpochSeconds(epochSeconds, before), after);
     }
 
     //-----------------------------------------------------------------------

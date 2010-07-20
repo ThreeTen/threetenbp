@@ -61,16 +61,21 @@ public class TestZoneOffsetTransition {
     private static final ZoneOffset OFFSET_0400 = ZoneOffset.ofHours(4);
 
     //-----------------------------------------------------------------------
-    // constructor
+    // factory
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_constructor_nullTransition() {
-        new ZoneOffsetTransition(null, OFFSET_0200);
+    public void test_factory_nullTransition() {
+        ZoneOffsetTransition.of(null, OFFSET_0200);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_constructor_nullOffset() {
-        new ZoneOffsetTransition(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), null);
+    public void test_factory_nullOffset() {
+        ZoneOffsetTransition.of(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), null);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_sameOffset() {
+        ZoneOffsetTransition.of(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), OFFSET_0200);
     }
 
     //-----------------------------------------------------------------------

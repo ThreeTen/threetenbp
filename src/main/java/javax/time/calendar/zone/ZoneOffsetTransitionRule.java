@@ -115,7 +115,10 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     private final ZoneOffset offsetAfter;
 
     /**
-     * Constructor.
+     * Creates an instance defining the yearly rule to create transitions between two offsets.
+     * <p>
+     * Applications should normally obtain an instance from {@link ZoneRules}.
+     * This constructor is intended for use by implementors of {@code ZoneRules}.
      *
      * @param month  the month of the month-day of the first day of the cutover week, not null
      * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
@@ -131,7 +134,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @throws IllegalArgumentException if the day of month indicator is invalid
      * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
      */
-    ZoneOffsetTransitionRule(
+    public static ZoneOffsetTransitionRule of(
             MonthOfYear month,
             int dayOfMonthIndicator,
             DayOfWeek dayOfWeek,
@@ -153,6 +156,36 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         if (timeEndOfDay && time.equals(LocalTime.MIDNIGHT) == false) {
             throw new IllegalArgumentException("Time must be midnight when end of day flag is true");
         }
+        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefnition, standardOffset, offsetBefore, offsetAfter);
+    }
+
+    /**
+     * Creates an instance defining the yearly rule to create transitions between two offsets.
+     *
+     * @param month  the month of the month-day of the first day of the cutover week, not null
+     * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
+     *  day or later, negative if the week is that day or earlier, counting from the last day of the month,
+     *  from -28 to 31 excluding 0
+     * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
+     * @param time  the cutover time in the 'before' offset, not null
+     * @param timeEndOfDay  whether the time is midnight at the end of day
+     * @param timeDefnition  how to interpret the cutover
+     * @param standardOffset  the standard offset in force at the cutover, not null
+     * @param offsetBefore  the offset before the cutover, not null
+     * @param offsetAfter  the offset after the cutover, not null
+     * @throws IllegalArgumentException if the day of month indicator is invalid
+     * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
+     */
+    public ZoneOffsetTransitionRule(
+            MonthOfYear month,
+            int dayOfMonthIndicator,
+            DayOfWeek dayOfWeek,
+            LocalTime time,
+            boolean timeEndOfDay,
+            TimeDefinition timeDefnition,
+            ZoneOffset standardOffset,
+            ZoneOffset offsetBefore,
+            ZoneOffset offsetAfter) {
         this.month = month;
         this.dom = (byte) dayOfMonthIndicator;
         this.dow = dayOfWeek;
@@ -233,7 +266,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         ZoneOffset std = (stdByte == 255 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds((stdByte - 128) * 900));
         ZoneOffset before = (beforeByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getAmountSeconds() + beforeByte * 1800));
         ZoneOffset after = (afterByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getAmountSeconds() + afterByte * 1800));
-        return new ZoneOffsetTransitionRule(month, dom, dow, time, timeByte == 24, defn, std, before, after);
+        return ZoneOffsetTransitionRule.of(month, dom, dow, time, timeByte == 24, defn, std, before, after);
     }
 
     //-----------------------------------------------------------------------

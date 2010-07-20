@@ -318,7 +318,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         int index  = Arrays.binarySearch(savingsLocalTransitions, dt);
         if (index == -1) {
             // before first transition
-            return createOffsetInfo(dt, wallOffsets[0]);
+            return new ZoneOffsetInfo(dt, wallOffsets[0], null);
         }
         if (index < 0) {
             // switch negative insert position to start of matched range
@@ -336,14 +336,14 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             ZoneOffset offsetAfter = wallOffsets[index / 2 + 1];
             if (offsetAfter.getAmountSeconds() > offsetBefore.getAmountSeconds()) {
                 // gap
-                return createOffsetInfo(dt, OffsetDateTime.of(dtBefore, offsetBefore), offsetAfter);
+                return new ZoneOffsetInfo(dt, null, new ZoneOffsetTransition(OffsetDateTime.of(dtBefore, offsetBefore), offsetAfter));
             } else {
                 // overlap
-                return createOffsetInfo(dt, OffsetDateTime.of(dtAfter, offsetBefore), offsetAfter);
+                return new ZoneOffsetInfo(dt, null, new ZoneOffsetTransition(OffsetDateTime.of(dtAfter, offsetBefore), offsetAfter));
             }
         } else {
             // normal (neither gap or overlap)
-            return createOffsetInfo(dt, wallOffsets[index / 2 + 1]);
+            return new ZoneOffsetInfo(dt, wallOffsets[index / 2 + 1], null);
         }
     }
 
@@ -358,21 +358,21 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     private ZoneOffsetInfo findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
         if (trans.isGap()) {
             if (dt.isBefore(trans.getLocal())) {
-                return createOffsetInfo(dt, trans.getOffsetBefore());
+                return new ZoneOffsetInfo(dt, trans.getOffsetBefore(), null);
             }
             if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
-                return createOffsetInfo(dt, trans.getDateTime(), trans.getOffsetAfter());
+                return new ZoneOffsetInfo(dt, null, trans);
             } else {
-                return createOffsetInfo(dt, trans.getOffsetAfter());
+                return new ZoneOffsetInfo(dt, trans.getOffsetAfter(), null);
             }
         } else {
             if (dt.isBefore(trans.getLocal()) == false) {
-                return createOffsetInfo(dt, trans.getOffsetAfter());
+                return new ZoneOffsetInfo(dt, trans.getOffsetAfter(), null);
             }
             if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
-                return createOffsetInfo(dt, trans.getOffsetBefore());
+                return new ZoneOffsetInfo(dt, trans.getOffsetBefore(), null);
             } else {
-                return createOffsetInfo(dt, trans.getDateTime(), trans.getOffsetAfter());
+                return new ZoneOffsetInfo(dt, null, trans);
             }
         }
     }
@@ -454,7 +454,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         }
         Instant transitionInstant = Instant.ofEpochSeconds(savingsInstantTransitions[index]);
         OffsetDateTime trans = OffsetDateTime.ofInstant(transitionInstant, wallOffsets[index]);
-        return createTransition(trans, wallOffsets[index + 1]);
+        return new ZoneOffsetTransition(trans, wallOffsets[index + 1]);
     }
 
     /**
@@ -497,7 +497,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         }
         Instant transitionInstant = Instant.ofEpochSeconds(savingsInstantTransitions[index - 1]);
         OffsetDateTime trans = OffsetDateTime.ofInstant(transitionInstant, wallOffsets[index - 1]);
-        return createTransition(trans, wallOffsets[index]);
+        return new ZoneOffsetTransition(trans, wallOffsets[index]);
     }
 
     /**
@@ -515,7 +515,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
             Instant instant = Instant.ofEpochSeconds(savingsInstantTransitions[i]);
             OffsetDateTime trans = OffsetDateTime.ofInstant(instant, wallOffsets[i]);
-            list.add(createTransition(trans, wallOffsets[i + 1]));
+            list.add(new ZoneOffsetTransition(trans, wallOffsets[i + 1]));
         }
         return list;
     }

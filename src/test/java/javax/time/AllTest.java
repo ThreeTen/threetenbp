@@ -104,6 +104,7 @@ import javax.time.calendar.i18n.TestInterCalendarSystem;
 import javax.time.calendar.zone.TestFixedZoneRules;
 import javax.time.calendar.zone.TestStandardZoneRules;
 import javax.time.calendar.zone.TestTZDBZoneRulesCompiler;
+import javax.time.calendar.zone.TestZoneOffsetInfo;
 import javax.time.calendar.zone.TestZoneOffsetTransition;
 import javax.time.calendar.zone.TestZoneOffsetTransitionRule;
 import javax.time.calendar.zone.TestZoneRules;
@@ -211,6 +212,7 @@ public class AllTest {
             TestFixedZoneRules.class,
             TestStandardZoneRules.class,
             TestTZDBZoneRulesCompiler.class,
+            TestZoneOffsetInfo.class,
             TestZoneOffsetTransition.class,
             TestZoneOffsetTransitionRule.class,
             TestZoneRules.class,

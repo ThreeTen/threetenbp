@@ -60,8 +60,8 @@ public class TestZoneRules {
         ZoneRules test = ZoneRules.ofFixed(OFFSET_1_15);
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getOffset(Instant.EPOCH), OFFSET_1_15);
-        assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01.atZone(TimeZone.UTC).toInstant()), new ZoneOffsetInfo(DATE_TIME_2008_01_01.plusHours(1).plusMinutes(15), OFFSET_1_15));
-        assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01), new ZoneOffsetInfo(DATE_TIME_2008_01_01, OFFSET_1_15));
+        assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01.atZone(TimeZone.UTC).toInstant()), new ZoneOffsetInfo(DATE_TIME_2008_01_01.plusHours(1).plusMinutes(15), OFFSET_1_15, null));
+        assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01), new ZoneOffsetInfo(DATE_TIME_2008_01_01, OFFSET_1_15, null));
         assertEquals(test.getStandardOffset(Instant.EPOCH), OFFSET_1_15);
         assertEquals(test.getTransitionRules().size(), 0);
         assertEquals(test.getTransitions().size(), 0);
