@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.calendar.LocalDate;
 
 /**
- * An instantaneous point on the time-line measured in the UTC post-1972 time-scale.
+ * An instantaneous point on the time-line measured in the UTC time-scale.
  * <p>
  * Most of the Time Framework for Java works on the assumption that the time-line is
  * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
@@ -52,6 +52,9 @@ import javax.time.calendar.LocalDate;
  * The {@link UTCRules} class models which dates have leap-seconds.
  * Alternative implementations of the rules may be supplied.
  * <p>
+ * The default rules implementation fixes the start point of UTC as 1972.
+ * This date was chosen as UTC was more complex before 1972.
+ * <p>
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
@@ -64,16 +67,16 @@ import javax.time.calendar.LocalDate;
  * The actual length is not predictable and can only be determined by measurement.
  * The UT1 time-scale captures these measurements.
  * <p>
- * The UTC time-scale is a standard approach to bundle up all the additional fractions of a second
- * into whole seconds, known as <i>leap-seconds</i>.
+ * The UTC time-scale is a standard approach to bundle up all the additional fractions
+ * of a second from UT1 into whole seconds, known as <i>leap-seconds</i>.
  * A leap-second may be added or removed depending on the Earth's rotational changes.
  * If it is removed, then the relevant date will have no time of 23:59:59.
  * If it is added, then the relevant date will have an extra second of 23:59:60.
  * <p>
  * The modern UTC time-scale was introduced in 1972, introducing the concept of whole leap-seconds.
  * Between 1958 and 1972, the definition of UTC was complex, with minor sub-second leaps and
- * alterations to the length of seconds. This class only implements UTC from 1972.
- * Prior to that date, this class fixes the TAI offset at 10 seconds.
+ * alterations to the length of seconds. This default rules only implement UTC from 1972.
+ * Prior to that date, they fix the TAI offset at 10 seconds.
  * <p>
  * The standard Java epoch of 1970-01-01 is prior to the introduction of whole leap-seconds into UTC in 1972.
  * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
