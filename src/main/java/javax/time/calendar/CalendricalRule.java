@@ -215,6 +215,7 @@ public abstract class CalendricalRule<T>
      *
      * @param value  the value to reify, may be null
      * @return the type-cast input value, may be null
+     * @throws ClassCastException if the value is not of the reified type
      */
     @SuppressWarnings("unchecked")
     public final T reify(Object value) {
