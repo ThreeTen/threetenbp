@@ -55,6 +55,10 @@ import javax.time.calendar.LocalDate;
  * The default rules implementation fixes the start point of UTC as 1972.
  * This date was chosen as UTC was more complex before 1972.
  * <p>
+ * The duration between two points on the UTC time-scale is calculated solely using this class.
+ * Do not use the {@code between} method on {@code Duration} as that will lose information.
+ * Instead use {@link #durationUntil(UTCInstant)} on this class.
+ * <p>
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.

@@ -49,6 +49,10 @@ import java.io.Serializable;
  * easy ways to obtain an accurate TAI instant, it is relatively easy to obtain a GPS instant.
  * GPS and TAI differ by the fixed amount of 19 seconds.
  * <p>
+ * The duration between two points on the TAI time-scale is calculated solely using this class.
+ * Do not use the {@code between} method on {@code Duration} as that will lose information.
+ * Instead use {@link #durationUntil(TAIInstant)} on this class.
+ * <p>
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
