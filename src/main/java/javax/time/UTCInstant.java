@@ -267,6 +267,8 @@ public final class UTCInstant
      * The Modified Julian Day count is a simple incrementing count of days
      * where day 0 is 1858-11-17.
      * The nanosecond part of the day is returned by {@code getNanosOfDay}.
+     * <p>
+     * A Modified Julian Day varies in length, being one second longer on a leap day.
      *
      * @return the Modified Julian Day based on the epoch 1858-11-17
      */
