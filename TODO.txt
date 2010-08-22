@@ -37,6 +37,7 @@ Duration
 
 Instant
 - toString/parse
+- Remove InstantProvider from UTC/TAI
 
 Time scales
 - Obtain rules from TZDB rather than a file?
@@ -227,5 +228,9 @@ EDR released
  - SPI and zone providers
 - TimeZone special factory to create unavailable instances
  0.6.2 released
+- nanoOfDay rule / epochDays rule
 - Use public factories for ZOT and ZOTR rather than protected methods in ZRules
+
+Not doing
+- Use nanoOfDay rule in LocalTime factory
  
