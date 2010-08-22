@@ -140,8 +140,8 @@ public final class UTCInstant
      * @return the UTC instant, never null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
-    public static UTCInstant ofModifiedJulianDay(long mjDay, long nanoOfDay) {
-        return ofModifiedJulianDay(mjDay, nanoOfDay, UTCRules.system());
+    public static UTCInstant ofModifiedJulianDays(long mjDay, long nanoOfDay) {
+        return ofModifiedJulianDays(mjDay, nanoOfDay, UTCRules.system());
     }
 
     /**
@@ -162,7 +162,7 @@ public final class UTCInstant
      * @return the UTC instant, never null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
-    public static UTCInstant ofModifiedJulianDay(long mjDay, long nanoOfDay, UTCRules rules) {
+    public static UTCInstant ofModifiedJulianDays(long mjDay, long nanoOfDay, UTCRules rules) {
         Instant.checkNotNull(rules, "LeapSecondRules must not be null");
         long leapSecs = rules.getLeapSecondAdjustment(mjDay);
         long maxNanos = (SECS_PER_DAY + leapSecs) * NANOS_PER_SECOND;
@@ -272,7 +272,7 @@ public final class UTCInstant
      *
      * @return the Modified Julian Day based on the epoch 1858-11-17
      */
-    public long getModifiedJulianDay() {
+    public long getModifiedJulianDays() {
         return mjDay;
     }
 

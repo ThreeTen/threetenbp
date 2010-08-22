@@ -172,7 +172,7 @@ public abstract class UTCRules {
      * @throws ArithmeticException if the capacity is exceeded
      */
     protected TAIInstant convertToTAI(UTCInstant utcInstant) {
-        long mjd = utcInstant.getModifiedJulianDay();
+        long mjd = utcInstant.getModifiedJulianDays();
         long nod = utcInstant.getNanoOfDay();
         long taiUtcDaySeconds = MathUtils.safeMultiply(mjd - OFFSET_MJD_TAI, SECS_PER_DAY);
         long taiSecs = MathUtils.safeAdd(taiUtcDaySeconds, nod / NANOS_PER_SECOND + getTAIOffset(mjd));
@@ -214,7 +214,7 @@ public abstract class UTCRules {
      * @throws ArithmeticException if the capacity is exceeded
      */
     protected Instant convertToInstant(UTCInstant utcInstant) {
-        long mjd = utcInstant.getModifiedJulianDay();
+        long mjd = utcInstant.getModifiedJulianDays();
         long utcNanos = utcInstant.getNanoOfDay();
         long epochDay = MathUtils.safeSubtract(mjd, OFFSET_MJD_EPOCH);
         long epochSecs = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
@@ -258,7 +258,7 @@ public abstract class UTCRules {
         if (leapAdj != 0 && slsNanos >= startSlsNanos) {
             utcNanos = startSlsNanos + ((slsNanos - startSlsNanos) * 1000) / (1000 - leapAdj);  // apply UTC-SLS mapping
         }
-        return UTCInstant.ofModifiedJulianDay(mjd, utcNanos, this);
+        return UTCInstant.ofModifiedJulianDays(mjd, utcNanos, this);
     }
 
     //-----------------------------------------------------------------------

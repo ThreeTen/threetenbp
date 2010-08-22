@@ -1307,7 +1307,7 @@ public final class LocalDate
      *
      * @return the Modified Julian Day equivalent to this date
      */
-    public long toModifiedJulianDays() {  // TODO: rename ,drop s
+    public long toModifiedJulianDays() {
         return toYearZeroDays() - ISOChronology.DAYS_0000_TO_MJD_EPOCH;
     }
 

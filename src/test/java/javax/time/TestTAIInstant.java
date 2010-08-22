@@ -168,7 +168,7 @@ public class TestTAIInstant {
     public void factory_of_UTCInstant() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
-                TAIInstant test = TAIInstant.of(UTCInstant.ofModifiedJulianDay(36204 + i, j * 1000000000L + 2L));
+                TAIInstant test = TAIInstant.of(UTCInstant.ofModifiedJulianDays(36204 + i, j * 1000000000L + 2L));
                 assertEquals(test.getTAISeconds(), i * 24 * 60 * 60 + j + 10);
                 assertEquals(test.getNanoOfSecond(), 2);
             }
@@ -627,7 +627,7 @@ public class TestTAIInstant {
     public void test_toUTCInstant() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
-                UTCInstant expected = UTCInstant.ofModifiedJulianDay(36204 + i, j * 1000000000L + 2L);
+                UTCInstant expected = UTCInstant.ofModifiedJulianDays(36204 + i, j * 1000000000L + 2L);
                 TAIInstant test = TAIInstant.ofTAISeconds(i * 24 * 60 * 60 + j + 10, 2);
                 assertEquals(test.toUTCInstant(), expected);
             }
