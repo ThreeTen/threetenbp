@@ -259,6 +259,21 @@ public class TestISOChronology {
         serialize(rule);
     }
 
+    public void test_clockHourOfDayRule() throws Exception {
+        DateTimeFieldRule<Integer> rule = ISOChronology.clockHourOfDayRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
+        assertEquals(rule.getID(), "ISO.ClockHourOfDay");
+        assertEquals(rule.getName(), "ClockHourOfDay");
+        assertEquals(rule.getMinimumValue(), 1);
+        assertEquals(rule.getLargestMinimumValue(), 1);
+        assertEquals(rule.getMaximumValue(), 24);
+        assertEquals(rule.getSmallestMaximumValue(), 24);
+        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
+        serialize(rule);
+    }
+
     //-----------------------------------------------------------------------
     // eras
     //-----------------------------------------------------------------------
@@ -563,7 +578,7 @@ public class TestISOChronology {
         list.add(ISOChronology.minuteOfHourRule());
         list.add(ISOChronology.clockHourOfAmPmRule());
         list.add(ISOChronology.hourOfAmPmRule());
-        list.add(ISOChronology.clockHourOfAmPmDay());
+        list.add(ISOChronology.clockHourOfDayRule());
         list.add(ISOChronology.hourOfDayRule());
         list.add(ISOChronology.amPmOfDayRule());
         list.add(ISOChronology.dayOfWeekRule());

@@ -615,7 +615,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the clock-hour-of-day field, never null
      */
-    public static DateTimeFieldRule<Integer> clockHourOfAmPmDay() {
+    public static DateTimeFieldRule<Integer> clockHourOfDayRule() {
         return CLOCK_HOUR_OF_DAY;
     }
 
