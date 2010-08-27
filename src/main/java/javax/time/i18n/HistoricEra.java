@@ -34,6 +34,8 @@ package javax.time.i18n;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -57,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  *
  * @author Stephen Colebourne
  */
-public enum HistoricEra {
+public enum HistoricEra implements Calendrical {
 
     /**
      * The singleton instance for the era BCE - Before Common Era.
@@ -106,6 +108,22 @@ public enum HistoricEra {
      */
     public int getValue() {
         return ordinal();
+    }
+
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This returns the one of the era values if the type of the rule
+     * is {@code HistoricEra}. Other rules will return {@code null}.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule.getReifiedType() != HistoricEra.class) {
+            return null;
+        }
+        return rule.reify(this);
     }
 
     //-----------------------------------------------------------------------
