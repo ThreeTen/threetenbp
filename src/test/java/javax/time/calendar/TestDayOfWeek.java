@@ -105,6 +105,16 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(DayOfWeek.MONDAY.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.THURSDAY.get(ISOChronology.dayOfWeekRule()), DayOfWeek.THURSDAY);
+        
+        assertEquals(DayOfWeek.MONDAY.get(ISOChronology.monthOfYearRule()), null);
+    }
+
+    //-----------------------------------------------------------------------
     // getShortText()
     //-----------------------------------------------------------------------
     public void test_getShortText_US() {

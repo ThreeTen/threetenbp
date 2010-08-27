@@ -61,7 +61,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear {
+public enum MonthOfYear implements Calendrical {
 
     /**
      * The singleton instance for the month of January.
@@ -181,6 +181,22 @@ public enum MonthOfYear {
      */
     public int getValue() {
         return ordinal() + 1;
+    }
+
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This returns the one of the month values if the type of the rule
+     * is {@code MonthOfYear}. Other rules will return {@code null}.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule.getReifiedType() != MonthOfYear.class) {
+            return null;
+        }
+        return rule.reify(this);
     }
 
     //-----------------------------------------------------------------------
@@ -339,7 +355,7 @@ public enum MonthOfYear {
      * @return the next month-of-year, never null
      */
     public MonthOfYear next() {
-        return values()[(ordinal() + 1) % 12];
+        return roll(1);
     }
 
     /**
@@ -351,7 +367,7 @@ public enum MonthOfYear {
      * @return the previous month-of-year, never null
      */
     public MonthOfYear previous() {
-        return values()[(ordinal() + 12 - 1) % 12];
+        return roll(-1);
     }
 
     /**

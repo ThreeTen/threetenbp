@@ -85,6 +85,16 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(MonthOfYear.JANUARY.get(ISOChronology.monthOfYearRule()), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.AUGUST.get(ISOChronology.monthOfYearRule()), MonthOfYear.AUGUST);
+        
+        assertEquals(MonthOfYear.JANUARY.get(ISOChronology.quarterOfYearRule()), null);
+    }
+
+    //-----------------------------------------------------------------------
     // getShortText()
     //-----------------------------------------------------------------------
     public void test_getShortText_US() {

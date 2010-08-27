@@ -60,7 +60,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek {
+public enum DayOfWeek implements Calendrical {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -168,6 +168,22 @@ public enum DayOfWeek {
      */
     public int getValue() {
         return ordinal() + 1;
+    }
+
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This returns the one of the day-of-week values if the type of the rule
+     * is {@code DayOfWeek}. Other rules will return {@code null}.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule.getReifiedType() != DayOfWeek.class) {
+            return null;
+        }
+        return rule.reify(this);
     }
 
     //-----------------------------------------------------------------------
@@ -281,7 +297,7 @@ public enum DayOfWeek {
      * @return the next day-of-week, never null
      */
     public DayOfWeek next() {
-        return values()[(ordinal() + 1) % 7];
+        return roll(1);
     }
 
     /**
@@ -293,7 +309,7 @@ public enum DayOfWeek {
      * @return the previous day-of-week, never null
      */
     public DayOfWeek previous() {
-        return values()[(ordinal() + 7 - 1) % 7];
+        return roll(-1);
     }
 
     /**

@@ -35,7 +35,8 @@ package javax.time.calendar;
  * A quarter-of-year, such as 'Q2'.
  * <p>
  * {@code QuarterOfYear} is an enum representing the 4 quarters of the year -
- * Q1, Q2, Q3 and Q4.
+ * Q1, Q2, Q3 and Q4. These are defined as January to March, April to June,
+ * July to September and October to December.
  * <p>
  * The calendrical framework requires date-time fields to have an {@code int} value.
  * The {@code int} value follows the quarter, from 1 (Q1) to 4 (Q4).
@@ -56,7 +57,7 @@ package javax.time.calendar;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear {
+public enum QuarterOfYear implements Calendrical {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -122,6 +123,22 @@ public enum QuarterOfYear {
         return ordinal() + 1;
     }
 
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This returns the one of the quarter values if the type of the rule
+     * is {@code QuarterOfYear}. Other rules will return {@code null}.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule.getReifiedType() != QuarterOfYear.class) {
+            return null;
+        }
+        return rule.reify(this);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Is this instance representing Q1, from January to March inclusive.
@@ -169,7 +186,7 @@ public enum QuarterOfYear {
      * @return the next quarter-of-year, never null
      */
     public QuarterOfYear next() {
-        return values()[(ordinal() + 1) % 4];
+        return roll(1);
     }
 
     /**
@@ -181,7 +198,7 @@ public enum QuarterOfYear {
      * @return the previous quarter-of-year, never null
      */
     public QuarterOfYear previous() {
-        return values()[(ordinal() + 4 - 1) % 4];
+        return roll(-1);
     }
 
     /**
