@@ -150,10 +150,12 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified by comparing the offset.
+     * Checks if this object equals another, comparing the offset.
+     * <p>
+     * The entire state of the object is compared.
      *
-     * @param otherRules  the other rules, null returns false
-     * @return true if this rules is the same as that specified
+     * @param other  the other object to compare to, null returns false
+     * @return true if equal
      */
     @Override
     public boolean equals(Object otherRules) {
@@ -167,9 +169,9 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     }
 
     /**
-     * A hash code for the rules object.
+     * Returns a suitable hash code.
      *
-     * @return a suitable hash code
+     * @return the hash code
      */
     @Override
     public int hashCode() {
@@ -178,9 +180,9 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the rules using the ID.
+     * Returns a string describing this object.
      *
-     * @return the rules ID, never null
+     * @return a string for debugging, never null
      */
     @Override
     public String toString() {

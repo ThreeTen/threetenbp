@@ -387,6 +387,8 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Creates a transition instance for the specified year.
+     * <p>
+     * Calculations are performed using the ISO-8601 chronology.
      *
      * @param year  the year to create a transition for, not null
      * @return the transition instance, never null
@@ -414,9 +416,11 @@ public final class ZoneOffsetTransitionRule implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instance equals another, comparing the entire set of rules.
+     * Checks if this object equals another.
+     * <p>
+     * The entire state of the object is compared.
      *
-     * @param otherRule  the other object to compare to, null returns false
+     * @param other  the other object to compare to, null returns false
      * @return true if equal
      */
     @Override
@@ -438,7 +442,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     }
 
     /**
-     * Gets the hash code, based on all the rules.
+     * Returns a suitable hash code.
      *
      * @return the hash code
      */
@@ -453,7 +457,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets a string describing this object.
+     * Returns a string describing this object.
      *
      * @return a string for debugging, never null
      */

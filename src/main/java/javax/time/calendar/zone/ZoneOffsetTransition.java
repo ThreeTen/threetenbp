@@ -265,7 +265,9 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instance equals another.
+     * Checks if this object equals another.
+     * <p>
+     * The entire state of the object is compared.
      *
      * @param other  the other object to compare to, null returns false
      * @return true if equal
@@ -284,7 +286,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     }
 
     /**
-     * Gets the hash code.
+     * Returns a suitable hash code.
      *
      * @return the hash code
      */
@@ -295,7 +297,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
 
     //-----------------------------------------------------------------------
     /**
-     * Gets a string describing this object.
+     * Returns a string describing this object.
      *
      * @return a string for debugging, never null
      */

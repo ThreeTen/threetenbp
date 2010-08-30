@@ -70,7 +70,7 @@ public final class ZoneOffsetInfo {
     private final ZoneOffsetTransition transition;
 
     /**
-     * Creates an instance handling a simple single offset.
+     * Creates an instance representing a simple single offset or a transition.
      * <p>
      * Applications should normally obtain an instance from {@link ZoneRules}.
      * This constructor is intended for use by implementors of {@code ZoneRules}.
@@ -185,10 +185,12 @@ public final class ZoneOffsetInfo {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified by comparing the offset.
+     * Checks if this object equals another.
+     * <p>
+     * The entire state of the object is compared.
      *
-     * @param otherInfo  the other info, null returns false
-     * @return true if this rules is the same as that specified
+     * @param other  the other object to compare to, null returns false
+     * @return true if equal
      */
     @Override
     public boolean equals(Object otherInfo) {
@@ -204,9 +206,9 @@ public final class ZoneOffsetInfo {
     }
 
     /**
-     * A hash code for the info object.
+     * A suitable hash code for this object.
      *
-     * @return a suitable hash code
+     * @return the hash code
      */
     @Override
     public int hashCode() {
@@ -214,7 +216,7 @@ public final class ZoneOffsetInfo {
     }
 
     /**
-     * Gets a string describing this object.
+     * Returns a string describing this object.
      *
      * @return a string for debugging, never null
      */

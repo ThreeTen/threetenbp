@@ -325,6 +325,8 @@ public abstract class ZoneRules {
      * Two rule sets are equal if they will always result in the same output
      * for any given input instant or date-time.
      * Rules from two different groups may return false even if they are in fact the same.
+     * <p>
+     * This definition should result in implementations comparing their entire state.
      *
      * @param otherRules  the other rules, null returns false
      * @return true if this rules is the same as that specified
@@ -333,9 +335,9 @@ public abstract class ZoneRules {
     public abstract boolean equals(Object otherRules);
 
     /**
-     * A hash code for the rules object.
+     * Returns a suitable hash code.
      *
-     * @return a suitable hash code
+     * @return the hash code
      */
     @Override
     public abstract int hashCode();
