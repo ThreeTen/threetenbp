@@ -32,6 +32,10 @@
 package javax.time;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.time.calendar.format.CalendricalParseException;
 
 /**
  * An instantaneous point on the time-line measured in the TAI time-scale.
@@ -68,6 +72,10 @@ public final class TAIInstant
      * Constant for nanos per second.
      */
     private static final int NANOS_PER_SECOND = 1000000000;
+    /**
+     * Parse regex.
+     */
+    private static final Pattern PARSER = Pattern.compile("([-]?[0-9]+)\\.([0-9]{9})s[(]TAI[)]");
     /**
      * Serialization version id.
      */
@@ -144,6 +152,38 @@ public final class TAIInstant
      */
     public static TAIInstant of(UTCInstant instant) {
         return instant.toTAIInstant();
+    }
+
+    /**
+     * Obtains an instance of {@code TAIInstant} from a text string.
+     * <p>
+     * The following format is accepted in ASCII:
+     * <ul>
+     * <li>{@code {seconds).(nanosOfSecond}s(TAI)
+     * </ul>
+     * The accepted format is strict.
+     * The seconds part must contain only numbers and a possible leading negative sign.
+     * The nanoseconds part must contain exactly nine digits.
+     * The trailing literal must be exactly specified.
+     * This format parses the {@code toString} format.
+     *
+     * @param text  the text to parse such as '12345.123456789s(TAI)', not null
+     * @return the parsed instant, never null
+     * @throws CalendricalException if the text cannot be parsed
+     */
+    public static TAIInstant parse(String text) {
+        Instant.checkNotNull(text, "Text to parse must not be null");
+        Matcher matcher = PARSER.matcher(text);
+        if (matcher.matches()) {
+            try {
+                long seconds = Long.parseLong(matcher.group(1));
+                long nanos = Long.parseLong(matcher.group(2));
+                return TAIInstant.ofTAISeconds(seconds, nanos);
+            } catch (NumberFormatException ex) {
+                throw new CalendricalParseException("The text could not be parsed", text, 0, ex);
+            }
+        }
+        throw new CalendricalParseException("The text could not be parsed", text, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -336,7 +376,9 @@ public final class TAIInstant
     /**
      * A string representation of this instant.
      * <p>
-     * The string is formatted as the decimal seconds from the epoch.
+     * The string is formatted as {@code {seconds).(nanosOfSecond}s(TAI).
+     * At least one second digit will be present.
+     * The nanoseconds will always be nine digits.
      *
      * @return a representation of this instant, never null
      */

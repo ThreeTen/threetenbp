@@ -40,6 +40,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.calendar.format.CalendricalParseException;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -178,6 +180,41 @@ public class TestTAIInstant {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_UTCInstant_null() {
         TAIInstant.of((UTCInstant) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(String)
+    //-----------------------------------------------------------------------
+    public void factory_parse_String() {
+        for (int i = -1000; i < 1000; i++) {
+            for (int j = 900000000; j < 990000000; j += 10000000) {
+                String str = i + "." + j + "s(TAI)";
+                TAIInstant test = TAIInstant.parse(str);
+                assertEquals(test.getTAISeconds(), i);
+                assertEquals(test.getNanoOfSecond(), j);
+            }
+        }
+    }
+
+    @DataProvider(name="BadParse")
+    Object[][] provider_badParse() {
+        return new Object[][] {
+            {"A.123456789s(TAI)"},
+            {"123.12345678As(TAI)"},
+            {"123.123456789"},
+            {"123.123456789s"},
+            {"+123.123456789s(TAI)"},
+            {"-123.123s(TAI)"},
+        };
+    }
+    @Test(dataProvider="BadParse", expectedExceptions=CalendricalParseException.class)
+    public void factory_parse_String_invalid(String str) {
+        TAIInstant.parse(str);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_String_null() {
+        TAIInstant.parse((String) null);
     }
 
     //-----------------------------------------------------------------------
