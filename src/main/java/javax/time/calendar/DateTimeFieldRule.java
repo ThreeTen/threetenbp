@@ -507,40 +507,6 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
         // do nothing - override if field provides text
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Converts a value for this field to a restricted value of the specified
-//     * power of ten as the width.
-//     * <p>
-//     * The restricted value is the least significant digits of the value as
-//     * defined the the specified power of ten. This is typically used to output
-//     * two-digit years.
-//     * <p>
-//     * For example, consider the year 1972:<br />
-//     * The restricted value using a power of 1 is 2.<br />
-//     * The restricted value using a power of 2 is 72.<br />
-//     * The restricted value using a power of 3 is 972.<br />
-//     * The restricted value using a power of 4 is 1972.<br />
-//     * The restricted value using a power of 5 is 1972.<br />
-//     *
-//     * @param value  the value to convert, valid for this field
-//     * @param powerOfTenWidth  the width (power of ten), from 1 to 10
-//     * @return the fractional value of the field
-//     * @throws UnsupportedCalendarFieldException if the value cannot be converted
-//     * @throws IllegalCalendarFieldValueException if the value is invalid
-//     */
-//    public int convertValueToRestricted(int value, int powerOfTenWidth) {
-//        checkValue(value);
-//        value = Math.abs(value);
-//        switch (powerOfTenWidth) {
-//            case 1:
-//                return value % 10;
-//            default:
-//                throw new UnsupportedCalendarFieldException(this, "The restricted value of " + getName() +
-//                " cannot be obtained as the width " + powerOfTenWidth + " is not in the range 1 to 10");
-//        }
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Converts a value for this field to a fraction between 0 and 1.

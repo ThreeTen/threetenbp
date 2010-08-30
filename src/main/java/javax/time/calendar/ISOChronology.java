@@ -1150,41 +1150,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Rule implementation.
-//     */
-//    private static final class TwoDigitYearRule extends DateTimeFieldRule implements Serializable {
-//        /** Singleton instance. */
-//        private static final DateTimeFieldRule INSTANCE = new TwoDigitYearRule();
-//        /** A serialization identifier for this class. */
-//        private static final long serialVersionUID = 1L;
-//        /** Constructor. */
-//        private TwoDigitYearRule() {
-//            super(ISOChronology.INSTANCE, "TwoDigitYear", YEARS, CENTURIES, 0, 99);
-//        }
-//        private Object readResolve() {
-//            return INSTANCE;
-//        }
-//        @Override
-//        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-//            if (date == null) {
-//                return null;
-//            }
-//            int year = date.getYear() % 100;
-//            return year < 0 ? year + 100 : year;
-//        }
-//        @Override
-//        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-//            Integer yVal = yearRule().getValueQuiet(fieldMap);
-//            if (yVal == null) {
-//                return null;
-//            }
-//            int year = yVal % 100;
-//            return year < 0 ? year + 100 : year;
-//        }
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
