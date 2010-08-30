@@ -982,6 +982,11 @@ public class TestStandardZoneRules {
         assertEquals(europeLondon().equals("Europe/London"), false);
     }
 
+    public void test_toString() {
+        assertEquals(europeLondon().toString().startsWith("StandardZoneRules["), true);
+        assertEquals(europeLondon().toString().endsWith("]"), true);
+    }
+
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------

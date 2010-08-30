@@ -537,10 +537,12 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified by comparing the complete set of rules.
+     * Checks if this object equals another, comparing the complete set of rules.
+     * <p>
+     * The entire state of the object is compared.
      *
-     * @param otherRules  the other rules, null returns false
-     * @return true if this rules is the same as that specified
+     * @param other  the other object to compare to, null returns false
+     * @return true if equal
      */
     @Override
     public boolean equals(Object otherRules) {
@@ -559,9 +561,9 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     /**
-     * A hash code for the rules object.
+     * Returns a suitable hash code.
      *
-     * @return a suitable hash code
+     * @return the hash code
      */
     @Override
     public int hashCode() {
@@ -570,6 +572,17 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
                 Arrays.hashCode(savingsInstantTransitions) ^
                 Arrays.hashCode(wallOffsets) ^
                 Arrays.hashCode(lastRules);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a string describing this object.
+     *
+     * @return a string for debugging, never null
+     */
+    @Override
+    public String toString() {
+        return "StandardZoneRules[currentStandardOffset=" + standardOffsets[standardOffsets.length - 1] + "]";
     }
 
 }
