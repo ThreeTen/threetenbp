@@ -438,10 +438,8 @@ public abstract class CalendricalRule<T>
      *  List<Calendrical> list = ...
      *  Collections.sort(list, ISOChronology.yearRule());
      * </pre>
-     * If the value cannot be obtained from a calendrical, then that calendrical
-     * will be sorted at the end of the list. Thus, in the example of sorting by
-     * year, if the list contained a {@code LocalTime}, then this would be
-     * sorted at the end of the list.
+     * If the value of this rule cannot be obtained from a calendrical, then
+     * an exception is thrown.
      * <p>
      * If the underlying type of this rule does not implement {@link Comparable}
      * then an exception will be thrown.
@@ -450,21 +448,15 @@ public abstract class CalendricalRule<T>
      * @param cal2  the second calendrical to compare, not null
      * @return the comparator result, negative if first is less, positive if first is greater, zero if equal
      * @throws NullPointerException if either input is null
-     * @throws ClassCastException if this rule has a generic type that is not comparable
+     * @throws ClassCastException if this rule has a type that is not comparable
+     * @throws IllegalArgumentException if this rule cannot be extracted from either input parameter
      */
     @SuppressWarnings("unchecked")
     public int compare(Calendrical cal1, Calendrical cal2) {
-        // TODO: why be nice to null here?
         Comparable value1 = (Comparable) cal1.get(this);
-        Object value2 = cal2.get(this);
-        if (value1 == null && value2 == null) {
-            return 0;
-        }
-        if (value1 == null) {
-            return 1;
-        }
-        if (value2 == null) {
-            return -1;
+        Comparable value2 = (Comparable) cal2.get(this);
+        if (value1 == null || value2 == null) {
+            throw new IllegalArgumentException("Unable to compare as Calendrical does not provide rule: " + getName());
         }
         return value1.compareTo(value2);
     }

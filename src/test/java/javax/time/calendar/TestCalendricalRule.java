@@ -140,8 +140,8 @@ public class TestCalendricalRule {
 
     public void test_comparator_noValueSortedLast() {
         List<Calendrical> list = new ArrayList<Calendrical>();
-        LocalTime lt = LocalTime.of(12, 30);
-        list.add(lt);
+        ZonedDateTime zdt = ZonedDateTime.of(LocalDateTime.of(2009, 8, 20, 2, 30), TimeZone.of("Europe/London"));
+        list.add(zdt);
         LocalDateTime ldt = LocalDateTime.of(2007, 1, 1, 12, 30);
         list.add(ldt);
         OffsetDate od = OffsetDate.of(2008, 6, 30, ZoneOffset.of("+01:00"));
@@ -150,7 +150,7 @@ public class TestCalendricalRule {
         Collections.sort(list, new MockBigYearRule());
         assertEquals(list.get(0), ldt);
         assertEquals(list.get(1), od);
-        assertEquals(list.get(2), lt);
+        assertEquals(list.get(2), zdt);
     }
 
     public void test_comparator_combinations() {
@@ -162,11 +162,16 @@ public class TestCalendricalRule {
         assertEquals(new MockBigYearRule().compare(year2009, year2009), 0);
     }
 
-    public void test_comparator_combinations_noValue() {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_comparator_combinations_noValue1() {
         Year year2008 = Year.of(2008);
         assertEquals(new MockBigYearRule().compare(year2008, new MockSimpleCalendrical()), -1);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_comparator_combinations_noValue2() {
+        Year year2008 = Year.of(2008);
         assertEquals(new MockBigYearRule().compare(new MockSimpleCalendrical(), year2008), 1);
-        assertEquals(new MockBigYearRule().compare(new MockSimpleCalendrical(), new MockSimpleCalendrical()), 0);
     }
 
     //-----------------------------------------------------------------------

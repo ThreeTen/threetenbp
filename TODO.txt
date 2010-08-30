@@ -85,6 +85,7 @@ Date/Time formatting
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
+- Promote TimeDefinition to top-level type
 - don't use Local Mean Time (or anything before 1900?)
 - SPI for names
 # some zones have transitions where only the name changes - America/Resolute
@@ -230,6 +231,7 @@ EDR released
  0.6.2 released
 - nanoOfDay rule / epochDays rule
 - Use public factories for ZOT and ZOTR rather than protected methods in ZRules
+- make CalendricalRule.compare less lenient
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory
