@@ -166,10 +166,9 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     }
 
     /**
-     * Converts the typed value of the rule to the Integer value.
+     * Converts the typed value of the rule to the {@code Integer} equivalent.
      * <p>
-     * This default implementation simply performs a cast.
-     * Where the reified type is not {@code Integer}, this method must be overridden.
+     * This method avoids boxing and unboxing when the value is an Integer.
      *
      * @param value  the value to convert, not null
      * @return the int value of the field

@@ -456,7 +456,7 @@ public final class UTCInstant
     /**
      * A string representation of this instant.
      * <p>
-     * The string is formatted as the duration in decimal seconds from the epoch.
+     * The string is formatted using ISO-8601.
      *
      * @return a representation of this instant, never null
      */
