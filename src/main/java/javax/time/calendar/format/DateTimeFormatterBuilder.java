@@ -360,6 +360,42 @@ public final class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
+     * Appends the reduced value of a date-time field to the formatter.
+     * <p>
+     * This is typically used for printing and parsing a two digit year.
+     * The {@code width} is the printed and parsed width.
+     * The {@code baseValue} is used in truncation.
+     * <p>
+     * The base value and width determine which values are printed and parsed.
+     * The width is used as a power of ten to determine the range of valid values.
+     * The base value is the first valid value.
+     * <p>
+     * For example, a base value of {@code 1980} and a width of {@code 2} will have
+     * valid values from {@code 1980} to {@code 2079}.
+     * On output, the value {@code 2012} will print {@code "12"}.
+     * On input, the text {@code "12"} will result in the value {@code 2012}.
+     * Any value outside the supported range will throw an exception during printing. 
+     * <p>
+     * This is a fixed width parser operating using 'adjacent value parsing'.
+     * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
+     *
+     * @param rule  the rule of the field to append, not null
+     * @param width  the width of the printed and parsed field, from 1 to 8
+     * @param baseValue  the base value of the range of valid values
+     * @return this, for chaining, never null
+     * @throws NullPointerException if the field rule is null
+     * @throws IllegalArgumentException if the width or base value is invalid
+     */
+    public DateTimeFormatterBuilder appendValueReduced(
+            DateTimeFieldRule<?> rule, int width, int baseValue) {
+        checkNotNull(rule, "DateTimeFieldRule must not be null");
+        ReducedPrinterParser pp = new ReducedPrinterParser(rule, width, baseValue);
+        appendInternal(pp, pp);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Appends the fractional value of a date-time field to the formatter.
      * <p>
      * The fractional value of the field will be output including the
@@ -1151,28 +1187,33 @@ public final class DateTimeFormatterBuilder {
     public static enum SignStyle {
         /**
          * Style to output the sign only if the value is negative.
-         * In strict parsing, the positive sign will be rejected.
+         * In strict parsing, the negative sign will be accepted and the positive sign rejected.
+         * In lenient parsing, any sign will be accepted.
          */
         NORMAL,
         /**
          * Style to always output the sign, where zero will output '+'.
          * In strict parsing, the absence of a sign will be rejected.
+         * In lenient parsing, the absence of a sign will be treated as a positive number.
          */
         ALWAYS,
         /**
          * Style to never output sign, only outputting the absolute value.
          * In strict parsing, any sign will be rejected.
+         * In lenient parsing, any sign will be accepted unless the width is fixed.
          */
         NEVER,
         /**
          * Style to block negative values, throwing an exception on printing.
          * In strict parsing, any sign will be rejected.
+         * In lenient parsing, any sign will be accepted unless the width is fixed.
          */
         NOT_NEGATIVE,
         /**
          * Style to always output the sign if the value exceeds the pad width.
          * A negative value will always output the '-' sign.
          * In strict parsing, the sign will be rejected unless the pad width is exceeded.
+         * In lenient parsing, any sign will be accepted.
          */
         EXCEEDS_PAD;
     }

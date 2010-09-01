@@ -99,6 +99,18 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
         this.value = value;
     }
 
+    /**
+     * Constructs a new exception using the specified message.
+     *
+     * @param fieldRule  the rule of the field that caused the exception, may be null
+     * @param value  the value of the field that caused the exception
+     */
+    public CalendricalPrintFieldException(String msg, DateTimeFieldRule<?> fieldRule, int value) {
+        super(msg);
+        this.rule = fieldRule;
+        this.value = value;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the rule that caused the exception.

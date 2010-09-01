@@ -44,12 +44,12 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
  *
  * @author Stephen Colebourne
  */
-final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
+class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * Array of 10 to the power of n
      */
-    private static final int[] EXCEED_POINTS = new int[] {
+    static final int[] EXCEED_POINTS = new int[] {
         0,
         10,
         100,
@@ -65,11 +65,11 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The rule to output, not null.
      */
-    private final DateTimeFieldRule<?> rule;
+    final DateTimeFieldRule<?> rule;
     /**
      * The minimum width allowed, zero padding is used up to this width, from 1 to 10.
      */
-    private final int minWidth;
+    final int minWidth;
     /**
      * The maximum width allowed, from 1 to 10.
      */
@@ -131,7 +131,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = rule.getInt(calendrical);
+        int value = getValue(calendrical);
         String str = (value == Integer.MIN_VALUE ? "2147483648" : Integer.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
             throw new CalendricalPrintFieldException(rule, value, maxWidth);
@@ -166,6 +166,15 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         appendable.append(str);
     }
 
+    /**
+     * Gets the value to output.
+     * @param calendrical  the calendrical, not null
+     * @return the value
+     */
+    int getValue(Calendrical calendrical) {
+        return rule.getInt(calendrical);
+    }
+
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
         return calendrical.get(rule) != null;  // TODO: Better, or remove method
@@ -189,7 +198,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     position++;
                     break;
                 default:
-                    if (context.isStrict()) {
+                    if (context.isStrict() || (signStyle != SignStyle.NORMAL && minWidth == maxWidth)) {
                         return ~position;
                     }
                     position++;
@@ -204,14 +213,14 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     position++;
                     break;
                 default:
-                    if (context.isStrict()) {
+                    if (context.isStrict() || minWidth == maxWidth) {
                         return ~position;
                     }
                     position++;
                     break;
             }
-        } else if (signStyle == SignStyle.ALWAYS) {
-            if (context.isStrict()) {
+        } else {
+            if (signStyle == SignStyle.ALWAYS && context.isStrict()) {
                 return ~position;
             }
         }
@@ -268,8 +277,17 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             total /= 10;
             pos--;
         }
-        context.setParsed(rule, (int) total);
+        setValue(context, total);
         return pos;
+    }
+
+    /**
+     * Stores the value.
+     * @param context  the context to store into, not null
+     * @param value  the value
+     */
+    void setValue(DateTimeParseContext context, long value) {
+        context.setParsed(rule, (int) value);
     }
 
     //-----------------------------------------------------------------------

@@ -369,7 +369,7 @@ public class TestNumberParser {
             {"+500", 1, 2, SignStyle.NEVER, ~0, null},
             {"+AAA", 1, 2, SignStyle.NEVER, ~0, null},
             
-            // negative error
+            // not negative
             {"0", 1, 2, SignStyle.NOT_NEGATIVE, 1, 0},
             {"5", 1, 2, SignStyle.NOT_NEGATIVE, 1, 5},
             {"50", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
@@ -454,8 +454,11 @@ public class TestNumberParser {
             {"+50", 1, 2, SignStyle.NEVER, 3, 50},
             {"+500", 1, 2, SignStyle.NEVER, 3, 50},
             {"+AAA", 1, 2, SignStyle.NEVER, ~1, null},
+            {"50", 2, 2, SignStyle.NEVER, 2, 50},
+            {"-50", 2, 2, SignStyle.NEVER, ~0, null},
+            {"+50", 2, 2, SignStyle.NEVER, ~0, null},
             
-            // negative error
+            // not negative
             {"0", 1, 2, SignStyle.NOT_NEGATIVE, 1, 0},
             {"5", 1, 2, SignStyle.NOT_NEGATIVE, 1, 5},
             {"50", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
@@ -468,6 +471,9 @@ public class TestNumberParser {
             {"+50", 1, 2, SignStyle.NOT_NEGATIVE, 3, 50},
             {"+500", 1, 2, SignStyle.NOT_NEGATIVE, 3, 50},
             {"+AAA", 1, 2, SignStyle.NOT_NEGATIVE, ~1, null},
+            {"50", 2, 2, SignStyle.NOT_NEGATIVE, 2, 50},
+            {"-50", 2, 2, SignStyle.NOT_NEGATIVE, ~0, null},
+            {"+50", 2, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             
             // normal
             {"0", 1, 2, SignStyle.NORMAL, 1, 0},
@@ -482,6 +488,9 @@ public class TestNumberParser {
             {"+50", 1, 2, SignStyle.NORMAL, 3, 50},
             {"+500", 1, 2, SignStyle.NORMAL, 3, 50},
             {"+AAA", 1, 2, SignStyle.NORMAL, ~1, null},
+            {"50", 2, 2, SignStyle.NORMAL, 2, 50},
+            {"-50", 2, 2, SignStyle.NORMAL, 3, -50},
+            {"+50", 2, 2, SignStyle.NORMAL, 3, 50},
             
             // always
             {"0", 1, 2, SignStyle.ALWAYS, 1, 0},
