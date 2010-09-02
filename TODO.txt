@@ -69,7 +69,6 @@ Rules
 ? ISO era
 
 Date/Time formatting
-- two digit years
 - parse 24:00 - maybe a special end-of-day class?
 - format patterns - yyyy-MM-dd, check details and letters
 - formats LONG/MEDIUM/SHORT from better data source
@@ -233,6 +232,7 @@ EDR released
 - Use public factories for ZOT and ZOTR rather than protected methods in ZRules
 - Make CalendricalRule.compare less lenient
 - Add TAIInstant.parse()
+- Print/parse two digit years
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory
