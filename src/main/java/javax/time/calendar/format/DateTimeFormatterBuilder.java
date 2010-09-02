@@ -296,18 +296,7 @@ public final class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
         }
         NumberPrinterParser pp = new NumberPrinterParser(rule, width, width, SignStyle.NOT_NEGATIVE);
-        if (active.valueParserIndex >= 0) {
-            NumberPrinterParser basePP = (NumberPrinterParser) active.printers.get(active.valueParserIndex);
-            basePP = basePP.withSubsequentWidth(width);
-            int activeValueParser = active.valueParserIndex;
-            active.printers.set(active.valueParserIndex, basePP);
-            active.parsers.set(active.valueParserIndex, basePP);
-            appendInternal(pp, pp);
-            active.valueParserIndex = activeValueParser;
-        } else {
-            appendInternal(pp, pp);
-        }
-        return this;
+        return appendFixedWidth(width, pp);
     }
 
     /**
@@ -364,17 +353,19 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * This is typically used for printing and parsing a two digit year.
      * The {@code width} is the printed and parsed width.
-     * The {@code baseValue} is used in truncation.
+     * The {@code baseValue} is used during parsing to determine the valid range.
      * <p>
-     * The base value and width determine which values are printed and parsed.
-     * The width is used as a power of ten to determine the range of valid values.
-     * The base value is the first valid value.
+     * For printing, the width is used to determine the number of characters to print.
+     * The rightmost characters are output to match the width, left padding with zero.
+     * <p>
+     * For parsing, exactly the number of characters specified by the width are parsed.
+     * This is incomplete information however, so the base value is used to complete the parse.
+     * The base value is the first valid value in a range of ten to the power of width.
      * <p>
      * For example, a base value of {@code 1980} and a width of {@code 2} will have
      * valid values from {@code 1980} to {@code 2079}.
-     * On output, the value {@code 2012} will print {@code "12"}.
-     * On input, the text {@code "12"} will result in the value {@code 2012}.
-     * Any value outside the supported range will throw an exception during printing. 
+     * During parsing, the text {@code "12"} will result in the value {@code 2012} as that
+     * is the value within the range where the last two digits are "12".
      * <p>
      * This is a fixed width parser operating using 'adjacent value parsing'.
      * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
@@ -390,7 +381,28 @@ public final class DateTimeFormatterBuilder {
             DateTimeFieldRule<?> rule, int width, int baseValue) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
         ReducedPrinterParser pp = new ReducedPrinterParser(rule, width, baseValue);
-        appendInternal(pp, pp);
+        appendFixedWidth(width, pp);
+        return this;
+    }
+
+    /**
+     * Appends a fixed width printer-parser.
+     * @param width  the width
+     * @param pp  the printer-parser, not null
+     * @return this, for chaining, never null
+     */
+    private DateTimeFormatterBuilder appendFixedWidth(int width, NumberPrinterParser pp) {
+        if (active.valueParserIndex >= 0) {
+            NumberPrinterParser basePP = (NumberPrinterParser) active.printers.get(active.valueParserIndex);
+            basePP = basePP.withSubsequentWidth(width);
+            int activeValueParser = active.valueParserIndex;
+            active.printers.set(active.valueParserIndex, basePP);
+            active.parsers.set(active.valueParserIndex, basePP);
+            appendInternal(pp, pp);
+            active.valueParserIndex = activeValueParser;
+        } else {
+            appendInternal(pp, pp);
+        }
         return this;
     }
 
@@ -731,7 +743,7 @@ public final class DateTimeFormatterBuilder {
      * <pre>
      *  Symbol  Meaning                     Presentation      Examples
      *  ------  -------                     ------------      -------
-     *   y       year                        year              1996
+     *   y       year                        year              2004; 04
      *   D       day-of-year                 number            189
      *   M       month-of-year               month             July; Jul; 07
      *   d       day-of-month                number            10
@@ -789,8 +801,11 @@ public final class DateTimeFormatterBuilder {
      * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
      * <p>
      * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
-     * If the count of letters is less than four, then the sign is only output for negative years as per
-     * {@link SignStyle#NORMAL}.
+     * If the count of letters is two, then a {@link #appendValueReduced reduced} two digit form is used.
+     * For printing, this outputs the rightmost two digits. For parsing, this will parse using the
+     * base value of 2000, resulting in a year within the range 2000 to 2099 inclusive.
+     * If the count of letters is less than four (but not two), then the sign is only output for negative
+     * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
      * <p>
      * <b>Month</b>: If the count of letters is 3 or greater, use the Text rules above.
@@ -939,7 +954,9 @@ public final class DateTimeFormatterBuilder {
         switch (cur) {
             case 'x':
             case 'y':
-                if (count < 4) {
+                if (count == 2) {
+                    appendValueReduced(rule, 2, 2000);
+                } else if (count < 4) {
                     appendValue(rule, count, 10, SignStyle.NORMAL);
                 } else {
                     appendValue(rule, count, 10, SignStyle.EXCEEDS_PAD);

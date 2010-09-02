@@ -71,7 +71,7 @@ public final class DateTimeFormatters {
      * <pre>
      *  Symbol  Meaning                     Presentation      Examples
      *  ------  -------                     ------------      -------
-     *   y       year                        year              1996
+     *   y       year                        year              2004; 04
      *   D       day-of-year                 number            189
      *   M       month-of-year               month             July; Jul; 07
      *   d       day-of-month                number            10
@@ -129,8 +129,11 @@ public final class DateTimeFormatters {
      * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
      * <p>
      * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
-     * If the count of letters is less than four, then the sign is only output for negative years as per
-     * {@link SignStyle#NORMAL}.
+     * If the count of letters is two, then a {@link DateTimeFormatterBuilder#appendValueReduced reduced} two digit form is used.
+     * For printing, this outputs the rightmost two digits. For parsing, this will parse using the
+     * base value of 2000, resulting in a year within the range 2000 to 2099 inclusive.
+     * If the count of letters is less than four (but not two), then the sign is only output for negative
+     * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
      * <p>
      * <b>Month</b>: If the count of letters is 3 or greater, use the Text rules above.

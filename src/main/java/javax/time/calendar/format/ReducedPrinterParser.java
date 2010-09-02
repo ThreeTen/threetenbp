@@ -81,11 +81,6 @@ final class ReducedPrinterParser extends NumberPrinterParser {
     @Override
     int getValue(Calendrical calendrical) {
         int value = rule.getInt(calendrical);
-        if (value < baseValue || value >= (baseValue + range)) {
-            throw new CalendricalPrintFieldException("Rule " + rule.getName() +
-                    " cannot be printed as the value " + value +
-                    " is outside the range " + baseValue + " to " + (baseValue + range), rule, value);
-        }
         return Math.abs(value % range);
     }
 

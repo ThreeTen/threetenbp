@@ -210,6 +210,29 @@ public class TestDateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendValueReduced_null() throws Exception {
+        builder.appendValueReduced(null, 2, 2000);
+    }
+
+    public void test_appendValueReduced() throws Exception {
+        builder.appendValueReduced(YEAR_RULE, 2, 2000);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "ReducedValue(ISO.Year,2,2000)");
+        CalendricalMerger cal = f.parse("12");
+        assertEquals(cal.getInputMap().get(YEAR_RULE), 2012);
+    }
+
+    public void test_appendValueReduced_subsequent_parse() throws Exception {
+        builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR_RULE, 2, 2000);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)ReducedValue(ISO.Year,2,2000)");
+        CalendricalMerger cal = f.parse("123");
+        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
+        assertEquals(cal.getInputMap().get(YEAR_RULE), 2023);
+    }
+
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_appendFraction_3arg() throws Exception {
@@ -438,13 +461,13 @@ public class TestDateTimeFormatterBuilder {
             {"'o''clock'", "'o''clock'"},
             
             {"y", "Value(ISO.Year)"},
-            {"yy", "Value(ISO.Year,2,10,NORMAL)"},
+            {"yy", "ReducedValue(ISO.Year,2,2000)"},
             {"yyy", "Value(ISO.Year,3,10,NORMAL)"},
             {"yyyy", "Value(ISO.Year,4,10,EXCEEDS_PAD)"},
             {"yyyyy", "Value(ISO.Year,5,10,EXCEEDS_PAD)"},
             
             {"x", "Value(ISO.WeekBasedYear)"},
-            {"xx", "Value(ISO.WeekBasedYear,2,10,NORMAL)"},
+            {"xx", "ReducedValue(ISO.WeekBasedYear,2,2000)"},
             {"xxx", "Value(ISO.WeekBasedYear,3,10,NORMAL)"},
             {"xxxx", "Value(ISO.WeekBasedYear,4,10,EXCEEDS_PAD)"},
             {"xxxxx", "Value(ISO.WeekBasedYear,5,10,EXCEEDS_PAD)"},
