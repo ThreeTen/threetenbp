@@ -627,7 +627,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the epoch-days field, never null
      */
-    public static CalendricalRule<Long> epocDays() {
+    public static CalendricalRule<Long> epochDays() {
         return EpochDaysRule.INSTANCE;
     }
 
