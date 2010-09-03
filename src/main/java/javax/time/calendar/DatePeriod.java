@@ -205,6 +205,122 @@ public final class DatePeriod
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains a {@code DatePeriod} consisting of the number of days, months
+     * and years between two dates.
+     * <p>
+     * The start date is included, but the end date is not. Only whole years count.
+     * For example, from {@code 2010-01-15} to {@code 2011-03-18} is one year, two months and three days.
+     * <p>
+     * The result of this method can be a negative period if the end is before the start.
+     * The negative sign will be the same in each of year, month and day.
+     * <p>
+     * Adding the result of this method to the start date will always yield the end date.
+     *
+     * @param startDateProvider  the start date, inclusive, not null
+     * @param endDateProvider  the end date, exclusive, not null
+     * @return the period in days, never null
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
+     */
+    public static DatePeriod between(DateProvider startDateProvider, DateProvider endDateProvider) {
+        LocalDate startDate = LocalDate.of(startDateProvider);
+        LocalDate endDate = LocalDate.of(endDateProvider);
+        long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
+        long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
+        long totalMonths = endMonth - startMonth;  // safe
+        int days = endDate.getDayOfMonth() - startDate.getDayOfMonth();
+        if (totalMonths > 0 && days < 0) {
+            totalMonths--;
+            LocalDate calcDate = startDate.plusMonths(totalMonths);
+            days = (int) (endDate.toEpochDays() - calcDate.toEpochDays());  // safe
+        } else if (totalMonths < 0 && days > 0) {
+            totalMonths++;
+            days -= endDate.getMonthOfYear().lengthInDays(endDate.isLeapYear());
+        }
+        long years = totalMonths / 12;  // safe
+        int months = (int) (totalMonths % 12);  // safe
+        return of(MathUtils.safeToInt(years), months, days);
+    }
+
+    /**
+     * Obtains a {@code DatePeriod} consisting of the number of years between two dates.
+     * <p>
+     * The start date is included, but the end date is not. Only whole years count.
+     * For example, from {@code 2010-01-15} to {@code 2012-01-15} is two years,
+     * whereas from {@code 2010-01-15} to {@code 2012-01-14} is only one year.
+     * <p>
+     * The result of this method can be a negative period if the end is before the start.
+     *
+     * @param startDateProvider  the start date, inclusive, not null
+     * @param endDateProvider  the end date, exclusive, not null
+     * @return the period in days, never null
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
+     */
+    public static DatePeriod yearsBetween(DateProvider startDateProvider, DateProvider endDateProvider) {
+        LocalDate startDate = LocalDate.of(startDateProvider);
+        LocalDate endDate = LocalDate.of(endDateProvider);
+        long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
+        long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
+        long years = (endMonth - startMonth) / 12;  // safe
+        if (endDate.getMonthOfYear() == startDate.getMonthOfYear()) {
+            if (years > 0 && endDate.getDayOfMonth() < startDate.getDayOfMonth()) {
+                years--;  // safe
+            } else if (years < 0 && endDate.getDayOfMonth() > startDate.getDayOfMonth()) {
+                years++;  // safe
+            }
+        }
+        return ofYears(MathUtils.safeToInt(years));
+    }
+
+    /**
+     * Obtains a {@code DatePeriod} consisting of the number of months between two dates.
+     * <p>
+     * The start date is included, but the end date is not. Only whole months count.
+     * For example, from {@code 2010-01-15} to {@code 2010-03-15} is two months,
+     * whereas from {@code 2010-01-15} to {@code 2010-03-14} is only one month.
+     * <p>
+     * The result of this method can be a negative period if the end is before the start.
+     *
+     * @param startDateProvider  the start date, inclusive, not null
+     * @param endDateProvider  the end date, exclusive, not null
+     * @return the period in days, never null
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
+     */
+    public static DatePeriod monthsBetween(DateProvider startDateProvider, DateProvider endDateProvider) {
+        LocalDate startDate = LocalDate.of(startDateProvider);
+        LocalDate endDate = LocalDate.of(endDateProvider);
+        long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
+        long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
+        long months = endMonth - startMonth;  // safe
+        if (months > 0 && endDate.getDayOfMonth() < startDate.getDayOfMonth()) {
+            months--;  // safe
+        } else if (months < 0 && endDate.getDayOfMonth() > startDate.getDayOfMonth()) {
+            months++;  // safe
+        }
+        return ofMonths(MathUtils.safeToInt(months));
+    }
+
+    /**
+     * Obtains a {@code DatePeriod} consisting of the number of days between two dates.
+     * <p>
+     * The start date is included, but the end date is not. For example, from
+     * {@code 2010-01-15} to {@code 2010-01-18} is three days.
+     * <p>
+     * The result of this method can be a negative period if the end is before the start.
+     *
+     * @param startDateProvider  the start date, inclusive, not null
+     * @param endDateProvider  the end date, exclusive, not null
+     * @return the period in days, never null
+     * @throws ArithmeticException if the capacity of an {@code int} is exceeded
+     */
+    public static DatePeriod daysBetween(DateProvider startDateProvider, DateProvider endDateProvider) {
+        LocalDate startDate = LocalDate.of(startDateProvider);
+        LocalDate endDate = LocalDate.of(endDateProvider);
+        long days = MathUtils.safeSubtract(endDate.toModifiedJulianDays(), startDate.toModifiedJulianDays());
+        return ofDays(MathUtils.safeToInt(days));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains a {@code DatePeriod} from a string formatted as {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * This will parse the string produced by {@code toString()} which is

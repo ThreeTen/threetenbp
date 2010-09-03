@@ -188,6 +188,298 @@ public class TestDatePeriod {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name="Between")
+    Object[][] data_between() {
+        return new Object[][] {
+            {2010, 1, 1, 2010, 1, 1, 0, 0, 0},
+            {2010, 1, 1, 2010, 1, 2, 0, 0, 1},
+            {2010, 1, 1, 2010, 1, 31, 0, 0, 30},
+            {2010, 1, 1, 2010, 2, 1, 0, 1, 0},
+            {2010, 1, 1, 2010, 2, 28, 0, 1, 27},
+            {2010, 1, 1, 2010, 3, 1, 0, 2, 0},
+            {2010, 1, 1, 2010, 12, 31, 0, 11, 30},
+            {2010, 1, 1, 2011, 1, 1, 1, 0, 0},
+            {2010, 1, 1, 2011, 12, 31, 1, 11, 30},
+            {2010, 1, 1, 2012, 1, 1, 2, 0, 0},
+            
+            {2010, 1, 10, 2010, 1, 1, 0, 0, -9},
+            {2010, 1, 10, 2010, 1, 2, 0, 0, -8},
+            {2010, 1, 10, 2010, 1, 9, 0, 0, -1},
+            {2010, 1, 10, 2010, 1, 10, 0, 0, 0},
+            {2010, 1, 10, 2010, 1, 11, 0, 0, 1},
+            {2010, 1, 10, 2010, 1, 31, 0, 0, 21},
+            {2010, 1, 10, 2010, 2, 1, 0, 0, 22},
+            {2010, 1, 10, 2010, 2, 9, 0, 0, 30},
+            {2010, 1, 10, 2010, 2, 10, 0, 1, 0},
+            {2010, 1, 10, 2010, 2, 28, 0, 1, 18},
+            {2010, 1, 10, 2010, 3, 1, 0, 1, 19},
+            {2010, 1, 10, 2010, 3, 9, 0, 1, 27},
+            {2010, 1, 10, 2010, 3, 10, 0, 2, 0},
+            {2010, 1, 10, 2010, 12, 31, 0, 11, 21},
+            {2010, 1, 10, 2011, 1, 1, 0, 11, 22},
+            {2010, 1, 10, 2011, 1, 9, 0, 11, 30},
+            {2010, 1, 10, 2011, 1, 10, 1, 0, 0},
+            
+            {2010, 3, 30, 2011, 5, 1, 1, 1, 1},
+            {2010, 4, 30, 2011, 5, 1, 1, 0, 1},
+            
+            {2010, 2, 28, 2012, 2, 27, 1, 11, 30},
+            {2010, 2, 28, 2012, 2, 28, 2, 0, 0},
+            {2010, 2, 28, 2012, 2, 29, 2, 0, 1},
+            
+            {2012, 2, 28, 2014, 2, 27, 1, 11, 30},
+            {2012, 2, 28, 2014, 2, 28, 2, 0, 0},
+            {2012, 2, 28, 2014, 3, 1, 2, 0, 1},
+            
+            {2012, 2, 29, 2014, 2, 28, 1, 11, 30},
+            {2012, 2, 29, 2014, 3, 1, 2, 0, 1},
+            {2012, 2, 29, 2014, 3, 2, 2, 0, 2},
+            
+            {2012, 2, 29, 2016, 2, 28, 3, 11, 30},
+            {2012, 2, 29, 2016, 2, 29, 4, 0, 0},
+            {2012, 2, 29, 2016, 3, 1, 4, 0, 1},
+            
+            {2010, 1, 1, 2009, 12, 31, 0, 0, -1},
+            {2010, 1, 1, 2009, 12, 30, 0, 0, -2},
+            {2010, 1, 1, 2009, 12, 2, 0, 0, -30},
+            {2010, 1, 1, 2009, 12, 1, 0, -1, 0},
+            {2010, 1, 1, 2009, 11, 30, 0, -1, -1},
+            {2010, 1, 1, 2009, 11, 2, 0, -1, -29},
+            {2010, 1, 1, 2009, 11, 1, 0, -2, 0},
+            {2010, 1, 1, 2009, 1, 2, 0, -11, -30},
+            {2010, 1, 1, 2009, 1, 1, -1, 0, 0},
+            
+            {2010, 1, 15, 2010, 1, 15, 0, 0, 0},
+            {2010, 1, 15, 2010, 1, 14, 0, 0, -1},
+            {2010, 1, 15, 2010, 1, 1, 0, 0, -14},
+            {2010, 1, 15, 2009, 12, 31, 0, 0, -15},
+            {2010, 1, 15, 2009, 12, 16, 0, 0, -30},
+            {2010, 1, 15, 2009, 12, 15, 0, -1, 0},
+            {2010, 1, 15, 2009, 12, 14, 0, -1, -1},
+            
+            {2010, 2, 28, 2009, 3, 1, 0, -11, -27},
+            {2010, 2, 28, 2009, 2, 28, -1, 0, 0},
+            {2010, 2, 28, 2009, 2, 27, -1, 0, -1},
+            
+            {2010, 2, 28, 2008, 2, 29, -1, -11, -28},
+            {2010, 2, 28, 2008, 2, 28, -2, 0, 0},
+            {2010, 2, 28, 2008, 2, 27, -2, 0, -1},
+            
+            {2012, 2, 29, 2009, 3, 1, -2, -11, -28},
+            {2012, 2, 29, 2009, 2, 28, -3, 0, -1},
+            {2012, 2, 29, 2009, 2, 27, -3, 0, -2},
+            
+            {2012, 2, 29, 2008, 3, 1, -3, -11, -28},
+            {2012, 2, 29, 2008, 2, 29, -4, 0, 0},
+            {2012, 2, 29, 2008, 2, 28, -4, 0, -1},
+        };
+    }
+
+    @Test(dataProvider="Between")
+    public void factory_between(int y1, int m1, int d1, int y2, int m2, int d2, int ye, int me, int de) {
+        LocalDate start = LocalDate.of(y1, m1, d1);
+        LocalDate end = LocalDate.of(y2, m2, d2);
+        DatePeriod test = DatePeriod.between(start, end);
+        assertPeriod(test, ye, me, de);
+        assertEquals(start.plus(test), end);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_between_nullFirst() {
+        DateProvider provider = null;
+        DatePeriod.between(provider, LocalDate.of(2010, 1, 1));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_between_nullSecond() {
+        DateProvider provider = null;
+        DatePeriod.between(LocalDate.of(2010, 1, 1), provider);
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="YearsBetween")
+    Object[][] data_yearsBetween() {
+        return new Object[][] {
+            {2010, 1, 1, 2010, 1, 1, 0},
+            {2010, 1, 1, 2010, 1, 2, 0},
+            {2010, 1, 1, 2010, 12, 31, 0},
+            {2010, 1, 1, 2011, 1, 1, 1},
+            {2010, 1, 1, 2011, 12, 31, 1},
+            {2010, 1, 1, 2012, 1, 1, 2},
+            
+            {2010, 2, 28, 2012, 2, 27, 1},
+            {2010, 2, 28, 2012, 2, 28, 2},
+            {2010, 2, 28, 2012, 2, 29, 2},
+            
+            {2012, 2, 29, 2014, 2, 28, 1},
+            {2012, 2, 29, 2014, 3, 1, 2},
+            
+            {2012, 2, 29, 2016, 2, 28, 3},
+            {2012, 2, 29, 2016, 2, 29, 4},
+            {2012, 2, 29, 2016, 3, 1, 4},
+            
+            {2010, 1, 1, 2009, 12, 31, 0},
+            {2010, 1, 1, 2009, 2, 1, 0},
+            {2010, 1, 1, 2009, 1, 2, 0},
+            {2010, 1, 1, 2009, 1, 1, -1},
+            
+            {2010, 1, 1, 2008, 12, 31, -1},
+            {2010, 1, 1, 2008, 2, 1, -1},
+            {2010, 1, 1, 2008, 1, 2, -1},
+            {2010, 1, 1, 2008, 1, 1, -2},
+            
+            {2010, 2, 28, 2009, 3, 1, 0},
+            {2010, 2, 28, 2009, 2, 28, -1},
+            {2010, 2, 28, 2009, 2, 27, -1},
+            
+            {2010, 2, 28, 2008, 2, 29, -1},
+            {2010, 2, 28, 2008, 2, 28, -2},
+            {2010, 2, 28, 2008, 2, 27, -2},
+            
+            {2012, 2, 29, 2009, 3, 1, -2},
+            {2012, 2, 29, 2009, 2, 28, -3},
+            {2012, 2, 29, 2009, 2, 27, -3},
+            
+            {2012, 2, 29, 2008, 3, 1, -3},
+            {2012, 2, 29, 2008, 2, 29, -4},
+            {2012, 2, 29, 2008, 2, 28, -4},
+        };
+    }
+
+    @Test(dataProvider="YearsBetween")
+    public void factory_yearsBetween(int y1, int m1, int d1, int y2, int m2, int d2, int expected) {
+        DatePeriod test = DatePeriod.yearsBetween(LocalDate.of(y1, m1, d1), LocalDate.of(y2, m2, d2));
+        assertPeriod(test, expected, 0, 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_yearsBetween_nullFirst() {
+        DateProvider provider = null;
+        DatePeriod.yearsBetween(provider, LocalDate.of(2010, 1, 1));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_yearsBetween_nullSecond() {
+        DateProvider provider = null;
+        DatePeriod.yearsBetween(LocalDate.of(2010, 1, 1), provider);
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="MonthsBetween")
+    Object[][] data_monthsBetween() {
+        return new Object[][] {
+            {2010, 1, 1, 2010, 1, 1, 0},
+            {2010, 1, 1, 2010, 1, 2, 0},
+            {2010, 1, 1, 2010, 1, 31, 0},
+            {2010, 1, 1, 2010, 2, 1, 1},
+            {2010, 1, 1, 2010, 2, 28, 1},
+            {2010, 1, 1, 2010, 3, 1, 2},
+            {2010, 1, 1, 2010, 12, 31, 11},
+            {2010, 1, 1, 2011, 1, 1, 12},
+            
+            {2010, 2, 28, 2012, 2, 27, 23},
+            {2010, 2, 28, 2012, 2, 28, 24},
+            {2010, 2, 28, 2012, 2, 29, 24},
+            
+            {2012, 2, 29, 2014, 2, 28, 23},
+            {2012, 2, 29, 2014, 3, 1, 24},
+            
+            {2012, 2, 29, 2016, 2, 28, 47},
+            {2012, 2, 29, 2016, 2, 29, 48},
+            {2012, 2, 29, 2016, 3, 1, 48},
+            
+            {2010, 1, 1, 2009, 12, 31, 0},
+            {2010, 1, 1, 2009, 12, 2, 0},
+            {2010, 1, 1, 2009, 12, 1, -1},
+            {2010, 1, 1, 2009, 11, 30, -1},
+            
+            {2010, 1, 1, 2009, 1, 2, -11},
+            {2010, 1, 1, 2009, 1, 1, -12},
+            {2010, 1, 1, 2008, 12, 31, -12},
+            {2010, 1, 1, 2008, 12, 2, -12},
+            {2010, 1, 1, 2008, 12, 1, -13},
+            {2010, 1, 1, 2008, 1, 2, -23},
+            {2010, 1, 1, 2008, 1, 1, -24},
+            
+            {2010, 2, 28, 2009, 3, 1, -11},
+            {2010, 2, 28, 2009, 2, 28, -12},
+            {2010, 2, 28, 2009, 2, 27, -12},
+            
+            {2010, 2, 28, 2008, 2, 29, -23},
+            {2010, 2, 28, 2008, 2, 28, -24},
+            {2010, 2, 28, 2008, 2, 27, -24},
+            
+            {2012, 2, 29, 2009, 3, 1, -35},
+            {2012, 2, 29, 2009, 2, 28, -36},
+            {2012, 2, 29, 2009, 2, 27, -36},
+            
+            {2012, 2, 29, 2008, 3, 1, -47},
+            {2012, 2, 29, 2008, 2, 29, -48},
+            {2012, 2, 29, 2008, 2, 28, -48},
+        };
+    }
+
+    @Test(dataProvider="MonthsBetween")
+    public void factory_monthsBetween(int y1, int m1, int d1, int y2, int m2, int d2, int expected) {
+        DatePeriod test = DatePeriod.monthsBetween(LocalDate.of(y1, m1, d1), LocalDate.of(y2, m2, d2));
+        assertPeriod(test, 0, expected, 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_monthsBetween_nullFirst() {
+        DateProvider provider = null;
+        DatePeriod.monthsBetween(provider, LocalDate.of(2010, 1, 1));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_monthsBetween_nullSecond() {
+        DateProvider provider = null;
+        DatePeriod.monthsBetween(LocalDate.of(2010, 1, 1), provider);
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="DaysBetween")
+    Object[][] data_daysBetween() {
+        return new Object[][] {
+            {2010, 1, 1, 2010, 1, 1, 0},
+            {2010, 1, 1, 2010, 1, 2, 1},
+            {2010, 1, 1, 2010, 1, 10, 9},
+            {2010, 1, 1, 2010, 1, 31, 30},
+            {2010, 1, 1, 2010, 2, 1, 31},
+            {2010, 1, 1, 2010, 2, 28, 58},
+            {2010, 1, 1, 2010, 3, 1, 59},
+            {2010, 1, 1, 2010, 12, 31, 364},
+            {2010, 1, 1, 2011, 1, 1, 365},
+            {2010, 1, 1, 2011, 2, 28, 365 + 58},
+            {2010, 1, 1, 2011, 3, 1, 365 + 59},
+            {2010, 1, 1, 2012, 1, 1, 365 + 365},
+            {2010, 1, 1, 2012, 2, 28, 365 + 365 + 58},
+            {2010, 1, 1, 2012, 2, 29, 365 + 365 + 59},
+            {2010, 1, 1, 2012, 3, 1, 365 + 365 + 60},
+            
+            {2010, 1, 1, 2009, 12, 31, -1},
+        };
+    }
+
+    @Test(dataProvider="DaysBetween")
+    public void factory_daysBetween(int y1, int m1, int d1, int y2, int m2, int d2, int expected) {
+        DatePeriod test = DatePeriod.daysBetween(LocalDate.of(y1, m1, d1), LocalDate.of(y2, m2, d2));
+        assertPeriod(test, 0, 0, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_daysBetween_nullFirst() {
+        DateProvider provider = null;
+        DatePeriod.daysBetween(provider, LocalDate.of(2010, 1, 1));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_daysBetween_nullSecond() {
+        DateProvider provider = null;
+        DatePeriod.daysBetween(LocalDate.of(2010, 1, 1), provider);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_period_provider() {
         PeriodProvider provider = DatePeriod.of(1, 2, 3);
         assertPeriod(DatePeriod.of(provider), 1, 2, 3);
@@ -960,9 +1252,9 @@ public class TestDatePeriod {
 
     //-----------------------------------------------------------------------
     private void assertPeriod(DatePeriod test, int y, int m, int d) {
-        assertEquals(test.getYears(), y);
-        assertEquals(test.getMonths(), m);
-        assertEquals(test.getDays(), d);
+        assertEquals(test.getYears(), y, "Years");
+        assertEquals(test.getMonths(), m, "Months");
+        assertEquals(test.getDays(), d, "Days");
     }
 
 }
