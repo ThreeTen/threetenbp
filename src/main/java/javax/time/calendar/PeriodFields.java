@@ -925,11 +925,12 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this period to an estimated duration.
+     * Estimates the duration of this period.
      * <p>
      * Each {@link PeriodUnit} contains an estimated duration for that unit.
-     * This method uses that estimate to calculate a total estimated duration for
-     * this period.
+     * The per-unit estimate allows an estimate to be calculated for the whole period
+     * including fields of variable duration. The estimate will equal the
+     * {@link #toDuration accurate} calculation if all the fields are based on seconds.
      *
      * @return the estimated duration of this period, never null
      * @throws ArithmeticException if the calculation overflows
@@ -943,18 +944,12 @@ public final class PeriodFields
     }
 
     /**
-     * Converts this {@code PeriodFields} to a {@code Duration} based on the standard
-     * durations of seconds and nanoseconds.
+     * Calculates the accurate duration of this period.
      * <p>
      * The conversion is based on the {@code ISOChronology} definition of the seconds and
-     * nanoseconds units. If all the fields in this period can be converted to one of these
-     * units then the conversion will succeed, subject to calculation overflow.
+     * nanoseconds units. If all the fields in this period can be converted to either seconds
+     * or nanoseconds then the conversion will succeed, subject to calculation overflow.
      * If any field cannot be converted to these fields above then an exception is thrown.
-     * <p>
-     * This conversion can only be used if the duration is being used in a manner
-     * compatible with the {@code ISOChronology} definitions of seconds and nanoseconds.
-     * This will be the case for most applications - care only needs to be taken if
-     * using explicit time-scales.
      *
      * @return the duration of this period based on {@code ISOChronology} fields, never null
      * @throws ArithmeticException if the calculation overflows

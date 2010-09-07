@@ -372,11 +372,12 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this period to an estimated duration.
+     * Estimates the duration of this period.
      * <p>
-     * Each {@link PeriodUnit} contains an estimated duration for that unit.
-     * This method uses that estimate to calculate an estimated duration for
-     * this period.
+     * The {@link PeriodUnit} contains an estimated duration for that unit.
+     * The value allows an estimate to be calculated for this period irrespective
+     * of whether the unit is of fixed or variable duration. The estimate will equal the
+     * {@link #toDuration accurate} calculation if the unit is based on the second.
      *
      * @return the estimated duration of this period, positive or negative
      * @throws ArithmeticException if the calculation overflows
@@ -386,17 +387,12 @@ public final class PeriodField
     }
 
     /**
-     * Converts this period to a {@code Duration} based on the standard durations of
-     * seconds and nanoseconds.
+     * Calculates the accurate duration of this period.
      * <p>
      * The conversion is based on the {@code ISOChronology} definition of the seconds and
-     * nanoseconds units. If this period can be converted to either seconds or nanoseconds
-     * then the conversion will succeed, subject to calculation overflow.
-     * <p>
-     * This conversion can only be used if the duration is being used in a manner
-     * compatible with the {@code ISOChronology} definitions of seconds and nanoseconds.
-     * This will be the case for most applications - care only needs to be taken if
-     * using explicit time-scales.
+     * nanoseconds units. If the unit of this period can be converted to either seconds
+     * or nanoseconds then the conversion will succeed, subject to calculation overflow.
+     * If the unit cannot be converted then an exception is thrown.
      *
      * @return the duration of this period based on {@code ISOChronology} fields, never null
      * @throws ArithmeticException if the calculation overflows

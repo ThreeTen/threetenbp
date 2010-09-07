@@ -1352,8 +1352,9 @@ public final class Period
     }
 
     /**
-     * Converts this object to a {@code Duration} using the hours, minutes,
-     * seconds and nanoseconds fields.
+     * Calculates the accurate duration of this period.
+     * <p>
+     * The calculation uses the hours, minutes, seconds and nanoseconds fields.
      * If years, months or days are present an exception is thrown.
      * <p>
      * The duration is calculated using assumptions:
@@ -1376,13 +1377,14 @@ public final class Period
     }
 
     /**
-     * Converts this object to a {@code Duration} using the days, hours, minutes,
-     * seconds and nanoseconds fields.
+     * Calculates the accurate duration of this period.
+     * <p>
+     * The calculation uses the days, hours, minutes, seconds and nanoseconds fields.
      * If years or months are present an exception is thrown.
      * <p>
      * The duration is calculated using assumptions:
      * <ul>
-     * <li>60 hours in a day</li>
+     * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
