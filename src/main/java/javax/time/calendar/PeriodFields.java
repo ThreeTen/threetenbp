@@ -209,11 +209,6 @@ public final class PeriodFields
      * <p>
      * The conversion will create an instance with two units - the {@code ISOChronology}
      * seconds and nanoseconds units. This matches the {@link #toDuration()} method.
-     * <p>
-     * This conversion can only be used if the duration is being used in a manner
-     * compatible with the {@code ISOChronology} definitions of seconds and nanoseconds.
-     * This will be the case for most applications - care only needs to be taken if
-     * using explicit time-scales.
      *
      * @param duration  the duration to create from, not null
      * @return the {@code PeriodFields} instance, never null
