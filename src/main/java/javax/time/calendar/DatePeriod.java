@@ -124,31 +124,6 @@ public final class DatePeriod
         return of(PeriodFields.of(amount, unit));
     }
 
-    /**
-     * Obtains a {@code DatePeriod} from a provider of periods.
-     * <p>
-     * A {@code DatePeriod} supports 3 units, ISO years, months and days.
-     * The period specified must only contain these units, or units that can be
-     * {@link PeriodFields#toEquivalent converted} to these units.
-     *
-     * @param periodProvider  a provider of period information, not null
-     * @return the period, never null
-     * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, except nanos, exceeds an {@code int}
-     */
-    public static DatePeriod of(PeriodProvider periodProvider) {
-        PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        if (periodProvider instanceof DatePeriod) {
-            return (DatePeriod) periodProvider;
-        }
-        PeriodFields periodFields = PeriodFields.of(periodProvider);
-        periodFields = periodFields.toEquivalent(UNITS);
-        int years = periodFields.getAmountInt(ISOChronology.periodYears());
-        int months = periodFields.getAmountInt(ISOChronology.periodMonths());
-        int days = periodFields.getAmountInt(ISOChronology.periodDays());
-        return of(years, months, days);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code DatePeriod} from a number of years.
@@ -187,6 +162,60 @@ public final class DatePeriod
             return ZERO;
         }
         return new DatePeriod(0, 0, days);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains a {@code DatePeriod} from a period, throwing an exception
+     * if there are any time fields.
+     * <p>
+     * A {@code DatePeriod} supports 3 units, ISO years, months and days.
+     * The period specified must only contain these units, or units that can be
+     * {@link PeriodFields#toEquivalent converted} to these units.
+     * <p>
+     * An exception occurs if the period contains other fields, such as hours and minutes.
+     * See {@link #ofDateFields(PeriodProvider)} for a more lenient alternative.
+     *
+     * @param periodProvider  a provider of period information, not null
+     * @return the period, never null
+     * @throws CalendricalException if the provided period cannot be converted to the supported units
+     * @throws ArithmeticException if any provided amount, exceeds an {@code int}
+     */
+    public static DatePeriod of(PeriodProvider periodProvider) {
+        return of(periodProvider, false);
+    }
+
+    /**
+     * Obtains a {@code DatePeriod} from a period, ignoring any time fields.
+     * <p>
+     * A {@code DatePeriod} supports 3 units, ISO years, months and days.
+     * This method extracts only those units which can be converted to one the required 3 units.
+     * <p>
+     * No error occurs if the period contains other fields, such as hours, minutes or seconds.
+     * See {@link #of(PeriodProvider)} for a stricter alternative.
+     *
+     * @param periodProvider  a provider of period information, not null
+     * @return the period, never null
+     * @throws ArithmeticException if any provided amount, exceeds an {@code int}
+     */
+    public static DatePeriod ofDateFields(PeriodProvider periodProvider) {
+        return of(periodProvider, true);
+    }
+
+    private static DatePeriod of(PeriodProvider periodProvider, boolean lenient) {
+        PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        if (periodProvider instanceof DatePeriod) {
+            return (DatePeriod) periodProvider;
+        }
+        PeriodFields periodFields = PeriodFields.of(periodProvider);
+        if (lenient) {
+            periodFields = periodFields.retainConvertible(UNITS);
+        }
+        periodFields = periodFields.toEquivalent(UNITS);
+        int years = periodFields.getAmountInt(ISOChronology.periodYears());
+        int months = periodFields.getAmountInt(ISOChronology.periodMonths());
+        int days = periodFields.getAmountInt(ISOChronology.periodDays());
+        return of(years, months, days);
     }
 
     //-----------------------------------------------------------------------
@@ -307,18 +336,17 @@ public final class DatePeriod
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code DatePeriod} from a string formatted as {@code PnYnMnDTnHnMn.nS}.
+     * Obtains a {@code DatePeriod} from a string formatted as {@code PnYnMnD}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
-     * a subset of the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
+     * a subset of the ISO8601 period format {@code PnYnMnD}.
      * <p>
      * The string consists of a series of numbers with a suffix identifying their meaning.
      * The values, and suffixes, must be in the sequence year, month, day, hour, minute, second.
      * Any of the number/suffix pairs may be omitted providing at least one is present.
-     * If the period is zero, the value is normally represented as {@code PT0S}.
+     * If the period is zero, the value is normally represented as {@code PT0D}.
      * The numbers must consist of ASCII digits.
      * Any of the numbers may be negative. Negative zero is not accepted.
-     * The number of nanoseconds is expressed as an optional fraction of the seconds.
      * There must be at least one digit before any decimal point.
      * There must be between 1 and 9 inclusive digits after any decimal point.
      * The letters will all be accepted in upper or lower case.

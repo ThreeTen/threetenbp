@@ -65,6 +65,7 @@ public class TestDatePeriod {
     private static final PeriodUnit QUARTERS = ISOChronology.periodQuarters();
     private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
     private static final PeriodUnit DAYS = ISOChronology.periodDays();
+    private static final PeriodUnit HOURS = ISOChronology.periodHours();
     private static final PeriodUnit HISTORIC_MONTHS = HistoricChronology.periodMonths();
 
     private static final BigInteger MAX_BINT = BigInteger.valueOf(Integer.MAX_VALUE);
@@ -476,21 +477,74 @@ public class TestDatePeriod {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_period_provider() {
+    // of(PeriodProvider
+    //-----------------------------------------------------------------------
+    public void factory_of_PeriodProvider() {
+        PeriodProvider provider = PeriodFields.of(1, YEARS).with(2, MONTHS).with(3, DAYS);
+        assertPeriod(DatePeriod.of(provider), 1, 2, 3);
+    }
+
+    public void factory_of_PeriodProvider_conversion() {
+        PeriodProvider provider = PeriodFields.of(1, YEARS).with(2, QUARTERS);
+        assertPeriod(DatePeriod.of(provider), 1, 6, 0);
+    }
+
+    public void factory_of_PeriodProvider_DatePeriod() {
         PeriodProvider provider = DatePeriod.of(1, 2, 3);
         assertPeriod(DatePeriod.of(provider), 1, 2, 3);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void factory_of_PeriodProvider_time() {
+        PeriodProvider provider = PeriodFields.of(1, YEARS).with(3, HOURS);
+        DatePeriod.of(provider);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_period_provider_null() {
+    public void factory_of_PeriodProvider_null() {
         PeriodProvider provider = null;
         DatePeriod.of(provider);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_period_badProvider() {
+    public void factory_of_PeriodProvider_badProvider() {
         PeriodProvider provider = new MockPeriodProviderReturnsNull();
         DatePeriod.of(provider);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofDateFields(PeriodProvider
+    //-----------------------------------------------------------------------
+    public void factory_ofDateFields_PeriodProvider() {
+        PeriodProvider provider = PeriodFields.of(1, YEARS).with(2, MONTHS).with(3, DAYS);
+        assertPeriod(DatePeriod.ofDateFields(provider), 1, 2, 3);
+    }
+
+    public void factory_ofDateFields_PeriodProvider_conversion() {
+        PeriodProvider provider = PeriodFields.of(1, YEARS).with(2, QUARTERS);
+        assertPeriod(DatePeriod.ofDateFields(provider), 1, 6, 0);
+    }
+
+    public void factory_ofDateFields_PeriodProvider_DatePeriod() {
+        PeriodProvider provider = DatePeriod.of(1, 2, 3);
+        assertPeriod(DatePeriod.ofDateFields(provider), 1, 2, 3);
+    }
+
+    public void factory_ofDateFields_PeriodProvider_time() {
+        PeriodProvider provider = PeriodFields.of(1, YEARS).with(3, HOURS);
+        assertPeriod(DatePeriod.ofDateFields(provider), 1, 0, 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofDateFields_PeriodProvider_null() {
+        PeriodProvider provider = null;
+        DatePeriod.ofDateFields(provider);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofDateFields_PeriodProvider_badProvider() {
+        PeriodProvider provider = new MockPeriodProviderReturnsNull();
+        DatePeriod.ofDateFields(provider);
     }
 
     //-----------------------------------------------------------------------
