@@ -240,6 +240,8 @@ EDR released
 - Add PeriodFields.normalize()
 - Add Period.of(Duration)
 - Remove DatePeriod.ofYearsMonths()
+- Add DatePeriod.ofDateFields()
+- Make LocalDate.plus(PeriodProvider)/minus(PeriodProvider) strict
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

@@ -643,14 +643,13 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDate} with the specified period added.
+     * Returns a copy of this {@code LocalDate} with the specified date period added.
      * <p>
-     * The period is normalized to ISO Months and Days before being added to this date.
-     * Any amounts that are not normalized to months or days, such as hours, are ignored.
-     * <p>
-     * The approach used only adds years, months and days which may not be exactly what you expect.
-     * For example, adding a period of 48 hours will have no effect on the date because hours cannot
-     * be converted into days. Use {@code LocalDateTime} to perform such a calculation.
+     * This adds the specified period to this date, returning a new date.
+     * Before addition, the period is converted to a {@code DatePeriod} using
+     * the {@link DatePeriod#of(PeriodProvider) strict factory}.
+     * If you want to ignore the non-date fields, simply wrap the parameter in a call
+     * to the {@link DatePeriod#ofDateFields(PeriodProvider) lenient factory}.
      * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code plusYears().plusMonths().plusDays()} in most cases.
@@ -683,12 +682,13 @@ public final class LocalDate
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code LocalDate} with the period added, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code DatePeriod}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths(), ISOChronology.periodDays());
-        long periodMonths = period.getAmount(ISOChronology.periodMonths());
-        long periodDays = period.getAmount(ISOChronology.periodDays());
+        DatePeriod period = DatePeriod.of(periodProvider);
+        long periodMonths = period.totalMonths();
+        long periodDays = period.getDays();
         if (periodMonths == 0) {
             return plusDays(periodDays);  // optimization that also returns this for zero
         }
@@ -867,14 +867,13 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code LocalDate} with the specified period subtracted.
+     * Returns a copy of this {@code LocalDate} with the specified date period subtracted.
      * <p>
-     * The period is normalized to ISO Months and Days before being subtracted from this date.
-     * Any amounts that are not normalized to months or days, such as hours, are ignored.
-     * <p>
-     * The approach used only subtracts years, months and days which may not be exactly what you expect.
-     * For example, subtracting a period of 48 hours will have no effect on the date because hours cannot
-     * be converted into days. Use {@code LocalDateTime} to perform such a calculation.
+     * This subtracts the specified period from this date, returning a new date.
+     * Before subtraction, the period is converted to a {@code DatePeriod} using
+     * the {@link DatePeriod#of(PeriodProvider) strict factory}.
+     * If you want to ignore the non-date fields, simply wrap the parameter in a call
+     * to the {@link DatePeriod#ofDateFields(PeriodProvider) lenient factory}.
      * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
@@ -907,12 +906,13 @@ public final class LocalDate
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code LocalDate} with the period subtracted, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code DatePeriod}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths(), ISOChronology.periodDays());
-        long periodMonths = period.getAmount(ISOChronology.periodMonths());
-        long periodDays = period.getAmount(ISOChronology.periodDays());
+        DatePeriod period = DatePeriod.of(periodProvider);
+        long periodMonths = period.totalMonths();
+        long periodDays = period.getDays();
         if (periodMonths == 0) {
             return minusDays(periodDays);  // optimization that also returns this for zero
         }
