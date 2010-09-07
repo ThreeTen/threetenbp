@@ -972,7 +972,7 @@ public final class Period
      * Two normalizations occur, one for years and months, and one for
      * hours, minutes, seconds and nanoseconds.
      * Days are not normalized, as a day may vary in length at daylight savings cutover.
-     * For example, a period of P1Y15M1DT28H61M will be normalized to P2Y3M1DT29H1M.
+     * For example, a period of {@code P1Y15M1DT28H61M} will be normalized to {@code P2Y3M1DT29H1M}.
      * <p>
      * Note that this method normalizes using assumptions:
      * <ul>
@@ -1018,7 +1018,7 @@ public final class Period
      * <p>
      * Two normalizations occur, one for years and months, and one for
      * days, hours, minutes, seconds and nanoseconds.
-     * For example, a period of P1Y15M1DT28H will be normalized to P2Y3M2DT4H.
+     * For example, a period of {@code P1Y15M1DT28H} will be normalized to {@code P2Y3M2DT4H}.
      * <p>
      * Note that this method normalizes using assumptions:
      * <ul>
