@@ -424,7 +424,7 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this period to the specified {@code PeriodField}.
+     * Compares this period to the specified period.
      * <p>
      * The comparison orders first by the unit, then by the amount.
      *
@@ -442,7 +442,7 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this period is equal to the specified {@code PeriodField}.
+     * Checks if this period is equal to the specified period.
      * <p>
      * The comparison is based on the unit and amount.
      *

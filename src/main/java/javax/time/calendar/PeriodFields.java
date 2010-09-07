@@ -998,7 +998,7 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instance equal to the object specified.
+     * Checks if this instance equal to the specified period.
      * <p>
      * Two {@code PeriodFields} instances are equal if all the contained
      * {@code PeriodField} instances are equal.
