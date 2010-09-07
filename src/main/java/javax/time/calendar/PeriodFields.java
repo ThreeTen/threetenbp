@@ -781,6 +781,26 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this period with the amounts normalized.
+     * <p>
+     * The calculation examines each pair of units in this period that have a fixed conversion factor.
+     * Each pair is adjusted so that the amount in the smaller unit does not exceed
+     * the amount of the fixed conversion factor.
+     * <p>
+     * For example, a period of '2 Decades, 2 Years, 17 Months' normalized using
+     * 'Years' and 'Months' will return '23 Years, 5 Months'.
+     * <p>
+     * The result will always contain all the units present in this period, even if they are zero.
+     * The result will be equivalent to this period.
+     *
+     * @return a period equivalent to this period with the amounts normalized, never null
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public PeriodFields normalized() {
+        return normalizedTo(unitFieldMap.keySet().toArray(new PeriodUnit[unitFieldMap.size()]));
+    }
+
+    /**
      * Returns a copy of this period with the amounts normalized to the specified units.
      * <p>
      * This will normalize the period around the specified units.
