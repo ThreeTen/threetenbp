@@ -94,6 +94,21 @@ public final class DatePeriod
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains a {@code DatePeriod} from an amount of years, months and days.
+     *
+     * @param years  the amount of years, may be negative
+     * @param months  the amount of months, may be negative
+     * @param days  the amount of days, may be negative
+     * @return the period, never null
+     */
+    public static DatePeriod of(int years, int months, int days) {
+        if ((years | months | days) == 0) {
+            return ZERO;
+        }
+        return new DatePeriod(years, months, days);
+    }
+
+    /**
      * Obtains a {@code DatePeriod} from an amount and unit.
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
@@ -132,35 +147,6 @@ public final class DatePeriod
         int months = periodFields.getAmountInt(ISOChronology.periodMonths());
         int days = periodFields.getAmountInt(ISOChronology.periodDays());
         return of(years, months, days);
-    }
-
-    /**
-     * Obtains a {@code DatePeriod} from amounts from years to seconds.
-     *
-     * @param years  the amount of years, may be negative
-     * @param months  the amount of months, may be negative
-     * @param days  the amount of days, may be negative
-     * @return the period, never null
-     */
-    public static DatePeriod of(int years, int months, int days) {
-        if ((years | months | days) == 0) {
-            return ZERO;
-        }
-        return new DatePeriod(years, months, days);
-    }
-
-    /**
-     * Obtains a {@code DatePeriod} from years, months and days.
-     *
-     * @param years  the amount of years, may be negative
-     * @param months  the amount of months, may be negative
-     * @return the period, never null
-     */
-    public static DatePeriod ofYearsMonths(int years, int months) {
-        if ((years | months) == 0) {
-            return ZERO;
-        }
-        return new DatePeriod(years, months, 0);
     }
 
     //-----------------------------------------------------------------------

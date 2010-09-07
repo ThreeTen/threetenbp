@@ -122,6 +122,12 @@ public class TestDatePeriod {
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
+    public void factory_ints() {
+        assertPeriod(DatePeriod.of(1, 2, 3), 1, 2, 3);
+        assertPeriod(DatePeriod.of(-1, -2, -3), -1, -2, -3);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_factory_of_intPeriodUnit() {
         assertEquals(DatePeriod.of(1, YEARS), DatePeriod.ofYears(1));
         assertEquals(DatePeriod.of(2, MONTHS), DatePeriod.ofMonths(2));
@@ -148,7 +154,6 @@ public class TestDatePeriod {
         assertSame(DatePeriod.ofYears(0), DatePeriod.ZERO);
         assertSame(DatePeriod.ofMonths(0), DatePeriod.ZERO);
         assertSame(DatePeriod.ofDays(0), DatePeriod.ZERO);
-        assertSame(DatePeriod.ofYearsMonths(0, 0), DatePeriod.ZERO);
         assertSame(DatePeriod.of(0, 0, 0), DatePeriod.ZERO);
         assertSame(DatePeriod.of(PeriodFields.ZERO), DatePeriod.ZERO);
     }
@@ -176,15 +181,6 @@ public class TestDatePeriod {
         assertPeriod(DatePeriod.ofDays(-1), 0, 0, -1);
         assertPeriod(DatePeriod.ofDays(Integer.MAX_VALUE), 0, 0, Integer.MAX_VALUE);
         assertPeriod(DatePeriod.ofDays(Integer.MIN_VALUE), 0, 0, Integer.MIN_VALUE);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_yearsMonths() {
-        assertPeriod(DatePeriod.ofYearsMonths(1, 2), 1, 2, 0);
-        assertPeriod(DatePeriod.ofYearsMonths(0, 2), 0, 2, 0);
-        assertPeriod(DatePeriod.ofYearsMonths(1, 0), 1, 0, 0);
-        assertPeriod(DatePeriod.ofYearsMonths(0, 0), 0, 0, 0);
-        assertPeriod(DatePeriod.ofYearsMonths(-1, -2), -1, -2, 0);
     }
 
     //-----------------------------------------------------------------------

@@ -239,6 +239,7 @@ EDR released
 - Rename PeriodFields.normalize() to normalizeTo()
 - Add PeriodFields.normalize()
 - Add Period.of(Duration)
+- Remove DatePeriod.ofYearsMonths()
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory
