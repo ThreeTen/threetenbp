@@ -603,7 +603,7 @@ public final class LocalTime
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public LocalTime plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalized(
+        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(
                 ISOChronology.periodHours(), ISOChronology.periodMinutes(),
                 ISOChronology.periodSeconds(), ISOChronology.periodNanos());
         long periodHours = period.getAmount(ISOChronology.periodHours());
@@ -788,7 +788,7 @@ public final class LocalTime
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public LocalTime minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalized(
+        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(
                 ISOChronology.periodHours(), ISOChronology.periodMinutes(),
                 ISOChronology.periodSeconds(), ISOChronology.periodNanos());
         long periodHours = period.getAmount(ISOChronology.periodHours());

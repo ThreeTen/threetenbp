@@ -781,7 +781,7 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with the amounts normalized using the specified units.
+     * Returns a copy of this period with the amounts normalized to the specified units.
      * <p>
      * This will normalize the period around the specified units.
      * The calculation examines each pair of units that have a fixed conversion factor.
@@ -802,7 +802,7 @@ public final class PeriodFields
      * @return a period equivalent to this period with the amounts normalized, never null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields normalized(PeriodUnit... units) {
+    public PeriodFields normalizedTo(PeriodUnit... units) {
         checkNotNull(units, "PeriodUnit array must not be null");
         PeriodFields result = this;
         TreeSet<PeriodUnit> targetUnits = new TreeSet<PeriodUnit>(Collections.reverseOrder());

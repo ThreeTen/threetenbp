@@ -686,7 +686,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths(), ISOChronology.periodDays());
+        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths(), ISOChronology.periodDays());
         long periodMonths = period.getAmount(ISOChronology.periodMonths());
         long periodDays = period.getAmount(ISOChronology.periodDays());
         if (periodMonths == 0) {
@@ -910,7 +910,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths(), ISOChronology.periodDays());
+        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths(), ISOChronology.periodDays());
         long periodMonths = period.getAmount(ISOChronology.periodMonths());
         long periodDays = period.getAmount(ISOChronology.periodDays());
         if (periodMonths == 0) {

@@ -358,7 +358,7 @@ public final class YearMonth
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths());
+        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths());
         return plusMonths(period.getAmount(ISOChronology.periodMonths()));
     }
 
@@ -414,7 +414,7 @@ public final class YearMonth
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalized(ISOChronology.periodMonths());
+        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths());
         return minusMonths(period.getAmount(ISOChronology.periodMonths()));
     }
 
