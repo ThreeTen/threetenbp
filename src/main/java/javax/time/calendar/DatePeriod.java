@@ -684,7 +684,7 @@ public final class DatePeriod
      * The normalization adjusts the years and months fields ensuring that the
      * months field is between 0 and 11 inclusive.
      * Days are not normalized.
-     * For example, a period of P1Y15M1D will be normalized to P2Y3M1D.
+     * For example, a period of {@code P1Y15M1D} will be normalized to {@code P2Y3M1D}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
