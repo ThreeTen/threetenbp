@@ -233,6 +233,7 @@ EDR released
 - Make CalendricalRule.compare less lenient
 - Add TAIInstant.parse()
 - Print/parse two digit years
+- Add Period.toEstimatedDuration()
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

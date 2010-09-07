@@ -1620,48 +1620,51 @@ public class TestPeriod {
         assertEquals(test.totalNanosWith24HourDays(), n);
     }
 
-//    //-----------------------------------------------------------------------
-//    // toPeriod()
-//    //-----------------------------------------------------------------------
-//    public void test_toPeriod() {
-//        Period test = Period.of(1, 2, 3, 4, 5, 6);
-//        assertSame(test.toPeriod(), test);
-//    }
-//
-//    public void test_toPeriod_zero() {
-//        assertSame(Period.ZERO.toPeriod(), Period.ZERO);
-//    }
+    //-----------------------------------------------------------------------
+    // toPeriodFields()
+    //-----------------------------------------------------------------------
+    public void test_toPeriodFields() {
+        Period test = Period.of(1, 2, 3, 4, 5, 6);
+        PeriodFields fields = test.toPeriodFields();
+        assertEquals(fields.size(), 6);
+        assertEquals(fields.getAmount(YEARS), 1);
+        assertEquals(fields.getAmount(MONTHS), 2);
+        assertEquals(fields.getAmount(DAYS), 3);
+        assertEquals(fields.getAmount(HOURS), 4);
+        assertEquals(fields.getAmount(MINUTES), 5);
+        assertEquals(fields.getAmount(SECONDS), 6);
+    }
 
-//    //-----------------------------------------------------------------------
-//    // toPeriodFields()
-//    //-----------------------------------------------------------------------
-//    public void test_toPeriodFields() {
-//        Period test = Period.of(1, 2, 3, 4, 5, 6);
-//        PeriodFields fields = test.toPeriodFields();
-//        assertEquals(fields.size(), 6);
-//        assertEquals(fields.get(YEARS), 1);
-//        assertEquals(fields.get(MONTHS), 2);
-//        assertEquals(fields.get(DAYS), 3);
-//        assertEquals(fields.get(HOURS), 4);
-//        assertEquals(fields.get(MINUTES), 5);
-//        assertEquals(fields.get(SECONDS), 6);
-//    }
-//
-//    public void test_toPeriodFields_zeroRemoved() {
-//        Period test = Period.of(1, 0, 3, 0, 5, 0);
-//        PeriodFields fields = test.toPeriodFields();
-//        assertEquals(fields.size(), 3);
-//        assertEquals(fields.get(YEARS), 1);
-//        assertEquals(fields.get(DAYS), 3);
-//        assertEquals(fields.get(MINUTES), 5);
-//        assertEquals(fields.contains(MONTHS), false);
-//        assertEquals(fields.contains(HOURS), false);
-//        assertEquals(fields.contains(SECONDS), false);
-//    }
-//
-//    public void test_toPeriodFields_zero() {
-//        assertSame(Period.ZERO.toPeriodFields(), PeriodFields.ZERO);
-//    }
+    public void test_toPeriodFields_zeroRemoved() {
+        Period test = Period.of(1, 0, 3, 0, 5, 0);
+        PeriodFields fields = test.toPeriodFields();
+        assertEquals(fields.size(), 3);
+        assertEquals(fields.getAmount(YEARS), 1);
+        assertEquals(fields.getAmount(DAYS), 3);
+        assertEquals(fields.getAmount(MINUTES), 5);
+        assertEquals(fields.contains(MONTHS), false);
+        assertEquals(fields.contains(HOURS), false);
+        assertEquals(fields.contains(SECONDS), false);
+    }
+
+    public void test_toPeriodFields_zero() {
+        assertSame(Period.ZERO.toPeriodFields(), PeriodFields.ZERO);
+    }
+
+    //-----------------------------------------------------------------------
+    // toEstimatedDuration()
+    //-----------------------------------------------------------------------
+    public void test_toEstimatedDuration() {
+        assertEquals(Period.ZERO.toEstimatedDuration(), Duration.ofSeconds(0));
+        assertEquals(Period.of(0, 0, 0, 4, 5, 6, 7).toEstimatedDuration(), Duration.ofSeconds((4 * 60 + 5) * 60L + 6, 7));
+        assertEquals(Period.of(0, 0, 0, -4, -5, -6, -7).toEstimatedDuration(), Duration.ofSeconds((-4 * 60 - 5) * 60L - 6, -7));
+    }
+
+    public void test_toEstimatedDuration_Days() {
+        assertEquals(Period.ZERO.toEstimatedDuration(), Duration.ofSeconds(0));
+        assertEquals(Period.ofDays(2).toEstimatedDuration(), ISOChronology.periodDays().getEstimatedDuration().multipliedBy(2));
+        assertEquals(Period.ofMonths(2).toEstimatedDuration(), ISOChronology.periodMonths().getEstimatedDuration().multipliedBy(2));
+    }
 
     //-----------------------------------------------------------------------
     // toDuration()

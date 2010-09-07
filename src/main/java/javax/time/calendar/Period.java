@@ -1352,6 +1352,21 @@ public final class Period
     }
 
     /**
+     * Estimates the duration of this period.
+     * <p>
+     * Each {@link PeriodUnit} contains an estimated duration for that unit.
+     * The per-unit estimate allows an estimate to be calculated for the whole period
+     * including years, months and days. The estimate will equal the {@link #toDuration accurate}
+     * calculation if the years, months and days fields are zero.
+     *
+     * @return the estimated duration of this period, never null
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public Duration toEstimatedDuration() {
+        return toPeriodFields().toEstimatedDuration();
+    }
+
+    /**
      * Calculates the accurate duration of this period.
      * <p>
      * The calculation uses the hours, minutes, seconds and nanoseconds fields.
