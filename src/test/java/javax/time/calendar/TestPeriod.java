@@ -288,6 +288,31 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
+    // of(Duration)
+    //-----------------------------------------------------------------------
+    public void factory_duration() {
+        assertPeriod(Period.of(Duration.ofSeconds(2, 3)), 0, 0, 0, 0, 0, 2, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(59, 3)), 0, 0, 0, 0, 0, 59, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(60, 3)), 0, 0, 0, 0, 1, 0, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(61, 3)), 0, 0, 0, 0, 1, 1, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(3599, 3)), 0, 0, 0, 0, 59, 59, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(3600, 3)), 0, 0, 0, 1, 0, 0, 3);
+    }
+
+    public void factory_duration_negative() {
+        assertPeriod(Period.of(Duration.ofSeconds(-2, 3)), 0, 0, 0, 0, 0, -2, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(-59, 3)), 0, 0, 0, 0, 0, -59, 3);
+        assertPeriod(Period.of(Duration.ofSeconds(-60, 3)), 0, 0, 0, 0, -1, 0, 3);
+        
+        assertPeriod(Period.of(Duration.ofSeconds(2, -3)), 0, 0, 0, 0, 0, 1, 999999997);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_duration_null() {
+        Period.of((Duration) null);
+    }
+
+    //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider="toStringAndParse")

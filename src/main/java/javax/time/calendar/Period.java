@@ -342,6 +342,29 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains a {@code Period} from a {@code Duration}.
+     * <p>
+     * The created period will have normalized values for the hours, minutes,
+     * seconds and nanoseconds fields. The years, months and days fields will be zero.
+     * <p>
+     * To populate the days field, call {@link #normalizedWith24HourDays()} on the created period.
+     *
+     * @param duration  the duration to create from, not null
+     * @return the {@code PeriodFields} instance, never null
+     * @throws ArithmeticException if the result exceeds the supported period range
+     */
+    public static Period of(Duration duration) {
+        PeriodFields.checkNotNull(duration, "Duration must not be null");
+        if (duration.isZero()) {
+            return ZERO;
+        }
+        int hours = MathUtils.safeToInt(duration.getSeconds() / 3600);
+        int amount = ((int) duration.getSeconds() % 3600);
+        return new Period(0, 0, 0, hours, amount / 60, amount % 60, duration.getNanoOfSecond());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains a {@code Period} from a string formatted as {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * This will parse the string produced by {@code toString()} which is

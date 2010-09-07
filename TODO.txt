@@ -238,6 +238,7 @@ EDR released
 - Add Period.toEstimatedDuration()
 - Rename PeriodFields.normalize() to normalizeTo()
 - Add PeriodFields.normalize()
+- Add Period.of(Duration)
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory
