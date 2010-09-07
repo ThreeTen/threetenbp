@@ -358,10 +358,11 @@ public final class MathUtils {
      * Returns the floor modulus.
      * <p>
      * This returns {@code 0} for {@code floorMod(0, 4)}.<br />
-     * This returns {@code 1} for {@code floorMod(-1, 4)}.<br />
+     * This returns {@code 3} for {@code floorMod(-1, 4)}.<br />
      * This returns {@code 2} for {@code floorMod(-2, 4)}.<br />
-     * This returns {@code 3} for {@code floorMod(-3, 4)}.<br />
+     * This returns {@code 1} for {@code floorMod(-3, 4)}.<br />
      * This returns {@code 0} for {@code floorMod(-4, 4)}.<br />
+     * This returns {@code 3} for {@code floorMod(-5, 4)}.<br />
      *
      * @param a  the dividend
      * @param b  the divisor
