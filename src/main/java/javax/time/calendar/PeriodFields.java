@@ -911,7 +911,10 @@ public final class PeriodFields
      * It operates by looping through the individual parts of this period,
      * converting each in turn to one of the specified units.
      * These converted periods are then combined to form the result.
+     * <p>
      * No normalization is performed on the result.
+     * This means that an amount in a smaller unit cannot be converted to an amount in a larger unit.
+     * If you need to do this, call {@link #normalized()} before calling this method.
      * <p>
      * This method uses {@link PeriodField#toEquivalent(PeriodUnit...)} and as such,
      * it is recommended to specify the units from largest to smallest.
