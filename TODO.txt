@@ -139,7 +139,6 @@ Possible items
 - round()
 - iteration
 - era in the hash codes
-- nano of day rule - Long
 - ModJulDays rule - BigDecimal
 - IntValue interface, implemented by Number/Integer
 - public factory for LocalDate.fromDayOfYear(year, doy)
@@ -166,6 +165,7 @@ Document
 -- Chronology is complex
 -- Date holding chronology is complex
 -- Exposed long millis
+- Parsing with wrong pattern letter case (month vs minute, doy vs dom) is caught
 
 Use cases
 - Day of Olympiad (roughly four year period)
@@ -212,6 +212,7 @@ EDR released
 - Rename factory methods to start with 'of'
 - LocalDate.plus(PeriodProvider) needs correct algorithm
 - Period.ofXxx factory rename
+
 0.6.1 released
 - PeriodFields.toTotal(Unit)
 - PeriodFields.normalize(Unit...)
@@ -227,7 +228,8 @@ EDR released
  - Specialised data format for zone-rules
  - SPI and zone providers
 - TimeZone special factory to create unavailable instances
- 0.6.2 released
+
+0.6.2 released
 - nanoOfDay rule / epochDays rule
 - Use public factories for ZOT and ZOTR rather than protected methods in ZRules
 - Make CalendricalRule.compare less lenient
