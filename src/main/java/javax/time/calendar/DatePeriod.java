@@ -751,12 +751,13 @@ public final class DatePeriod
     }
 
     /**
-     * Converts this object to an estimated {@code Duration} using the definitions on the units.
+     * Estimates the duration of this period.
      * <p>
-     * This uses the estimated duration definitions on the years, months and days units
-     * to provide the estimate.
+     * Each {@link PeriodUnit} contains an estimated duration for that unit.
+     * The per-unit estimate allows an estimate to be calculated for the whole period.
      *
-     * @return a {@code Duration} with a length estimated from this period, never null
+     * @return the estimated duration of this period, never null
+     * @throws ArithmeticException if the calculation overflows
      */
     public Duration toEstimatedDuration() {
         return toPeriodFields().toEstimatedDuration();
