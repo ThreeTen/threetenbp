@@ -1485,7 +1485,7 @@ public class TestZonedDateTime {
     // plusDuration(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plusDuration_PeriodProvider() {
-        PeriodProvider provider = Period.ofHoursMinutesSeconds(4, 5, 6);
+        PeriodProvider provider = Period.ofTimeFields(4, 5, 6);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
         assertEquals(t.plusDuration(provider), expected);
@@ -1675,7 +1675,7 @@ public class TestZonedDateTime {
     // minusDuration(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minusDuration_PeriodProvider() {
-        PeriodProvider provider = Period.ofHoursMinutesSeconds(4, 5, 6);
+        PeriodProvider provider = Period.ofTimeFields(4, 5, 6);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
         assertEquals(t.minusDuration(provider), expected);

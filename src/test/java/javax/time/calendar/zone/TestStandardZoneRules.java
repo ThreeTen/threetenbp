@@ -108,9 +108,9 @@ public class TestStandardZoneRules {
     public void test_serialization_unusual() throws Exception {
         ZoneRulesBuilder b = new ZoneRulesBuilder()
             .addWindow(ZoneOffset.of("-17:49:23"), LocalDateTime.of(1980, 3, 1, 1, 34, 56), TimeDefinition.WALL)
-            .setFixedSavingsToWindow(Period.ofHoursMinutesSeconds(1, 34, 23))
+            .setFixedSavingsToWindow(Period.ofTimeFields(1, 34, 23))
             .addWindowForever(ZoneOffset.of("+04:23"))
-            .setFixedSavingsToWindow(Period.ofHoursMinutesSeconds(13, 22, 9));
+            .setFixedSavingsToWindow(Period.ofTimeFields(13, 22, 9));
         ZoneRules test = b.toRules("Test");
         assertSerialization(test);
     }

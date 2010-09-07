@@ -515,7 +515,7 @@ public final class ZoneOffset
      */
     public ZoneOffset plus(PeriodProvider periodProvider) {
         Period otherPeriod = Period.of(periodProvider);
-        otherPeriod = Period.ofHoursMinutesSeconds(otherPeriod.getHours(), otherPeriod.getMinutes(), otherPeriod.getSeconds());
+        otherPeriod = Period.ofTimeFields(otherPeriod.getHours(), otherPeriod.getMinutes(), otherPeriod.getSeconds());
         Period thisPeriod = toPeriod();
         Period combined = thisPeriod.plus(otherPeriod).normalized();
         return ofHoursMinutesSeconds(combined.getHours(), combined.getMinutes(), combined.getSeconds());
@@ -534,7 +534,7 @@ public final class ZoneOffset
      * @return the period equivalent to the zone offset amount, never null
      */
     public Period toPeriod() {
-        return Period.ofHoursMinutesSeconds(getHoursField(), getMinutesField(), getSecondsField());
+        return Period.ofTimeFields(getHoursField(), getMinutesField(), getSecondsField());
     }
 
     /**

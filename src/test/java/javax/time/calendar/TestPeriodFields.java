@@ -271,7 +271,7 @@ public class TestPeriodFields {
     }
 
     public void factory_total_providers_multipleElements_addition() {
-        PeriodProvider[] array = new PeriodProvider[] {PeriodField.of(1, YEARS), Period.ofYearsMonthsDays(2, 3, 4)};
+        PeriodProvider[] array = new PeriodProvider[] {PeriodField.of(1, YEARS), Period.ofDateFields(2, 3, 4)};
         PeriodFields test = PeriodFields.ofTotal(array);
         assertEquals(test.size(), 3);
         assertEquals(test.getAmount(YEARS), 3);

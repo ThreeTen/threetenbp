@@ -616,7 +616,7 @@ public class TestOffsetTime {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.ofHoursMinutesSeconds(1, 2, 3);
+        PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
         OffsetTime t = TEST_TIME.plus(provider);
         assertEquals(t, OffsetTime.of(12, 33, 2, 500, OFFSET_PONE));
     }
@@ -700,7 +700,7 @@ public class TestOffsetTime {
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.ofHoursMinutesSeconds(1, 2, 3);
+        PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
         OffsetTime t = TEST_TIME.minus(provider);
         assertEquals(t, OffsetTime.of(10, 28, 56, 500, OFFSET_PONE));
     }

@@ -35,7 +35,7 @@ import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendar.DayOfWeek.FRIDAY;
 import static javax.time.calendar.ISOChronology.*;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
-import static javax.time.calendar.Period.ofYearsMonthsDays;
+import static javax.time.calendar.Period.ofDateFields;
 
 import java.util.Locale;
 
@@ -100,7 +100,7 @@ public class Examples {
         LocalDate later = clock.today().plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
-        Period period = ofYearsMonthsDays(1, 3, 5);
+        Period period = ofDateFields(1, 3, 5);
         LocalDate moreLater = clock.today().plus(period);
         System.out.println("Period " + period + " after today : " + moreLater);
         

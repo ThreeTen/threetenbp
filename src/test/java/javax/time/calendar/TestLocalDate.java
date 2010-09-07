@@ -893,7 +893,7 @@ public class TestLocalDate {
 
     @Test(dataProvider="PlusPeriodProvider")
     public void test_plus_PeriodProvider(LocalDate base, int years, int months, int days, LocalDate expected) {
-        PeriodProvider provider = Period.ofYearsMonthsDays(years, months, days);
+        PeriodProvider provider = Period.ofDateFields(years, months, days);
         LocalDate t = base.plus(provider);
         assertEquals(t, expected);
     }
@@ -1530,7 +1530,7 @@ public class TestLocalDate {
 
     @Test(dataProvider="MinusPeriodProvider")
     public void test_minus_PeriodProvider(LocalDate base, int years, int months, int days, LocalDate expected) {
-        PeriodProvider provider = Period.ofYearsMonthsDays(years, months, days);
+        PeriodProvider provider = Period.ofDateFields(years, months, days);
         LocalDate t = base.minus(provider);
         assertEquals(t, expected);
     }

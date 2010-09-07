@@ -406,31 +406,31 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
-        Period p = Period.ofHoursMinutesSeconds(4, 6, 8);
+        Period p = Period.ofTimeFields(4, 6, 8);
         assertEquals(offset.plus(p), ZoneOffset.of("+05:08:11"));
     }
 
     public void test_plus_PeriodProvider_overflowSecs() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
-        Period p = Period.ofHoursMinutesSeconds(4, 6, 68);
+        Period p = Period.ofTimeFields(4, 6, 68);
         assertEquals(offset.plus(p), ZoneOffset.of("+05:09:11"));
     }
 
     public void test_plus_PeriodProvider_overflowMins() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
-        Period p = Period.ofHoursMinutesSeconds(4, 66, 8);
+        Period p = Period.ofTimeFields(4, 66, 8);
         assertEquals(offset.plus(p), ZoneOffset.of("+06:08:11"));
     }
 
     public void test_plus_PeriodProvider_negative() {
         ZoneOffset offset = ZoneOffset.of("-02:04:06");
-        Period p = Period.ofHoursMinutesSeconds(1, 2, 3);
+        Period p = Period.ofTimeFields(1, 2, 3);
         assertEquals(offset.plus(p), ZoneOffset.of("-01:02:03"));
     }
 
     public void test_plus_PeriodProvider_negativeToPositive() {
         ZoneOffset offset = ZoneOffset.of("-01:02:03");
-        Period p = Period.ofHoursMinutesSeconds(4, 6, 8);
+        Period p = Period.ofTimeFields(4, 6, 8);
         assertEquals(offset.plus(p), ZoneOffset.of("+03:04:05"));
     }
 
@@ -444,12 +444,12 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     public void test_toPeriod() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
-        assertEquals(offset.toPeriod(), Period.ofHoursMinutesSeconds(1, 2, 3));
+        assertEquals(offset.toPeriod(), Period.ofTimeFields(1, 2, 3));
     }
 
     public void test_toPeriod_negative() {
         ZoneOffset offset = ZoneOffset.of("-01:02:03");
-        assertEquals(offset.toPeriod(), Period.ofHoursMinutesSeconds(-1, -2, -3));
+        assertEquals(offset.toPeriod(), Period.ofTimeFields(-1, -2, -3));
     }
 
     public void test_toPeriod_zero() {

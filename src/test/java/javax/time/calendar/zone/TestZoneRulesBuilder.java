@@ -61,7 +61,7 @@ public class TestZoneRulesBuilder {
     private static final ZoneOffset OFFSET_2_30 = ZoneOffset.ofHoursMinutes(2, 30);
     private static final Period PERIOD_0 = Period.ZERO;
     private static final Period PERIOD_1HOUR = Period.ofHours(1);
-    private static final Period PERIOD_1HOUR30MIN = Period.ofHoursMinutesSeconds(1, 30, 0);
+    private static final Period PERIOD_1HOUR30MIN = Period.ofTimeFields(1, 30, 0);
     private static final LocalDateTime DATE_TIME_FIRST = dateTime(Year.MIN_YEAR, 1, 1, 0, 0);
     private static final LocalDateTime DATE_TIME_LAST = dateTime(Year.MAX_YEAR, 12, 31, 23, 59);
     private static final LocalDateTime DATE_TIME_2008_01_01 = dateTime(2008, 1, 1, 0, 0);

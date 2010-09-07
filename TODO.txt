@@ -242,6 +242,7 @@ EDR released
 - Remove DatePeriod.ofYearsMonths()
 - Add DatePeriod.ofDateFields()
 - Make LocalDate.plus(PeriodProvider)/minus(PeriodProvider) strict
+- Remove DatePeriod, adding methods to Period
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

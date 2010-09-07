@@ -646,10 +646,10 @@ public final class LocalDate
      * Returns a copy of this {@code LocalDate} with the specified date period added.
      * <p>
      * This adds the specified period to this date, returning a new date.
-     * Before addition, the period is converted to a {@code DatePeriod} using
-     * the {@link DatePeriod#of(PeriodProvider) strict factory}.
+     * Before addition, the period is converted to a date-based {@code Period} using
+     * the {@link Period#ofDateFields(PeriodProvider) strict factory}.
      * If you want to ignore the non-date fields, simply wrap the parameter in a call
-     * to the {@link DatePeriod#ofDateFields(PeriodProvider) lenient factory}.
+     * to the {@link Period#ofDateFieldsIgnoreInvalid(PeriodProvider) lenient factory}.
      * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code plusYears().plusMonths().plusDays()} in most cases.
@@ -686,7 +686,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
-        DatePeriod period = DatePeriod.of(periodProvider);
+        Period period = Period.ofDateFields(periodProvider);
         long periodMonths = period.totalMonths();
         long periodDays = period.getDays();
         if (periodMonths == 0) {
@@ -870,10 +870,10 @@ public final class LocalDate
      * Returns a copy of this {@code LocalDate} with the specified date period subtracted.
      * <p>
      * This subtracts the specified period from this date, returning a new date.
-     * Before subtraction, the period is converted to a {@code DatePeriod} using
-     * the {@link DatePeriod#of(PeriodProvider) strict factory}.
+     * Before subtraction, the period is converted to a date-based {@code Period} using
+     * the {@link Period#ofDateFields(PeriodProvider) strict factory}.
      * If you want to ignore the non-date fields, simply wrap the parameter in a call
-     * to the {@link DatePeriod#ofDateFields(PeriodProvider) lenient factory}.
+     * to the {@link Period#ofDateFieldsIgnoreInvalid(PeriodProvider) lenient factory}.
      * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
@@ -910,7 +910,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {
-        DatePeriod period = DatePeriod.of(periodProvider);
+        Period period = Period.ofDateFields(periodProvider);
         long periodMonths = period.totalMonths();
         long periodDays = period.getDays();
         if (periodMonths == 0) {

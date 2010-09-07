@@ -115,7 +115,7 @@ public class TestFluentAPI {
 //        date = date.with(MONDAY.adjustToNext());
         
         // different ways to build/use periods
-        date = date.plus(ofYearsMonthsDays(2, 3, 1));
+        date = date.plus(ofDateFields(2, 3, 1));
 //        date = date.plus(3, YEARS).plus(2, MONTHS).plus(1, DAYS);
         date = date.plus(ofYears(3)).plus(ofMonths(2)).plus(ofDays(1));
 //        PeriodFields d1 = periodBuilder().hours(2).seconds(3).build();

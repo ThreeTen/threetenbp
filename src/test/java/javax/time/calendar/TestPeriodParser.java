@@ -80,7 +80,7 @@ public class TestPeriodParser {
             {"P" + Integer.MAX_VALUE + "D", Period.ofDays(Integer.MAX_VALUE)},
             {"P" + Integer.MIN_VALUE + "D", Period.ofDays(Integer.MIN_VALUE)},
             
-            {"P2Y3M25D", Period.ofYearsMonthsDays(2, 3, 25)},
+            {"P2Y3M25D", Period.ofDateFields(2, 3, 25)},
             
             {"PT1H", Period.ofHours(1)},
             {"PT-1H", Period.ofHours(-1)},
