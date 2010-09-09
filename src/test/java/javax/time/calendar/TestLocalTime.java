@@ -49,6 +49,7 @@ import javax.time.TimeSource;
 import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.i18n.CopticChronology;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -836,6 +837,11 @@ public class TestLocalTime {
         assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_notISOPeriod() {
+        TEST_12_30_40_987654321.plus(PeriodFields.of(2, CopticChronology.periodMonths()));
+    }
+
     public void test_plus_PeriodProvider_zero() {
         LocalTime t = TEST_12_30_40_987654321.plus(Period.ZERO);
         assertSame(t, TEST_12_30_40_987654321);
@@ -1350,6 +1356,11 @@ public class TestLocalTime {
         PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
         LocalTime t = TEST_12_30_40_987654321.minus(provider);
         assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_notISOPeriod() {
+        TEST_12_30_40_987654321.minus(PeriodFields.of(2, CopticChronology.periodMonths()));
     }
 
     public void test_minus_PeriodProvider_zero() {

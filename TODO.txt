@@ -239,11 +239,12 @@ EDR released
 - Rename PeriodFields.normalize() to normalizeTo()
 - Add PeriodFields.normalize()
 - Add Period.of(Duration)
-- Remove DatePeriod.ofYearsMonths()
-- Add DatePeriod.ofDateFields()
 - Make LocalDate.plus(PeriodProvider)/minus(PeriodProvider) strict
 - Remove DatePeriod, adding methods to Period
 - Add Period.withDateFieldsOnly()/withTimeFieldsOnly()
+- Add Period.ofDateFields()/ofTimeFields()
+- Rename Period.ofYearsMonthsDays() to ofDateFields()
+- Rename Period.ofHoursMinutesSeconds() to ofTimeFields()
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

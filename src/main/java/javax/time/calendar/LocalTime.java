@@ -592,24 +592,25 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period added.
      * <p>
-     * The period is normalized to ISO Hours, Minutes, Seconds and Nanoseconds
-     * before being added to this time.
-     * Any amounts that are not normalized to these fields, such as months, are ignored.
+     * This adds the specified period to this time, returning a new time.
+     * Before addition, the period is converted to a time-based {@code Period} using
+     * the {@link Period#ofTimeFields(PeriodProvider)}.
+     * That factory ignores any date-based ISO fields, thus adding a date-based
+     * period to this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code LocalTime} with the period added, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public LocalTime plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(
-                ISOChronology.periodHours(), ISOChronology.periodMinutes(),
-                ISOChronology.periodSeconds(), ISOChronology.periodNanos());
-        long periodHours = period.getAmount(ISOChronology.periodHours());
-        long periodMinutes = period.getAmount(ISOChronology.periodMinutes());
-        long periodSeconds = period.getAmount(ISOChronology.periodSeconds());
-        long periodNanos = period.getAmount(ISOChronology.periodNanos());
+        Period period = Period.ofTimeFields(periodProvider).normalizedWith24HourDays();
+        long periodHours = period.getHours();
+        long periodMinutes = period.getMinutes();
+        long periodSeconds = period.getSeconds();
+        long periodNanos = period.getNanos();
         long totNanos = periodNanos % NANOS_PER_DAY +                    //   max  86400000000000
                 (periodSeconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
                 (periodMinutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
@@ -777,24 +778,25 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period subtracted.
      * <p>
-     * The period is normalized to ISO Hours, Minutes, Seconds and Nanoseconds
-     * before being subtracted from this time.
-     * Any amounts that are not normalized to these fields, such as months, are ignored.
+     * This subtracts the specified period from this time, returning a new time.
+     * Before subtraction, the period is converted to a time-based {@code Period} using
+     * the {@link Period#ofTimeFields(PeriodProvider)}.
+     * That factory ignores any date-based ISO fields, thus subtracting a date-based
+     * period from this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code LocalTime} with the period subtracted, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public LocalTime minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(
-                ISOChronology.periodHours(), ISOChronology.periodMinutes(),
-                ISOChronology.periodSeconds(), ISOChronology.periodNanos());
-        long periodHours = period.getAmount(ISOChronology.periodHours());
-        long periodMinutes = period.getAmount(ISOChronology.periodMinutes());
-        long periodSeconds = period.getAmount(ISOChronology.periodSeconds());
-        long periodNanos = period.getAmount(ISOChronology.periodNanos());
+        Period period = Period.ofTimeFields(periodProvider).normalizedWith24HourDays();
+        long periodHours = period.getHours();
+        long periodMinutes = period.getMinutes();
+        long periodSeconds = period.getSeconds();
+        long periodNanos = period.getNanos();
         long totNanos = periodNanos % NANOS_PER_DAY +                    //   max  86400000000000
                 (periodSeconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
                 (periodMinutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000

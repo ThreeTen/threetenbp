@@ -647,9 +647,10 @@ public final class LocalDate
      * <p>
      * This adds the specified period to this date, returning a new date.
      * Before addition, the period is converted to a date-based {@code Period} using
-     * the {@link Period#ofDateFields(PeriodProvider) strict factory}.
-     * If you want to ignore the non-date fields, simply wrap the parameter in a call
-     * to the {@link Period#ofDateFieldsIgnoreInvalid(PeriodProvider) lenient factory}.
+     * the {@link Period#ofDateFields(PeriodProvider)}.
+     * That factory ignores any time-based ISO fields, thus adding a time-based
+     * period to this date will have no effect. If you want to take time fields into
+     * account, call {@link Period#normalizedWith24HourDays()} on the input period.
      * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code plusYears().plusMonths().plusDays()} in most cases.
@@ -682,7 +683,7 @@ public final class LocalDate
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code LocalDate} with the period added, never null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code DatePeriod}
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodProvider periodProvider) {
@@ -871,9 +872,10 @@ public final class LocalDate
      * <p>
      * This subtracts the specified period from this date, returning a new date.
      * Before subtraction, the period is converted to a date-based {@code Period} using
-     * the {@link Period#ofDateFields(PeriodProvider) strict factory}.
-     * If you want to ignore the non-date fields, simply wrap the parameter in a call
-     * to the {@link Period#ofDateFieldsIgnoreInvalid(PeriodProvider) lenient factory}.
+     * the {@link Period#ofDateFields(PeriodProvider)}.
+     * That factory ignores any time-based ISO fields, thus subtracting a time-based
+     * period from this date will have no effect. If you want to take time fields into
+     * account, call {@link Period#normalizedWith24HourDays()} on the input period.
      * <p>
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
@@ -906,7 +908,7 @@ public final class LocalDate
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code LocalDate} with the period subtracted, never null
-     * @throws CalendricalException if the specified period cannot be converted to a {@code DatePeriod}
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodProvider periodProvider) {

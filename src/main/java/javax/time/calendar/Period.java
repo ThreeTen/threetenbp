@@ -81,18 +81,6 @@ public final class Period
         ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays(),
         ISOChronology.periodHours(), ISOChronology.periodMinutes(), ISOChronology.periodSeconds(), ISOChronology.periodNanos(),
     };
-    /**
-     * The ISO period units, trusted to not be altered.
-     */
-    private static final PeriodUnit[] DATE_UNITS = new PeriodUnit[] {
-        ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays(),
-    };
-    /**
-     * The ISO period units, trusted to not be altered.
-     */
-    private static final PeriodUnit[] TIME_UNITS = new PeriodUnit[] {
-        ISOChronology.periodHours(), ISOChronology.periodMinutes(), ISOChronology.periodSeconds(), ISOChronology.periodNanos(),
-    };
 
     /**
      * The number of years.
@@ -182,7 +170,7 @@ public final class Period
      * @param periodProvider  a provider of period information, not null
      * @return the period, never null
      * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, except nanos, exceeds an {@code int}
+     * @throws ArithmeticException if any provided amount, exceeds the supported range
      */
     public static Period of(PeriodProvider periodProvider) {
         PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
@@ -213,65 +201,28 @@ public final class Period
      * @return the period, never null
      */
     public static Period ofDateFields(int years, int months, int days) {
-        if ((years | months | days) == 0) {
-            return ZERO;
-        }
-        return new Period(years, months, days, 0, 0, 0, 0);
+        return of(years, months, days, 0, 0, 0, 0);
     }
 
     /**
      * Obtains a {@code Period} from the date-based fields of a period.
      * <p>
      * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds.
-     * This method extracts only the date-based units - years, months and days,
-     * or units that can be {@link PeriodFields#toEquivalent converted} to these units.
+     * minutes, seconds and nanoseconds. Any period that contains amounts in
+     * these units, or in units that can be converted to these units will be
+     * accepted. If the provider contains any other unit, an exception is thrown.
      * <p>
-     * An exception occurs if the specified period contains other fields, such as hours or minutes.
-     * See {@link #ofDateFieldsIgnoreInvalid(PeriodProvider)} for a more lenient alternative.
+     * Once the initial conversion to the 7 units is complete, the period is created
+     * using just the date-based fields - years, months and days.
+     * The time-based fields are ignored and will be zero in the created period.
      *
      * @param periodProvider  a provider of period information, not null
-     * @param strict
-     *  true to throw an exception when invalid fields are found,
-     *  false to ignore invalid fields
-     * @return the period, never null
+     * @return the period containing only date-based fields, never null
      * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, exceeds an {@code int}
+     * @throws ArithmeticException if any provided amount, exceeds the supported range
      */
     public static Period ofDateFields(PeriodProvider periodProvider) {
-        return ofDateFields(periodProvider, false);
-    }
-
-    /**
-     * Obtains a {@code Period} from the date-based fields of a period.
-     * <p>
-     * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds.
-     * This method extracts only the date-based units - years, months and days,
-     * or units that can be {@link PeriodFields#toEquivalent converted} to these units.
-     * <p>
-     * No error occurs if the period contains other fields, such as hours or minutes.
-     * See {@link #ofDateFields(PeriodProvider)} for a stricter alternative.
-     *
-     * @param periodProvider  a provider of period information, not null
-     * @return the period, never null
-     * @throws ArithmeticException if any provided amount, exceeds an {@code int}
-     */
-    public static Period ofDateFieldsIgnoreInvalid(PeriodProvider periodProvider) {
-        return ofDateFields(periodProvider, true);
-    }
-
-    private static Period ofDateFields(PeriodProvider periodProvider, boolean lenient) {
-        PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        PeriodFields periodFields = PeriodFields.of(periodProvider);
-        if (lenient) {
-            periodFields = periodFields.retainConvertible(DATE_UNITS);
-        }
-        periodFields = periodFields.toEquivalent(DATE_UNITS);
-        int years = periodFields.getAmountInt(ISOChronology.periodYears());
-        int months = periodFields.getAmountInt(ISOChronology.periodMonths());
-        int days = periodFields.getAmountInt(ISOChronology.periodDays());
-        return ofDateFields(years, months, days);
+        return of(periodProvider).withDateFieldsOnly();
     }
 
     //-----------------------------------------------------------------------
@@ -286,66 +237,43 @@ public final class Period
      * @return the period, never null
      */
     public static Period ofTimeFields(int hours, int minutes, int seconds) {
-        if ((hours | minutes | seconds) == 0) {
-            return ZERO;
-        }
-        return new Period(0, 0, 0, hours, minutes, seconds, 0);
+        return of(0, 0, 0, hours, minutes, seconds, 0);
+    }
+
+    /**
+     * Obtains a {@code Period} from time-based fields.
+     * <p>
+     * This creates an instance based on hours, minutes, seconds and nanoseconds.
+     *
+     * @param hours  the amount of hours, may be negative
+     * @param minutes  the amount of minutes, may be negative
+     * @param seconds  the amount of seconds, may be negative
+     * @param nanos  the amount of nanos, may be negative
+     * @return the period, never null
+     */
+    public static Period ofTimeFields(int hours, int minutes, int seconds, long nanos) {
+        return of(0, 0, 0, hours, minutes, seconds, nanos);
     }
 
     /**
      * Obtains a {@code Period} from the time-based fields of a period.
      * <p>
      * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds.
-     * This method extracts only the time-based units - hours, minutes, seconds and nanoseconds,
-     * or units that can be {@link PeriodFields#toEquivalent converted} to these units.
+     * minutes, seconds and nanoseconds. Any period that contains amounts in
+     * these units, or in units that can be converted to these units will be
+     * accepted. If the provider contains any other unit, an exception is thrown.
      * <p>
-     * An exception occurs if the specified period contains other fields, such as years or months.
-     * See {@link #ofTimeFieldsIgnoreInvalid(PeriodProvider)} for a more lenient alternative.
+     * Once the initial conversion to the 7 units is complete, the period is created
+     * using just the time-based fields - hours, minutes, seconds and nanoseconds.
+     * The date-based fields are ignored and will be zero in the created period.
      *
      * @param periodProvider  a provider of period information, not null
-     * @param strict
-     *  true to throw an exception when invalid fields are found,
-     *  false to ignore invalid fields
-     * @return the period, never null
+     * @return the period containing only time-based fields, never null
      * @throws CalendricalException if the provided period cannot be converted to the supported units
-     * @throws ArithmeticException if any provided amount, exceeds an {@code int}
+     * @throws ArithmeticException if any provided amount, exceeds the supported range
      */
     public static Period ofTimeFields(PeriodProvider periodProvider) {
-        return ofTimeFields(periodProvider, false);
-    }
-
-    /**
-     * Obtains a {@code Period} from the time-based fields of a period.
-     * <p>
-     * A {@code Period} supports 7 units, ISO years, months, days, hours,
-     * minutes, seconds and nanoseconds.
-     * This method extracts only the time-based units - hours, minutes, seconds and nanoseconds,
-     * or units that can be {@link PeriodFields#toEquivalent converted} to these units.
-     * <p>
-     * No error occurs if the period contains other fields, such as years or months.
-     * See {@link #ofTimeFields(PeriodProvider)} for a stricter alternative.
-     *
-     * @param periodProvider  a provider of period information, not null
-     * @return the period, never null
-     * @throws ArithmeticException if any provided amount, exceeds an {@code int}
-     */
-    public static Period ofTimeFieldsIgnoreInvalid(PeriodProvider periodProvider) {
-        return ofTimeFields(periodProvider, true);
-    }
-
-    private static Period ofTimeFields(PeriodProvider periodProvider, boolean lenient) {
-        PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        PeriodFields periodFields = PeriodFields.of(periodProvider);
-        if (lenient) {
-            periodFields = periodFields.retainConvertible(TIME_UNITS);
-        }
-        periodFields = periodFields.toEquivalent(TIME_UNITS);
-        int hours = periodFields.getAmountInt(ISOChronology.periodHours());
-        int mins = periodFields.getAmountInt(ISOChronology.periodMinutes());
-        int secs = periodFields.getAmountInt(ISOChronology.periodSeconds());
-        long nanos = periodFields.getAmount(ISOChronology.periodNanos());
-        return of(0, 0, 0, hours, mins, secs, nanos);
+        return of(periodProvider).withTimeFieldsOnly();
     }
 
     //-----------------------------------------------------------------------
@@ -1224,10 +1152,8 @@ public final class Period
         long total = (days * 24L * 60L * 60L) +
                         (hours * 60L * 60L) +
                         (minutes * 60L) + seconds;  // will not overflow
-        total = MathUtils.safeMultiply(total, 1000000000);
-        total = MathUtils.safeAdd(total, nanos);
-        long nanos = total % 1000000000L;
-        total /= 1000000000L;
+        total = MathUtils.safeAdd(total, MathUtils.floorDiv(this.nanos, 1000000000));
+        int nanos = MathUtils.floorMod(this.nanos, 1000000000);
         int seconds = (int) (total % 60);
         total /= 60;
         int minutes = (int) (total % 60);
