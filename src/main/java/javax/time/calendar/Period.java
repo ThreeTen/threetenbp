@@ -662,7 +662,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to represent
-     * @return a {@code Period} based on this period with the requested years, never null
+     * @return a period based on this period with the requested years, never null
      */
     public Period withYears(int years) {
         if (years == this.years) {
@@ -680,7 +680,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to represent
-     * @return a {@code Period} based on this period with the requested months, never null
+     * @return a period based on this period with the requested months, never null
      */
     public Period withMonths(int months) {
         if (months == this.months) {
@@ -698,7 +698,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to represent
-     * @return a {@code Period} based on this period with the requested days, never null
+     * @return a period based on this period with the requested days, never null
      */
     public Period withDays(int days) {
         if (days == this.days) {
@@ -716,7 +716,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to represent
-     * @return a {@code Period} based on this period with the requested hours, never null
+     * @return a period based on this period with the requested hours, never null
      */
     public Period withHours(int hours) {
         if (hours == this.hours) {
@@ -734,7 +734,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to represent
-     * @return a {@code Period} based on this period with the requested minutes, never null
+     * @return a period based on this period with the requested minutes, never null
      */
     public Period withMinutes(int minutes) {
         if (minutes == this.minutes) {
@@ -752,7 +752,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to represent
-     * @return a {@code Period} based on this period with the requested seconds, never null
+     * @return a period based on this period with the requested seconds, never null
      */
     public Period withSeconds(int seconds) {
         if (seconds == this.seconds) {
@@ -770,7 +770,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanoseconds to represent
-     * @return a {@code Period} based on this period with the requested nanoseconds, never null
+     * @return a period based on this period with the requested nanoseconds, never null
      */
     public Period withNanos(long nanos) {
         if (nanos == this.nanos) {
@@ -786,7 +786,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code Period} based on this period with the requested period added, never null
+     * @return a period based on this period with the requested period added, never null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public Period plus(PeriodProvider periodProvider) {
@@ -811,7 +811,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, positive or negative
-     * @return a {@code Period} based on this period with the requested years added, never null
+     * @return a period based on this period with the requested years added, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusYears(int years) {
@@ -827,7 +827,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, positive or negative
-     * @return a {@code Period} based on this period with the requested months added, never null
+     * @return a period based on this period with the requested months added, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusMonths(int months) {
@@ -843,7 +843,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, positive or negative
-     * @return a {@code Period} based on this period with the requested days added, never null
+     * @return a period based on this period with the requested days added, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusDays(int days) {
@@ -859,7 +859,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, positive or negative
-     * @return a {@code Period} based on this period with the requested hours added, never null
+     * @return a period based on this period with the requested hours added, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusHours(int hours) {
@@ -875,7 +875,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, positive or negative
-     * @return a {@code Period} based on this period with the requested minutes added, never null
+     * @return a period based on this period with the requested minutes added, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusMinutes(int minutes) {
@@ -891,7 +891,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, positive or negative
-     * @return a {@code Period} based on this period with the requested seconds added, never null
+     * @return a period based on this period with the requested seconds added, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period plusSeconds(int seconds) {
@@ -907,7 +907,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanoseconds to add, positive or negative
-     * @return a {@code Period} based on this period with the requested nanoseconds added, never null
+     * @return a period based on this period with the requested nanoseconds added, never null
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public Period plusNanos(long nanos) {
@@ -921,7 +921,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code Period} based on this period with the requested period subtracted, never null
+     * @return a period based on this period with the requested period subtracted, never null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public Period minus(PeriodProvider periodProvider) {
@@ -946,7 +946,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, positive or negative
-     * @return a {@code Period} based on this period with the requested years subtracted, never null
+     * @return a period based on this period with the requested years subtracted, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusYears(int years) {
@@ -962,7 +962,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, positive or negative
-     * @return a {@code Period} based on this period with the requested months subtracted, never null
+     * @return a period based on this period with the requested months subtracted, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusMonths(int months) {
@@ -978,7 +978,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, positive or negative
-     * @return a {@code Period} based on this period with the requested days subtracted, never null
+     * @return a period based on this period with the requested days subtracted, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusDays(int days) {
@@ -994,7 +994,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, positive or negative
-     * @return a {@code Period} based on this period with the requested hours subtracted, never null
+     * @return a period based on this period with the requested hours subtracted, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusHours(int hours) {
@@ -1010,7 +1010,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, positive or negative
-     * @return a {@code Period} based on this period with the requested minutes subtracted, never null
+     * @return a period based on this period with the requested minutes subtracted, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusMinutes(int minutes) {
@@ -1026,7 +1026,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, positive or negative
-     * @return a {@code Period} based on this period with the requested seconds subtracted, never null
+     * @return a period based on this period with the requested seconds subtracted, never null
      * @throws ArithmeticException if the capacity of an {@code int} is exceeded
      */
     public Period minusSeconds(int seconds) {
@@ -1042,7 +1042,7 @@ public final class Period
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanoseconds to subtract, positive or negative
-     * @return a {@code Period} based on this period with the requested nanoseconds subtracted, never null
+     * @return a period based on this period with the requested nanoseconds subtracted, never null
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public Period minusNanos(long nanos) {
@@ -1055,7 +1055,7 @@ public final class Period
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return a {@code Period} based on this period with the amounts multiplied by the scalar, never null
+     * @return a period based on this period with the amounts multiplied by the scalar, never null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public Period multipliedBy(int scalar) {
@@ -1080,7 +1080,7 @@ public final class Period
      * using integer division.
      *
      * @param divisor  the value to divide by, not null
-     * @return a {@code Period} based on this period with the amounts divided by the divisor, never null
+     * @return a period based on this period with the amounts divided by the divisor, never null
      * @throws ArithmeticException if dividing by zero
      */
     public Period dividedBy(int divisor) {
@@ -1098,7 +1098,7 @@ public final class Period
     /**
      * Returns a new instance with each amount in this period negated.
      *
-     * @return a {@code Period} based on this period with the amounts negated, never null
+     * @return a period based on this period with the amounts negated, never null
      * @throws ArithmeticException if any field has the minimum value
      */
     public Period negated() {
@@ -1126,7 +1126,7 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Period} based on this period with the amounts normalized, never null
+     * @return a period based on this period with the amounts normalized, never null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public Period normalized() {
@@ -1173,7 +1173,7 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Period} based on this period with the amounts normalized, never null
+     * @return a period based on this period with the amounts normalized, never null
      * @throws ArithmeticException if the capacity of any field is exceeded
      */
     public Period normalizedWith24HourDays() {
