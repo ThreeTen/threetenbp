@@ -781,28 +781,6 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with the specified period added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periodProvider  the period to add, not null
-     * @return a period based on this period with the requested period added, never null
-     * @throws ArithmeticException if the capacity of any field is exceeded
-     */
-    public Period plus(PeriodProvider periodProvider) {
-        Period other = of(periodProvider);
-        return of(
-                MathUtils.safeAdd(years, other.years),
-                MathUtils.safeAdd(months, other.months),
-                MathUtils.safeAdd(days, other.days),
-                MathUtils.safeAdd(hours, other.hours),
-                MathUtils.safeAdd(minutes, other.minutes),
-                MathUtils.safeAdd(seconds, other.seconds),
-                MathUtils.safeAdd(nanos, other.nanos));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this period with only the date-based fields retained.
      * <p>
      * The returned period will have the same values for the date-based fields
@@ -834,6 +812,28 @@ public final class Period
             return this;
         }
         return of(0, 0, 0, hours, minutes, seconds, nanos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this period with the specified period added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to add, not null
+     * @return a period based on this period with the requested period added, never null
+     * @throws ArithmeticException if the capacity of any field is exceeded
+     */
+    public Period plus(PeriodProvider periodProvider) {
+        Period other = of(periodProvider);
+        return of(
+                MathUtils.safeAdd(years, other.years),
+                MathUtils.safeAdd(months, other.months),
+                MathUtils.safeAdd(days, other.days),
+                MathUtils.safeAdd(hours, other.hours),
+                MathUtils.safeAdd(minutes, other.minutes),
+                MathUtils.safeAdd(seconds, other.seconds),
+                MathUtils.safeAdd(nanos, other.nanos));
     }
 
     //-----------------------------------------------------------------------
