@@ -803,6 +803,41 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this period with only the date-based fields retained.
+     * <p>
+     * The returned period will have the same values for the date-based fields
+     * (years, months and days) and zero values for the time-based fields.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a period based on this period with zero values for time-based fields, never null
+     */
+    public Period withDateFieldsOnly() {
+        if ((hours | minutes | seconds | nanos) == 0) {
+            return this;
+        }
+        return ofDateFields(years, months, days);
+    }
+
+    /**
+     * Returns a copy of this period with only the time-based fields retained.
+     * <p>
+     * The returned period will have the same values for the time-based fields
+     * (hours, minutes, seconds and nanoseconds) and zero values for the date-based fields.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a period based on this period with zero values for date-based fields, never null
+     */
+    public Period withTimeFieldsOnly() {
+        if ((years | months | days) == 0) {
+            return this;
+        }
+        return of(0, 0, 0, hours, minutes, seconds, nanos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this period with the specified number of years added.
      * <p>
      * This method will only affect the the years field.

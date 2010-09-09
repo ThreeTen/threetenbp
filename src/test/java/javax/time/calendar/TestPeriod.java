@@ -689,6 +689,42 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
+    // withDateFieldsOnly()
+    //-----------------------------------------------------------------------
+    public void test_withDateFieldsOnly() {
+        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+        assertPeriod(test.withDateFieldsOnly(), 1, 2, 3, 0, 0, 0, 0);
+    }
+
+    public void test_withDateFieldsOnly_noChange() {
+        Period test = Period.of(1, 2, 3, 0, 0, 0, 0);
+        assertSame(test.withDateFieldsOnly(), test);
+    }
+
+    public void test_withDateFieldsOnly_toZero() {
+        Period test = Period.of(0, 0, 0, 4, 5, 6, 7);
+        assertSame(test.withDateFieldsOnly(), Period.ZERO);
+    }
+
+    //-----------------------------------------------------------------------
+    // withTimeFieldsOnly()
+    //-----------------------------------------------------------------------
+    public void test_withTimeFieldsOnly() {
+        Period test = Period.of(1, 2, 3, 4, 5, 6, 7);
+        assertPeriod(test.withTimeFieldsOnly(), 0, 0, 0, 4, 5, 6, 7);
+    }
+
+    public void test_withTimeFieldsOnly_noChange() {
+        Period test = Period.of(0, 0, 0, 4, 5, 6, 7);
+        assertSame(test.withTimeFieldsOnly(), test);
+    }
+
+    public void test_withTimeFieldsOnly_toZero() {
+        Period test = Period.of(1, 2, 3, 0, 0, 0, 0);
+        assertSame(test.withTimeFieldsOnly(), Period.ZERO);
+    }
+
+    //-----------------------------------------------------------------------
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_provider() {
