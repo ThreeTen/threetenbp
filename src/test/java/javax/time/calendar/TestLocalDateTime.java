@@ -47,6 +47,7 @@ import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.i18n.CopticChronology;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -1547,9 +1548,158 @@ public class TestLocalDateTime {
         assertEquals(t, LocalDateTime.of(2008, 7, 1, 0, 30));
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_notISOPeriod() {
+        TEST_2007_07_15_12_30_40_987654321.plus(PeriodFields.of(2, CopticChronology.periodMonths()));
+    }
+
     public void test_plus_PeriodProvider_zero() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(Period.ZERO);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plus_PeriodProvider_noTimePeriodMatchesDatePlus() {
+        for (int y = 2008; y <= 2010; y++) {
+            for (int doy0 = 0; doy0 <= 100; doy0++) {
+                LocalDate base = LocalDate.of(y, 1, 1).plusDays(doy0);
+                for (int py = 0; py <= 1; py++) {
+                    for (int pm = -2; pm <= 2; pm++) {
+                        for (int pd = -40; pd <= 40; pd++) {
+                            Period p = Period.ofDateFields(py, pm, pd);
+                            LocalDate expected = base.plus(p);
+                            assertEquals(base.atMidnight().plus(p), expected.atMidnight());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void test_plus_PeriodProvider_plus1Hour() {
+        for (int y = 2008; y <= 2010; y++) {
+            for (int doy0 = 0; doy0 <= 100; doy0++) {
+                LocalDate base = LocalDate.of(y, 1, 1).plusDays(doy0);
+                for (int py = 0; py <= 1; py++) {
+                    for (int pm = -2; pm <= 2; pm++) {
+                        for (int pd = -40; pd <= 40; pd++) {
+                            Period p = Period.of(py, pm, pd, 1, 0, 0);
+                            LocalDate expected = base.plus(p);
+                            assertEquals(base.atMidnight().plus(p), expected.atMidnight().plusHours(1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void test_plus_PeriodProvider_minus1Hour() {
+        for (int y = 2008; y <= 2010; y++) {
+            for (int doy0 = 0; doy0 <= 100; doy0++) {
+                LocalDate base = LocalDate.of(y, 1, 1).plusDays(doy0);
+                for (int py = 0; py <= 1; py++) {
+                    for (int pm = -2; pm <= 2; pm++) {
+                        for (int pd = -40; pd <= 40; pd++) {
+                            Period p = Period.of(py, pm, pd, -1, 0, 0);
+                            LocalDate expected = base.plus(p);
+                            assertEquals(base.atMidnight().plus(p), expected.atMidnight().minusHours(1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @DataProvider(name="PlusDTPeriodProvider")
+    Object[][] data_plusDTPeriodProvider() {
+        return new Object[][] {
+            {"2010-01-30T00:00", 1, 2, -29, "2010-02-28T19:00"},
+            {"2010-01-30T00:00", 1, 2, -5,  "2010-03-01T19:00"},
+            {"2010-01-30T00:00", 1, 2, 0,   "2010-03-02T00:00"},
+            {"2010-01-30T00:00", 1, 2, 4,   "2010-03-02T04:00"},
+            {"2010-01-30T00:00", 1, 2, 28,  "2010-03-03T04:00"},
+            
+            {"2010-01-30T00:00", 1, 1, -29, "2010-02-27T19:00"},
+            {"2010-01-30T00:00", 1, 1, -5,  "2010-02-28T19:00"},
+            {"2010-01-30T00:00", 1, 1, 0,   "2010-03-01T00:00"},
+            {"2010-01-30T00:00", 1, 1, 4,   "2010-03-01T04:00"},
+            {"2010-01-30T00:00", 1, 1, 28,  "2010-03-02T04:00"},
+            
+            {"2010-01-30T00:00", 1, 0, -29, "2010-02-26T19:00"},
+            {"2010-01-30T00:00", 1, 0, -5,  "2010-02-27T19:00"},
+            {"2010-01-30T00:00", 1, 0, 0,   "2010-02-28T00:00"},
+            {"2010-01-30T00:00", 1, 0, 4,   "2010-02-28T04:00"},
+            {"2010-01-30T00:00", 1, 0, 28,  "2010-03-01T04:00"},
+            
+            {"2010-01-30T00:00", 1, -1, -29, "2010-02-26T19:00"},
+            {"2010-01-30T00:00", 1, -1, -5,  "2010-02-27T19:00"},
+            {"2010-01-30T00:00", 1, -1, 0,   "2010-02-28T00:00"},
+            {"2010-01-30T00:00", 1, -1, 4,   "2010-02-28T04:00"},
+            {"2010-01-30T00:00", 1, -1, 28,  "2010-03-01T04:00"},
+            
+            {"2010-01-30T00:00", 1, -2, -29, "2010-02-26T19:00"},
+            {"2010-01-30T00:00", 1, -2, -5,  "2010-02-27T19:00"},
+            {"2010-01-30T00:00", 1, -2, 0,   "2010-02-28T00:00"},
+            {"2010-01-30T00:00", 1, -2, 4,   "2010-02-28T04:00"},
+            {"2010-01-30T00:00", 1, -2, 28,  "2010-03-01T04:00"},
+            
+            {"2010-01-30T00:00", 1, -3, -29, "2010-02-25T19:00"},
+            {"2010-01-30T00:00", 1, -3, -5,  "2010-02-26T19:00"},
+            {"2010-01-30T00:00", 1, -3, 0,   "2010-02-27T00:00"},
+            {"2010-01-30T00:00", 1, -3, 4,   "2010-02-27T04:00"},
+            {"2010-01-30T00:00", 1, -3, 28,  "2010-02-28T04:00"},
+            
+            
+            {"2010-01-30T12:30", 1, 2, -28, "2010-03-01T08:30"},
+            {"2010-01-30T12:30", 1, 2, -5,  "2010-03-02T07:30"},
+            {"2010-01-30T12:30", 1, 2, 0,   "2010-03-02T12:30"},
+            {"2010-01-30T12:30", 1, 2, 4,   "2010-03-02T16:30"},
+            {"2010-01-30T12:30", 1, 2, 27,  "2010-03-03T15:30"},
+            
+            {"2010-01-30T12:30", 1, 1, -28, "2010-02-28T08:30"},
+            {"2010-01-30T12:30", 1, 1, -5,  "2010-03-01T07:30"},
+            {"2010-01-30T12:30", 1, 1, 0,   "2010-03-01T12:30"},
+            {"2010-01-30T12:30", 1, 1, 4,   "2010-03-01T16:30"},
+            {"2010-01-30T12:30", 1, 1, 27,  "2010-03-02T15:30"},
+            
+            {"2010-01-30T12:30", 1, 0, -28, "2010-02-27T08:30"},
+            {"2010-01-30T12:30", 1, 0, -5,  "2010-02-28T07:30"},
+            {"2010-01-30T12:30", 1, 0, 0,   "2010-02-28T12:30"},
+            {"2010-01-30T12:30", 1, 0, 4,   "2010-02-28T16:30"},
+            {"2010-01-30T12:30", 1, 0, 27,  "2010-03-01T15:30"},
+            
+            {"2010-01-30T12:30", 1, -1, -28, "2010-02-27T08:30"},
+            {"2010-01-30T12:30", 1, -1, -5,  "2010-02-28T07:30"},
+            {"2010-01-30T12:30", 1, -1, 0,   "2010-02-28T12:30"},
+            {"2010-01-30T12:30", 1, -1, 4,   "2010-02-28T16:30"},
+            {"2010-01-30T12:30", 1, -1, 27,  "2010-03-01T15:30"},
+            
+            {"2010-01-30T12:30", 1, -2, -28, "2010-02-27T08:30"},
+            {"2010-01-30T12:30", 1, -2, -5,  "2010-02-28T07:30"},
+            {"2010-01-30T12:30", 1, -2, 0,   "2010-02-28T12:30"},
+            {"2010-01-30T12:30", 1, -2, 4,   "2010-02-28T16:30"},
+            {"2010-01-30T12:30", 1, -2, 27,  "2010-03-01T15:30"},
+            
+            {"2010-01-30T12:30", 1, -3, -28, "2010-02-26T08:30"},
+            {"2010-01-30T12:30", 1, -3, -5,  "2010-02-27T07:30"},
+            {"2010-01-30T12:30", 1, -3, 0,   "2010-02-27T12:30"},
+            {"2010-01-30T12:30", 1, -3, 4,   "2010-02-27T16:30"},
+            {"2010-01-30T12:30", 1, -3, 27,  "2010-02-28T15:30"},
+            
+            
+            {"2010-01-30T12:30", 1, 0, 0,    "2010-02-28T12:30"},
+            {"2010-01-30T12:30", 1, 0, -12,  "2010-02-28T00:30"},
+            {"2010-01-30T12:30", 1, 0, -13,  "2010-02-27T23:30"},
+            {"2010-01-30T12:30", 1, 0, -24,  "2010-02-27T12:30"},
+        };
+    }
+
+    @Test(dataProvider="PlusDTPeriodProvider")
+    public void test_plus_PeriodProvider_dateTime(String baseStr, int months, int days, int hours, String expectedStr) {
+        PeriodProvider provider = Period.of(0, months, days, hours, 0, 0);
+        LocalDateTime base = LocalDateTime.parse(baseStr);
+        LocalDateTime expected = LocalDateTime.parse(expectedStr);
+        LocalDateTime t = base.plus(provider);
+        assertEquals(t, expected);
     }
 
     //-----------------------------------------------------------------------
@@ -2327,9 +2477,119 @@ public class TestLocalDateTime {
         assertEquals(t, LocalDateTime.of(2008, 5, 31, 23, 30));
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_notISOPeriod() {
+        TEST_2007_07_15_12_30_40_987654321.minus(PeriodFields.of(2, CopticChronology.periodMonths()));
+    }
+
     public void test_minus_PeriodProvider_zero() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(Period.ZERO);
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_minus_PeriodProvider_noTimePeriodMatchesDatePlus() {
+        for (int y = 2008; y <= 2010; y++) {
+            for (int doy0 = 0; doy0 <= 100; doy0++) {
+                LocalDate base = LocalDate.of(y, 1, 1).plusDays(doy0);
+                for (int py = 0; py <= 1; py++) {
+                    for (int pm = -2; pm <= 2; pm++) {
+                        for (int pd = -40; pd <= 40; pd++) {
+                            Period p = Period.ofDateFields(py, pm, pd);
+                            LocalDate expected = base.minus(p);
+                            assertEquals(base.atMidnight().minus(p), expected.atMidnight());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void test_minus_PeriodProvider_plus1Hour() {
+        for (int y = 2008; y <= 2010; y++) {
+            for (int doy0 = 0; doy0 <= 100; doy0++) {
+                LocalDate base = LocalDate.of(y, 1, 1).plusDays(doy0);
+                for (int py = 0; py <= 1; py++) {
+                    for (int pm = -2; pm <= 2; pm++) {
+                        for (int pd = -40; pd <= 40; pd++) {
+                            Period p = Period.of(py, pm, pd, 1, 0, 0);
+                            LocalDate expected = base.minus(p);
+                            assertEquals(base.atMidnight().minus(p), expected.atMidnight().minusHours(1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void test_minus_PeriodProvider_minus1Hour() {
+        for (int y = 2008; y <= 2010; y++) {
+            for (int doy0 = 0; doy0 <= 100; doy0++) {
+                LocalDate base = LocalDate.of(y, 1, 1).plusDays(doy0);
+                for (int py = 0; py <= 1; py++) {
+                    for (int pm = -2; pm <= 2; pm++) {
+                        for (int pd = -40; pd <= 40; pd++) {
+                            Period p = Period.of(py, pm, pd, -1, 0, 0);
+                            LocalDate expected = base.minus(p);
+                            assertEquals(base.atMidnight().minus(p), expected.atMidnight().plusHours(1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @DataProvider(name="MinusDTPeriodProvider")
+    Object[][] data_minusDTPeriodProvider() {
+        return new Object[][] {
+            {"2010-03-30T00:00", 1, 3, -29, "2010-02-28T05:00"},
+            {"2010-03-30T00:00", 1, 3, -5,  "2010-02-27T05:00"},
+            {"2010-03-30T00:00", 1, 3, 0,   "2010-02-27T00:00"},
+            {"2010-03-30T00:00", 1, 3, 4,   "2010-02-26T20:00"},
+            {"2010-03-30T00:00", 1, 3, 28,  "2010-02-25T20:00"},
+            
+            {"2010-03-30T00:00", 1, 2, -29, "2010-03-01T05:00"},
+            {"2010-03-30T00:00", 1, 2, -5,  "2010-02-28T05:00"},
+            {"2010-03-30T00:00", 1, 2, 0,   "2010-02-28T00:00"},
+            {"2010-03-30T00:00", 1, 2, 4,   "2010-02-27T20:00"},
+            {"2010-03-30T00:00", 1, 2, 28,  "2010-02-26T20:00"},
+            
+            {"2010-03-30T00:00", 1, 1, -29, "2010-03-01T05:00"},
+            {"2010-03-30T00:00", 1, 1, -5,  "2010-02-28T05:00"},
+            {"2010-03-30T00:00", 1, 1, 0,   "2010-02-28T00:00"},
+            {"2010-03-30T00:00", 1, 1, 4,   "2010-02-27T20:00"},
+            {"2010-03-30T00:00", 1, 1, 28,  "2010-02-26T20:00"},
+            
+            {"2010-03-30T00:00", 1, 0, -29, "2010-03-01T05:00"},
+            {"2010-03-30T00:00", 1, 0, -5,  "2010-02-28T05:00"},
+            {"2010-03-30T00:00", 1, 0, 0,   "2010-02-28T00:00"},
+            {"2010-03-30T00:00", 1, 0, 4,   "2010-02-27T20:00"},
+            {"2010-03-30T00:00", 1, 0, 28,  "2010-02-26T20:00"},
+            
+            {"2010-03-30T00:00", 1, -1, -29, "2010-03-02T05:00"},
+            {"2010-03-30T00:00", 1, -1, -5,  "2010-03-01T05:00"},
+            {"2010-03-30T00:00", 1, -1, 0,   "2010-03-01T00:00"},
+            {"2010-03-30T00:00", 1, -1, 4,   "2010-02-28T20:00"},
+            {"2010-03-30T00:00", 1, -1, 28,  "2010-02-27T20:00"},
+            
+            {"2010-03-30T00:00", 1, -2, -29, "2010-03-03T05:00"},
+            {"2010-03-30T00:00", 1, -2, -5,  "2010-03-02T05:00"},
+            {"2010-03-30T00:00", 1, -2, 0,   "2010-03-02T00:00"},
+            {"2010-03-30T00:00", 1, -2, 4,   "2010-03-01T20:00"},
+            {"2010-03-30T00:00", 1, -2, 28,  "2010-02-28T20:00"},
+            
+            {"2010-03-30T12:30", 1, 0, 0,    "2010-02-28T12:30"},
+            {"2010-03-30T12:30", 1, 0, -12,  "2010-03-01T00:30"},
+            {"2010-03-30T12:30", 1, 0, -24,  "2010-03-01T12:30"},
+        };
+    }
+
+    @Test(dataProvider="MinusDTPeriodProvider")
+    public void test_minus_PeriodProvider_dateTime(String baseStr, int months, int days, int hours, String expectedStr) {
+        PeriodProvider provider = Period.of(0, months, days, hours, 0, 0);
+        LocalDateTime base = LocalDateTime.parse(baseStr);
+        LocalDateTime expected = LocalDateTime.parse(expectedStr);
+        LocalDateTime t = base.minus(provider);
+        assertEquals(t, expected);
     }
 
     //-----------------------------------------------------------------------

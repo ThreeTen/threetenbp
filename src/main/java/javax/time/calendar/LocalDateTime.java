@@ -940,22 +940,69 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period added.
      * <p>
-     * This adds the specified period to this date-time.
+     * This adds the specified period to this date-time, returning a new date-time.
+     * Before addition, the period is converted to a {@code Period} using
+     * {@link Period#of(PeriodProvider)}.
+     * <p>
+     * The detailed rules for the addition effectively treat the date and time parts of
+     * this date-time completely separately during the calculation.
+     * <p>
+     * The rules are expressed in four steps:
+     * <ol>
+     * <li>Add the date part of the period to the date part of this date-time
+     * using {@link LocalDate#plus(PeriodProvider)} - which has some complex rules</li>
+     * <li>Add the time part of the period to the time part of this date-time using
+     * {@link LocalTime#plusWithOverflow(int, int, int, long)</li>
+     * <li>Add the overflow days from the time calculation to the calculated date</li>
+     * <li>Combine the new date and time parts to form the result</li>
+     * </ol>
+     * <p>
+     * The effect of this definition is that time periods are always evenly spaced.
+     * For example, adding 5 hours will always result in a date-time one hour later
+     * than adding 4 hours. However, another effect of the definition is that adding
+     * 24 hour periods is not the same as adding 1 day periods. See the rules of
+     * {@link LocalDate#plus(PeriodProvider) date addition} to understand why.
+     * <p>
+     * For example, this table shows what happens when for various inputs and periods:
+     * <pre>
+     *   2010-01-30T00:00 plus P1M2DT-5H  = 2010-03-01T19:00
+     *   2010-01-30T00:00 plus P1M2D      = 2010-03-02T00:00
+     *   2010-01-30T00:00 plus P1M2DT4H   = 2010-03-02T04:00
+     *   
+     *   2010-01-30T00:00 plus P1M1DT-5H  = 2010-02-28T19:00
+     *   2010-01-30T00:00 plus P1M1D      = 2010-03-01T00:00
+     *   2010-01-30T00:00 plus P1M1DT4H   = 2010-03-01T04:00
+     *   
+     *   2010-01-30T00:00 plus P1MT-5H    = 2010-02-27T19:00
+     *   2010-01-30T00:00 plus P1M        = 2010-02-28T00:00
+     *   2010-01-30T00:00 plus P1MT4H     = 2010-02-28T04:00
+     *   
+     *   2010-01-30T00:00 plus P1M-1DT-5H = 2010-02-27T19:00
+     *   2010-01-30T00:00 plus P1M-1D     = 2010-02-28T00:00
+     *   2010-01-30T00:00 plus P1M-1DT4H  = 2010-02-28T04:00
+     *   
+     *   2010-01-30T00:00 plus P1M-2DT-5H = 2010-02-27T19:00
+     *   2010-01-30T00:00 plus P1M-2D     = 2010-02-28T00:00
+     *   2010-01-30T00:00 plus P1M-2DT4H  = 2010-02-28T04:00
+     *   
+     *   2010-01-30T00:00 plus P1M-3DT-5H = 2010-02-26T19:00
+     *   2010-01-30T00:00 plus P1M-3D     = 2010-02-27T00:00
+     *   2010-01-30T00:00 plus P1M-3DT4H  = 2010-02-27T04:00
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code LocalDateTime} with the period added, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
-        // TODO: correct algorithm
-        LocalDate date = this.date.plusYears(period.getYears())
-                .plusMonths(period.getMonths()).plusDays(period.getDays());
-        Overflow overflow = this.time.plusWithOverflow(
-                period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos());
-        LocalDateTime result = overflow.toLocalDateTime(date);
+        Period period = Period.of(periodProvider);
+        LocalDate newDate = date.plus(period);
+        Overflow overflow = time.plusWithOverflow(
+            period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos());
+        LocalDateTime result = overflow.toLocalDateTime(newDate);
         return (result.equals(this) ? this : result);
     }
 
@@ -1164,22 +1211,69 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period subtracted.
      * <p>
-     * This subtracts the specified period from this date-time.
+     * This subtracts the specified period from this date-time, returning a new date-time.
+     * Before subtraction, the period is converted to a {@code Period} using
+     * {@link Period#of(PeriodProvider)}.
+     * <p>
+     * The detailed rules for the subtraction effectively treat the date and time parts of
+     * this date-time completely separately during the calculation.
+     * <p>
+     * The rules are expressed in four steps:
+     * <ol>
+     * <li>Subtract the date part of the period from the date part of this date-time
+     * using {@link LocalDate#minus(PeriodProvider)} - which has some complex rules</li>
+     * <li>Subtract the time part of the period from the time part of this date-time using
+     * {@link LocalTime#minusWithOverflow(int, int, int, long)</li>
+     * <li>Subtract the overflow days from the time calculation from the calculated date</li>
+     * <li>Combine the new date and time parts to form the result</li>
+     * </ol>
+     * <p>
+     * The effect of this definition is that time periods are always evenly spaced.
+     * For example, subtracting 5 hours will always result in a date-time one hour earlier
+     * than adding 4 hours. However, another effect of the definition is that subtracting
+     * 24 hour periods is not the same as subtracting 1 day periods. See the rules of
+     * {@link LocalDate#minus(PeriodProvider) date subtraction} to understand why.
+     * <p>
+     * For example, this table shows what happens when for various inputs and periods:
+     * <pre>
+     *   2010-03-30T00:00 minus P1M3DT-5H  = 2010-02-27T05:00
+     *   2010-03-30T00:00 minus P1M3D      = 2010-02-27T00:00
+     *   2010-03-30T00:00 minus P1M3DT4H   = 2010-02-26T20:00
+     *   
+     *   2010-03-30T00:00 minus P1M2DT-5H  = 2010-02-28T05:00
+     *   2010-03-30T00:00 minus P1M2D      = 2010-02-28T00:00
+     *   2010-03-30T00:00 minus P1M2DT4H   = 2010-02-27T20:00
+     *   
+     *   2010-03-30T00:00 minus P1M1DT-5H  = 2010-02-28T05:00
+     *   2010-03-30T00:00 minus P1M1D      = 2010-02-28T00:00
+     *   2010-03-30T00:00 minus P1M1DT4H   = 2010-02-27T20:00
+     *   
+     *   2010-03-30T00:00 minus P1MT-5H    = 2010-02-28T05:00
+     *   2010-03-30T00:00 minus P1M        = 2010-02-28T00:00
+     *   2010-03-30T00:00 minus P1MT4H     = 2010-02-27T20:00
+     *   
+     *   2010-03-30T00:00 minus P1M-1DT-5H = 2010-03-01T05:00
+     *   2010-03-30T00:00 minus P1M-1D     = 2010-03-01T00:00
+     *   2010-03-30T00:00 minus P1M-1DT4H  = 2010-02-28T20:00
+     *   
+     *   2010-03-30T00:00 minus P1M-2DT-5H = 2010-03-02T05:00
+     *   2010-03-30T00:00 minus P1M-2D     = 2010-03-02T00:00
+     *   2010-03-30T00:00 minus P1M-2DT4H  = 2010-03-01T20:00
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code LocalDateTime} with the period subtracted, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minus(PeriodProvider periodProvider) {
-        Period period = Period.of(periodProvider);  // TODO: overflows long->int PeriodFields
-        // TODO: correct algorithm
-        LocalDate date = this.date.minusYears(period.getYears())
-                .minusMonths(period.getMonths()).minusDays(period.getDays());
-        Overflow overflow = this.time.minusWithOverflow(
-                period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos());
-        LocalDateTime result = overflow.toLocalDateTime(date);
+        Period period = Period.of(periodProvider);
+        LocalDate newDate = date.minus(period);
+        Overflow overflow = time.minusWithOverflow(
+            period.getHours(), period.getMinutes(), period.getSeconds(), period.getNanos());
+        LocalDateTime result = overflow.toLocalDateTime(newDate);
         return (result.equals(this) ? this : result);
     }
 
