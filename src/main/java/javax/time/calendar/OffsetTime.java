@@ -460,16 +460,19 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the specified period added.
+     * Returns a copy of this {@code OffsetTime} with the specified time period added.
      * <p>
-     * This adds the amount in hours, minutes and seconds from the specified period to this time.
-     * If the period contains date amounts then an exception is thrown.
+     * This adds the specified period to this time, returning a new time.
+     * Before addition, the period is converted to a time-based {@code Period} using
+     * the {@link Period#ofTimeFields(PeriodProvider)}.
+     * That factory ignores any date-based ISO fields, thus adding a date-based
+     * period to this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated OffsetTime, never null
-     * @throws CalendricalException if the provider contains date period units
+     * @return an {@code OffsetTime} based on this time with the period added, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      */
     public OffsetTime plus(PeriodProvider periodProvider) {
         LocalTime newTime = time.plus(periodProvider);
@@ -531,16 +534,19 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the specified period subtracted.
+     * Returns a copy of this {@code OffsetTime} with the specified time period subtracted.
      * <p>
-     * This subtracts the amount in hours, minutes and seconds from the specified period to this time.
-     * If the period contains date amounts then an exception is thrown.
+     * This subtracts the specified period from this time, returning a new time.
+     * Before subtraction, the period is converted to a time-based {@code Period} using
+     * the {@link Period#ofTimeFields(PeriodProvider)}.
+     * That factory ignores any date-based ISO fields, thus subtracting a date-based
+     * period to this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a new updated OffsetTime, never null
-     * @throws CalendricalException if the provider contains date period units
+     * @return an {@code OffsetTime} based on this time with the period subtracted, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      */
     public OffsetTime minus(PeriodProvider periodProvider) {
         LocalTime newTime = time.minus(periodProvider);

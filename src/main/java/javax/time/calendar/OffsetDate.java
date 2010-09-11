@@ -556,16 +556,23 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the specified period added.
+     * Returns a copy of this {@code OffsetDate} with the specified date period added.
      * <p>
-     * This adds the amount in years, months and days from the specified period to this date.
-     * If the period contains time amounts then an exception is thrown.
+     * This adds the specified period to this date, returning a new date.
+     * Before addition, the period is converted to a date-based {@code Period} using
+     * the {@link Period#ofDateFields(PeriodProvider)}.
+     * That factory ignores any time-based ISO fields, thus adding a time-based
+     * period to this date will have no effect. If you want to take time fields into
+     * account, call {@link Period#normalizedWith24HourDays()} on the input period.
+     * <p>
+     * The detailed rules for the addition have some complexity due to variable length months.
+     * See {@link LocalDate#plus(PeriodProvider)} for details.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated OffsetDate, never null
-     * @throws CalendricalException if the provider contains time period units
+     * @return an {@code OffsetDate} based on this date with the period added, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(PeriodProvider periodProvider) {
@@ -709,16 +716,23 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the specified period subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified date period subtracted.
      * <p>
-     * This subtracts the amount in years, months and days from the specified period from this date.
-     * If the period contains time amounts then an exception is thrown.
+     * This subtracts the specified period from this date, returning a new date.
+     * Before subtraction, the period is converted to a date-based {@code Period} using
+     * the {@link Period#ofDateFields(PeriodProvider)}.
+     * That factory ignores any time-based ISO fields, thus adding a time-based
+     * period to this date will have no effect. If you want to take time fields into
+     * account, call {@link Period#normalizedWith24HourDays()} on the input period.
+     * <p>
+     * The detailed rules for the subtraction have some complexity due to variable length months.
+     * See {@link LocalDate#minus(PeriodProvider)} for details.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a new updated OffsetDate, never null
-     * @throws CalendricalException if the provider contains time period units
+     * @return an {@code OffsetDate} based on this date with the period subtracted, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minus(PeriodProvider periodProvider) {
