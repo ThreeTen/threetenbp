@@ -1019,14 +1019,20 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDateTime with the specified period added.
+     * Returns a copy of this {@code OffsetDateTime} with the specified period added.
      * <p>
-     * This adds the specified period to this date-time.
+     * This adds the specified period to this date-time, returning a new date-time.
+     * Before addition, the period is converted to a {@code Period} using the
+     * {@link Period#of(PeriodProvider)}.
+     * <p>
+     * The detailed rules for the addition have some complexity due to variable length months.
+     * See {@link LocalDateTime#plus(PeriodProvider)} for details.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the period added, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plus(PeriodProvider periodProvider) {
@@ -1237,14 +1243,20 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDateTime with the specified period subtracted.
+     * Returns a copy of this {@code OffsetDateTime} with the specified period subtracted.
      * <p>
-     * This subtracts the specified period to this date-time.
+     * This subtracts the specified period from this date-time, returning a new date-time.
+     * Before addition, the period is converted to a {@code Period} using the
+     * {@link Period#of(PeriodProvider)}.
+     * <p>
+     * The detailed rules for the subtraction have some complexity due to variable length months.
+     * See {@link LocalDateTime#minus(PeriodProvider)} for details.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the period subtracted, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minus(PeriodProvider periodProvider) {
