@@ -31,11 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,7 +47,6 @@ import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.i18n.CopticChronology;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -779,7 +774,7 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_notISOPeriod() {
-        TEST_2007_07_15.plus(PeriodFields.of(2, CopticChronology.periodMonths()));
+        TEST_2007_07_15.plus(PeriodFields.of(2, MockOtherChronology.OTHER_MONTHS));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -1435,7 +1430,7 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_notISOPeriod() {
-        TEST_2007_07_15.minus(PeriodFields.of(2, CopticChronology.periodMonths()));
+        TEST_2007_07_15.minus(PeriodFields.of(2, MockOtherChronology.OTHER_MONTHS));
     }
 
     public void test_minus_PeriodProvider_zero() {
