@@ -560,7 +560,7 @@ public final class OffsetDate
      * <p>
      * This adds the specified period to this date, returning a new date.
      * Before addition, the period is converted to a date-based {@code Period} using
-     * the {@link Period#ofDateFields(PeriodProvider)}.
+     * {@link Period#ofDateFields(PeriodProvider)}.
      * That factory ignores any time-based ISO fields, thus adding a time-based
      * period to this date will have no effect. If you want to take time fields into
      * account, call {@link Period#normalizedWith24HourDays()} on the input period.
@@ -720,7 +720,7 @@ public final class OffsetDate
      * <p>
      * This subtracts the specified period from this date, returning a new date.
      * Before subtraction, the period is converted to a date-based {@code Period} using
-     * the {@link Period#ofDateFields(PeriodProvider)}.
+     * {@link Period#ofDateFields(PeriodProvider)}.
      * That factory ignores any time-based ISO fields, thus adding a time-based
      * period to this date will have no effect. If you want to take time fields into
      * account, call {@link Period#normalizedWith24HourDays()} on the input period.

@@ -594,7 +594,7 @@ public final class LocalTime
      * <p>
      * This adds the specified period to this time, returning a new time.
      * Before addition, the period is converted to a time-based {@code Period} using
-     * the {@link Period#ofTimeFields(PeriodProvider)}.
+     * {@link Period#ofTimeFields(PeriodProvider)}.
      * That factory ignores any date-based ISO fields, thus adding a date-based
      * period to this time will have no effect.
      * <p>
@@ -780,7 +780,7 @@ public final class LocalTime
      * <p>
      * This subtracts the specified period from this time, returning a new time.
      * Before subtraction, the period is converted to a time-based {@code Period} using
-     * the {@link Period#ofTimeFields(PeriodProvider)}.
+     * {@link Period#ofTimeFields(PeriodProvider)}.
      * That factory ignores any date-based ISO fields, thus subtracting a date-based
      * period from this time will have no effect.
      * <p>
