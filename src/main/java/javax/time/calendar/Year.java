@@ -278,20 +278,27 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Year with the specified period added.
+     * Returns a copy of this {@code Year} with the specified period added.
      * <p>
-     * The period is normalized to ISO Years before being added to this year.
-     * Any amounts that are not normalized to years, such as hours, are ignored.
+     * This adds the specified period to this year, returning a new year.
+     * Before addition, the period is converted to a {@code Period} using
+     * {@link Period#of(PeriodProvider)}.
+     * The calculation simply adds the amount of years from the specified period.
+     * ISO fields other than years are ignored.
+     * <p>
+     * Note that no normalization is performed. Thus, adding 24 months has no effect.
+     * To take months into account, the period must be normalized by the caller.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code Year} based on this year with the period added, never null
-     * @throws CalendricalException if the result exceeds the supported year range
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+     * @throws ArithmeticException if the result exceeds the supported year range
      */
     public Year plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodYears());
-        return plusYears(period.getAmount(ISOChronology.periodYears()));
+        Period period = Period.of(periodProvider);
+        return plusYears(period.getYears());
     }
 
     /**
@@ -312,20 +319,27 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Year with the specified period subtracted.
+     * Returns a copy of this {@code Year} with the specified period subtracted.
      * <p>
-     * The period is normalized to ISO Years before being subtracted from this year.
-     * Any amounts that are not normalized to years, such as hours, are ignored.
+     * This subtracts the specified period from this year, returning a new year.
+     * Before addition, the period is converted to a {@code Period} using
+     * {@link Period#of(PeriodProvider)}.
+     * The calculation simply adds the amount of years from the specified period.
+     * ISO fields other than years are ignored.
+     * <p>
+     * Note that no normalization is performed. Thus, subtracting 24 months has no effect.
+     * To take months into account, the period must be normalized by the caller.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code Year} based on this year with the period subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported year range
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+     * @throws ArithmeticException if the result exceeds the supported year range
      */
     public Year minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodYears());
-        return minusYears(period.getAmount(ISOChronology.periodYears()));
+        Period period = Period.of(periodProvider);
+        return minusYears(period.getYears());
     }
 
     /**

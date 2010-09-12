@@ -296,12 +296,12 @@ public class TestYear {
 
     public void test_plus_PeriodProvider_normalized() {
         PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
-        assertEquals(Year.of(2007).plus(provider), Year.of(2007 + 50 + 3 + 2));
+        assertEquals(Year.of(2007).plus(provider), Year.of(2007 + 50 + 3));  // months ignored
     }
 
     public void test_plus_PeriodProvider_otherFieldsIgnored() {
         PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
-        assertEquals(Year.of(2007).plus(provider), Year.of(2010));
+        assertEquals(Year.of(2007).plus(provider), Year.of(2008));  // months ignored
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -309,10 +309,17 @@ public class TestYear {
         assertSame(base.plus(Period.ZERO), base);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_invalidPeriod() {
+        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
+        Year.of(2010).plus(provider);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plus_PeriodProvider_bigPeriod() {
         long years = 20L + Integer.MAX_VALUE;
         PeriodProvider provider = PeriodField.of(years, YEARS);
-        assertEquals(Year.of(-40).plus(provider), Year.of((int) (-40L + years)));
+        Year.of(-40).plus(provider);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -393,12 +400,12 @@ public class TestYear {
 
     public void test_minus_PeriodProvider_normalized() {
         PeriodProvider provider = PeriodFields.of(5, DECADES).with(3, YEARS).with(25, MONTHS);
-        assertEquals(Year.of(2007).minus(provider), Year.of(2007 - 50 - 3 - 2));
+        assertEquals(Year.of(2007).minus(provider), Year.of(2007 - 50 - 3));  // months ignored
     }
 
     public void test_minus_PeriodProvider_otherFieldsIgnored() {
         PeriodProvider provider = Period.of(1, 27, 3, 4, 5, 6, 7);
-        assertEquals(Year.of(2007).minus(provider), Year.of(2004));
+        assertEquals(Year.of(2007).minus(provider), Year.of(2006));  // months ignored
     }
 
     public void test_minus_PeriodProvider_zero() {
@@ -416,10 +423,17 @@ public class TestYear {
         Year.of(2007).minus(new MockPeriodProviderReturnsNull());
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_invalidPeriod() {
+        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
+        Year.of(2010).minus(provider);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_PeriodProvider_bigPeriod() {
         long years = 20L + Integer.MAX_VALUE;
         PeriodProvider provider = PeriodField.of(years, YEARS);
-        assertEquals(Year.of(40).minus(provider), Year.of((int) (40L - years)));
+        Year.of(40).minus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
