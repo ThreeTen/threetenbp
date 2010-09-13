@@ -384,7 +384,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the time altered using the adjuster.
+     * Returns a copy of this {@code OffsetTime} with the time altered using the adjuster.
      * <p>
      * Adjusters can be used to alter the time in various ways.
      * A simple adjuster might simply set the one of the fields, such as the hour field.
@@ -393,7 +393,7 @@ public final class OffsetTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the adjusted time, never null
      * @throws IllegalArgumentException if the adjuster returned null
      */
     public OffsetTime with(TimeAdjuster adjuster) {
@@ -403,12 +403,12 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the hour-of-day value altered.
+     * Returns a copy of this {@code OffsetTime} with the hour-of-day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the adjusted hour, never null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public OffsetTime withHourOfDay(int hourOfDay) {
@@ -417,12 +417,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the minute-of-hour value altered.
+     * Returns a copy of this {@code OffsetTime} with the minute-of-hour value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the adjusted minute, never null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public OffsetTime withMinuteOfHour(int minuteOfHour) {
@@ -431,12 +431,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the second-of-minute value altered.
+     * Returns a copy of this {@code OffsetTime} with the second-of-minute value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the adjusted second, never null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public OffsetTime withSecondOfMinute(int secondOfMinute) {
@@ -445,12 +445,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the nano-of-second value altered.
+     * Returns a copy of this {@code OffsetTime} with the nano-of-second value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the adjusted nanosecond, never null
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public OffsetTime withNanoOfSecond(int nanoOfSecond) {
@@ -481,12 +481,12 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the specified period in hours added.
+     * Returns a copy of this {@code OffsetTime} with the specified period in hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the hours added, never null
      */
     public OffsetTime plusHours(int hours) {
         LocalTime newTime = time.plusHours(hours);
@@ -494,12 +494,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the specified period in minutes added.
+     * Returns a copy of this {@code OffsetTime} with the specified period in minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the minutes added, never null
      */
     public OffsetTime plusMinutes(int minutes) {
         LocalTime newTime = time.plusMinutes(minutes);
@@ -507,12 +507,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the specified period in seconds added.
+     * Returns a copy of this {@code OffsetTime} with the specified period in seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the seconds added, never null
      */
     public OffsetTime plusSeconds(int seconds) {
         LocalTime newTime = time.plusSeconds(seconds);
@@ -520,12 +520,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the specified period in nanoseconds added.
+     * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the nanos added, never null
      */
     public OffsetTime plusNanos(int nanos) {
         LocalTime newTime = time.plusNanos(nanos);
@@ -555,12 +555,12 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the specified period in hours subtracted.
+     * Returns a copy of this {@code OffsetTime} with the specified period in hours subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the hours subtracted, never null
      */
     public OffsetTime minusHours(int hours) {
         LocalTime newTime = time.minusHours(hours);
@@ -568,12 +568,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the specified period in minutes subtracted.
+     * Returns a copy of this {@code OffsetTime} with the specified period in minutes subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the minutes subtracted, never null
      */
     public OffsetTime minusMinutes(int minutes) {
         LocalTime newTime = time.minusMinutes(minutes);
@@ -581,12 +581,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the specified period in seconds subtracted.
+     * Returns a copy of this {@code OffsetTime} with the specified period in seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the seconds subtracted, never null
      */
     public OffsetTime minusSeconds(int seconds) {
         LocalTime newTime = time.minusSeconds(seconds);
@@ -594,12 +594,12 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the specified period in nanoseconds subtracted.
+     * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the nanos subtracted, never null
      */
     public OffsetTime minusNanos(int nanos) {
         LocalTime newTime = time.minusNanos(nanos);

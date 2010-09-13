@@ -488,7 +488,7 @@ public final class LocalDate
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalDate} with the year altered.
-     * If the resulting {@code LocalDate} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting date is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * <p>
      * This method does the same as {@code withYear(year, DateResolvers.previousValid())}.
      * <p>
@@ -504,7 +504,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the year altered.
-     * If the resulting {@code LocalDate} is invalid, it will be resolved using {@code dateResolver}.
+     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -523,7 +523,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the resulting {@code LocalDate} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting date is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * <p>
      * This method does the same as {@code withMonthOfYear(monthOfYear, DateResolvers.previousValid())}.
      * <p>
@@ -539,7 +539,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the resulting {@code LocalDate} is invalid, it will be resolved using {@code dateResolver}.
+     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -554,7 +554,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the resulting {@code LocalDate} is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * If the resulting date is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * <p>
      * This method does the same as {@code with(monthOfYear, DateResolvers.previousValid())}.
      * <p>
@@ -569,7 +569,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the month-of-year altered.
-     * If the resulting {@code LocalDate} is invalid, it will be resolved using {@code dateResolver}.
+     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -588,7 +588,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the day-of-month altered.
-     * If the resulting {@code LocalDate} is invalid, an exception is thrown.
+     * If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -606,7 +606,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the day-of-month altered.
-     * If the resulting {@code LocalDate} is invalid, it will be resolved using {@code dateResolver}.
+     * If the resulting date is invalid, it will be resolved using {@code dateResolver}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -625,7 +625,7 @@ public final class LocalDate
 
     /**
      * Returns a copy of this {@code LocalDate} with the day-of-year altered.
-     * If the resulting {@code LocalDate} is invalid, an exception is thrown.
+     * If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -682,7 +682,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code LocalDate} with the period added, never null
+     * @return a {@code LocalDate} based on this date with the period added, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -725,7 +725,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a {@code LocalDate} with the years added, never null
+     * @return a {@code LocalDate} based on this date with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(long, javax.time.calendar.DateResolver)
      */
@@ -747,7 +747,7 @@ public final class LocalDate
      *
      * @param years  the years to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} with the years added, never null
+     * @return a {@code LocalDate} based on this date with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusYears(long years, DateResolver dateResolver) {
@@ -778,7 +778,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a {@code LocalDate} with the months added, never null
+     * @return a {@code LocalDate} based on this date with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusMonths(long, javax.time.calendar.DateResolver)
      */
@@ -800,7 +800,7 @@ public final class LocalDate
      *
      * @param months  the months to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} with the months added, never null
+     * @return a {@code LocalDate} based on this date with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusMonths(long months, DateResolver dateResolver) {
@@ -827,7 +827,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a {@code LocalDate} with the weeks added, never null
+     * @return a {@code LocalDate} based on this date with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusWeeks(long weeks) {
@@ -850,7 +850,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a {@code LocalDate} with the days added, never null
+     * @return a {@code LocalDate} based on this date with the days added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusDays(long days) {
@@ -907,7 +907,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalDate} with the period subtracted, never null
+     * @return a {@code LocalDate} based on this date with the period subtracted, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -950,7 +950,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a {@code LocalDate} with the years subtracted, never null
+     * @return a {@code LocalDate} based on this date with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusYears(long, javax.time.calendar.DateResolver)
      */
@@ -972,7 +972,7 @@ public final class LocalDate
      *
      * @param years  the years to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} with the years subtracted, never null
+     * @return a {@code LocalDate} based on this date with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusYears(long years, DateResolver dateResolver) {
@@ -1003,7 +1003,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a {@code LocalDate} with the months subtracted, never null
+     * @return a {@code LocalDate} based on this date with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusMonths(long, javax.time.calendar.DateResolver)
      */
@@ -1025,7 +1025,7 @@ public final class LocalDate
      *
      * @param months  the months to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDate} with the months subtracted, never null
+     * @return a {@code LocalDate} based on this date with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusMonths(long months, DateResolver dateResolver) {
@@ -1052,7 +1052,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a {@code LocalDate} with the weeks subtracted, never null
+     * @return a {@code LocalDate} based on this date with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusWeeks(long weeks) {
@@ -1075,7 +1075,7 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a {@code LocalDate} with the days subtracted, never null
+     * @return a {@code LocalDate} based on this date with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusDays(long days) {

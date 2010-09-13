@@ -509,7 +509,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time adjusted as necessary, never null
+     * @return a {@code LocalTime} based on this time with the adjusted time, never null
      */
     public LocalTime with(TimeAdjuster adjuster) {
         LocalTime time = adjuster.adjustTime(this);
@@ -526,7 +526,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @return a {@code LocalDateTime} based on this date-time with the adjusted hour, never null
+     * @return a {@code LocalTime} based on this time with the adjusted hour, never null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public LocalTime withHourOfDay(int hourOfDay) {
@@ -543,7 +543,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the adjusted minute, never null
+     * @return a {@code LocalTime} based on this time with the adjusted minute, never null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public LocalTime withMinuteOfHour(int minuteOfHour) {
@@ -560,7 +560,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the adjusted second, never null
+     * @return a {@code LocalTime} based on this time with the adjusted second, never null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public LocalTime withSecondOfMinute(int secondOfMinute) {
@@ -577,7 +577,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a {@code LocalDateTime} based on this date-time with the adjusted nanosecond, never null
+     * @return a {@code LocalTime} based on this time with the adjusted nanosecond, never null
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public LocalTime withNanoOfSecond(int nanoOfSecond) {
@@ -601,7 +601,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code LocalTime} with the period added, never null
+     * @return a {@code LocalTime} based on this time with the period added, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
@@ -628,7 +628,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a {@code LocalTime} with the hours added, never null
+     * @return a {@code LocalTime} based on this time with the hours added, never null
      */
     public LocalTime plusHours(long hours) {
         if (hours == 0) {
@@ -647,7 +647,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a {@code LocalTime} with the minutes added, never null
+     * @return a {@code LocalTime} based on this time with the minutes added, never null
      */
     public LocalTime plusMinutes(long minutes) {
         if (minutes == 0) {
@@ -672,7 +672,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a {@code LocalTime} with the seconds added, never null
+     * @return a {@code LocalTime} based on this time with the seconds added, never null
      */
     public LocalTime plusSeconds(long seconds) {
         if (seconds == 0) {
@@ -699,7 +699,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a {@code LocalTime} with the nanos added, never null
+     * @return a {@code LocalTime} based on this time with the nanos added, never null
      */
     public LocalTime plusNanos(long nanos) {
         if (nanos == 0) {
@@ -787,7 +787,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalTime} with the period subtracted, never null
+     * @return a {@code LocalTime} based on this time with the period subtracted, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
@@ -814,7 +814,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a {@code LocalTime} with the hours subtracted, never null
+     * @return a {@code LocalTime} based on this time with the hours subtracted, never null
      */
     public LocalTime minusHours(long hours) {
         if (hours == 0) {
@@ -833,7 +833,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a {@code LocalTime} with the minutes subtracted, never null
+     * @return a {@code LocalTime} based on this time with the minutes subtracted, never null
      */
     public LocalTime minusMinutes(long minutes) {
         if (minutes == 0) {
@@ -858,7 +858,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a {@code LocalTime} with the seconds subtracted, never null
+     * @return a {@code LocalTime} based on this time with the seconds subtracted, never null
      */
     public LocalTime minusSeconds(long seconds) {
         if (seconds == 0) {
@@ -885,7 +885,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a {@code LocalTime} with the nanos subtracted, never null
+     * @return a {@code LocalTime} based on this time with the nanos subtracted, never null
      */
     public LocalTime minusNanos(long nanos) {
         if (nanos == 0) {
