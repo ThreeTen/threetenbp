@@ -237,7 +237,7 @@ public final class Year
      * Returns the next leap year after the current year.
      * The definition of a leap year is specified in {@link #isLeap()}.
      *
-     * @return the next leap year after this year
+     * @return the next leap year after this year, never null
      * @throws CalendricalException if the maximum year is reached
      */
     public Year nextLeap() {
@@ -265,7 +265,7 @@ public final class Year
      * Returns the previous leap year before the current year.
      * The definition of a leap year is specified in {@link #isLeap()}.
      *
-     * @return the previous leap year after this year
+     * @return the previous leap year after this year, never null
      * @throws CalendricalException if the minimum year is reached
      */
     public Year previousLeap() {
@@ -322,7 +322,7 @@ public final class Year
      * Returns a copy of this {@code Year} with the specified period subtracted.
      * <p>
      * This subtracts the specified period from this year, returning a new year.
-     * Before addition, the period is converted to a {@code Period} using
+     * Before subtraction, the period is converted to a {@code Period} using
      * {@link Period#of(PeriodProvider)}.
      * The calculation simply adds the amount of years from the specified period.
      * ISO fields other than years are ignored.
