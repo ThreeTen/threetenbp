@@ -346,20 +346,24 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this YearMonth with the specified period added.
+     * Returns a copy of this {@code YearMonth} with the specified period added.
      * <p>
-     * The period is normalized to ISO Months before being added to this year-month.
-     * Any amounts that are not normalized to months, such as hours, are ignored.
+     * This adds the specified period to this year-month, returning a new year-month.
+     * Before addition, the period is converted to a {@code Period} using
+     * {@link Period#of(PeriodProvider)}.
+     * The calculation only uses the years and months fields.
+     * Other fields are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
      * @return a {@code YearMonth} based on this year-month with the period added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+     * @throws ArithmeticException if the result exceeds the supported range
      */
     public YearMonth plus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths());
-        return plusMonths(period.getAmount(ISOChronology.periodMonths()));
+        Period period = Period.of(periodProvider);
+        return plusMonths(period.totalMonths());
     }
 
     //-----------------------------------------------------------------------
@@ -370,7 +374,7 @@ public final class YearMonth
      *
      * @param years  the years to add, positive or negative
      * @return a {@code YearMonth} based on this year-month with the period added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth plusYears(long years) {
         if (years == 0) {
@@ -387,7 +391,7 @@ public final class YearMonth
      *
      * @param months  the months to add, positive or negative
      * @return a {@code YearMonth} based on this year-month with the period added, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth plusMonths(long months) {
         if (months == 0) {
@@ -402,20 +406,24 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this YearMonth with the specified period subtracted.
+     * Returns a copy of this {@code YearMonth} with the specified period subtracted.
      * <p>
-     * The period is normalized to ISO Months before being added to this year-month.
-     * Any amounts that are not normalized to months, such as hours, are ignored.
+     * This subtracts the specified period from this year-month, returning a new year-month.
+     * Before subtraction, the period is converted to a {@code Period} using
+     * {@link Period#of(PeriodProvider)}.
+     * The calculation only uses the years and months fields.
+     * Other fields are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+     * @throws ArithmeticException if the result exceeds the supported range
      */
     public YearMonth minus(PeriodProvider periodProvider) {
-        PeriodFields period = PeriodFields.of(periodProvider).normalizedTo(ISOChronology.periodMonths());
-        return minusMonths(period.getAmount(ISOChronology.periodMonths()));
+        Period period = Period.of(periodProvider);
+        return minusMonths(period.totalMonths());
     }
 
     //-----------------------------------------------------------------------
@@ -426,7 +434,7 @@ public final class YearMonth
      *
      * @param years  the years to subtract, positive or negative
      * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth minusYears(long years) {
         if (years == 0) {
@@ -443,7 +451,7 @@ public final class YearMonth
      *
      * @param months  the months to subtract, positive or negative
      * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
-     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth minusMonths(long months) {
         if (months == 0) {

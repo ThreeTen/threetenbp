@@ -577,10 +577,17 @@ public class TestYearMonth {
         assertEquals(test, YearMonth.of(2009, 6));
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_invalidPeriod() {
+        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
+        YearMonth.of(2010, 6).plus(provider);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plus_PeriodProvider_bigPeriod() {
         long years = 20L + Integer.MAX_VALUE;
         PeriodProvider provider = PeriodField.of(years, YEARS);
-        assertEquals(YearMonth.of(-40, 6).plus(provider), YearMonth.of((int) (-40L + years), 6));
+        YearMonth.of(-40, 6).plus(provider);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -748,10 +755,17 @@ public class TestYearMonth {
         assertEquals(test, YearMonth.of(2007, 6));
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_invalidPeriod() {
+        PeriodProvider provider = PeriodField.of(20, MockOtherChronology.OTHER_MONTHS);
+        YearMonth.of(2010, 6).minus(provider);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_PeriodProvider_bigPeriod() {
         long years = 20L + Integer.MAX_VALUE;
         PeriodProvider provider = PeriodField.of(years, YEARS);
-        assertEquals(YearMonth.of(40, 6).minus(provider), YearMonth.of((int) (40L - years), 6));
+        YearMonth.of(40, 6).minus(provider);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
