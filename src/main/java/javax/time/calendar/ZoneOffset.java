@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.time.CalendricalException;
 
 /**
  * A time-zone offset from UTC, such as '+02:00'.
@@ -268,21 +269,24 @@ public final class ZoneOffset
         return ofTotalSeconds(totalSeconds);
     }
 
-//    /**
-//     * Obtains an instance of {@code ZoneOffset} from a period.
-//     * <p>
-//     * Only the hour, minute and second fields from the period are used.
-//     * The sign of the hours, minutes and seconds components must match.
-//     * Thus, if the hours is negative, the minutes and seconds must be negative or zero.
-//     *
-//     * @param periodProvider  the period to use, not null
-//     * @return the ZoneOffset, never null
-//     * @throws IllegalArgumentException if the offset is not in the required range
-//     */
-//    public static ZoneOffset zoneOffset(PeriodProvider periodProvider) {
-//        Period period = Period.period(periodProvider);
-//        return zoneOffset(period.getHours(), period.getMinutes(), period.getSeconds());
-//    }
+    /**
+     * Obtains an instance of {@code ZoneOffset} from a period.
+     * <p>
+     * This creates an offset from the specified period, converting using
+     * {@link Period#of(PeriodProvider)}.
+     * Only the hour, minute and second fields from the period are used - other fields are ignored.
+     * The sign of the hours, minutes and seconds components must match.
+     * Thus, if the hours is negative, the minutes and seconds must be negative or zero.
+     *
+     * @param periodProvider  the period to use, not null
+     * @return the ZoneOffset, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+     * @throws IllegalArgumentException if the offset is not in the required range
+     */
+    public static ZoneOffset of(PeriodProvider periodProvider) {
+        Period period = Period.of(periodProvider);
+        return ofHoursMinutesSeconds(period.getHours(), period.getMinutes(), period.getSeconds());
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -505,20 +509,21 @@ public final class ZoneOffset
      * Returns a copy of this offset with the specified period added.
      * <p>
      * This adds the amount in hours, minutes and seconds from the specified period to this offset.
-     * Any other fields in the period, such as years, months, days or nanos are ignored.
+     * This converts the period using {@link Period#of(PeriodProvider)}.
+     * Only the hour, minute and second fields from the period are used - other fields are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code ZoneOffset} based on this offset with the peiod added, never null
+     * @return a {@code ZoneOffset} based on this offset with the period added, never null
+     * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public ZoneOffset plus(PeriodProvider periodProvider) {
-        Period otherPeriod = Period.of(periodProvider);
-        otherPeriod = Period.ofTimeFields(otherPeriod.getHours(), otherPeriod.getMinutes(), otherPeriod.getSeconds());
+        Period otherPeriod = Period.of(periodProvider).withTimeFieldsOnly().withNanos(0);
         Period thisPeriod = toPeriod();
         Period combined = thisPeriod.plus(otherPeriod).normalized();
-        return ofHoursMinutesSeconds(combined.getHours(), combined.getMinutes(), combined.getSeconds());
+        return of(combined);
     }
 
     //-----------------------------------------------------------------------

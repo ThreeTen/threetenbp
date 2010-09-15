@@ -44,7 +44,6 @@ Time scales
 
 Date/Time classes
 - factories from Calendrical...
-- LocalDateTime/LocalTime/Year/YearMonth.plus(PeriodProvider) needs correct algorithm
 - toString(pattern)
 - parse(str, pattern)
 - ZDT int factories
@@ -245,6 +244,8 @@ EDR released
 - Add Period.ofDateFields()/ofTimeFields()
 - Rename Period.ofYearsMonthsDays() to ofDateFields()
 - Rename Period.ofHoursMinutesSeconds() to ofTimeFields()
+- LocalDateTime/LocalTime/Year/YearMonth.plus(PeriodProvider) have correct algorithm
+- ZoneOffset period factory
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

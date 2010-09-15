@@ -41,6 +41,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.CalendricalException;
 
 import org.testng.annotations.Test;
 
@@ -325,7 +326,24 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
-    public void test_forTotalSeconds() {
+    public void test_factory_of_PeriodProvider() {
+        assertSame(ZoneOffset.of(PeriodFields.ZERO), ZoneOffset.UTC);
+        assertEquals(ZoneOffset.of(Period.ofTimeFields(2, 30, 45)), ZoneOffset.ofHoursMinutesSeconds(2, 30, 45));
+        assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, 30, 45, 99)), ZoneOffset.ofHoursMinutesSeconds(2, 30, 45));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_of_PeriodProvider_invalidPeriod() {
+        ZoneOffset.of(PeriodField.of(2, MockOtherChronology.OTHER_MONTHS));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_of_PeriodProvider_null() {
+        ZoneOffset.of((PeriodProvider) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_factory_ofTotalSeconds() {
         assertSame(ZoneOffset.ofTotalSeconds(0), ZoneOffset.UTC);
         assertEquals(ZoneOffset.ofTotalSeconds(60 * 60 + 1), ZoneOffset.ofHoursMinutesSeconds(1, 0, 1));
         assertEquals(ZoneOffset.ofTotalSeconds(18 * 60 * 60), ZoneOffset.ofHours(18));
@@ -333,12 +351,12 @@ public class TestZoneOffset {
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_forTotalSeconds_tooLarge() {
+    public void test_factory_ofTotalSeconds_tooLarge() {
         ZoneOffset.ofTotalSeconds(18 * 60 * 60 + 1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_forTotalSeconds_tooSmall() {
+    public void test_factory_ofTotalSeconds_tooSmall() {
         ZoneOffset.ofTotalSeconds(-18 * 60 * 60 - 1);
     }
 
@@ -437,6 +455,18 @@ public class TestZoneOffset {
     public void test_plus_PeriodProvider_zero() {
         ZoneOffset offset = ZoneOffset.UTC;
         assertEquals(offset.plus(Period.ZERO), ZoneOffset.UTC);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_invalidPeriod() {
+        ZoneOffset offset = ZoneOffset.UTC;
+        offset.plus(PeriodField.of(2, MockOtherChronology.OTHER_MONTHS));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_null() {
+        ZoneOffset offset = ZoneOffset.UTC;
+        offset.plus((PeriodProvider) null);
     }
 
     //-----------------------------------------------------------------------
