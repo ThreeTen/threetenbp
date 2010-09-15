@@ -296,7 +296,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned year-month, not null
-     * @return a {@code YearMonth} based on this one with the requested year, never null
+     * @return a {@code YearMonth} based on this year-month with the requested year, never null
      */
     public YearMonth with(Year year) {
         ISOChronology.checkNotNull(year, "Year must not be null");
@@ -309,7 +309,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned year-month, not null
-     * @return a {@code YearMonth} based on this one with the requested month, never null
+     * @return a {@code YearMonth} based on this year-month with the requested month, never null
      */
     public YearMonth with(MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -373,7 +373,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the period added, never null
+     * @return a {@code YearMonth} based on this year-month with the years added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth plusYears(long years) {
@@ -390,7 +390,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the period added, never null
+     * @return a {@code YearMonth} based on this year-month with the months added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth plusMonths(long months) {
@@ -433,7 +433,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
+     * @return a {@code YearMonth} based on this year-month with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth minusYears(long years) {
@@ -450,7 +450,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
+     * @return a {@code YearMonth} based on this year-month with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth minusMonths(long months) {

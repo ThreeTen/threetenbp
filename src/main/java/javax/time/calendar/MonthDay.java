@@ -316,7 +316,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned month-day, not null
-     * @return a {@code MonthDay} based on this one with the requested month, never null
+     * @return a {@code MonthDay} based on this month-day with the requested month, never null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -337,7 +337,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
-     * @return a {@code MonthDay} based on this one with the requested month, never null
+     * @return a {@code MonthDay} based on this month-day with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
@@ -353,7 +353,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the return month-day, from 1 to 31
-     * @return a {@code MonthDay} based on this one with the requested day, never null
+     * @return a {@code MonthDay} based on this month-day with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
@@ -381,7 +381,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return a {@code MonthDay} based on this one with the month rolled, never null
+     * @return a {@code MonthDay} based on this month-day with the month rolled, never null
      */
     public MonthDay rollMonthOfYear(int months) {
         return with(month.roll(months));
@@ -397,7 +397,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to roll by, positive or negative
-     * @return a {@code MonthDay} based on this one with the day rolled, never null
+     * @return a {@code MonthDay} based on this month-day with the day rolled, never null
      */
     public MonthDay rollDayOfMonth(int days) {
         if (days == 0) {

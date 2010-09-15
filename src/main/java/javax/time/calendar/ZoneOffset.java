@@ -510,7 +510,7 @@ public final class ZoneOffset
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a new updated ZoneOffset, never null
+     * @return a {@code ZoneOffset} based on this offset with the peiod added, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public ZoneOffset plus(PeriodProvider periodProvider) {
