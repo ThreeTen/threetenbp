@@ -594,7 +594,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time adjusted as necessary, never null
+     * @return a {@code LocalDateTime} based on this date-time with the date adjusted, never null
      * @throws NullPointerException if the adjuster returned null
      */
     public LocalDateTime with(DateAdjuster adjuster) {
@@ -613,7 +613,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time adjusted as necessary, never null
+     * @return a {@code LocalDateTime} based on this date-time with the time adjusted, never null
      * @throws IllegalArgumentException if the adjuster returned null
      */
     public LocalDateTime with(TimeAdjuster adjuster) {
@@ -993,7 +993,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code LocalDateTime} with the period added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the period added, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -1026,7 +1026,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a {@code LocalDateTime} with the period added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the period added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
@@ -1049,7 +1049,7 @@ public final class LocalDateTime
      *
      * @param years  the years to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the years added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusYears(int years, DateResolver dateResolver) {
@@ -1076,7 +1076,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a {@code LocalDateTime} with the months added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
@@ -1099,7 +1099,7 @@ public final class LocalDateTime
      *
      * @param months  the months to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the months added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusMonths(int months, DateResolver dateResolver) {
@@ -1119,7 +1119,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a {@code LocalDateTime} with the weeks added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusWeeks(int weeks) {
@@ -1139,7 +1139,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a {@code LocalDateTime} with the days added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the days added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusDays(long days) {
@@ -1153,7 +1153,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a {@code LocalDateTime} with the hours added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the hours added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusHours(int hours) {
@@ -1168,7 +1168,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a {@code LocalDateTime} with the minutes added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the minutes added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusMinutes(int minutes) {
@@ -1183,7 +1183,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a {@code LocalDateTime} with the seconds added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the seconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusSeconds(int seconds) {
@@ -1198,7 +1198,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a {@code LocalDateTime} with the nanoseconds added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the nanoseconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusNanos(long nanos) {
@@ -1264,7 +1264,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalDateTime} with the period subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the period subtracted, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -1297,7 +1297,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a {@code LocalDateTime} with the years subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusYears(int, javax.time.calendar.DateResolver)
      */
@@ -1320,7 +1320,7 @@ public final class LocalDateTime
      *
      * @param years  the years to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the years subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusYears(int years, DateResolver dateResolver) {
@@ -1347,7 +1347,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a {@code LocalDateTime} with the months subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusMonths(int, javax.time.calendar.DateResolver)
      */
@@ -1370,7 +1370,7 @@ public final class LocalDateTime
      *
      * @param months  the months to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} with the months subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusMonths(int months, DateResolver dateResolver) {
@@ -1390,7 +1390,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a {@code LocalDateTime} with the weeks subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusWeeks(int weeks) {
@@ -1410,7 +1410,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a {@code LocalDateTime} with the days subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusDays(long days) {
@@ -1424,7 +1424,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a {@code LocalDateTime} with the hours subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the hours subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusHours(int hours) {
@@ -1439,7 +1439,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a {@code LocalDateTime} with the minutes subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the minutes subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusMinutes(int minutes) {
@@ -1454,7 +1454,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a {@code LocalDateTime} with the seconds subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the seconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusSeconds(int seconds) {
@@ -1469,7 +1469,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a {@code LocalDateTime} with the nanoseconds subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the nanoseconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusNanos(long nanos) {

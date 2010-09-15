@@ -683,7 +683,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time adjusted as necessary, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the date adjusted, never null
      * @throws NullPointerException if the adjuster returned null
      */
     public OffsetDateTime with(DateAdjuster adjuster) {
@@ -702,7 +702,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return an {@code OffsetDateTime} based on this date-time adjusted as necessary, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the time adjusted, never null
      * @throws IllegalArgumentException if the adjuster returned null
      */
     public OffsetDateTime with(TimeAdjuster adjuster) {
@@ -1058,7 +1058,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusYears(int years) {
@@ -1080,7 +1080,7 @@ public final class OffsetDateTime
      *
      * @param years  the years to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusYears(int years, DateResolver dateResolver) {
@@ -1105,7 +1105,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMonths(int months) {
@@ -1127,7 +1127,7 @@ public final class OffsetDateTime
      *
      * @param months  the months to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMonths(int months, DateResolver dateResolver) {
@@ -1147,7 +1147,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusWeeks(int weeks) {
@@ -1167,7 +1167,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the days added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusDays(int days) {
@@ -1191,7 +1191,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the hours added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusHours(int hours) {
@@ -1205,7 +1205,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the minutes added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMinutes(int minutes) {
@@ -1219,7 +1219,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the seconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusSeconds(int seconds) {
@@ -1233,7 +1233,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusNanos(int nanos) {
@@ -1282,7 +1282,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusYears(int years) {
@@ -1304,7 +1304,7 @@ public final class OffsetDateTime
      *
      * @param years  the years to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusYears(int years, DateResolver dateResolver) {
@@ -1329,7 +1329,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusMonths(int months) {
@@ -1351,7 +1351,7 @@ public final class OffsetDateTime
      *
      * @param months  the months to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusMonths(int months, DateResolver dateResolver) {
@@ -1371,7 +1371,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusWeeks(int weeks) {
@@ -1391,7 +1391,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusDays(int days) {
@@ -1415,7 +1415,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the hours subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusHours(int hours) {
@@ -1429,7 +1429,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the minutes subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusMinutes(int minutes) {
@@ -1443,7 +1443,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the seconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusSeconds(int seconds) {
@@ -1457,7 +1457,7 @@ public final class OffsetDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a new updated OffsetDateTime, never null
+     * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minusNanos(int nanos) {
