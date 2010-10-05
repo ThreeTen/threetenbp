@@ -66,7 +66,9 @@ import javax.time.calendar.format.CalendricalParseException;
  * @author Stephen Colebourne
  */
 public final class TAIInstant
-        implements InstantProvider, Comparable<TAIInstant>, Serializable {
+        implements Comparable<TAIInstant>, Serializable {
+    // does not implement InstantProvider as that would enable methods like
+    // Duration.between which gives the wrong answer due to lossy conversion
 
     /**
      * Constant for nanos per second.

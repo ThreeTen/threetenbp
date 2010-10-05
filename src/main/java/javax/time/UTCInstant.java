@@ -36,7 +36,8 @@ import java.io.Serializable;
 import javax.time.calendar.LocalDate;
 
 /**
- * An instantaneous point on the time-line measured in the UTC time-scale.
+ * An instantaneous point on the time-line measured in the UTC time-scale,
+ * handling leap seconds.
  * <p>
  * Most of the Time Framework for Java works on the assumption that the time-line is
  * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
@@ -79,8 +80,9 @@ import javax.time.calendar.LocalDate;
  * <p>
  * The modern UTC time-scale was introduced in 1972, introducing the concept of whole leap-seconds.
  * Between 1958 and 1972, the definition of UTC was complex, with minor sub-second leaps and
- * alterations to the length of seconds. This default rules only implement UTC from 1972.
- * Prior to that date, they fix the TAI offset at 10 seconds.
+ * alterations to the length of seconds. The default rules only implement UTC from 1972.
+ * Prior to that date, the default rules fix the UTC-TAI offset at 10 seconds.
+ * While not historically accurate, it is a simple, easy definition, suitable for this library.
  * <p>
  * The standard Java epoch of 1970-01-01 is prior to the introduction of whole leap-seconds into UTC in 1972.
  * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
@@ -92,7 +94,9 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class UTCInstant
-        implements InstantProvider, Comparable<UTCInstant>, Serializable {
+        implements Comparable<UTCInstant>, Serializable {
+    // does not implement InstantProvider as that would enable methods like
+    // Duration.between which gives the wrong answer due to lossy conversion
 
     /**
      * Constant for seconds per day.
@@ -295,7 +299,7 @@ public final class UTCInstant
      * Checks if the instant is within a leap second.
      * <p>
      * This method returns true when an accurate clock would return a seconds
-     * field of 60 or 61.
+     * field of 60.
      *
      * @return true if this instant is within a leap second
      */
