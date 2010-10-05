@@ -371,6 +371,26 @@ public final class LocalDateTime
         return result;
     }
 
+//    /**
+//     * Obtains an instance of {@code LocalDateTime} from an {@code InstantProvider} using
+//     * an offset to define the correct local time.
+//     * <p>
+//     * In order to calculate the local date-time from an instant the offset is needed.
+//     * This is the same as calling {@code OffsetDateTime.of(instant, offset).toLocalDateTime()}
+//     * but saves an object creation.
+//     *
+//     * @param instantProvider  the instant to convert, not null
+//     * @param offset  the zone offset, not null
+//     * @return the offset date-time, never null
+//     * @throws CalendarConversionException if the instant exceeds the supported date range
+//     */
+//    public static LocalDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
+//        Instant instant = Instant.of(instantProvider);
+//        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+//        long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+//        return LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDateTime} from a text string.
