@@ -37,17 +37,12 @@ Duration
 
 Instant
 - toString/parse
-- Remove InstantProvider from UTC/TAI
 
 Time scales
 - Obtain rules from TZDB rather than a file?
 
 Date/Time classes
 - factories from Calendrical...
-- toString(pattern)
-- parse(str, pattern)
-- ZDT int factories
-- LocalTime plus/minus shouldn't throw ArithmeticException
 ? DateResolver takes int or MonthOfDay or calendricals
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
@@ -55,13 +50,11 @@ Date/Time classes
 ? getMonthOfYear() -> getMonth(), etc
 ? getAmPm()
 ? with(rule, value)
-? YearMonth.with(Year)
 
 Rules
 - ensure can merge MonthDay and Year
 - test min/max year for week-based-year
 - remove Chronology and share
-- nanoOfDay rule (use in LocalTime factory)
 ? parse()
 ? merge -> normalize
 ? deriveInt for fields
@@ -104,6 +97,7 @@ Time zones
 # Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
 
 Periods
+- hours/minutes/seconds between factories
 - rename classes?
 - formatting (defer?)
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
@@ -122,6 +116,8 @@ Calendars
 - more calendar systems
 
 General
+- rework Clock - remove instant()
+- cache todays date
 - localized day of week number
 - first day of week
 - get month/weekday text
@@ -131,11 +127,12 @@ General
 - evaluate hash codes
 - check overflows
 - Use ArithmeticException everywhere
+- factories/methods taking double
 
 Possible items
 - Rename DateProvider to LocalDateProvider?
 - roll()
-- round()
+- round() - truncateToSeconds() feels weird
 - iteration
 - era in the hash codes
 - ModJulDays rule - BigDecimal
@@ -246,7 +243,12 @@ EDR released
 - Rename Period.ofHoursMinutesSeconds() to ofTimeFields()
 - LocalDateTime/LocalTime/Year/YearMonth.plus(PeriodProvider) have correct algorithm
 - ZoneOffset period factory
+- ZDT int factories
+- YearMonth.with(Year)
+- LocalTime plus/minus shouldn't throw ArithmeticException
+- Remove InstantProvider from UTC/TAI
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory
+- toString(pattern)/parse(str, pattern)
  
