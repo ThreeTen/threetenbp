@@ -119,69 +119,134 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Obtains an instance of {@code ZonedDateTime}.
-//     * <p>
-//     * The second and nanosecond fields will be set to zero by this factory method.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-//     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-//     * @param zone  the time-zone, not null
-//     * @return a ZonedDateTime object, never null
-//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-//     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-//     */
-//    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
-//            int hourOfDay, int minuteOfHour, TimeZone zone) {
-//        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0, zone);
-//    }
-//
-//    /**
-//     * Obtains an instance of {@code ZonedDateTime}.
-//     * <p>
-//     * The nanosecond field will be set to zero by this factory method.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-//     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-//     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-//     * @param zone  the time-zone, not null
-//     * @return a ZonedDateTime object, never null
-//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-//     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-//     */
-//    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
-//            int hourOfDay, int minuteOfHour, int secondOfMinute, TimeZone zone) {
-//        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, zone);
-//    }
-//
-//    /**
-//     * Obtains an instance of {@code ZonedDateTime}.
-//     *
-//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
-//     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-//     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-//     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-//     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-//     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-//     * @param zone  the time-zone, not null
-//     * @return a ZonedDateTime object, never null
-//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-//     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-//     * @throws CalendricalException if the date-time cannot be resolved due to daylight savings
-//     */
-//    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
-//            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
-//        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
-//                                    hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-//        return dateTime(dt, zone, ZoneResolvers.retainOffset());
-//    }
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from year, month,
+     * day, hour, minute, second, nanosecond and time-zone
+     * where the date-time must be valid for the time-zone.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
+     * The local date-time must be valid for the time-zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then an exception will be thrown.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param zone  the time-zone, not null
+     * @return the zoned date-time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the local date-time is invalid for the time-zone
+     */
+    public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
+        return of(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from year, month,
+     * day, hour, minute, second, nanosecond and time-zone
+     * providing a resolver to handle an invalid date-time.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
+     * The local date-time must be valid for the time-zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then the resolver will determine what action to take.
+     * See {@link ZoneResolvers} for common resolver implementations.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param zone  the time-zone, not null
+     * @param resolver  the resolver from local date-time to zoned, not null
+     * @return the zoned date-time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
+     */
+    public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
+            TimeZone zone, ZoneResolver resolver) {
+        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+                                    hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return resolve(dt, null, zone, resolver);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from year, month,
+     * day, hour, minute, second, nanosecond and time-zone
+     * where the date-time must be valid for the time-zone.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
+     * The local date-time must be valid for the time-zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then an exception will be thrown.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param zone  the time-zone, not null
+     * @return the zoned date-time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the local date-time is invalid for the time-zone
+     */
+    public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
+        return of(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from year, month,
+     * day, hour, minute, second, nanosecond and time-zone
+     * providing a resolver to handle an invalid date-time.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
+     * The local date-time must be valid for the time-zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then the resolver will determine what action to take.
+     * See {@link ZoneResolvers} for common resolver implementations.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
+     * @param zone  the time-zone, not null
+     * @param resolver  the resolver from local date-time to zoned, not null
+     * @return the zoned date-time, never null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
+     */
+    public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
+            TimeZone zone, ZoneResolver resolver) {
+        LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
+                                    hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return resolve(dt, null, zone, resolver);
+    }
 
     //-----------------------------------------------------------------------
     /**

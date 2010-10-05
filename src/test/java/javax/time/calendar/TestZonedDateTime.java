@@ -171,41 +171,6 @@ public class TestZonedDateTime {
         assertTrue(diff < 100000000);  // less than 0.1 secs
     }
 
-//    //-----------------------------------------------------------------------
-//    // dateMidnight factories
-//    //-----------------------------------------------------------------------
-//    public void factory_dateMidnight_YMD() {
-//        ZonedDateTime test = ZonedDateTime.dateMidnight(Year.isoYear(2008), MonthOfYear.JUNE, DayOfMonth.dayOfMonth(30), ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateMidnight_intMonthInt() {
-//        ZonedDateTime test = ZonedDateTime.dateMidnight(2008, MonthOfYear.JUNE, 30, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateMidnight_ints() {
-//        ZonedDateTime test = ZonedDateTime.dateMidnight(2008, 6, 30, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateMidnight_DateProvider() {
-//        DateProvider provider = LocalDate.date(2008, 6, 30);
-//        ZonedDateTime test = ZonedDateTime.dateMidnight(provider, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//    }
-//
     //-----------------------------------------------------------------------
     // dateTime factories
     //-----------------------------------------------------------------------
@@ -221,119 +186,49 @@ public class TestZonedDateTime {
         assertEquals(test.getZone(), zone);
     }
 
-//    public void factory_dateTime_objectsHM() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(
-//                Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
-//                HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_objectsHMS() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(
-//                Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
-//                HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_objectsHMSN() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(
-//                Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
-//                HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30),
-//                SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_intMonthIntHM() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_intMonthIntHMS() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, 10, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_intMonthIntHMSN() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_intsHM() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(2008, 6, 30, 11, 30, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_intsHMS() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(2008, 6, 30, 11, 30, 10, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_dateTime_intsHMSN() {
-//        ZonedDateTime test = ZonedDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, ZONE_0100);
-//        assertEquals(test.getYear(), Year.isoYear(2008));
-//        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-//        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-//        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-//        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-//        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-//        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-//    }
+    //-----------------------------------------------------------------------
+    public void factory_of_intMonthIntHMSN() {
+        ZonedDateTime test = ZonedDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void factory_of_intMonthIntHMSN_gap() {
+        ZonedDateTime.of(2008, MonthOfYear.MARCH, 30, 02, 30, 0, 0, ZONE_PARIS);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_of_intMonthIntHMSNResolver() {
+        ZonedDateTime test = ZonedDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, ZONE_PARIS, ZoneResolvers.postTransition());
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    public void factory_of_intMonthIntHMSNResolver_gap() {
+        ZonedDateTime test = ZonedDateTime.of(2008, MonthOfYear.MARCH, 30, 2, 30, 0, 0, ZONE_PARIS, ZoneResolvers.postTransition());
+        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_of_intsHMSN() {
+        ZonedDateTime test = ZonedDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void factory_of_intsHMSN_gap() {
+        ZonedDateTime.of(2008, 3, 30, 02, 30, 0, 0, ZONE_PARIS);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_of_intsHMSNResolver() {
+        ZonedDateTime test = ZonedDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZONE_PARIS, ZoneResolvers.postTransition());
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    public void factory_of_intsHMSNResolver_gap() {
+        ZonedDateTime test = ZonedDateTime.of(2008, 3, 30, 2, 30, 0, 0, ZONE_PARIS, ZoneResolvers.postTransition());
+        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
+    }
 
     //-----------------------------------------------------------------------
     // from(DateProvider, TimeProvider, TimeZone)
