@@ -85,13 +85,16 @@ import java.io.Serializable;
  * obtained using {@link #utcInstant()}. The instant in TAI, which is a simple incrementing number
  * ignoring all human time concepts, can be obtained using {@link #taiInstant()}.
  * See the relevant classes for more detail.
+ * 
+ * <h4>Implementation notes</h4>
  * <p>
- * <p>
- * TimeSource is an abstract class and must be implemented with care
+ * {@code TimeSource} is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  * <p>
- * It is recommended that implementations are {@code Serializable} where possible.
+ * Subclass implementations should implement {@code Serializable} wherever possible.
+ * They should also implement {@code equals()}, {@code hashCode()} and
+ * {@code toString()} based on their state.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -163,7 +166,7 @@ public abstract class TimeSource {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the current {@code Instant} from this {@code TimeSource}.
+     * Gets the current {@code Instant}.
      * <p>
      * The instant returned by this method will vary according to the implementation.
      * For example, the time-source returned by {@link #system()} will return
@@ -180,7 +183,7 @@ public abstract class TimeSource {
     public abstract Instant instant();
 
     /**
-     * Gets the current {@code UTCInstant} from this {@code TimeSource}.
+     * Gets the current {@code UTCInstant}.
      * <p>
      * The UTC time-scale differs from that used by {@code Instant} because it includes
      * leap-seconds. An accurate implementation of this abstract class will return a
@@ -202,7 +205,7 @@ public abstract class TimeSource {
     }
 
     /**
-     * Gets the current {@code TAIInstant} from this {@code TimeSource}.
+     * Gets the current {@code TAIInstant}.
      * <p>
      * The TAI time-scale is a simple incrementing number of seconds from the TAI epoch of 1958-01-01(TAI).
      * It ignores all human concepts of time such as days.
@@ -221,10 +224,32 @@ public abstract class TimeSource {
         return TAIInstant.of(instant());
     }
 
+    /**
+     * Gets the current millisecond instant.
+     * <p>
+     * The instant returned by this method will vary according to the implementation.
+     * For example, the time-source returned by {@link #system()} will return
+     * {@link System#currentTimeMillis()}.
+     * <p>
+     * This method is provided for backwards compatibility.
+     * New code should use classes such as <code>Instant</code> to represent an instant
+     * rather than a raw millisecond value.
+     * <p>
+     * Normally, this method will not throw an exception.
+     * However, one possible implementation would be to obtain the time from a
+     * central time server across the network. Obviously, in this case the lookup
+     * could fail, and so the method is permitted to throw an exception.
+     *
+     * @return the current millisecond instant from this time-source, measured from
+     *  the Java epoch of 1970-01-01T00:00 UTC, never null
+     * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
+     */
+    public long millis() {
+        return instant().toEpochMillisLong();
+    }
+
     // TODO: implement InstantProvider?
-    // TODO: add long millis method?
     // TODO: add caching of instants ("get to second precision")
-    // TODO: define equals/hashCode
 
     //-----------------------------------------------------------------------
     /**
@@ -248,6 +273,11 @@ public abstract class TimeSource {
         @Override
         public Instant instant() {
             return Instant.ofEpochMillis(System.currentTimeMillis());
+        }
+        /** {@inheritDoc} */
+        @Override
+        public long millis() {
+            return System.currentTimeMillis();
         }
         /** {@inheritDoc} */
         @Override

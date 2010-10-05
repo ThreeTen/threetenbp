@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -73,6 +73,20 @@ public class TestTimeSource_System {
             Instant instant = system.instant();
             long systemMillis = System.currentTimeMillis();
             if (systemMillis - instant.toEpochMillisLong() < 10) {
+                return;  // success
+            }
+        }
+        fail();
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_system_millis() {
+        TimeSource system = TimeSource.system();
+        for (int i = 0; i < 10000; i++) {
+            // assume can eventually get these within 10 milliseconds
+            long instant = system.millis();
+            long systemMillis = System.currentTimeMillis();
+            if (systemMillis - instant < 10) {
                 return;  // success
             }
         }
