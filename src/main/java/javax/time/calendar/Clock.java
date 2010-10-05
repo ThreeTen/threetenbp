@@ -69,7 +69,11 @@ import javax.time.TimeSource;
  * {@link TimeSource#fixed} to be used during testing.
  *
  * <h4>Implementation notes</h4>
- * {@code Clock} is designed to be subclassed, however this will rarely be necessary.
+ * {@code Clock} is an abstract class and must be implemented with care
+ * to ensure other classes in the framework operate correctly.
+ * All instantiable implementations must be final, immutable and thread-safe.
+ * <p>
+ * The class is designed to be subclassed, however this will rarely be necessary.
  * In most cases, you should subclass {@code TimeSource} instead.
  * <p>
  * A subclass will normally override {@code getSource()} and {@code getZone()}.
@@ -86,10 +90,6 @@ import javax.time.TimeSource;
  * Subclass implementations should implement {@code Serializable} wherever possible.
  * They should also implement {@code equals()}, {@code hashCode()} and
  * {@code toString()} based on their state.
- * <p>
- * Clock is an abstract class and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -530,7 +530,7 @@ public abstract class Clock {
      * @throws CalendricalException if the date-time cannot be created
      */
     public ZonedDateTime zonedDateTime() {
-        return ZonedDateTime.ofInstant(instant(), getZone());
+        return ZonedDateTime.now(this);
     }
 
     /**
