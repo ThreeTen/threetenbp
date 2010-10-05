@@ -154,7 +154,7 @@ public abstract class UTCRules {
      * The leap second is added to, or removed from, the <i>end</i> of the specified dates.
      * The dates will be sorted from earliest to latest.
      *
-     * @return an array of leap second dates expressed as Modified Julian Day values
+     * @return an array of leap second dates expressed as Modified Julian Day values, not null
      */
     public abstract long[] getLeapSecondDates();
 
