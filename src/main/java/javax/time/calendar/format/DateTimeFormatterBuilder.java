@@ -1019,7 +1019,7 @@ public final class DateTimeFormatterBuilder {
         RULE_MAP.put('e', ISOChronology.dayOfWeekRule());
         RULE_MAP.put('a', ISOChronology.amPmOfDayRule());
         RULE_MAP.put('H', ISOChronology.hourOfDayRule());
-//        RULE_MAP.put('k', ISOChronology.clockHourOfDayRule());
+        RULE_MAP.put('k', ISOChronology.clockHourOfDayRule());
         RULE_MAP.put('K', ISOChronology.hourOfAmPmRule());
         RULE_MAP.put('h', ISOChronology.clockHourOfAmPmRule());
         RULE_MAP.put('m', ISOChronology.minuteOfHourRule());

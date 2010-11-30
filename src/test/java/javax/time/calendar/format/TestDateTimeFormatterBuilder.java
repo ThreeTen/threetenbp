@@ -526,6 +526,14 @@ public class TestDateTimeFormatterBuilder {
             {"KK", "Value(ISO.HourOfAmPm,2)"},
             {"KKK", "Value(ISO.HourOfAmPm,3)"},
             
+            {"k", "Value(ISO.ClockHourOfDay)"},
+            {"kk", "Value(ISO.ClockHourOfDay,2)"},
+            {"kkk", "Value(ISO.ClockHourOfDay,3)"},
+            
+            {"h", "Value(ISO.ClockHourOfAmPm)"},
+            {"hh", "Value(ISO.ClockHourOfAmPm,2)"},
+            {"hhh", "Value(ISO.ClockHourOfAmPm,3)"},
+            
             {"m", "Value(ISO.MinuteOfHour)"},
             {"mm", "Value(ISO.MinuteOfHour,2)"},
             {"mmm", "Value(ISO.MinuteOfHour,3)"},
