@@ -115,7 +115,23 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    // nowClock()
+    // now()
+    //-----------------------------------------------------------------------
+    public void now() {
+        MonthDay expected = MonthDay.now(Clock.systemDefaultZone());
+        MonthDay test = MonthDay.now();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = MonthDay.now(Clock.systemDefaultZone());
+            test = MonthDay.now();
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
     //-----------------------------------------------------------------------
     public void now_Clock() {
         Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
@@ -128,22 +144,6 @@ public class TestMonthDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
         MonthDay.now(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    public void nowSystemClock() {
-        MonthDay expected = MonthDay.now(Clock.systemDefaultZone());
-        MonthDay test = MonthDay.nowSystemClock();
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = MonthDay.now(Clock.systemDefaultZone());
-            test = MonthDay.nowSystemClock();
-        }
-        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

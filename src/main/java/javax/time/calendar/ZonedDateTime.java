@@ -87,6 +87,22 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current date-time from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date-time.
+     * The zone and offset will be set based on the time-zone in the clock.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date-time using the system clock, never null
+     */
+    public static ZonedDateTime now() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
      * Obtains the current date-time from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current time.
@@ -100,22 +116,8 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
-        return ofInstant(clock.instant(), clock.getZone());
-    }
-
-    /**
-     * Obtains the current date-time from the system clock in the default time-zone.
-     * <p>
-     * This will query the system clock in the default time-zone to obtain the current time.
-     * The zone and offset will be set based on the time-zone in the clock.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, never null
-     */
-    public static ZonedDateTime nowSystemClock() {
-        return now(Clock.systemDefaultZone());
+        final Instant now = clock.instant();  // called once
+        return ofInstant(now, clock.getZone());
     }
 
     //-----------------------------------------------------------------------

@@ -31,7 +31,10 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -117,7 +120,23 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // nowClock()
+    // now()
+    //-----------------------------------------------------------------------
+    public void now() {
+        YearMonth expected = YearMonth.now(Clock.systemDefaultZone());
+        YearMonth test = YearMonth.now();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = YearMonth.now(Clock.systemDefaultZone());
+            test = YearMonth.now();
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
     //-----------------------------------------------------------------------
     public void now_Clock() {
         Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
@@ -130,22 +149,6 @@ public class TestYearMonth {
     @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
         YearMonth.now(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    public void nowSystemClock() {
-        YearMonth expected = YearMonth.now(Clock.systemDefaultZone());
-        YearMonth test = YearMonth.nowSystemClock();
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = YearMonth.now(Clock.systemDefaultZone());
-            test = YearMonth.nowSystemClock();
-        }
-        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

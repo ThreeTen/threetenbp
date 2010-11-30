@@ -88,6 +88,22 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current year-month from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current year-month.
+     * The zone and offset will be set based on the time-zone in the clock.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current year-month using the system clock, never null
+     */
+    public static YearMonth now() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
      * Obtains the current year-month from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current year-month.
@@ -98,21 +114,8 @@ public final class YearMonth
      * @return the current year-month, never null
      */
     public static YearMonth now(Clock clock) {
-        LocalDate date = LocalDate.now(clock);
-        return YearMonth.of(date.getYear(), date.getMonthOfYear());
-    }
-
-    /**
-     * Obtains the current year-month from the system clock in the default time-zone.
-     * <p>
-     * This will query the system clock in the default time-zone to obtain the current year-month.
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current year-month using the system clock, never null
-     */
-    public static YearMonth nowSystemClock() {
-        return now(Clock.systemDefaultZone());
+        final LocalDate now = LocalDate.now(clock);  // called once
+        return YearMonth.of(now.getYear(), now.getMonthOfYear());
     }
 
     //-----------------------------------------------------------------------

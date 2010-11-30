@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -118,7 +122,23 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // nowClock()
+    // now()
+    //-----------------------------------------------------------------------
+    public void now() {
+        OffsetDate expected = OffsetDate.now(Clock.systemDefaultZone());
+        OffsetDate test = OffsetDate.now();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = OffsetDate.now(Clock.systemDefaultZone());
+            test = OffsetDate.now();
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
@@ -160,22 +180,6 @@ public class TestOffsetDate {
             assertEquals(test.getDayOfMonth(), i >= 12 ? 2 : 1);
             assertEquals(test.getOffset(), offset);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    public void nowSystemClock() {
-        OffsetDate expected = OffsetDate.now(Clock.systemDefaultZone());
-        OffsetDate test = OffsetDate.nowSystemClock();
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = OffsetDate.now(Clock.systemDefaultZone());
-            test = OffsetDate.nowSystemClock();
-        }
-        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

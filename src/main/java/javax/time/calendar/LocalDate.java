@@ -89,6 +89,21 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current date from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date using the system clock, never null
+     */
+    public static LocalDate now() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
      * Obtains the current date from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current date - today.
@@ -101,9 +116,9 @@ public final class LocalDate
     public static LocalDate now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDate factory to avoid creating object and InstantProvider checks
-        Instant instant = clock.instant();
-        ZoneOffset offset = clock.getZone().getRules().getOffset(instant);
-        long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        final Instant now = clock.instant();  // called once
+        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+        long epochSecs = now.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
         long yearZeroDays = MathUtils.floorDiv(epochSecs, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
         return LocalDate.ofYearZeroDays(yearZeroDays);
     }

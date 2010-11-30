@@ -113,7 +113,23 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // nowClock()
+    // now()
+    //-----------------------------------------------------------------------
+    public void now() {
+        OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
+        OffsetDateTime test = OffsetDateTime.now();
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        if (diff >= 100000000) {
+            // may be date change
+            expected = OffsetDateTime.now(Clock.systemDefaultZone());
+            test = OffsetDateTime.now();
+            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        }
+        assertTrue(diff < 100000000);  // less than 0.1 secs
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
@@ -179,22 +195,6 @@ public class TestOffsetDateTime {
             assertEquals(test.getNanoOfSecond(), 0);
             assertEquals(test.getOffset(), offset);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    public void nowSystemClock() {
-        OffsetDateTime expected = OffsetDateTime.now(Clock.systemDefaultZone());
-        OffsetDateTime test = OffsetDateTime.nowSystemClock();
-        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        if (diff >= 100000000) {
-            // may be date change
-            expected = OffsetDateTime.now(Clock.systemDefaultZone());
-            test = OffsetDateTime.nowSystemClock();
-            diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        }
-        assertTrue(diff < 100000000);  // less than 0.1 secs
     }
 
     //-----------------------------------------------------------------------

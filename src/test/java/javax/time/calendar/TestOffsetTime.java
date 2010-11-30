@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -105,6 +109,20 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
+    // now()
+    //-----------------------------------------------------------------------
+    @Test
+    public void now() {
+        OffsetDateTime nowDT = OffsetDateTime.now();
+        
+        OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
+        OffsetTime test = OffsetTime.now();
+        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
+        assertTrue(diff < 100000000);  // less than 0.1 secs
+        assertEquals(test.getOffset(), nowDT.getOffset());
+    }
+
+    //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
@@ -150,20 +168,6 @@ public class TestOffsetTime {
             assertEquals(test.getNanoOfSecond(), 0);
             assertEquals(test.getOffset(), offset);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    @Test(timeOut=30000)  // TODO: remove when time zone loading is faster
-    public void nowSystemClock() {
-        OffsetDateTime nowDT = OffsetDateTime.nowSystemClock();
-        
-        OffsetTime expected = OffsetTime.now(Clock.systemDefaultZone());
-        OffsetTime test = OffsetTime.nowSystemClock();
-        long diff = Math.abs(test.toLocalTime().toNanoOfDay() - expected.toLocalTime().toNanoOfDay());
-        assertTrue(diff < 100000000);  // less than 0.1 secs
-        assertEquals(test.getOffset(), nowDT.getOffset());
     }
 
     //-----------------------------------------------------------------------

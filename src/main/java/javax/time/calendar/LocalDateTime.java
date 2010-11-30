@@ -78,6 +78,21 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current date-time from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current date-time.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current date-time using the system clock, never null
+     */
+    public static LocalDateTime now() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
      * Obtains the current date-time from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current date-time.
@@ -90,23 +105,10 @@ public final class LocalDateTime
     public static LocalDateTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
-        Instant instant = clock.instant();
-        ZoneOffset offset = clock.getZone().getRules().getOffset(instant);
-        long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
-        return create(localSeconds, instant.getNanoOfSecond());
-    }
-
-    /**
-     * Obtains the current date from the system clock in the default time-zone.
-     * <p>
-     * This will query the system clock in the default time-zone to obtain the current date-time.
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date-time using the system clock, never null
-     */
-    public static LocalDateTime nowSystemClock() {
-        return now(Clock.systemDefaultZone());
+        final Instant now = clock.instant();  // called once
+        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+        long localSeconds = now.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        return create(localSeconds, now.getNanoOfSecond());
     }
 
     /**

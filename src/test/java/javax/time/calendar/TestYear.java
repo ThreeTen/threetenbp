@@ -77,7 +77,23 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // nowClock()
+    // now()
+    //-----------------------------------------------------------------------
+    public void now() {
+        Year expected = Year.now(Clock.systemDefaultZone());
+        Year test = Year.now();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = Year.now(Clock.systemDefaultZone());
+            test = Year.now();
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
     //-----------------------------------------------------------------------
     public void now_Clock() {
         Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
@@ -89,22 +105,6 @@ public class TestYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
         Year.now(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    public void nowSystemClock() {
-        Year expected = Year.now(Clock.systemDefaultZone());
-        Year test = Year.nowSystemClock();
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = Year.now(Clock.systemDefaultZone());
-            test = Year.nowSystemClock();
-        }
-        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

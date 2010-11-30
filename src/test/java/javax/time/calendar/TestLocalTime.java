@@ -131,6 +131,17 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // now()
+    //-----------------------------------------------------------------------
+    @Test
+    public void now() {
+        LocalTime expected = LocalTime.now(Clock.systemDefaultZone());
+        LocalTime test = LocalTime.now();
+        long diff = Math.abs(test.toNanoOfDay() - expected.toNanoOfDay());
+        assertTrue(diff < 100000000);  // less than 0.1 secs
+    }
+
+    //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
@@ -189,17 +200,6 @@ public class TestLocalTime {
         assertEquals(test.getMinuteOfHour(), min);
         assertEquals(test.getSecondOfMinute(), sec);
         assertEquals(test.getNanoOfSecond(), 0);
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    @Test(timeOut=30000)  // TODO: remove when time zone loading is faster
-    public void nowSystemClock() {
-        LocalTime expected = LocalTime.now(Clock.systemDefaultZone());
-        LocalTime test = LocalTime.nowSystemClock();
-        long diff = Math.abs(test.toNanoOfDay() - expected.toNanoOfDay());
-        assertTrue(diff < 100000000);  // less than 0.1 secs
     }
 
     //-----------------------------------------------------------------------

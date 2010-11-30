@@ -260,6 +260,8 @@ EDR released
 - Remove InstantProvider from UTC/TAI
 - OffsetTime.withOffset/adjustLocalTime method names changed
 - Add isLeapYear() to other principal date classes
+- Fix bug in Offset* now(Clock)
+- Rename nowSystemClock() to now()
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

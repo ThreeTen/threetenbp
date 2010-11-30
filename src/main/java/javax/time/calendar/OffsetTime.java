@@ -75,10 +75,26 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current time from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current time.
+     * The offset will be calculated from the time-zone in the clock.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current time using the system clock, never null
+     */
+    public static OffsetTime now() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
      * Obtains the current time from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current time.
-     * The offset will be set based on the time-zone in the clock.
+     * The offset will be calculated from the time-zone in the clock.
      * <p>
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
@@ -88,22 +104,8 @@ public final class OffsetTime
      */
     public static OffsetTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
-        return ofInstant(clock.instant(), clock.getZone().getRules().getOffset(clock.instant()));
-    }
-
-    /**
-     * Obtains the current time from the system clock in the default time-zone.
-     * <p>
-     * This will query the system clock in the default time-zone to obtain the current time.
-     * The offset will be set based on the time-zone in the system clock.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current time using the system clock, never null
-     */
-    public static OffsetTime nowSystemClock() {
-        return now(Clock.systemDefaultZone());
+        final Instant now = clock.instant();  // called once
+        return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
 
     //-----------------------------------------------------------------------

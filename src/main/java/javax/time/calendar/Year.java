@@ -101,6 +101,21 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current year from the system clock in the default time-zone.
+     * <p>
+     * This will query the {@link Clock#systemDefaultZone() system clock} in the default
+     * time-zone to obtain the current year.
+     * <p>
+     * Using this method will prevent the ability to use an alternate clock for testing
+     * because the clock is hard-coded.
+     *
+     * @return the current year using the system clock, never null
+     */
+    public static Year now() {
+        return now(Clock.systemDefaultZone());
+    }
+
+    /**
      * Obtains the current year from the specified clock.
      * <p>
      * This will query the specified clock to obtain the current year.
@@ -111,20 +126,8 @@ public final class Year
      * @return the current year, never null
      */
     public static Year now(Clock clock) {
-        return Year.of(LocalDate.now(clock));
-    }
-
-    /**
-     * Obtains the current year from the system clock in the default time-zone.
-     * <p>
-     * This will query the system clock in the default time-zone to obtain the current year.
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current year using the system clock, never null
-     */
-    public static Year nowSystemClock() {
-        return now(Clock.systemDefaultZone());
+        final LocalDate now = LocalDate.now(clock);  // called once
+        return Year.of(now);
     }
 
     //-----------------------------------------------------------------------

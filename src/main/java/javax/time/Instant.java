@@ -142,6 +142,20 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains the current instant from the system time-source in the default time-zone.
+     * <p>
+     * This will query the {@link TimeSource#system() system time-source} to obtain the current instant.
+     * <p>
+     * Using this method will prevent the ability to use an alternate time-source for testing
+     * because the time-source is hard-coded.
+     *
+     * @return the current instant using the system clock, never null
+     */
+    public static Instant now() {
+        return now(TimeSource.system());
+    }
+
+    /**
      * Obtains the current instant from the specified clock.
      * <p>
      * This will query the specified time-source to obtain the current time.
@@ -155,20 +169,6 @@ public final class Instant
     public static Instant now(TimeSource timeSource) {
         checkNotNull(timeSource, "TimeSource must not be null");
         return of(timeSource.instant());
-    }
-
-    /**
-     * Obtains the current instant from the system clock in the default time-zone.
-     * <p>
-     * This will query the system clock time-source to obtain the current time.
-     * <p>
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current instant using the system clock, never null
-     */
-    public static Instant nowSystemClock() {
-        return now(TimeSource.system());
     }
 
     //-----------------------------------------------------------------------
