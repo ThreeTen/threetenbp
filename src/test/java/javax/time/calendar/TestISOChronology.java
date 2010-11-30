@@ -94,16 +94,11 @@ public class TestISOChronology {
 
     //-----------------------------------------------------------------------
     public void test_getDateFromDayOfYear_nonLeap() {
-        long a = System.nanoTime();
-        for (int j = 0; j < 100; j++) {
-            LocalDate date = LocalDate.of(2007, 1, 1);
-            for (int i = 1; i < 365; i++) {
-                assertEquals(ISOChronology.getDateFromDayOfYear(2007, i), date);
-                date = date.plusDays(1);
-            }
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        for (int i = 1; i < 365; i++) {
+            assertEquals(ISOChronology.getDateFromDayOfYear(2007, i), date);
+            date = date.plusDays(1);
         }
-        long b = System.nanoTime();
-        System.out.println((b - a) + "ns");
     }
 
     public void test_getDateFromDayOfYear_leap() {
