@@ -873,7 +873,7 @@ public final class PeriodFields
      *
      * @return the cloned map, never null
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private TreeMap<PeriodUnit, PeriodField> clonedMap() {
         return (TreeMap) unitFieldMap.clone();
     }

@@ -58,7 +58,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestISOChronology {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
         for (Constructor constructor : ISOChronology.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));

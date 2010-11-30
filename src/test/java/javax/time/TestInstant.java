@@ -1530,7 +1530,7 @@ public class TestInstant {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonInstant() {
        Comparable c = Instant.ofEpochSeconds(0L);
        c.compareTo(new Object());

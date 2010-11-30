@@ -60,7 +60,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestCalendricalMatchers {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
         for (Constructor constructor : CalendricalMatchers.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));

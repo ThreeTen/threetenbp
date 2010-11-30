@@ -60,7 +60,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestCopticChronology {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
         for (Constructor constructor : CopticChronology.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));

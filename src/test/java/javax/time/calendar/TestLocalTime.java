@@ -2037,7 +2037,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonLocalTime() {
        Comparable c = TEST_12_30_40_987654321;
        c.compareTo(new Object());

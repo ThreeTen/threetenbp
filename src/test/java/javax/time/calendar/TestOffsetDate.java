@@ -1924,7 +1924,7 @@ public class TestOffsetDate {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonOffsetDate() {
        Comparable c = TEST_2007_07_15_PONE;
        c.compareTo(new Object());

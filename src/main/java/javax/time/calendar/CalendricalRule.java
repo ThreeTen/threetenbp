@@ -451,7 +451,7 @@ public abstract class CalendricalRule<T>
      * @throws ClassCastException if this rule has a type that is not comparable
      * @throws IllegalArgumentException if this rule cannot be extracted from either input parameter
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public int compare(Calendrical cal1, Calendrical cal2) {
         Comparable value1 = (Comparable) cal1.get(this);
         Comparable value2 = (Comparable) cal2.get(this);

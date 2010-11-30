@@ -847,7 +847,7 @@ public class TestOffsetTime {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonOffsetTime() {
        Comparable c = TEST_TIME;
        c.compareTo(new Object());

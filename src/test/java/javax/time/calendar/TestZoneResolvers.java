@@ -58,7 +58,7 @@ public class TestZoneResolvers {
     private static final LocalDateTime DT_WINTER = dateTime(2008, 1, 1, 2, 30, 0, 0);
     private static final LocalDateTime DT_SUMMER = dateTime(2008, 6, 1, 2, 30, 0, 0);
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
         for (Constructor constructor : ZoneResolvers.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));

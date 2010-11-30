@@ -531,8 +531,8 @@ public class TestThaiBuddhistDate {
         testDate.isAfter(null);
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void testCompareToNoDate() throws Exception {
        Comparable c = testDate;
        c.compareTo(new Object());

@@ -56,7 +56,7 @@ public class TestDateResolvers {
     private static final Year YEAR_2007 = Year.of(2007);
     private static final Year YEAR_2008 = Year.of(2008);
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void test_constructor() throws Exception {
         for (Constructor constructor : DateResolvers.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));

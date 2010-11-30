@@ -472,7 +472,7 @@ public class TestUTCInstant {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonUTCInstant() {
        Comparable c = UTCInstant.ofModifiedJulianDays(0L, 2);
        c.compareTo(new Object());

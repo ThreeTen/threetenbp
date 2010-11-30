@@ -731,7 +731,7 @@ public class TestTAIInstant {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonTAIInstant() {
        Comparable c = TAIInstant.ofTAISeconds(0L, 2);
        c.compareTo(new Object());

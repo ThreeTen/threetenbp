@@ -2412,7 +2412,7 @@ public class TestLocalDate {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonLocalDate() {
        Comparable c = TEST_2007_07_15;
        c.compareTo(new Object());

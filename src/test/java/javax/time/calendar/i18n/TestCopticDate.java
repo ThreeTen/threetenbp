@@ -573,7 +573,7 @@ public class TestCopticDate {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareToNonCopticDate() throws Exception {
        Comparable c = TEST_1234_7_15;
        c.compareTo(new Object());

@@ -32,12 +32,9 @@
 package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.time.CalendricalException;
 
 import org.testng.annotations.Test;
 
@@ -49,24 +46,24 @@ public class TestCalendricalMerger {
 
     private static final DateTimeFieldRule<?> NULL_RULE = null;
     private static final DateTimeFieldRule<Integer> YEAR_RULE = ISOChronology.yearRule();
-    private static final DateTimeFieldRule<MonthOfYear> MOY_RULE = ISOChronology.monthOfYearRule();
+//    private static final DateTimeFieldRule<MonthOfYear> MOY_RULE = ISOChronology.monthOfYearRule();
     private static final DateTimeFieldRule<Integer> DOM_RULE = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule<Integer> DOY_RULE = ISOChronology.dayOfYearRule();
-    private static final DateTimeFieldRule<DayOfWeek> DOW_RULE = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule<QuarterOfYear> QOY_RULE = ISOChronology.quarterOfYearRule();
-    private static final DateTimeFieldRule<Integer> MOQ_RULE = ISOChronology.monthOfQuarterRule();
-    private static final DateTimeFieldRule<Integer> HOUR_RULE = ISOChronology.hourOfDayRule();
+//    private static final DateTimeFieldRule<Integer> DOY_RULE = ISOChronology.dayOfYearRule();
+//    private static final DateTimeFieldRule<DayOfWeek> DOW_RULE = ISOChronology.dayOfWeekRule();
+//    private static final DateTimeFieldRule<QuarterOfYear> QOY_RULE = ISOChronology.quarterOfYearRule();
+//    private static final DateTimeFieldRule<Integer> MOQ_RULE = ISOChronology.monthOfQuarterRule();
+//    private static final DateTimeFieldRule<Integer> HOUR_RULE = ISOChronology.hourOfDayRule();
     private static final DateTimeFieldRule<AmPmOfDay> AMPM_RULE = ISOChronology.amPmOfDayRule();
     private static final DateTimeFieldRule<Integer> HOUR_AMPM_RULE = ISOChronology.hourOfAmPmRule();
-    private static final DateTimeFieldRule<Integer> MIN_RULE = ISOChronology.minuteOfHourRule();
-    private static final DateTimeFieldRule<Integer> SEC_RULE = ISOChronology.secondOfMinuteRule();
-    private static final DateTimeFieldRule<Integer> MILLISEC_RULE = ISOChronology.milliOfSecondRule();
-    private static final DateTimeFieldRule<Integer> MILLIDAY_RULE = ISOChronology.milliOfDayRule();
+//    private static final DateTimeFieldRule<Integer> MIN_RULE = ISOChronology.minuteOfHourRule();
+//    private static final DateTimeFieldRule<Integer> SEC_RULE = ISOChronology.secondOfMinuteRule();
+//    private static final DateTimeFieldRule<Integer> MILLISEC_RULE = ISOChronology.milliOfSecondRule();
+//    private static final DateTimeFieldRule<Integer> MILLIDAY_RULE = ISOChronology.milliOfDayRule();
 
     private static final CalendricalContext STRICT_CONTEXT = new CalendricalContext(true, true);
-    private static final CalendricalContext STRICT_DISCARD_UNUSED_CONTEXT = new CalendricalContext(true, false);
-    private static final CalendricalContext LENIENT_CONTEXT = new CalendricalContext(false, true);
-    private static final CalendricalContext LENIENT_DISCARD_UNUSED_CONTEXT = new CalendricalContext(false, false);
+//    private static final CalendricalContext STRICT_DISCARD_UNUSED_CONTEXT = new CalendricalContext(true, false);
+//    private static final CalendricalContext LENIENT_CONTEXT = new CalendricalContext(false, true);
+//    private static final CalendricalContext LENIENT_DISCARD_UNUSED_CONTEXT = new CalendricalContext(false, false);
 
     //-----------------------------------------------------------------------
     // basics

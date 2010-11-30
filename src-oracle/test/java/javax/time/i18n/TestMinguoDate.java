@@ -531,8 +531,8 @@ public class TestMinguoDate {
         testDate.isAfter(null);
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void testCompareToNonDate() throws Exception {
        Comparable c = testDate;
        c.compareTo(new Object());
