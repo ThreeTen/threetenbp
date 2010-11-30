@@ -333,7 +333,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalTime} from a string.
+     * Obtains an instance of {@code LocalTime} from a string such as {@code 10:15}.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>

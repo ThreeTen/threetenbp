@@ -441,7 +441,8 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZonedDateTime} from a text string.
+     * Obtains an instance of {@code ZonedDateTime} from a text string such as
+     * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>

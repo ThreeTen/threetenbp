@@ -527,7 +527,7 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code Period} from a string formatted as {@code PnYnMnDTnHnMn.nS}.
+     * Obtains a {@code Period} from a text string such as {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
      * a subset of the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.

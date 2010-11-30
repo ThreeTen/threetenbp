@@ -159,8 +159,9 @@ public final class YearMonth
         return of(year, month);
     }
 
+    //-------------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearMonth} from a text string.
+     * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>

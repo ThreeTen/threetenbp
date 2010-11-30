@@ -182,8 +182,9 @@ public final class MonthDay
         return of(month, dom);
     }
 
+    //-------------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthDay} from a text string.
+     * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>

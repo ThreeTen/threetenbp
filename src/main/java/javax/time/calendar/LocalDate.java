@@ -251,7 +251,7 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDate} from a text string.
+     * Obtains an instance of {@code LocalDate} from a text string such as {@code 2007-12-03}.
      * <p>
      * The following format is accepted in ASCII:
      * <ul>
