@@ -41,7 +41,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
- * A year-month in the ISO-8601 calendar system, such as '2007-12'.
+ * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.
  * <p>
  * {@code YearMonth} is an immutable calendrical that represents the combination
  * of a year and month. Any field that can be derived from a year and month, such as

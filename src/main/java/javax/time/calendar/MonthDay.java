@@ -40,7 +40,7 @@ import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 
 /**
- * A month-day in the ISO-8601 calendar system, such as '--12-03'.
+ * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
  * <p>
  * {@code MonthDay} is an immutable calendrical that represents the combination
  * of a year and month. Any field that can be derived from a month and day, such as

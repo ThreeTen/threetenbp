@@ -46,7 +46,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * <p>
  * This class is an alternative representation based on the TAI time-scale.
  * This scale is defined using atomic clocks and has proceeded in a continuous uninterrupted
- * manner since its epoch of 1958-01-01T00:00:00(TAI).
+ * manner since its epoch of {@code 1958-01-01T00:00:00(TAI)}.
  * <p>
  * As there are no leap seconds, or other discontinuities, in TAI, this time-scale
  * would make an excellent timestamp. While there are, at the time of writing, few

@@ -42,14 +42,14 @@ import javax.time.calendar.format.DateTimeFormatters;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
- * such as '2007-12-03'.
+ * such as {@code 2007-12-03}.
  * <p>
- * LocalDate is an immutable calendrical that represents a date, often viewed
+ * {@code LocalDate} is an immutable calendrical that represents a date, often viewed
  * as year-month-day. This object can also access other date fields such as
  * day-of-year, day-of-week and week-of-year.
  * <p>
  * This class does not store or represent a time or time-zone.
- * Thus, for example, the value "2nd October 2007" can be stored in a LocalDate.
+ * Thus, for example, the value "2nd October 2007" can be stored in a {@code LocalDate}.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar

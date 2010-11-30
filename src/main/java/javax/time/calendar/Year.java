@@ -37,7 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.MathUtils;
 
 /**
- * A year in the ISO-8601 calendar system, such as '2007'.
+ * A year in the ISO-8601 calendar system, such as {@code 2007}.
  * <p>
  * {@code Year} is an immutable calendrical that represents a year.
  * Any field that can be derived from a year can be obtained.

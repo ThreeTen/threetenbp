@@ -42,14 +42,14 @@ import javax.time.calendar.format.DateTimeFormatters;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
- * such as '10:15:30'.
+ * such as {@code 10:15:30}.
  * <p>
- * LocalTime is an immutable calendrical that represents a time, often
+ * {@code LocalTime} is an immutable calendrical that represents a time, often
  * viewed as hour-minute-second.
  * <p>
  * This class stores all time fields, to a precision of nanoseconds.
  * It does not store or represent a date or time-zone. Thus, for example, the
- * value "13:45.30.123456789" can be stored in a LocalTime.
+ * value "13:45.30.123456789" can be stored in a {@code LocalTime}.
  * <p>
  * LocalTime is immutable and thread-safe.
  *

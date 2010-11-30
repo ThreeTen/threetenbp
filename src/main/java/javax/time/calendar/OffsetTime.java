@@ -42,14 +42,14 @@ import javax.time.calendar.format.DateTimeFormatters;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
- * such as '10:15:30+01:00'.
+ * such as {@code 10:15:30+01:00}.
  * <p>
- * OffsetTime is an immutable calendrical that represents a time, often
+ * {@code OffsetTime} is an immutable calendrical that represents a time, often
  * viewed as hour-minute-second-offset.
  * This class stores all time fields, to a precision of nanoseconds,
  * as well as a zone offset.
  * Thus, for example, the value "13:45.30.123456789+02:00" can be stored
- * in a OffsetTime.
+ * in a {@code OffsetTime}.
  * <p>
  * OffsetTime is immutable and thread-safe.
  *

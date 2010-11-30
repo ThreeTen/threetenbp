@@ -43,12 +43,12 @@ import javax.time.calendar.format.DateTimeFormatters;
 
 /**
  * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
- * such as '2007-12-03T10:15:30+01:00'.
+ * such as {@code 2007-12-03T10:15:30+01:00}.
  * <p>
- * OffsetDateTime is an immutable representation of a date-time with an offset.
+ * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
  * as well as the offset from UTC. Thus, for example, the value
- * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an OffsetDateTime.
+ * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime).
  * <p>
  * OffsetDateTime is immutable and thread-safe.
  *

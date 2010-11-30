@@ -40,7 +40,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.time.CalendricalException;
 
 /**
- * A time-zone offset from UTC, such as '+02:00'.
+ * A time-zone offset from UTC, such as {@code +02:00}.
  * <p>
  * A time-zone offset is the period of time that a time-zone differs from UTC.
  * This is usually a fixed number of hours and minutes.
@@ -64,7 +64,7 @@ import javax.time.CalendricalException;
  * calendar systems providing the definition of the time fields matches those
  * of the ISO calendar system.
  * <p>
- * Instances of ZoneOffset must be compared using {@link #equals}.
+ * Instances of {@code ZoneOffset} must be compared using {@link #equals}.
  * Implementations may choose to cache certain common offsets, however
  * applications must not rely on such caching.
  * <p>

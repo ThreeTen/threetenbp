@@ -75,8 +75,8 @@ import javax.time.calendar.LocalDate;
  * The UTC time-scale is a standard approach to bundle up all the additional fractions
  * of a second from UT1 into whole seconds, known as <i>leap-seconds</i>.
  * A leap-second may be added or removed depending on the Earth's rotational changes.
- * If it is removed, then the relevant date will have no time of 23:59:59.
- * If it is added, then the relevant date will have an extra second of 23:59:60.
+ * If it is removed, then the relevant date will have no time of {@code 23:59:59}.
+ * If it is added, then the relevant date will have an extra second of {@code 23:59:60}.
  * <p>
  * The modern UTC time-scale was introduced in 1972, introducing the concept of whole leap-seconds.
  * Between 1958 and 1972, the definition of UTC was complex, with minor sub-second leaps and
@@ -84,9 +84,9 @@ import javax.time.calendar.LocalDate;
  * Prior to that date, the default rules fix the UTC-TAI offset at 10 seconds.
  * While not historically accurate, it is a simple, easy definition, suitable for this library.
  * <p>
- * The standard Java epoch of 1970-01-01 is prior to the introduction of whole leap-seconds into UTC in 1972.
+ * The standard Java epoch of {@code 1970-01-01} is prior to the introduction of whole leap-seconds into UTC in 1972.
  * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
- * The chosen definition follows the UTC definition given above, such that 1970-01-01 is 10 seconds
+ * The chosen definition follows the UTC definition given above, such that {@code 1970-01-01} is 10 seconds
  * offset from TAI.
  * <p>
  * UTCInstant is immutable and thread-safe.

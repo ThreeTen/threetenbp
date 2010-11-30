@@ -45,13 +45,13 @@ import javax.time.calendar.zone.ZoneRules;
 
 /**
  * A date-time with a time-zone in the ISO-8601 calendar system,
- * such as '2007-12-03T10:15:30+01:00 Europe/Paris'.
+ * such as {@code 2007-12-03T10:15:30+01:00 Europe/Paris}.
  * <p>
- * ZonedDateTime is an immutable representation of a date-time with a time-zone.
+ * {@code ZonedDateTime} is an immutable representation of a date-time with a time-zone.
  * This class stores all date and time fields, to a precision of nanoseconds,
  * as well as a time-zone and zone offset. Thus, for example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00 in the Europe/Paris time-zone"
- * can be stored in a ZonedDateTime.
+ * can be stored in a {@code ZonedDateTime}.
  * <p>
  * The purpose of storing the time-zone is to distinguish the ambiguous case where
  * the local time-line overlaps, typically as a result of the end of daylight time.

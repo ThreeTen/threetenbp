@@ -43,15 +43,15 @@ import javax.time.calendar.format.DateTimeFormatters;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
- * such as '2007-12-03+01:00'.
+ * such as {@code 2007-12-03+01:00}.
  * <p>
- * OffsetDate is an immutable calendrical that represents a date, often viewed
+ * {@code OffsetDate} is an immutable calendrical that represents a date, often viewed
  * as year-month-day-offset. This object can also access other date fields such as
  * day-of-year, day-of-week and week-of-year.
  * <p>
  * This class does not store or represent a time.
  * Thus, for example, the value "2nd October 2007 +02:00" can be stored
- * in a OffsetDate.
+ * in a {@code OffsetDate}.
  * <p>
  * OffsetDate is immutable and thread-safe.
  *

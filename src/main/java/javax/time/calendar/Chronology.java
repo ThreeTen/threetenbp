@@ -32,8 +32,7 @@
 package javax.time.calendar;
 
 /**
- * A calendar system, consisting of rules controlling the passage of human-scale
- * time.
+ * A calendar system, consisting of rules controlling the passage of human-scale time.
  * <p>
  * Calendar systems describe a set of fields that can be used to describe time
  * in a human-scale. Typical fields include year, month-of-year and day-of-month.

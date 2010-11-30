@@ -59,7 +59,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * measured using an {@code int}. The nanosecond part will always be between
  * 0 and 999,999,999 representing the nanosecond part of the second.
  * <p>
- * The seconds are measured from the standard Java epoch of 1970-01-01T00:00:00Z.
+ * The seconds are measured from the standard Java epoch of {@code 1970-01-01T00:00:00Z}.
  * Instants on the time-line after the epoch are positive, earlier are negative.
  * 
  * <h4>Time-scale</h4>
