@@ -174,13 +174,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the day-of-year
      */
     static int getDayOfYearFromDate(LocalDate date) {
-        int moy0 = date.getMonthOfYear().ordinal();
-        int dom = date.getDayOfMonth();
-        if (ISOChronology.isLeapYear(date.getYear())) {
-            return LEAP_MONTH_START[moy0] + dom;
-        } else {
-            return STANDARD_MONTH_START[moy0] + dom;
-        }
+        return date.getMonthOfYear().getMonthStartDayOfYear(date.isLeapYear()) + date.getDayOfMonth() - 1;
     }
 
     /**
@@ -191,10 +185,66 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the date, never null
      */
     static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {
+        dayOfYearRule().checkValue(dayOfYear);
         boolean leap = ISOChronology.isLeapYear(year);
         if (dayOfYear == 366 && leap == false) {
             throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, dayOfYearRule());
         }
+        
+//        int doy0 = dayOfYear - 1;
+//        int[] array = (leap ? LEAP_MONTH_START : STANDARD_MONTH_START);
+//        int month = doy0 / 31 + 1;
+//        if (doy0 >= array[month]) {
+//            month++;
+//        }
+//        MonthOfYear moy = MonthOfYear.of(month);
+//        int dom = dayOfYear - array[month - 1];
+//        return LocalDate.of(year, moy, dom);
+        
+//        MonthOfYear moy = MonthOfYear.of((dayOfYear - 1) / 31 + 1);
+//        int monthEnd = moy.getMonthEndDayOfYear(leap);
+//        if (dayOfYear > monthEnd) {
+//            moy = moy.next();
+//        }
+//        int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
+//        return LocalDate.of(year, moy, dom);
+        
+//        MonthOfYear moy = MonthOfYear.of(Math.min(dayOfYear / 30 + 1, 12));
+//        int monthStart = moy.getMonthStartDayOfYear(leap);
+//        if (dayOfYear < monthStart) {
+//            moy = moy.previous();
+//            monthStart = moy.getMonthStartDayOfYear(leap);
+//        }
+//        int dom = dayOfYear - monthStart + 1;
+//        return LocalDate.of(year, moy, dom);
+        
+//        int firstMarch = (leap ? 61 : 60);
+//        int month;
+//        int dom;
+//        if (dayOfYear < firstMarch) {
+//            month = (dayOfYear / 32) + 1;
+//            dom = (dayOfYear - 1) % 31 + 1;
+//        } else {
+//            int doy0 = dayOfYear - firstMarch;
+//            int monthMarchBased = (doy0 * 5 + 155) / 153;
+//            month = monthMarchBased + 2;
+//            dom = dayOfYear - firstMarch - ((monthMarchBased * 153 - 151) / 5) + 1;
+//        }
+//        MonthOfYear moy = MonthOfYear.of(month);
+//        return LocalDate.of(year, moy, dom);
+        
+//        int firstMarch = (leap ? 61 : 60);
+//        int month;
+//        if (dayOfYear < firstMarch) {
+//            month = (dayOfYear / 32) + 1;
+//        } else {
+//            int doy0 = dayOfYear - firstMarch;
+//            month = ((doy0 * 5 + 155) / 153) + 2;
+//        }
+//        MonthOfYear moy = MonthOfYear.of(month);
+//        int dom = dayOfYear - (moy.getMonthStartDayOfYear(leap) - 1);
+//        return LocalDate.of(year, moy, dom);
+        
         int doy0 = dayOfYear - 1;
         int[] array = (leap ? LEAP_MONTH_START : STANDARD_MONTH_START);
         int month = 1;

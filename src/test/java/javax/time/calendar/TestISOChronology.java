@@ -93,19 +93,26 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-//    public void test_twoDigitYearRule() throws Exception {
-//        DateTimeFieldRule rule = ISOChronology.twoDigitYearRule();
-//        assertEquals(rule.getID(), "ISO.TwoDigitYear");
-//        assertEquals(rule.getName(), "TwoDigitYear");
-//        assertEquals(rule.getMinimumValue(), 0);
-//        assertEquals(rule.getLargestMinimumValue(), 0);
-//        assertEquals(rule.getMaximumValue(), 99);
-//        assertEquals(rule.getSmallestMaximumValue(), 99);
-//        assertEquals(rule.isFixedValueSet(), true);
-//        assertEquals(rule.getPeriodUnit(), ISOChronology.YEARS);
-//        assertEquals(rule.getPeriodRange(), ISOChronology.CENTURIES);
-//        serialize(rule);
-//    }
+    public void test_getDateFromDayOfYear_nonLeap() {
+        long a = System.nanoTime();
+        for (int j = 0; j < 100; j++) {
+            LocalDate date = LocalDate.of(2007, 1, 1);
+            for (int i = 1; i < 365; i++) {
+                assertEquals(ISOChronology.getDateFromDayOfYear(2007, i), date);
+                date = date.plusDays(1);
+            }
+        }
+        long b = System.nanoTime();
+        System.out.println((b - a) + "ns");
+    }
+
+    public void test_getDateFromDayOfYear_leap() {
+        LocalDate date = LocalDate.of(2008, 1, 1);
+        for (int i = 1; i < 366; i++) {
+            assertEquals(ISOChronology.getDateFromDayOfYear(2008, i), date);
+            date = date.plusDays(1);
+        }
+    }
 
     //-----------------------------------------------------------------------
     public void test_hourOfDayRule() throws Exception {
