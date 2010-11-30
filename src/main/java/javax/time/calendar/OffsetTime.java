@@ -195,7 +195,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime} from a text string.
+     * Obtains an instance of {@code OffsetTime} from a text string such as {@code 10:15:30+01:00}.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
@@ -280,14 +280,13 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with a different local time.
+     * Returns a copy of this {@code OffsetTime} with the time altered and the offset retained.
      * <p>
-     * This method changes the time stored to a different time.
-     * No calculation is performed. The result simply represents the same
-     * offset and the new time.
+     * This method returns an object with the same {@code ZoneOffset} and the specified {@code LocalTime}.
+     * No calculation is needed or performed.
      *
      * @param timeProvider  the local time to change to, not null
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the requested time, never null
      */
     public OffsetTime withTime(TimeProvider timeProvider) {
         LocalTime localTime = LocalTime.of(timeProvider);
@@ -305,38 +304,45 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with a different zone offset.
+     * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
+     * that the result has the same local time.
      * <p>
-     * This method changes the zoned time to a different offset.
-     * No calculation is performed - the result simply represents the same
-     * time and the new offset.
+     * This method returns an object with the same {@code LocalTime} and the specified {@code ZoneOffset}.
+     * No calculation is needed or performed.
+     * For example, if this time represents {@code 10:30+02:00} and the offset specified is
+     * {@code +03:00}, then this method will return {@code 10:30+03:00}.
      * <p>
-     * To take into account the offsets and adjust the time fields,
-     * use {@link #adjustLocalTime(ZoneOffset)}.
+     * To take into account the difference between the offsets, and adjust the time fields,
+     * use {@link #withOffsetSameInstant}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the zone offset to change to, not null
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the requested offset, never null
      */
-    public OffsetTime withOffset(ZoneOffset offset) {
+    public OffsetTime withOffsetSameLocal(ZoneOffset offset) {
         return offset != null && offset.equals(this.offset) ? this : new OffsetTime(time, offset);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Adjusts the local time using the specified offset.
+     * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
+     * that the result is at the same instant on an implied day.
      * <p>
-     * This method changes the offset time from one offset to another.
-     * If this time represents 10:30+02:00 and the offset specified is
-     * +03:00, then this method will return 11:30+03:00.
+     * This method returns an object with the the specified {@code ZoneOffset} and a {@code LocalTime}
+     * adjusted by the difference between the two offsets.
+     * This will result in the old and new objects representing the same instant an an implied day.
+     * This is useful for finding the local time in a different offset.
+     * For example, if this time represents {@code 10:30+02:00} and the offset specified is
+     * {@code +03:00}, then this method will return {@code 11:30+03:00}.
      * <p>
-     * To change the offset whilst keeping the local time,
-     * use {@link #withOffset(ZoneOffset)}.
+     * To change the offset without adjusting the local time use {@link #withOffsetSameLocal}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the zone offset to change to, not null
-     * @return a new updated OffsetTime, never null
+     * @return an {@code OffsetTime} based on this time with the requested offset, never null
      */
-    public OffsetTime adjustLocalTime(ZoneOffset offset) {
-        // TODO: Rename to withOffsetAdjustLocalTime?
+    public OffsetTime withOffsetSameInstant(ZoneOffset offset) {
         if (offset.equals(this.offset)) {
             return this;
         }
@@ -660,12 +666,12 @@ public final class OffsetTime
      * This ordering is consistent with {@code equals()}.
      * For example, the following is the comparator order:
      * <ol>
-     * <li>10:30+01:00</li>
-     * <li>11:00+01:00</li>
-     * <li>12:00+02:00</li>
-     * <li>11:30+01:00</li>
-     * <li>12:00+01:00</li>
-     * <li>12:30+01:00</li>
+     * <li>{@code 10:30+01:00}</li>
+     * <li>{@code 11:00+01:00}</li>
+     * <li>{@code 12:00+02:00}</li>
+     * <li>{@code 11:30+01:00}</li>
+     * <li>{@code 12:00+01:00}</li>
+     * <li>{@code 12:30+01:00}</li>
      * </ol>
      * Values #2 and #3 represent the same instant on the time-line.
      * When two values represent the same instant, the local time is compared

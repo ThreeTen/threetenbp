@@ -43,7 +43,10 @@ Time scales
 
 Date/Time classes
 - factories from Calendrical...
-? DateResolver takes int or MonthOfDay or calendricals
+- DayOfWeek.firstDayOfWeekFor
+- DateResolver rework - takes int or MonthOfDay or calendricals
+- factories taking double for seconds (LocalTime...)
+- MonthOfYear - start/end of month as DOY
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
 ? remove getChronology()
@@ -52,17 +55,22 @@ Date/Time classes
 ? with(rule, value)
 
 Rules
+- Chronology is a Calendrical
 - ensure can merge MonthDay and Year
 - test min/max year for week-based-year
 - remove Chronology and share
+- date time field rule serialization
 ? parse()
 ? merge -> normalize
 ? deriveInt for fields
 ? ISO era
 
 Date/Time formatting
+- merger - general processing
+- merger - days overflow
+- merge ISO weekyear
 - parse 24:00 - maybe a special end-of-day class?
-- format patterns - yyyy-MM-dd, check details and letters
+- format patterns - yyyy-MM-dd, check details and letters with CLDR
 - formats LONG/MEDIUM/SHORT from better data source
 - SPI for date-time text
 - strict/lenient parse
@@ -72,13 +80,13 @@ Date/Time formatting
 - parseInto(Calendrical)
 - default calendrical to pre-define era for example
 - check compatible with RFC "Wed, 02 Apr 2008" and j.u.Date "Wed Apr 02 time zone 2008"
-? isPrintDataAvailable() causes get of field value twice, can we drop method
+- isPrintDataAvailable() causes get of field value twice, can we drop method
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
 - Promote TimeDefinition to top-level type
 - don't use Local Mean Time (or anything before 1900?)
-- SPI for names
+- SPI for zone names
 # some zones have transitions where only the name changes - America/Resolute
 # "resolvers need to use correct rules" what does this mean?
 - parse/format names
@@ -112,11 +120,14 @@ Matchers/Adjusters
 ? recurrences
 
 Calendars
-- GJCalendar
+- HistoricChronology
+- EthiopicChronology
 - more calendar systems
+- Coptic year definition
 
 General
 - rework Clock - remove instant()
+- TimeSource get to nearest second etc. with caching?
 - cache todays date
 - localized day of week number
 - first day of week
@@ -247,6 +258,7 @@ EDR released
 - YearMonth.with(Year)
 - LocalTime plus/minus shouldn't throw ArithmeticException
 - Remove InstantProvider from UTC/TAI
+- OffsetTime.withOffset/adjustLocalTime method names changed
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

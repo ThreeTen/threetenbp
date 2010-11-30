@@ -1128,7 +1128,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                         throw new CalendricalRuleException("Unable to merge OffsetDate and OffsetTime as offsets differ", OffsetTime.rule());
                     } else {
                         // TODO test
-                        ot = ot.adjustLocalTime(od.getOffset());
+                        ot = ot.withOffsetSameInstant(od.getOffset());
                     }
                 }
                 merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.of(od, ot, od.getOffset()));

@@ -476,47 +476,47 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // withOffset()
+    // withOffsetSameLocal()
     //-----------------------------------------------------------------------
-    public void test_withOffset() {
+    public void test_withOffsetSameLocal() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.withOffset(OFFSET_PTWO);
+        OffsetTime test = base.withOffsetSameLocal(OFFSET_PTWO);
         assertSame(test.toLocalTime(), base.toLocalTime());
         assertSame(test.getOffset(), OFFSET_PTWO);
     }
 
-    public void test_withOffset_noChange() {
+    public void test_withOffsetSameLocal_noChange() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.withOffset(OFFSET_PONE);
+        OffsetTime test = base.withOffsetSameLocal(OFFSET_PONE);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_withOffset_null() {
+    public void test_withOffsetSameLocal_null() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        base.withOffset(null);
+        base.withOffsetSameLocal(null);
     }
 
     //-----------------------------------------------------------------------
-    // adjustLocalTime()
+    // withOffsetSameInstant()
     //-----------------------------------------------------------------------
-    public void test_adjustLocalTime() {
+    public void test_withOffsetSameInstant() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.adjustLocalTime(OFFSET_PTWO);
+        OffsetTime test = base.withOffsetSameInstant(OFFSET_PTWO);
         OffsetTime expected = OffsetTime.of(12, 30, 59, OFFSET_PTWO);
         assertEquals(test, expected);
     }
 
-    public void test_adjustLocalTime_noChange() {
+    public void test_withOffsetSameInstant_noChange() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.adjustLocalTime(OFFSET_PONE);
+        OffsetTime test = base.withOffsetSameInstant(OFFSET_PONE);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_adjustLocalTime_null() {
+    public void test_withOffsetSameInstant_null() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        base.adjustLocalTime(null);
+        base.withOffsetSameInstant(null);
     }
 
     //-----------------------------------------------------------------------
