@@ -121,7 +121,6 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             if (position == length) {
                 return ~position;
             }
-            // TODO: should the comparison use the locale?
             if (parseText.regionMatches(!context.isCaseSensitive(), position, utcText, 0, utcLen)) {
                 context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
                 return position + utcLen;
