@@ -46,7 +46,6 @@ Date/Time classes
 - DayOfWeek.firstDayOfWeekFor
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - factories taking double for seconds (LocalTime...)
-- MonthOfYear - start/end of month as DOY
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
 ? remove getChronology()
@@ -262,6 +261,7 @@ EDR released
 - Add isLeapYear() to other principal date classes
 - Fix bug in Offset* now(Clock)
 - Rename nowSystemClock() to now()
+- MonthOfYear - start/end of month as DOY
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

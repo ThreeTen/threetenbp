@@ -543,6 +543,72 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
+    // getMonthStartDayOfYear(boolean)
+    //-----------------------------------------------------------------------
+    public void test_getMonthStartDayOfYear_notLeapYear() {
+        assertEquals(MonthOfYear.JANUARY.getMonthStartDayOfYear(false), 1);
+        assertEquals(MonthOfYear.FEBRUARY.getMonthStartDayOfYear(false), 1 + 31);
+        assertEquals(MonthOfYear.MARCH.getMonthStartDayOfYear(false), 1 + 31 + 28);
+        assertEquals(MonthOfYear.APRIL.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31);
+        assertEquals(MonthOfYear.MAY.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30);
+        assertEquals(MonthOfYear.JUNE.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.JULY.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31 + 30);
+        assertEquals(MonthOfYear.AUGUST.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.SEPTEMBER.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31);
+        assertEquals(MonthOfYear.OCTOBER.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30);
+        assertEquals(MonthOfYear.NOVEMBER.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.DECEMBER.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30);
+    }
+
+    public void test_getMonthStartDayOfYear_leapYear() {
+        assertEquals(MonthOfYear.JANUARY.getMonthStartDayOfYear(true), 1);
+        assertEquals(MonthOfYear.FEBRUARY.getMonthStartDayOfYear(true), 1 + 31);
+        assertEquals(MonthOfYear.MARCH.getMonthStartDayOfYear(true), 1 + 31 + 29);
+        assertEquals(MonthOfYear.APRIL.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31);
+        assertEquals(MonthOfYear.MAY.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30);
+        assertEquals(MonthOfYear.JUNE.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.JULY.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30 + 31 + 30);
+        assertEquals(MonthOfYear.AUGUST.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.SEPTEMBER.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31);
+        assertEquals(MonthOfYear.OCTOBER.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30);
+        assertEquals(MonthOfYear.NOVEMBER.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.DECEMBER.getMonthStartDayOfYear(true), 1 + 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30);
+    }
+
+    //-----------------------------------------------------------------------
+    // getMonthEndDayOfYear(boolean)
+    //-----------------------------------------------------------------------
+    public void test_getMonthEndDayOfYear_notLeapYear() {
+        assertEquals(MonthOfYear.JANUARY.getMonthEndDayOfYear(false), 31);
+        assertEquals(MonthOfYear.FEBRUARY.getMonthEndDayOfYear(false), 31 + 28);
+        assertEquals(MonthOfYear.MARCH.getMonthEndDayOfYear(false), 31 + 28 + 31);
+        assertEquals(MonthOfYear.APRIL.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30);
+        assertEquals(MonthOfYear.MAY.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.JUNE.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30);
+        assertEquals(MonthOfYear.JULY.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.AUGUST.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31);
+        assertEquals(MonthOfYear.SEPTEMBER.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30);
+        assertEquals(MonthOfYear.OCTOBER.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.NOVEMBER.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30);
+        assertEquals(MonthOfYear.DECEMBER.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 31);
+    }
+
+    public void test_getMonthEndDayOfYear_leapYear() {
+        assertEquals(MonthOfYear.JANUARY.getMonthEndDayOfYear(true), 31);
+        assertEquals(MonthOfYear.FEBRUARY.getMonthEndDayOfYear(true), 31 + 29);
+        assertEquals(MonthOfYear.MARCH.getMonthEndDayOfYear(true), 31 + 29 + 31);
+        assertEquals(MonthOfYear.APRIL.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30);
+        assertEquals(MonthOfYear.MAY.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.JUNE.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31 + 30);
+        assertEquals(MonthOfYear.JULY.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.AUGUST.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31);
+        assertEquals(MonthOfYear.SEPTEMBER.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30);
+        assertEquals(MonthOfYear.OCTOBER.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31);
+        assertEquals(MonthOfYear.NOVEMBER.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30);
+        assertEquals(MonthOfYear.DECEMBER.getMonthEndDayOfYear(true), 31 + 29 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 31);
+    }
+
+    //-----------------------------------------------------------------------
     // getQuarterOfYear()
     //-----------------------------------------------------------------------
     public void test_getQuarterOfYear() {

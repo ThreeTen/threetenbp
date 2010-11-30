@@ -472,31 +472,58 @@ public enum MonthOfYear implements Calendrical {
         return lengthInDays(leapYear);
     }
 
-//    /**
-//     * Gets the day-of-year for the first day of this month.
-//     * <p>
-//     * This returns the day-of-year that this month begins on, using the leap
-//     * year flag to determine the length of February.
-//     *
-//     * @param leapYear  true if the length is required for a leap year
-//     * @return the last day of this month, from 1 to 335
-//     */
-//    public int getMonthStartDayOfYear(boolean leapYear) {
-//        return 0;  // TODO
-//    }
-//
-//    /**
-//     * Gets the day-of-year for the first day of this month.
-//     * <p>
-//     * This returns the day-of-year that this month ends on, using the leap
-//     * year flag to determine the length of February.
-//     *
-//     * @param leapYear  true if the length is required for a leap year
-//     * @return the last day of this month, from 31 to 366
-//     */
-//    public int getMonthEndDayOfYear(boolean leapYear) {
-//        return 0;  // TODO
-//    }
+    /**
+     * Gets the day-of-year for the first day of this month.
+     * <p>
+     * This returns the day-of-year that this month begins on, using the leap
+     * year flag to determine the length of February.
+     *
+     * @param leapYear  true if the length is required for a leap year
+     * @return the last day of this month, from 1 to 335
+     */
+    public int getMonthStartDayOfYear(boolean leapYear) {
+        int leap = leapYear ? 1 : 0;
+        switch (this) {
+            case JANUARY:
+                return 1;
+            case FEBRUARY:
+                return 32;
+            case MARCH:
+                return 60 + leap;
+            case APRIL:
+                return 91 + leap;
+            case MAY:
+                return 121 + leap;
+            case JUNE:
+                return 152 + leap;
+            case JULY:
+                return 182 + leap;
+            case AUGUST:
+                return 213 + leap;
+            case SEPTEMBER:
+                return 244 + leap;
+            case OCTOBER:
+                return 274 + leap;
+            case NOVEMBER:
+                return 305 + leap;
+            case DECEMBER:
+            default:
+                return 335 + leap;
+        }
+    }
+
+    /**
+     * Gets the day-of-year for the last day of this month.
+     * <p>
+     * This returns the day-of-year that this month ends on, using the leap
+     * year flag to determine the length of February.
+     *
+     * @param leapYear  true if the length is required for a leap year
+     * @return the last day of this month, from 31 to 366
+     */
+    public int getMonthEndDayOfYear(boolean leapYear) {
+        return getMonthStartDayOfYear(leapYear) + lengthInDays(leapYear) -1;
+    }
 
     //-----------------------------------------------------------------------
     /**
