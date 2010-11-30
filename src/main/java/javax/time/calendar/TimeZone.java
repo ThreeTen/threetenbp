@@ -93,7 +93,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * One difference is that serializing this class only stores the reference to the zone,
  * whereas serializing {@code ZoneRules} stores the entire set of rules.
  * <p>
- * After deserialization, or by using the special factory {@link #ofUnchecked(String) ofUnchecked},
+ * After deserialization, or by using the special factory {@link #ofUnchecked},
  * it is possible for the time-zone to represent a group/region/version combination that is unavailable.
  * Since this class can still be loaded even when the rules cannot, the application can
  * continue. For example, a {@link ZonedDateTime} instance could still be queried.
@@ -416,7 +416,9 @@ public abstract class TimeZone implements Calendrical, Serializable {
     /**
      * Gets the time-zone rules group ID, such as 'TZDB'.
      * <p>
-     * Time zone rules are provided by groups referenced by an ID.
+     * The group ID is the first part of the {@link #getID() full unique ID}.
+     * Time zone rule data is supplied by a group, typically a company or organization.
+     * The default group is 'TZDB' representing the public time-zone database.
      * <p>
      * For fixed time-zones, the group ID will be an empty string.
      *
@@ -427,7 +429,9 @@ public abstract class TimeZone implements Calendrical, Serializable {
     /**
      * Gets the time-zone region identifier, such as 'Europe/London'.
      * <p>
-     * The time-zone region identifier is of a format specific to the group.
+     * The region ID is the second part of the {@link #getID() full unique ID}.
+     * Time zone rules are defined for a region and this element represents that region.
+     * The ID uses a format specific to the group.
      * The default 'TZDB' group generally uses the format {area}/{city}, such as 'Europe/Paris'.
      *
      * @return the time-zone rules region ID, never null
@@ -437,6 +441,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
     /**
      * Gets the time-zone rules group version, such as '2009b'.
      * <p>
+     * The version ID is the third part of the {@link #getID() full unique ID}.
      * Time zone rules change over time as governments change the associated laws.
      * The time-zone groups capture these changes by issuing multiple versions
      * of the data. An application can reference the exact set of rules used
@@ -473,14 +478,16 @@ public abstract class TimeZone implements Calendrical, Serializable {
      * For group based time-zones, this returns true if the version ID is empty,
      * which is the definition of a floating zone.
      * <p>
-     * For fixed time-zones, true is returned.
+     * For fixed time-zones, true is returned as the data is always the latest.
      *
      * @return true if the version is floating
      */
-    public abstract boolean isFloatingVersion();
+    public boolean isFloatingVersion() {
+        return getVersionID().length() == 0;
+    }
 
     /**
-     * Returns a copy of this time-zone with the specified version ID.
+     * Returns a copy of this time-zone with a floating version.
      * <p>
      * For group based time-zones, this returns a {@code TimeZone} with the
      * same group and region, but a floating version.
@@ -545,6 +552,10 @@ public abstract class TimeZone implements Calendrical, Serializable {
     /**
      * Returns a copy of this time-zone with the latest version that is valid
      * for the specified date-time and offset.
+     * <p>
+     * This will search for a version of the time-zone rules that would make the specified
+     * date-time valid. This is needed for cases where the time-zone changes and you hold
+     * a reference to a date-time created before the rules changed.
      * <p>
      * This method validates the group and region IDs.
      *
@@ -858,11 +869,6 @@ public abstract class TimeZone implements Calendrical, Serializable {
         @Override
         public boolean isFixed() {
             return false;
-        }
-
-        @Override
-        public boolean isFloatingVersion() {
-            return versionID.length() == 0;
         }
 
         @Override
