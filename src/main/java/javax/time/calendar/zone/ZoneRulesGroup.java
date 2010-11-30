@@ -415,7 +415,7 @@ public final class ZoneRulesGroup {
      * @throws CalendricalException if the region ID is not found
      */
     public String getLatestVersionID() {
-        return versions.get().firstKey();  // TODO: test, use as cache in TimeZone???
+        return versions.get().firstKey();
     }
 
     /**
