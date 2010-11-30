@@ -473,6 +473,19 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    public void test_isLeapYear() {
+        assertEquals(OffsetDateTime.of(1999, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDateTime.of(2000, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), true);
+        assertEquals(OffsetDateTime.of(2001, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDateTime.of(2002, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDateTime.of(2003, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDateTime.of(2004, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), true);
+        assertEquals(OffsetDateTime.of(2005, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
+    }
+
+    //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {

@@ -583,6 +583,19 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    public void test_isLeapYear() {
+        assertEquals(OffsetDate.of(1999, 1, 1, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDate.of(2000, 1, 1, OFFSET_PONE).isLeapYear(), true);
+        assertEquals(OffsetDate.of(2001, 1, 1, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDate.of(2002, 1, 1, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDate.of(2003, 1, 1, OFFSET_PONE).isLeapYear(), false);
+        assertEquals(OffsetDate.of(2004, 1, 1, OFFSET_PONE).isLeapYear(), true);
+        assertEquals(OffsetDate.of(2005, 1, 1, OFFSET_PONE).isLeapYear(), false);
+    }
+
+    //-----------------------------------------------------------------------
     // withDate()
     //-----------------------------------------------------------------------
     public void test_withDate() {

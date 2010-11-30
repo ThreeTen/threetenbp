@@ -632,6 +632,19 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    public void test_isLeapYear() {
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(1999, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), true);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2001, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2002, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2003, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2004, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), true);
+        assertEquals(ZonedDateTime.of(LocalDateTime.of(2005, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
+    }
+
+    //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {

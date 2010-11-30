@@ -259,6 +259,7 @@ EDR released
 - LocalTime plus/minus shouldn't throw ArithmeticException
 - Remove InstantProvider from UTC/TAI
 - OffsetTime.withOffset/adjustLocalTime method names changed
+- Add isLeapYear() to other principal date classes
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

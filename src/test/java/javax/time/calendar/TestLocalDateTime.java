@@ -904,6 +904,19 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    public void test_isLeapYear() {
+        assertEquals(LocalDateTime.of(1999, 1, 1, 0, 0).isLeapYear(), false);
+        assertEquals(LocalDateTime.of(2000, 1, 1, 0, 0).isLeapYear(), true);
+        assertEquals(LocalDateTime.of(2001, 1, 1, 0, 0).isLeapYear(), false);
+        assertEquals(LocalDateTime.of(2002, 1, 1, 0, 0).isLeapYear(), false);
+        assertEquals(LocalDateTime.of(2003, 1, 1, 0, 0).isLeapYear(), false);
+        assertEquals(LocalDateTime.of(2004, 1, 1, 0, 0).isLeapYear(), true);
+        assertEquals(LocalDateTime.of(2005, 1, 1, 0, 0).isLeapYear(), false);
+    }
+
+    //-----------------------------------------------------------------------
     // with()
     //-----------------------------------------------------------------------
     public void test_with_DateAdjuster() {
