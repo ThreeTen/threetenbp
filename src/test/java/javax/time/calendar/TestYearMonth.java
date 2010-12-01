@@ -393,6 +393,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
         assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);

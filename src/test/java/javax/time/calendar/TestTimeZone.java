@@ -1320,6 +1320,40 @@ public class TestTimeZone {
     }
 
     //-----------------------------------------------------------------------
+    // get(CalendricalRule)
+    //-----------------------------------------------------------------------
+    public void test_get_CalendricalRule() {
+        TimeZone test = TimeZone.of("Europe/London");
+        assertEquals(test.get(Chronology.rule()), null);
+        assertEquals(test.get(ISOChronology.yearRule()), null);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
+        assertEquals(test.get(LocalDate.rule()), null);
+        assertEquals(test.get(ZoneOffset.rule()), null);
+        assertEquals(test.get(TimeZone.rule()), test);
+    }
+
+    public void test_get_CalendricalRule_fixedOffset() {
+        TimeZone test = TimeZone.of("UTC+03:00");
+        assertEquals(test.get(Chronology.rule()), null);
+        assertEquals(test.get(ISOChronology.yearRule()), null);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
+        assertEquals(test.get(LocalDate.rule()), null);
+        assertEquals(test.get(ZoneOffset.rule()), ZoneOffset.ofHours(3));
+        assertEquals(test.get(TimeZone.rule()), test);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_get_CalendricalRule_null() {
+        TimeZone test = TimeZone.of("Europe/London");
+        test.get((CalendricalRule<?>) null);
+    }
+
+    public void test_get_unsupported() {
+        TimeZone test = TimeZone.of("Europe/London");
+        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
+    }
+
+    //-----------------------------------------------------------------------
     private void checkOffset(ZoneOffsetInfo info, ZoneOffset zoneOffset) {
         assertEquals(info.isTransition(), false);
         assertEquals(info.getTransition(), null);

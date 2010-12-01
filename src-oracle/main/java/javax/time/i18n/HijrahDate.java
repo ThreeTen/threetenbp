@@ -523,7 +523,7 @@ public final class HijrahDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this);
+        return rule().deriveValueFor(rule, this, this, HijrahChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

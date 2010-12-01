@@ -408,6 +408,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         OffsetTime test = OffsetTime.of(12, 30, 40, 987654321, OFFSET_PONE);
+        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(ISOChronology.yearRule()), null);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), null);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), null);

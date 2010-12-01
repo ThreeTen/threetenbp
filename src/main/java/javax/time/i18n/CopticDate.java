@@ -238,7 +238,7 @@ public final class CopticDate
         if (rule.equals(LocalDate.rule())) {  // NPE check
             return rule.reify(toLocalDate());
         }
-        return rule().deriveValueFor(rule, this, this);
+        return rule().deriveValueFor(rule, this, this, CopticChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

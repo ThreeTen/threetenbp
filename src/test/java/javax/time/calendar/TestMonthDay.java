@@ -360,6 +360,7 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         MonthDay test = MonthDay.of(6, 12);
+        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
         assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
         assertEquals(test.get(ISOChronology.dayOfMonthRule()), (Integer) 12);

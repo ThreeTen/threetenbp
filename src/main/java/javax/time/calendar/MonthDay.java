@@ -276,7 +276,7 @@ public final class MonthDay
         if (rule.equals(ISOChronology.dayOfMonthRule())) {
             return rule.reify(day);
         }
-        return rule().deriveValueFor(rule, this, this);
+        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

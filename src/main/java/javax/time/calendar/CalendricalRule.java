@@ -283,14 +283,18 @@ public abstract class CalendricalRule<T>
      * @param rule  the rule to retrieve, not null
      * @param value  the value to return if this rule is the specified rule, not null
      * @param calendrical  the calendrical to get the value from, not null
+     * @param chronology  the chronology the value belongs to, null if chronology neutral
      * @return the value, null if unable to derive the value
      */
-    public final <R> R deriveValueFor(CalendricalRule<R> rule, T value, Calendrical calendrical) {
+    public final <R> R deriveValueFor(CalendricalRule<R> rule, T value, Calendrical calendrical, Chronology chronology) {
         ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
         ISOChronology.checkNotNull(value, "Value must not be null");
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         if (rule.equals(this)) {
             return rule.reify(value);
+        }
+        if (rule.equals(Chronology.rule())) {
+            return rule.reify(chronology);
         }
         return rule.derive(calendrical);
     }
@@ -514,6 +518,9 @@ public abstract class CalendricalRule<T>
      */
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }

@@ -769,7 +769,7 @@ public abstract class TimeZone implements Calendrical, Serializable {
         if (rule.equals(ZoneOffset.rule()) && isFixed()) {
             return rule.reify(getRules().getOffset(Instant.EPOCH));
         }
-        return rule().deriveValueFor(rule, this, this);
+        return rule().deriveValueFor(rule, this, this, null);
     }
 
     //-----------------------------------------------------------------------

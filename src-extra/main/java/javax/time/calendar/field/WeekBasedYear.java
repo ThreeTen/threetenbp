@@ -160,7 +160,7 @@ public final class WeekBasedYear
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, weekyear, this);
+        return rule().deriveValueFor(rule, weekyear, this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

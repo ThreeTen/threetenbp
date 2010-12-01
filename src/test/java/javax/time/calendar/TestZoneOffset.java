@@ -539,6 +539,30 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
+    // get(CalendricalRule)
+    //-----------------------------------------------------------------------
+    public void test_get_CalendricalRule() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
+        assertEquals(test.get(Chronology.rule()), null);
+        assertEquals(test.get(ISOChronology.yearRule()), null);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
+        assertEquals(test.get(LocalDate.rule()), null);
+        assertEquals(test.get(ZoneOffset.rule()), test);
+        assertEquals(test.get(TimeZone.rule()), null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_get_CalendricalRule_null() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
+        test.get((CalendricalRule<?>) null);
+    }
+
+    public void test_get_unsupported() {
+        ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
+        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
+    }
+
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     private void doTestOffset(ZoneOffset offset, int hours, int minutes, int seconds) {

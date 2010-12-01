@@ -650,6 +650,7 @@ public class TestZonedDateTime {
     public void test_get_CalendricalRule() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
         ZonedDateTime test = ZonedDateTime.of(ldt, ZONE_0100);
+        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);

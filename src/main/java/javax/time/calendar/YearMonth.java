@@ -256,7 +256,7 @@ public final class YearMonth
         if (rule.equals(ISOChronology.monthOfYearRule())) {
             return rule.reify(month);
         }
-        return rule().deriveValueFor(rule, this, this);
+        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

@@ -576,6 +576,7 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         LocalTime test = TEST_12_30_40_987654321;
+        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(ISOChronology.yearRule()), null);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), null);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), null);

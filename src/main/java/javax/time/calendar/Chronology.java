@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import java.io.Serializable;
+
 /**
  * A calendar system, consisting of rules controlling the passage of human-scale time.
  * <p>
@@ -52,7 +54,7 @@ package javax.time.calendar;
  *
  * @author Stephen Colebourne
  */
-public abstract class Chronology {
+public abstract class Chronology implements Calendrical {
 
     /**
      * Restrictive constructor.
@@ -80,6 +82,46 @@ public abstract class Chronology {
     @Override
     public String toString() {
         return getName();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this offset then
+     * {@code null} will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for {@code Chronology}.
+     *
+     * @return the field rule for the chronology, never null
+     */
+    public static CalendricalRule<Chronology> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<Chronology> implements Serializable {
+        private static final CalendricalRule<Chronology> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(Chronology.class, ISOChronology.INSTANCE, "Chronology", null, null);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
     }
 
 }

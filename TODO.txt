@@ -262,6 +262,7 @@ EDR released
 - Fix bug in Offset* now(Clock)
 - Rename nowSystemClock() to now()
 - MonthOfYear - start/end of month as DOY
+- Add Chronology CalendricalRule
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

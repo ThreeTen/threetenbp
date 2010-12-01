@@ -196,7 +196,7 @@ public final class Year
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, year, this);
+        return rule().deriveValueFor(rule, year, this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

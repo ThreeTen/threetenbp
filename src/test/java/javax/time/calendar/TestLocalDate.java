@@ -478,6 +478,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         LocalDate test = LocalDate.of(2008, 6, 30);
+        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
