@@ -134,7 +134,23 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    // nowClock()
+    // now()
+    //-----------------------------------------------------------------------
+    public void now() {
+        LocalDate expected = LocalDate.now(Clock.systemDefaultZone());
+        LocalDate test = LocalDate.now();
+        for (int i = 0; i < 100; i++) {
+            if (expected.equals(test)) {
+                return;
+            }
+            expected = LocalDate.now(Clock.systemDefaultZone());
+            test = LocalDate.now();
+        }
+        assertEquals(test, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // now(Clock)
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void now_Clock_nullClock() {
@@ -207,22 +223,6 @@ public class TestLocalDate {
             assertEquals(ex.getRule(), ISOChronology.yearRule());
             throw ex;
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // nowSystemClock()
-    //-----------------------------------------------------------------------
-    public void nowSystemClock() {
-        LocalDate expected = LocalDate.now(Clock.systemDefaultZone());
-        LocalDate test = LocalDate.nowSystemClock();
-        for (int i = 0; i < 100; i++) {
-            if (expected.equals(test)) {
-                return;
-            }
-            expected = LocalDate.now(Clock.systemDefaultZone());
-            test = LocalDate.nowSystemClock();
-        }
-        assertEquals(test, expected);
     }
 
     //-----------------------------------------------------------------------

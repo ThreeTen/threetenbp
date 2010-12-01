@@ -123,19 +123,6 @@ public final class LocalDate
         return LocalDate.ofYearZeroDays(yearZeroDays);
     }
 
-    /**
-     * Obtains the current date from the system clock in the default time-zone.
-     * <p>
-     * This will query the system clock in the default time-zone to obtain the current date - today.
-     * Using this method will prevent the ability to use an alternate clock for testing
-     * because the clock is hard-coded.
-     *
-     * @return the current date using the system clock, never null
-     */
-    public static LocalDate nowSystemClock() {
-        return now(Clock.systemDefaultZone());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDate} from a year, month and day.
