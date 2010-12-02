@@ -68,14 +68,13 @@ public final class Year
         implements Calendrical, Comparable<Year>, Serializable, DateAdjuster, CalendricalMatcher {
 
     /**
-     * Constant for the minimum year on the proleptic ISO calendar system.
+     * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
      */
-    public static final int MIN_YEAR = Integer.MIN_VALUE + 2;
+    public static final int MIN_YEAR = -999999999;
     /**
-     * Constant for the maximum year on the proleptic ISO calendar system,
-     * which is the same as the maximum for year of era.
+     * Constant for the maximum year on the proleptic ISO calendar system, 999,999,999.
      */
-    public static final int MAX_YEAR = Integer.MAX_VALUE;
+    public static final int MAX_YEAR = 999999999;
     /**
      * A serialization identifier for this class.
      */

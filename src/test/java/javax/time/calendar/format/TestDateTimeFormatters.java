@@ -45,6 +45,7 @@ import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.MonthOfYear;
@@ -180,6 +181,42 @@ public class TestDateTimeFormatters {
             // offset/zone not expected to be parsed
             assertParseMatch(DateTimeFormatters.isoLocalDate().parse(input), expected);
         }
+    }
+
+    @Test
+    public void test_parse_isoLocalDate_999999999() {
+        MockSimpleCalendrical expected = createDate(999999999, 8, 6);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+999999999-08-06"), expected);
+        assertEquals(LocalDate.parse("+999999999-08-06"), LocalDate.of(999999999, 8, 6));
+    }
+
+    @Test
+    public void test_parse_isoLocalDate_1000000000() {
+        MockSimpleCalendrical expected = createDate(1000000000, 8, 6);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+1000000000-08-06"), expected);
+    }
+
+    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    public void test_parse_isoLocalDate_1000000000_failedCreate() {
+        LocalDate.parse("+1000000000-08-06");
+    }
+
+    @Test
+    public void test_parse_isoLocalDate_M999999999() {
+        MockSimpleCalendrical expected = createDate(-999999999, 8, 6);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-999999999-08-06"), expected);
+        assertEquals(LocalDate.parse("-999999999-08-06"), LocalDate.of(-999999999, 8, 6));
+    }
+
+    @Test
+    public void test_parse_isoLocalDate_M1000000000() {
+        MockSimpleCalendrical expected = createDate(-1000000000, 8, 6);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-1000000000-08-06"), expected);
+    }
+
+    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    public void test_parse_isoLocalDate_M1000000000_failedCreate() {
+        LocalDate.parse("-1000000000-08-06");
     }
 
     //-----------------------------------------------------------------------

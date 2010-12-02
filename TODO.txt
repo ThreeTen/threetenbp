@@ -263,6 +263,7 @@ EDR released
 - Rename nowSystemClock() to now()
 - MonthOfYear - start/end of month as DOY
 - Add Chronology CalendricalRule
+- Change ISO year range to -999,999,999 to 999,999,999
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory

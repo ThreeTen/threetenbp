@@ -118,17 +118,11 @@ public class TestYear {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_tooLow() {
-        if (Year.MIN_YEAR == Integer.MIN_VALUE) {
-            return;
-        }
         Year.of(Year.MIN_YEAR - 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_tooHigh() {
-        if (Year.MAX_YEAR == Integer.MAX_VALUE) {
-            throw new IllegalCalendarFieldValueException("", RULE);
-        }
         Year.of(Year.MAX_YEAR + 1);
     }
 
@@ -366,7 +360,7 @@ public class TestYear {
     }
 
     public void test_plusYears_big() {
-        long years = 20L + Integer.MAX_VALUE;
+        long years = 20L + Year.MAX_YEAR;
         assertEquals(Year.of(-40).plusYears(years), Year.of((int) (-40L + years)));
     }
 
@@ -470,7 +464,7 @@ public class TestYear {
     }
 
     public void test_minusYears_big() {
-        long years = 20L + Integer.MAX_VALUE;
+        long years = 20L + Year.MAX_YEAR;
         assertEquals(Year.of(40).minusYears(years), Year.of((int) (40L - years)));
     }
 
