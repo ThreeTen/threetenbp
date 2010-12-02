@@ -211,20 +211,23 @@ public class TestOffsetDateTime_instants {
     }
 
     //-----------------------------------------------------------------------
-    private void doTest_factory_fromInstant_InstantProvider_all(int minYear, int maxYear) {
+    private void doTest_factory_fromInstant_InstantProvider_all(long minYear, long maxYear) {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int minOffset = (minYear <= 0 ? 0 : 3);
         int maxOffset = (maxYear <= 0 ? 0 : 3);
         long minDays = (minYear * 365L + ((minYear + minOffset) / 4L - (minYear + minOffset) / 100L + (minYear + minOffset) / 400L)) - days_0000_to_1970;
         long maxDays = (maxYear * 365L + ((maxYear + maxOffset) / 4L - (maxYear + maxOffset) / 100L + (maxYear + maxOffset) / 400L)) + 365L - days_0000_to_1970;
         
-        OffsetDateTime expected = OffsetDateTime.of(minYear, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        final LocalDate maxDate = LocalDate.of(Year.MAX_YEAR, 12, 31);
+        OffsetDateTime expected = OffsetDateTime.of((int) minYear, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         for (long i = minDays; i < maxDays; i++) {
             Instant instant = Instant.ofEpochSeconds(i * 24L * 60L * 60L);
             try {
                 OffsetDateTime test = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
                 assertEquals(test, expected);
-                expected = expected.plusDays(1);
+                if (expected.toLocalDate().equals(maxDate) == false) {
+                    expected = expected.plusDays(1);
+                }
             } catch (RuntimeException ex) {
                 System.out.println("Error: " + i + " " + expected);
                 throw ex;
