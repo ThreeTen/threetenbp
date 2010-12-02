@@ -177,7 +177,9 @@ Use cases
 - Day of Olympiad (roughly four year period)
 
 
+===============================================================================
 DONE
+===============================================================================
 - getYearMonth(), getMonthDay()
 - withXxx() taking Year, MonthOfYear - with(Adjuster)
 - zone prev/next transition
@@ -218,8 +220,8 @@ EDR released
 - Rename factory methods to start with 'of'
 - LocalDate.plus(PeriodProvider) needs correct algorithm
 - Period.ofXxx factory rename
-
 0.6.1 released
+===============================================================================
 - PeriodFields.toTotal(Unit)
 - PeriodFields.normalize(Unit...)
 - Rename/add methods on PeriodUnit
@@ -234,8 +236,8 @@ EDR released
  - Specialised data format for zone-rules
  - SPI and zone providers
 - TimeZone special factory to create unavailable instances
-
 0.6.2 released
+===============================================================================
 - nanoOfDay rule / epochDays rule
 - Use public factories for ZOT and ZOTR rather than protected methods in ZRules
 - Make CalendricalRule.compare less lenient
@@ -264,7 +266,9 @@ EDR released
 - MonthOfYear - start/end of month as DOY
 - Add Chronology CalendricalRule
 - Change ISO year range to -999,999,999 to 999,999,999
-
+- Add OffsetDateTime.of(DateProvider,OffsetTime)
+===============================================================================
+ 
 Not doing
 - Use nanoOfDay rule in LocalTime factory
 - toString(pattern)/parse(str, pattern)

@@ -320,6 +320,26 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_dateTime_DateProviderOffsetTime() {
+        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
+        OffsetTime time = OffsetTime.of(11, 30, 10, 500, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(dateProvider, time);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderOffsetTime_nullDateProvider() {
+        OffsetTime time = OffsetTime.of(11, 30, 10, 500, OFFSET_PONE);
+        OffsetDateTime.of((DateProvider) null, time);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderOffsetTime_nullOffsetTime() {
+        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
+        OffsetDateTime.of(dateProvider, (OffsetTime) null);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_dateTime_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
         OffsetDateTime test = OffsetDateTime.of(mmp, OFFSET_PTWO);

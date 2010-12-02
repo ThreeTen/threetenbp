@@ -340,6 +340,19 @@ public final class OffsetDateTime
         return new OffsetDateTime(dt, offset);
     }
 
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from a {@code DateProvider}
+     * and {@code OffsetTime}.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @param offsetTime  the offset time to use, not null
+     * @return the offset date-time, never null
+     */
+    public static OffsetDateTime of(DateProvider dateProvider, OffsetTime offsetTime) {
+        LocalDateTime dt = LocalDateTime.of(dateProvider, offsetTime);
+        return new OffsetDateTime(dt, offsetTime.getOffset());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}.
