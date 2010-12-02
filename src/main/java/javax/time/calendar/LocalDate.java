@@ -357,10 +357,7 @@ public final class LocalDate
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a {@code Year} object which includes information on whether
-     * this is a leap year and its length in days.
+     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -711,7 +708,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in three steps:
+     * This method adds the specified amount to the years field in three steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -738,7 +735,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in three steps:
+     * This method adds the specified amount to the years field in three steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -764,7 +761,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in months added.
      * <p>
-     * This method add the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in three steps:
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -791,7 +788,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in months added.
      * <p>
-     * This method add the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in three steps:
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -820,7 +817,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in weeks added.
      * <p>
-     * This method add the specified amount in weeks to the days field incrementing
+     * This method adds the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -843,7 +840,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified number of days added.
      * <p>
-     * This method add the specified amount to the days field incrementing the
+     * This method adds the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -879,7 +876,7 @@ public final class LocalDate
      * period from this date will have no effect. If you want to take time fields into
      * account, call {@link Period#normalizedWith24HourDays()} on the input period.
      * <p>
-     * The detailed rules for the addition have some complexity due to variable length months.
+     * The detailed rules for the subtraction have some complexity due to variable length months.
      * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
      * The principle case of difference is best expressed by example:
      * {@code 2010-03-31} minus {@code P1M1M} yields {@code 2010-02-28} whereas
@@ -936,7 +933,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in years subtracted.
      * <p>
-     * This method subtract the specified amount to the years field in three steps:
+     * This method subtracts the specified amount from the years field in three steps:
      * <ol>
      * <li>Subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -963,7 +960,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in years subtracted.
      * <p>
-     * This method subtract the specified amount to the years field in three steps:
+     * This method subtracts the specified amount from the years field in three steps:
      * <ol>
      * <li>Subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -989,7 +986,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in months subtracted.
      * <p>
-     * This method subtract the specified amount to the months field in three steps:
+     * This method subtracts the specified amount from the months field in three steps:
      * <ol>
      * <li>Subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1000,7 +997,7 @@ public final class LocalDate
      * 2007-02-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-02-28, is selected instead.
      * <p>
-     * This method does the same as {@code minusMonts(months, DateResolvers.previousValid())}.
+     * This method does the same as {@code minusMonths(months, DateResolvers.previousValid())}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1016,7 +1013,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in months subtracted.
      * <p>
-     * This method subtract the specified amount to the months field in three steps:
+     * This method subtracts the specified amount from the months field in three steps:
      * <ol>
      * <li>Subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1045,7 +1042,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified period in weeks subtracted.
      * <p>
-     * This method subtract the specified amount in weeks to the days field decrementing
+     * This method subtracts the specified amount in weeks from the days field decrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1068,7 +1065,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the specified number of days subtracted.
      * <p>
-     * This method subtract the specified amount to the days field decrementing the
+     * This method subtracts the specified amount from the days field decrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1255,7 +1252,7 @@ public final class LocalDate
      * local time-line exists. When this method converts the date to a date-time it
      * adjusts the time and offset as necessary to ensure that the time is as early
      * as possible on the date, which is typically midnight. Internally this is
-     * achieved using a {@link ZoneResolvers#postGapPreOverlap() zone resolver}.
+     * achieved using the {@link ZoneResolvers#postGapPreOverlap() zone resolver}.
      * <p>
      * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
      * followed by {@link LocalDateTime#atZone(TimeZone)}. Note that the resolver used
@@ -1348,7 +1345,6 @@ public final class LocalDate
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(LocalDate other) {
         int cmp = MathUtils.safeCompare(year, other.year);
@@ -1368,7 +1364,6 @@ public final class LocalDate
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(LocalDate other) {
         return compareTo(other) > 0;
@@ -1380,8 +1375,7 @@ public final class LocalDate
      * The comparison is based on the time-line position of the dates.
      *
      * @param other  the other date to compare to, not null
-     * @return true if this point is before the specified date
-     * @throws NullPointerException if {@code other} is null
+     * @return true if this is before the specified date
      */
     public boolean isBefore(LocalDate other) {
         return compareTo(other) < 0;
@@ -1394,7 +1388,7 @@ public final class LocalDate
      * The comparison is based on the time-line position of the dates.
      *
      * @param other  the other date to compare to, null returns false
-     * @return true if this point is equal to the specified date
+     * @return true if this is equal to the specified date
      */
     @Override
     public boolean equals(Object other) {

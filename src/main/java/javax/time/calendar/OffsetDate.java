@@ -114,8 +114,8 @@ public final class OffsetDate
     /**
      * Obtains an instance of {@code OffsetDate} from a year, month and day.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @param monthOfYear  the month-of-year, not null
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return the offset date, never null
@@ -130,7 +130,7 @@ public final class OffsetDate
     /**
      * Obtains an instance of {@code OffsetDate} from a year, month and day.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param offset  the zone offset, not null
@@ -144,7 +144,7 @@ public final class OffsetDate
     }
 
     /**
-     * Obtains an instance of {@code OffsetDate} from a {@code DateProvider}.
+     * Obtains an instance of {@code OffsetDate} from a date provider.
      *
      * @param dateProvider  the date provider to use, not null
      * @param offset  the zone offset, not null
@@ -307,10 +307,7 @@ public final class OffsetDate
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a {@code Year} object which includes information on whether
-     * this is a leap year and its length in days.
+     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -400,7 +397,7 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the date altered using the adjuster.
+     * Returns a copy of this {@code OffsetDate} with the date altered using the adjuster.
      * <p>
      * Adjusters can be used to alter the date in various ways.
      * A simple adjuster might simply set the one of the fields, such as the year field.
@@ -420,7 +417,7 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with a different local date.
+     * Returns a copy of this {@code OffsetDate} with a different local date.
      * <p>
      * This method changes the date stored to a different date.
      * No calculation is performed. The result simply represents the same
@@ -609,9 +606,9 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the specified period in years added.
+     * Returns a copy of this {@code OffsetDate} with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in three steps:
+     * This method adds the specified amount to the years field in three steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -636,9 +633,9 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in years added.
+     * Returns a copy of this {@code OffsetDate} with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in three steps:
+     * This method adds the specified amount to the years field in three steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -657,9 +654,9 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in months added.
+     * Returns a copy of this {@code OffsetDate} with the specified period in months added.
      * <p>
-     * This method add the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in three steps:
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -684,9 +681,9 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in months added.
+     * Returns a copy of this {@code OffsetDate} with the specified period in months added.
      * <p>
-     * This method add the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in three steps:
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -705,13 +702,13 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in weeks added.
+     * Returns a copy of this {@code OffsetDate} with the specified period in weeks added.
      * <p>
-     * This method add the specified amount in weeks to the days field incrementing
+     * This method adds the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
+     * For example, 2008-12-31 plus one week would result in 2009-01-07.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -724,13 +721,13 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in days added.
+     * Returns a copy of this {@code OffsetDate} with the specified period in days added.
      * <p>
-     * This method add the specified amount to the days field incrementing the
+     * This method adds the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
+     * For example, 2008-12-31 plus one day would result in 2009-01-01.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -749,8 +746,8 @@ public final class OffsetDate
      * This subtracts the specified period from this date, returning a new date.
      * Before subtraction, the period is converted to a date-based {@code Period} using
      * {@link Period#ofDateFields(PeriodProvider)}.
-     * That factory ignores any time-based ISO fields, thus adding a time-based
-     * period to this date will have no effect. If you want to take time fields into
+     * That factory ignores any time-based ISO fields, thus subtracting a time-based
+     * period from this date will have no effect. If you want to take time fields into
      * account, call {@link Period#normalizedWith24HourDays()} on the input period.
      * <p>
      * The detailed rules for the subtraction have some complexity due to variable length months.
@@ -769,9 +766,9 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the specified period in years subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified period in years subtracted.
      * <p>
-     * This method subtract the specified amount to the years field in three steps:
+     * This method subtracts the specified amount from the years field in three steps:
      * <ol>
      * <li>Subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -796,9 +793,9 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in years subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified period in years subtracted.
      * <p>
-     * This method subtract the specified amount to the years field in three steps:
+     * This method subtracts the specified amount from the years field in three steps:
      * <ol>
      * <li>Subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -817,9 +814,9 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in months subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified period in months subtracted.
      * <p>
-     * This method subtract the specified amount to the months field in three steps:
+     * This method subtracts the specified amount from the months field in three steps:
      * <ol>
      * <li>Subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -844,9 +841,9 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in months subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified period in months subtracted.
      * <p>
-     * This method subtract the specified amount to the months field in three steps:
+     * This method subtracts the specified amount from the months field in three steps:
      * <ol>
      * <li>Subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -865,13 +862,13 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified period in weeks subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified period in weeks subtracted.
      * <p>
-     * This method subtract the specified amount in weeks to the days field incrementing
+     * This method subtracts the specified amount in weeks from the days field decrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2009-01-07 minus one week would result in the 2008-12-31.
+     * For example, 2009-01-07 minus one week would result in 2008-12-31.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -884,13 +881,13 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetDate with the specified number of days subtracted.
+     * Returns a copy of this {@code OffsetDate} with the specified number of days subtracted.
      * <p>
-     * This method subtract the specified amount to the days field decrementing the
+     * This method subtracts the specified amount from the days field decrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
-     * For example, 2009-01-01 minus one day would result in the 2008-12-31.
+     * For example, 2009-01-01 minus one day would result in 2008-12-31.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -904,7 +901,7 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this date matches the specified matcher.
+     * Checks whether this {@code OffsetDate} matches the specified matcher.
      * <p>
      * Matchers can be used to query the date.
      * A simple matcher might simply compare one of the fields, such as the year field.
@@ -919,7 +916,10 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the date extracted from the calendrical matches this.
+     * Checks if the date extracted from the calendrical matches this date.
+     * <p>
+     * This method implements the {@code CalendricalMatcher} interface.
+     * It is intended that applications use {@link #matches} rather than this method.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical matches, false otherwise
@@ -955,7 +955,7 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a offset date-time formed from this date at the specified time.
+     * Returns an offset date-time formed from this date at the specified time.
      * <p>
      * This merges the three values - {@code this} and the specified time -
      * to form an instance of {@code OffsetDateTime}.
@@ -972,7 +972,7 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a offset date-time formed from this date at the specified time.
+     * Returns an offset date-time formed from this date at the specified time.
      * <p>
      * This merges the four values - {@code this} and the specified time -
      * to form an instance of {@code OffsetDateTime}.
@@ -990,7 +990,7 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a offset date-time formed from this date at the specified time.
+     * Returns an offset date-time formed from this date at the specified time.
      * <p>
      * This merges the five values - {@code this} and the specified time -
      * to form an instance of {@code OffsetDateTime}.
@@ -1053,7 +1053,7 @@ public final class OffsetDate
     /**
      * Converts this date to a {@code LocalDate}.
      *
-     * @return a LocalDate with the same date as this instance, never null
+     * @return a local date with the same date as this instance, never null
      */
     public LocalDate toLocalDate() {
         return date;
@@ -1061,8 +1061,8 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date to another date based on the UTC equivalent dates
-     * then local date.
+     * Compares this {@code OffsetDate} to another date based on the UTC equivalent
+     * dates then local date.
      * <p>
      * This ordering is consistent with {@code equals()}.
      * For example, the following is the comparator order:
@@ -1079,7 +1079,6 @@ public final class OffsetDate
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(OffsetDate other) {
         if (offset.equals(other.offset)) {
@@ -1097,22 +1096,24 @@ public final class OffsetDate
     }
 
     /**
-     * Is this date after the specified date.
+     * Checks if this {@code OffsetDate} is after the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(OffsetDate other) {
         return compareTo(other) > 0;
     }
 
     /**
-     * Is this date before the specified date.
+     * Checks if this {@code OffsetDate} is before the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
      * @param other  the other date to compare to, not null
-     * @return true if this point is before the specified date
-     * @throws NullPointerException if {@code other} is null
+     * @return true if this is before the specified date
      */
     public boolean isBefore(OffsetDate other) {
         return compareTo(other) < 0;
@@ -1120,12 +1121,12 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Is this date equal to the specified date.
+     * Checks if this {@code OffsetDate} is equal to the specified date.
      * <p>
-     * This compares the date and the offset.
+     * The comparison is based on the date and the offset.
      *
      * @param other  the other date to compare to, null returns false
-     * @return true if this point is equal to the specified date
+     * @return true if this is equal to the specified date
      */
     @Override
     public boolean equals(Object other) {
@@ -1140,7 +1141,7 @@ public final class OffsetDate
     }
 
     /**
-     * A hash code for this date.
+     * A hash code for this {@code OffsetDate}.
      *
      * @return a suitable hash code
      */
