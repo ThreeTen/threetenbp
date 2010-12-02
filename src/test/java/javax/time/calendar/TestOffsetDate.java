@@ -506,7 +506,6 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         
-        assertEquals(a.toYear(), localDate.toYear());
         assertSame(a.toLocalDate(), localDate);
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), y % 2 == 0 ? OFFSET_PTWO : OFFSET_PONE);
@@ -1885,15 +1884,6 @@ public class TestOffsetDate {
     public void test_toLocalDate(int year, int month, int day, ZoneOffset offset) {
         LocalDate t = LocalDate.of(year, month, day);
         assertEquals(OffsetDate.of(year, month, day, offset).toLocalDate(), t);
-    }
-
-    //-----------------------------------------------------------------------
-    // toYear()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_toLocalYear(int year, int month, int day, ZoneOffset offset) {
-        OffsetDate t = OffsetDate.of(year, month, day, offset);
-        assertEquals(t.toYear(), Year.of(year));
     }
 
     //-----------------------------------------------------------------------

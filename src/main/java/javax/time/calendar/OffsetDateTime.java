@@ -1669,18 +1669,6 @@ public final class OffsetDateTime
         return OffsetTime.of(dateTime, offset);
     }
 
-    /**
-     * Gets the year field as a {@code Year}.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * {@code Year} has methods for querying addition year-based information.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return dateTime.toYear();
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Converts this date-time to the number of seconds from the epoch

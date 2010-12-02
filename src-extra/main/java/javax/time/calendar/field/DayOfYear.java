@@ -244,7 +244,7 @@ public final class DayOfYear
      * @throws IllegalCalendarFieldValueException if the day-of-year is invalid for the input year
      */
     public LocalDate adjustDate(LocalDate date) {
-        return atYear(date.toYear());
+        return atYear(date.getYear());
     }
 
     //-----------------------------------------------------------------------

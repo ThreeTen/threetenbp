@@ -1906,18 +1906,6 @@ public final class ZonedDateTime
         return dateTime;
     }
 
-    /**
-     * Gets the year field as a {@code Year}.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * {@code Year} has methods for querying addition year-based information.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return dateTime.toYear();
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Converts this {@code ZonedDateTime} to the number of seconds from the epoch

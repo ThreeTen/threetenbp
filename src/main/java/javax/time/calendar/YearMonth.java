@@ -592,19 +592,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field as a {@code Year}.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * {@code Year} has methods for querying addition year-based information.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return Year.of(year);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this year-month to another year-month.
      *
      * @param other  the other year-month to compare to, not null

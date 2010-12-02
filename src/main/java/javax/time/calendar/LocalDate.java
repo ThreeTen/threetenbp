@@ -1272,20 +1272,6 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Converts this date to a {@code DateTimeFields} containing the
-//     * year, month-of-year and day-of-month fields.
-//     *
-//     * @return the field set, never null
-//     */
-//    public DateTimeFields toDateTimeFields() {
-//        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
-//        map.put(ISOChronology.yearRule(), year);
-//        map.put(ISOChronology.monthOfYearRule(), month.getValue());
-//        map.put(ISOChronology.dayOfMonthRule(), day);
-//        return DateTimeFields.fields(map);
-//    }
-
     /**
      * Converts this date to a {@code LocalDate}, trivially
      * returning {@code this}.
@@ -1294,18 +1280,6 @@ public final class LocalDate
      */
     public LocalDate toLocalDate() {
         return this;
-    }
-
-    /**
-     * Gets the year field as a {@code Year}.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * {@code Year} has methods for querying addition year-based information.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return Year.of(year);
     }
 
     //-----------------------------------------------------------------------

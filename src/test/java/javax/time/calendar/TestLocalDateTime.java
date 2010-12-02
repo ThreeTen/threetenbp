@@ -31,7 +31,10 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -3492,16 +3495,6 @@ public class TestLocalDateTime {
         LocalTime t = LocalTime.of(h, m, s, ns);
         LocalDateTime dt = LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321, t);
         assertSame(dt.toLocalTime(), t);
-    }
-
-    //-----------------------------------------------------------------------
-    // toYear()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_toYear(int year, int month, int day) {
-        LocalDate d = LocalDate.of(year, month, day);
-        LocalDateTime dt = LocalDateTime.ofMidnight(d);
-        assertEquals(dt.toYear(), Year.of(year));
     }
 
     //-----------------------------------------------------------------------

@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -316,7 +320,7 @@ public class TestLocalDate {
         }
         date = date.withDayOfMonth(1);
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
-            date = date.with(date.toYear().next());
+            date = date.withYear(date.getYear() + 1);
         }
         return date.with(date.getMonthOfYear().next());
     }
@@ -328,7 +332,7 @@ public class TestLocalDate {
         }
         date = date.with(date.getMonthOfYear().previous());
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
-            date = date.with(date.toYear().previous());
+            date = date.withYear(date.getYear() - 1);
         }
         return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(ISOChronology.isLeapYear(date.getYear())));
     }
@@ -2272,15 +2276,6 @@ public class TestLocalDate {
     public void test_toLocalDate(int year, int month, int day) {
         LocalDate t = LocalDate.of(year, month, day);
         assertSame(t.toLocalDate(), t);
-    }
-
-    //-----------------------------------------------------------------------
-    // toYear()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_toYear(int year, int month, int day) {
-        LocalDate t = LocalDate.of(year, month, day);
-        assertEquals(t.toYear(), Year.of(year));
     }
 
     //-----------------------------------------------------------------------

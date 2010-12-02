@@ -234,7 +234,7 @@ public final class MinguoDate
      * @return true if this date is in a leap year
      */
     public boolean isLeapYear() {
-        return date.toYear().isLeap();
+        return date.isLeapYear();
     }
 
     //-----------------------------------------------------------------------

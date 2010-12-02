@@ -324,7 +324,7 @@ public abstract class Clock {
      * @throws CalendricalException if the year cannot be created
      */
     public Year year() {
-        return today().toYear();
+        return Year.of(today());
     }
 
     //-----------------------------------------------------------------------

@@ -81,7 +81,7 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRul
         while (date.getYear() <= 2100) {
             if (date.getDayOfWeek() == DayOfWeek.THURSDAY ) {
                 assertEquals(rule().getMaximumValue(date), 53);
-            } else if (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && date.toYear().isLeap()) {
+            } else if (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && date.isLeapYear()) {
                 assertEquals(rule().getMaximumValue(date), 53);
             } else {
                 assertEquals(rule().getMaximumValue(date), 52);

@@ -169,9 +169,6 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_intsMonth_dayTooHigh() {
-        if (Year.MAX_YEAR == Integer.MAX_VALUE) {
-            throw new IllegalCalendarFieldValueException("", RULE_YEAR);
-        }
         try {
             YearMonth.of(Year.MAX_YEAR + 1, MonthOfYear.JANUARY);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -203,9 +200,6 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_dayTooHigh() {
-        if (Year.MAX_YEAR == Integer.MAX_VALUE) {
-            throw new IllegalCalendarFieldValueException("", RULE_YEAR);
-        }
         try {
             YearMonth.of(Year.MAX_YEAR + 1, 2);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -423,15 +417,6 @@ public class TestYearMonth {
         };
     }
 
-    @Test(dataProvider="sampleDates")
-    public void test_get(int y, int m) {
-        YearMonth a = YearMonth.of(y, m);
-        assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
-        
-        assertEquals(a.toYear(), Year.of(y));
-    }
-
     //-----------------------------------------------------------------------
     // with(Year)
     //-----------------------------------------------------------------------
@@ -496,9 +481,6 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withYear_tooHigh() {
-        if (Year.MAX_YEAR == Integer.MAX_VALUE) {
-            throw new IllegalCalendarFieldValueException("", RULE_YEAR);
-        }
         YearMonth test = YearMonth.of(2008, 6);
         try {
             test.withYear(Year.MAX_YEAR + 1);

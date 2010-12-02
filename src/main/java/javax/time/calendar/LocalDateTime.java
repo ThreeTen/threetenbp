@@ -1655,18 +1655,6 @@ public final class LocalDateTime
         return this;
     }
 
-    /**
-     * Gets the year field as a {@code Year}.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * {@code Year} has methods for querying addition year-based information.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return date.toYear();
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this {@code LocalDateTime} to another date-time.

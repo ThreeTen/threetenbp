@@ -488,7 +488,6 @@ public class TestOffsetDateTime {
         assertSame(a.toLocalDateTime(), localDateTime);
         assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
-        assertEquals(a.toYear(), localDate.toYear());
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }
 
