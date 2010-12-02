@@ -50,11 +50,11 @@ Date/Time classes
 ? InstantProvider implementations toEpochMillis()
 ? remove getChronology()
 ? getMonthOfYear() -> getMonth(), etc
-? getAmPm()
 ? with(rule, value)
+? MAX_DATE/MIN_DATE etc
+? Calendrical rule for date/time as a period (for between calculations)
 
 Rules
-- Chronology is a Calendrical
 - ensure can merge MonthDay and Year
 - test min/max year for week-based-year
 - remove Chronology and share
@@ -104,13 +104,11 @@ Time zones
 # Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
 
 Periods
-- hours/minutes/seconds between factories
+- Between factories
 - rename classes?
-- formatting (defer?)
+- Formatting/parsing (defer?)
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - Period.toString is not output of state
-- Period parsing
-- Days between, and similar
 
 Matchers/Adjusters
 - DateTimeAdjuster
@@ -152,7 +150,7 @@ Possible items
 - intervals (defer completely?)
 - HalfDays period unit for AM/PM (more accurate than 12 hours)
 - InvalidDateException - better exception name?
-- simplify (TimeSource to InstantProvider, NO, due to UTC/TAI) and Clock to Calendrical, merging
+- simplify Clock to Calendrical, merging
 
 Document
 - requirement: non JDK extensible
@@ -272,6 +270,8 @@ EDR released
 ===============================================================================
  
 Not doing
-- Use nanoOfDay rule in LocalTime factory
-- toString(pattern)/parse(str, pattern)
+- Use nanoOfDay rule in LocalTime factory - NO, as doesn't work
+- toString(pattern)/parse(str, pattern) - NO, due to ease of formatter usage
+- Add getAmPm() to time classes - NO, due to low use case
+- Remove TimeSource replace by InstantProvider - NO, due to UTC/TAI
  
