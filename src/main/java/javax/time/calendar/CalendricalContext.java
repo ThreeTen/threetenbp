@@ -106,9 +106,9 @@ public final class CalendricalContext
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the merge is strict.
+     * Gets the date resolver to use.
      *
-     * @return true if the merge is strict
+     * @return the date resolver to use
      */
     public DateResolver getDateResolver() {
         return dateResolver;
