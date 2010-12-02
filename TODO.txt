@@ -269,6 +269,7 @@ EDR released
 - Add OffsetDateTime.of(DateProvider,OffsetTime)
 - Add LocalDate.atTime(OffsetTime)
 - Remove toYear() from principal classes
+0.6.3 released
 ===============================================================================
  
 Not doing
