@@ -267,6 +267,7 @@ EDR released
 - Add Chronology CalendricalRule
 - Change ISO year range to -999,999,999 to 999,999,999
 - Add OffsetDateTime.of(DateProvider,OffsetTime)
+- Add LocalDate.atTime(OffsetTime)
 ===============================================================================
  
 Not doing

@@ -2076,6 +2076,17 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     // atTime()
     //-----------------------------------------------------------------------
+    public void test_atTime_OffsetTime() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        assertEquals(t.atTime(OffsetTime.of(11, 30, OFFSET_PONE)), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atTime_OffsetTime_null() {
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        t.atTime((OffsetTime) null);
+    }
+
     public void test_atTime_LocalTime() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         assertEquals(t.atTime(LocalTime.of(11, 30)), LocalDateTime.of(2008, 6, 30, 11, 30));
@@ -2087,6 +2098,7 @@ public class TestLocalDate {
         t.atTime((LocalTime) null);
     }
 
+    //-------------------------------------------------------------------------
     public void test_atTime_int_int() {
         LocalDate t = LocalDate.of(2008, 6, 30);
         assertEquals(t.atTime(11, 30), LocalDateTime.of(2008, 6, 30, 11, 30));

@@ -1135,6 +1135,21 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a local date-time formed from this date at the specified offset time.
+     * <p>
+     * This merges the two objects - {@code this} and the specified time -
+     * to form an instance of {@code OffsetDateTime}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param offsetTime  the offset time to use, not null
+     * @return the offset date-time formed from this date and the specified time, never null
+     */
+    public OffsetDateTime atTime(OffsetTime offsetTime) {
+        return OffsetDateTime.of(this, offsetTime);
+    }
+
+    /**
      * Returns a local date-time formed from this date at the specified time.
      * <p>
      * This merges the two objects - {@code this} and the specified time -
@@ -1142,11 +1157,11 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param time  the time to use, not null
+     * @param localTime  the local time to use, not null
      * @return the local date-time formed from this date and the specified time, never null
      */
-    public LocalDateTime atTime(LocalTime time) {
-        return LocalDateTime.of(this, time);
+    public LocalDateTime atTime(LocalTime localTime) {
+        return LocalDateTime.of(this, localTime);
     }
 
     /**
