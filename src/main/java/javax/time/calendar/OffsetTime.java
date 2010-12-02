@@ -306,7 +306,7 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
+     * Returns a copy of this {@code OffsetTime} with the specified offset ensuring
      * that the result has the same local time.
      * <p>
      * This method returns an object with the same {@code LocalTime} and the specified {@code ZoneOffset}.
@@ -327,7 +327,7 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
+     * Returns a copy of this {@code OffsetTime} with the specified offset ensuring
      * that the result is at the same instant on an implied day.
      * <p>
      * This method returns an object with the the specified {@code ZoneOffset} and a {@code LocalTime}
@@ -639,7 +639,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this time matches the specified matcher.
+     * Checks whether this {@code OffsetTime} matches the specified matcher.
      * <p>
      * Matchers can be used to query the time.
      * A simple matcher might simply compare one of the fields, such as the hour field.
@@ -655,6 +655,9 @@ public final class OffsetTime
     //-----------------------------------------------------------------------
     /**
      * Checks if the time extracted from the calendrical matches this.
+     * <p>
+     * This method implements the {@code CalendricalMatcher} interface.
+     * It is intended that applications use {@link #matches} rather than this method.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical matches, false otherwise
@@ -665,6 +668,9 @@ public final class OffsetTime
 
     /**
      * Adjusts a time to have the value of the time part of this object.
+     * <p>
+     * This method implements the {@code TimeAdjuster} interface.
+     * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
      *
      * @param time  the time to be adjusted, not null
      * @return the adjusted time, never null

@@ -1052,7 +1052,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in three steps:
+     * This method adds the specified amount to the years field in three steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1068,7 +1068,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the period added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
@@ -1080,7 +1080,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in three steps:
+     * This method adds the specified amount to the years field in three steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1102,7 +1102,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in months added.
      * <p>
-     * This method add the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in three steps:
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1130,7 +1130,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in months added.
      * <p>
-     * This method add the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in three steps:
      * <ol>
      * <li>Add the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1152,7 +1152,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in weeks added.
      * <p>
-     * This method add the specified amount in weeks to the days field incrementing
+     * This method adds the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1172,7 +1172,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in days added.
      * <p>
-     * This method add the specified amount to the days field incrementing the
+     * This method adds the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1323,9 +1323,9 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in years subtracted.
      * <p>
-     * This method subtract the specified amount to the years field in three steps:
+     * This method subtracts the specified amount from the years field in three steps:
      * <ol>
-     * <li>subtract the input years to the year field</li>
+     * <li>Subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * </ol>
@@ -1351,9 +1351,9 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in years subtracted.
      * <p>
-     * This method subtract the specified amount to the years field in three steps:
+     * This method subtracts the specified amount from the years field in three steps:
      * <ol>
-     * <li>subtract the input years to the year field</li>
+     * <li>Subtract the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
@@ -1373,9 +1373,9 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in months subtracted.
      * <p>
-     * This method subtract the specified amount to the months field in three steps:
+     * This method subtracts the specified amount from the months field in three steps:
      * <ol>
-     * <li>subtract the input months to the month-of-year field</li>
+     * <li>Subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day-of-month to the last valid day if necessary</li>
      * </ol>
@@ -1401,9 +1401,9 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in months subtracted.
      * <p>
-     * This method subtract the specified amount to the months field in three steps:
+     * This method subtracts the specified amount from the months field in three steps:
      * <ol>
-     * <li>subtract the input months to the month-of-year field</li>
+     * <li>Subtract the input months to the month-of-year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the date using {@code dateResolver} if necessary</li>
      * </ol>
@@ -1423,7 +1423,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in weeks subtracted.
      * <p>
-     * This method subtract the specified amount in weeks to the days field incrementing
+     * This method subtracts the specified amount in weeks from the days field decrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1443,7 +1443,7 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the specified period in days subtracted.
      * <p>
-     * This method subtract the specified amount to the days field incrementing the
+     * This method subtracts the specified amount from the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1522,7 +1522,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this date-time matches the specified matcher.
+     * Checks whether this {@code LocalDateTime} matches the specified matcher.
      * <p>
      * Matchers can be used to query the date-time.
      * A simple matcher might simply compare one of the fields, such as the year field.
@@ -1538,6 +1538,9 @@ public final class LocalDateTime
     //-----------------------------------------------------------------------
     /**
      * Checks if the date-time extracted from the calendrical matches this.
+     * <p>
+     * This method implements the {@code CalendricalMatcher} interface.
+     * It is intended that applications use {@link #matches} rather than this method.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical matches, false otherwise
@@ -1548,6 +1551,9 @@ public final class LocalDateTime
 
     /**
      * Adjusts a date to have the value of the date part of this object.
+     * <p>
+     * This method implements the {@code DateAdjuster} interface.
+     * It is intended that applications use {@link #with(DateAdjuster)} rather than this method.
      *
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, never null
@@ -1558,6 +1564,9 @@ public final class LocalDateTime
 
     /**
      * Adjusts a time to have the value of the time part of this object.
+     * <p>
+     * This method implements the {@code TimeAdjuster} interface.
+     * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
      *
      * @param time  the time to be adjusted, not null
      * @return the adjusted time, never null
@@ -1660,7 +1669,6 @@ public final class LocalDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(LocalDateTime other) {
         int cmp = date.compareTo(other.date);
@@ -1677,7 +1685,6 @@ public final class LocalDateTime
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(LocalDateTime other) {
         return compareTo(other) > 0;
@@ -1689,8 +1696,7 @@ public final class LocalDateTime
      * The comparison is based on the time-line position of the date-times.
      *
      * @param other  the other date-time to compare to, not null
-     * @return true if this point is before the specified date-time
-     * @throws NullPointerException if {@code other} is null
+     * @return true if this is before the specified date-time
      */
     public boolean isBefore(LocalDateTime other) {
         return compareTo(other) < 0;

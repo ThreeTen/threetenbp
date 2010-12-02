@@ -930,6 +930,9 @@ public final class OffsetDate
 
     /**
      * Adjusts a date to have the value of the date part of this object.
+     * <p>
+     * This method implements the {@code DateAdjuster} interface.
+     * It is intended that applications use {@link #with(DateAdjuster)} rather than this method.
      *
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, never null

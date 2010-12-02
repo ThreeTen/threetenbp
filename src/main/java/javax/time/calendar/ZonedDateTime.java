@@ -1815,7 +1815,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this date-time matches the specified matcher.
+     * Checks whether this {@code ZonedDateTime} matches the specified matcher.
      * <p>
      * Matchers can be used to query the date-time.
      * A simple matcher might simply compare one of the fields, such as the year field.
@@ -1831,6 +1831,9 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Checks if the date-time extracted from the calendrical matches this.
+     * <p>
+     * This method implements the {@code CalendricalMatcher} interface.
+     * It is intended that applications use {@link #matches} rather than this method.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical matches, false otherwise

@@ -486,6 +486,9 @@ public final class YearMonth
     //-----------------------------------------------------------------------
     /**
      * Checks if the year-month extracted from the calendrical matches this.
+     * <p>
+     * This method implements the {@code CalendricalMatcher} interface.
+     * It is intended that applications use {@link LocalDate#matches} rather than this method.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical matches, false otherwise
