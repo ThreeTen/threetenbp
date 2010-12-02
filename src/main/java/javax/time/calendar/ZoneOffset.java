@@ -627,9 +627,9 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for the zone-offset.
+     * Gets the rule for the zone-offset.
      *
-     * @return the field rule for the zone-offset, never null
+     * @return the rule for the zone-offset, never null
      */
     public static CalendricalRule<ZoneOffset> rule() {
         return Rule.INSTANCE;

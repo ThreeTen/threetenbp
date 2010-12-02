@@ -335,7 +335,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalTime} from a string such as {@code 10:15}.
+     * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.
      * <p>
      * The following formats are accepted in ASCII:
      * <ul>
@@ -624,7 +624,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in hours added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -643,7 +643,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in minutes added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -668,7 +668,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in seconds added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -695,7 +695,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in nanoseconds added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -810,7 +810,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in hours subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -829,7 +829,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in minutes subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -854,7 +854,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in seconds subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -881,7 +881,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in nanoseconds subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
      * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -979,21 +979,6 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Converts this time to a {@code DateTimeFields} containing the
-//     * hour, minute, second and nano fields.
-//     *
-//     * @return the field set, never null
-//     */
-//    public DateTimeFields toDateTimeFields() {
-//        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
-//        map.put(ISOChronology.hourOfDayRule(), (int) hour);
-//        map.put(ISOChronology.minuteOfHourRule(), (int) minute);
-//        map.put(ISOChronology.secondOfMinuteRule(), (int) second);
-//        map.put(ISOChronology.nanoOfSecondRule(), nano);
-//        return DateTimeFields.fields(map);
-//    }
-
     /**
      * Converts this time to a {@code LocalTime}, trivially
      * returning {@code this}.

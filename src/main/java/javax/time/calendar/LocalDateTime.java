@@ -1764,9 +1764,9 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for {@code LocalDateTime}.
+     * Gets the rule for {@code LocalDateTime}.
      *
-     * @return the field rule for the date-time, never null
+     * @return the rule for the date-time, never null
      */
     public static CalendricalRule<LocalDateTime> rule() {
         return Rule.INSTANCE;

@@ -603,9 +603,9 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for the month-day.
+     * Gets the rule for the month-day.
      *
-     * @return the field rule for the month-day, never null
+     * @return the rule for the month-day, never null
      */
     public static CalendricalRule<MonthDay> rule() {
         return Rule.INSTANCE;

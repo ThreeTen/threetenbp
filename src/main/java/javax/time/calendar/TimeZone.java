@@ -774,9 +774,9 @@ public abstract class TimeZone implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for {@code DateTimeZone}.
+     * Gets the rule for {@code TimeZone}.
      *
-     * @return the field rule for the time-zone, never null
+     * @return the rule for the time-zone, never null
      */
     public static CalendricalRule<TimeZone> rule() {
         return Rule.INSTANCE;

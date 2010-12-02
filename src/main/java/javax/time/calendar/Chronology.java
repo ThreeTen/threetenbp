@@ -101,9 +101,9 @@ public abstract class Chronology implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for {@code Chronology}.
+     * Gets the rule for {@code Chronology}.
      *
-     * @return the field rule for the chronology, never null
+     * @return the rule for the chronology, never null
      */
     public static CalendricalRule<Chronology> rule() {
         return Rule.INSTANCE;

@@ -110,7 +110,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime}.
+     * Obtains an instance of {@code OffsetTime} from an hour and minute.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
@@ -126,7 +126,7 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetTime}.
+     * Obtains an instance of {@code OffsetTime} from an hour, minute and second.
      * <p>
      * The second field will be set to zero by this factory method.
      *
@@ -143,7 +143,7 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetTime}.
+     * Obtains an instance of {@code OffsetTime} from an hour, minute, second and nanosecond.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
@@ -159,7 +159,7 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetTime} from a {@code TimeProvider}.
+     * Obtains an instance of {@code OffsetTime} from a time provider.
      *
      * @param timeProvider  the time provider to use, not null
      * @param offset  the zone offset, not null
@@ -402,7 +402,6 @@ public final class OffsetTime
      *
      * @param adjuster  the adjuster to use, not null
      * @return an {@code OffsetTime} based on this time adjusted as necessary, never null
-     * @throws IllegalArgumentException if the adjuster returned null
      */
     public OffsetTime with(TimeAdjuster adjuster) {
         LocalTime newTime = time.with(adjuster);
@@ -491,6 +490,9 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in hours added.
      * <p>
+     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
@@ -503,6 +505,9 @@ public final class OffsetTime
 
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in minutes added.
+     * <p>
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -517,6 +522,9 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in seconds added.
      * <p>
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
@@ -530,6 +538,9 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds added.
      * <p>
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
@@ -542,13 +553,13 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the specified time period subtracted.
+     * Returns a copy of this {@code OffsetTime} with the specified period subtracted.
      * <p>
      * This subtracts the specified period from this time, returning a new time.
      * Before subtraction, the period is converted to a time-based {@code Period} using
      * {@link Period#ofTimeFields(PeriodProvider)}.
      * That factory ignores any date-based ISO fields, thus subtracting a date-based
-     * period to this time will have no effect.
+     * period from this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -565,6 +576,9 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in hours subtracted.
      * <p>
+     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
@@ -577,6 +591,9 @@ public final class OffsetTime
 
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in minutes subtracted.
+     * <p>
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -591,6 +608,9 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in seconds subtracted.
      * <p>
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
@@ -603,6 +623,9 @@ public final class OffsetTime
 
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds subtracted.
+     * <p>
+     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -662,7 +685,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this time to another time based on the UTC equivalent times
+     * Compares this {@code OffsetTime} to another time based on the UTC equivalent times
      * then local time.
      * <p>
      * This ordering is consistent with {@code equals()}.
@@ -698,7 +721,9 @@ public final class OffsetTime
     }
 
     /**
-     * Is this time after the specified time.
+     * Checks if this {@code OffsetTime} is after the specified time.
+     * <p>
+     * The comparison is based on the time-line position of the time within a day.
      *
      * @param other  the other time to compare to, not null
      * @return true if this is after the specified time
@@ -709,7 +734,9 @@ public final class OffsetTime
     }
 
     /**
-     * Is this time before the specified time.
+     * Checks if this {@code OffsetTime} is before the specified time.
+     * <p>
+     * The comparison is based on the time-line position of the time within a day.
      *
      * @param other  the other time to compare to, not null
      * @return true if this point is before the specified time
@@ -721,9 +748,9 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Is this time equal to the specified time.
+     * Checks if this {@code OffsetTime} is equal to the specified time.
      * <p>
-     * This compares the time and the offset.
+     * The comparison is based on the time and the offset.
      *
      * @param other  the other time to compare to, null returns false
      * @return true if this point is equal to the specified time
@@ -741,7 +768,7 @@ public final class OffsetTime
     }
 
     /**
-     * A hash code for this time.
+     * A hash code for this {@code OffsetTime}.
      *
      * @return a suitable hash code
      */
@@ -787,9 +814,9 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for {@code OffsetTime}.
+     * Gets the rule for {@code OffsetTime}.
      *
-     * @return the field rule for the time, never null
+     * @return the rule for the time, never null
      */
     public static CalendricalRule<OffsetTime> rule() {
         return Rule.INSTANCE;

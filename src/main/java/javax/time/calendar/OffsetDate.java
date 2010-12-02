@@ -1178,9 +1178,9 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for {@code OffsetDate}.
+     * Gets the rule for {@code OffsetDate}.
      *
-     * @return the field rule for the date, never null
+     * @return the rule for the date, never null
      */
     public static CalendricalRule<OffsetDate> rule() {
         return Rule.INSTANCE;

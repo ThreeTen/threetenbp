@@ -697,9 +697,9 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for the year-month.
+     * Gets the rule for the year-month.
      *
-     * @return the field rule for the date-time, never null
+     * @return the rule for the year-month, never null
      */
     public static CalendricalRule<YearMonth> rule() {
         return Rule.INSTANCE;

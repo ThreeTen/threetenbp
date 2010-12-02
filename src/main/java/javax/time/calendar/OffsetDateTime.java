@@ -1841,9 +1841,9 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for the date-time.
+     * Gets the rule for the date-time.
      *
-     * @return the field rule for the date-time, never null
+     * @return the rule for the date-time, never null
      */
     public static CalendricalRule<OffsetDateTime> rule() {
         return Rule.INSTANCE;
