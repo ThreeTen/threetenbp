@@ -420,7 +420,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * <p>
      * The entire state of the object is compared.
      *
-     * @param other  the other object to compare to, null returns false
+     * @param otherRule  the other object to compare to, null returns false
      * @return true if equal
      */
     @Override

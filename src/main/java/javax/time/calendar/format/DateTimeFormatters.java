@@ -114,8 +114,8 @@ public final class DateTimeFormatters {
      * as per {@link TextStyle#FULL}. Otherwise a short form is used, as per {@link TextStyle#SHORT}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link #appendValue(DateTimeFieldRule)}. Otherwise, the
-     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeFieldRule, int)}.
+     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeFieldRule)}. Otherwise, the
+     * count of digits is used as the width of the output field as per {@link DateTimeFormatterBuilder#appendValue(DateTimeFieldRule, int)}.
      * <p>
      * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
      * All fractional values must use the 'f' prefix to ensure correct parsing.
@@ -148,12 +148,12 @@ public final class DateTimeFormatters {
      * <p>
      * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
      * <p>
-     * <b>Optional section</b>: The optional section markers work exactly like calling {@link #optionalStart()}
-     * and {@link #optionalEnd()}.
+     * <b>Optional section</b>: The optional section markers work exactly like calling {@link DateTimeFormatterBuilder#optionalStart()}
+     * and {@link DateTimeFormatterBuilder#optionalEnd()}.
      * <p>
      * <b>Pad modifier</b>: Modifies the pattern that immediately follows to be padded with spaces.
      * The pad width is determined by the number of pattern letters.
-     * This is the same as calling {@link #padNext(int)}.
+     * This is the same as calling {@link DateTimeFormatterBuilder#padNext(int)}.
      * <p>
      * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
      * <p>

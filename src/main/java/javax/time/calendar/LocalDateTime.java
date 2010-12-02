@@ -498,10 +498,7 @@ public final class LocalDateTime
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a {@code Year} object which includes information on whether
-     * this is a leap year and its length in days.
+     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -997,7 +994,7 @@ public final class LocalDateTime
      * <li>Add the date part of the period to the date part of this date-time
      * using {@link LocalDate#plus(PeriodProvider)} - which has some complex rules</li>
      * <li>Add the time part of the period to the time part of this date-time using
-     * {@link LocalTime#plusWithOverflow(int, int, int, long)</li>
+     * {@link LocalTime#plusWithOverflow(int, int, int, long)}</li>
      * <li>Add the overflow days from the time calculation to the calculated date</li>
      * <li>Combine the new date and time parts to form the result</li>
      * </ol>
@@ -1268,7 +1265,7 @@ public final class LocalDateTime
      * <li>Subtract the date part of the period from the date part of this date-time
      * using {@link LocalDate#minus(PeriodProvider)} - which has some complex rules</li>
      * <li>Subtract the time part of the period from the time part of this date-time using
-     * {@link LocalTime#minusWithOverflow(int, int, int, long)</li>
+     * {@link LocalTime#minusWithOverflow(int, int, int, long)}</li>
      * <li>Subtract the overflow days from the time calculation from the calculated date</li>
      * <li>Combine the new date and time parts to form the result</li>
      * </ol>

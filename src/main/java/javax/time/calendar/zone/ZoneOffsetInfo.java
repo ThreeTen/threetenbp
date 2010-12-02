@@ -189,7 +189,7 @@ public final class ZoneOffsetInfo {
      * <p>
      * The entire state of the object is compared.
      *
-     * @param other  the other object to compare to, null returns false
+     * @param otherInfo  the other object to compare to, null returns false
      * @return true if equal
      */
     @Override

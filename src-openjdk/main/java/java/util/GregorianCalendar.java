@@ -2989,7 +2989,6 @@ public class GregorianCalendar
      * for Modified Julian Days.
      *
      * @return the date-time representing the same point on the time-line, never null.
-     * @see #setDateTime(DateTimeProvider)
      * @since ?
      */
     public LocalDateTime toLocalDateTime() {
@@ -3051,7 +3050,6 @@ public class GregorianCalendar
      * for Modified Julian Days.
      *
      * @return the date-time representing the same point on the time-line, never null.
-     * @see #setDateTime(DateTimeProvider)
      * @since ?
      */
     public OffsetDateTime toOffsetDateTime() {

@@ -161,7 +161,7 @@ public final class TAIInstant
      * <p>
      * The following format is accepted in ASCII:
      * <ul>
-     * <li>{@code {seconds).(nanosOfSecond}s(TAI)
+     * <li>{@code {seconds}.{nanosOfSecond}s(TAI)}
      * </ul>
      * The accepted format is strict.
      * The seconds part must contain only numbers and a possible leading negative sign.
@@ -378,7 +378,7 @@ public final class TAIInstant
     /**
      * A string representation of this instant.
      * <p>
-     * The string is formatted as {@code {seconds).(nanosOfSecond}s(TAI).
+     * The string is formatted as {@code {seconds).(nanosOfSecond}s(TAI)}.
      * At least one second digit will be present.
      * The nanoseconds will always be nine digits.
      *

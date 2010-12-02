@@ -48,7 +48,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
  * as well as the offset from UTC. Thus, for example, the value
- * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime).
+ * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
  * OffsetDateTime is immutable and thread-safe.
  *
@@ -573,10 +573,7 @@ public final class OffsetDateTime
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a {@code Year} object which includes information on whether
-     * this is a leap year and its length in days.
+     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */

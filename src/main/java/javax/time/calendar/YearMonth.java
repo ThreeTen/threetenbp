@@ -264,10 +264,7 @@ public final class YearMonth
      * Gets the year field.
      * <p>
      * This method returns the primitive {@code int} value for the year.
-     * <p>
-     * Additional information about the year can be obtained via {@link #toYear}.
-     * This returns a {@code Year} object which includes information on whether
-     * this is a leap year and its length in days.
+     * Additional information about the year can be obtained by creating a {@link Year}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
