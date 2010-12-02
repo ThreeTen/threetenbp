@@ -65,7 +65,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * The last year to have its transitions cached.
      */
-    private static final Year LAST_CACHED_YEAR = Year.of(2100);
+    private static final int LAST_CACHED_YEAR = 2100;
 
     /**
      * The transitions between standard offsets (epoch seconds), sorted.
@@ -276,7 +276,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         if (lastRules.length > 0 &&
                 epochSecs > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
             OffsetDateTime dt = OffsetDateTime.ofInstant(instant, wallOffsets[wallOffsets.length - 1]);
-            ZoneOffsetTransition[] transArray = findTransitionArray(Year.of(dt));
+            ZoneOffsetTransition[] transArray = findTransitionArray(dt.getYear());
             ZoneOffsetTransition trans = null;
             for (int i = 0; i < transArray.length; i++) {
                 trans = transArray[i];
@@ -303,7 +303,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         // check if using last rules
         if (lastRules.length > 0 &&
                 dt.isAfter(savingsLocalTransitions[savingsLocalTransitions.length - 1])) {
-            ZoneOffsetTransition[] transArray = findTransitionArray(Year.of(dt));
+            ZoneOffsetTransition[] transArray = findTransitionArray(dt.getYear());
             ZoneOffsetInfo info = null;
             for (ZoneOffsetTransition trans : transArray) {
                 info = findOffsetInfo(dt, trans);
@@ -384,18 +384,19 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @param year  the year, not null
      * @return the transition array, never null
      */
-    private ZoneOffsetTransition[] findTransitionArray(Year year) {
-        ZoneOffsetTransition[] transArray = lastRulesCache.get(year);
+    private ZoneOffsetTransition[] findTransitionArray(int year) {
+        Year yearObj = Year.of(year);
+        ZoneOffsetTransition[] transArray = lastRulesCache.get(yearObj);
         if (transArray != null) {
             return transArray;
         }
         ZoneOffsetTransitionRule[] ruleArray = lastRules;
         transArray  = new ZoneOffsetTransition[ruleArray.length];
         for (int i = 0; i < ruleArray.length; i++) {
-            transArray[i] = ruleArray[i].createTransition(year.getValue());
+            transArray[i] = ruleArray[i].createTransition(year);
         }
-        if (year.isBefore(LAST_CACHED_YEAR)) {
-            lastRulesCache.putIfAbsent(year, transArray);
+        if (year < LAST_CACHED_YEAR) {
+            lastRulesCache.putIfAbsent(yearObj, transArray);
         }
         return transArray;
     }
@@ -432,14 +433,14 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
                 return null;
             }
             OffsetDateTime dt = OffsetDateTime.ofInstant(instant, wallOffsets[wallOffsets.length - 1]);
-            for (Year year = Year.of(dt); true; year = year.next()) {
+            for (int year = dt.getYear(); true; year++) {
                 ZoneOffsetTransition[] transArray = findTransitionArray(year);
                 for (ZoneOffsetTransition trans : transArray) {
                     if (instant.isBefore(trans.getInstant())) {
                         return trans;
                     }
                 }
-                if (year.getValue() == Year.MAX_YEAR) {
+                if (year == Year.MAX_YEAR) {
                     return null;
                 }
             }
@@ -477,7 +478,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             ZoneOffset lastHistoricOffset = wallOffsets[wallOffsets.length - 1];
             OffsetDateTime dt = OffsetDateTime.ofInstant(instant, lastHistoricOffset);
             OffsetDateTime lastHistoricDT = OffsetDateTime.ofInstant(Instant.ofEpochSeconds(lastHistoric), lastHistoricOffset);
-            for (Year year = Year.of(dt); year.getValue() > lastHistoricDT.getYear(); year = year.previous()) {
+            for (int year = dt.getYear(); year > lastHistoricDT.getYear(); year--) {
                 ZoneOffsetTransition[] transArray = findTransitionArray(year);
                 for (int i = transArray.length - 1; i >= 0; i--) {
                     if (instant.isAfter(transArray[i].getInstant())) {
