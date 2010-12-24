@@ -30,14 +30,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-README for JSR-310 Reference Implementation
-2008-08-04
+README for ThreeTen, the JSR-310 Reference Implementation
+2010-12-24
 
-Welcome to the JSR-310 reference implementation.
+Welcome to the ThreeTen project, the reference implementation for JSR-310.
 This is a quick guide to help you getting started.
 
 The subversion repository for this codebase is at:
-https://jsr-310.dev.java.net/svn/jsr-310/trunk/jsr-310-ri
+https://threeten.svn.sourceforge.net/svnroot/threeten/trunk/threeten
 
 The main build process uses Apache Ant - http://ant.apache.org
 From the command line the following options will get you started:
@@ -46,19 +46,19 @@ From the command line the following options will get you started:
   ant javadoc         # creates the javadoc
   ant test            # runs the main test suite (excluding OpenJDK classes)
   ant coverage        # calculates test coverage (excluding OpenJDK classes)
-Sun JDK 1.6 (or OpenJDK) is required to build the codebase.
+Oracle JDK 1.6 (or OpenJDK) is required to build the codebase.
 
 
-JSR-310 divides time into two categories - continuous and human.
+ThreeTen divides time into two categories - continuous and human.
 
 Continuous time is based around a single incrementing number from a single epoch.
-JSR-310 counts in nanoseconds from 1970-01-01T00:00:00.000000000Z
+ThreeTen counts in nanoseconds from 1970-01-01T00:00:00.000000000Z
 Continuous time is represented as follows:
  - Instant - a point on the time-line to nanosecond precision
  - Duration - an amount of time measured in nanoseconds
 
 Human time is based around fields, such as year, month, day and hour.
-JSR-310 supports precision of nanoseconds.
+ThreeTen supports precision of nanoseconds.
 The year range roughly equal to the range of a 32-bit int.
 Human time is represented via a group of classes:
  - LocalDate - a date, without time of day, offset or zone
@@ -70,9 +70,9 @@ Human time is represented via a group of classes:
  - ZonedDateTime - the date and time with a time zone and offset
  - YearMonth - a year and month
  - MonthDay - month and day
- - Year/MonthOfDay/DayOfMonth/DayOfWeek/... - classes for the important fields
- - Calendrical - a flexible representation with optional fields, offset and zone
+ - Year/MonthOfDay/DayOfWeek/... - classes for the important fields
  - DateTimeFields - stores a map of field-value pairs which may be invalid
+ - Calendrical - access to the low-level API
  - Period - a descriptive amount of time, such as "2 months and 3 days"
 
 Support classes include:
@@ -87,22 +87,21 @@ Additional packages provide for:
  - single field periods
  - integration with existing Java classes
 
-The reference implementation is currently considered usable while still
-partially incomplete. The API is subject to change before final release.
+The ThreeTen project is used to drive the reference implementation of JSR-310.
+The API is currently considered usable and accurate, yet incomplete and subject to change.
+If you use this API you must be able to handle incompatible changes in later versions.
 
-The only time zones implemented are fixed rules based on offsets and the
-major European and American zones (based on 2008 rules).
-Special efforts with the boot classpath are also necessary to test and use
+Special efforts with the boot classpath are necessary to test and use
 the integration with the existing Java classes.
 
 Test coverage is at about 95% and all current tests pass.
 
 Feedback is welcomed!
-Home page: https://jsr-310.dev.java.net/
-Mailing list: https://jsr-310.dev.java.net/servlets/ProjectMailingListList (dev)
+Home page: https://threeten.sourceforge.net/
+Mailing list: http://sourceforge.net/mailarchive/forum.php?forum_name=threeten-develop (develop)
 Wiki: http://wiki.java.net/bin/view/Projects/DateTimeAPI
 
-JSR-310 team
+ThreeTen/JSR-310 team
 
 
 (See the license files for detail on licensing, warranty and disclaimers)

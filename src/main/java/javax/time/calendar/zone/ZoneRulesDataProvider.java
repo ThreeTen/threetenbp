@@ -61,7 +61,7 @@ public interface ZoneRulesDataProvider {
      * <p>
      * Group IDs must match regex {@code [A-Za-z0-9._-]+}.
      * Group IDs should use reverse domain name notation, like packages.
-     * Group IDs without a dot are reserved for use by the JSR-310 expert group.
+     * Group IDs without a dot are reserved.
      *
      * @return the ID of the group, never null
      */

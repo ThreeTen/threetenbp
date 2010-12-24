@@ -57,7 +57,7 @@ import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
- * Examples for JSR-310.
+ * Examples for this project.
  *
  * @author Stephen Colebourne
  */

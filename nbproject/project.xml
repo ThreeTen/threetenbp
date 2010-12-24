@@ -4,7 +4,7 @@
     <configuration>
         <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
             <!-- Do not use Project Properties customizer when editing this file manually. -->
-            <name>jsr-310-ri</name>
+            <name>threeten</name>
             <properties/>
             <folders>
                 <source-folder>

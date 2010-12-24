@@ -288,7 +288,7 @@ public final class TZDBZoneRulesCompiler {
     private static void outputFile(
             File dstFile, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
             Set<String> allRegionIds, Set<ZoneRules> allRules) {
-        // this format is not part of the jsr-310 specification
+        // this format is not publicly specified
         try {
             JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
             jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));

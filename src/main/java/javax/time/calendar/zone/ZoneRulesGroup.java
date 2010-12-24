@@ -57,8 +57,8 @@ import javax.time.calendar.OffsetDateTime;
  * as used in older versions of Java and many operating systems.
  * <p>
  * Other groups of zone rules can be developed and registered.
- * Group IDs should be reverse domain names as with package names unless explicitly
- * approved by the JSR-310 expert group.
+ * Group IDs should be reverse domain names as with package names.
+ * Group IDs that do not contain a dot are reserved.
  * <p>
  * Each group will provide versioned sets of data for a number of geographical regions.
  * Instances of {@code ZoneRulesGroup} manage the data via region and version IDs.
