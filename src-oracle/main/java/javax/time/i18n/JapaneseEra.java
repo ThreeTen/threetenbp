@@ -60,7 +60,7 @@ public enum JapaneseEra implements Calendrical {
     /**
      * Arrays containing the end date of era as LocalDate.
      */
-    private static final LocalDate ERA_END_DATES[] = {
+    private static final LocalDate[] ERA_END_DATES = {
         LocalDate.of(1865, 4, 6), // End of UNKOWN era
         LocalDate.of(1868, 9, 7), // End of KEIO era
         LocalDate.of(1912, 7, 29), // End of MEIJI era

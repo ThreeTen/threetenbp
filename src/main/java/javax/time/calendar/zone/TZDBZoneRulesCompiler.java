@@ -389,6 +389,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Sets the deduplication map.
+     * @param deduplicateMap  the map to deduplicate items
      */
     void setDeduplicateMap(Map<Object, Object> deduplicateMap) {
         this.deduplicateMap = deduplicateMap;
@@ -418,7 +419,7 @@ public final class TZDBZoneRulesCompiler {
         try {
             in = new BufferedReader(new FileReader(file));
             List<TZDBZone> openZone = null;
-            for (; (line = in.readLine()) != null; lineNumber++) {
+            for ( ; (line = in.readLine()) != null; lineNumber++) {
                 int index = line.indexOf('#');  // remove comments (doesn't handle # in quotes)
                 if (index >= 0) {
                     line = line.substring(0, index);
@@ -473,7 +474,9 @@ public final class TZDBZoneRulesCompiler {
             throw new Exception("Failed while processing file '" + file + "' on line " + lineNumber + " '" + line + "'", ex);
         } finally {
             try {
-                in.close();
+                if (in != null) {
+                    in.close();
+                }
             } catch (Exception ex) {
                 // ignore NPE and IOE
             }

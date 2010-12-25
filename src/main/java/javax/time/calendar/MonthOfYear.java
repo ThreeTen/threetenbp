@@ -522,7 +522,7 @@ public enum MonthOfYear implements Calendrical {
      * @return the last day of this month, from 31 to 366
      */
     public int getMonthEndDayOfYear(boolean leapYear) {
-        return getMonthStartDayOfYear(leapYear) + lengthInDays(leapYear) -1;
+        return getMonthStartDayOfYear(leapYear) + lengthInDays(leapYear) - 1;
     }
 
     //-----------------------------------------------------------------------

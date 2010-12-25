@@ -47,7 +47,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * Array of 10 to the power of n
+     * Array of 10 to the power of n.
      */
     static final int[] EXCEED_POINTS = new int[] {
         0,

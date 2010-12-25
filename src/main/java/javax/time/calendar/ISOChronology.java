@@ -1094,7 +1094,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         } else {
             OffsetDate od = merger.getValue(OffsetDate.rule());
             OffsetTime ot = merger.getValue(OffsetTime.rule());
-            if (od != null && ot != null ) {
+            if (od != null && ot != null) {
                 if (od.getOffset().equals(ot.getOffset()) == false) {
                     if (merger.getContext().isStrict()) {
                         throw new CalendricalRuleException("Unable to merge OffsetDate and OffsetTime as offsets differ", OffsetTime.rule());
@@ -1443,6 +1443,10 @@ public final class ISOChronology extends Chronology implements Serializable {
             }
             return super.equals(obj);
         }
+        @Override
+        public int hashCode() {
+            return ordinal;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -1537,7 +1541,7 @@ public final class ISOChronology extends Chronology implements Serializable {
     static final class Rule extends DateTimeFieldRule<Integer> implements Serializable {
         private static final long serialVersionUID = 1L;
         private final int ordinal;
-        private transient final int smallestMaximum;
+        private final transient int smallestMaximum;
         private Rule(int ordinal, 
                 String name,
                 PeriodUnit periodUnit,
@@ -1660,7 +1664,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: {
                     // TODO: derive from WeekBasedYear
                     LocalDate date = calendrical.get(LocalDate.rule());
-                    if (date == null ) {
+                    if (date == null) {
                         return 53;
                     }
                     date = date.withDayOfMonth(1).withMonthOfYear(1);
@@ -1686,6 +1690,10 @@ public final class ISOChronology extends Chronology implements Serializable {
                 return ordinal == ((Rule) obj).ordinal;
             }
             return super.equals(obj);
+        }
+        @Override
+        public int hashCode() {
+            return ordinal;
         }
     }
 

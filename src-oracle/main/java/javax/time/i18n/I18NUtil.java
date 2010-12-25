@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2009 Oracle All Rights Reserved.
  */
-
 package javax.time.i18n;
 
 /**
@@ -9,7 +8,14 @@ package javax.time.i18n;
  *
  * @author Ryoji Suzuki
  */
-class I18NUtil {
+final class I18NUtil {
+
+    /**
+     * Restricted constructor.
+     */
+    private I18NUtil() {
+    }
+
     /**
      * Validates that the input value is not null.
      *
@@ -22,4 +28,5 @@ class I18NUtil {
             throw new NullPointerException(errorMessage);
         }
     }
+
 }

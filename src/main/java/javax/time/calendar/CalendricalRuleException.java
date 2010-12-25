@@ -46,7 +46,7 @@ public class CalendricalRuleException extends CalendricalException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The rule that caused the exception
+     * The rule that caused the exception.
      */
     private final CalendricalRule<?> rule;
 

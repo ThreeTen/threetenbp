@@ -43,8 +43,9 @@ import java.io.Serializable;
  * @author Stephen Colebourne
  */
 public final class DateResolvers {
+
     /**
-     * Private constructor since this is a utility class
+     * Private constructor since this is a utility class.
      */
     private DateResolvers() {
     }

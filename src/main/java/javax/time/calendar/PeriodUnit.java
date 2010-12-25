@@ -72,19 +72,19 @@ public abstract class PeriodUnit
     /**
      * The name of the unit, not null.
      */
-    private transient final String name;
+    private final transient String name;
     /**
      * The estimated duration of the unit, not null.
      */
-    private transient final Duration estimatedDuration;
+    private final transient Duration estimatedDuration;
     /**
      * The cache of periods equivalent to this unit, not null.
      */
-    private transient final List<PeriodField> equivalentPeriods;
+    private final transient List<PeriodField> equivalentPeriods;
     /**
      * The cache of the unit hash code.
      */
-    private transient final int hashCode;
+    private final transient int hashCode;
 
     /**
      * Constructor to create a base unit that cannot be derived.
@@ -325,6 +325,7 @@ public abstract class PeriodUnit
     /**
      * Compares two units based on the name, estimated duration and equivalent period.
      *
+     * @param obj  the object to compare to, null returns false
      * @return true if the units are the same
      */
     @Override

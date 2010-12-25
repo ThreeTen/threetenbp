@@ -13,9 +13,13 @@
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
     <module name="FileContentsHolder"/>
-    <module name="ConstantName"/>
+    <module name="ConstantName">
+      <property name="format" value="^[A-Z_][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+    </module>
     <module name="AvoidStarImport"/>
-    <module name="EmptyBlock"/>
+    <module name="EmptyBlock">
+      <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_IF,LITERAL_TRY,LITERAL_WHILE,STATIC_INIT"/>
+    </module>
     <module name="EmptyForInitializerPad">
       <property name="option" value="space"/>
     </module>
@@ -25,27 +29,33 @@
     <module name="EqualsHashCode"/>
     <module name="IllegalImport"/>
     <module name="IllegalInstantiation"/>
-    <module name="InnerAssignment"/>
     <module name="JavadocType">
       <property name="authorFormat" value="\S"/>
     </module>
     <module name="JavadocMethod">
       <property name="scope" value="package"/>
+      <property name="excludeScope" value="anoninner"/>
       <property name="allowUndeclaredRTE" value="true"/>
     </module>
-    <module name="JavadocVariable"/>
+    <module name="JavadocVariable">
+      <property name="excludeScope" value="anoninner"/>
+    </module>
     <module name="LeftCurly"/>
     <module name="LineLength">
       <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
-      <property name="max" value="136"/>
+      <property name="max" value="200"/>
     </module>
     <module name="LocalFinalVariableName"/>
     <module name="LocalVariableName"/>
     <module name="MemberName"/>
-    <module name="MethodLength"/>
+    <module name="MethodLength">
+      <property name="max" value="250"/>
+    </module>
     <module name="MethodName"/>
     <module name="ModifierOrder"/>
-    <module name="NeedBraces"/>
+    <module name="NeedBraces">
+      <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_IF,LITERAL_WHILE"/>
+    </module>
     <module name="NoWhitespaceAfter"/>
     <module name="NoWhitespaceBefore">
       <property name="allowLineBreaks" value="true"/>
@@ -76,14 +86,12 @@
     </module>
     <module name="AnnotationUseStyle"/>
     <module name="MissingDeprecated"/>
-    <module name="MissingOverride"/>
     <module name="PackageAnnotation"/>
     <module name="SuppressWarnings"/>
     <module name="JavadocStyle"/>
     <module name="ClassTypeParameterName"/>
     <module name="MethodTypeParameterName"/>
     <module name="ImportOrder"/>
-    <module name="UnusedImports"/>
     <module name="GenericWhitespace"/>
     <module name="MethodParamPad"/>
     <module name="CovariantEquals"/>
@@ -91,7 +99,6 @@
     <module name="ExplicitInitialization"/>
     <module name="FallThrough"/>
     <module name="JUnitTestCase"/>
-    <module name="MissingSwitchDefault"/>
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="InterfaceIsType"/>
@@ -106,7 +113,9 @@
     <property name="onCommentFormat" value="CSON\: ([\w\|]+)"/>
     <property name="checkFormat" value="$1"/>
   </module>
-  <module name="FileLength"/>
+  <module name="FileLength">
+    <property name="max" value="3000"/>
+  </module>
   <module name="JavadocPackage"/>
   <module name="FileTabCharacter"/>
   <module name="NewlineAtEndOfFile"/>

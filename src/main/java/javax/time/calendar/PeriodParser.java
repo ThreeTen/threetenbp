@@ -40,7 +40,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * @author Darryl West
  * @author Stephen Colebourne
  */
-class PeriodParser {
+final class PeriodParser {
 
     /**
      * The singleton instance.
@@ -252,7 +252,7 @@ class PeriodParser {
     }
 
     /**
-     * Parse values container created for each parse
+     * Parse values container created for each parse.
      */
     private static class ParseValues {
         /**

@@ -469,7 +469,7 @@ public final class PeriodField
      */
     @Override
     public int hashCode() {
-        return unit.hashCode() ^ (int)( amount ^ (amount >>> 32));
+        return unit.hashCode() ^ (int) (amount ^ (amount >>> 32));
     }
 
     //-----------------------------------------------------------------------

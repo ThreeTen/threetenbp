@@ -254,7 +254,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
         int data = in.readInt();
         MonthOfYear month = MonthOfYear.of(data >>> 28);
-        int dom = ((data & (63 << 22)) >>> 22) -32;
+        int dom = ((data & (63 << 22)) >>> 22) - 32;
         int dowByte = (data & (7 << 19)) >>> 19;
         DayOfWeek dow = dowByte == 0 ? null : DayOfWeek.of(dowByte);
         int timeByte = (data & (31 << 14)) >>> 14;

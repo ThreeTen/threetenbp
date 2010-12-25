@@ -263,8 +263,11 @@ public final class DateTimeParseContext {
         return currentCalendrical().toString();
     }
 
+    /**
+     * Temporary store of parsed data.
+     */
     static class Parsed {
-        Map<CalendricalRule<?>, Object> values = new HashMap<CalendricalRule<?>, Object>();
+        final Map<CalendricalRule<?>, Object> values = new HashMap<CalendricalRule<?>, Object>();
         
         @Override
         protected Parsed clone() {

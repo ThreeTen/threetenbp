@@ -476,7 +476,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the resolved instance, never null
      */
     private Object readResolve() {
-        return (seconds| nanos) == 0 ? ZERO : this;
+        return (seconds | nanos) == 0 ? ZERO : this;
     }
 
     //-----------------------------------------------------------------------

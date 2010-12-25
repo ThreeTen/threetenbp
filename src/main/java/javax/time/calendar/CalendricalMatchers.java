@@ -50,7 +50,7 @@ import java.io.Serializable;
 public final class CalendricalMatchers {
 
     /**
-     * Private constructor since this is a utility class
+     * Private constructor since this is a utility class.
      */
     private CalendricalMatchers() {
     }

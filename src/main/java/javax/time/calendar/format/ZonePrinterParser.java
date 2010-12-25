@@ -110,8 +110,6 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
     private static Set<String> preparedIDs;
 
     /**
-     * {@inheritDoc}
-     * <p>
      * This implementation looks for the longest matching string.
      * For example, parsing Etc/GMT-2 will return Etc/GMC-2 rather than just
      * Etc/GMC although both are valid.
@@ -212,7 +210,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
      * substring is no longer found, at which point the matched text is checked
      * against the real time-zones.
      */
-    private static class SubstringTree {
+    private static final class SubstringTree {
         /**
          * The length of the substring this node of the tree contains.
          * Subtrees will have a longer length.

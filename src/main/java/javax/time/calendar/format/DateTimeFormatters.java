@@ -51,7 +51,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 public final class DateTimeFormatters {
 
     /**
-     * Private constructor since this is a utility class
+     * Private constructor since this is a utility class.
      */
     private DateTimeFormatters() {
     }

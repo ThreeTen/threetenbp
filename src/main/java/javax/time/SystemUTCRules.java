@@ -57,7 +57,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /**
      * Singleton.
      */
-    static SystemUTCRules INSTANCE = new SystemUTCRules();
+    static final SystemUTCRules INSTANCE = new SystemUTCRules();
     /**
      * Serialization version.
      */
@@ -69,7 +69,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     private AtomicReference<Data> dataRef = new AtomicReference<Data>(loadLeapSeconds());
 
     /** Data holder. */
-    private static class Data implements Serializable {
+    private static final class Data implements Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */

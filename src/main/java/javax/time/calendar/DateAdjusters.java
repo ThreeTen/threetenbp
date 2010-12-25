@@ -45,7 +45,7 @@ import java.io.Serializable;
 public final class DateAdjusters {
 
     /**
-     * Private constructor since this is a utility class
+     * Private constructor since this is a utility class.
      */
     private DateAdjusters() {
     }

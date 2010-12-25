@@ -478,7 +478,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     private Instant plus(long secondsToAdd, long nanosToAdd) {
-        if ((secondsToAdd |nanosToAdd) == 0) {
+        if ((secondsToAdd | nanosToAdd) == 0) {
             return this;
         }
         long epochSecs = MathUtils.safeAdd(seconds, secondsToAdd);

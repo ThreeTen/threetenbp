@@ -32,13 +32,16 @@
 package javax.time;
 
 /**
- * These methods are proposed for {@code java.lang.Math}
+ * These methods are proposed for {@code java.lang.Math}.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class MathUtils {
-    /** Private constructor since this is an utility class */
+
+    /**
+     * Private constructor since this is a utility class.
+     */
     private MathUtils() {
     }
 

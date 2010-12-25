@@ -48,11 +48,11 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The rule that caused the exception
+     * The rule that caused the exception.
      */
     private final CalendricalRule<?> rule;
     /**
-     * The value of the field that caused the exception
+     * The value of the field that caused the exception.
      */
     private final Integer value;
 

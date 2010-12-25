@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -60,6 +59,9 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe and must
  * ensure serialization works correctly.
+ * 
+ * @param <T> the underlying type representing the data, typically a {@code Calendrical},
+ *  {@code Number} or {@code Enum}, must be immutable, should be comparable
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -79,7 +81,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /** The maximum value for the field. */
     private final int maximumValue;
     /** The cached text for this rule. */
-    private transient final ConcurrentMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>> textStores;
+    private final transient ConcurrentMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>> textStores;
 
     /**
      * Constructor.
@@ -632,7 +634,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
             Map<String, Integer> reverse = new HashMap<String, Integer>();
             Map<String, Integer> insensitive = new HashMap<String, Integer>();
             Set<Integer> lengthSet = new HashSet<Integer>();
-            for (Entry<Integer, String> entry : copy.entrySet()) {
+            for (Map.Entry<Integer, String> entry : copy.entrySet()) {
                 String text = entry.getValue();
                 Integer value = entry.getKey();
                 reverse.put(text, value);

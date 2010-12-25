@@ -855,7 +855,7 @@ public final class PeriodFields
                             long convertAmount = conversion.getAmount();
                             long amount = result.getAmount(loopUnit);
                             if (amount >= convertAmount || amount <= -convertAmount) {
-                                result = result.with(amount % convertAmount, loopUnit).plus(amount /convertAmount, targetUnit);
+                                result = result.with(amount % convertAmount, loopUnit).plus(amount / convertAmount, targetUnit);
                                 process = (units.length > 2);  // need to re-check from start
                             }
                         }
@@ -873,7 +873,7 @@ public final class PeriodFields
      *
      * @return the cloned map, never null
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"unchecked", "rawtypes" })
     private TreeMap<PeriodUnit, PeriodField> clonedMap() {
         return (TreeMap) unitFieldMap.clone();
     }
