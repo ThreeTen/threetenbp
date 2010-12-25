@@ -49,7 +49,6 @@ import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
@@ -313,7 +312,7 @@ public final class TZDBZoneRulesCompiler {
             List<ZoneRules> rulesList = new ArrayList<ZoneRules>(allRules);
             for (String version : allBuiltZones.keySet()) {
                 out.writeShort(allBuiltZones.get(version).size());
-                for (Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
+                for (Map.Entry<String, ZoneRules> entry : allBuiltZones.get(version).entrySet()) {
                      int regionIndex = Arrays.binarySearch(regionArray, entry.getKey());
                      int rulesIndex = rulesList.indexOf(entry.getValue());
                      out.writeShort(regionIndex);

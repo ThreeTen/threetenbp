@@ -1,4 +1,3 @@
-<!--
 /*
  * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
@@ -30,11 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- -->
-<body>
-<p>
-Provides classes representing a single field in the human time scale including
-year, month-of-year and day-of-week.
-</p>
-</body>
- 
+
+/**
+ * Provides classes to format dates and times as strings.
+ */
+package javax.time.calendar.format;

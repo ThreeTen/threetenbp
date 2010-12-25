@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 /**
  * A set of date-time fields.
@@ -143,7 +142,7 @@ public final class DateTimeFields
         }
         // don't use contains() as tree map and others can throw NPE
         TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
-        for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
+        for (Map.Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
             DateTimeFieldRule<?> fieldRule = entry.getKey();
             Integer value = entry.getValue();
             ISOChronology.checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
@@ -386,7 +385,7 @@ public final class DateTimeFields
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
-        for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
+        for (Map.Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
             Integer dateValue = entry.getKey().getInteger(calendrical);
             if (dateValue != null && dateValue.equals(entry.getValue()) == false) {
                 return false;

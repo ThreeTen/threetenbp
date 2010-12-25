@@ -1,4 +1,3 @@
-<!--
 /*
  * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
@@ -30,10 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- -->
-<body>
-<p>
-Provides classes to format dates and times as strings.
-</p>
-</body>
- 
+
+/**
+ * Provides classes representing a single amount of time such as "three years".
+ */
+package javax.time.period.field;

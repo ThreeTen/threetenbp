@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.time.calendar.LocalDate;
@@ -220,7 +219,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             int[] offsets = new int[leaps.size()];
             long[] taiSeconds = new long[leaps.size()];
             int i = 0;
-            for (Entry<Long, Integer> entry : leaps.entrySet()) {
+            for (Map.Entry<Long, Integer> entry : leaps.entrySet()) {
                 long changeMjd = entry.getKey() - 1;  // subtract one to get date leap second is added
                 int offset = entry.getValue();
                 if (i > 0) {

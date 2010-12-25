@@ -6,6 +6,8 @@
 <suppressions>
     <suppress checks=".*" files="Test.*" />
     <suppress checks=".*" files="Mock.*" />
+    <suppress checks=".*" files="Examples.*" />
+    <suppress checks=".*" files="Performance.*" />
     <suppress checks=".*" files="Date.java" />
     <suppress checks=".*" files="Calendar.java" />
     <suppress checks=".*" files="GregorianCalendar.java" />

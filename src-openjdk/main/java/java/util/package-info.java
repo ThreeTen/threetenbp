@@ -1,4 +1,3 @@
-<!--
 /*
  * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
@@ -30,10 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- -->
-<body>
-<p>
-Provides classes to manage the continuous time scale including a wrapper for the system clock.
-</p>
-</body>
- 
+
+/**
+ * Amended OpenJDK classes that integrate JSR-310 with the existing date and time APIs.
+ */
+package java.util;

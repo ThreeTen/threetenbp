@@ -1,6 +1,5 @@
-<!--
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -30,10 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- -->
-<body>
-<p>
-Amended OpenJDK classes that integrate JSR-310 with the existing date and time APIs.
-</p>
-</body>
- 
+
+/**
+ * Provides classes representing dates and times in alternate calendar systems.
+ */
+package javax.time.i18n;

@@ -1,6 +1,5 @@
-<!--
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -30,10 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- -->
-<body>
-<p>
-Provides classes representing a single amount of time such as "three years".
-</p>
-</body>
- 
+
+/**
+ * Provides classes to implement time-zones and their rules.
+ */
+package javax.time.calendar.zone;
