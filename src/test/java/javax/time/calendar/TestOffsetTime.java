@@ -813,7 +813,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) < 0, true);
+        assertEquals(DATE.atTime(a).toInstant().compareTo(DATE.atTime(b).toInstant()) < 0, true);
     }
 
     public void test_compareTo_offset() {
@@ -823,7 +823,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) < 0, true);
+        assertEquals(DATE.atTime(a).toInstant().compareTo(DATE.atTime(b).toInstant()) < 0, true);
     }
 
     public void test_compareTo_both() {
@@ -833,7 +833,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) < 0, true);
+        assertEquals(DATE.atTime(a).toInstant().compareTo(DATE.atTime(b).toInstant()) < 0, true);
     }
 
     public void test_compareTo_hourDifference() {
@@ -843,7 +843,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
-        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) == 0, true);
+        assertEquals(DATE.atTime(a).toInstant().compareTo(DATE.atTime(b).toInstant()) == 0, true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
