@@ -31,11 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,6 +64,7 @@ public class TestOffsetTime {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
+    private static final LocalDate DATE = LocalDate.of(2008, 12, 3);
     private OffsetTime TEST_TIME;
 
     @BeforeMethod
@@ -816,6 +813,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) < 0, true);
     }
 
     public void test_compareTo_offset() {
@@ -825,6 +823,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) < 0, true);
     }
 
     public void test_compareTo_both() {
@@ -834,6 +833,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) < 0, true);
     }
 
     public void test_compareTo_hourDifference() {
@@ -843,6 +843,7 @@ public class TestOffsetTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(OffsetDateTime.of(DATE, a).toInstant().compareTo(OffsetDateTime.of(DATE, b).toInstant()) == 0, true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

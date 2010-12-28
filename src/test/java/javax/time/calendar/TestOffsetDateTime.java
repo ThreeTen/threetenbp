@@ -1333,6 +1333,7 @@ public class TestOffsetDateTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
     public void test_compareTo_time2() {
@@ -1342,6 +1343,7 @@ public class TestOffsetDateTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
     public void test_compareTo_offset() {
@@ -1351,6 +1353,7 @@ public class TestOffsetDateTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
     public void test_compareTo_both() {
@@ -1360,6 +1363,7 @@ public class TestOffsetDateTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
     public void test_compareTo_hourDifference() {
@@ -1369,6 +1373,7 @@ public class TestOffsetDateTime {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) == 0, true);
     }
 
     public void test_compareTo_max() {
