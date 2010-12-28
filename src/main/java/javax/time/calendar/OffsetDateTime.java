@@ -1692,7 +1692,7 @@ public final class OffsetDateTime
      */
     public long toEpochSeconds() {
         long epochDays = dateTime.toLocalDate().toEpochDays();
-        long secs = epochDays * 60L * 60L * 24L + dateTime.toLocalTime().toSecondOfDay();
+        long secs = epochDays * ISOChronology.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
         secs -= offset.getAmountSeconds();
         return secs;
     }
