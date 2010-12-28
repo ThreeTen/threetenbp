@@ -1111,11 +1111,7 @@ public final class OffsetDate
         if (offset.equals(other.offset)) {
             return date.compareTo(other.date);
         }
-        LocalDateTime thisDT = LocalDateTime.ofMidnight(getYear(), getMonthOfYear(), getDayOfMonth());
-        LocalDateTime otherDT = LocalDateTime.ofMidnight(other.getYear(), other.getMonthOfYear(), other.getDayOfMonth());
-        LocalDateTime thisUTC = thisDT.plusSeconds(-offset.getAmountSeconds());
-        LocalDateTime otherUTC = otherDT.plusSeconds(-other.offset.getAmountSeconds());
-        int compare = thisUTC.compareTo(otherUTC);
+        int compare = MathUtils.safeCompare(toEpochSeconds(), other.toEpochSeconds());
         if (compare == 0) {
             compare = date.compareTo(other.date);
         }
