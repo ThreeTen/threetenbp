@@ -1953,17 +1953,69 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // isAfter() / isBefore()
+    // isAfter() / isBefore() / equalInstant()
     //-----------------------------------------------------------------------
-    public void test_isBeforeIsAfter() {
+    public void test_isBeforeIsAfterIsEqual1() {
         OffsetDate a = OffsetDate.of(2008, 6, 29, OFFSET_PONE);
-        OffsetDate b = OffsetDate.of(2008, 6, 30, OFFSET_PONE);  // a is before b due to date
+        OffsetDate b = OffsetDate.of(2008, 6, 30, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.isBefore(b), true);
+        assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
+        
         assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), false);
         assertEquals(b.isAfter(a), true);
+        
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
+    }
+
+    public void test_isBeforeIsAfterIsEqual2() {
+        OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        OffsetDate b = OffsetDate.of(2008, 6, 30, OFFSET_PONE);  // a is before b due to offset
+        assertEquals(a.isBefore(b), true);
+        assertEquals(a.equalInstant(b), false);
+        assertEquals(a.isAfter(b), false);
+        
+        assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), false);
+        assertEquals(b.isAfter(a), true);
+        
+        assertEquals(a.isBefore(a), false);
+        assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
+    }
+
+    public void test_isBeforeIsAfterIsEqual_instantComparison() {
+        OffsetDate a = OffsetDate.of(2008, 6, 30, ZoneOffset.ofHours(12));
+        OffsetDate b = OffsetDate.of(2008, 6, 29, ZoneOffset.ofHours(-12));  // a is same instant as b
+        assertEquals(a.isBefore(b), false);
+        assertEquals(a.equalInstant(b), true);
+        assertEquals(a.isAfter(b), false);
+        
+        assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), true);
+        assertEquals(b.isAfter(a), false);
+        
+        assertEquals(a.isBefore(a), false);
+        assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1976,6 +2028,12 @@ public class TestOffsetDate {
     public void test_isAfter_null() {
         OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
         a.isAfter(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_equalInstant_null() {
+        OffsetDate a = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
+        a.equalInstant(null);
     }
 
     //-----------------------------------------------------------------------

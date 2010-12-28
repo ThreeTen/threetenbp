@@ -46,7 +46,6 @@ Date/Time classes
 - DayOfWeek.firstDayOfWeekFor
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - factories taking double for seconds (LocalTime...)
-- OffsetDate.isAfter/Before takes into account offset
 - OffsetDate.plus/minus uses int not long
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
@@ -272,6 +271,7 @@ EDR released
 0.6.3 released
 ===============================================================================
 - Add OffsetDate.toInstant()
+- OffsetDate.isAfter/Before takes into account offset
 ===============================================================================
  
 Not doing

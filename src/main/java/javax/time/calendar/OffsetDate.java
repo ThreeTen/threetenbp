@@ -1055,16 +1055,14 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to an {@code Instant}.
+     * Converts this date to an {@code Instant} at midnight.
      * <p>
      * This conversion treats the time component as midnight at the start of the day.
      *
      * @return an instant equivalent to midnight at the start of this day, never null
      */
     public Instant toInstant() {
-        long epochDays = date.toEpochDays();
-        long epochSecs = epochDays * ISOChronology.SECONDS_PER_DAY;
-        epochSecs -= offset.getAmountSeconds();
+        long epochSecs = toEpochSeconds();
         return Instant.ofEpochSeconds(epochSecs, 0);
     }
 
@@ -1075,6 +1073,17 @@ public final class OffsetDate
      */
     public LocalDate toLocalDate() {
         return date;
+    }
+
+    /**
+     * Converts this date to midnight at the start of day in epoch seconds.
+     * 
+     * @return the epoch seconds value
+     */
+    private long toEpochSeconds() {
+        long epochDays = date.toEpochDays();
+        long secs = epochDays * ISOChronology.SECONDS_PER_DAY;
+        return secs - offset.getAmountSeconds();
     }
 
     //-----------------------------------------------------------------------
@@ -1113,38 +1122,63 @@ public final class OffsetDate
         return compare;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code OffsetDate} is after the specified date.
+     * Checks if the instant of midnight at the start of this {@code OffsetDate}
+     * is after midnight at the start of the specified date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the instant of the date. This is equivalent to using
+     * {@code date1.toInstant().isAfter(date2.toInstant());}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
      */
     public boolean isAfter(OffsetDate other) {
-        return compareTo(other) > 0;
+        return toEpochSeconds() > other.toEpochSeconds();
     }
 
     /**
-     * Checks if this {@code OffsetDate} is before the specified date.
+     * Checks if the instant of midnight at the start of this {@code OffsetDate}
+     * is before midnight at the start of the specified date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the instant of the date. This is equivalent to using
+     * {@code date1.toInstant().isBefore(date2.toInstant());}.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
     public boolean isBefore(OffsetDate other) {
-        return compareTo(other) < 0;
+        return toEpochSeconds() < other.toEpochSeconds();
+    }
+
+    /**
+     * Checks if the instant of midnight at the start of this {@code OffsetDate}
+     * equals midnight at the start of the specified date.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it only compares the instant of the date. This is equivalent to using
+     * {@code date1.toInstant().equals(date2.toInstant());}.
+     *
+     * @param other  the other date to compare to, not null
+     * @return true if the instant equals the instant of the specified date
+     */
+    public boolean equalInstant(OffsetDate other) {
+        return toEpochSeconds() == other.toEpochSeconds();
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if this {@code OffsetDate} is equal to the specified date.
      * <p>
-     * The comparison is based on the date and the offset.
+     * This method returns true if the state of the two objects are equal.
+     * The state consists of the local date and the offset.
+     * <p>
+     * To compare for the same instant on the time-line, use {@link #equalInstant}.
      *
      * @param other  the other date to compare to, null returns false
-     * @return true if this is equal to the specified date
+     * @return true if this date is equal to the specified date
      */
     @Override
     public boolean equals(Object other) {
