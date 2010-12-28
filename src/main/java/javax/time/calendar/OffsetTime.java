@@ -710,7 +710,7 @@ public final class OffsetTime
      * consistent with {@code equals()}.
      *
      * @param other  the other time to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(OffsetTime other) {
