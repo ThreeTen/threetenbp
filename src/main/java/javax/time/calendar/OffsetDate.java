@@ -159,7 +159,8 @@ public final class OffsetDate
     /**
      * Obtains an instance of {@code OffsetDate} from an {@code InstantProvider}.
      * <p>
-     * This conversion drops the time component of the instant.
+     * This conversion drops the time component of the instant effectively
+     * converting at midnight at the start of the day.
      *
      * @param instantProvider  the instant to convert, not null
      * @param offset  the zone offset, not null
@@ -1053,6 +1054,20 @@ public final class OffsetDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Converts this date to an {@code Instant}.
+     * <p>
+     * This conversion treats the time component as midnight at the start of the day.
+     *
+     * @return an instant equivalent to midnight at the start of this day, never null
+     */
+    public Instant toInstant() {
+        long epochDays = date.toEpochDays();
+        long epochSecs = epochDays * ISOChronology.SECONDS_PER_DAY;
+        epochSecs -= offset.getAmountSeconds();
+        return Instant.ofEpochSeconds(epochSecs, 0);
+    }
+
     /**
      * Converts this date to a {@code LocalDate}.
      *

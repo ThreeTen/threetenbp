@@ -490,6 +490,7 @@ public class TestOffsetDate {
             {2005, 7, 5, OFFSET_PONE},
             {2004, 1, 1, OFFSET_PTWO},
             {-1, 1, 2, OFFSET_PONE},
+            {999999, 11, 20, ZoneOffset.ofHoursMinutesSeconds(6, 9, 12)},
         };
     }
 
@@ -508,7 +509,7 @@ public class TestOffsetDate {
         
         assertSame(a.toLocalDate(), localDate);
         assertEquals(a.toString(), localDate.toString() + offset.toString());
-        assertEquals(a.getOffset(), y % 2 == 0 ? OFFSET_PTWO : OFFSET_PONE);
+        assertEquals(a.getOffset(), offset);
     }
 
     @Test(dataProvider="sampleDates")
@@ -1878,6 +1879,15 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    // toInstant()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toInstant(int year, int month, int day, ZoneOffset offset) {
+        OffsetDate d = OffsetDate.of(year, month, day, offset);
+        assertEquals(d.toInstant(), d.atMidnight().toInstant());
+    }
+
+    //-----------------------------------------------------------------------
     // toLocalDate()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
@@ -1896,6 +1906,7 @@ public class TestOffsetDate {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
     public void test_compareTo_offset() {
@@ -1905,6 +1916,7 @@ public class TestOffsetDate {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
     public void test_compareTo_both() {
@@ -1914,6 +1926,7 @@ public class TestOffsetDate {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
     public void test_compareTo_24hourDifference() {
@@ -1923,6 +1936,7 @@ public class TestOffsetDate {
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) == 0, true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

@@ -271,6 +271,8 @@ EDR released
 - Remove toYear() from principal classes
 0.6.3 released
 ===============================================================================
+- Add OffsetDate.toInstant()
+===============================================================================
  
 Not doing
 - Use nanoOfDay rule in LocalTime factory - NO, as doesn't work
