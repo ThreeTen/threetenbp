@@ -46,6 +46,9 @@ Date/Time classes
 - DayOfWeek.firstDayOfWeekFor
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - factories taking double for seconds (LocalTime...)
+- OffsetTime isAfter/isBefore calculation
+- OffsetDateTime.compareTo doesn't handle nanos
+- OffsetDateTime.toEpochSecs() could be private
 - OffsetDate.plus/minus uses int not long
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
