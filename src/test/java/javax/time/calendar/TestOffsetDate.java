@@ -1715,13 +1715,37 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     // atTime()
     //-----------------------------------------------------------------------
-    public void test_atTime() {
+    public void test_atTime_Offset_sameOffset() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        OffsetTime time = OffsetTime.of(11, 30, OFFSET_PTWO);
+        assertEquals(t.atTime(time), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
+    }
+
+    public void test_atTime_Offset_differentOffset1() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        OffsetTime time = OffsetTime.of(11, 30, OFFSET_PONE);  // 10:30Z, 12:30+02:00
+        assertEquals(t.atTime(time), OffsetDateTime.of(2008, 6, 30, 12, 30, OFFSET_PTWO));
+    }
+
+    public void test_atTime_Offset_differentOffset2() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        OffsetTime time = OffsetTime.of(11, 30, 5, 6, ZoneOffset.ofHours(-3));  // 14:30Z, 16:30+02:00
+        assertEquals(t.atTime(time), OffsetDateTime.of(2008, 6, 30, 16, 30, 5, 6, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atTime_Offset_nullOffsetTime() {
+        OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
+        t.atTime((OffsetTime) null);
+    }
+
+    public void test_atTime_Local() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         assertEquals(t.atTime(LocalTime.of(11, 30)), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_atTime_nullLocalTime() {
+    public void test_atTime_Local_nullLocalTime() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
         t.atTime((LocalTime) null);
     }

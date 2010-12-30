@@ -948,6 +948,23 @@ public final class OffsetDate
      * <p>
      * This merges the two objects - {@code this} and the specified time -
      * to form an instance of {@code OffsetDateTime}.
+     * If the offset of the time differs from the offset of the date, then the
+     * result will have the offset of the date and the time will be adjusted to match.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to use, not null
+     * @return the offset date-time formed from this date and the specified time, never null
+     */
+    public OffsetDateTime atTime(OffsetTime time) {
+        return OffsetDateTime.of(this, time.withOffsetSameInstant(offset), offset);
+    }
+
+    /**
+     * Returns an offset date-time formed from this date at the specified time.
+     * <p>
+     * This merges the two objects - {@code this} and the specified time -
+     * to form an instance of {@code OffsetDateTime}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -955,7 +972,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the specified time, never null
      */
     public OffsetDateTime atTime(LocalTime time) {
-        return OffsetDateTime.of(this, time, getOffset());
+        return OffsetDateTime.of(this, time, offset);
     }
 
     /**
@@ -1023,7 +1040,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the time of midnight, never null
      */
     public OffsetDateTime atMidnight() {
-        return OffsetDateTime.of(this, LocalTime.MIDNIGHT, getOffset());
+        return OffsetDateTime.of(this, LocalTime.MIDNIGHT, offset);
     }
 
     /**

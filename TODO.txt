@@ -46,7 +46,6 @@ Date/Time classes
 - DayOfWeek.firstDayOfWeekFor
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - factories taking double for seconds (LocalTime...)
-- OffsetDateTime.compareTo doesn't handle nanos
 - OffsetDateTime.toEpochSecs() could be private
 - OffsetDate.plus/minus uses int not long
 ? ZoneResolver code moved to ZDT
@@ -276,6 +275,8 @@ EDR released
 - OffsetDate.isAfter/Before takes into account offset
 - OffsetTime.isAfter/isBefore calculation
 - OffsetTime.compareTo fixed
+- OffsetDateTime.compareTo doesn't handle nanos
+- Add OffsetDate.atTime(OffsetTime)
 ===============================================================================
  
 Not doing
