@@ -690,13 +690,14 @@ public final class OffsetTime
     }
 
     /**
-     * Converts this time to epoch seconds on 1970-01-01Z.
+     * Converts this time to epoch nanos based on 1970-01-01Z.
      * 
-     * @return the epoch seconds value
+     * @return the epoch nanos value
      */
-    private int toEpochSeconds() {
-        int secs = time.toSecondOfDay();
-        return secs - offset.getAmountSeconds();
+    private long toEpochNanos() {
+        long nod = time.toNanoOfDay();
+        long offsetNanos = offset.getAmountSeconds() * 1000000000L;
+        return nod - offsetNanos;
     }
 
     //-----------------------------------------------------------------------
@@ -727,12 +728,14 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        int thisSecs = toEpochSeconds();
-        int otherSecs = other.toEpochSeconds();
-        if (thisSecs == otherSecs) {
+        long thisEpochNanos = toEpochNanos();
+        long otherEpochNanos = other.toEpochNanos();
+        if (thisEpochNanos == otherEpochNanos) {
             return time.compareTo(other.time);
+        } else if (thisEpochNanos < otherEpochNanos) {
+            return -1;
         } else {
-            return thisSecs - otherSecs;
+            return 1;
         }
     }
 
@@ -749,7 +752,7 @@ public final class OffsetTime
      * @return true if this is after the instant of the specified time
      */
     public boolean isAfter(OffsetTime other) {
-        return toEpochSeconds() > other.toEpochSeconds();
+        return toEpochNanos() > other.toEpochNanos();
     }
 
     /**
@@ -764,7 +767,7 @@ public final class OffsetTime
      * @return true if this is before the instant of the specified time
      */
     public boolean isBefore(OffsetTime other) {
-        return toEpochSeconds() < other.toEpochSeconds();
+        return toEpochNanos() < other.toEpochNanos();
     }
 
     /**
@@ -779,7 +782,7 @@ public final class OffsetTime
      * @return true if this is equal to the instant of the specified time
      */
     public boolean equalInstant(OffsetTime other) {
-        return toEpochSeconds() == other.toEpochSeconds();
+        return toEpochNanos() == other.toEpochNanos();
     }
 
     //-----------------------------------------------------------------------

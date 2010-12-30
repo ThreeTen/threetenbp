@@ -893,9 +893,51 @@ public class TestOffsetTime {
         assertEquals(b.isAfter(b), false);
     }
 
+    public void test_isBeforeIsAfterIsEqual1nanos() {
+        OffsetTime a = OffsetTime.of(11, 30, 59, 3, OFFSET_PONE);
+        OffsetTime b = OffsetTime.of(11, 30, 59, 4, OFFSET_PONE);  // a is before b due to time
+        assertEquals(a.isBefore(b), true);
+        assertEquals(a.equalInstant(b), false);
+        assertEquals(a.isAfter(b), false);
+        
+        assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), false);
+        assertEquals(b.isAfter(a), true);
+        
+        assertEquals(a.isBefore(a), false);
+        assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
+    }
+
     public void test_isBeforeIsAfterIsEqual2() {
         OffsetTime a = OffsetTime.of(11, 30, 59, OFFSET_PTWO);
-        OffsetTime b = OffsetTime.of(11, 30, 59, OFFSET_PONE);  // a is before b due to offset
+        OffsetTime b = OffsetTime.of(11, 30, 58, OFFSET_PONE);  // a is before b due to offset
+        assertEquals(a.isBefore(b), true);
+        assertEquals(a.equalInstant(b), false);
+        assertEquals(a.isAfter(b), false);
+        
+        assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), false);
+        assertEquals(b.isAfter(a), true);
+        
+        assertEquals(a.isBefore(a), false);
+        assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
+    }
+
+    public void test_isBeforeIsAfterIsEqual2nanos() {
+        OffsetTime a = OffsetTime.of(11, 30, 59, 4, OFFSET_PONE.plus(Period.ofSeconds(1)));
+        OffsetTime b = OffsetTime.of(11, 30, 59, 3, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
