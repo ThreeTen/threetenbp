@@ -689,6 +689,16 @@ public final class OffsetTime
         return time;
     }
 
+    /**
+     * Converts this time to epoch seconds on 1970-01-01Z.
+     * 
+     * @return the epoch seconds value
+     */
+    private int toEpochSeconds() {
+        int secs = time.toSecondOfDay();
+        return secs - offset.getAmountSeconds();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this {@code OffsetTime} to another time based on the UTC equivalent times
@@ -717,39 +727,59 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        LocalTime thisUTC = time.plusSeconds(-offset.getAmountSeconds());
-        LocalTime otherUTC = other.time.plusSeconds(-other.offset.getAmountSeconds());
-        int compare = thisUTC.compareTo(otherUTC);
-        if (compare == 0) {
-            compare = time.compareTo(other.time);
+        int thisSecs = toEpochSeconds();
+        int otherSecs = other.toEpochSeconds();
+        if (thisSecs == otherSecs) {
+            return time.compareTo(other.time);
+        } else {
+            return thisSecs - otherSecs;
         }
-        return compare;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code OffsetTime} is after the specified time.
+     * Checks if the instant of this {@code OffsetTime} is after that of the
+     * specified time applying both times to a common date.
      * <p>
-     * The comparison is based on the time-line position of the time within a day.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the instant of the time. This is equivalent to converting both
+     * times to an instant using the same date and comparing the instants.
      *
      * @param other  the other time to compare to, not null
-     * @return true if this is after the specified time
-     * @throws NullPointerException if {@code other} is null
+     * @return true if this is after the instant of the specified time
      */
     public boolean isAfter(OffsetTime other) {
-        return compareTo(other) > 0;
+        return toEpochSeconds() > other.toEpochSeconds();
     }
 
     /**
-     * Checks if this {@code OffsetTime} is before the specified time.
+     * Checks if the instant of this {@code OffsetTime} is before that of the
+     * specified time applying both times to a common date.
      * <p>
-     * The comparison is based on the time-line position of the time within a day.
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the instant of the time. This is equivalent to converting both
+     * times to an instant using the same date and comparing the instants.
      *
      * @param other  the other time to compare to, not null
-     * @return true if this point is before the specified time
-     * @throws NullPointerException if {@code other} is null
+     * @return true if this is before the instant of the specified time
      */
     public boolean isBefore(OffsetTime other) {
-        return compareTo(other) < 0;
+        return toEpochSeconds() < other.toEpochSeconds();
+    }
+
+    /**
+     * Checks if the instant of this {@code OffsetTime} is equal to that of the
+     * specified time applying both times to a common date.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * only compares the instant of the time. This is equivalent to converting both
+     * times to an instant using the same date and comparing the instants.
+     *
+     * @param other  the other time to compare to, not null
+     * @return true if this is equal to the instant of the specified time
+     */
+    public boolean equalInstant(OffsetTime other) {
+        return toEpochSeconds() == other.toEpochSeconds();
     }
 
     //-----------------------------------------------------------------------
