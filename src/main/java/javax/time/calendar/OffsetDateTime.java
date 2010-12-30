@@ -1740,7 +1740,7 @@ public final class OffsetDateTime
      * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
      *
      * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
+     * @return true if this is after the instant of the specified date-time
      */
     public boolean isAfter(OffsetDateTime other) {
         long thisEpochSecs = toEpochSeconds();
@@ -1757,7 +1757,7 @@ public final class OffsetDateTime
      * {@code dateTime1.toInstant().isBefore(dateTime2.toInstant());}.
      *
      * @param other  the other date-time to compare to, not null
-     * @return true if this is before the specified date-time
+     * @return true if this is before the instant of the specified date-time
      */
     public boolean isBefore(OffsetDateTime other) {
         long thisEpochSecs = toEpochSeconds();
