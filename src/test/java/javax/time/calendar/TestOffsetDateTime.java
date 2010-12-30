@@ -1326,7 +1326,7 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    public void test_compareTo_time1() {
+    public void test_compareTo_timeMins() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 29, 3, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 30, 2, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
@@ -1336,9 +1336,19 @@ public class TestOffsetDateTime {
         assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
-    public void test_compareTo_time2() {
+    public void test_compareTo_timeSecs() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 29, 2, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 29, 3, OFFSET_PONE);  // a is before b due to time
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
+    }
+
+    public void test_compareTo_timeNanos() {
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 29, 40, 4, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 29, 40, 5, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1356,9 +1366,29 @@ public class TestOffsetDateTime {
         assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
     }
 
+    public void test_compareTo_offsetNanos() {
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 40, 6, OFFSET_PTWO);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 30, 40, 5, OFFSET_PONE);  // a is before b due to offset
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
+    }
+
     public void test_compareTo_both() {
         OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 50, OFFSET_PTWO);
         OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 20, OFFSET_PONE);  // a is before b on instant scale
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+        assertEquals(a.toInstant().compareTo(b.toInstant()) < 0, true);
+    }
+
+    public void test_compareTo_bothNanos() {
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 20, 40, 4, OFFSET_PTWO);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 10, 20, 40, 5, OFFSET_PONE);  // a is before b on instant scale
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);

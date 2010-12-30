@@ -1677,18 +1677,36 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    public void test_compareTo_time() {
-        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 29), ZONE_0100);
-        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0100);  // a is before b due to time
+    public void test_compareTo_time1() {
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 39), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 41), ZONE_0100);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
         assertEquals(b.compareTo(b) == 0, true);
     }
 
-    public void test_compareTo_offset() {
-        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0200);
-        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_0100);  // a is before b due to offset
+    public void test_compareTo_time2() {
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 40, 4), ZONE_0100);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 40, 5), ZONE_0100);  // a is before b due to time
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+    }
+
+    public void test_compareTo_offset1() {
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 41), ZONE_0200);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 39), ZONE_0100);  // a is before b due to offset
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+    }
+
+    public void test_compareTo_offset2() {
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 40, 5), TimeZone.of("UTC+01:01"));
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 40, 4), ZONE_0100);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1698,6 +1716,15 @@ public class TestZonedDateTime {
     public void test_compareTo_both() {
         ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 50), ZONE_0200);
         ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 20), ZONE_0100);  // a is before b on instant scale
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+    }
+
+    public void test_compareTo_bothNanos() {
+        ZonedDateTime a = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 20, 40, 5), ZONE_0200);
+        ZonedDateTime b = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 10, 20, 40, 6), ZONE_0100);  // a is before b on instant scale
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);

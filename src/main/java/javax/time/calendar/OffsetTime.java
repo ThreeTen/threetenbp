@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
@@ -728,15 +729,11 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        long thisEpochNanos = toEpochNanos();
-        long otherEpochNanos = other.toEpochNanos();
-        if (thisEpochNanos == otherEpochNanos) {
-            return time.compareTo(other.time);
-        } else if (thisEpochNanos < otherEpochNanos) {
-            return -1;
-        } else {
-            return 1;
+        int compare = MathUtils.safeCompare(toEpochNanos(), other.toEpochNanos());
+        if (compare == 0) {
+            compare = time.compareTo(other.time);
         }
+        return compare;
     }
 
     //-----------------------------------------------------------------------
@@ -774,8 +771,8 @@ public final class OffsetTime
      * Checks if the instant of this {@code OffsetTime} is equal to that of the
      * specified time applying both times to a common date.
      * <p>
-     * This method differs from the comparison in {@link #compareTo} in that it
-     * only compares the instant of the time. This is equivalent to converting both
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it only compares the instant of the time. This is equivalent to converting both
      * times to an instant using the same date and comparing the instants.
      *
      * @param other  the other time to compare to, not null

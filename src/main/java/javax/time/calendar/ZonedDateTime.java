@@ -1944,7 +1944,7 @@ public final class ZonedDateTime
      * Checks if the instant of this date-time is before that of the specified date-time.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
-     * compares only the instant of the date-time. This is equivalent to using
+     * only compares the instant of the date-time. This is equivalent to using
      * {@code dateTime1.toInstant().isBefore(dateTime2.toInstant());}.
      *
      * @param other  the other date-time to compare to, not null
@@ -1952,33 +1952,14 @@ public final class ZonedDateTime
      * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(ZonedDateTime other) {
-        long thisEpochSecs = toEpochSeconds();
-        long otherEpochSecs = other.toEpochSeconds();
-        return thisEpochSecs < otherEpochSecs ||
-            (thisEpochSecs == otherEpochSecs && getNanoOfSecond() < other.getNanoOfSecond());
-    }
-
-    /**
-     * Checks if the instant of this date-time is equal to that of the specified date-time.
-     * <p>
-     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
-     * in that it compares only the instant of the date-time. This is equivalent to using
-     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
-     */
-    public boolean equalInstant(ZonedDateTime other) {
-        return toEpochSeconds() == other.toEpochSeconds() &&
-            getNanoOfSecond() == other.getNanoOfSecond();
+        return dateTime.isBefore(other.dateTime);
     }
 
     /**
      * Checks if the instant of this date-time is after that of the specified date-time.
      * <p>
      * This method differs from the comparison in {@link #compareTo} in that it
-     * compares the only the instant of the date-time. This is equivalent to using
+     * only compares the instant of the date-time. This is equivalent to using
      * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
      *
      * @param other  the other date-time to compare to, not null
@@ -1986,10 +1967,22 @@ public final class ZonedDateTime
      * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(ZonedDateTime other) {
-        long thisEpochSecs = toEpochSeconds();
-        long otherEpochSecs = other.toEpochSeconds();
-        return thisEpochSecs > otherEpochSecs ||
-            (thisEpochSecs == otherEpochSecs && getNanoOfSecond() > other.getNanoOfSecond());
+        return dateTime.isAfter(other.dateTime);
+    }
+
+    /**
+     * Checks if the instant of this date-time is equal to that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it only compares the instant of the date-time. This is equivalent to using
+     * {@code dateTime1.toInstant().equals(dateTime2.toInstant());}.
+     *
+     * @param other  the other date-time to compare to, not null
+     * @return true if this is after the specified date-time
+     * @throws NullPointerException if {@code other} is null
+     */
+    public boolean equalInstant(ZonedDateTime other) {
+        return dateTime.equalInstant(other.dateTime);
     }
 
     //-----------------------------------------------------------------------

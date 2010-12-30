@@ -1726,7 +1726,10 @@ public final class OffsetDateTime
         }
         int compare = MathUtils.safeCompare(toEpochSeconds(), other.toEpochSeconds());
         if (compare == 0) {
-            compare = dateTime.compareTo(other.dateTime);
+            compare = MathUtils.safeCompare(getNanoOfSecond(), other.getNanoOfSecond());
+            if (compare == 0) {
+                compare = dateTime.compareTo(other.dateTime);
+            }
         }
         return compare;
     }
@@ -1735,7 +1738,7 @@ public final class OffsetDateTime
     /**
      * Checks if the instant of this {@code OffsetDateTime} is after that of the specified date-time.
      * <p>
-     * This method differs from the comparison in {@link #compareTo} in that it
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals} in that it
      * only compares the instant of the date-time. This is equivalent to using
      * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
      *
