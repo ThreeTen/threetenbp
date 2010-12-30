@@ -864,182 +864,244 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
-    public void test_plusYears_int_normal() {
+    public void test_plusYears_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(1);
         assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
     }
 
-    public void test_plusYears_int_noChange() {
+    public void test_plusYears_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(0);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_plusYears_int_negative() {
+    public void test_plusYears_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(-1);
         assertEquals(t, OffsetDate.of(2006, 7, 15, OFFSET_PONE));
     }
 
-    public void test_plusYears_int_adjustDay() {
+    public void test_plusYears_long_adjustDay() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).plusYears(1);
         OffsetDate expected = OffsetDate.of(2009, 2, 28, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_plusYears_long_big() {
+        long years = 20L + Year.MAX_YEAR;
+        OffsetDate test = OffsetDate.of(-40, 6, 1, OFFSET_PONE).plusYears(years);
+        assertEquals(test, OffsetDate.of((int) (-40L + years), 6, 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_invalidTooLarge() {
+    public void test_plusYears_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).plusYears(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_invalidTooSmall() {
+    public void test_plusYears_long_invalidTooLargeMaxAddMax() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.plusYears(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusYears_long_invalidTooLargeMaxAddMin() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.plusYears(Long.MIN_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusYears_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusYears(-1);
     }
 
-    public void test_plusYears_int_DateResolver_normal() {
+    //-------------------------------------------------------------------------
+    public void test_plusYears_long_DateResolver_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
     }
 
-    public void test_plusYears_int_DateResolver_noChange() {
+    public void test_plusYears_long_DateResolver_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_plusYears_int_DateResolver_negative() {
+    public void test_plusYears_long_DateResolver_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusYears(-1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2006, 7, 15, OFFSET_PONE));
     }
 
-    public void test_plusYears_int_DateResolver_adjustDay() {
+    public void test_plusYears_long_DateResolver_adjustDay() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).plusYears(1, DateResolvers.nextValid());
         OffsetDate expected = OffsetDate.of(2009, 3, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_plusYears_long_DateResolver_big() {
+        long years = 20L + Year.MAX_YEAR;
+        OffsetDate test = OffsetDate.of(-40, 6, 1, OFFSET_PONE).plusYears(years, DateResolvers.nextValid());
+        assertEquals(test, OffsetDate.of((int) (-40L + years), 6, 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_plusYears_int_DateResolver_null_adjustDay() {
+    public void test_plusYears_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15_PONE.plusYears(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_DateResolver_invalidTooLarge() {
+    public void test_plusYears_long_DateResolver_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).plusYears(1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_plusYears_int_DateResolver_invalidTooSmall() {
+    public void test_plusYears_long_DateResolver_invalidTooSmall() {
          OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusYears(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
     // plusMonths()
     //-----------------------------------------------------------------------
-    public void test_plusMonths_int_normal() {
+    public void test_plusMonths_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(1);
         assertEquals(t, OffsetDate.of(2007, 8, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_noChange() {
+    public void test_plusMonths_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(0);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_plusMonths_int_overYears() {
+    public void test_plusMonths_long_overYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(25);
         assertEquals(t, OffsetDate.of(2009, 8, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_negative() {
+    public void test_plusMonths_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-1);
         assertEquals(t, OffsetDate.of(2007, 6, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_negativeAcrossYear() {
+    public void test_plusMonths_long_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-7);
         assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_negativeOverYears() {
+    public void test_plusMonths_long_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-31);
         assertEquals(t, OffsetDate.of(2004, 12, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_adjustDayFromLeapYear() {
+    public void test_plusMonths_long_adjustDayFromLeapYear() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).plusMonths(12);
         OffsetDate expected = OffsetDate.of(2009, 2, 28, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    public void test_plusMonths_int_adjustDayFromMonthLength() {
+    public void test_plusMonths_long_adjustDayFromMonthLength() {
         OffsetDate t = OffsetDate.of(2007, 3, 31, OFFSET_PONE).plusMonths(1);
         OffsetDate expected = OffsetDate.of(2007, 4, 30, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_plusMonths_long_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        OffsetDate test = OffsetDate.of(-40, 6, 1, OFFSET_PONE).plusMonths(months);
+        assertEquals(test, OffsetDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_invalidTooLarge() {
+    public void test_plusMonths_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).plusMonths(1);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_invalidTooLargeMaxAddMax() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.plusMonths(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_invalidTooLargeMaxAddMin() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.plusMonths(Long.MIN_VALUE);
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_invalidTooSmall() {
+    public void test_plusMonths_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusMonths(-1);
     }
 
-    public void test_plusMonths_int_DateResolver_normal() {
+    //-----------------------------------------------------------------------
+    public void test_plusMonths_long_DateResolver_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2007, 8, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_DateResolver_noChange() {
+    public void test_plusMonths_long_DateResolver_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_plusMonths_int_DateResolver_overYears() {
+    public void test_plusMonths_long_DateResolver_overYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(25, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2009, 8, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_DateResolver_negative() {
+    public void test_plusMonths_long_DateResolver_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2007, 6, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_DateResolver_negativeAcrossYear() {
+    public void test_plusMonths_long_DateResolver_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-7, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2006, 12, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_DateResolver_negativeOverYears() {
+    public void test_plusMonths_long_DateResolver_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.plusMonths(-31, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2004, 12, 15, OFFSET_PONE));
     }
 
-    public void test_plusMonths_int_DateResolver_adjustDayFromLeapYear() {
+    public void test_plusMonths_long_DateResolver_adjustDayFromLeapYear() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).plusMonths(12, DateResolvers.nextValid());
         OffsetDate expected = OffsetDate.of(2009, 3, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
+    public void test_plusMonths_long_DateResolver_adjustDayFromMonthLength() {
         OffsetDate t = OffsetDate.of(2007, 3, 31, OFFSET_PONE).plusMonths(1, DateResolvers.nextValid());
         OffsetDate expected = OffsetDate.of(2007, 5, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_plusMonths_long_DateResolver_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        OffsetDate test = OffsetDate.of(-40, 6, 1, OFFSET_PONE).plusMonths(months, DateResolvers.nextValid());
+        assertEquals(test, OffsetDate.of((int) (-40L + months / 12), 6 + (int) (months % 12), 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_plusMonths_int_DateResolver_null_adjustDay() {
+    public void test_plusMonths_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15_PONE.plusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_DateResolver_invalidTooLarge() {
+    public void test_plusMonths_long_DateResolver_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).plusMonths(1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.plusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.plusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_plusMonths_int_DateResolver_invalidTooSmall() {
+    public void test_plusMonths_long_DateResolver_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusMonths(-1, DateResolvers.nextValid());
     }
 
@@ -1149,6 +1211,16 @@ public class TestOffsetDate {
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusWeeks_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).plusWeeks(-1);
+    }
+
+    @Test(expectedExceptions={CalendricalException.class})
+    public void test_plusWeeks_invalidMaxMinusMax() {
+        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions={CalendricalException.class})
+    public void test_plusWeeks_invalidMaxMinusMin() {
+        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1286,182 +1358,244 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
-    public void test_minusYears_int_normal() {
+    public void test_minusYears_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(1);
         assertEquals(t, OffsetDate.of(2006, 7, 15, OFFSET_PONE));
     }
 
-    public void test_minusYears_int_noChange() {
+    public void test_minusYears_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(0);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_minusYears_int_negative() {
+    public void test_minusYears_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(-1);
         assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
     }
 
-    public void test_minusYears_int_adjustDay() {
+    public void test_minusYears_long_adjustDay() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).minusYears(1);
         OffsetDate expected = OffsetDate.of(2007, 2, 28, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_minusYears_long_big() {
+        long years = 20L + Year.MAX_YEAR;
+        OffsetDate test = OffsetDate.of(40, 6, 1, OFFSET_PONE).minusYears(years);
+        assertEquals(test, OffsetDate.of((int) (40L - years), 6, 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_invalidTooLarge() {
+    public void test_minusYears_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).minusYears(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void test_minusYears_int_invalidTooSmall() {
+    public void test_minusYears_long_invalidTooLargeMaxAddMax() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.minusYears(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusYears_long_invalidTooLargeMaxAddMin() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.minusYears(Long.MIN_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusYears_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusYears(1);
     }
 
-    public void test_minusYears_int_DateResolver_normal() {
+    //-----------------------------------------------------------------------
+    public void test_minusYears_long_DateResolver_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2006, 7, 15, OFFSET_PONE));
     }
 
-    public void test_minusYears_int_DateResolver_noChange() {
+    public void test_minusYears_long_DateResolver_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_minusYears_int_DateResolver_negative() {
+    public void test_minusYears_long_DateResolver_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusYears(-1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2008, 7, 15, OFFSET_PONE));
     }
 
-    public void test_minusYears_int_DateResolver_adjustDay() {
+    public void test_minusYears_long_DateResolver_adjustDay() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).minusYears(1, DateResolvers.nextValid());
         OffsetDate expected = OffsetDate.of(2007, 3, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_minusYears_long_DateResolver_big() {
+        long years = 20L + Year.MAX_YEAR;
+        OffsetDate test = OffsetDate.of(40, 6, 1, OFFSET_PONE).minusYears(years, DateResolvers.nextValid());
+        assertEquals(test, OffsetDate.of((int) (40L - years), 6, 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_minusYears_int_DateResolver_null_adjustDay() {
+    public void test_minusYears_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15_PONE.minusYears(1, new MockDateResolverReturnsNull());
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusYears_int_DateResolver_invalidTooLarge() {
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusYears_long_DateResolver_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 1, 1, OFFSET_PONE).minusYears(-1, DateResolvers.nextValid());
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusYears_int_DateResolver_invalidTooSmall() {
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusYears_long_DateResolver_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusYears(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
     // minusMonths()
     //-----------------------------------------------------------------------
-    public void test_minusMonths_int_normal() {
+    public void test_minusMonths_long_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(1);
         assertEquals(t, OffsetDate.of(2007, 6, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_noChange() {
+    public void test_minusMonths_long_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(0);
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_minusMonths_int_overYears() {
+    public void test_minusMonths_long_overYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(25);
         assertEquals(t, OffsetDate.of(2005, 6, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_negative() {
+    public void test_minusMonths_long_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-1);
         assertEquals(t, OffsetDate.of(2007, 8, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_negativeAcrossYear() {
+    public void test_minusMonths_long_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-7);
         assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_negativeOverYears() {
+    public void test_minusMonths_long_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-31);
         assertEquals(t, OffsetDate.of(2010, 2, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_adjustDayFromLeapYear() {
+    public void test_minusMonths_long_adjustDayFromLeapYear() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).minusMonths(12);
         OffsetDate expected = OffsetDate.of(2007, 2, 28, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    public void test_minusMonths_int_adjustDayFromMonthLength() {
+    public void test_minusMonths_long_adjustDayFromMonthLength() {
         OffsetDate t = OffsetDate.of(2007, 3, 31, OFFSET_PONE).minusMonths(1);
         OffsetDate expected = OffsetDate.of(2007, 2, 28, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_minusMonths_long_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        OffsetDate test = OffsetDate.of(40, 6, 1, OFFSET_PONE).minusMonths(months);
+        assertEquals(test, OffsetDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_invalidTooLarge() {
+    public void test_minusMonths_long_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).minusMonths(-1);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_invalidTooLargeMaxAddMax() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.minusMonths(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_invalidTooLargeMaxAddMin() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.minusMonths(Long.MIN_VALUE);
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_invalidTooSmall() {
+    public void test_minusMonths_long_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusMonths(1);
     }
 
-    public void test_minusMonths_int_DateResolver_normal() {
+    //-----------------------------------------------------------------------
+    public void test_minusMonths_long_DateResolver_normal() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2007, 6, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_DateResolver_noChange() {
+    public void test_minusMonths_long_DateResolver_noChange() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(0, DateResolvers.nextValid());
         assertSame(t, TEST_2007_07_15_PONE);
     }
 
-    public void test_minusMonths_int_DateResolver_overYears() {
+    public void test_minusMonths_long_DateResolver_overYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(25, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2005, 6, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_DateResolver_negative() {
+    public void test_minusMonths_long_DateResolver_negative() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-1, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2007, 8, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_DateResolver_negativeAcrossYear() {
+    public void test_minusMonths_long_DateResolver_negativeAcrossYear() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-7, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2008, 2, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_DateResolver_negativeOverYears() {
+    public void test_minusMonths_long_DateResolver_negativeOverYears() {
         OffsetDate t = TEST_2007_07_15_PONE.minusMonths(-31, DateResolvers.nextValid());
         assertEquals(t, OffsetDate.of(2010, 2, 15, OFFSET_PONE));
     }
 
-    public void test_minusMonths_int_DateResolver_adjustDayFromLeapYear() {
+    public void test_minusMonths_long_DateResolver_adjustDayFromLeapYear() {
         OffsetDate t = OffsetDate.of(2008, 2, 29, OFFSET_PONE).minusMonths(12, DateResolvers.nextValid());
         OffsetDate expected = OffsetDate.of(2007, 3, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
-    public void test_minusMonths_int_DateResolver_adjustDayFromMonthLength() {
+    public void test_minusMonths_long_DateResolver_adjustDayFromMonthLength() {
         OffsetDate t = OffsetDate.of(2007, 3, 31, OFFSET_PONE).minusMonths(1, DateResolvers.nextValid());
         OffsetDate expected = OffsetDate.of(2007, 3, 1, OFFSET_PONE);
         assertEquals(t, expected);
     }
 
+    public void test_minusMonths_long_DateResolver_big() {
+        long months = 20L + Integer.MAX_VALUE;
+        OffsetDate test = OffsetDate.of(40, 6, 1, OFFSET_PONE).minusMonths(months, DateResolvers.nextValid());
+        assertEquals(test, OffsetDate.of((int) (40L - months / 12), 6 - (int) (months % 12), 1, OFFSET_PONE));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_minusMonths_int_DateResolver_null_adjustDay() {
+    public void test_minusMonths_long_DateResolver_null_adjustDay() {
         TEST_2007_07_15_PONE.minusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_DateResolver_invalidTooLarge() {
+    public void test_minusMonths_long_DateResolver_invalidTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE).minusMonths(-1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMax() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.minusMonths(Long.MAX_VALUE, DateResolvers.nextValid());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minusMonths_long_DateResolver_invalidTooLargeMaxAddMin() {
+        OffsetDate test = OffsetDate.of(Year.MAX_YEAR, 12, 1, OFFSET_PONE);
+        test.minusMonths(Long.MIN_VALUE, DateResolvers.nextValid());
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
-    public void test_minusMonths_int_DateResolver_invalidTooSmall() {
+    public void test_minusMonths_long_DateResolver_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusMonths(1, DateResolvers.nextValid());
     }
 
@@ -1571,6 +1705,16 @@ public class TestOffsetDate {
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusWeeks_invalidTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).minusWeeks(1);
+    }
+
+    @Test(expectedExceptions={CalendricalException.class})
+    public void test_minusWeeks_invalidMaxMinusMax() {
+        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions={CalendricalException.class})
+    public void test_minusWeeks_invalidMaxMinusMin() {
+        OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

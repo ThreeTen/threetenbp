@@ -629,7 +629,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
-    public OffsetDate plusYears(int years) {
+    public OffsetDate plusYears(long years) {
         return with(date.plusYears(years), offset);
     }
 
@@ -650,7 +650,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate plusYears(int years, DateResolver dateResolver) {
+    public OffsetDate plusYears(long years, DateResolver dateResolver) {
         return with(date.plusYears(years, dateResolver), offset);
     }
 
@@ -677,7 +677,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
-    public OffsetDate plusMonths(int months) {
+    public OffsetDate plusMonths(long months) {
         return with(date.plusMonths(months), offset);
     }
 
@@ -698,7 +698,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate plusMonths(int months, DateResolver dateResolver) {
+    public OffsetDate plusMonths(long months, DateResolver dateResolver) {
         return with(date.plusMonths(months, dateResolver), offset);
     }
 
@@ -717,7 +717,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate plusWeeks(int weeks) {
+    public OffsetDate plusWeeks(long weeks) {
         return with(date.plusWeeks(weeks), offset);
     }
 
@@ -789,7 +789,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusYears(int, javax.time.calendar.DateResolver)
      */
-    public OffsetDate minusYears(int years) {
+    public OffsetDate minusYears(long years) {
         return with(date.minusYears(years), offset);
     }
 
@@ -810,7 +810,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate minusYears(int years, DateResolver dateResolver) {
+    public OffsetDate minusYears(long years, DateResolver dateResolver) {
         return with(date.minusYears(years, dateResolver), offset);
     }
 
@@ -837,7 +837,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusMonths(int, javax.time.calendar.DateResolver)
      */
-    public OffsetDate minusMonths(int months) {
+    public OffsetDate minusMonths(long months) {
         return with(date.minusMonths(months), offset);
     }
 
@@ -858,7 +858,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate minusMonths(int months, DateResolver dateResolver) {
+    public OffsetDate minusMonths(long months, DateResolver dateResolver) {
         return with(date.minusMonths(months, dateResolver), offset);
     }
 
@@ -877,7 +877,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate minusWeeks(int weeks) {
+    public OffsetDate minusWeeks(long weeks) {
         return with(date.minusWeeks(weeks), offset);
     }
 

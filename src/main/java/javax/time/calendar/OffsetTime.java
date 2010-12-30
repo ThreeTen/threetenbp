@@ -499,7 +499,7 @@ public final class OffsetTime
      * @param hours  the hours to add, may be negative
      * @return an {@code OffsetTime} based on this time with the hours added, never null
      */
-    public OffsetTime plusHours(int hours) {
+    public OffsetTime plusHours(long hours) {
         LocalTime newTime = time.plusHours(hours);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
@@ -515,7 +515,7 @@ public final class OffsetTime
      * @param minutes  the minutes to add, may be negative
      * @return an {@code OffsetTime} based on this time with the minutes added, never null
      */
-    public OffsetTime plusMinutes(int minutes) {
+    public OffsetTime plusMinutes(long minutes) {
         LocalTime newTime = time.plusMinutes(minutes);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
@@ -531,7 +531,7 @@ public final class OffsetTime
      * @param seconds  the seconds to add, may be negative
      * @return an {@code OffsetTime} based on this time with the seconds added, never null
      */
-    public OffsetTime plusSeconds(int seconds) {
+    public OffsetTime plusSeconds(long seconds) {
         LocalTime newTime = time.plusSeconds(seconds);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
@@ -547,7 +547,7 @@ public final class OffsetTime
      * @param nanos  the nanos to add, may be negative
      * @return an {@code OffsetTime} based on this time with the nanoseconds added, never null
      */
-    public OffsetTime plusNanos(int nanos) {
+    public OffsetTime plusNanos(long nanos) {
         LocalTime newTime = time.plusNanos(nanos);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
@@ -585,7 +585,7 @@ public final class OffsetTime
      * @param hours  the hours to subtract, may be negative
      * @return an {@code OffsetTime} based on this time with the hours subtracted, never null
      */
-    public OffsetTime minusHours(int hours) {
+    public OffsetTime minusHours(long hours) {
         LocalTime newTime = time.minusHours(hours);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
@@ -601,7 +601,7 @@ public final class OffsetTime
      * @param minutes  the minutes to subtract, may be negative
      * @return an {@code OffsetTime} based on this time with the minutes subtracted, never null
      */
-    public OffsetTime minusMinutes(int minutes) {
+    public OffsetTime minusMinutes(long minutes) {
         LocalTime newTime = time.minusMinutes(minutes);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
@@ -617,7 +617,7 @@ public final class OffsetTime
      * @param seconds  the seconds to subtract, may be negative
      * @return an {@code OffsetTime} based on this time with the seconds subtracted, never null
      */
-    public OffsetTime minusSeconds(int seconds) {
+    public OffsetTime minusSeconds(long seconds) {
         LocalTime newTime = time.minusSeconds(seconds);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
@@ -633,7 +633,7 @@ public final class OffsetTime
      * @param nanos  the nanos to subtract, may be negative
      * @return an {@code OffsetTime} based on this time with the nanoseconds subtracted, never null
      */
-    public OffsetTime minusNanos(int nanos) {
+    public OffsetTime minusNanos(long nanos) {
         LocalTime newTime = time.minusNanos(nanos);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
