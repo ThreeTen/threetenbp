@@ -45,6 +45,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.TimeSource;
@@ -912,6 +913,25 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // plus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_plus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(dur);
+        assertEquals(t, OffsetDateTime.of(2008, 6, 30, 11, 32, 1, 503, OFFSET_PONE));
+    }
+
+    public void test_plus_Duration_zero() {
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(Duration.ZERO);
+        assertSame(t, TEST_2008_6_30_11_30_59_000000500);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_Duration_null() {
+        TEST_2008_6_30_11_30_59_000000500.plus((Duration) null);
+    }
+
+    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears() {
@@ -1067,6 +1087,25 @@ public class TestOffsetDateTime {
     public void test_minus_PeriodProvider_zero() {
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(Period.ZERO);
         assertSame(t, TEST_2008_6_30_11_30_59_000000500);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_minus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(dur);
+        assertEquals(t, OffsetDateTime.of(2008, 6, 30, 11, 29, 57, 497, OFFSET_PONE));
+    }
+
+    public void test_minus_Duration_zero() {
+        OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(Duration.ZERO);
+        assertSame(t, TEST_2008_6_30_11_30_59_000000500);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_Duration_null() {
+        TEST_2008_6_30_11_30_59_000000500.minus((Duration) null);
     }
 
     //-----------------------------------------------------------------------

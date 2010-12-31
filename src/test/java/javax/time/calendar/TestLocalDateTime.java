@@ -47,6 +47,7 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.DateTimeFormatters;
@@ -1720,6 +1721,25 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // plus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_plus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(dur);
+        assertEquals(t, LocalDateTime.of(2007, 7, 15, 12, 31, 42, 987654324));
+    }
+
+    public void test_plus_Duration_zero() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(Duration.ZERO);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_Duration_null() {
+        TEST_2007_07_15_12_30_40_987654321.plus((Duration) null);
+    }
+
+    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears_int_normal() {
@@ -2607,6 +2627,25 @@ public class TestLocalDateTime {
         LocalDateTime expected = LocalDateTime.parse(expectedStr);
         LocalDateTime t = base.minus(provider);
         assertEquals(t, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_minus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(dur);
+        assertEquals(t, LocalDateTime.of(2007, 7, 15, 12, 29, 38, 987654318));
+    }
+
+    public void test_minus_Duration_zero() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(Duration.ZERO);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_Duration_null() {
+        TEST_2007_07_15_12_30_40_987654321.minus((Duration) null);
     }
 
     //-----------------------------------------------------------------------
