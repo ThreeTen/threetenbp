@@ -417,6 +417,13 @@ public class TestPeriod {
         assertPeriod(Period.of(Duration.ofSeconds(2, -3)), 0, 0, 0, 0, 0, 1, 999999997);
     }
 
+    public void factory_duration_big() {
+        Duration dur = Duration.ofSeconds(2, Long.MAX_VALUE);
+        long secs = Long.MAX_VALUE / 1000000000 + 2;
+        long nanos = Long.MAX_VALUE % 1000000000;
+        assertPeriod(Period.of(dur), 0, 0, 0, (int) (secs / 3600), (int) ((secs % 3600) / 60), (int) (secs % 60), nanos);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_duration_null() {
         Period.of((Duration) null);

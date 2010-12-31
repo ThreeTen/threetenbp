@@ -405,7 +405,7 @@ public final class Period
             return ZERO;
         }
         int hours = MathUtils.safeToInt(duration.getSeconds() / 3600);
-        int amount = ((int) duration.getSeconds() % 3600);
+        int amount = (int) (duration.getSeconds() % 3600L);
         return new Period(0, 0, 0, hours, amount / 60, amount % 60, duration.getNanoOfSecond());
     }
 

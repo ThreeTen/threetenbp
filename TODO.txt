@@ -278,6 +278,7 @@ EDR released
 - OffsetDateTime.compareTo doesn't handle nanos
 - Add OffsetDate.atTime(OffsetTime)
 - Ensure date-time plus/minus uses int not long
+- Fix Period.of(Duration)
 ===============================================================================
  
 Not doing
