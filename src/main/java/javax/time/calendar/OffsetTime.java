@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
@@ -468,12 +469,13 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the specified time period added.
+     * Returns a copy of this {@code OffsetTime} with the specified period added.
      * <p>
      * This adds the specified period to this time, returning a new time.
-     * Before addition, the period is converted to a time-based {@code Period} using
-     * {@link Period#ofTimeFields(PeriodProvider)}.
-     * That factory ignores any date-based ISO fields, thus adding a date-based
+     * The calculation wraps around midnight and ignores any date-based ISO fields.
+     * <p>
+     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
+     * Those rules ignore any date-based ISO fields, thus adding a date-based
      * period to this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -481,9 +483,29 @@ public final class OffsetTime
      * @param periodProvider  the period to add, not null
      * @return an {@code OffsetTime} based on this time with the period added, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public OffsetTime plus(PeriodProvider periodProvider) {
         LocalTime newTime = time.plus(periodProvider);
+        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    /**
+     * Returns a copy of this {@code OffsetTime} with the specified duration added.
+     * <p>
+     * This adds the specified duration to this time, returning a new time.
+     * The calculation wraps around midnight.
+     * <p>
+     * The calculation is equivalent to using {@link #plusSeconds(long)} and
+     * {@link #plusNanos(long)} on the two parts of the duration.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return an {@code OffsetTime} based on this time with the duration added, never null
+     */
+    public OffsetTime plus(Duration duration) {
+        LocalTime newTime = time.plus(duration);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
 
@@ -491,8 +513,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in hours added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of hours to this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -507,8 +529,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in minutes added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of minutes to this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -523,8 +545,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in seconds added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of seconds to this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -539,8 +561,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of nanoseconds to this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -557,19 +579,40 @@ public final class OffsetTime
      * Returns a copy of this {@code OffsetTime} with the specified period subtracted.
      * <p>
      * This subtracts the specified period from this time, returning a new time.
-     * Before subtraction, the period is converted to a time-based {@code Period} using
-     * {@link Period#ofTimeFields(PeriodProvider)}.
-     * That factory ignores any date-based ISO fields, thus subtracting a date-based
-     * period from this time will have no effect.
+     * The calculation wraps around midnight and ignores any date-based ISO fields.
+     * <p>
+     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
+     * Those rules ignore any date-based ISO fields, thus adding a date-based
+     * period to this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
      * @return an {@code OffsetTime} based on this time with the period subtracted, never null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
+     * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
     public OffsetTime minus(PeriodProvider periodProvider) {
         LocalTime newTime = time.minus(periodProvider);
+        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    /**
+     * Returns a copy of this {@code OffsetTime} with the specified duration subtracted.
+     * <p>
+     * This subtracts the specified duration to this time, returning a new time.
+     * The calculation wraps around midnight.
+     * <p>
+     * The calculation is equivalent to using {@link #minusSeconds(long)} and
+     * {@link #minusNanos(long)} on the two parts of the duration.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return an {@code OffsetTime} based on this time with the duration subtracted, never null
+     */
+    public OffsetTime minus(Duration duration) {
+        LocalTime newTime = time.minus(duration);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
 
@@ -577,8 +620,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in hours subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of hours from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -593,8 +636,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in minutes subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of minutes from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -609,8 +652,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in seconds subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of seconds from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -625,8 +668,8 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the specified period in nanoseconds subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of nanoseconds from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

@@ -279,7 +279,7 @@ EDR released
 - Add OffsetDate.atTime(OffsetTime)
 - Ensure date-time plus/minus uses int not long
 - Fix Period.of(Duration)
-- Add LocalTime.plus/minus(Duration)
+- Add LocalTime/OffsetTime.plus/minus(Duration)
 ===============================================================================
  
 Not doing

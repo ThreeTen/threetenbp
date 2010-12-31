@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
@@ -65,16 +66,16 @@ public class TestOffsetTime {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final LocalDate DATE = LocalDate.of(2008, 12, 3);
-    private OffsetTime TEST_TIME;
+    private OffsetTime TEST_11_30_59_500_PONE;
 
     @BeforeMethod
     public void setUp() {
-        TEST_TIME = OffsetTime.of(11, 30, 59, 500, OFFSET_PONE);
+        TEST_11_30_59_500_PONE = OffsetTime.of(11, 30, 59, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        Object obj = TEST_TIME;
+        Object obj = TEST_11_30_59_500_PONE;
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
@@ -86,12 +87,12 @@ public class TestOffsetTime {
     public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(TEST_TIME);
+        oos.writeObject(TEST_11_30_59_500_PONE);
         oos.close();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
                 baos.toByteArray()));
-        assertEquals(ois.readObject(), TEST_TIME);
+        assertEquals(ois.readObject(), TEST_11_30_59_500_PONE);
     }
 
     public void test_immutable() {
@@ -619,23 +620,60 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
         PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
-        OffsetTime t = TEST_TIME.plus(provider);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(provider);
         assertEquals(t, OffsetTime.of(12, 33, 2, 500, OFFSET_PONE));
     }
 
     public void test_plus_PeriodProvider_zero() {
-        OffsetTime t = TEST_TIME.plus(Period.ZERO);
-        assertSame(t, TEST_TIME);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(Period.ZERO);
+        assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PeriodProvider_null() {
-        TEST_TIME.plus((PeriodProvider) null);
+        TEST_11_30_59_500_PONE.plus((PeriodProvider) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PeriodProvider_badProvider() {
-        TEST_TIME.plus(new MockPeriodProviderReturnsNull());
+        TEST_11_30_59_500_PONE.plus(new MockPeriodProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_plus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(dur);
+        assertEquals(t, OffsetTime.of(11, 32, 1, 503, OFFSET_PONE));
+    }
+
+    public void test_plus_Duration_big1() {
+        Duration dur = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(dur);
+        assertEquals(t, TEST_11_30_59_500_PONE.plusSeconds(Long.MAX_VALUE).plusNanos(999999999));
+    }
+
+    public void test_plus_Duration_big2() {
+        Duration dur = Duration.ofSeconds(999, Long.MAX_VALUE);
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(dur);
+        assertEquals(t, TEST_11_30_59_500_PONE.plusSeconds(999).plusNanos(Long.MAX_VALUE));
+    }
+
+    public void test_plus_Duration_zero() {
+        OffsetTime t = TEST_11_30_59_500_PONE.plus(Duration.ZERO);
+        assertSame(t, TEST_11_30_59_500_PONE);
+    }
+
+    public void test_plus_Duration_wrap() {
+        Duration dur = Duration.ofStandardHours(1);
+        OffsetTime t = OffsetTime.of(23, 30, OFFSET_PONE).plus(dur);
+        assertEquals(t, OffsetTime.of(0, 30, OFFSET_PONE));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_Duration_null() {
+        TEST_11_30_59_500_PONE.plus((Duration) null);
     }
 
     //-----------------------------------------------------------------------
@@ -703,23 +741,60 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
         PeriodProvider provider = Period.ofTimeFields(1, 2, 3);
-        OffsetTime t = TEST_TIME.minus(provider);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(provider);
         assertEquals(t, OffsetTime.of(10, 28, 56, 500, OFFSET_PONE));
     }
 
     public void test_minus_PeriodProvider_zero() {
-        OffsetTime t = TEST_TIME.minus(Period.ZERO);
-        assertSame(t, TEST_TIME);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(Period.ZERO);
+        assertSame(t, TEST_11_30_59_500_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_PeriodProvider_null() {
-        TEST_TIME.minus((PeriodProvider) null);
+        TEST_11_30_59_500_PONE.minus((PeriodProvider) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_PeriodProvider_badProvider() {
-        TEST_TIME.minus(new MockPeriodProviderReturnsNull());
+        TEST_11_30_59_500_PONE.minus(new MockPeriodProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_minus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(dur);
+        assertEquals(t, OffsetTime.of(11, 29, 57, 497, OFFSET_PONE));
+    }
+
+    public void test_minus_Duration_big1() {
+        Duration dur = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(dur);
+        assertEquals(t, TEST_11_30_59_500_PONE.minusSeconds(Long.MAX_VALUE).minusNanos(999999999));
+    }
+
+    public void test_minus_Duration_big2() {
+        Duration dur = Duration.ofSeconds(999, Long.MAX_VALUE);
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(dur);
+        assertEquals(t, TEST_11_30_59_500_PONE.minusSeconds(999).minusNanos(Long.MAX_VALUE));
+    }
+
+    public void test_minus_Duration_zero() {
+        OffsetTime t = TEST_11_30_59_500_PONE.minus(Duration.ZERO);
+        assertSame(t, TEST_11_30_59_500_PONE);
+    }
+
+    public void test_minus_Duration_wrap() {
+        Duration dur = Duration.ofStandardHours(1);
+        OffsetTime t = OffsetTime.of(0, 30, OFFSET_PONE).minus(dur);
+        assertEquals(t, OffsetTime.of(23, 30, OFFSET_PONE));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_Duration_null() {
+        TEST_11_30_59_500_PONE.minus((Duration) null);
     }
 
     //-----------------------------------------------------------------------
@@ -786,12 +861,12 @@ public class TestOffsetTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        assertTrue(TEST_TIME.matches(new CalendricalMatcher() {
+        assertTrue(TEST_11_30_59_500_PONE.matches(new CalendricalMatcher() {
             public boolean matchesCalendrical(Calendrical calendrical) {
                 return true;
             }
         }));
-        assertFalse(TEST_TIME.matches(new CalendricalMatcher() {
+        assertFalse(TEST_11_30_59_500_PONE.matches(new CalendricalMatcher() {
             public boolean matchesCalendrical(Calendrical calendrical) {
                 return false;
             }
@@ -800,7 +875,7 @@ public class TestOffsetTime {
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_matches_null() {
-        TEST_TIME.matches(null);
+        TEST_11_30_59_500_PONE.matches(null);
     }
 
     //-----------------------------------------------------------------------
@@ -865,7 +940,7 @@ public class TestOffsetTime {
     @Test(expectedExceptions=ClassCastException.class)
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void compareToNonOffsetTime() {
-       Comparable c = TEST_TIME;
+       Comparable c = TEST_11_30_59_500_PONE;
        c.compareTo(new Object());
     }
 
@@ -1041,15 +1116,15 @@ public class TestOffsetTime {
     }
 
     public void test_equals_itself_true() {
-        assertEquals(TEST_TIME.equals(TEST_TIME), true);
+        assertEquals(TEST_11_30_59_500_PONE.equals(TEST_11_30_59_500_PONE), true);
     }
 
     public void test_equals_string_false() {
-        assertEquals(TEST_TIME.equals("2007-07-15"), false);
+        assertEquals(TEST_11_30_59_500_PONE.equals("2007-07-15"), false);
     }
 
     public void test_equals_null_false() {
-        assertEquals(TEST_TIME.equals(null), false);
+        assertEquals(TEST_11_30_59_500_PONE.equals(null), false);
     }
 
     //-----------------------------------------------------------------------
@@ -1093,24 +1168,24 @@ public class TestOffsetTime {
     // matchesCalendrical() - parameter is larger calendrical
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_true_date() {
-        OffsetTime test = TEST_TIME;
-        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_TIME);
+        OffsetTime test = TEST_11_30_59_500_PONE;
+        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_11_30_59_500_PONE);
         assertEquals(test.matchesCalendrical(cal), true);
     }
 
     public void test_matchesCalendrical_false_date() {
-        OffsetTime test = TEST_TIME;
-        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_TIME.plusHours(1));
+        OffsetTime test = TEST_11_30_59_500_PONE;
+        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_11_30_59_500_PONE.plusHours(1));
         assertEquals(test.matchesCalendrical(cal), false);
     }
 
     public void test_matchesCalendrical_itself_true() {
-        assertEquals(TEST_TIME.matchesCalendrical(TEST_TIME), true);
+        assertEquals(TEST_11_30_59_500_PONE.matchesCalendrical(TEST_11_30_59_500_PONE), true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matchesCalendrical_null() {
-        TEST_TIME.matchesCalendrical(null);
+        TEST_11_30_59_500_PONE.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1119,16 +1194,16 @@ public class TestOffsetTime {
     @Test(dataProvider="sampleTimes")
     public void test_adjustTime(int h, int m, int s, int n, ZoneOffset ignored) {
         LocalTime a = LocalTime.of(h, m, s, n);
-        assertSame(a.adjustTime(TEST_TIME.toLocalTime()), a);
-        assertSame(TEST_TIME.adjustTime(a), TEST_TIME.toLocalTime());
+        assertSame(a.adjustTime(TEST_11_30_59_500_PONE.toLocalTime()), a);
+        assertSame(TEST_11_30_59_500_PONE.adjustTime(a), TEST_11_30_59_500_PONE.toLocalTime());
     }
 
     public void test_adjustTime_same() {
-        assertSame(OffsetTime.of(11, 30, 59, 500, OFFSET_PTWO).adjustTime(TEST_TIME.toLocalTime()), TEST_TIME.toLocalTime());
+        assertSame(OffsetTime.of(11, 30, 59, 500, OFFSET_PTWO).adjustTime(TEST_11_30_59_500_PONE.toLocalTime()), TEST_11_30_59_500_PONE.toLocalTime());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_null() {
-        TEST_TIME.adjustTime(null);
+        TEST_11_30_59_500_PONE.adjustTime(null);
     }
 }
