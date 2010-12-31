@@ -1007,7 +1007,7 @@ public final class LocalTime
      * @param daysOverflow  the number of days to store
      * @return the days-overflow, never null
      */
-    public Overflow toOverflow(int daysOverflow) {
+    public Overflow toOverflow(long daysOverflow) {
         return new Overflow(this, daysOverflow);
     }
 

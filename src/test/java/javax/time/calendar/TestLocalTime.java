@@ -1918,6 +1918,15 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // toOverflow()
+    //-----------------------------------------------------------------------
+    public void test_toOverflow() {
+        Overflow test = TEST_12_30_40_987654321.toOverflow(2);
+        assertEquals(test.getOverflowDays(), 2);
+        assertEquals(test.getResultTime(), TEST_12_30_40_987654321);
+    }
+
+    //-----------------------------------------------------------------------
     // toSecondOfDay()
     //-----------------------------------------------------------------------
     public void test_toSecondOfDay() {

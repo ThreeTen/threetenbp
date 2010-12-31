@@ -47,6 +47,7 @@ Date/Time classes
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - factories taking double for seconds (LocalTime...)
 - OffsetDateTime.toEpochSecs() could be private
+- date-time plus(Duration)
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
 ? remove getChronology()
@@ -276,7 +277,7 @@ EDR released
 - OffsetTime.compareTo fixed
 - OffsetDateTime.compareTo doesn't handle nanos
 - Add OffsetDate.atTime(OffsetTime)
-- OffsetDate/Time.plus/minus uses int not long
+- Ensure date-time plus/minus uses int not long
 ===============================================================================
  
 Not doing
