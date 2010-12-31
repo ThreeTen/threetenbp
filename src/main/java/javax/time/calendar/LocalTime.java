@@ -839,8 +839,8 @@ public final class LocalTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to add, not null
-     * @return a {@code LocalTime} based on this time with the duration added, never null
+     * @param duration  the duration to subtract, not null
+     * @return a {@code LocalTime} based on this time with the duration subtracted, never null
      */
     public LocalTime minus(Duration duration) {
         return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());

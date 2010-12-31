@@ -608,7 +608,7 @@ public final class OffsetTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to add, not null
+     * @param duration  the duration to subtract, not null
      * @return an {@code OffsetTime} based on this time with the duration subtracted, never null
      */
     public OffsetTime minus(Duration duration) {
