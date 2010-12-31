@@ -1070,9 +1070,9 @@ public final class LocalDateTime
      * @param years  the years to add, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(int, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendar.DateResolver)
      */
-    public LocalDateTime plusYears(int years) {
+    public LocalDateTime plusYears(long years) {
         LocalDate newDate = date.plusYears(years);
         return with(newDate, time);
     }
@@ -1094,7 +1094,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plusYears(int years, DateResolver dateResolver) {
+    public LocalDateTime plusYears(long years, DateResolver dateResolver) {
         LocalDate newDate = date.plusYears(years, dateResolver);
         return with(newDate, time);
     }
@@ -1120,9 +1120,9 @@ public final class LocalDateTime
      * @param months  the months to add, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(int, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendar.DateResolver)
      */
-    public LocalDateTime plusMonths(int months) {
+    public LocalDateTime plusMonths(long months) {
         LocalDate newDate = date.plusMonths(months);
         return with(newDate, time);
     }
@@ -1144,7 +1144,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plusMonths(int months, DateResolver dateResolver) {
+    public LocalDateTime plusMonths(long months, DateResolver dateResolver) {
         LocalDate newDate = date.plusMonths(months, dateResolver);
         return with(newDate, time);
     }
@@ -1164,7 +1164,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plusWeeks(int weeks) {
+    public LocalDateTime plusWeeks(long weeks) {
         LocalDate newDate = date.plusWeeks(weeks);
         return with(newDate, time);
     }
@@ -1198,7 +1198,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the hours added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plusHours(int hours) {
+    public LocalDateTime plusHours(long hours) {
         LocalTime.Overflow overflow = time.plusWithOverflow(hours, 0, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());
@@ -1213,7 +1213,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the minutes added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plusMinutes(int minutes) {
+    public LocalDateTime plusMinutes(long minutes) {
         LocalTime.Overflow overflow = time.plusWithOverflow(0, minutes, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());
@@ -1228,7 +1228,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the seconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plusSeconds(int seconds) {
+    public LocalDateTime plusSeconds(long seconds) {
         LocalTime.Overflow overflow = time.plusWithOverflow(0, 0, seconds, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());
@@ -1341,9 +1341,9 @@ public final class LocalDateTime
      * @param years  the years to subtract, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(int, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendar.DateResolver)
      */
-    public LocalDateTime minusYears(int years) {
+    public LocalDateTime minusYears(long years) {
         LocalDate newDate = date.minusYears(years);
         return with(newDate, time);
     }
@@ -1365,7 +1365,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minusYears(int years, DateResolver dateResolver) {
+    public LocalDateTime minusYears(long years, DateResolver dateResolver) {
         LocalDate newDate = date.minusYears(years, dateResolver);
         return with(newDate, time);
     }
@@ -1391,9 +1391,9 @@ public final class LocalDateTime
      * @param months  the months to subtract, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(int, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendar.DateResolver)
      */
-    public LocalDateTime minusMonths(int months) {
+    public LocalDateTime minusMonths(long months) {
         LocalDate newDate = date.minusMonths(months);
         return with(newDate, time);
     }
@@ -1415,7 +1415,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minusMonths(int months, DateResolver dateResolver) {
+    public LocalDateTime minusMonths(long months, DateResolver dateResolver) {
         LocalDate newDate = date.minusMonths(months, dateResolver);
         return with(newDate, time);
     }
@@ -1435,7 +1435,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minusWeeks(int weeks) {
+    public LocalDateTime minusWeeks(long weeks) {
         LocalDate newDate = date.minusWeeks(weeks);
         return with(newDate, time);
     }
@@ -1469,7 +1469,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the hours subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minusHours(int hours) {
+    public LocalDateTime minusHours(long hours) {
         LocalTime.Overflow overflow = time.minusWithOverflow(hours, 0, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());
@@ -1484,7 +1484,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the minutes subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minusMinutes(int minutes) {
+    public LocalDateTime minusMinutes(long minutes) {
         LocalTime.Overflow overflow = time.minusWithOverflow(0, minutes, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());
@@ -1499,7 +1499,7 @@ public final class LocalDateTime
      * @return a {@code LocalDateTime} based on this date-time with the seconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minusSeconds(int seconds) {
+    public LocalDateTime minusSeconds(long seconds) {
         LocalTime.Overflow overflow = time.minusWithOverflow(0, 0, seconds, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return with(newDate, overflow.getResultTime());

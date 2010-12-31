@@ -1104,9 +1104,9 @@ public final class OffsetDateTime
      * @param years  the years to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(int, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendar.DateResolver)
      */
-    public OffsetDateTime plusYears(int years) {
+    public OffsetDateTime plusYears(long years) {
         LocalDateTime newDT = dateTime.plusYears(years);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1128,7 +1128,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusYears(int years, DateResolver dateResolver) {
+    public OffsetDateTime plusYears(long years, DateResolver dateResolver) {
         LocalDateTime newDT = dateTime.plusYears(years, dateResolver);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1154,9 +1154,9 @@ public final class OffsetDateTime
      * @param months  the months to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(int, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendar.DateResolver)
      */
-    public OffsetDateTime plusMonths(int months) {
+    public OffsetDateTime plusMonths(long months) {
         LocalDateTime newDT = dateTime.plusMonths(months);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1178,7 +1178,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusMonths(int months, DateResolver dateResolver) {
+    public OffsetDateTime plusMonths(long months, DateResolver dateResolver) {
         LocalDateTime newDT = dateTime.plusMonths(months);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1198,7 +1198,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusWeeks(int weeks) {
+    public OffsetDateTime plusWeeks(long weeks) {
         LocalDateTime newDT = dateTime.plusWeeks(weeks);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1218,7 +1218,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the days added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusDays(int days) {
+    public OffsetDateTime plusDays(long days) {
         LocalDateTime newDT = dateTime.plusDays(days);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1232,7 +1232,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the hours added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusHours(int hours) {
+    public OffsetDateTime plusHours(long hours) {
         LocalDateTime newDT = dateTime.plusHours(hours);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1246,7 +1246,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the minutes added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusMinutes(int minutes) {
+    public OffsetDateTime plusMinutes(long minutes) {
         LocalDateTime newDT = dateTime.plusMinutes(minutes);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1260,7 +1260,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the seconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusSeconds(int seconds) {
+    public OffsetDateTime plusSeconds(long seconds) {
         LocalDateTime newDT = dateTime.plusSeconds(seconds);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1274,7 +1274,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plusNanos(int nanos) {
+    public OffsetDateTime plusNanos(long nanos) {
         LocalDateTime newDT = dateTime.plusNanos(nanos);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1324,9 +1324,9 @@ public final class OffsetDateTime
      * @param years  the years to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(int, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendar.DateResolver)
      */
-    public OffsetDateTime minusYears(int years) {
+    public OffsetDateTime minusYears(long years) {
         LocalDateTime newDT = dateTime.minusYears(years);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1348,7 +1348,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusYears(int years, DateResolver dateResolver) {
+    public OffsetDateTime minusYears(long years, DateResolver dateResolver) {
         LocalDateTime newDT = dateTime.minusYears(years, dateResolver);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1374,9 +1374,9 @@ public final class OffsetDateTime
      * @param months  the months to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(int, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendar.DateResolver)
      */
-    public OffsetDateTime minusMonths(int months) {
+    public OffsetDateTime minusMonths(long months) {
         LocalDateTime newDT = dateTime.minusMonths(months);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1398,7 +1398,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusMonths(int months, DateResolver dateResolver) {
+    public OffsetDateTime minusMonths(long months, DateResolver dateResolver) {
         LocalDateTime newDT = dateTime.minusMonths(months);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1418,7 +1418,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusWeeks(int weeks) {
+    public OffsetDateTime minusWeeks(long weeks) {
         LocalDateTime newDT = dateTime.minusWeeks(weeks);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1438,7 +1438,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusDays(int days) {
+    public OffsetDateTime minusDays(long days) {
         LocalDateTime newDT = dateTime.minusDays(days);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1452,7 +1452,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the hours subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusHours(int hours) {
+    public OffsetDateTime minusHours(long hours) {
         LocalDateTime newDT = dateTime.minusHours(hours);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1466,7 +1466,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the minutes subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusMinutes(int minutes) {
+    public OffsetDateTime minusMinutes(long minutes) {
         LocalDateTime newDT = dateTime.minusMinutes(minutes);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1480,7 +1480,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the seconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusSeconds(int seconds) {
+    public OffsetDateTime minusSeconds(long seconds) {
         LocalDateTime newDT = dateTime.minusSeconds(seconds);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1494,7 +1494,7 @@ public final class OffsetDateTime
      * @return an {@code OffsetDateTime} based on this date-time with the nanoseconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime minusNanos(int nanos) {
+    public OffsetDateTime minusNanos(long nanos) {
         LocalDateTime newDT = dateTime.minusNanos(nanos);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }

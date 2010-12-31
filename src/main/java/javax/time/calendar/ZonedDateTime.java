@@ -1292,7 +1292,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the years added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusYears(int years) {
+    public ZonedDateTime plusYears(long years) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusYears(years);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1319,7 +1319,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the months added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusMonths(int months) {
+    public ZonedDateTime plusMonths(long months) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusMonths(months);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1343,7 +1343,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusWeeks(int weeks) {
+    public ZonedDateTime plusWeeks(long weeks) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusWeeks(weeks);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1367,7 +1367,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the days added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusDays(int days) {
+    public ZonedDateTime plusDays(long days) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusDays(days);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1395,7 +1395,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the hours added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusHours(int hours) {
+    public ZonedDateTime plusHours(long hours) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusHours(hours);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1413,7 +1413,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the minutes added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusMinutes(int minutes) {
+    public ZonedDateTime plusMinutes(long minutes) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusMinutes(minutes);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1431,7 +1431,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the seconds added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusSeconds(int seconds) {
+    public ZonedDateTime plusSeconds(long seconds) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusSeconds(seconds);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1449,7 +1449,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the nanoseconds added, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime plusNanos(int nanos) {
+    public ZonedDateTime plusNanos(long nanos) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusNanos(nanos);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1594,7 +1594,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusYears(int years) {
+    public ZonedDateTime minusYears(long years) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusYears(years);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1621,7 +1621,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusMonths(int months) {
+    public ZonedDateTime minusMonths(long months) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusMonths(months);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1645,7 +1645,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusWeeks(int weeks) {
+    public ZonedDateTime minusWeeks(long weeks) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusWeeks(weeks);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1669,7 +1669,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusDays(int days) {
+    public ZonedDateTime minusDays(long days) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusDays(days);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1697,7 +1697,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the hours subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusHours(int hours) {
+    public ZonedDateTime minusHours(long hours) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusHours(hours);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1715,7 +1715,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the minutes subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusMinutes(int minutes) {
+    public ZonedDateTime minusMinutes(long minutes) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusMinutes(minutes);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1733,7 +1733,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the seconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusSeconds(int seconds) {
+    public ZonedDateTime minusSeconds(long seconds) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusSeconds(seconds);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
@@ -1751,7 +1751,7 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the nanoseconds subtracted, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public ZonedDateTime minusNanos(int nanos) {
+    public ZonedDateTime minusNanos(long nanos) {
         LocalDateTime newDT = dateTime.toLocalDateTime().minusNanos(nanos);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));

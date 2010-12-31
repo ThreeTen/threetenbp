@@ -1322,16 +1322,16 @@ public class TestLocalTime {
     }
 
     public void test_plusWithOveflow_max() {
-        Overflow t = TEST_12_30_40_987654321.plusWithOverflow(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+        Overflow t = TEST_12_30_40_987654321.plusWithOverflow(Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
         long nanos = Long.MAX_VALUE % (24 * 60 * 60 * 1000000000L);
-        nanos += (Integer.MAX_VALUE % (24 * 60 * 60)) * 1000000000L;
-        nanos += (Integer.MAX_VALUE % (24 * 60)) * 60 * 1000000000L;
-        nanos += (Integer.MAX_VALUE % (24)) * 60 * 60 * 1000000000L;
+        nanos += (Long.MAX_VALUE % (24 * 60 * 60)) * 1000000000L;
+        nanos += (Long.MAX_VALUE % (24 * 60)) * 60 * 1000000000L;
+        nanos += (Long.MAX_VALUE % (24)) * 60 * 60 * 1000000000L;
         Overflow justNanos = TEST_12_30_40_987654321.plusWithOverflow(0, 0, 0, nanos);
         long days = Long.MAX_VALUE / (24 * 60 * 60 * 1000000000L);
-        days += Integer.MAX_VALUE / (24 * 60 * 60);
-        days += Integer.MAX_VALUE / (24 * 60);
-        days += Integer.MAX_VALUE / (24);
+        days += Long.MAX_VALUE / (24 * 60 * 60);
+        days += Long.MAX_VALUE / (24 * 60);
+        days += Long.MAX_VALUE / (24);
         days += justNanos.getOverflowDays();
         assertEquals(t.getOverflowDays(), days);
         assertEquals(t.getResultTime(), justNanos.getResultTime());
@@ -1858,16 +1858,16 @@ public class TestLocalTime {
     }
 
     public void test_minusWithOveflow_max() {
-        Overflow t = TEST_12_30_40_987654321.minusWithOverflow(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+        Overflow t = TEST_12_30_40_987654321.minusWithOverflow(Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
         long nanos = Long.MAX_VALUE % (24 * 60 * 60 * 1000000000L);
-        nanos += (Integer.MAX_VALUE % (24 * 60 * 60)) * 1000000000L;
-        nanos += (Integer.MAX_VALUE % (24 * 60)) * 60 * 1000000000L;
-        nanos += (Integer.MAX_VALUE % (24)) * 60 * 60 * 1000000000L;
+        nanos += (Long.MAX_VALUE % (24 * 60 * 60)) * 1000000000L;
+        nanos += (Long.MAX_VALUE % (24 * 60)) * 60 * 1000000000L;
+        nanos += (Long.MAX_VALUE % (24)) * 60 * 60 * 1000000000L;
         Overflow justNanos = TEST_12_30_40_987654321.minusWithOverflow(0, 0, 0, nanos);
         long days = Long.MAX_VALUE / (24 * 60 * 60 * 1000000000L);
-        days += Integer.MAX_VALUE / (24 * 60 * 60);
-        days += Integer.MAX_VALUE / (24 * 60);
-        days += Integer.MAX_VALUE / (24);
+        days += Long.MAX_VALUE / (24 * 60 * 60);
+        days += Long.MAX_VALUE / (24 * 60);
+        days += Long.MAX_VALUE / (24);
         days -= justNanos.getOverflowDays();
         assertEquals(t.getOverflowDays(), -days);
         assertEquals(t.getResultTime(), justNanos.getResultTime());

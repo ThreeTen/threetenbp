@@ -735,7 +735,7 @@ public final class LocalTime
      * @param nanos the nanos to add, may be negative
      * @return an {@code Overflow} instance with the resulting time and overflow, never null
      */
-    public Overflow plusWithOverflow(int hours, int minutes, int seconds, long nanos) {
+    public Overflow plusWithOverflow(long hours, long minutes, long seconds, long nanos) {
         return plusWithOverflow(hours, minutes, seconds, nanos, 1);
     }
 
@@ -752,15 +752,16 @@ public final class LocalTime
      * @param minutes the minutes to add, may be negative
      * @param seconds the seconds to add, may be negative
      * @param nanos the nanos to add, may be negative
+     * @param sign  the sign to determine add or subtract
      * @return an {@code Overflow} instance with the resulting time and overflow, never null
      */
-    private Overflow plusWithOverflow(int hours, int minutes, int seconds, long nanos, int sign) {
+    private Overflow plusWithOverflow(long hours, long minutes, long seconds, long nanos, int sign) {
         // 9223372036854775808 long, 2147483648 int
-        int totDays = (int) (nanos / NANOS_PER_DAY) +      //   max   106751
-                seconds / SECONDS_PER_DAY +                //   max    24855
-                minutes / MINUTES_PER_DAY +                //   max  1491308
-                hours / HOURS_PER_DAY;                     //   max 89478485
-        totDays *= sign;                                   // total 91101399
+        long totDays = nanos / NANOS_PER_DAY +             //   max/24*60*60*1B
+                seconds / SECONDS_PER_DAY +                //   max/24*60*60
+                minutes / MINUTES_PER_DAY +                //   max/24*60
+                hours / HOURS_PER_DAY;                     //   max/24
+        totDays *= sign;                                   // total max*0.4237...
         long totNanos = nanos % NANOS_PER_DAY +                    //   max  86400000000000
                 (seconds % SECONDS_PER_DAY) * NANOS_PER_SECOND +   //   max  86400000000000
                 (minutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE +   //   max  86400000000000
@@ -921,7 +922,7 @@ public final class LocalTime
      * @param nanos the nanos to subtract, may be negative
      * @return an {@code Overflow} instance with the resulting time and overflow, never null
      */
-    public Overflow minusWithOverflow(int hours, int minutes, int seconds, long nanos) {
+    public Overflow minusWithOverflow(long hours, long minutes, long seconds, long nanos) {
         return plusWithOverflow(hours, minutes, seconds, nanos, -1);
     }
 
@@ -1269,7 +1270,7 @@ public final class LocalTime
         /** The time after the addition. */
         private final LocalTime time;
         /** The overflow in days. */
-        private final int days;
+        private final long days;
 
         /**
          * Constructor.
@@ -1277,7 +1278,7 @@ public final class LocalTime
          * @param time  the {@code LocalTime} after the addition, not null
          * @param days  the overflow in days
          */
-        private Overflow(LocalTime time, int days) {
+        private Overflow(LocalTime time, long days) {
             this.time = time;
             this.days = days;
         }
@@ -1296,7 +1297,7 @@ public final class LocalTime
          *
          * @return the overflow days
          */
-        public int getOverflowDays() {
+        public long getOverflowDays() {
             return days;
         }
 
@@ -1335,7 +1336,7 @@ public final class LocalTime
          */
         @Override
         public int hashCode() {
-            return time.hashCode() + days;
+            return time.hashCode() + ((int) (days ^ (days >>> 32)));
         }
 
         /**
