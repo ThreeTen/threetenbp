@@ -644,7 +644,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in hours added.
      * <p>
-     * This adds the specified number of hours from this time, returning a new time.
+     * This adds the specified number of hours to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -663,7 +663,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in minutes added.
      * <p>
-     * This adds the specified number of minutes from this time, returning a new time.
+     * This adds the specified number of minutes to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -688,7 +688,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in seconds added.
      * <p>
-     * This adds the specified number of seconds from this time, returning a new time.
+     * This adds the specified number of seconds to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -715,7 +715,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in nanoseconds added.
      * <p>
-     * This adds the specified number of nanoseconds from this time, returning a new time.
+     * This adds the specified number of nanoseconds to this time, returning a new time.
      * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
