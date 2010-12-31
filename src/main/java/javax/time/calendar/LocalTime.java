@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalPrintException;
@@ -595,9 +596,10 @@ public final class LocalTime
      * Returns a copy of this {@code LocalTime} with the specified period added.
      * <p>
      * This adds the specified period to this time, returning a new time.
-     * Before addition, the period is converted to a time-based {@code Period} using
-     * {@link Period#ofTimeFields(PeriodProvider)}.
-     * That factory ignores any date-based ISO fields, thus adding a date-based
+     * The calculation wraps around midnight and ignores any date-based ISO fields.
+     * <p>
+     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
+     * Those rules ignore any date-based ISO fields, thus adding a date-based
      * period to this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -620,12 +622,30 @@ public final class LocalTime
         return plusNanos(totNanos);
     }
 
+    /**
+     * Returns a copy of this {@code LocalTime} with the specified duration added.
+     * <p>
+     * This adds the specified duration to this time, returning a new time.
+     * The calculation wraps around midnight.
+     * <p>
+     * The calculation is equivalent to using {@link #plusSeconds(long)} and
+     * {@link #plusNanos(long)} on the two parts of the duration.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return a {@code LocalTime} based on this time with the duration added, never null
+     */
+    public LocalTime plus(Duration duration) {
+        return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in hours added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of hours from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -643,8 +663,8 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in minutes added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of minutes from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -668,8 +688,8 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in seconds added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of seconds from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -695,8 +715,8 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in nanoseconds added.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This adds the specified number of nanoseconds from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -782,10 +802,11 @@ public final class LocalTime
      * Returns a copy of this {@code LocalTime} with the specified period subtracted.
      * <p>
      * This subtracts the specified period from this time, returning a new time.
-     * Before subtraction, the period is converted to a time-based {@code Period} using
-     * {@link Period#ofTimeFields(PeriodProvider)}.
-     * That factory ignores any date-based ISO fields, thus subtracting a date-based
-     * period from this time will have no effect.
+     * The calculation wraps around midnight and ignores any date-based ISO fields.
+     * <p>
+     * The period is interpreted using rules equivalent to {@link Period#ofTimeFields(PeriodProvider)}.
+     * Those rules ignore any date-based ISO fields, thus adding a date-based
+     * period to this time will have no effect.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -807,12 +828,30 @@ public final class LocalTime
         return minusNanos(totNanos);
     }
 
+    /**
+     * Returns a copy of this {@code LocalTime} with the specified duration subtracted.
+     * <p>
+     * This subtracts the specified duration from this time, returning a new time.
+     * The calculation wraps around midnight.
+     * <p>
+     * The calculation is equivalent to using {@link #minusSeconds(long)} and
+     * {@link #minusNanos(long)} on the two parts of the duration.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return a {@code LocalTime} based on this time with the duration added, never null
+     */
+    public LocalTime minus(Duration duration) {
+        return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in hours subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of hours from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -830,8 +869,8 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in minutes subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of minutes from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -855,8 +894,8 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in seconds subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of seconds from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -882,8 +921,8 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the specified period in nanoseconds subtracted.
      * <p>
-     * If the resulting hour is less than 0 or greater than 23, the hour field <b>rolls</b>.
-     * For instance, 24 becomes 0 and -1 becomes 23.
+     * This subtracts the specified number of nanoseconds from this time, returning a new time.
+     * The calculation wraps around midnight.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

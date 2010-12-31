@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +48,7 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.LocalTime.Overflow;
@@ -60,7 +65,7 @@ import org.testng.annotations.Test;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-@Test(timeOut=5000)
+@Test
 public class TestLocalTime {
 
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
@@ -869,6 +874,43 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // plus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_plus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        LocalTime t = TEST_12_30_40_987654321.plus(dur);
+        assertEquals(t, LocalTime.of(12, 31, 42, 987654324));
+    }
+
+    public void test_plus_Duration_big1() {
+        Duration dur = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
+        LocalTime t = TEST_12_30_40_987654321.plus(dur);
+        assertEquals(t, TEST_12_30_40_987654321.plusSeconds(Long.MAX_VALUE).plusNanos(999999999));
+    }
+
+    public void test_plus_Duration_big2() {
+        Duration dur = Duration.ofSeconds(999, Long.MAX_VALUE);
+        LocalTime t = TEST_12_30_40_987654321.plus(dur);
+        assertEquals(t, TEST_12_30_40_987654321.plusSeconds(999).plusNanos(Long.MAX_VALUE));
+    }
+
+    public void test_plus_Duration_zero() {
+        LocalTime t = TEST_12_30_40_987654321.plus(Duration.ZERO);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_plus_Duration_wrap() {
+        Duration dur = Duration.ofStandardHours(1);
+        LocalTime t = LocalTime.of(23, 30).plus(dur);
+        assertEquals(t, LocalTime.of(0, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_Duration_null() {
+        TEST_12_30_40_987654321.plus((Duration) null);
+    }
+
+    //-----------------------------------------------------------------------
     // plusHours()
     //-----------------------------------------------------------------------
     public void test_plusHours_one() {
@@ -1387,6 +1429,43 @@ public class TestLocalTime {
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_PeriodProvider_big() {
         TEST_12_30_40_987654321.minus(PeriodField.of(Long.MAX_VALUE, ISOChronology.period12Hours()));
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(Duration)
+    //-----------------------------------------------------------------------
+    public void test_minus_Duration() {
+        Duration dur = Duration.ofSeconds(62, 3);
+        LocalTime t = TEST_12_30_40_987654321.minus(dur);
+        assertEquals(t, LocalTime.of(12, 29, 38, 987654318));
+    }
+
+    public void test_minus_Duration_big1() {
+        Duration dur = Duration.ofSeconds(Long.MAX_VALUE, 999999999);
+        LocalTime t = TEST_12_30_40_987654321.minus(dur);
+        assertEquals(t, TEST_12_30_40_987654321.minusSeconds(Long.MAX_VALUE).minusNanos(999999999));
+    }
+
+    public void test_minus_Duration_big2() {
+        Duration dur = Duration.ofSeconds(999, Long.MAX_VALUE);
+        LocalTime t = TEST_12_30_40_987654321.minus(dur);
+        assertEquals(t, TEST_12_30_40_987654321.minusSeconds(999).minusNanos(Long.MAX_VALUE));
+    }
+
+    public void test_minus_Duration_zero() {
+        LocalTime t = TEST_12_30_40_987654321.minus(Duration.ZERO);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_minus_Duration_wrap() {
+        Duration dur = Duration.ofStandardHours(1);
+        LocalTime t = LocalTime.of(0, 30).minus(dur);
+        assertEquals(t, LocalTime.of(23, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_Duration_null() {
+        TEST_12_30_40_987654321.minus((Duration) null);
     }
 
     //-----------------------------------------------------------------------
