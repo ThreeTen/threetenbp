@@ -19,6 +19,8 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -40,7 +42,7 @@ public class TestJapaneseDate {
     }
     
     @Test
-    public void testInterfaces() {
+    public void test_interfaces() {
         Object obj = testDate;
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof DateProvider);
@@ -49,7 +51,7 @@ public class TestJapaneseDate {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(testDate);
@@ -61,7 +63,7 @@ public class TestJapaneseDate {
     }
     
     @Test
-    public void testImmutable() {
+    public void test_immutable() {
         Class<JapaneseDate> cls = JapaneseDate.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
@@ -74,31 +76,21 @@ public class TestJapaneseDate {
         }
     }
 
+    //-----------------------------------------------------------------------
     @Test
-    public void testJapaneseDateDateProvider() throws Exception {
-        assertEquals(JapaneseDate.of(testDate), testDate);
-        assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
-    }
-    
-    @Test(expectedExceptions=NullPointerException.class)
-    public void testJapaneseDateDateProviderNull() throws Exception {
-        JapaneseDate.of(null);
-    }
-
-    @Test
-    public void testJapaneseDateIntIntInt() throws Exception{
+    public void test_factoy_of_3() throws Exception{
         assertEquals(JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testJapaneseDateIntIntIntInt() throws Exception{
+    public void test_factoy_of_4() throws Exception{
         assertEquals(JapaneseDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testJapaneseDateInvalidYear() throws Exception{
+    public void test_factoy_of_3_invalidYear() throws Exception{
         try {
             JapaneseDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
@@ -108,18 +100,34 @@ public class TestJapaneseDate {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void testJapaneseDateInvalidMonth() throws Exception{
+    public void test_factoy_of_3_invalidMonth() throws Exception{
         JapaneseDate.of(testYear, null, testDayOfMonth);
     }
 
     @Test
-    public void testJapaneseDateInvalidDay() throws Exception{
+    public void test_factoy_of_3_invalidDay() throws Exception{
         try {
             JapaneseDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), JapaneseChronology.dayOfMonthRule());
         }
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_of_Calendrical() throws Exception {
+        assertEquals(JapaneseDate.of(testDate), testDate);
+        assertJapaneseDate(JapaneseDate.of(testDate), JapaneseEra.HEISEI, 21, MonthOfYear.MARCH, 3);
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void factory_of_Calendrical_noData() throws Exception {
+        JapaneseDate.of(new MockSimpleCalendrical());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_of_Calendrical_null() throws Exception {
+        JapaneseDate.of((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

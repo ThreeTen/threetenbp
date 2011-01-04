@@ -16,6 +16,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A date in the Japanese calendar system.
@@ -23,10 +24,8 @@ import javax.time.calendar.MonthOfYear;
  * JapaneseDate is an immutable class that represents a date in the Japanese calendar system.
  * The rules of the calendar system are described in {@link JapaneseChronology}.
  * <p>
- * Instances of this class may be created from any other object that implements
- * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
- * this class may be passed into the factory method of any other implementation
- * of <code>DateProvider</code>.
+ * Instances of this class may be created from other date objects that implement {@code Calendrical}.
+ * Notably this includes {@link LocalDate} and all other date classes from other calendar systems.
  * <p>
  * JapaneseDate is thread-safe and immutable.
  *
@@ -61,7 +60,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>JapaneseDate</code> from the Japanese year,
+     * Obtains an instance of {@code JapaneseDate} from the Japanese year,
      * month-of-year and day-of-month. This uses the Japanese era.
      *
      * @param yearOfJapaneseEra  the year to represent in the Japanese era, from 1 to 9999
@@ -76,7 +75,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Obtains an instance of <code>JapaneseDate</code> from the Japanese era,
+     * Obtains an instance of {@code JapaneseDate} from the Japanese era,
      * Japanese year, month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
@@ -98,13 +97,29 @@ public final class JapaneseDate
     }
 
     /**
-     * Obtains an instance of <code>JapaneseDate</code> from a date provider.
+     * Obtains an instance of {@code JapaneseDate} from a calendrical.
+     * <p>
+     * This can be used extract the date directly from any implementation
+     * of {@code Calendrical}, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @return the created JapaneseDate instance, never null
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the Japanese date, never null
+     * @throws UnsupportedRuleException if the date cannot be obtained
+     * @throws IllegalCalendarFieldValueException if the year is invalid
      */
-    public static JapaneseDate of(DateProvider dateProvider) {
-        LocalDate date = LocalDate.of(dateProvider);
+    public static JapaneseDate of(Calendrical calendrical) {
+        return rule().getValueChecked(calendrical);
+    }
+
+    /**
+     * Obtains an instance of {@code JapaneseDate} from a date.
+     *
+     * @param date  the date to use, not null
+     * @return the Japanese date, never null
+     * @throws IllegalCalendarFieldValueException if the year is invalid
+     */
+    static JapaneseDate of(LocalDate date) {
+        I18NUtil.checkNotNull(date, "LocalDate must not be null");
         int yearOfEra = getYearOfEra(date);
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
@@ -115,7 +130,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance of <code>JapaneseDate</code> with the specified date.
+     * Constructs an instance of {@code JapaneseDate} with the specified date.
      *
      * @param date  the date, validated in range, validated not null
      */
@@ -123,11 +138,23 @@ public final class JapaneseDate
         this.date = date;
     }
 
+    /**
+     * Returns a new date based on this one, returning {@code this} where possible.
+     *
+     * @param date  the date to create with, not null
+     */
+    private JapaneseDate with(LocalDate date) {
+        if (this.date == date) {
+            return this;
+        }
+        return JapaneseDate.of(date);
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for this date.
+     * Gets the chronology that this date uses, which is the Japanese calendar system.
      *
-     * @return the JapaneseChronology, never null
+     * @return the Japanese chronology, never null
      */
     public JapaneseChronology getChronology() {
         return JapaneseChronology.INSTANCE;
@@ -139,7 +166,7 @@ public final class JapaneseDate
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -150,7 +177,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the era value.
+     * Gets the era field.
      *
      * @return the era, never null
      */
@@ -159,7 +186,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Gets the year value.
+     * Gets the year field.
      *
      * @return the year, from 1 to 9999
      */
@@ -168,7 +195,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Gets the month-of-year.
+     * Gets the month-of-year field.
      *
      * @return the month-of-year, never null
      */
@@ -177,25 +204,33 @@ public final class JapaneseDate
     }
 
     /**
-     * Gets the day-of-month value.
+     * Gets the day-of-month field.
      *
-     * @return the day-of-month, from 1 to 28-31
+     * @return the day-of-month, from 1 to 31
      */
     public int getDayOfMonth() {
         return date.getDayOfMonth();
     }
 
     /**
-     * Gets the day-of-year value.
+     * Gets the day-of-year field.
      *
-     * @return the day-of-year, from 1 to 365-366
+     * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
         return date.getDayOfYear();
     }
 
     /**
-     * Gets the day-of-week.
+     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
+     * <p>
+     * This method returns the enum {@link DayOfWeek} for the day-of-week.
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
+     * provides the {@link DayOfWeek#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the {@code DayOfWeek}.
+     * This includes textual names of the values.
      *
      * @return the day-of-week, never null
      */
@@ -214,226 +249,233 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this JapaneseDate with the year of era value altered.
+     * Returns a copy of this {@code JapaneseDate} with the year-of-era value altered.
      * <p>
+     * This method changes the year of the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param era  the era to represent, not null
-     * @param yearOfEra  the year to represent, from 1 to 9999
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year is out of range
+     * @param era  the era to set in the returned date, not null
+     * @param yearOfEra  the year-of-era to set in the returned date, from 1 to 9999
+     * @return a {@code JapaneseDate} based on this date with the requested year, never null
+     * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     public JapaneseDate withYear(JapaneseEra era, int yearOfEra) {
         JapaneseChronology.yearOfEraRule().checkValue(yearOfEra);
         int year = yearOfEra + era.getYearOffset();
-        return JapaneseDate.of(date.withYear(year));
+        return with(date.withYear(year));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the year value altered.
+     * Returns a copy of this {@code JapaneseDate} with the year-of-era value altered.
      * <p>
+     * This method changes the year-of-era of the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearOfEra  the year to represent, from 1 to 9999
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year is out of range
+     * @param yearOfEra  the year to set in the returned date, from 1 to 9999
+     * @return a {@code JapaneseDate} based on this date with the requested year-of-era, never null
+     * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     public JapaneseDate withYearOfEra(int yearOfEra) {
         return withYear(getEra(), yearOfEra);
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the month-of-year value altered.
+     * Returns a copy of this {@code JapaneseDate} with the month-of-year value altered.
      * <p>
+     * This method changes the month-of-year of the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to represent, not null
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the month is out of range
+     * @param monthOfYear  the month-of-year to set in the returned date, not null
+     * @return a {@code JapaneseDate} based on this date with the requested month, never null
+     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public JapaneseDate withMonthOfYear(MonthOfYear monthOfYear) {
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return JapaneseDate.of(date.with(monthOfYear));
+        return with(date.with(monthOfYear));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the day-of-month value altered.
+     * Returns a copy of this {@code JapaneseDate} with the day-of-month altered.
+     * <p>
+     * This method changes the day-of-month of the date.
+     * If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 28-31
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
+     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
+     * @return a {@code JapaneseDate} based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public JapaneseDate withDayOfMonth(int dayOfMonth) {
         JapaneseChronology.dayOfMonthRule().checkValue(dayOfMonth);
-        return JapaneseDate.of(date.withDayOfMonth(dayOfMonth));
+        return with(date.withDayOfMonth(dayOfMonth));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the day-of-year value altered.
+     * Returns a copy of this {@code JapaneseDate} with the day-of-year altered.
+     * <p>
+     * This method changes the day-of-year of the date.
+     * If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to represent, from 1 to 365-366
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day-of-year is out of range
+     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @return a {@code JapaneseDate} based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public JapaneseDate withDayOfYear(int dayOfYear) {
         JapaneseChronology.dayOfYearRule().checkValue(dayOfYear);
-        return JapaneseDate.of(date.withDayOfYear(dayOfYear));
+        return with(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this JapaneseDate with the specified number of years added.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of years added.
      * <p>
+     * This method adds the specified amount in years to the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, positive or negative
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year range is exceeded
+     * @param years  the years to add, may be negative
+     * @return a {@code JapaneseDate} based on this date with the years added, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate plusYears(int years) {
-        if (years == 0) {
-            return this;
-        }
-        return JapaneseDate.of(date.plusYears(years));
+        return with(date.plusYears(years));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the specified number of months added.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of months added.
      * <p>
+     * This method adds the specified amount in months to the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, positive or negative
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year range is exceeded
+     * @param months  the months to add, may be negative
+     * @return a {@code JapaneseDate} based on this date with the months added, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate plusMonths(int months) {
-        if (months == 0) {
-            return this;
-        }
-        return JapaneseDate.of(date.plusMonths(months));
+        return with(date.plusMonths(months));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the specified period in weeks added.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of weeks added.
+     * <p>
+     * This method adds the specified amount in weeks to the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a new updated JapaneseDate, never null
+     * @return a {@code JapaneseDate} based on this date with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate plusWeeks(int weeks) {
-        return plusDays(7L * weeks);
+        return with(date.plusWeeks(weeks));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the specified number of days added.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of days added.
+     * <p>
+     * This method adds the specified amount in days to the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, positive or negative
-     * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year range is exceeded
+     * @param days  the days to add, may be negative
+     * @return a {@code JapaneseDate} based on this date with the days added, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate plusDays(long days) {
-        if (days == 0) {
-            return this;
-        }
-        return JapaneseDate.of(date.plusDays(days));
+        return with(date.plusDays(days));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this JapaneseDate with the specified period in years subtracted.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of years subtracted.
      * <p>
+     * This method subtracts the specified amount in years from the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a new updated JapaneseDate, never null
+     * @return a {@code JapaneseDate} based on this date with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate minusYears(int years) {
-        if (years == 0) {
-            return this;
-        }
-        return JapaneseDate.of(date.minusYears(years));
+        return with(date.minusYears(years));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the specified period in months subtracted.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of months subtracted.
      * <p>
+     * This method subtracts the specified amount in months from the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a new updated JapaneseDate, never null
+     * @return a {@code JapaneseDate} based on this date with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate minusMonths(int months) {
-        if (months == 0) {
-            return this;
-        }
-        return JapaneseDate.of(date.minusMonths(months));
+        return with(date.minusMonths(months));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the specified period in weeks subtracted.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of weeks subtracted.
+     * <p>
+     * This method subtracts the specified amount in weeks from the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a new updated JapaneseDate, never null
+     * @return a {@code JapaneseDate} based on this date with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate minusWeeks(int weeks) {
-        return minusDays(7L * weeks);
+        return with(date.minusWeeks(weeks));
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the specified number of days subtracted.
+     * Returns a copy of this {@code JapaneseDate} with the specified number of days subtracted.
+     * <p>
+     * This method subtracts the specified amount in days from the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a new updated JapaneseDate, never null
+     * @return a {@code JapaneseDate} based on this date with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public JapaneseDate minusDays(long days) {
         if (days == 0) {
             return this;
         }
-        return JapaneseDate.of(date.minusDays(days));
+        return with(date.minusDays(days));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to an ISO-8601 calendar system <code>LocalDate</code>.
+     * Converts this date to a {@code LocalDate}, which is the default representation
+     * of a date, and provides values in the ISO-8601 calendar system.
      *
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
@@ -443,59 +485,64 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this instance to another.
+     * Compares this {@code JapaneseDate} to another date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date instance to compare to, not null
+     * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if otherDay is null
      */
-    public int compareTo(JapaneseDate otherDate) {
-        return date.compareTo(otherDate.date);
+    public int compareTo(JapaneseDate other) {
+        return date.compareTo(other.date);
     }
 
     /**
-     * Is this instance after the specified one.
+     * Checks if this {@code JapaneseDate} is after the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date instance to compare to, not null
-     * @return true if this day is after the specified day
-     * @throws NullPointerException if otherDay is null
+     * @param other  the other date to compare to, not null
+     * @return true if this is after the specified date
      */
-    public boolean isAfter(JapaneseDate otherDate) {
-        return date.isAfter(otherDate.date);
+    public boolean isAfter(JapaneseDate other) {
+        return date.isAfter(other.date);
     }
 
     /**
-     * Is this instance before the specified one.
+     * Checks if this {@code JapaneseDate} is before the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date instance to compare to, not null
-     * @return true if this day is before the specified day
-     * @throws NullPointerException if otherDay is null
+     * @param other  the other date to compare to, not null
+     * @return true if this is before the specified date
      */
-    public boolean isBefore(JapaneseDate otherDate) {
-        return date.isBefore(otherDate.date);
+    public boolean isBefore(JapaneseDate other) {
+        return date.isBefore(other.date);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this date equal to the specified date.
+     * Checks if this {@code JapaneseDate} is equal to the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date to compare to, null returns false
-     * @return true if this point is equal to the specified date
+     * @param other  the other date to compare to, null returns false
+     * @return true if this is equal to the specified date
      */
     @Override
-    public boolean equals(Object otherDate) {
-        if (this == otherDate) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (otherDate instanceof JapaneseDate) {
-            JapaneseDate other = (JapaneseDate) otherDate;
-            return this.date.equals(other.date);
+        if (other instanceof JapaneseDate) {
+            JapaneseDate otherDate = (JapaneseDate) other;
+            return this.date.equals(otherDate.date);
         }
         return false;
     }
 
     /**
-     * A hash code for this date.
+     * A hash code for this {@code JapaneseDate}.
      *
      * @return a suitable hash code
      */
@@ -506,7 +553,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date as a <code>String</code>, such as 'SHOWA 48-12-01 (Japanese)'.
+     * Outputs the date as a {@code String}, such as 'SHOWA 48-12-01 (Japanese)'.
      * <p>
      * The output will be in the format 'Era yy-MM-dd (Japanese)'.
      *
@@ -541,7 +588,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for <code>JapaneseDate</code>.
+     * Gets the rule for {@code JapaneseDate}.
      *
      * @return the rule for the date, never null
      */
