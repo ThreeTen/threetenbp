@@ -109,7 +109,7 @@ public class TestCopticDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_ints() throws Exception {
+    public void factory_of_ints() throws Exception {
         for (int y = 1; y <= 9999; y++) {
             for (int m = 1; m <= 12; m++) {
                 for (int d = 1; d <= 30; d++) {
@@ -127,7 +127,7 @@ public class TestCopticDate {
         }
     }
 
-    public void factory_date_ints_invalidYear() throws Exception {
+    public void factory_of_ints_invalidYear() throws Exception {
         assertInvalidCopticDate(CopticDate.MIN_YEAR - 1, 1, 1);
         assertInvalidCopticDate(CopticDate.MIN_YEAR - 1, 12, 30);
         assertInvalidCopticDate(CopticDate.MIN_YEAR - 1, 13, 5);
@@ -136,14 +136,14 @@ public class TestCopticDate {
         assertInvalidCopticDate(CopticDate.MAX_YEAR + 1, 13, 5);
     }
 
-    public void factory_date_ints_invalidMonth() throws Exception {
+    public void factory_of_ints_invalidMonth() throws Exception {
         for (int y = 1; y <= 9999; y++) {
             assertInvalidCopticDate(y, 0, 1);
             assertInvalidCopticDate(y, 14, 1);
         }
     }
 
-    public void factory_date_ints_invalidDay() throws Exception {
+    public void factory_of_ints_invalidDay() throws Exception {
         for (int y = 1; y <= 9999; y++) {
             for (int m = 1; m <= 12; m++) {
                 assertInvalidCopticDate(y, m, 0);
@@ -153,19 +153,19 @@ public class TestCopticDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_Calendrical() throws Exception {
+    public void factory_of_Calendrical() throws Exception {
         assertEquals(CopticDate.of(TEST_1234_7_15), TEST_1234_7_15);
         assertCopticDate(CopticDate.of(TEST_1234_7_15), 1234, 7, 15);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void factory_date_Calendrical_noData() throws Exception {
+    public void factory_of_Calendrical_noData() throws Exception {
         CopticDate.of(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_Calendrical_null() throws Exception {
-        CopticDate.of(null);
+    public void factory_of_Calendrical_null() throws Exception {
+        CopticDate.of((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
