@@ -162,7 +162,7 @@ public final class CopticDate
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the Coptic date, never null
-     * @throws UnsupportedRuleException if the day-of-week cannot be obtained
+     * @throws UnsupportedRuleException if the date cannot be obtained
      */
     public static CopticDate of(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
