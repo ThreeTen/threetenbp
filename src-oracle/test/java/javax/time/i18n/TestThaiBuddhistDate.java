@@ -19,6 +19,8 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -40,7 +42,7 @@ public class TestThaiBuddhistDate {
     }
     
     @Test
-    public void testInterfaces() {
+    public void test_interfaces() {
         Object obj = testDate;
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof DateProvider);
@@ -49,7 +51,7 @@ public class TestThaiBuddhistDate {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(testDate);
@@ -61,7 +63,7 @@ public class TestThaiBuddhistDate {
     }
     
     @Test
-    public void testImmutable() {
+    public void test_immutable() {
         Class<ThaiBuddhistDate> cls = ThaiBuddhistDate.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
@@ -74,31 +76,21 @@ public class TestThaiBuddhistDate {
         }
     }
 
+    //-----------------------------------------------------------------------
     @Test
-    public void testThaiBuddhistDateDateProvider() throws Exception {
-        assertEquals(ThaiBuddhistDate.of(testDate), testDate);
-        assertThaiBuddhistDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
-    }
-    
-    @Test(expectedExceptions=NullPointerException.class)
-    public void testThaiBuddhistDateDateProviderNull() throws Exception {
-        ThaiBuddhistDate.of(null);
-    }
-
-    @Test
-    public void testThaiBuddhistDateIntIntInt() throws Exception{
+    public void test_factory_of_3() throws Exception{
         assertEquals(ThaiBuddhistDate.of(testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertThaiBuddhistDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testThaiBuddhistDateIntIntIntInt() throws Exception{
+    public void test_factory_of_4() throws Exception{
         assertEquals(ThaiBuddhistDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertThaiBuddhistDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testThaiBuddhistDateInvalidYear() throws Exception{
+    public void test_factoy_of_3_invalidYear() throws Exception{
         try {
             ThaiBuddhistDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
@@ -108,12 +100,12 @@ public class TestThaiBuddhistDate {
     }
     
     @Test(expectedExceptions=NullPointerException.class)
-    public void testThaiBuddhistDateInvalidMonth() throws Exception{
+    public void test_factoy_of_3_invalidMonth() throws Exception{
         ThaiBuddhistDate.of(testYear, null, testDayOfMonth);
     }
     
     @Test
-    public void testThaiBuddhistDateInvalidDay() throws Exception{
+    public void test_factoy_of_3_invalidDay() throws Exception{
         try {
             ThaiBuddhistDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
@@ -122,6 +114,23 @@ public class TestThaiBuddhistDate {
         }
     }
 
+    //-----------------------------------------------------------------------
+    public void factory_of_Calendrical() throws Exception {
+        assertEquals(JapaneseDate.of(testDate), testDate);
+        assertThaiBuddhistDate(ThaiBuddhistDate.of(testDate), ThaiBuddhistEra.BUDDHIST, 2552, MonthOfYear.MARCH, 3);
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void factory_of_Calendrical_noData() throws Exception {
+        ThaiBuddhistDate.of(new MockSimpleCalendrical());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_of_Calendrical_null() throws Exception {
+        ThaiBuddhistDate.of((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
     @Test
     public void testGetChronology() {
         assertEquals(testDate.getChronology(), ThaiBuddhistChronology.INSTANCE);

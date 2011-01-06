@@ -16,6 +16,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A date in the Thai Buddhist calendar system.
@@ -102,13 +103,29 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Obtains an instance of <code>ThaiBuddhistDate</code> from a date provider.
+     * Obtains an instance of {@code ThaiBuddhistDate} from a calendrical.
+     * <p>
+     * This can be used extract the date directly from any implementation
+     * of {@code Calendrical}, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @return the created ThaiBuddhistDate instance, never null
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the Thai Buddhist date, never null
+     * @throws UnsupportedRuleException if the date cannot be obtained
+     * @throws IllegalCalendarFieldValueException if the year is invalid
      */
-    public static ThaiBuddhistDate of(DateProvider dateProvider) {
-        LocalDate date = LocalDate.of(dateProvider);
+    public static ThaiBuddhistDate of(Calendrical calendrical) {
+        return rule().getValueChecked(calendrical);
+    }
+
+    /**
+     * Obtains an instance of {@code ThaiBuddhistDate} from a date.
+     *
+     * @param date  the date to use, not null
+     * @return the Thai Buddhist date, never null
+     * @throws IllegalCalendarFieldValueException if the year is invalid
+     */
+    static ThaiBuddhistDate of(LocalDate date) {
+        I18NUtil.checkNotNull(date, "LocalDate must not be null");
         int yearOfEra = date.getYear() - ThaiBuddhistChronology.YEAR_OFFSET;
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
@@ -125,6 +142,18 @@ public final class ThaiBuddhistDate
      */
     private ThaiBuddhistDate(LocalDate date) {
         this.date = date;
+    }
+
+    /**
+     * Returns a new date based on this one, returning {@code this} where possible.
+     *
+     * @param date  the date to create with, not null
+     */
+    private ThaiBuddhistDate with(LocalDate date) {
+        if (this.date == date) {
+            return this;
+        }
+        return ThaiBuddhistDate.of(date);
     }
 
     //-----------------------------------------------------------------------
@@ -239,7 +268,7 @@ public final class ThaiBuddhistDate
             year = 1 - yearOfEra;
         }
         year += ThaiBuddhistChronology.YEAR_OFFSET;
-        return ThaiBuddhistDate.of(date.withYear(year));
+        return with(date.withYear(year));
     }
 
     /**
@@ -271,7 +300,7 @@ public final class ThaiBuddhistDate
      */
     public ThaiBuddhistDate withMonthOfYear(MonthOfYear monthOfYear) {
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return ThaiBuddhistDate.of(date.with(monthOfYear));
+        return with(date.with(monthOfYear));
     }
 
     /**
@@ -286,7 +315,7 @@ public final class ThaiBuddhistDate
      */
     public ThaiBuddhistDate withDayOfMonth(int dayOfMonth) {
         ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
-        return ThaiBuddhistDate.of(date.withDayOfMonth(dayOfMonth));
+        return with(date.withDayOfMonth(dayOfMonth));
     }
 
     /**
@@ -301,7 +330,7 @@ public final class ThaiBuddhistDate
      */
     public ThaiBuddhistDate withDayOfYear(int dayOfYear) {
         ThaiBuddhistChronology.dayOfYearRule().checkValue(dayOfYear);
-        return ThaiBuddhistDate.of(date.withDayOfYear(dayOfYear));
+        return with(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------
@@ -318,10 +347,7 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public ThaiBuddhistDate plusYears(int years) {
-        if (years == 0) {
-            return this;
-        }
-        return ThaiBuddhistDate.of(date.plusYears(years));
+        return with(date.plusYears(years));
     }
 
     /**
@@ -337,10 +363,7 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public ThaiBuddhistDate plusMonths(int months) {
-        if (months == 0) {
-            return this;
-        }
-        return ThaiBuddhistDate.of(date.plusMonths(months));
+        return with(date.plusMonths(months));
     }
 
     /**
@@ -353,7 +376,7 @@ public final class ThaiBuddhistDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate plusWeeks(int weeks) {
-        return plusDays(7L * weeks);
+        return with(date.plusWeeks(weeks));
     }
 
     /**
@@ -366,10 +389,7 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public ThaiBuddhistDate plusDays(long days) {
-        if (days == 0) {
-            return this;
-        }
-        return ThaiBuddhistDate.of(date.plusDays(days));
+        return with(date.plusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -386,10 +406,7 @@ public final class ThaiBuddhistDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusYears(int years) {
-        if (years == 0) {
-            return this;
-        }
-        return ThaiBuddhistDate.of(date.minusYears(years));
+        return with(date.minusYears(years));
     }
 
     /**
@@ -405,10 +422,7 @@ public final class ThaiBuddhistDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusMonths(int months) {
-        if (months == 0) {
-            return this;
-        }
-        return ThaiBuddhistDate.of(date.minusMonths(months));
+        return with(date.minusMonths(months));
     }
 
     /**
@@ -421,7 +435,7 @@ public final class ThaiBuddhistDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusWeeks(int weeks) {
-        return minusDays(7L * weeks);
+        return with(date.minusWeeks(weeks));
     }
 
     /**
@@ -434,10 +448,7 @@ public final class ThaiBuddhistDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusDays(long days) {
-        if (days == 0) {
-            return this;
-        }
-        return ThaiBuddhistDate.of(date.minusDays(days));
+        return with(date.minusDays(days));
     }
 
     //-----------------------------------------------------------------------
