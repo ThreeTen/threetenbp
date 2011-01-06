@@ -60,29 +60,30 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code JapaneseDate} from the Japanese year,
-     * month-of-year and day-of-month. This uses the Japanese era.
+     * Obtains an instance of {@code JapaneseDate} from the Heisei era year,
+     * month-of-year and day-of-month. This uses the Heisei era.
      *
-     * @param yearOfJapaneseEra  the year to represent in the Japanese era, from 1 to 9999
+     * @param yearOfHeiseiEra  the year to represent in the Heisei era, from 1 to 9999
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the created JapaneseDate instance, never null
+     * @return the Japanese date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static JapaneseDate of(int yearOfJapaneseEra, MonthOfYear monthOfYear, int dayOfMonth) {
-        return JapaneseDate.of(JapaneseEra.HEISEI, yearOfJapaneseEra, monthOfYear, dayOfMonth);
+    public static JapaneseDate of(int yearOfHeiseiEra, MonthOfYear monthOfYear, int dayOfMonth) {
+        // TODO: remove method as era is unsafe
+        return JapaneseDate.of(JapaneseEra.HEISEI, yearOfHeiseiEra, monthOfYear, dayOfMonth);
     }
 
     /**
-     * Obtains an instance of {@code JapaneseDate} from the Japanese era,
-     * Japanese year, month-of-year and day-of-month.
+     * Obtains an instance of {@code JapaneseDate} from the era, year-of-era,
+     * month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
-     * @param yearOfEra  the year to represent, from 1 to 9999
+     * @param yearOfEra  the year-of-era to represent, from 1 to 9999
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the created JapaneseDate instance, never null
+     * @return the Japanese date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -239,7 +240,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Checks if the date represented is a leap year.
+     * Checks if the year is a leap year, according to the Japanese calendar system rules.
      *
      * @return true if this date is in a leap year
      */
@@ -249,7 +250,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code JapaneseDate} with the year-of-era value altered.
+     * Returns a copy of this {@code JapaneseDate} with the year value altered.
      * <p>
      * This method changes the year of the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -296,7 +297,6 @@ public final class JapaneseDate
      *
      * @param monthOfYear  the month-of-year to set in the returned date, not null
      * @return a {@code JapaneseDate} based on this date with the requested month, never null
-     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public JapaneseDate withMonthOfYear(MonthOfYear monthOfYear) {
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -553,11 +553,11 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date as a {@code String}, such as 'SHOWA 48-12-01 (Japanese)'.
+     * Outputs this date as a {@code String}, such as {@code SHOWA 48-12-01 (Japanese)}.
      * <p>
-     * The output will be in the format 'Era yy-MM-dd (Japanese)'.
+     * The output will be in the format {@code Era yy-MM-dd (Japanese)}.
      *
-     * @return the formatted date string, never null
+     * @return the formatted date, never null
      */
     @Override
     public String toString() {
@@ -575,9 +575,9 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns year of era from a local date object.
+     * Returns year-of-era from a local date object.
      *
-     * @param date    the date, validated in range, validated not null
+     * @param date  the date, validated in range, validated not null
      * @return year of era
      */
     private static int getYearOfEra(LocalDate date) {

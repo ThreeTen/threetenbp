@@ -24,10 +24,8 @@ import javax.time.calendar.UnsupportedRuleException;
  * ThaiBuddhistDate is an immutable class that represents a date in the Thai Buddhist calendar system.
  * The rules of the calendar system are described in {@link ThaiBuddhistChronology}.
  * <p>
- * Instances of this class may be created from any other object that implements
- * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
- * this class may be passed into the factory method of any other implementation
- * of <code>DateProvider</code>.
+ * Instances of this class may be created from other date objects that implement {@code Calendrical}.
+ * Notably this includes {@link LocalDate} and all other date classes from other calendar systems.
  * <p>
  * ThaiBuddhistDate is thread-safe and immutable.
  *
@@ -62,13 +60,13 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ThaiBuddhistDate</code> from the Thai Buddhist year,
+     * Obtains an instance of {@code ThaiBuddhistDate} from the Thai Buddhist year,
      * month-of-year and day-of-month. This uses the Thai Buddhist era.
      *
      * @param yearOfThaiBuddhistEra  the year to represent in the Thai Buddhist era, from 1 to 9999
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the created ThaiBuddhistDate instance, never null
+     * @return the Thai Buddhist date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -77,14 +75,14 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Obtains an instance of <code>ThaiBuddhistDate</code> from the Thai Buddhist era,
-     * ThaiBuddhist year, month-of-year and day-of-month.
+     * Obtains an instance of {@code ThaiBuddhistDate} from the era, year-of-era,
+     * month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
-     * @param yearOfEra  the year to represent, from 1 to 9999
+     * @param yearOfEra  the year-of-era to represent, from 1 to 9999
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the created ThaiBuddhistDate instance, never null
+     * @return the Thai Buddhist date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -136,7 +134,7 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance of <code>ThaiBuddhistDate</code> with the specified date.
+     * Constructs an instance of {@code ThaiBuddhistDate} with the specified date.
      *
      * @param date  the date, validated in range, validated not null
      */
@@ -158,9 +156,9 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for this date.
+     * Gets the chronology that this date uses, which is the Thai Buddhist calendar system.
      *
-     * @return the ThaiBuddhistChronology, never null
+     * @return the Thai Buddhist chronology, never null
      */
     public ThaiBuddhistChronology getChronology() {
         return ThaiBuddhistChronology.INSTANCE;
@@ -172,7 +170,7 @@ public final class ThaiBuddhistDate
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -183,7 +181,7 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the era value.
+     * Gets the era field.
      *
      * @return the era, never null
      */
@@ -193,7 +191,7 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Gets the year value.
+     * Gets the year field.
      *
      * @return the year, from 1 to 9999
      */
@@ -203,7 +201,7 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Gets the month-of-year.
+     * Gets the month-of-year field.
      *
      * @return the month-of-year, never null
      */
@@ -212,25 +210,33 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Gets the day-of-month value.
+     * Gets the day-of-month field.
      *
-     * @return the day-of-month, from 1 to 28-31
+     * @return the day-of-month, from 1 to 31
      */
     public int getDayOfMonth() {
         return date.getDayOfMonth();
     }
 
     /**
-     * Gets the day-of-year value.
+     * Gets the day-of-year field.
      *
-     * @return the day-of-year, from 1 to 365-366
+     * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
         return date.getDayOfYear();
     }
 
     /**
-     * Gets the day-of-week.
+     * Gets the day-of-week field, which is an enum {@code DayOfWeek}.
+     * <p>
+     * This method returns the enum {@link DayOfWeek} for the day-of-week.
+     * This avoids confusion as to what {@code int} values mean.
+     * If you need access to the primitive {@code int} value then the enum
+     * provides the {@link DayOfWeek#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the {@code DayOfWeek}.
+     * This includes textual names of the values.
      *
      * @return the day-of-week, never null
      */
@@ -239,7 +245,7 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Checks if the date represented is a leap year.
+     * Checks if the year is a leap year, according to the Thai Buddhist calendar system rules.
      *
      * @return true if this date is in a leap year
      */
@@ -249,17 +255,18 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ThaiBuddhistDate with the year of era value altered.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the year value altered.
      * <p>
+     * This method changes the year of the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param era  the era to represent, not null
-     * @param yearOfEra  the year to represent, from 1 to 9999
-     * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year is out of range
+     * @param era  the era to set in the returned date, not null
+     * @param yearOfEra  the year-of-era to set in the returned date, from 1 to 9999
+     * @return a {@code ThaiBuddhistDate} based on this date with the requested year, never null
+     * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     public ThaiBuddhistDate withYear(ThaiBuddhistEra era, int yearOfEra) {
         ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
@@ -272,31 +279,33 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the year value altered.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the year-of-era value altered.
      * <p>
+     * This method changes the year-of-era of the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearOfEra  the year to represent, from 1 to 9999
-     * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year is out of range
+     * @param yearOfEra  the year to set in the returned date, from 1 to 9999
+     * @return a {@code ThaiBuddhistDate} based on this date with the requested year-of-era, never null
+     * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     public ThaiBuddhistDate withYearOfEra(int yearOfEra) {
         return withYear(getEra(), yearOfEra);
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the month-of-year value altered.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the month-of-year value altered.
      * <p>
+     * This method changes the month-of-year of the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month-of-year to represent, not null
-     * @return a new updated ThaiBuddhistDate instance, never null
+     * @param monthOfYear  the month-of-year to set in the returned date, not null
+     * @return a {@code ThaiBuddhistDate} based on this date with the requested month, never null
      */
     public ThaiBuddhistDate withMonthOfYear(MonthOfYear monthOfYear) {
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -304,14 +313,17 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the day-of-month value altered.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the day-of-month altered.
+     * <p>
+     * This method changes the day-of-month of the date.
+     * If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 28-31
-     * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day is out of range
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
+     * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
+     * @return a {@code ThaiBuddhistDate} based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public ThaiBuddhistDate withDayOfMonth(int dayOfMonth) {
         ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
@@ -319,13 +331,16 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the day-of-year value altered.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the day-of-year altered.
+     * <p>
+     * This method changes the day-of-year of the date.
+     * If the resulting date is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to represent, from 1 to 365-366
-     * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day-of-year is out of range
+     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @return a {@code ThaiBuddhistDate} based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public ThaiBuddhistDate withDayOfYear(int dayOfYear) {
@@ -335,44 +350,48 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified number of years added.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of years added.
      * <p>
+     * This method adds the specified amount in years to the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, positive or negative
-     * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year range is exceeded
+     * @param years  the years to add, may be negative
+     * @return a {@code ThaiBuddhistDate} based on this date with the years added, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate plusYears(int years) {
         return with(date.plusYears(years));
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified number of months added.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of months added.
      * <p>
+     * This method adds the specified amount in months to the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, positive or negative
-     * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year range is exceeded
+     * @param months  the months to add, may be negative
+     * @return a {@code ThaiBuddhistDate} based on this date with the months added, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate plusMonths(int months) {
         return with(date.plusMonths(months));
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified period in weeks added.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of weeks added.
+     * <p>
+     * This method adds the specified amount in weeks to the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a new updated ThaiBuddhistDate, never null
+     * @return a {@code ThaiBuddhistDate} based on this date with the weeks added, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate plusWeeks(int weeks) {
@@ -380,13 +399,15 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified number of days added.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of days added.
+     * <p>
+     * This method adds the specified amount in days to the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, positive or negative
-     * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year range is exceeded
+     * @param days  the days to add, may be negative
+     * @return a {@code ThaiBuddhistDate} based on this date with the days added, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate plusDays(long days) {
         return with(date.plusDays(days));
@@ -394,15 +415,16 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified period in years subtracted.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of years subtracted.
      * <p>
+     * This method subtracts the specified amount in years from the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a new updated ThaiBuddhistDate, never null
+     * @return a {@code ThaiBuddhistDate} based on this date with the years subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusYears(int years) {
@@ -410,15 +432,16 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified period in months subtracted.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of months subtracted.
      * <p>
+     * This method subtracts the specified amount in months from the date.
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a new updated ThaiBuddhistDate, never null
+     * @return a {@code ThaiBuddhistDate} based on this date with the months subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusMonths(int months) {
@@ -426,12 +449,14 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified period in weeks subtracted.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of weeks subtracted.
+     * <p>
+     * This method subtracts the specified amount in weeks from the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a new updated ThaiBuddhistDate, never null
+     * @return a {@code ThaiBuddhistDate} based on this date with the weeks subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusWeeks(int weeks) {
@@ -439,21 +464,27 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Returns a copy of this ThaiBuddhistDate with the specified number of days subtracted.
+     * Returns a copy of this {@code ThaiBuddhistDate} with the specified number of days subtracted.
+     * <p>
+     * This method subtracts the specified amount in days from the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a new updated ThaiBuddhistDate, never null
+     * @return a {@code ThaiBuddhistDate} based on this date with the days subtracted, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ThaiBuddhistDate minusDays(long days) {
+        if (days == 0) {
+            return this;
+        }
         return with(date.minusDays(days));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to an ISO-8601 calendar system <code>LocalDate</code>.
+     * Converts this date to a {@code LocalDate}, which is the default representation
+     * of a date, and provides values in the ISO-8601 calendar system.
      *
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
@@ -463,59 +494,64 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this instance to another.
+     * Compares this {@code ThaiBuddhistDate} to another date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date instance to compare to, not null
+     * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if otherDay is null
      */
-    public int compareTo(ThaiBuddhistDate otherDate) {
-        return date.compareTo(otherDate.date);
+    public int compareTo(ThaiBuddhistDate other) {
+        return date.compareTo(other.date);
     }
 
     /**
-     * Is this instance after the specified one.
+     * Checks if this {@code ThaiBuddhistDate} is after the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date instance to compare to, not null
-     * @return true if this day is after the specified day
-     * @throws NullPointerException if otherDay is null
+     * @param other  the other date to compare to, not null
+     * @return true if this is after the specified date
      */
-    public boolean isAfter(ThaiBuddhistDate otherDate) {
-        return date.isAfter(otherDate.date);
+    public boolean isAfter(ThaiBuddhistDate other) {
+        return date.isAfter(other.date);
     }
 
     /**
-     * Is this instance before the specified one.
+     * Checks if this {@code ThaiBuddhistDate} is before the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date instance to compare to, not null
-     * @return true if this day is before the specified day
-     * @throws NullPointerException if otherDay is null
+     * @param other  the other date to compare to, not null
+     * @return true if this is before the specified date
      */
-    public boolean isBefore(ThaiBuddhistDate otherDate) {
-        return date.isBefore(otherDate.date);
+    public boolean isBefore(ThaiBuddhistDate other) {
+        return date.isBefore(other.date);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this date equal to the specified date.
+     * Checks if this {@code ThaiBuddhistDate} is equal to the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
      *
-     * @param otherDate  the other date to compare to, null returns false
-     * @return true if this point is equal to the specified date
+     * @param other  the other date to compare to, null returns false
+     * @return true if this is equal to the specified date
      */
     @Override
-    public boolean equals(Object otherDate) {
-        if (this == otherDate) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (otherDate instanceof ThaiBuddhistDate) {
-            ThaiBuddhistDate other = (ThaiBuddhistDate) otherDate;
-            return this.date.equals(other.date);
+        if (other instanceof ThaiBuddhistDate) {
+            ThaiBuddhistDate otherDate = (ThaiBuddhistDate) other;
+            return this.date.equals(otherDate.date);
         }
         return false;
     }
 
     /**
-     * A hash code for this date.
+     * A hash code for this {@code ThaiBuddhistDate}.
      *
      * @return a suitable hash code
      */
@@ -526,13 +562,13 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date as a <code>String</code>, such as '2551-12-01 (ThaiBuddhist)'.
+     * Outputs this date as a {@code String}, such as {@code 2551-12-01 (ThaiBuddhist)}.
      * <p>
-     * The output will be in the format 'yyyy-MM-dd (ThaiBuddhist)'.
+     * The output will be in the format {@code yyyy-MM-dd (ThaiBuddhist)}.
      * The year will be negative for the era BEFORE_BUDDHIST.
      * There is no year zero.
      *
-     * @return the formatted date string, never null
+     * @return the formatted date, never null
      */
     @Override
     public String toString() {
@@ -551,7 +587,7 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for <code>ThaiBuddhistDate</code>.
+     * Gets the rule for {@code ThaiBuddhistDate}.
      *
      * @return the rule for the date, never null
      */
