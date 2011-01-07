@@ -19,6 +19,8 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -40,7 +42,7 @@ public class TestMinguoDate {
     }
     
     @Test
-    public void testInterfaces() {
+    public void test_interfaces() {
         Object obj = testDate;
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof DateProvider);
@@ -49,7 +51,7 @@ public class TestMinguoDate {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(testDate);
@@ -61,7 +63,7 @@ public class TestMinguoDate {
     }
     
     @Test
-    public void testImmutable() {
+    public void test_immutable() {
         Class<MinguoDate> cls = MinguoDate.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
@@ -74,31 +76,21 @@ public class TestMinguoDate {
         }
     }
 
+    //-----------------------------------------------------------------------
     @Test
-    public void testMinguoDateDateProvider() throws Exception {
-        assertEquals(MinguoDate.of(testDate), testDate);
-        assertMinguoDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
-    }
-    
-    @Test(expectedExceptions=NullPointerException.class)
-    public void testMinguoDateDateProviderNull() throws Exception {
-        MinguoDate.of(null);
-    }
-
-    @Test
-    public void testMinguoDateIntIntInt() throws Exception{
+    public void test_factory_of_3() throws Exception{
         assertEquals(MinguoDate.of(testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertMinguoDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testMinguoDateIntIntIntInt() throws Exception{
+    public void test_factory_of_4() throws Exception{
         assertEquals(MinguoDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertMinguoDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testMinguoDateInvalidYear() throws Exception{
+    public void test_factory_of_3_invalidYear() throws Exception{
         try {
             MinguoDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
@@ -108,12 +100,12 @@ public class TestMinguoDate {
     }
     
     @Test(expectedExceptions=NullPointerException.class)
-    public void testMinguoDateInvalidMonth() throws Exception{
+    public void test_factory_of_3_invalidMonth() throws Exception{
         MinguoDate.of(testYear, null, testDayOfMonth);
     }
     
     @Test
-    public void testMinguoDateInvalidDay() throws Exception{
+    public void test_factory_of_3_invalidDay() throws Exception{
         try {
             MinguoDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
@@ -122,6 +114,23 @@ public class TestMinguoDate {
         }
     }
 
+    //-----------------------------------------------------------------------
+    public void test_factory_of_Calendrical() throws Exception {
+        assertEquals(MinguoDate.of(testDate), testDate);
+        assertMinguoDate(MinguoDate.of(testDate), testEra, testYear, testMonthOfYear, testDayOfMonth);
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_of_Calendrical_noData() throws Exception {
+        MinguoDate.of(new MockSimpleCalendrical());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_of_Calendrical_null() throws Exception {
+        MinguoDate.of((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
     @Test
     public void testGetChronology() {
         assertEquals(testDate.getChronology(), MinguoChronology.INSTANCE);

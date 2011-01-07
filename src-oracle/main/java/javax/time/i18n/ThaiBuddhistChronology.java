@@ -21,10 +21,11 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * The Thai Buddhist calendar system.
  * <p>
- * ThaiBuddhistChronology defines the rules of the Thai Buddhist calendar
- * system.
+ * {@code ThaiBuddhistChronology} defines the rules of the Thai Buddhist calendar system.
  * <p>
- * ThaiBuddhistChronology is thread-safe and immutable.
+ * The Minguo calendar system is the same as the ISO calendar system apart from the year.
+ * <p>
+ * ThaiBuddhistChronology is immutable and thread-safe.
  *
  * @author Ryoji Suzuki
  * @author Stephen Colebourne

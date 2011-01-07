@@ -21,8 +21,8 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * The Hijrah calendar system.
  * <p>
- * HijrahChronology defines the rules of the Hijrah calendar
- * system. The Hijrah calendar follows the Freeman-Grenville
+ * {@code HijrahChronology} defines the rules of the Hijrah calendar system.
+ * The Hijrah calendar follows the Freeman-Grenville
  * algorithm (*1) and has following features.
  * <ul>
  * <li>A year has 12 months.</li>
@@ -112,7 +112,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * (*1) The algorithm is taken from the book, 
  * The Muslim and Christian Calendars by G.S.P. Freeman-Grenville.
  * <p>
- * HijrahChronology is thread-safe and immutable.
+ * HijrahChronology is immutable and thread-safe.
  *
  * @author Ryoji Suzuki
  * @author Stephen Colebourne

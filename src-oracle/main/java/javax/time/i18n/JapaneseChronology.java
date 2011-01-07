@@ -22,12 +22,12 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * The Japanese Imperial calendar system.
  * <p>
- * JapaneseChronology defines the rules of the Japanese Imperial calendar system.
+ * {@code JapaneseChronology} defines the rules of the Japanese Imperial calendar system.
  * Only Keio (1865-04-07 - 1868-09-07) and later eras are supported.
  * Older eras are recognized as unknown era, and the year of era of
  * unknown era is Gregorian year.
  * <p>
- * JapaneseChronology is thread-safe and immutable.
+ * JapaneseChronology is immutable and thread-safe.
  *
  * @author Ryoji Suzuki
  * @author Stephen Colebourne

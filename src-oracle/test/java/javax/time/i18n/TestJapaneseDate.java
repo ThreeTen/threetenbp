@@ -78,19 +78,19 @@ public class TestJapaneseDate {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_factoy_of_3() throws Exception{
+    public void test_factory_of_3() throws Exception{
         assertEquals(JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void test_factoy_of_4() throws Exception{
+    public void test_factory_of_4() throws Exception{
         assertEquals(JapaneseDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void test_factoy_of_3_invalidYear() throws Exception{
+    public void test_factory_of_3_invalidYear() throws Exception{
         try {
             JapaneseDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
@@ -100,12 +100,12 @@ public class TestJapaneseDate {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factoy_of_3_invalidMonth() throws Exception{
+    public void test_factory_of_3_invalidMonth() throws Exception{
         JapaneseDate.of(testYear, null, testDayOfMonth);
     }
 
     @Test
-    public void test_factoy_of_3_invalidDay() throws Exception{
+    public void test_factory_of_3_invalidDay() throws Exception{
         try {
             JapaneseDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
@@ -115,18 +115,18 @@ public class TestJapaneseDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_of_Calendrical() throws Exception {
+    public void test_factory_of_Calendrical() throws Exception {
         assertEquals(JapaneseDate.of(testDate), testDate);
-        assertJapaneseDate(JapaneseDate.of(testDate), JapaneseEra.HEISEI, 21, MonthOfYear.MARCH, 3);
+        assertJapaneseDate(JapaneseDate.of(testDate), testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void factory_of_Calendrical_noData() throws Exception {
+    public void test_factory_of_Calendrical_noData() throws Exception {
         JapaneseDate.of(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_Calendrical_null() throws Exception {
+    public void test_factory_of_Calendrical_null() throws Exception {
         JapaneseDate.of((Calendrical) null);
     }
 

@@ -1,6 +1,8 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,6 +20,8 @@ import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -41,7 +45,7 @@ public class TestHijrahDate {
     }
     
     @Test
-    public void testInterfaces() {
+    public void test_interfaces() {
         Object obj = testDate;
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof DateProvider);
@@ -50,7 +54,7 @@ public class TestHijrahDate {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(testDate);
@@ -62,7 +66,7 @@ public class TestHijrahDate {
     }
     
     @Test
-    public void testImmutable() {
+    public void test_immutable() {
         Class<HijrahDate> cls = HijrahDate.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
@@ -75,31 +79,21 @@ public class TestHijrahDate {
         }
     }
 
+    //-----------------------------------------------------------------------
     @Test
-    public void testHijrahDateDateProvider() throws Exception {
-        assertEquals(HijrahDate.of(testDate), testDate);
-        assertHijrahDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
-    }
-    
-    @Test(expectedExceptions=NullPointerException.class)
-    public void testHijrahDateDateProviderNull() throws Exception {
-        HijrahDate.of(null);
-    }
-
-    @Test
-    public void testHijrahDateIntIntInt() throws Exception{
+    public void test_factory_of_3() throws Exception{
         assertEquals(HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertHijrahDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testHijrahDateIntIntIntInt() throws Exception{
+    public void test_factory_of_4() throws Exception{
         assertEquals(HijrahDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertHijrahDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
-    public void testHijrahDateInvalidYear() throws Exception{
+    public void test_factory_of_3_invalidYear() throws Exception{
         try {
             HijrahDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
@@ -109,7 +103,7 @@ public class TestHijrahDate {
     }
     
     @Test
-    public void testHijrahDateInvalidMonth() throws Exception{
+    public void test_factory_of_3_invalidMonth() throws Exception{
         try {
             HijrahDate.of(testYear, 13, testDayOfMonth);// Invalid month of year
             fail();
@@ -119,7 +113,7 @@ public class TestHijrahDate {
     }
     
     @Test
-    public void testHijrahDateInvalidDay() throws Exception{
+    public void test_factory_of_3_invalidDay() throws Exception{
         try {
             HijrahDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
@@ -128,6 +122,23 @@ public class TestHijrahDate {
         }
     }
 
+    //-----------------------------------------------------------------------
+    public void test_factory_of_Calendrical() throws Exception {
+        assertEquals(HijrahDate.of(testDate), testDate);
+        assertHijrahDate(HijrahDate.of(testDate), testEra, testYear, testMonthOfYear, testDayOfMonth);
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_of_Calendrical_noData() throws Exception {
+        HijrahDate.of(new MockSimpleCalendrical());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_of_Calendrical_null() throws Exception {
+        HijrahDate.of((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
     @Test
     public void testGetChronology() {
         assertEquals(testDate.getChronology(), HijrahChronology.INSTANCE);

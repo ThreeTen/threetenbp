@@ -90,7 +90,7 @@ public class TestThaiBuddhistDate {
     }
     
     @Test
-    public void test_factoy_of_3_invalidYear() throws Exception{
+    public void test_factory_of_3_invalidYear() throws Exception{
         try {
             ThaiBuddhistDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
@@ -100,12 +100,12 @@ public class TestThaiBuddhistDate {
     }
     
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factoy_of_3_invalidMonth() throws Exception{
+    public void test_factory_of_3_invalidMonth() throws Exception{
         ThaiBuddhistDate.of(testYear, null, testDayOfMonth);
     }
     
     @Test
-    public void test_factoy_of_3_invalidDay() throws Exception{
+    public void test_factory_of_3_invalidDay() throws Exception{
         try {
             ThaiBuddhistDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
@@ -115,18 +115,18 @@ public class TestThaiBuddhistDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_of_Calendrical() throws Exception {
-        assertEquals(JapaneseDate.of(testDate), testDate);
-        assertThaiBuddhistDate(ThaiBuddhistDate.of(testDate), ThaiBuddhistEra.BUDDHIST, 2552, MonthOfYear.MARCH, 3);
+    public void test_factory_of_Calendrical() throws Exception {
+        assertEquals(ThaiBuddhistDate.of(testDate), testDate);
+        assertThaiBuddhistDate(ThaiBuddhistDate.of(testDate), testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void factory_of_Calendrical_noData() throws Exception {
+    public void test_factory_of_Calendrical_noData() throws Exception {
         ThaiBuddhistDate.of(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_Calendrical_null() throws Exception {
+    public void test_factory_of_Calendrical_null() throws Exception {
         ThaiBuddhistDate.of((Calendrical) null);
     }
 

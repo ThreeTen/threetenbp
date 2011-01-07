@@ -21,9 +21,11 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * The Minguo calendar system.
  * <p>
- * MinguoChronology defines the rules of the Minguo calendar system.
+ * {@code MinguoChronology} defines the rules of the Minguo calendar system.
  * <p>
- * MinguoChronology is thread-safe and immutable.
+ * The Minguo calendar system is the same as the ISO calendar system apart from the year.
+ * <p>
+ * MinguoChronology is immutable and thread-safe.
  *
  * @author Ryoji Suzuki
  * @author Stephen Colebourne
