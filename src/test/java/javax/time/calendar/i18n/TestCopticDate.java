@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -464,6 +464,22 @@ public class TestCopticDate {
     }
 
     //-----------------------------------------------------------------------
+    // plusWeeks()
+    //-----------------------------------------------------------------------
+    public void test_plusWeeks() throws Exception {
+        doTest_plusWeeks(1234, 7, 15, 1, 1234, 7, 22);  // simple
+        doTest_plusWeeks(1234, 13, 1, 1, 1235, 1, 3);  // across year
+        doTest_plusWeeks(1234, 7, 15, -1, 1234, 7, 8);  // simple negative
+        doTest_plusWeeks(1234, 1, 1, -1, 1233, 12, 29);  // negative across year
+    }
+
+    private void doTest_plusWeeks(int y, int m, int d, int plus, int ey, int em, int ed) throws Exception {
+        CopticDate test = CopticDate.of(y, m, d);
+        CopticDate expected = CopticDate.of(ey, em, ed);
+        assertEquals(test.plusWeeks(plus), expected);
+    }
+
+    //-----------------------------------------------------------------------
     // plusDays()
     //-----------------------------------------------------------------------
     public void test_plusDays() throws Exception {
@@ -664,7 +680,6 @@ public class TestCopticDate {
         assertEquals(test.getDayOfMonth(), day);
         assertEquals(test.getDayOfYear(), (month - 1) * 30 + day);
         assertEquals(test.isLeapYear(), isLeapYear(year));
-        assertEquals(test.isLeapDay(), month == 13 && day == 6);
     }
 
     private void assertInvalidCopticDate(int year, int month, int day) throws Exception {
