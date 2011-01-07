@@ -122,7 +122,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
      */
     private static final long serialVersionUID = 1L;
     /**
-     * The time-zone offset for UTC, with an id of 'UTC'.
+     * The time-zone id for 'UTC'.
+     * Note that it is intended that fixed offset time-zones like this are rarely used.
+     * Applications should use {@link ZoneOffset} and {@link OffsetDateTime} in preference.
      */
     public static final ZoneId UTC = new Fixed(ZoneOffset.UTC);
     /**
