@@ -376,7 +376,7 @@ public class ZoneRulesBuilder {
                 effectiveSavings = Period.ZERO;
                 for (TZRule rule : window.ruleList) {
                     ZoneOffsetTransition trans = rule.toTransition(standardOffset, savings);
-                    if (trans.getDateTime().isAfter(windowStart)) {
+                    if (trans.getDateTimeBefore().isAfter(windowStart)) {
                         // previous savings amount found, which could be the savings amount at
                         // the instant that the window starts (hence isAfter)
                         break;
@@ -402,8 +402,8 @@ public class ZoneRulesBuilder {
             // apply rules within the window
             for (TZRule rule : window.ruleList) {
                 ZoneOffsetTransition trans = deduplicate(rule.toTransition(standardOffset, savings));
-                if (trans.getDateTime().isBefore(windowStart) == false &&
-                        trans.getDateTime().isBefore(window.createDateTime(savings)) &&
+                if (trans.getDateTimeBefore().isBefore(windowStart) == false &&
+                        trans.getDateTimeBefore().isBefore(window.createDateTime(savings)) &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
                     transitionList.add(trans);
                     savings = rule.savingAmount;

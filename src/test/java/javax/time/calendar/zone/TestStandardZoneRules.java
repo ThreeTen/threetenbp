@@ -264,7 +264,7 @@ public class TestStandardZoneRules {
         assertEquals(dis.getOffsetBefore(), OFFSET_ZERO);
         assertEquals(dis.getOffsetAfter(), OFFSET_PONE);
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(dis.getDateTime(), OffsetDateTime.of(2008, 3, 30, 1, 0, OFFSET_ZERO));
+        assertEquals(dis.getDateTimeBefore(), OffsetDateTime.of(2008, 3, 30, 1, 0, OFFSET_ZERO));
         assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 3, 30, 2, 0, OFFSET_PONE));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
@@ -297,7 +297,7 @@ public class TestStandardZoneRules {
         assertEquals(dis.getOffsetBefore(), OFFSET_PONE);
         assertEquals(dis.getOffsetAfter(), OFFSET_ZERO);
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(dis.getDateTime(), OffsetDateTime.of(2008, 10, 26, 2, 0, OFFSET_PONE));
+        assertEquals(dis.getDateTimeBefore(), OffsetDateTime.of(2008, 10, 26, 2, 0, OFFSET_PONE));
         assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 10, 26, 1, 0, OFFSET_ZERO));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
@@ -361,37 +361,37 @@ public class TestStandardZoneRules {
                 break;
             }
         }
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1990, 3, 25, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1990, 3, 25, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1990, 10, 28, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1990, 10, 28, 2, 0, OFFSET_PONE));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1991, 3, 31, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1991, 3, 31, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1991, 10, 27, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1991, 10, 27, 2, 0, OFFSET_PONE));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1992, 3, 29, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1992, 3, 29, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1992, 10, 25, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1992, 10, 25, 2, 0, OFFSET_PONE));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1993, 3, 28, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1993, 3, 28, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1993, 10, 24, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1993, 10, 24, 2, 0, OFFSET_PONE));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1994, 3, 27, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1994, 3, 27, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1994, 10, 23, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1994, 10, 23, 2, 0, OFFSET_PONE));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1995, 3, 26, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1995, 3, 26, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1995, 10, 22, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1995, 10, 22, 2, 0, OFFSET_PONE));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1996, 3, 31, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1996, 3, 31, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1996, 10, 27, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1996, 10, 27, 2, 0, OFFSET_PONE));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1997, 3, 30, 1, 0, OFFSET_ZERO));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1997, 3, 30, 1, 0, OFFSET_ZERO));
         zot = it.next();
-        assertEquals(zot.getDateTime(), OffsetDateTime.of(1997, 10, 26, 2, 0, OFFSET_PONE));
+        assertEquals(zot.getDateTimeBefore(), OffsetDateTime.of(1997, 10, 26, 2, 0, OFFSET_PONE));
         assertEquals(it.hasNext(), false);
     }
 

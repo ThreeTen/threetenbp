@@ -148,7 +148,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * This is the instant of the discontinuity, which is defined as the first
      * instant that the 'after' offset applies.
      * <p>
-     * The methods {@link #getInstant()}, {@link #getDateTime()} and {@link #getDateTimeAfter()}
+     * The methods {@link #getInstant()}, {@link #getDateTimeBefore()} and {@link #getDateTimeAfter()}
      * all represent the same instant.
      *
      * @return the transition instant, not null
@@ -182,12 +182,12 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * This is the date-time where the discontinuity begins expressed with the before offset.
      * At this instant, the after offset is actually used, therefore this is an invalid date-time.
      * <p>
-     * The methods {@link #getInstant()}, {@link #getDateTime()} and {@link #getDateTimeAfter()}
+     * The methods {@link #getInstant()}, {@link #getDateTimeBefore()} and {@link #getDateTimeAfter()}
      * all represent the same instant.
      *
      * @return the transition date-time expressed with the before offset, not null
      */
-    public OffsetDateTime getDateTime() {
+    public OffsetDateTime getDateTimeBefore() {
         return transition;
     }
 
@@ -196,7 +196,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * <p>
      * This is the first date-time after the discontinuity, when the new offset applies.
      * <p>
-     * The methods {@link #getInstant()}, {@link #getDateTime()} and {@link #getDateTimeAfter()}
+     * The methods {@link #getInstant()}, {@link #getDateTimeBefore()} and {@link #getDateTimeAfter()}
      * all represent the same instant.
      *
      * @return the transition date-time expressed with the after offset, not null

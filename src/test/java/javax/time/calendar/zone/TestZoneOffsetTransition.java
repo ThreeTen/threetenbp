@@ -86,7 +86,7 @@ public class TestZoneOffsetTransition {
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0300);
         assertEquals(test.isGap(), true);
         assertEquals(test.isOverlap(), false);
-        assertEquals(test.getDateTime(), odt);
+        assertEquals(test.getDateTimeBefore(), odt);
         assertEquals(test.getDateTimeAfter(), odt.withOffsetSameInstant(OFFSET_0300));
         assertEquals(test.getInstant(), odt.toInstant());
         assertEquals(test.getLocal(), odt.toLocalDateTime());
@@ -101,7 +101,7 @@ public class TestZoneOffsetTransition {
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0200);
         assertEquals(test.isGap(), false);
         assertEquals(test.isOverlap(), true);
-        assertEquals(test.getDateTime(), odt);
+        assertEquals(test.getDateTimeBefore(), odt);
         assertEquals(test.getDateTimeAfter(), odt.withOffsetSameInstant(OFFSET_0200));
         assertEquals(test.getInstant(), odt.toInstant());
         assertEquals(test.getLocal(), odt.toLocalDateTime());

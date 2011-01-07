@@ -645,7 +645,7 @@ public class TestTimeZone {
         assertEquals(dis.getOffsetBefore(), ZoneOffset.ofHours(0));
         assertEquals(dis.getOffsetAfter(), ZoneOffset.ofHours(1));
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(dis.getDateTime(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.ofHours(0)));
+        assertEquals(dis.getDateTimeBefore(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.ofHours(0)));
         assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 3, 30, 2, 0, ZoneOffset.ofHours(1)));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
@@ -678,7 +678,7 @@ public class TestTimeZone {
         assertEquals(dis.getOffsetBefore(), ZoneOffset.ofHours(1));
         assertEquals(dis.getOffsetAfter(), ZoneOffset.ofHours(0));
         assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(dis.getDateTime(), OffsetDateTime.of(2008, 10, 26, 2, 0, ZoneOffset.ofHours(1)));
+        assertEquals(dis.getDateTimeBefore(), OffsetDateTime.of(2008, 10, 26, 2, 0, ZoneOffset.ofHours(1)));
         assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.ofHours(0)));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
