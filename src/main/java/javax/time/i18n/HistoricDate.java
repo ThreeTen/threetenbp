@@ -336,19 +336,6 @@ public final class HistoricDate
         return chrono.isLeapYear(getYear());
     }
 
-    /**
-     * Checks if the date represented is the leap day in a leap year.
-     * <p>
-     * The leap day is when the year is a leap year, the month is February and
-     * the day is 29.
-     *
-     * @return true if this date is the leap day in a leap year
-     */
-    public boolean isLeapDay() {
-        // no need to check leap year, as date always valid
-        return getMonthOfYear().isFebruary() && getDayOfMonth() == 29;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this date with the year value altered.
