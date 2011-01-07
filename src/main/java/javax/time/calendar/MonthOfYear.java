@@ -52,9 +52,9 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
- * concept with a twelve month year where the names are equivalent to those defined.
- * Note that the implementation of {@link DateTimeFieldRule} for month-of-year may
- * vary by calendar system.
+ * concept with a twelve month year where the names and month lengths are equivalent to
+ * those defined. Note that the implementation of {@link DateTimeFieldRule} for month-of-year
+ * may vary by calendar system.
  * <p>
  * MonthOfYear is an immutable and thread-safe enum.
  *
@@ -64,62 +64,62 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 public enum MonthOfYear implements Calendrical {
 
     /**
-     * The singleton instance for the month of January.
+     * The singleton instance for the month of January with 31 days.
      * This has the numeric value of {@code 1}.
      */
     JANUARY,
     /**
-     * The singleton instance for the month of February.
+     * The singleton instance for the month of February with 28 days, or 29 in a leap year.
      * This has the numeric value of {@code 2}.
      */
     FEBRUARY,
     /**
-     * The singleton instance for the month of March.
+     * The singleton instance for the month of March with 31 days.
      * This has the numeric value of {@code 3}.
      */
     MARCH,
     /**
-     * The singleton instance for the month of April.
+     * The singleton instance for the month of April with 30 days.
      * This has the numeric value of {@code 4}.
      */
     APRIL,
     /**
-     * The singleton instance for the month of May.
+     * The singleton instance for the month of May with 31 days.
      * This has the numeric value of {@code 5}.
      */
     MAY,
     /**
-     * The singleton instance for the month of June.
+     * The singleton instance for the month of June with 30 days.
      * This has the numeric value of {@code 6}.
      */
     JUNE,
     /**
-     * The singleton instance for the month of July.
+     * The singleton instance for the month of July with 31 days.
      * This has the numeric value of {@code 7}.
      */
     JULY,
     /**
-     * The singleton instance for the month of August.
+     * The singleton instance for the month of August with 31 days.
      * This has the numeric value of {@code 8}.
      */
     AUGUST,
     /**
-     * The singleton instance for the month of September.
+     * The singleton instance for the month of September with 30 days.
      * This has the numeric value of {@code 9}.
      */
     SEPTEMBER,
     /**
-     * The singleton instance for the month of October.
+     * The singleton instance for the month of October with 31 days.
      * This has the numeric value of {@code 10}.
      */
     OCTOBER,
     /**
-     * The singleton instance for the month of November.
+     * The singleton instance for the month of November with 30 days.
      * This has the numeric value of {@code 11}.
      */
     NOVEMBER,
     /**
-     * The singleton instance for the month of December.
+     * The singleton instance for the month of December with 31 days.
      * This has the numeric value of {@code 12}.
      */
     DECEMBER;
