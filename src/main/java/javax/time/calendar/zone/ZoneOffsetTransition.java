@@ -48,11 +48,13 @@ import javax.time.calendar.ZoneOffset;
  * The discontinuity is normally a gap in spring and an overlap in autumn.
  * {@code ZoneOffsetTransition} models the transition between the two offsets.
  * <p>
- * There are two types of transition - a gap and an overlap.
  * Gaps occur where there are local date-times that simply do not not exist.
  * An example would be when the offset changes from {@code +01:00} to {@code +02:00}.
+ * This might be described as 'the clocks will move forward one hour tonight at 1am'.
+ * <p>
  * Overlaps occur where there are local date-times that exist twice.
  * An example would be when the offset changes from {@code +02:00} to {@code +01:00}.
+ * This might be described as 'the clocks will move back one hour tonight at 2am'.
  * <p>
  * ZoneOffsetTransition is immutable and thread-safe.
  *
@@ -115,6 +117,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
 
     /**
      * Writes the state to the stream.
+     *
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
@@ -126,6 +129,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
 
     /**
      * Reads the state from the stream.
+     *
      * @param in  the input stream, not null
      * @return the created object, never null
      * @throws IOException if an error occurs
@@ -142,9 +146,10 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * Gets the transition instant.
      * <p>
      * This is the instant of the discontinuity, which is defined as the first
-     * instant that the 'after' offset applies. This instant can be also obtained
-     * using the {@link #getDateTime() 'before' offset} or the
-     * {@link #getDateTimeAfter() 'after' offset}.
+     * instant that the 'after' offset applies.
+     * <p>
+     * The methods {@link #getInstant()}, {@link #getDateTime()} and {@link #getDateTimeAfter()}
+     * all represent the same instant.
      *
      * @return the transition instant, not null
      */
@@ -156,13 +161,16 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * Gets the local date-time at the transition which is expressed relative to
      * the 'before' offset.
      * <p>
-     * This is the date-time where the discontinuity begins, and as such it never
-     * actually occurs. This method is simply {@code getDateTime().toLocalDateTime()}
+     * This is the date-time where the discontinuity begins.
+     * For a gap, this local date-time never occurs, whereas for an overlap it occurs
+     * just once after the entire transition is complete.
+     * This method is simply {@code getDateTime().toLocalDateTime()}
      * <p>
      * This value expresses the date-time normally used in verbal communications.
-     * For example 'the clocks will move forward one hour tonight at 1am'.
+     * For example 'the clocks will move forward one hour tonight at 1am' (a gap) or
+     * 'the clocks will move back one hour tonight at 2am' (an overlap).
      *
-     * @return the transition date-time expressed with the before offset, not null
+     * @return the local date-time of the transition, expressed relative to the before offset, not null
      */
     public LocalDateTime getLocal() {
         return transition.toLocalDateTime();
@@ -171,9 +179,11 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     /**
      * Gets the transition instant date-time expressed with the 'before' offset.
      * <p>
-     * This is the date-time where the discontinuity begins, and as such it never
-     * actually occurs (as the 'after' offset is actually used at this instant).
-     * This is the same instant as {@link #getDateTimeAfter()} but with the 'before' offset.
+     * This is the date-time where the discontinuity begins expressed with the before offset.
+     * At this instant, the after offset is actually used, therefore this is an invalid date-time.
+     * <p>
+     * The methods {@link #getInstant()}, {@link #getDateTime()} and {@link #getDateTimeAfter()}
+     * all represent the same instant.
      *
      * @return the transition date-time expressed with the before offset, not null
      */
@@ -185,7 +195,9 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * Gets the transition date-time expressed with the 'after' offset.
      * <p>
      * This is the first date-time after the discontinuity, when the new offset applies.
-     * This is the same instant as {@link #getDateTime()} but with the 'after' offset.
+     * <p>
+     * The methods {@link #getInstant()}, {@link #getDateTime()} and {@link #getDateTimeAfter()}
+     * all represent the same instant.
      *
      * @return the transition date-time expressed with the after offset, not null
      */
@@ -194,27 +206,34 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     }
 
     /**
-     * Gets the offset before the gap.
+     * Gets the offset before the transition.
+     * <p>
+     * This is the offset in use before the instant of the transition.
      *
-     * @return the offset before the gap, not null
+     * @return the offset before the transition, not null
      */
     public ZoneOffset getOffsetBefore() {
         return transition.getOffset();
     }
 
     /**
-     * Gets the offset after the gap.
+     * Gets the offset after the transition.
+     * <p>
+     * This is the offset in use on and after the instant of the transition.
      *
-     * @return the offset after the gap, not null
+     * @return the offset after the transition, not null
      */
     public ZoneOffset getOffsetAfter() {
         return transitionAfter.getOffset();
     }
 
     /**
-     * Gets the size of the transition.
+     * Gets the length of the transition as a {@code Period}.
+     * <p>
+     * This will typically be one hour, but might not be.
+     * It will be positive for a gap and negative for an overlap.
      *
-     * @return the size of the transition, positive for gaps, negative for overlaps
+     * @return the length of the transition, positive for gaps, negative for overlaps
      */
     public Period getTransitionSize() {
         int secs = getOffsetAfter().getAmountSeconds() - getOffsetBefore().getAmountSeconds();
@@ -223,8 +242,12 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
 
     /**
      * Does this transition represent a gap in the local time-line.
+     * <p>
+     * Gaps occur where there are local date-times that simply do not not exist.
+     * An example would be when the offset changes from {@code +01:00} to {@code +02:00}.
+     * This might be described as 'the clocks will move forward one hour tonight at 1am'.
      *
-     * @return true if this transition is a gap
+     * @return true if this transition is a gap, false if it is an overlap
      */
     public boolean isGap() {
         return getOffsetAfter().getAmountSeconds() > getOffsetBefore().getAmountSeconds();
@@ -232,8 +255,12 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
 
     /**
      * Does this transition represent a gap in the local time-line.
+     * <p>
+     * Overlaps occur where there are local date-times that exist twice.
+     * An example would be when the offset changes from {@code +02:00} to {@code +01:00}.
+     * This might be described as 'the clocks will move back one hour tonight at 2am'.
      *
-     * @return true if this transition is an overlap
+     * @return true if this transition is an overlap, false if it is a gap
      */
     public boolean isOverlap() {
         return getOffsetAfter().getAmountSeconds() < getOffsetBefore().getAmountSeconds();
@@ -241,6 +268,8 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
 
     /**
      * Checks if the specified offset is valid during this transition.
+     * <p>
+     * This checks to see if the given offset will be valid at some point in the transition.
      * A gap will always return false.
      * An overlap will return true if the offset is either the before or after offset.
      *
@@ -254,6 +283,8 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
     //-----------------------------------------------------------------------
     /**
      * Compares this transition to another based on the transition instant.
+     * <p>
+     * This compares the instants of each transition.
      * The offsets are ignored, making this order inconsistent with equals.
      *
      * @param transition  the transition to compare to, not null
