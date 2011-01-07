@@ -125,7 +125,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
     private static final long serialVersionUID = 5856454970865881985L;
 
     /**
-     * The singleton instance of <code>HijrahChronology</code>.
+     * The singleton instance of {@code HijrahChronology}.
      */
     public static final HijrahChronology INSTANCE = new HijrahChronology();
 

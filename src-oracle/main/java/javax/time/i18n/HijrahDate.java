@@ -72,7 +72,7 @@ import javax.time.calendar.LocalDate;
  * Instances of this class may be created from any other object that implements
  * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
  * this class may be passed into the factory method of any other implementation
- * of <code>DateProvider</code>.
+ * of {@code DateProvider}.
  * <p>
  * HijrahDate is thread-safe and immutable.
  *
@@ -418,7 +418,7 @@ public final class HijrahDate
     private final transient boolean isLeapYear;
 
     /**
-     * Obtains an instance of <code>HijrahDate</code> from the Hijrah year,
+     * Obtains an instance of {@code HijrahDate} from the Hijrah year,
      * month-of-year and day-of-month. This uses the Hijrah era.
      *
      * @param yearOfHijrahEra  the year to represent in the Hijrah era, from 1 to 9999
@@ -434,7 +434,7 @@ public final class HijrahDate
     }
     
     /**
-     * Obtains an instance of <code>HijrahDate</code> from the Hijrah era,
+     * Obtains an instance of {@code HijrahDate} from the Hijrah era,
      * Hijrah year, month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
@@ -455,7 +455,7 @@ public final class HijrahDate
     }
 
     /**
-     * Obtains an instance of <code>HijrahDate</code> from a date provider.
+     * Obtains an instance of {@code HijrahDate} from a date provider.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the created HijrahDate instance, never null
@@ -466,7 +466,7 @@ public final class HijrahDate
     }
 
     /**
-     * Constructs an instance of <code>HijrahDate</code> with the specified
+     * Constructs an instance of {@code HijrahDate} with the specified
      * gregorian days.
      *
      * @param gregorianDay  the number of days from 0001/01/01 (Gregorian), caller calculated
@@ -517,7 +517,7 @@ public final class HijrahDate
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -832,7 +832,7 @@ public final class HijrahDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to an ISO-8601 calendar system <code>LocalDate</code>.
+     * Converts this date to an ISO-8601 calendar system {@code LocalDate}.
      *
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
@@ -905,7 +905,7 @@ public final class HijrahDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date as a <code>String</code>, such as '1430-03-05 (Hijrah)'.
+     * Outputs the date as a {@code String}, such as '1430-03-05 (Hijrah)'.
      * <p>
      * The output will be in the format 'yyyy-MM-dd (Hijrah)'.
      *
@@ -1907,7 +1907,7 @@ public final class HijrahDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for <code>HijrahDate</code>.
+     * Gets the rule for {@code HijrahDate}.
      *
      * @return the rule for the date, never null
      */

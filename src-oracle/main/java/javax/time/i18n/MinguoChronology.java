@@ -36,7 +36,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
     private static final long serialVersionUID = 5856454970865881985L;
 
     /**
-     * The singleton instance of <code>MinguoChronology</code>.
+     * The singleton instance of {@code MinguoChronology}.
      */
     public static final MinguoChronology INSTANCE = new MinguoChronology();
 

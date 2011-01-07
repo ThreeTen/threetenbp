@@ -37,7 +37,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     private static final long serialVersionUID = 5856454970865881985L;
 
     /**
-     * The singleton instance of <code>ThaiBuddhistChronology</code>.
+     * The singleton instance of {@code ThaiBuddhistChronology}.
      */
     public static final ThaiBuddhistChronology INSTANCE = new ThaiBuddhistChronology();
 

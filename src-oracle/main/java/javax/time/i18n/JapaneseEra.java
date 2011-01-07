@@ -83,7 +83,7 @@ public enum JapaneseEra implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>JapaneseEra</code> from a value.
+     * Obtains an instance of {@code JapaneseEra} from a value.
      * <p>
      * The SHOWA era that contains 1970-01-01 (ISO calendar system) has the value 1
      * Later era is numbered 2 (HEISEI). Earlier eras are numbered 0 (TAISHO), -1 (MEIJI),
@@ -114,7 +114,7 @@ public enum JapaneseEra implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>JapaneseEra</code> from a date.
+     * Obtains an instance of {@code JapaneseEra} from a date.
      *
      * @param date  the date, not null
      * @return the JapaneseEra singleton, never null
@@ -130,7 +130,7 @@ public enum JapaneseEra implements Calendrical {
     }
 
     /**
-     * Obtains an instance of <code>JapaneseEra</code> from a calendrical.
+     * Obtains an instance of {@code JapaneseEra} from a calendrical.
      * <p>
      * This can be used extract the era directly from any implementation
      * of Calendrical, including those in other calendar systems.
@@ -149,7 +149,7 @@ public enum JapaneseEra implements Calendrical {
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned

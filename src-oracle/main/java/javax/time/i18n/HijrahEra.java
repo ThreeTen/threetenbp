@@ -47,7 +47,7 @@ public enum HijrahEra implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>HijrahEra</code> from a value.
+     * Obtains an instance of {@code HijrahEra} from a value.
      * <p>
      * The current era (from ISO date 622-06-19 onwards) has the value 1
      * The previous era has the value 0.
@@ -69,7 +69,7 @@ public enum HijrahEra implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>HijrahEra</code> from a calendrical.
+     * Obtains an instance of {@code HijrahEra} from a calendrical.
      * <p>
      * This can be used extract the era directly from any implementation
      * of Calendrical, including those in other calendar systems.
@@ -88,7 +88,7 @@ public enum HijrahEra implements Calendrical {
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned

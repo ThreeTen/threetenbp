@@ -26,7 +26,7 @@ import javax.time.calendar.MonthOfYear;
  * Instances of this class may be created from any other object that implements
  * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
  * this class may be passed into the factory method of any other implementation
- * of <code>DateProvider</code>.
+ * of {@code DateProvider}.
  * <p>
  * MinguoDate is thread-safe and immutable.
  *
@@ -61,7 +61,7 @@ public final class MinguoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinguoDate</code> from the Minguo year,
+     * Obtains an instance of {@code MinguoDate} from the Minguo year,
      * month-of-year and day-of-month. This uses the Minguo era.
      *
      * @param yearOfMinguoEra  the year to represent in the Minguo era, from 1 to 9999
@@ -76,7 +76,7 @@ public final class MinguoDate
     }
 
     /**
-     * Obtains an instance of <code>MinguoDate</code> from the Minguo era,
+     * Obtains an instance of {@code MinguoDate} from the Minguo era,
      * Minguo year, month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
@@ -102,7 +102,7 @@ public final class MinguoDate
     }
 
 //    /**
-//     * Obtains an instance of <code>MinguoDate</code> with the specified date.
+//     * Obtains an instance of {@code MinguoDate} with the specified date.
 //     *
 //     * @param era  the era to represent, caller calulated, BM(Before-Minguo) or AM After-Minguo)
 //     * @param year  the year to represent, caller calculated
@@ -121,7 +121,7 @@ public final class MinguoDate
 //    }
 
     /**
-     * Obtains an instance of <code>MinguoDate</code> from a date provider.
+     * Obtains an instance of {@code MinguoDate} from a date provider.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the created MinguoDate instance, never null
@@ -138,7 +138,7 @@ public final class MinguoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance of <code>MinguoDate</code> with the specified date.
+     * Constructs an instance of {@code MinguoDate} with the specified date.
      *
      * @param date  the date, validated in range, validated not null
      */
@@ -162,7 +162,7 @@ public final class MinguoDate
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date then
-     * <code>null</code> will be returned.
+     * {@code null} will be returned.
      *
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
@@ -462,7 +462,7 @@ public final class MinguoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to an ISO-8601 calendar system <code>LocalDate</code>.
+     * Converts this date to an ISO-8601 calendar system {@code LocalDate}.
      *
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
@@ -535,7 +535,7 @@ public final class MinguoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date as a <code>String</code>, such as '97-13-01 (Minguo)'.
+     * Outputs the date as a {@code String}, such as '97-13-01 (Minguo)'.
      * <p>
      * The output will be in the format 'yy-MM-dd (Minguo)'.
      * The year will be negative for the era BEFORE_MINGUO.
@@ -560,7 +560,7 @@ public final class MinguoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for <code>MinguoDate</code>.
+     * Gets the rule for {@code MinguoDate}.
      *
      * @return the rule for the date, never null
      */

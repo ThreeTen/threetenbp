@@ -41,7 +41,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
     private static final long serialVersionUID = -4760300484384995747L;
 
     /**
-     * The singleton instance of <code>JapaneseChronology</code>.
+     * The singleton instance of {@code JapaneseChronology}.
      */
     public static final JapaneseChronology INSTANCE = new JapaneseChronology();
 

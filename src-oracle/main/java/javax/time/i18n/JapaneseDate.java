@@ -16,18 +16,17 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A date in the Japanese calendar system.
  * <p>
- * JapaneseDate is an immutable class that represents a date in the Japanese calendar system.
+ * {@code JapaneseDate} is an immutable class that represents a date in the Japanese calendar system.
  * The rules of the calendar system are described in {@link JapaneseChronology}.
  * <p>
  * Instances of this class may be created from other date objects that implement {@code Calendrical}.
  * Notably this includes {@link LocalDate} and all other date classes from other calendar systems.
  * <p>
- * JapaneseDate is thread-safe and immutable.
+ * JapaneseDate is immutable and thread-safe.
  *
  * @author Ryoji Suzuki
  * @author Stephen Colebourne
@@ -41,13 +40,11 @@ public final class JapaneseDate
     private static final long serialVersionUID = -135957664026407129L;
 
     /**
-     * The minimum valid year of era.
-     * This is currently set to 1 but may be changed to increase the valid range
-     * in a future version of the specification.
+     * The minimum valid year-of-era.
      */
     public static final int MIN_YEAR_OF_ERA = 1;
     /**
-     * The maximum valid year of era.
+     * The maximum valid year-of-era.
      * This is currently set to 9999 but may be changed to increase the valid range
      * in a future version of the specification.
      */
@@ -105,8 +102,7 @@ public final class JapaneseDate
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the Japanese date, never null
-     * @throws UnsupportedRuleException if the date cannot be obtained
-     * @throws IllegalCalendarFieldValueException if the year is invalid
+     * @throws CalendricalException if the date cannot be obtained
      */
     public static JapaneseDate of(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
@@ -131,7 +127,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance of {@code JapaneseDate} with the specified date.
+     * Constructs an instance with the specified date.
      *
      * @param date  the date, validated in range, validated not null
      */
@@ -178,7 +174,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the era field.
+     * Gets the Japanese era field.
      *
      * @return the era, never null
      */
@@ -187,7 +183,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Gets the year field.
+     * Gets the Japanese year-of-era field.
      *
      * @return the year, from 1 to 9999
      */
@@ -239,6 +235,7 @@ public final class JapaneseDate
         return date.getDayOfWeek();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Checks if the year is a leap year, according to the Japanese calendar system rules.
      *
@@ -250,7 +247,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code JapaneseDate} with the year value altered.
+     * Returns a copy of this date with the year altered.
      * <p>
      * This method changes the year of the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -270,7 +267,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the year-of-era value altered.
+     * Returns a copy of this date with the year-of-era altered.
      * <p>
      * This method changes the year-of-era of the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -287,7 +284,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the month-of-year value altered.
+     * Returns a copy of this date with the month-of-year altered.
      * <p>
      * This method changes the month-of-year of the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -304,7 +301,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the day-of-month altered.
+     * Returns a copy of this date with the day-of-month altered.
      * <p>
      * This method changes the day-of-month of the date.
      * If the resulting date is invalid, an exception is thrown.
@@ -322,7 +319,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the day-of-year altered.
+     * Returns a copy of this date with the day-of-year altered.
      * <p>
      * This method changes the day-of-year of the date.
      * If the resulting date is invalid, an exception is thrown.
@@ -341,7 +338,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of years added.
+     * Returns a copy of this date with the specified number of years added.
      * <p>
      * This method adds the specified amount in years to the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -358,7 +355,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of months added.
+     * Returns a copy of this date with the specified number of months added.
      * <p>
      * This method adds the specified amount in months to the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -375,7 +372,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of weeks added.
+     * Returns a copy of this date with the specified number of weeks added.
      * <p>
      * This method adds the specified amount in weeks to the date.
      * <p>
@@ -390,7 +387,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of days added.
+     * Returns a copy of this date with the specified number of days added.
      * <p>
      * This method adds the specified amount in days to the date.
      * <p>
@@ -406,7 +403,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of years subtracted.
+     * Returns a copy of this date with the specified number of years subtracted.
      * <p>
      * This method subtracts the specified amount in years from the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -423,7 +420,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of months subtracted.
+     * Returns a copy of this date with the specified number of months subtracted.
      * <p>
      * This method subtracts the specified amount in months from the date.
      * If the month-day is invalid for the year, then the previous valid day
@@ -440,7 +437,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of weeks subtracted.
+     * Returns a copy of this date with the specified number of weeks subtracted.
      * <p>
      * This method subtracts the specified amount in weeks from the date.
      * <p>
@@ -455,7 +452,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this {@code JapaneseDate} with the specified number of days subtracted.
+     * Returns a copy of this date with the specified number of days subtracted.
      * <p>
      * This method subtracts the specified amount in days from the date.
      * <p>
@@ -485,7 +482,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this {@code JapaneseDate} to another date.
+     * Compares this date to another date.
      * <p>
      * The comparison is based on the time-line position of the dates.
      *
@@ -497,7 +494,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Checks if this {@code JapaneseDate} is after the specified date.
+     * Checks if this date is after the specified date.
      * <p>
      * The comparison is based on the time-line position of the dates.
      *
@@ -509,7 +506,7 @@ public final class JapaneseDate
     }
 
     /**
-     * Checks if this {@code JapaneseDate} is before the specified date.
+     * Checks if this date is before the specified date.
      * <p>
      * The comparison is based on the time-line position of the dates.
      *
@@ -522,7 +519,7 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code JapaneseDate} is equal to the specified date.
+     * Checks if this date is equal to the specified date.
      * <p>
      * The comparison is based on the time-line position of the dates.
      *
@@ -542,7 +539,7 @@ public final class JapaneseDate
     }
 
     /**
-     * A hash code for this {@code JapaneseDate}.
+     * A hash code for this date.
      *
      * @return a suitable hash code
      */
@@ -616,8 +613,8 @@ public final class JapaneseDate
         }
         @Override
         protected void merge(CalendricalMerger merger) {
-            JapaneseDate jd = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), jd.toLocalDate());
+            JapaneseDate date = merger.getValue(this);
+            merger.storeMerged(LocalDate.rule(), date.toLocalDate());
             merger.removeProcessed(this);
         }
     }
