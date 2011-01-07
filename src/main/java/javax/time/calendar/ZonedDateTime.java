@@ -640,6 +640,17 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Gets the time-zone, such as 'Europe/Paris'.
+     * <p>
+     * The time-zone stored by this {@code ZonedDateTime} can have either a
+     * fixed or a floating version. This method returns the time-zone with
+     * a version, calculating the best matching version if necessary.
+     * 
+     * This returns the stored time-zone id used to determine the time-zone rules.
+     * <p>
+     * A time-zone can have either a fixed or a floating version, where floating
+     * represents the latest version of the underlying rules.
+     * The {@link #getApplicableZone()} method will resolve the zone to a specific version.
+     * The {@link #getApplicableRules()} method will resolve the actual zone-rules.
      *
      * @return the time-zone, never null
      */
@@ -722,8 +733,12 @@ public final class ZonedDateTime
      * <p>
      * For a floating time-zone, the applicable version is the latest version
      * for which the offset date-time contained in this object would be valid.
+     * If a new version of the time-zone rules is registered then the result
+     * of this method may change.
      * <p>
-     * This method can throw an exception if the time-zone is invalid for this JVM.
+     * If this instance is created on one JVM and passed by serialization to another JVM
+     * it is possible for the time-zone id to be invalid.
+     * If this happens, this method will throw an exception.
      *
      * @return the time-zone complete with version, never null
      * @throws CalendricalException if no rules can be found for the zone
@@ -743,8 +758,12 @@ public final class ZonedDateTime
      * This usually includes historical and future information.
      * The rules are determined using {@link TimeZone#getRulesValidFor(OffsetDateTime)}
      * which finds the best matching set of rules for this date-time.
+     * If a new version of the time-zone rules is registered then the result
+     * of this method may change.
      * <p>
-     * This method can throw an exception if the time-zone is invalid for this JVM.
+     * If this instance is created on one JVM and passed by serialization to another JVM
+     * it is possible for the time-zone id to be invalid.
+     * If this happens, this method will throw an exception.
      *
      * @return the time-zone rules, never null
      * @throws CalendricalException if no rules can be found for the zone
