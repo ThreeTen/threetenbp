@@ -1479,7 +1479,27 @@ public final class ZonedDateTime
      */
     public ZonedDateTime plusDuration(PeriodProvider periodProvider) {
         PeriodFields period = PeriodFields.of(periodProvider);
-        Duration duration = period.toDuration();
+        return plusDuration(period.toDuration());
+    }
+
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the specified duration added.
+     * <p>
+     * This adds the specified duration to this date-time, returning a new date-time.
+     * The calculation is equivalent to addition on the {@link #toInstant() instant} equivalent of this instance.
+     * <p>
+     * Adding a duration differs from adding a period as gaps and overlaps in
+     * the local time-line are taken into account. For example, if there is a
+     * gap in the local time-line of one hour from 01:00 to 02:00, then adding a
+     * duration of one hour to 00:30 will yield 02:30.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the duration added, never null
+     * @throws CalendricalException if the result exceeds the supported range
+     */
+    public ZonedDateTime plusDuration(Duration duration) {
         return duration.isZero() ? this : ofInstant(toInstant().plus(duration), zone);
     }
 
@@ -1781,7 +1801,27 @@ public final class ZonedDateTime
      */
     public ZonedDateTime minusDuration(PeriodProvider periodProvider) {
         PeriodFields period = PeriodFields.of(periodProvider);
-        Duration duration = period.toDuration();
+        return minusDuration(period.toDuration());
+    }
+
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the specified duration subtracted.
+     * <p>
+     * This subtracts the specified duration from this date-time, returning a new date-time.
+     * The calculation is equivalent to subtraction on the {@link #toInstant() instant} equivalent of this instance.
+     * <p>
+     * Subtracting a duration differs from subtracting a period as gaps and overlaps in
+     * the local time-line are taken into account. For example, if there is a
+     * gap in the local time-line of one hour from 01:00 to 02:00, then subtracting a
+     * duration of one hour from 02:30 will yield 00:30.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to subtract, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the duration subtracted, never null
+     * @throws CalendricalException if the result exceeds the supported range
+     */
+    public ZonedDateTime minusDuration(Duration duration) {
         return duration.isZero() ? this : ofInstant(toInstant().minus(duration), zone);
     }
 

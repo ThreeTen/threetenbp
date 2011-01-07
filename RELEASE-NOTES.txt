@@ -40,7 +40,7 @@
 - Add OffsetDate.atTime(OffsetTime)
 - Ensure date-time plus/minus uses int not long
 - Fix Period.of(Duration)
-- Add LocalTime/OffsetTime/LocalDateTime/OffsetDateTime.plus/minus(Duration)
+- Add LocalTime/OffsetTime/LocalDateTime/OffsetDateTime/ZonedDateTime.plus/minus(Duration)
 - Remove CopticDate/HistoricDate.isLeapDay()
 - Add CopticDate.plusWeeks()
 - Change factories on I18N dates to take Calendrical, not DateProvider

@@ -31,13 +31,17 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.TimeSource;
@@ -1394,10 +1398,10 @@ public class TestZonedDateTime {
     // plusDuration(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plusDuration_PeriodProvider() {
-        PeriodProvider provider = Period.ofTimeFields(4, 5, 6);
+        PeriodProvider duration = Period.ofTimeFields(4, 5, 6);
         ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
         ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
-        assertEquals(t.plusDuration(provider), expected);
+        assertEquals(t.plusDuration(duration), expected);
     }
 
     public void test_plusDuration_PeriodProvider_zero() {
@@ -1408,6 +1412,26 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plusDuration_PeriodProvider_null() {
         TEST_DATE_TIME.plusDuration((PeriodProvider) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // plusDuration(Duration)
+    //-----------------------------------------------------------------------
+    public void test_plusDuration_Duration() {
+        Duration provider = Duration.ofSeconds(4L * 60 * 60 + 5L * 60 + 6L);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 16, 36, 5, 500), ZONE_0100);
+        assertEquals(t.plusDuration(provider), expected);
+    }
+
+    public void test_plusDuration_Duration_zero() {
+        ZonedDateTime t = TEST_DATE_TIME.plusDuration(Duration.ZERO);
+        assertSame(t, TEST_DATE_TIME);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plusDuration_Duration_null() {
+        TEST_DATE_TIME.plusDuration((Duration) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1598,6 +1622,26 @@ public class TestZonedDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minusDuration_PeriodProvider_null() {
         TEST_DATE_TIME.minusDuration((PeriodProvider) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusDuration(Duration)
+    //-----------------------------------------------------------------------
+    public void test_minusDuration_Duration() {
+        Duration duration = Duration.ofSeconds(4L * 60 * 60 + 5L * 60 + 6L);
+        ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.of(LocalDateTime.of(2008, 6, 1, 8, 25, 53, 500), ZONE_0100);
+        assertEquals(t.minusDuration(duration), expected);
+    }
+
+    public void test_minusDuration_Duration_zero() {
+        ZonedDateTime t = TEST_DATE_TIME.minusDuration(Duration.ZERO);
+        assertSame(t, TEST_DATE_TIME);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minusDuration_Duration_null() {
+        TEST_DATE_TIME.minusDuration((Duration) null);
     }
 
     //-----------------------------------------------------------------------
