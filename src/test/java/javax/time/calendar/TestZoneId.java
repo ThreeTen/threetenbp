@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -61,7 +61,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestTimeZone {
+public class TestZoneId {
 
     public static final String LATEST_TZDB = "2010i";
 
@@ -69,13 +69,13 @@ public class TestTimeZone {
     // Basics
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        Object obj = TimeZone.UTC;
+        Object obj = ZoneId.UTC;
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
     }
 
     public void test_immutable() {
-        Class<TimeZone> cls = TimeZone.class;
+        Class<ZoneId> cls = ZoneId.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
@@ -88,7 +88,7 @@ public class TestTimeZone {
     }
 
     public void test_serialization_UTC() throws Exception {
-        TimeZone test = TimeZone.UTC;
+        ZoneId test = ZoneId.UTC;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -97,13 +97,13 @@ public class TestTimeZone {
         
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
-        TimeZone result = (TimeZone) in.readObject();
+        ZoneId result = (ZoneId) in.readObject();
         
         assertSame(result, test);
     }
 
     public void test_serialization_fixed() throws Exception {
-        TimeZone test = TimeZone.of("UTC+01:30");
+        ZoneId test = ZoneId.of("UTC+01:30");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -112,13 +112,13 @@ public class TestTimeZone {
         
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
-        TimeZone result = (TimeZone) in.readObject();
+        ZoneId result = (ZoneId) in.readObject();
         
         assertEquals(result, test);
     }
 
     public void test_serialization_Europe() throws Exception {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -127,13 +127,13 @@ public class TestTimeZone {
         
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
-        TimeZone result = (TimeZone) in.readObject();
+        ZoneId result = (ZoneId) in.readObject();
         
         assertEquals(result, test);
     }
 
     public void test_serialization_America() throws Exception {
-        TimeZone test = TimeZone.of("America/Chicago");
+        ZoneId test = ZoneId.of("America/Chicago");
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -143,7 +143,7 @@ public class TestTimeZone {
         
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
-        TimeZone result = (TimeZone) in.readObject();
+        ZoneId result = (ZoneId) in.readObject();
         
         assertEquals(result, test);
     }
@@ -152,7 +152,7 @@ public class TestTimeZone {
     // UTC
     //-----------------------------------------------------------------------
     public void test_constant_UTC() {
-        TimeZone test = TimeZone.UTC;
+        ZoneId test = ZoneId.UTC;
         assertEquals(test.getID(), "UTC");
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), "UTC");
@@ -167,15 +167,15 @@ public class TestTimeZone {
         assertEquals(info.getTransition(), null);
         assertEquals(info.getOffset(), ZoneOffset.UTC);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.UTC);
-        assertSame(test, TimeZone.of("UTC"));
-        assertSame(test, TimeZone.of(ZoneOffset.UTC));
+        assertSame(test, ZoneId.of("UTC"));
+        assertSame(test, ZoneId.of(ZoneOffset.UTC));
     }
 
     //-----------------------------------------------------------------------
     // OLD_IDS_PRE_2005
     //-----------------------------------------------------------------------
     public void test_constant_OLD_IDS_PRE_2005() {
-        Map<String, String> ids = TimeZone.OLD_IDS_PRE_2005;
+        Map<String, String> ids = ZoneId.OLD_IDS_PRE_2005;
         assertEquals(ids.get("EST"), "America/Indianapolis");
         assertEquals(ids.get("MST"), "America/Phoenix");
         assertEquals(ids.get("HST"), "Pacific/Honolulu");
@@ -208,7 +208,7 @@ public class TestTimeZone {
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_constant_OLD_IDS_PRE_2005_immutable() {
-        Map<String, String> ids = TimeZone.OLD_IDS_PRE_2005;
+        Map<String, String> ids = ZoneId.OLD_IDS_PRE_2005;
         ids.clear();
     }
 
@@ -216,7 +216,7 @@ public class TestTimeZone {
     // OLD_IDS_POST_2005
     //-----------------------------------------------------------------------
     public void test_constant_OLD_IDS_POST_2005() {
-        Map<String, String> ids = TimeZone.OLD_IDS_POST_2005;
+        Map<String, String> ids = ZoneId.OLD_IDS_POST_2005;
         assertEquals(ids.get("EST"), "UTC-05:00");
         assertEquals(ids.get("MST"), "UTC-07:00");
         assertEquals(ids.get("HST"), "UTC-10:00");
@@ -249,7 +249,7 @@ public class TestTimeZone {
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_constant_OLD_IDS_POST_2005_immutable() {
-        Map<String, String> ids = TimeZone.OLD_IDS_POST_2005;
+        Map<String, String> ids = ZoneId.OLD_IDS_POST_2005;
         ids.clear();
     }
 
@@ -260,7 +260,7 @@ public class TestTimeZone {
         Map<String, String> map = new HashMap<String, String>();
         map.put("LONDON", "Europe/London");
         map.put("PARIS", "Europe/Paris");
-        TimeZone test = TimeZone.of("LONDON", map);
+        ZoneId test = ZoneId.of("LONDON", map);
         assertEquals(test.getID(), "Europe/London");
     }
 
@@ -268,20 +268,20 @@ public class TestTimeZone {
         Map<String, String> map = new HashMap<String, String>();
         map.put("LONDON", "Europe/London");
         map.put("PARIS", "Europe/Paris");
-        TimeZone test = TimeZone.of("Europe/Madrid", map);
+        ZoneId test = ZoneId.of("Europe/Madrid", map);
         assertEquals(test.getID(), "Europe/Madrid");
     }
 
     public void test_of_string_Map_emptyMap() {
         Map<String, String> map = new HashMap<String, String>();
-        TimeZone test = TimeZone.of("Europe/Madrid", map);
+        ZoneId test = ZoneId.of("Europe/Madrid", map);
         assertEquals(test.getID(), "Europe/Madrid");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_of_string_Map_unknown() {
         Map<String, String> map = new HashMap<String, String>();
-        TimeZone.of("Unknown", map);
+        ZoneId.of("Unknown", map);
     }
 
     //-----------------------------------------------------------------------
@@ -298,8 +298,8 @@ public class TestTimeZone {
 
     @Test(dataProvider="String_UTC")
     public void test_of_string_UTC(String id) {
-        TimeZone test = TimeZone.of("UTC" + id);
-        assertSame(test, TimeZone.UTC);
+        ZoneId test = ZoneId.of("UTC" + id);
+        assertSame(test, ZoneId.UTC);
     }
 
     //-----------------------------------------------------------------------
@@ -321,7 +321,7 @@ public class TestTimeZone {
 
     @Test(dataProvider="String_Fixed")
     public void test_of_string_Fixed(String input, String id) {
-        TimeZone test = TimeZone.of("UTC" + input);
+        ZoneId test = ZoneId.of("UTC" + input);
         assertEquals(test.getID(), id);
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), id);
@@ -361,7 +361,7 @@ public class TestTimeZone {
 
     @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
     public void test_of_string_UTC_invalid(String id) {
-        TimeZone.of("UTC" + id);
+        ZoneId.of("UTC" + id);
     }
 
     //-----------------------------------------------------------------------
@@ -382,17 +382,17 @@ public class TestTimeZone {
 
     @Test(dataProvider="String_Invalid", expectedExceptions=CalendricalException.class)
     public void test_of_string_invalid(String id) {
-        TimeZone.of(id);
+        ZoneId.of(id);
     }
 
     @Test(dataProvider="String_Invalid", expectedExceptions=CalendricalException.class)
     public void test_ofUnchecked_string_invalid(String id) {
-        TimeZone.ofUnchecked(id);
+        ZoneId.ofUnchecked(id);
     }
 
     //-----------------------------------------------------------------------
     public void test_of_string_floatingGMT0() {
-        TimeZone test = TimeZone.of("GMT0");
+        ZoneId test = ZoneId.of("GMT0");
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
@@ -403,7 +403,7 @@ public class TestTimeZone {
     }
 
     public void test_of_string_versionedGMT0() {
-        TimeZone test = TimeZone.of("GMT0#2008i");
+        ZoneId test = ZoneId.of("GMT0#2008i");
         assertEquals(test.getID(), "GMT0#2008i");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
@@ -414,7 +414,7 @@ public class TestTimeZone {
     }
 
     public void test_of_string_groupGMT0() {
-        TimeZone test = TimeZone.of("TZDB:GMT0");
+        ZoneId test = ZoneId.of("TZDB:GMT0");
         assertEquals(test.getID(), "GMT0");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
@@ -425,7 +425,7 @@ public class TestTimeZone {
     }
 
     public void test_of_string_groupVersionedGMT0() {
-        TimeZone test = TimeZone.of("TZDB:GMT0#2008i");
+        ZoneId test = ZoneId.of("TZDB:GMT0#2008i");
         assertEquals(test.getID(), "GMT0#2008i");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "GMT0");
@@ -437,7 +437,7 @@ public class TestTimeZone {
 
     //-----------------------------------------------------------------------
     public void test_of_string_floatingLondon() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -448,7 +448,7 @@ public class TestTimeZone {
     }
 
     public void test_of_string_versionedLondon() {
-        TimeZone test = TimeZone.of("Europe/London#2008i");
+        ZoneId test = ZoneId.of("Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2008i");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -459,7 +459,7 @@ public class TestTimeZone {
     }
 
     public void test_of_string_groupLondon() {
-        TimeZone test = TimeZone.of("TZDB:Europe/London");
+        ZoneId test = ZoneId.of("TZDB:Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -470,7 +470,7 @@ public class TestTimeZone {
     }
 
     public void test_of_string_groupVersionedLondon() {
-        TimeZone test = TimeZone.of("TZDB:Europe/London#2008i");
+        ZoneId test = ZoneId.of("TZDB:Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2008i");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -483,32 +483,32 @@ public class TestTimeZone {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_of_string_null() {
-        TimeZone.of((String) null);
+        ZoneId.of((String) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_of_string_unknown_simple() {
-        TimeZone.of("Unknown");
+        ZoneId.of("Unknown");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_of_string_unknown_group() {
-        TimeZone.of("Unknown:Europe/London");
+        ZoneId.of("Unknown:Europe/London");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_of_string_unknown_version() {
-        TimeZone.of("TZDB:Europe/London#Unknown");
+        ZoneId.of("TZDB:Europe/London#Unknown");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_of_string_unknown_region() {
-        TimeZone.of("TZDB:Unknown#2008i");
+        ZoneId.of("TZDB:Unknown#2008i");
     }
 
     //-------------------------------------------------------------------------
     public void test_ofUnchecked_string_invalidNotChecked() {
-        TimeZone test = TimeZone.ofUnchecked("UnknownGroup:UnknownRegion#UnknownVersion");
+        ZoneId test = ZoneId.ofUnchecked("UnknownGroup:UnknownRegion#UnknownVersion");
         assertEquals(test.getID(), "UnknownGroup:UnknownRegion#UnknownVersion");
         assertEquals(test.getGroupID(), "UnknownGroup");
         assertEquals(test.getRegionID(), "UnknownRegion");
@@ -519,7 +519,7 @@ public class TestTimeZone {
     }
 
     public void test_ofUnchecked_string_invalidNotChecked_unusualCharacters() {
-        TimeZone test = TimeZone.ofUnchecked("QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
+        ZoneId test = ZoneId.ofUnchecked("QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
         assertEquals(test.getID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "QWERTYUIOPASDFGHJKLZXCVBNM%@~/+.-_");
@@ -530,7 +530,7 @@ public class TestTimeZone {
     // Europe/London
     //-----------------------------------------------------------------------
     public void test_London() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -541,7 +541,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffset() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(0));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(0));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(0));
@@ -557,7 +557,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffset_toDST() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(0));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(0));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(0));
@@ -572,7 +572,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffset_fromDST() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
@@ -587,7 +587,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffsetInfo() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), ZoneOffset.ofHours(0));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), ZoneOffset.ofHours(0));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), ZoneOffset.ofHours(0));
@@ -603,7 +603,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffsetInfo_toDST() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 24)), ZoneOffset.ofHours(0));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 25)), ZoneOffset.ofHours(0));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 26)), ZoneOffset.ofHours(0));
@@ -618,7 +618,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffsetInfo_fromDST() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 24)), ZoneOffset.ofHours(1));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 25)), ZoneOffset.ofHours(1));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 26)), ZoneOffset.ofHours(1));
@@ -633,7 +633,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffsetInfo_gap() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 1, 0, 0, 0);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isTransition(), true);
@@ -666,7 +666,7 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffsetInfo_overlap() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 1, 0, 0, 0);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isTransition(), true);
@@ -704,7 +704,7 @@ public class TestTimeZone {
     // Europe/Paris
     //-----------------------------------------------------------------------
     public void test_Paris() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getID(), "Europe/Paris");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/Paris");
@@ -715,7 +715,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffset() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
@@ -731,7 +731,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffset_toDST() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(1));
@@ -746,7 +746,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffset_fromDST() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(2));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(2));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.ofHours(2));
@@ -761,7 +761,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffsetInfo() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), ZoneOffset.ofHours(1));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), ZoneOffset.ofHours(1));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), ZoneOffset.ofHours(1));
@@ -777,7 +777,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffsetInfo_toDST() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 24)), ZoneOffset.ofHours(1));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 25)), ZoneOffset.ofHours(1));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 26)), ZoneOffset.ofHours(1));
@@ -792,7 +792,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffsetInfo_fromDST() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 24)), ZoneOffset.ofHours(2));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 25)), ZoneOffset.ofHours(2));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 10, 26)), ZoneOffset.ofHours(2));
@@ -807,7 +807,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffsetInfo_gap() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isTransition(), true);
@@ -838,7 +838,7 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffsetInfo_overlap() {
-        TimeZone test = TimeZone.of("Europe/Paris");
+        ZoneId test = ZoneId.of("Europe/Paris");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isTransition(), true);
@@ -874,7 +874,7 @@ public class TestTimeZone {
     // America/New_York
     //-----------------------------------------------------------------------
     public void test_NewYork() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         assertEquals(test.getID(), "America/New_York");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "America/New_York");
@@ -885,7 +885,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffset() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         ZoneOffset offset = ZoneOffset.ofHours(-5);
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 1, 1, offset).toInstant()), ZoneOffset.ofHours(-5));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 2, 1, offset).toInstant()), ZoneOffset.ofHours(-5));
@@ -914,7 +914,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffset_toDST() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         ZoneOffset offset = ZoneOffset.ofHours(-5);
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 8, offset).toInstant()), ZoneOffset.ofHours(-5));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 3, 9, offset).toInstant()), ZoneOffset.ofHours(-5));
@@ -929,7 +929,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffset_fromDST() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         ZoneOffset offset = ZoneOffset.ofHours(-4);
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 11, 1, offset).toInstant()), ZoneOffset.ofHours(-4));
         assertEquals(test.getRules().getOffset(OffsetDateTime.ofMidnight(2008, 11, 2, offset).toInstant()), ZoneOffset.ofHours(-4));
@@ -944,7 +944,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffsetInfo() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 1, 1)), ZoneOffset.ofHours(-5));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 2, 1)), ZoneOffset.ofHours(-5));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 1)), ZoneOffset.ofHours(-5));
@@ -972,7 +972,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffsetInfo_toDST() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 8)), ZoneOffset.ofHours(-5));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 9)), ZoneOffset.ofHours(-5));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 3, 10)), ZoneOffset.ofHours(-4));
@@ -986,7 +986,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffsetInfo_fromDST() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 1)), ZoneOffset.ofHours(-4));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 2)), ZoneOffset.ofHours(-4));
         checkOffset(test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 11, 3)), ZoneOffset.ofHours(-5));
@@ -1000,7 +1000,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffsetInfo_gap() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 9, 2, 0, 0, 0);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isTransition(), true);
@@ -1031,7 +1031,7 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffsetInfo_overlap() {
-        TimeZone test = TimeZone.of("America/New_York");
+        ZoneId test = ZoneId.of("America/New_York");
         final LocalDateTime dateTime = LocalDateTime.of(2008, 11, 2, 1, 0, 0, 0);
         ZoneOffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isTransition(), true);
@@ -1067,7 +1067,7 @@ public class TestTimeZone {
     // getXxx() isXxx()
     //-----------------------------------------------------------------------
     public void test_get_TzdbFloating() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -1079,7 +1079,7 @@ public class TestTimeZone {
     }
 
     public void test_get_TzdbVersioned() {
-        TimeZone test = TimeZone.of("Europe/London#2008i");
+        ZoneId test = ZoneId.of("Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2008i");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -1091,7 +1091,7 @@ public class TestTimeZone {
     }
 
     public void test_get_TzdbFixed() {
-        TimeZone test = TimeZone.of("UTC+01:30");
+        ZoneId test = ZoneId.of("UTC+01:30");
         assertEquals(test.getID(), "UTC+01:30");
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), "UTC+01:30");
@@ -1103,149 +1103,149 @@ public class TestTimeZone {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_get_TzdbFixed_getGroup() {
-        TimeZone test = TimeZone.of("UTC+01:30");
+        ZoneId test = ZoneId.of("UTC+01:30");
         test.getGroup();
     }
 
     //-----------------------------------------------------------------------
     public void test_withFloatingVersion_TzdbFloating() {
-        TimeZone base = TimeZone.of("Europe/London");
-        TimeZone test = base.withFloatingVersion();
+        ZoneId base = ZoneId.of("Europe/London");
+        ZoneId test = base.withFloatingVersion();
         assertSame(test, base);
     }
 
     public void test_withFloatingVersion_TzdbVersioned() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
-        TimeZone test = base.withFloatingVersion();
+        ZoneId base = ZoneId.of("Europe/London#2008i");
+        ZoneId test = base.withFloatingVersion();
         assertEquals(base.getID(), "Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London");
 //        assertNotSame(test.getRules(), base.getRules());  // TODO: rewrite test with mocks
     }
 
     public void test_withFloatingVersion_TzdbFixed() {
-        TimeZone base = TimeZone.of("UTC+01:30");
-        TimeZone test = base.withFloatingVersion();
+        ZoneId base = ZoneId.of("UTC+01:30");
+        ZoneId test = base.withFloatingVersion();
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
     public void test_withLatestVersion_TzdbFloating() {
-        TimeZone base = TimeZone.of("Europe/London");
-        TimeZone test = base.withLatestVersion();
+        ZoneId base = ZoneId.of("Europe/London");
+        ZoneId test = base.withLatestVersion();
         assertEquals(base.getID(), "Europe/London");
         assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
     }
 
     public void test_withLatestVersion_TzdbVersioned() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
-        TimeZone test = base.withLatestVersion();
+        ZoneId base = ZoneId.of("Europe/London#2008i");
+        ZoneId test = base.withLatestVersion();
         assertEquals(base.getID(), "Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
 //        assertNotSame(test.getRules(), base.getRules());
     }
 
     public void test_withLatestVersion_TzdbVersioned_alreadyLatest() {
-        TimeZone base = TimeZone.of("Europe/London#" + LATEST_TZDB);
-        TimeZone test = base.withLatestVersion();
+        ZoneId base = ZoneId.of("Europe/London#" + LATEST_TZDB);
+        ZoneId test = base.withLatestVersion();
         assertSame(test, base);
         assertSame(test.getRules(), base.getRules());
     }
 
     public void test_withLatestVersion_TzdbFixed() {
-        TimeZone base = TimeZone.of("UTC+01:30");
-        TimeZone test = base.withLatestVersion();
+        ZoneId base = ZoneId.of("UTC+01:30");
+        ZoneId test = base.withLatestVersion();
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
     public void test_withVersion_TzdbFloating() {
-        TimeZone base = TimeZone.of("Europe/London");
-        TimeZone test = base.withVersion("2008i");
+        ZoneId base = ZoneId.of("Europe/London");
+        ZoneId test = base.withVersion("2008i");
         assertEquals(base.getID(), "Europe/London");
         assertEquals(test.getID(), "Europe/London#2008i");
     }
 
     public void test_withVersion_TzdbFloating_latestVersion() {
-        TimeZone base = TimeZone.of("Europe/London");
-        TimeZone test = base.withVersion(LATEST_TZDB);
+        ZoneId base = ZoneId.of("Europe/London");
+        ZoneId test = base.withVersion(LATEST_TZDB);
         assertEquals(base.getID(), "Europe/London");
         assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
     }
 
     public void test_withVersion_TzdbFloating_floatingVersion() {
-        TimeZone base = TimeZone.of("Europe/London");
-        TimeZone test = base.withVersion("");
+        ZoneId base = ZoneId.of("Europe/London");
+        ZoneId test = base.withVersion("");
         assertEquals(test, base);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_withVersion_TzdbFloating_badVersion() {
-        TimeZone base = TimeZone.of("Europe/London");
+        ZoneId base = ZoneId.of("Europe/London");
         base.withVersion("20");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_withVersion_TzdbFloating_null() {
-        TimeZone base = TimeZone.of("Europe/London");
+        ZoneId base = ZoneId.of("Europe/London");
         base.withVersion(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_withVersion_TzdbVersioned() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
-        TimeZone test = base.withVersion("2009a");
+        ZoneId base = ZoneId.of("Europe/London#2008i");
+        ZoneId test = base.withVersion("2009a");
         assertEquals(base.getID(), "Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2009a");
     }
 
     public void test_withVersion_TzdbVersioned_latestVersion() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
-        TimeZone test = base.withVersion(LATEST_TZDB);
+        ZoneId base = ZoneId.of("Europe/London#2008i");
+        ZoneId test = base.withVersion(LATEST_TZDB);
         assertEquals(base.getID(), "Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#" + LATEST_TZDB);
     }
 
     public void test_withVersion_TzdbVersioned_sameVersion() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
-        TimeZone test = base.withVersion("2008i");
+        ZoneId base = ZoneId.of("Europe/London#2008i");
+        ZoneId test = base.withVersion("2008i");
         assertSame(test, base);
     }
 
     public void test_withVersion_TzdbVersioned_floatingVersion() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
-        TimeZone test = base.withVersion("");
+        ZoneId base = ZoneId.of("Europe/London#2008i");
+        ZoneId test = base.withVersion("");
         assertEquals(base.getID(), "Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_withVersion_TzdbVersioned_badVersion() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
+        ZoneId base = ZoneId.of("Europe/London#2008i");
         base.withVersion("20");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_withVersion_TzdbVersioned_null() {
-        TimeZone base = TimeZone.of("Europe/London#2008i");
+        ZoneId base = ZoneId.of("Europe/London#2008i");
         base.withVersion(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_withVersion_TzdbFixed_floatingVersion() {
-        TimeZone base = TimeZone.of("UTC+01:30");
-        TimeZone test = base.withVersion("");
+        ZoneId base = ZoneId.of("UTC+01:30");
+        ZoneId test = base.withVersion("");
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_withVersion_TzdbFixed_badVersion() {
-        TimeZone base = TimeZone.of("UTC+01:30");
+        ZoneId base = ZoneId.of("UTC+01:30");
         base.withVersion("20");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_withVersion_TzdbFixed_null() {
-        TimeZone base = TimeZone.of("UTC+01:30");
+        ZoneId base = ZoneId.of("UTC+01:30");
         base.withVersion(null);
     }
 
@@ -1273,9 +1273,9 @@ public class TestTimeZone {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        TimeZone test1 = TimeZone.of("Europe/London");
-        TimeZone test2 = TimeZone.of("Europe/Paris");
-        TimeZone test2b = TimeZone.of("Europe/Paris");
+        ZoneId test1 = ZoneId.of("Europe/London");
+        ZoneId test2 = ZoneId.of("Europe/Paris");
+        ZoneId test2b = ZoneId.of("Europe/Paris");
         assertEquals(test1.equals(test2), false);
         assertEquals(test2.equals(test1), false);
         
@@ -1289,11 +1289,11 @@ public class TestTimeZone {
     }
 
     public void test_equals_null() {
-        assertEquals(TimeZone.of("Europe/London").equals(null), false);
+        assertEquals(ZoneId.of("Europe/London").equals(null), false);
     }
 
     public void test_equals_notTimeZone() {
-        assertEquals(TimeZone.of("Europe/London").equals("Europe/London"), false);
+        assertEquals(ZoneId.of("Europe/London").equals("Europe/London"), false);
     }
 
     //-----------------------------------------------------------------------
@@ -1315,7 +1315,7 @@ public class TestTimeZone {
 
     @Test(dataProvider="ToString")
     public void test_toString(String id, String expected) {
-        TimeZone test = TimeZone.of(id);
+        ZoneId test = ZoneId.of(id);
         assertEquals(test.toString(), expected);
     }
 
@@ -1323,33 +1323,33 @@ public class TestTimeZone {
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.get(Chronology.rule()), null);
         assertEquals(test.get(ISOChronology.yearRule()), null);
         assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), null);
-        assertEquals(test.get(TimeZone.rule()), test);
+        assertEquals(test.get(ZoneId.rule()), test);
     }
 
     public void test_get_CalendricalRule_fixedOffset() {
-        TimeZone test = TimeZone.of("UTC+03:00");
+        ZoneId test = ZoneId.of("UTC+03:00");
         assertEquals(test.get(Chronology.rule()), null);
         assertEquals(test.get(ISOChronology.yearRule()), null);
         assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), ZoneOffset.ofHours(3));
-        assertEquals(test.get(TimeZone.rule()), test);
+        assertEquals(test.get(ZoneId.rule()), test);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_get_CalendricalRule_null() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         test.get((CalendricalRule<?>) null);
     }
 
     public void test_get_unsupported() {
-        TimeZone test = TimeZone.of("Europe/London");
+        ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 

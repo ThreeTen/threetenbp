@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1639,14 +1639,14 @@ public final class LocalDateTime
      * Finer control over gaps and overlaps is available in two ways.
      * If you simply want to use the earlier offset at overlaps then call
      * {@link ZonedDateTime#withEarlierOffsetAtOverlap()} immediately after this method.
-     * Alternately, pass a specific resolver to {@link #atZone(TimeZone, ZoneResolver)}.
+     * Alternately, pass a specific resolver to {@link #atZone(ZoneId, ZoneResolver)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, never null
      */
-    public ZonedDateTime atZone(TimeZone zone) {
+    public ZonedDateTime atZone(ZoneId zone) {
         return ZonedDateTime.of(this, zone, ZoneResolvers.postTransition());
     }
 
@@ -1665,7 +1665,7 @@ public final class LocalDateTime
      * @return the zoned date-time formed from this date-time, never null
      * @throws CalendricalException if the date-time cannot be resolved
      */
-    public ZonedDateTime atZone(TimeZone zone, ZoneResolver resolver) {
+    public ZonedDateTime atZone(ZoneId zone, ZoneResolver resolver) {
         return ZonedDateTime.of(this, zone, resolver);
     }
 

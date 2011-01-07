@@ -70,7 +70,7 @@ import javax.time.calendar.TestPeriodFields;
 import javax.time.calendar.TestPeriodParser;
 import javax.time.calendar.TestPeriodUnit;
 import javax.time.calendar.TestQuarterOfYear;
-import javax.time.calendar.TestTimeZone;
+import javax.time.calendar.TestZoneId;
 import javax.time.calendar.TestYear;
 import javax.time.calendar.TestYearMonth;
 import javax.time.calendar.TestZoneOffset;
@@ -96,7 +96,7 @@ import javax.time.calendar.format.TestTextParser;
 import javax.time.calendar.format.TestTextPrinter;
 import javax.time.calendar.format.TestZoneOffsetParser;
 import javax.time.calendar.format.TestZoneOffsetPrinter;
-import javax.time.calendar.format.TestZoneParser;
+import javax.time.calendar.format.TestZoneIdParser;
 import javax.time.calendar.i18n.TestCopticChronology;
 import javax.time.calendar.i18n.TestCopticDate;
 import javax.time.calendar.i18n.TestInterCalendarSystem;
@@ -173,7 +173,7 @@ public class AllTest {
             TestPeriodFields.class,
             TestPeriodUnit.class,
             TestQuarterOfYear.class,
-            TestTimeZone.class,
+            TestZoneId.class,
             TestYear.class,
             TestYearMonth.class,  // needs strict to block overflow leftovers
             TestZonedDateTime.class,
@@ -201,7 +201,7 @@ public class AllTest {
             TestTextParser.class,
             TestZoneOffsetPrinter.class,
             TestZoneOffsetParser.class,
-            TestZoneParser.class,
+            TestZoneIdParser.class,
             // i18n
             TestCopticChronology.class,
             TestCopticDate.class,

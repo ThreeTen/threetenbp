@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1598,14 +1598,14 @@ public final class OffsetDateTime
      * This avoids any problems with local time-line gaps or overlaps.
      * The result might have different values for fields such as hour, minute an even day.
      * <p>
-     * To attempt to retain the values of the fields, use {@link #atZoneSimilarLocal(TimeZone)}.
+     * To attempt to retain the values of the fields, use {@link #atZoneSimilarLocal(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date-time, never null
      */
-    public ZonedDateTime atZoneSameInstant(TimeZone zone) {
+    public ZonedDateTime atZoneSameInstant(ZoneId zone) {
         return ZonedDateTime.ofInstant(this, zone);
     }
 
@@ -1623,17 +1623,17 @@ public final class OffsetDateTime
      * Finer control over gaps and overlaps is available in two ways.
      * If you simply want to use the earlier offset at overlaps then call
      * {@link ZonedDateTime#withEarlierOffsetAtOverlap()} immediately after this method.
-     * Alternately, pass a specific resolver to {@link #atZoneSimilarLocal(TimeZone, ZoneResolver)}.
+     * Alternately, pass a specific resolver to {@link #atZoneSimilarLocal(ZoneId, ZoneResolver)}.
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
-     * use {@link #atZoneSameInstant(TimeZone)}.
+     * use {@link #atZoneSameInstant(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
      */
-    public ZonedDateTime atZoneSimilarLocal(TimeZone zone) {
+    public ZonedDateTime atZoneSimilarLocal(ZoneId zone) {
         return ZonedDateTime.of(this, zone, ZoneResolvers.postTransition());
     }
 
@@ -1648,7 +1648,7 @@ public final class OffsetDateTime
      * This method uses the specified resolver to determine what to do when a gap or overlap occurs.
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
-     * use {@link #atZoneSameInstant(TimeZone)}.
+     * use {@link #atZoneSameInstant(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1657,7 +1657,7 @@ public final class OffsetDateTime
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
      * @throws CalendricalException if the date-time cannot be resolved
      */
-    public ZonedDateTime atZoneSimilarLocal(TimeZone zone, ZoneResolver resolver) {
+    public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
         return ZonedDateTime.of(this, zone, resolver);
     }
 

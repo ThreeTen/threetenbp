@@ -59,6 +59,7 @@ import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
 import javax.time.calendar.TimeProvider;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
 
@@ -3114,7 +3115,7 @@ public class GregorianCalendar
      */
     public ZonedDateTime toZonedDateTime() {
         Instant instant = Instant.ofEpochMillis(getTimeInMillis());
-        javax.time.calendar.TimeZone zone = javax.time.calendar.TimeZone.of(getZone().getID());
+        ZoneId zone = ZoneId.of(getZone().getID());
         return ZonedDateTime.ofInstant(instant, zone);
     }
 

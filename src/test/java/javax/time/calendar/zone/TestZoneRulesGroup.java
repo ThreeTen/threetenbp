@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,7 +43,7 @@ import javax.time.CalendricalException;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.TestTimeZone;
+import javax.time.calendar.TestZoneId;
 import javax.time.calendar.ZoneOffset;
 
 import org.testng.annotations.Test;
@@ -328,7 +328,7 @@ public class TestZoneRulesGroup {
     public void test_getLatestVersionIDValidFor() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
-        assertEquals(group.getLatestVersionIDValidFor("Europe/London", odt), TestTimeZone.LATEST_TZDB);
+        assertEquals(group.getLatestVersionIDValidFor("Europe/London", odt), TestZoneId.LATEST_TZDB);
     }
 
     public void test_getLatestVersionIDValidFor_mock_latest() {
@@ -415,7 +415,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     public void test_getLatestVersionID() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
-        assertEquals(group.getLatestVersionID(), TestTimeZone.LATEST_TZDB);
+        assertEquals(group.getLatestVersionID(), TestZoneId.LATEST_TZDB);
     }
 
     public void test_getLatestVersionID_mock() {
@@ -428,7 +428,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     public void test_getLatestVersionID_String() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
-        assertEquals(group.getLatestVersionID("Europe/London"), TestTimeZone.LATEST_TZDB);
+        assertEquals(group.getLatestVersionID("Europe/London"), TestZoneId.LATEST_TZDB);
     }
 
     public void test_getLatestVersionID_String_mock() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -140,7 +140,7 @@ public class TestCalendricalRule {
 
     public void test_comparator_noValueSortedLast() {
         List<Calendrical> list = new ArrayList<Calendrical>();
-        ZonedDateTime zdt = ZonedDateTime.of(LocalDateTime.of(2009, 8, 20, 2, 30), TimeZone.of("Europe/London"));
+        ZonedDateTime zdt = ZonedDateTime.of(LocalDateTime.of(2009, 8, 20, 2, 30), ZoneId.of("Europe/London"));
         list.add(zdt);
         LocalDateTime ldt = LocalDateTime.of(2007, 1, 1, 12, 30);
         list.add(ldt);

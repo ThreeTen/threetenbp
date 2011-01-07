@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1064,7 +1064,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         LocalDate date = merger.getValue(LocalDate.rule());
         LocalTime time = merger.getValue(LocalTime.rule());
         ZoneOffset offset = merger.getValue(ZoneOffset.rule());
-        TimeZone zone = merger.getValue(TimeZone.rule());
+        ZoneId zone = merger.getValue(ZoneId.rule());
         if (date != null && time != null) {
             merger.storeMerged(LocalDateTime.rule(), LocalDateTime.of(date, time));
             merger.removeProcessed(LocalDate.rule());
@@ -1118,7 +1118,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.ofInstant(odt, zone));
             }
             merger.removeProcessed(OffsetDateTime.rule());
-            merger.removeProcessed(TimeZone.rule());
+            merger.removeProcessed(ZoneId.rule());
         }
     }
 

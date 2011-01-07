@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.Period;
 import javax.time.calendar.QuarterOfYear;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.Year;
 import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZoneOffset;
@@ -188,7 +188,7 @@ public class TestFluentAPI {
 //        minuteOfHour(min);
         
         ZoneOffset offset = ZoneOffset.ofHours(1);
-        TimeZone paris = TimeZone.of("Europe/Paris");
+        ZoneId paris = ZoneId.of("Europe/Paris");
         
         for (ZoneOffsetTransition trans : paris.getRules().getTransitions()) {
             System.out.println("Paris transition: " + trans);

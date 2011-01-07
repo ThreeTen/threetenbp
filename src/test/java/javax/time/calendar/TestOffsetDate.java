@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -68,8 +68,8 @@ import org.testng.annotations.Test;
 public class TestOffsetDate {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
-    private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
+    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
+    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
     
     private OffsetDate TEST_2007_07_15_PONE;
     private OffsetDate MAX_DATE;
@@ -148,7 +148,7 @@ public class TestOffsetDate {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSeconds(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -160,7 +160,7 @@ public class TestOffsetDate {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSeconds(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
@@ -173,7 +173,7 @@ public class TestOffsetDate {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
+            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), ZoneId.of(offset));
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -554,7 +554,7 @@ public class TestOffsetDate {
         assertEquals(test.get(OffsetDateTime.rule()), null);
         assertEquals(test.get(ZonedDateTime.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
-        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(ZoneId.rule()), null);
         assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
         assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
     }
@@ -2043,7 +2043,7 @@ public class TestOffsetDate {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atStartOfDayInZone_nullZoneOffset() {
         OffsetDate t = OffsetDate.of(2008, 6, 30, OFFSET_PTWO);
-        t.atStartOfDayInZone((TimeZone) null);
+        t.atStartOfDayInZone((ZoneId) null);
     }
 
     //-----------------------------------------------------------------------

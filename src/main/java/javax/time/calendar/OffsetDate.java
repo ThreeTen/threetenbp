@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1054,7 +1054,7 @@ public final class OffsetDate
      * achieved using the {@link ZoneResolvers#postGapPreOverlap() zone resolver}.
      * <p>
      * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
-     * followed by {@link OffsetDateTime#atZoneSimilarLocal(TimeZone)}. Note that the resolver
+     * followed by {@link OffsetDateTime#atZoneSimilarLocal(ZoneId)}. Note that the resolver
      * used by {@code atZoneSimilarLocal()} is different to that used here (it chooses
      * the later offset in an overlap, whereas this method chooses the earlier offset).
      * <p>
@@ -1066,7 +1066,7 @@ public final class OffsetDate
      * @param zone  the time-zone to use, not null
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
      */
-    public ZonedDateTime atStartOfDayInZone(TimeZone zone) {
+    public ZonedDateTime atStartOfDayInZone(ZoneId zone) {
         return ZonedDateTime.of(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,14 +43,14 @@ public class MockZoneResolverReturnsNull extends ZoneResolver {
 
     /** {@inheritDoc} */
     @Override
-    protected OffsetDateTime handleGap(TimeZone zone, ZoneRules rules,
+    protected OffsetDateTime handleGap(ZoneId zone, ZoneRules rules,
             ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected OffsetDateTime handleOverlap(TimeZone zone, ZoneRules rules,
+    protected OffsetDateTime handleOverlap(ZoneId zone, ZoneRules rules,
             ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
         return null;
     }

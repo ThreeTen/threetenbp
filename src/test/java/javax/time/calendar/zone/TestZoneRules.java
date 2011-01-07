@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,7 +36,7 @@ import static org.testng.Assert.assertEquals;
 import javax.time.Instant;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.Period;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 
 import org.testng.annotations.Test;
@@ -60,7 +60,7 @@ public class TestZoneRules {
         ZoneRules test = ZoneRules.ofFixed(OFFSET_1_15);
         assertEquals(test.isFixedOffset(), true);
         assertEquals(test.getOffset(Instant.EPOCH), OFFSET_1_15);
-        assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01.atZone(TimeZone.UTC).toInstant()), new ZoneOffsetInfo(DATE_TIME_2008_01_01.plusHours(1).plusMinutes(15), OFFSET_1_15, null));
+        assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01.atZone(ZoneId.UTC).toInstant()), new ZoneOffsetInfo(DATE_TIME_2008_01_01.plusHours(1).plusMinutes(15), OFFSET_1_15, null));
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01), new ZoneOffsetInfo(DATE_TIME_2008_01_01, OFFSET_1_15, null));
         assertEquals(test.getStandardOffset(Instant.EPOCH), OFFSET_1_15);
         assertEquals(test.getTransitionRules().size(), 0);

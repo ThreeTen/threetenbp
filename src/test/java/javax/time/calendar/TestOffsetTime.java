@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -131,7 +131,7 @@ public class TestOffsetTime {
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSeconds(i, 8);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -144,7 +144,7 @@ public class TestOffsetTime {
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSeconds(i, 8);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
@@ -158,7 +158,7 @@ public class TestOffsetTime {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
+            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), ZoneId.of(offset));
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (12 + i) % 24);
             assertEquals(test.getMinuteOfHour(), 0);
@@ -432,7 +432,7 @@ public class TestOffsetTime {
         assertEquals(test.get(OffsetDateTime.rule()), null);
         assertEquals(test.get(ZonedDateTime.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
-        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(ZoneId.rule()), null);
         assertEquals(test.get(YearMonth.rule()), null);
         assertEquals(test.get(MonthDay.rule()), null);
     }

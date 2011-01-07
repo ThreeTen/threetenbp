@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -492,7 +492,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     public void test_toTimeZone() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(offset.toTimeZone(), TimeZone.of(offset));
+        assertEquals(offset.toTimeZone(), ZoneId.of(offset));
     }
 
     //-----------------------------------------------------------------------
@@ -548,7 +548,7 @@ public class TestZoneOffset {
         assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), test);
-        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(ZoneId.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
@@ -596,7 +596,7 @@ public class TestZoneOffset {
             }
         }
         assertEquals(ZoneOffset.of(id), offset);
-        assertEquals(offset.toTimeZone(), TimeZone.of(offset));
+        assertEquals(offset.toTimeZone(), ZoneId.of(offset));
         assertEquals(offset.toString(), id);
     }
 

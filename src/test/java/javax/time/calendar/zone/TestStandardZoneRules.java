@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -52,7 +52,7 @@ import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.Period;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
@@ -139,7 +139,7 @@ public class TestStandardZoneRules {
     // Europe/London
     //-----------------------------------------------------------------------
     private StandardZoneRules europeLondon() {
-        return (StandardZoneRules) TimeZone.of("Europe/London#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("Europe/London#2009b").getRules();
     }
 
     public void test_London() {
@@ -513,7 +513,7 @@ public class TestStandardZoneRules {
     // Europe/Paris
     //-----------------------------------------------------------------------
     private StandardZoneRules europeParis() {
-        return (StandardZoneRules) TimeZone.of("Europe/Paris#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("Europe/Paris#2009b").getRules();
     }
 
     public void test_Paris() {
@@ -712,7 +712,7 @@ public class TestStandardZoneRules {
     // America/New_York
     //-----------------------------------------------------------------------
     private StandardZoneRules americaNewYork() {
-        return (StandardZoneRules) TimeZone.of("America/New_York#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("America/New_York#2009b").getRules();
     }
 
     public void test_NewYork() {
@@ -928,7 +928,7 @@ public class TestStandardZoneRules {
     // Kathmandu
     //-----------------------------------------------------------------------
     private StandardZoneRules asiaKathmandu() {
-        return (StandardZoneRules) TimeZone.of("Asia/Kathmandu#2009b").getRules();
+        return (StandardZoneRules) ZoneId.of("Asia/Kathmandu#2009b").getRules();
     }
 
     public void test_Kathmandu_nextTransition_historic() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,7 +47,7 @@ import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.Period;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneResolvers;
 import javax.time.calendar.ZonedDateTime;
@@ -73,10 +73,10 @@ public class Examples {
         ZonedDateTime zdt = clock.zonedDateTime();
         System.out.println("Current date-time: " + zdt);
         
-        ZonedDateTime zdtNewYork = Clock.system(TimeZone.of("America/New_York")).zonedDateTime();
+        ZonedDateTime zdtNewYork = Clock.system(ZoneId.of("America/New_York")).zonedDateTime();
         System.out.println("Current date-time in New York: " + zdtNewYork);
         
-        ZonedDateTime zdtParis = Clock.system(TimeZone.of("Europe/Paris")).zonedDateTime();
+        ZonedDateTime zdtParis = Clock.system(ZoneId.of("Europe/Paris")).zonedDateTime();
         System.out.println("Current date-time in Paris: " + zdtParis);
         
         LocalDateTime ldt = clock.dateTime();
@@ -119,7 +119,7 @@ public class Examples {
         LocalDateTime dt = LocalDateTime.of(2008, 3, 30, 1, 30);
         System.out.println("Local date-time in Spring DST gap: " + dt);
         
-        ZonedDateTime resolved = ZonedDateTime.of(dt, TimeZone.of("Europe/London"), ZoneResolvers.postTransition());
+        ZonedDateTime resolved = ZonedDateTime.of(dt, ZoneId.of("Europe/London"), ZoneResolvers.postTransition());
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
         
         String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.TimeZone;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
@@ -109,7 +110,7 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, never null
      */
     public static Clock systemDefaultZone() {
-        TimeZone zone = TimeZone.of(java.util.TimeZone.getDefault().getID());
+        ZoneId zone = ZoneId.of(TimeZone.getDefault().getID());
         return new TimeSourceClock(TimeSource.system(), zone);
     }
 
@@ -123,8 +124,8 @@ public abstract class Clock {
      * @param zone  the time-zone to use to convert to date-times, not null
      * @return a clock that uses the system millisecond clock in the specified zone, never null
      */
-    public static Clock system(TimeZone zone) {
-        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+    public static Clock system(ZoneId zone) {
+        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         return new TimeSourceClock(TimeSource.system(), zone);
     }
 
@@ -141,7 +142,7 @@ public abstract class Clock {
      */
     public static Clock clockDefaultZone(TimeSource timeSource) {
         ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
-        TimeZone zone = TimeZone.of(java.util.TimeZone.getDefault().getID());
+        ZoneId zone = ZoneId.of(TimeZone.getDefault().getID());
         return new TimeSourceClock(timeSource, zone);
     }
 
@@ -153,9 +154,9 @@ public abstract class Clock {
      * @param timeZone  the time-zone to use to convert to date-times, not null
      * @return a clock that uses the system millisecond clock in the specified zone, never null
      */
-    public static Clock clock(TimeSource timeSource, TimeZone timeZone) {
+    public static Clock clock(TimeSource timeSource, ZoneId timeZone) {
         ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
-        ISOChronology.checkNotNull(timeZone, "TimeZone must not be null");
+        ISOChronology.checkNotNull(timeZone, "ZoneId must not be null");
         return new TimeSourceClock(timeSource, timeZone);
     }
 
@@ -216,7 +217,7 @@ public abstract class Clock {
      * @return the time-zone being used to interpret instants, never null
      * @throws UnsupportedOperationException if the implementation does not support accessing the time-zone
      */
-    public TimeZone getZone() {
+    public ZoneId getZone() {
         throw new UnsupportedOperationException("Clock.getZone is not supported");
     }
 
@@ -234,7 +235,7 @@ public abstract class Clock {
      * @return the new clock with the altered time-zone, never null
      * @throws UnsupportedOperationException if the implementation does not support changing the time-zone
      */
-    public Clock withZone(TimeZone zone) {
+    public Clock withZone(ZoneId zone) {
         throw new UnsupportedOperationException("Clock.withZone is not supported");
     }
 
@@ -243,7 +244,7 @@ public abstract class Clock {
      * Gets the current instant.
      * <p>
      * The instant returned by this method will vary according to the implementation.
-     * For example, the time-source returned by {@link #system(TimeZone)} will return
+     * For example, the time-source returned by {@link #system(ZoneId)} will return
      * an instant based on {@link System#currentTimeMillis()}.
      * <p>
      * Normally, this method will not throw an exception.
@@ -569,10 +570,10 @@ public abstract class Clock {
         /** The time-source being used. */
         private final TimeSource timeSource;
         /** The time-zone being used. */
-        private final TimeZone zone;
+        private final ZoneId zone;
 
         /** Restricted constructor. */
-        private TimeSourceClock(TimeSource timeSource, TimeZone zone) {
+        private TimeSourceClock(TimeSource timeSource, ZoneId zone) {
             this.timeSource = timeSource;
             this.zone = zone;
         }
@@ -595,14 +596,14 @@ public abstract class Clock {
 
         /** {@inheritDoc} */
         @Override
-        public TimeZone getZone() {
+        public ZoneId getZone() {
             return zone;
         }
 
         /** {@inheritDoc} */
         @Override
-        public Clock withZone(TimeZone zone) {
-            ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+        public Clock withZone(ZoneId zone) {
+            ISOChronology.checkNotNull(zone, "ZoneId must not be null");
             if (zone.equals(this.zone)) {
                 return this;
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestZoneResolvers {
 
-    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
+    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
 //    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -87,7 +87,7 @@ public class MockMultiProvider
         return dateTime.toOffsetTime();
     }
     public ZonedDateTime toZonedDateTime() {
-        return ZonedDateTime.of(dateTime, TimeZone.of("Europe/Paris"));
+        return ZonedDateTime.of(dateTime, ZoneId.of("Europe/Paris"));
     }
     public <T> T get(CalendricalRule<T> rule) {
         return null;

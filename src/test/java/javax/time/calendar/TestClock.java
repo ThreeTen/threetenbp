@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -55,8 +55,8 @@ public class TestClock {
 
     static class MockClock extends Clock {
         final TimeSource timeSource;
-        final TimeZone timeZone;
-        MockClock(TimeSource ts, TimeZone tz) {
+        final ZoneId timeZone;
+        MockClock(TimeSource ts, ZoneId tz) {
             timeSource = ts;
             timeZone = tz;
         }
@@ -69,11 +69,11 @@ public class TestClock {
             return new MockClock(timeSource, timeZone);
         }
         @Override
-        public TimeZone getZone() {
+        public ZoneId getZone() {
             return timeZone;
         }
         @Override
-        public Clock withZone(TimeZone timeZone) {
+        public Clock withZone(ZoneId timeZone) {
             return new MockClock(timeSource, timeZone);
         }
     }
@@ -84,7 +84,7 @@ public class TestClock {
     private static final ZoneOffset OFFSET = ZoneOffset.ofHours(2);
     private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET);
     private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
-    private static final TimeZone ZONE = TimeZone.of("Europe/Paris");
+    private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
     private static final Clock MOCK = new MockClock(TIME_SOURCE, ZONE);
     private static final Clock MOCK_NO_OVERRIDES = new MockClockNoOverrides();
 
@@ -142,7 +142,7 @@ public class TestClock {
     }
 
     public void test_mockClock_withZone() {
-        TimeZone london = TimeZone.of("Europe/London");
+        ZoneId london = ZoneId.of("Europe/London");
         Clock changed = MOCK.withZone(london);
         assertEquals(changed.getSource(), TIME_SOURCE);
         assertEquals(changed.getZone(), london);

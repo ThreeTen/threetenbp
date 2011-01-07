@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -42,19 +42,19 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.zone.ZoneRulesGroup;
 
 /**
- * Prints or parses a zone offset.
+ * Prints or parses a zone id.
  * <p>
- * ZonePrinterParser is immutable and thread-safe.
+ * ZoneIdPrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
+final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The text style to output, null means the id.
@@ -64,7 +64,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      */
-    ZonePrinterParser() {
+    ZoneIdPrinterParser() {
         this.textStyle = null;
     }
 
@@ -73,7 +73,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
      *
      * @param textStyle  the test style to output, not null
      */
-    ZonePrinterParser(TextStyle textStyle) {
+    ZoneIdPrinterParser(TextStyle textStyle) {
         // validated by caller
         this.textStyle = textStyle;
     }
@@ -81,7 +81,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        TimeZone zone = calendrical.get(TimeZone.rule());
+        ZoneId zone = calendrical.get(ZoneId.rule());
         if (zone == null) {
             throw new CalendricalPrintException("Unable to print TimeZone");
         }
@@ -96,7 +96,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return (calendrical.get(TimeZone.rule()) != null);
+        return (calendrical.get(ZoneId.rule()) != null);
     }
 
     //-----------------------------------------------------------------------
@@ -131,7 +131,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
             return ~position;
         }
         SubstringTree tree;
-        synchronized (ZonePrinterParser.class) {
+        synchronized (ZoneIdPrinterParser.class) {
             if (preparedTree == null || preparedIDs.size() < ids.size()) {
                 ids = new HashSet<String>(ids);
                 preparedTree = prepareParser(ids);
@@ -146,11 +146,11 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
             int startPos = position + 3;
             int endPos = new ZoneOffsetPrinterParser("", true, true).parse(newContext, parseText, startPos);
             if (endPos < 0) {
-                context.setParsed(TimeZone.rule(), TimeZone.UTC);
+                context.setParsed(ZoneId.rule(), ZoneId.UTC);
                 return startPos;
             }
-            TimeZone zone = TimeZone.of((ZoneOffset) newContext.getParsed(ZoneOffset.rule()));
-            context.setParsed(TimeZone.rule(), zone);
+            ZoneId zone = ZoneId.of((ZoneOffset) newContext.getParsed(ZoneOffset.rule()));
+            context.setParsed(ZoneId.rule(), zone);
             return endPos;
         }
         
@@ -169,7 +169,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
         
         if (parsedZoneId != null && preparedIDs.contains(parsedZoneId)) {
             // handle zone version
-            TimeZone zone = TimeZone.of(parsedZoneId);
+            ZoneId zone = ZoneId.of(parsedZoneId);
             int pos = position + parsedZoneId.length();
             if (pos + 1 < length && parseText.charAt(pos) == '#') {
                 Set<String> versions = zone.getGroup().getAvailableVersionIDs();
@@ -181,7 +181,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
                     }
                 }
             }
-            context.setParsed(TimeZone.rule(), zone);
+            context.setParsed(ZoneId.rule(), zone);
             return pos;
         } else {
             return ~position;

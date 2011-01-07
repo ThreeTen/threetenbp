@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,7 +44,7 @@ import java.util.Random;
 
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneResolvers;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.format.DateTimeFormatter;
@@ -148,7 +148,7 @@ public class Performance {
 
     //-----------------------------------------------------------------------
     private static List<ZonedDateTime> setupZonedDateTime() {
-        TimeZone tz = TimeZone.of("Europe/London");
+        ZoneId tz = ZoneId.of("Europe/London");
         Random random = new Random(47658758756875687L);
         List<ZonedDateTime> list = new ArrayList<ZonedDateTime>(SIZE);
         long start = System.nanoTime();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -83,7 +83,7 @@ public final class ZonedDateTime
     /**
      * The time-zone.
      */
-    private final TimeZone zone;
+    private final ZoneId zone;
 
     //-----------------------------------------------------------------------
     /**
@@ -146,7 +146,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneId zone) {
         return of(year, monthOfYear, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
     }
@@ -179,7 +179,7 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime of(int year, MonthOfYear monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
-            TimeZone zone, ZoneResolver resolver) {
+            ZoneId zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
                                     hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return resolve(dt, null, zone, resolver);
@@ -211,7 +211,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
     public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneId zone) {
         return of(year, monthOfYear, dayOfMonth,
                 hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone, ZoneResolvers.strict());
     }
@@ -244,7 +244,7 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime of(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond,
-            TimeZone zone, ZoneResolver resolver) {
+            ZoneId zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.of(year, monthOfYear, dayOfMonth,
                                     hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return resolve(dt, null, zone, resolver);
@@ -265,7 +265,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
+    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, ZoneId zone) {
         return of(dateProvider, timeProvider, zone, ZoneResolvers.strict());
     }
 
@@ -285,7 +285,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
+    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, ZoneId zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.of(dateProvider, timeProvider);
         return resolve(dt, null, zone, resolver);
     }
@@ -303,7 +303,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, TimeZone zone) {
+    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, ZoneId zone) {
         return of(dateTimeProvider, zone, ZoneResolvers.strict());
     }
 
@@ -322,7 +322,7 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
+    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, ZoneId zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.of(dateTimeProvider);
         return resolve(dt, null, zone, resolver);
     }
@@ -338,7 +338,7 @@ public final class ZonedDateTime
      * If the time-zone has a floating version, then this conversion will use the
      * latest time-zone rules that are valid for the input date-time.
      * <p>
-     * An alternative to this method is {@link #ofInstant(OffsetDateTime, TimeZone)}.
+     * An alternative to this method is {@link #ofInstant(OffsetDateTime, ZoneId)}.
      * This method will retain the date and time and throw an exception if
      * the offset is invalid. The {@code fromInstant} method will change the
      * date and time if necessary to retain the same instant.
@@ -350,9 +350,9 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time is invalid due to a gap in the local time-line
      * @throws CalendricalException if the offset is invalid for the time-zone at the date-time
      */
-    public static ZonedDateTime of(OffsetDateTime dateTime, TimeZone zone) {
+    public static ZonedDateTime of(OffsetDateTime dateTime, ZoneId zone) {
         ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
-        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
         ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
@@ -382,9 +382,9 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime ofInstant(InstantProvider instantProvider, TimeZone zone) {
+    public static ZonedDateTime ofInstant(InstantProvider instantProvider, ZoneId zone) {
         Instant instant = Instant.of(instantProvider);
-        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
         return new ZonedDateTime(offsetDT, zone);
@@ -403,7 +403,7 @@ public final class ZonedDateTime
      * <p>
      * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
      * <p>
-     * An alternative to this method is {@link #of(OffsetDateTime, TimeZone)}.
+     * An alternative to this method is {@link #of(OffsetDateTime, ZoneId)}.
      * The {@code fromInstant} method will change the date and time if necessary to
      * retain the same instant. The {@code dateTime} method will retain the date and
      * time and throw an exception if the offset is invalid.
@@ -413,9 +413,9 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime ofInstant(OffsetDateTime dateTime, TimeZone zone) {
+    public static ZonedDateTime ofInstant(OffsetDateTime dateTime, ZoneId zone) {
         ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
-        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         if (rules.isValidDateTime(dateTime) == false) {
             ZoneOffset offsetForInstant = rules.getOffset(dateTime);
@@ -436,8 +436,8 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime ofEpochSeconds(long epochSeconds, TimeZone zone) {
-        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+    public static ZonedDateTime ofEpochSeconds(long epochSeconds, ZoneId zone) {
+        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         return ZonedDateTime.ofInstant(Instant.ofEpochSeconds(epochSeconds, 0), zone);
     }
 
@@ -468,7 +468,7 @@ public final class ZonedDateTime
      * <p>
      * The offset ID is the normalized form as defined in {@link ZoneOffset}.
      * <p>
-     * The zone ID is the normalized form as defined in {@link TimeZone#getID()}.
+     * The zone ID is the normalized form as defined in {@link ZoneId#getID()}.
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30+01:00[Europe/Paris]', not null
      * @return the parsed zoned date-time, never null
@@ -505,9 +505,9 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the date-time cannot be resolved
      */
-    private static ZonedDateTime resolve(LocalDateTime dateTime, ZonedDateTime oldDateTime, TimeZone zone, ZoneResolver resolver) {
+    private static ZonedDateTime resolve(LocalDateTime dateTime, ZonedDateTime oldDateTime, ZoneId zone, ZoneResolver resolver) {
         ISOChronology.checkNotNull(dateTime, "LocalDateTime must not be null");
-        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         ISOChronology.checkNotNull(resolver, "ZoneResolver must not be null");
         OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, oldDateTime);
         return new ZonedDateTime(offsetDT, zone);
@@ -520,7 +520,7 @@ public final class ZonedDateTime
      * @param dateTime  the date-time, validated as not null
      * @param zone  the time-zone, validated as not null
      */
-    private ZonedDateTime(OffsetDateTime dateTime, TimeZone zone) {
+    private ZonedDateTime(OffsetDateTime dateTime, ZoneId zone) {
         this.dateTime = dateTime;
         this.zone = zone;
     }
@@ -654,7 +654,7 @@ public final class ZonedDateTime
      *
      * @return the time-zone, never null
      */
-    public TimeZone getZone() {
+    public ZoneId getZone() {
         return zone;
     }
 
@@ -667,14 +667,14 @@ public final class ZonedDateTime
      * In that case, the {@link ZoneResolvers#retainOffset() retain offset} resolver is used.
      * <p>
      * To change the zone and adjust the local date-time,
-     * use {@link #withZoneSameInstant(TimeZone)}.
+     * use {@link #withZoneSameInstant(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to change to, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, never null
      */
-    public ZonedDateTime withZoneSameLocal(TimeZone zone) {
+    public ZonedDateTime withZoneSameLocal(ZoneId zone) {
         return withZoneSameLocal(zone, ZoneResolvers.retainOffset());
     }
 
@@ -687,7 +687,7 @@ public final class ZonedDateTime
      * In that case, the specified resolver is used.
      * <p>
      * To change the zone and adjust the local date-time,
-     * use {@link #withZoneSameInstant(TimeZone)}.
+     * use {@link #withZoneSameInstant(ZoneId)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -695,8 +695,8 @@ public final class ZonedDateTime
      * @param resolver  the resolver to use, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, never null
      */
-    public ZonedDateTime withZoneSameLocal(TimeZone zone, ZoneResolver resolver) {
-        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+    public ZonedDateTime withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
+        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         ISOChronology.checkNotNull(resolver, "ZoneResolver must not be null");
         return zone == this.zone ? this :
             resolve(dateTime.toLocalDateTime(), this, zone, resolver);
@@ -713,13 +713,13 @@ public final class ZonedDateTime
      * in the local time-line have no effect on the result.
      * <p>
      * To change the offset while keeping the local time,
-     * use {@link #withZoneSameLocal(TimeZone)}.
+     * use {@link #withZoneSameLocal(ZoneId)}.
      *
      * @param zone  the time-zone to change to, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, never null
      * @throws CalendarConversionException if the result exceeds the supported date range
      */
-    public ZonedDateTime withZoneSameInstant(TimeZone zone) {
+    public ZonedDateTime withZoneSameInstant(ZoneId zone) {
         return zone == this.zone ? this : ofInstant(dateTime, zone);
     }
 
@@ -744,7 +744,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if no rules can be found for the zone
      * @throws CalendricalException if no rules are valid for this date-time
      */
-    public TimeZone getApplicableZone() {
+    public ZoneId getApplicableZone() {
         if (zone.isFloatingVersion()) {
             return zone.withLatestVersionValidFor(dateTime);
         }
@@ -756,7 +756,7 @@ public final class ZonedDateTime
      * <p>
      * The rules provide the information on how the zone offset changes over time.
      * This usually includes historical and future information.
-     * The rules are determined using {@link TimeZone#getRulesValidFor(OffsetDateTime)}
+     * The rules are determined using {@link ZoneId#getRulesValidFor(OffsetDateTime)}
      * which finds the best matching set of rules for this date-time.
      * If a new version of the time-zone rules is registered then the result
      * of this method may change.

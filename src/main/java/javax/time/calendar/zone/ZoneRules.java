@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -40,7 +40,7 @@ import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
 import javax.time.calendar.Period;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
 
@@ -48,7 +48,7 @@ import javax.time.calendar.ZonedDateTime;
  * The rules defining how the zone offset varies for a single time-zone.
  * <p>
  * The rules model all the historic and future transitions for a time-zone.
- * The rules are loaded via {@link TimeZone} and {@link ZoneRulesGroup} and
+ * The rules are loaded via {@link ZoneId} and {@link ZoneRulesGroup} and
  * are specific to a group, region and version. The same rules may be shared
  * between multiple versions, regions or even groups.
  * <p>

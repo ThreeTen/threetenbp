@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,7 +39,7 @@ import java.util.GregorianCalendar;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 
 /**
@@ -77,7 +77,7 @@ public class PerformanceZone {
     //-----------------------------------------------------------------------
     private static void jsrLocalGetOffset() {
         LocalDateTime dt = LocalDateTime.of(YEAR, 6, 1, 12, 0);
-        TimeZone tz = TimeZone.of("Europe/London");
+        ZoneId tz = ZoneId.of("Europe/London");
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
@@ -91,7 +91,7 @@ public class PerformanceZone {
     private static void jsrInstantGetOffset() {
         OffsetDateTime dt = OffsetDateTime.of(YEAR, 6, 1, 12, 0, ZoneOffset.ofHours(1));
         Instant instant = dt.toInstant();
-        TimeZone tz = TimeZone.of("Europe/London");
+        ZoneId tz = ZoneId.of("Europe/London");
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {

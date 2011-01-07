@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,7 +41,7 @@ import java.util.Map;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 
 /**
@@ -59,7 +59,7 @@ import javax.time.calendar.ZoneOffset;
  * outputting fractions to ensure that the fraction is parsed correctly</li>
  * <li>Text - the textual equivalent for the value</li>
  * <li>OffsetId/Offset - the {@link ZoneOffset zone offset}</li>
- * <li>ZoneId - the {@link TimeZone time-zone} id</li>
+ * <li>ZoneId - the {@link ZoneId time-zone} id</li>
  * <li>ZoneText - the name of the time-zone</li>
  * <li>Literal - a text literal</li>
  * <li>Nested and Optional - formats can be nested or made optional</li>
@@ -564,7 +564,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendZoneId() {
-        ZonePrinterParser pp = new ZonePrinterParser();
+        ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
         appendInternal(pp, pp);
         return this;
     }
@@ -588,7 +588,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
         checkNotNull(textStyle, "TextStyle must not be null");
-        ZonePrinterParser pp = new ZonePrinterParser(textStyle);
+        ZoneIdPrinterParser pp = new ZoneIdPrinterParser(textStyle);
         appendInternal(pp, pp);
         return this;
     }

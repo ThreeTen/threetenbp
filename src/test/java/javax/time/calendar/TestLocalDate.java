@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -69,8 +69,8 @@ public class TestLocalDate {
 //    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
-    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
-    private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
+    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
+    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
     
     private LocalDate TEST_2007_07_15;
     private long MAX_VALID_EPOCHDAYS;
@@ -164,7 +164,7 @@ public class TestLocalDate {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSeconds(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -175,7 +175,7 @@ public class TestLocalDate {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSeconds(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), TimeZone.of(OFFSET_PONE));
+            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), ZoneId.of(OFFSET_PONE));
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -186,7 +186,7 @@ public class TestLocalDate {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSeconds(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
@@ -196,14 +196,14 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void now_Clock_maxYear() {
-        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT), TimeZone.UTC);
+        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT), ZoneId.UTC);
         LocalDate test = LocalDate.now(clock);
         assertEquals(test, MAX_DATE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void now_Clock_tooBig() {
-        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60)), TimeZone.UTC);
+        Clock clock = Clock.clock(TimeSource.fixed(MAX_INSTANT.plusSeconds(24 * 60 * 60)), ZoneId.UTC);
         try {
             LocalDate.now(clock);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -213,14 +213,14 @@ public class TestLocalDate {
     }
 
     public void now_Clock_minYear() {
-        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT), TimeZone.UTC);
+        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT), ZoneId.UTC);
         LocalDate test = LocalDate.now(clock);
         assertEquals(test, MIN_DATE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void now_Clock_tooLow() {
-        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT.minusNanos(1)), TimeZone.UTC);
+        Clock clock = Clock.clock(TimeSource.fixed(MIN_INSTANT.minusNanos(1)), ZoneId.UTC);
         try {
             LocalDate.now(clock);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -508,7 +508,7 @@ public class TestLocalDate {
         assertEquals(test.get(OffsetDateTime.rule()), null);
         assertEquals(test.get(ZonedDateTime.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), null);
-        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(ZoneId.rule()), null);
         assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
         assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
     }
@@ -2266,7 +2266,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atStartOfDayInZone_nullTimeZone() {
         LocalDate t = LocalDate.of(2008, 6, 30);
-        t.atStartOfDayInZone((TimeZone) null);
+        t.atStartOfDayInZone((ZoneId) null);
     }
 
     //-----------------------------------------------------------------------

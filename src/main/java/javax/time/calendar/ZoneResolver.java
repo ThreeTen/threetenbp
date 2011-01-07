@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -79,7 +79,7 @@ public abstract class ZoneResolver {
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public final OffsetDateTime resolve(
-            TimeZone zone,
+            ZoneId zone,
             LocalDateTime newDateTime,
             ZonedDateTime oldDateTime) {
         
@@ -140,7 +140,7 @@ public abstract class ZoneResolver {
      * @throws IllegalCalendarFieldValueException if the offset cannot be calculated
      */
     protected abstract OffsetDateTime handleGap(
-            TimeZone zone,
+            ZoneId zone,
             ZoneRules rules,
             ZoneOffsetTransition gapInfo,
             LocalDateTime newDateTime,
@@ -186,7 +186,7 @@ public abstract class ZoneResolver {
      * @throws IllegalCalendarFieldValueException if the offset cannot be calculated
      */
     protected abstract OffsetDateTime handleOverlap(
-            TimeZone zone,
+            ZoneId zone,
             ZoneRules rules,
             ZoneOffsetTransition overlapInfo,
             LocalDateTime newDateTime,

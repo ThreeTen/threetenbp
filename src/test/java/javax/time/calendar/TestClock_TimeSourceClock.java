@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -56,7 +56,7 @@ public class TestClock_TimeSourceClock {
     private static final ZoneOffset OFFSET = ZoneOffset.ofHours(2);
     private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET);
     private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
-    private static final TimeZone ZONE = TimeZone.of("Europe/Paris");
+    private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
 
     //-----------------------------------------------------------------------
     public void test_isSerializable() throws IOException, ClassNotFoundException {
@@ -96,7 +96,7 @@ public class TestClock_TimeSourceClock {
 
     public void test_withZone() {
         Clock test = Clock.clock(TIME_SOURCE, ZONE);
-        TimeZone london = TimeZone.of("Europe/London");
+        ZoneId london = ZoneId.of("Europe/London");
         Clock changed = test.withZone(london);
         assertEquals(test.getSource(), TIME_SOURCE);
         assertEquals(test.getZone(), ZONE);
@@ -124,11 +124,11 @@ public class TestClock_TimeSourceClock {
                 return TIME_SOURCE;
             }
             @Override
-            public TimeZone getZone() {
+            public ZoneId getZone() {
                 return ZONE;
             }
         }));
-        assertFalse(test.equals(Clock.system(TimeZone.of(ZoneOffset.ofHours(1)))));
+        assertFalse(test.equals(Clock.system(ZoneId.of(ZoneOffset.ofHours(1)))));
     }
 
     public void test_hashCode() {

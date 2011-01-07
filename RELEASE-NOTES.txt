@@ -45,6 +45,7 @@
 - Add CopticDate.plusWeeks()
 - Change factories on I18N dates to take Calendrical, not DateProvider
 - Rename ZoneOffsetTransition.getDateTime() to getDateTimeBefore()
+- Rename TimeZone to ZoneId (avoids annoying clash with JDK)
 
 0.6.3
 ===============================================================================

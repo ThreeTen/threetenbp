@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -64,8 +64,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestOffsetDateTime {
 
-    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
-    private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
+    private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
+    private static final ZoneId ZONE_GAZA = ZoneId.of("Asia/Gaza");
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
     private static final ZoneOffset OFFSET_MONE = ZoneOffset.ofHours(-1);
@@ -140,7 +140,7 @@ public class TestOffsetDateTime {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -156,7 +156,7 @@ public class TestOffsetDateTime {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), TimeZone.of(OFFSET_PONE));
+            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), ZoneId.of(OFFSET_PONE));
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -173,7 +173,7 @@ public class TestOffsetDateTime {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), TimeZone.UTC);
+            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
@@ -188,7 +188,7 @@ public class TestOffsetDateTime {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), TimeZone.of(offset));
+            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), ZoneId.of(offset));
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getHourOfDay(), (12 + i) % 24);
             assertEquals(test.getMinuteOfHour(), 0);
@@ -536,7 +536,7 @@ public class TestOffsetDateTime {
         assertEquals(test.get(OffsetDateTime.rule()), test);
         assertEquals(test.get(ZonedDateTime.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
-        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(ZoneId.rule()), null);
         assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
         assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
     }
@@ -1284,7 +1284,7 @@ public class TestOffsetDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZone_nullTimeZone() {
         OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
-        t.atZoneSameInstant((TimeZone) null);
+        t.atZoneSameInstant((ZoneId) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1305,7 +1305,7 @@ public class TestOffsetDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZoneSimilarLocal_nullTimeZone() {
         OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
-        t.atZoneSimilarLocal((TimeZone) null);
+        t.atZoneSimilarLocal((ZoneId) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1330,7 +1330,7 @@ public class TestOffsetDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZoneSimilarLocal_resolver_nullTimeZone() {
         OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
-        t.atZoneSimilarLocal((TimeZone) null, ZoneResolvers.strict());
+        t.atZoneSimilarLocal((ZoneId) null, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1665,13 +1665,13 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_true_date() {
         OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500;
-        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.atZoneSimilarLocal(TimeZone.of(TEST_2008_6_30_11_30_59_000000500.getOffset()));
+        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.atZoneSimilarLocal(ZoneId.of(TEST_2008_6_30_11_30_59_000000500.getOffset()));
         assertEquals(test.matchesCalendrical(cal), true);
     }
 
     public void test_matchesCalendrical_false_date() {
         OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500;
-        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.plusYears(1).atZoneSimilarLocal(TimeZone.of(TEST_2008_6_30_11_30_59_000000500.getOffset()));
+        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.plusYears(1).atZoneSimilarLocal(ZoneId.of(TEST_2008_6_30_11_30_59_000000500.getOffset()));
         assertEquals(test.matchesCalendrical(cal), false);
     }
 
