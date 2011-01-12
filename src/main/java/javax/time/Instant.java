@@ -78,7 +78,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * The UTC-SLS conversion only matters to users of this class with high precision requirements.
  * To keep full track of an instant using an accurate time-scale use the {@link UTCInstant} or
  * {@link TAIInstant} class.
- * For most applications, the behavior where each day has exactly 84000 seconds is the desired one.
+ * For most applications, the behavior where each day has exactly 86400 seconds is the desired one.
  * The UTC-SLS time-scale is also used for all human-scale date-time classes,
  * such as {@code OffsetDateTime} and {@code ZonedDateTime}.
  * <p>
