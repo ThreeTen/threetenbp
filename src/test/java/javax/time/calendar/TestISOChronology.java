@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -110,21 +112,6 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-    public void test_hourOfDayRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.hourOfDayRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.HourOfDay");
-        assertEquals(rule.getName(), "HourOfDay");
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getMaximumValue(), 23);
-        assertEquals(rule.getSmallestMaximumValue(), 23);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
-        serialize(rule);
-    }
-
     public void test_minuteOfHourRule() throws Exception {
         DateTimeFieldRule<Integer> rule = ISOChronology.minuteOfHourRule();
         assertEquals(rule.getReifiedType(), Integer.class);
@@ -213,66 +200,6 @@ public class TestISOChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), ISOChronology.periodMillis());
         assertEquals(rule.getPeriodRange(), ISOChronology.periodSeconds());
-        serialize(rule);
-    }
-
-    public void test_amPmOfDayRule() throws Exception {
-        DateTimeFieldRule<AmPmOfDay> rule = ISOChronology.amPmOfDayRule();
-        assertEquals(rule.getReifiedType(), AmPmOfDay.class);
-        assertEquals(rule.getID(), "ISO.AmPmOfDay");
-        assertEquals(rule.getName(), "AmPmOfDay");
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getMaximumValue(), 1);
-        assertEquals(rule.getSmallestMaximumValue(), 1);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.period12Hours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
-        serialize(rule);
-    }
-
-    public void test_hourOfAmPmRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.hourOfAmPmRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.HourOfAmPm");
-        assertEquals(rule.getName(), "HourOfAmPm");
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getMaximumValue(), 11);
-        assertEquals(rule.getSmallestMaximumValue(), 11);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.period12Hours());
-        serialize(rule);
-    }
-
-    public void test_clockHourOfAmPmRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.clockHourOfAmPmRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.ClockHourOfAmPm");
-        assertEquals(rule.getName(), "ClockHourOfAmPm");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 12);
-        assertEquals(rule.getSmallestMaximumValue(), 12);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.period12Hours());
-        serialize(rule);
-    }
-
-    public void test_clockHourOfDayRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.clockHourOfDayRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.ClockHourOfDay");
-        assertEquals(rule.getName(), "ClockHourOfDay");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 24);
-        assertEquals(rule.getSmallestMaximumValue(), 24);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
         serialize(rule);
     }
 

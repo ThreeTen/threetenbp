@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,10 +43,15 @@ import javax.time.calendar.TestDateAdjusters;
 import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestDateTimeFields;
 import javax.time.calendar.TestDayOfWeek;
+import javax.time.calendar.TestISOAmPmOfDayRule;
 import javax.time.calendar.TestISOChronology;
+import javax.time.calendar.TestISOClockHourOfAmPmRule;
+import javax.time.calendar.TestISOClockHourOfDayRule;
 import javax.time.calendar.TestISODayOfMonthRule;
 import javax.time.calendar.TestISODayOfWeekRule;
 import javax.time.calendar.TestISODayOfYearRule;
+import javax.time.calendar.TestISOHourOfAmPmRule;
+import javax.time.calendar.TestISOHourOfDayRule;
 import javax.time.calendar.TestISOMonthOfQuarterRule;
 import javax.time.calendar.TestISOMonthOfYearRule;
 import javax.time.calendar.TestISOQuarterOfYearRule;
@@ -70,9 +75,9 @@ import javax.time.calendar.TestPeriodFields;
 import javax.time.calendar.TestPeriodParser;
 import javax.time.calendar.TestPeriodUnit;
 import javax.time.calendar.TestQuarterOfYear;
-import javax.time.calendar.TestZoneId;
 import javax.time.calendar.TestYear;
 import javax.time.calendar.TestYearMonth;
+import javax.time.calendar.TestZoneId;
 import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.TestZoneResolvers;
 import javax.time.calendar.TestZonedDateTime;
@@ -94,9 +99,9 @@ import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
 import javax.time.calendar.format.TestTextParser;
 import javax.time.calendar.format.TestTextPrinter;
+import javax.time.calendar.format.TestZoneIdParser;
 import javax.time.calendar.format.TestZoneOffsetParser;
 import javax.time.calendar.format.TestZoneOffsetPrinter;
-import javax.time.calendar.format.TestZoneIdParser;
 import javax.time.calendar.i18n.TestCopticChronology;
 import javax.time.calendar.i18n.TestCopticDate;
 import javax.time.calendar.i18n.TestInterCalendarSystem;
@@ -146,10 +151,15 @@ public class AllTest {
             TestDateResolvers.class,
             TestDateTimeFields.class,
             TestDayOfWeek.class,
+            TestISOAmPmOfDayRule.class,
             TestISOChronology.class,
+            TestISOClockHourOfAmPmRule.class,
+            TestISOClockHourOfDayRule.class,
             TestISODayOfMonthRule.class,
             TestISODayOfWeekRule.class,
             TestISODayOfYearRule.class,
+            TestISOHourOfAmPmRule.class,
+            TestISOHourOfDayRule.class,
             TestISOMonthOfQuarterRule.class,
             TestISOMonthOfYearRule.class,
             TestISOQuarterOfYearRule.class,

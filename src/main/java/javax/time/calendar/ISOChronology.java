@@ -1585,7 +1585,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 }
                 case CLOCK_HOUR_OF_AMPM_ORDINAL: {
                     Integer hourVal = calendrical.get(hourOfAmPmRule());
-                    return hourVal != null ? (hourVal + 12) % 13 : null;
+                    return hourVal != null ? ((hourVal + 11) % 12) + 1 : null;
                 }
                 case HOUR_OF_AMPM_ORDINAL: {
                     Integer hourVal = calendrical.get(hourOfDayRule());
@@ -1593,7 +1593,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 }
                 case CLOCK_HOUR_OF_DAY_ORDINAL: {
                     Integer hourVal = calendrical.get(hourOfDayRule());
-                    return hourVal != null ? (hourVal + 24) % 25 : null;
+                    return hourVal != null ? ((hourVal + 23) % 24) + 1 : null;
                 }
                 case HOUR_OF_DAY_ORDINAL: {
                     LocalTime time = calendrical.get(LocalTime.rule());
