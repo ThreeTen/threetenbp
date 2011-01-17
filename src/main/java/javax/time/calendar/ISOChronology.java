@@ -1678,7 +1678,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return super.getMaximumValue();
         }
         @Override
-        public int compareTo(CalendricalRule<Integer> other) {
+        public int compareTo(CalendricalRule<?> other) {
             if (other instanceof Rule) {
                 return ordinal - ((Rule) other).ordinal;
             }

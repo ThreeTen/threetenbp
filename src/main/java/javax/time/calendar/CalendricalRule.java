@@ -59,7 +59,7 @@ import javax.time.CalendricalException;
  *  {@code Number} or {@code Enum}, must be immutable, should be comparable
  */
 public abstract class CalendricalRule<T>
-        implements Comparable<CalendricalRule<T>>, Comparator<Calendrical>, Serializable {
+        implements Comparable<CalendricalRule<?>>, Comparator<Calendrical>, Serializable {
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
@@ -480,7 +480,7 @@ public abstract class CalendricalRule<T>
      * @return the comparator result, negative if less, positive if greater, zero if equal
      * @throws NullPointerException if other is null
      */
-    public int compareTo(CalendricalRule<T> other) {
+    public int compareTo(CalendricalRule<?> other) {
         if (this.getPeriodUnit() == null) {
             if (other.getPeriodUnit() == null) {
                 return getID().compareTo(other.getID());
