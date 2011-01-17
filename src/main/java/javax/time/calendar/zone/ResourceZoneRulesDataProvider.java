@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,14 +51,14 @@ import javax.time.CalendricalException;
 /**
  * Loads time-zone rules stored in a file accessed via class loader.
  * <p>
- * ResourceZoneRulesDataProvider is thread-safe and immutable.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
 final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
 
     /**
-     * The group ID.
+     * The time-zone group ID.
      */
     private final String groupID;
     /**
@@ -193,6 +193,7 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
     //-------------------------------------------------------------------------
     /**
      * Loads the rule.
+     * 
      * @param index  the index to retrieve
      * @return the rules, should not be null
      */

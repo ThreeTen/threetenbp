@@ -56,7 +56,7 @@ import javax.time.calendar.ZonedDateTime;
  * of rules. It does not store the group, region or version as they are not
  * part of the state of this object.
  * <p>
- * ZoneRules is an abstract class and must be implemented with care
+ * This class is an abstract base and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  * It is only intended that the abstract methods are overridden.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -50,7 +50,7 @@ import javax.time.calendar.ZoneOffset;
  * method to handle the gap and overlap. Alternatively use one of the general
  * methods {@link #getEstimatedOffset()} or {@link #isValidOffset(ZoneOffset)}.
  * <p>
- * OffsetInfo is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

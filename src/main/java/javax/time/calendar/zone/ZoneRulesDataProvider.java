@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,8 +49,8 @@ import java.util.Set;
  * {@link ZoneRulesGroup#registerProvider(ZoneRulesDataProvider)} using a standard
  * immutable provider implementation.
  * <p>
- * ZoneRulesDataProvider is a service provider interface that can be called
- * by multiple threads. Implementations must be immutable and thread-safe.
+ * This interface is a service provider that can be called by multiple threads.
+ * Implementations must be immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -61,9 +61,9 @@ import javax.time.calendar.ZoneOffset;
  * <li>Rules - A set of one or more rules describe how daylight savings changes during the window.</li>
  * </ul>
  * <p>
- * TransitionRulesBuilder is a mutable class used to create instances of TimeZone.
+ * This class is a mutable builder used to create instances of TimeZone.
  * It must only be used from a single thread.
- * The created TimeZone instances are immutable and thread-safe.
+ * The created instances are immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,7 +51,7 @@ import javax.time.calendar.ZoneOffset;
 /**
  * The rules describing how the zone offset varies through the year and historically.
  * <p>
- * ZoneRules is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -100,7 +100,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
                 new ConcurrentHashMap<Year, ZoneOffsetTransition[]>();
 
     /**
-     * Constructor.
+     * Creates an instance.
      *
      * @param baseStandardOffset  the standard offset to use before legal rules were set, not null
      * @param baseWallOffset  the wall offset to use before legal rules were set, not null
@@ -208,6 +208,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     /**
      * Writes the state to the stream.
+     *
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
@@ -234,6 +235,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     /**
      * Reads the state from the stream.
+     *
      * @param in  the input stream, not null
      * @return the created object, never null
      * @throws IOException if an error occurs
