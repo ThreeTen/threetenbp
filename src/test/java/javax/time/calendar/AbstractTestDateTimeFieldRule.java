@@ -121,7 +121,7 @@ public abstract class AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     // convertValueToInt(T)
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void test_convertValueToInt() {
         DateTimeFieldRule rule = rule();
         assertEquals(rule.convertValueToInt(1), 1);
@@ -131,7 +131,7 @@ public abstract class AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     // convertIntToValue(int)
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void test_convertIntToValue() {
         DateTimeFieldRule rule = rule();
         assertEquals(rule.convertIntToValue(1), 1);
