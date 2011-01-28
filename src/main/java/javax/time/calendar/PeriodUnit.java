@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,8 +48,7 @@ import javax.time.Duration;
  * <p>
  * Units are either basic or derived. A derived unit can be converted accurately to
  * another smaller unit. A basic unit is fundamental, and has no smaller representation.
- * For example years are a derived unit consisting of 12 months, where a month is
- * a basic unit.
+ * For example years are a derived unit consisting of 12 months, where a month is a basic unit.
  * <p>
  * PeriodUnit is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
