@@ -946,7 +946,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 merger.removeProcessed(ISOChronology.amPmOfDayRule());
                 merger.removeProcessed(ISOChronology.hourOfAmPmRule());
             }
-            Integer chapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
+            Integer chapVal = merger.getValue(ISOChronology.clockHourOfAmPmRule());
             if (chapVal != null) {
                 int hourOfDay = amPm.getValue() * 12 + chapVal;
                 if (hourOfDay == 24) {
