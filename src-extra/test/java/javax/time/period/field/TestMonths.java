@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -42,7 +42,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodFields;
 import javax.time.calendar.PeriodUnit;
 
@@ -168,7 +168,7 @@ public class TestMonths {
     public void test_getUnit() {
         PeriodUnit unit = Months.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, ISOChronology.periodMonths());
+        assertEquals(unit, ISOPeriodUnit.MONTHS);
     }
 
     //-----------------------------------------------------------------------
@@ -328,7 +328,7 @@ public class TestMonths {
     //-----------------------------------------------------------------------
     public void test_toPeriodFields() {
         Months test5 = Months.of(5);
-        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, ISOChronology.periodMonths()));
+        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, ISOPeriodUnit.MONTHS));
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -68,8 +68,8 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(), 31);
         assertEquals(rule.getSmallestMaximumValue(), 28);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodDays());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodMonths());
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.MONTHS);
     }
 
     //-----------------------------------------------------------------------

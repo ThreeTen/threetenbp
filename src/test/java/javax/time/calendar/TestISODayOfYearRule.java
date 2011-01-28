@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -66,8 +66,8 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(), 366);
         assertEquals(rule.getSmallestMaximumValue(), 365);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodDays());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodYears());
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------

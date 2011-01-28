@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -40,6 +40,7 @@ import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
@@ -289,7 +290,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return the period unit for years, never null
      */
     public static PeriodUnit periodEras() {
-        return ISOChronology.periodEras();
+        return ISOPeriodUnit.ERAS;
     }
 
     /**
@@ -330,7 +331,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return the period unit for weeks, never null
      */
     public static PeriodUnit periodWeeks() {
-        return ISOChronology.periodWeeks();
+        return ISOPeriodUnit.WEEKS;
     }
 
     /**
@@ -344,7 +345,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return the period unit for days, never null
      */
     public static PeriodUnit periodDays() {
-        return ISOChronology.periodDays();
+        return ISOPeriodUnit.DAYS;
     }
 
     //-----------------------------------------------------------------------

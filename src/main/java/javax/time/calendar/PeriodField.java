@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -398,11 +398,11 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
-        PeriodField equivalent = unit.getEquivalentPeriod(ISOChronology.periodSeconds());
+        PeriodField equivalent = unit.getEquivalentPeriod(ISOPeriodUnit.SECONDS);
         if (equivalent != null) {
             return equivalent.multipliedBy(amount).toEstimatedDuration();
         }
-        equivalent = unit.getEquivalentPeriod(ISOChronology.periodNanos());
+        equivalent = unit.getEquivalentPeriod(ISOPeriodUnit.NANOS);
         if (equivalent != null) {
             return equivalent.multipliedBy(amount).toEstimatedDuration();
         }

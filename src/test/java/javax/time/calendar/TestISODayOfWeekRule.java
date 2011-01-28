@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -69,8 +69,8 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(new MockSimpleCalendrical()), 7);
         assertEquals(rule.getSmallestMaximumValue(), 7);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodDays());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodWeeks());
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.WEEKS);
     }
 
     //-----------------------------------------------------------------------

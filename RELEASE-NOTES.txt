@@ -48,6 +48,7 @@
 - Rename TimeZone to ZoneId (avoids annoying clash with JDK)
 - Fix clock hour of day and of am-pm
 - Fix/Weaken contract of CalendricalRule comparator
+- Change period units to be standalone class for ISO
 
 0.6.3
 ===============================================================================

@@ -67,10 +67,10 @@ import org.testng.annotations.Test;
 @Test
 public class TestYearMonth {
 
-    private static final PeriodUnit DECADES = ISOChronology.periodDecades();
-    private static final PeriodUnit YEARS = ISOChronology.periodYears();
-    private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
-    private static final PeriodUnit DAYS = ISOChronology.periodDays();
+    private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
+    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
+    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
+    private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
     private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
     private static final DateTimeFieldRule<MonthOfYear> RULE_MONTH = ISOChronology.monthOfYearRule();
     private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();

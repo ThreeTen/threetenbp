@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,7 +39,7 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.PeriodUnit;
 
@@ -263,7 +263,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      * @return the period unit for weeks, never null
      */
     public static PeriodUnit periodWeeks() {
-        return ISOChronology.periodWeeks();
+        return ISOPeriodUnit.WEEKS;
     }
 
     /**
@@ -277,7 +277,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      * @return the period unit for days, never null
      */
     public static PeriodUnit periodDays() {
-        return ISOChronology.periodDays();
+        return ISOPeriodUnit.DAYS;
     }
 
     //-----------------------------------------------------------------------

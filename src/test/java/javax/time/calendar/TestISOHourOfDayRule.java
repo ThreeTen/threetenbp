@@ -65,8 +65,8 @@ public class TestISOHourOfDayRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(), 23);
         assertEquals(rule.getSmallestMaximumValue(), 23);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
     }
 
     public void test_values() throws Exception {

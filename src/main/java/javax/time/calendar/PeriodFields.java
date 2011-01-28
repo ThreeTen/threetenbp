@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -216,8 +216,8 @@ public final class PeriodFields
     public static PeriodFields of(Duration duration) {
         checkNotNull(duration, "Duration must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
-        internalMap.put(ISOChronology.periodSeconds(), PeriodField.of(duration.getSeconds(), ISOChronology.periodSeconds()));
-        internalMap.put(ISOChronology.periodNanos(), PeriodField.of(duration.getNanoOfSecond(), ISOChronology.periodNanos()));
+        internalMap.put(ISOPeriodUnit.SECONDS, PeriodField.of(duration.getSeconds(), ISOPeriodUnit.SECONDS));
+        internalMap.put(ISOPeriodUnit.NANOS, PeriodField.of(duration.getNanoOfSecond(), ISOPeriodUnit.NANOS));
         return create(internalMap);
     }
 
@@ -972,8 +972,8 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
-        PeriodFields period = toEquivalent(ISOChronology.periodSeconds(), ISOChronology.periodNanos());
-        return Duration.ofSeconds(period.getAmount(ISOChronology.periodSeconds()), period.getAmount(ISOChronology.periodNanos()));
+        PeriodFields period = toEquivalent(ISOPeriodUnit.SECONDS, ISOPeriodUnit.NANOS);
+        return Duration.ofSeconds(period.getAmount(ISOPeriodUnit.SECONDS), period.getAmount(ISOPeriodUnit.NANOS));
     }
 
     //-----------------------------------------------------------------------

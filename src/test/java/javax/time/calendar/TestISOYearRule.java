@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -69,7 +69,7 @@ public class TestISOYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(new MockSimpleCalendrical()), Year.MAX_YEAR);
         assertEquals(rule.getSmallestMaximumValue(), Year.MAX_YEAR);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodYears());
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.YEARS);
         assertEquals(rule.getPeriodRange(), null);
     }
 
