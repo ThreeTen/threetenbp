@@ -389,7 +389,6 @@ public final class PeriodFields
      *
      * @param unit  the unit to query, not null
      * @return the period amount, 0 if no period stored for the unit
-     * @throws CalendricalException if there is no amount for the unit
      */
     public long getAmount(PeriodUnit unit) {
         PeriodField field = get(unit);
@@ -408,7 +407,6 @@ public final class PeriodFields
      *
      * @param unit  the unit to query, not null
      * @return the period amount, 0 if no period stored for the unit
-     * @throws CalendricalException if there is no amount for the unit
      * @throws ArithmeticException if the amount is too large to be returned in an int
      */
     public int getAmountInt(PeriodUnit unit) {
