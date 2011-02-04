@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
+        implements Calendrical, Calendrical2, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -74,6 +74,68 @@ public final class OffsetDate
      * The zone offset.
      */
     private final ZoneOffset offset;
+
+    /**
+     * Obtains an instance of {@code OffsetDate} from a calendrical.
+     * <p>
+     * This can be used extract the date directly from any implementation
+     * of {@code Calendrical}, including those in other calendar systems.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the date, never null
+     * @throws CalendricalException if the date cannot be obtained
+     */
+    public static OffsetDate of(Calendrical2 calendrical) {
+        OffsetDate date = ofCalendrical(calendrical);
+        if (date == null) {
+            throw new CalendricalException("Unable to create OffsetDate from Calendrical: " + calendrical);
+        }
+        return date;
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDate} from a calendrical returning null if unable to create.
+     * <p>
+     * This factory exists to avoid the exception thrown by {@link #of(Calendrical)} by returning null.
+     * It is primarily intended for low-level use.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the date, null if the date cannot be obtained
+     */
+    public static OffsetDate ofCalendrical(Calendrical2 calendrical) {
+        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
+        if (calendrical instanceof OffsetDate) {
+            return (OffsetDate) calendrical;
+        }
+//        LocalDate date = LocalDate.of(calendrical);
+//        ZoneOffset offset = ZoneOffset.of(calendrical);
+//        if (date != null && offset != null) {
+//            return of(date, offset);
+//        }
+        return null;
+    }
+
+    /**
+     * Extracts the value of a calendrical concept.
+     * <p>
+     * This is a low-level method used to unify the API between different calendricals.
+     * Applications should use factory methods taking a {@code Calendrical}.
+     *
+     * @param concept  the concept to extract, not null
+     * @return the extracted value, null if the value cannot be returned
+     */
+    public Object extractCalendrical(CalendricalConcept concept) {
+        switch (concept) {
+            case LOCAL_CALENDRICAL:
+            case LOCAL_DATE:
+                return date;
+            case ZONE_OFFSET:
+                return offset;
+            case CHRONOLOGY:
+                return getChronology();
+        }
+        return null;
+    }
 
     //-----------------------------------------------------------------------
     /**

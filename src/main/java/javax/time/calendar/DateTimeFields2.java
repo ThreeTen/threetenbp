@@ -135,6 +135,22 @@ public final class DateTimeFields2
     }
 
     /**
+     * Obtains a {@code DateTimeFields} from an array of fields.
+     * <p>
+     * Each field represents a phrase like 'MonthOfYear 12'.
+     * ,p>
+     * The array must provide fields with no duplicate rules.
+     *
+     * @param fieldsIterable  the iterable providing fields
+     * @return the date-time fields, never null
+     * @throws IllegalArgumentException if any rule is duplicated
+     */
+    public static DateTimeFields2 of(DateTimeField... fields) {
+        ISOChronology.checkNotNull(fields, "Array must not be null");
+        return of(Arrays.asList(fields));
+    }
+
+    /**
      * Obtains a {@code DateTimeFields} from a collection of fields.
      * <p>
      * Each field represents a phrase like 'MonthOfYear 12'.
@@ -148,15 +164,16 @@ public final class DateTimeFields2
     public static DateTimeFields2 of(Iterable<DateTimeField> fieldsIterable) {
         ISOChronology.checkNotNull(fieldsIterable, "Iterable must not be null");
         Set<DateTimeRule> rules = new HashSet<DateTimeRule>();
-        List<DateTimeField> fields = new ArrayList<DateTimeField>();
+        List<DateTimeField> created = new ArrayList<DateTimeField>();
         for (DateTimeField field : fieldsIterable) {
+            ISOChronology.checkNotNull(field, "DateTimeField must not be null");
             if (rules.add(field.getRule()) == false) {
                 throw new IllegalArgumentException("Duplicate rules are not allowed");
             }
-            fields.add(field);
+            created.add(field);
         }
-        Collections.sort(fields, Collections.reverseOrder());
-        return new DateTimeFields2(fields);
+        Collections.sort(created, Collections.reverseOrder());
+        return new DateTimeFields2(created);
     }
 
     //-----------------------------------------------------------------------

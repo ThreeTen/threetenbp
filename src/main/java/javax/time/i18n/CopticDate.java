@@ -36,12 +36,18 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.Calendrical2;
+import javax.time.calendar.CalendricalConcept;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeField;
+import javax.time.calendar.DateTimeFields2;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
+import javax.time.calendar.LocalCalendrical2;
 import javax.time.calendar.LocalDate;
 
 /**
@@ -59,7 +65,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class CopticDate
-        implements DateProvider, Calendrical, Comparable<CopticDate>, Serializable {
+        implements DateProvider, Calendrical, Calendrical2, LocalCalendrical2, Comparable<CopticDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -107,6 +113,97 @@ public final class CopticDate
      * The Coptic day.
      */
     private final transient int day;
+
+    /**
+     * Obtains an instance of {@code CopticDate} from a calendrical.
+     * <p>
+     * This can be used extract the date directly from any implementation
+     * of {@code Calendrical}, including those in other calendar systems.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the date, never null
+     * @throws CalendricalException if the date cannot be obtained
+     */
+    public static CopticDate of(Calendrical2 calendrical) {
+        CopticDate date = ofCalendrical(calendrical);
+        if (date == null) {
+            throw new CalendricalException("Unable to create LocalDate from Calendrical: " + calendrical);
+        }
+        return date;
+    }
+
+    /**
+     * Obtains an instance of {@code CopticDate} from a calendrical returning null if unable to create.
+     * <p>
+     * This factory exists to avoid the exception thrown by {@link #of(Calendrical)} by returning null.
+     * It is primarily intended for low-level use.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the date, null if the date cannot be obtained
+     */
+    public static CopticDate ofCalendrical(Calendrical2 calendrical) {
+//        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
+        if (calendrical instanceof CopticDate) {
+            return (CopticDate) calendrical;
+        }
+        LocalDate ld = LocalDate.of(calendrical);
+        if (ld != null) {
+            long epochDays = ld.toModifiedJulianDays() + MJD_TO_COPTIC;
+            return copticDateFromEpochDays((int) epochDays);
+        }
+        LocalCalendrical2 lcal = (LocalCalendrical2) calendrical.extractCalendrical(CalendricalConcept.LOCAL_CALENDRICAL);
+        if (lcal != null) {
+            DateTimeField cyearField = lcal.extractLocalField(null);
+            DateTimeField cmoyField = lcal.extractLocalField(null);
+            DateTimeField cdomField = lcal.extractLocalField(null);
+            if (cyearField != null && cmoyField != null && cdomField != null) {
+                return of(cyearField.getValidIntValue(), cmoyField.getValidIntValue(), cdomField.getValidIntValue());
+            }
+        }
+//        DateTimeFields2 dtf = (DateTimeFields2) calendrical.extractCalendrical(CalendricalConcept.DATE_TIME_FIELDS);
+//        if (dtf != null) {
+//            int cyear = dtf.getValidIntValue(null);
+//            int cmoy = dtf.getValidIntValue(null);
+//            int cdom = dtf.getValidIntValue(null);
+//            return of(cyear, cmoy, cdom);
+//        }
+        return null;
+    }
+
+    /**
+     * Extracts the value of a calendrical concept.
+     * <p>
+     * This is a low-level method used to unify the API between different calendricals.
+     * Applications should use factory methods taking a {@code Calendrical}.
+     *
+     * @param concept  the concept to extract, not null
+     * @return the extracted value, null if the value cannot be returned
+     */
+    public Object extractCalendrical(CalendricalConcept concept) {
+        switch (concept) {
+            case LOCAL_CALENDRICAL:
+            case LOCAL_DATE:
+                return toLocalDate();
+            case CHRONOLOGY:
+                return getChronology();
+        }
+        return null;
+    }
+
+    @Override
+    public DateTimeField extractLocalField(DateTimeRule rule) {
+//        if (rule == null) {
+//            return DateTimeField.of(null, month.getValue());
+//        }
+//        if (rule == null) {
+//            return DateTimeField.of(null, day);
+//        }
+        return null;
+    }
+
+    public DateTimeFields2 toDateTimeFields() {
+        return DateTimeFields2.of(DateTimeField.of(null, year), DateTimeField.of(null, month), DateTimeField.of(null, day));
+    }
 
     //-----------------------------------------------------------------------
     /**
