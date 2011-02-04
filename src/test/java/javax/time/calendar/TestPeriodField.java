@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -57,13 +57,13 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodField {
 
-    private static final PeriodUnit YEARS = ISOChronology.periodYears();
-    private static final PeriodUnit QUARTERS = ISOChronology.periodQuarters();
-    private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
-    private static final PeriodUnit DAYS = ISOChronology.periodDays();
-    private static final PeriodUnit HOURS = ISOChronology.periodHours();
-    private static final PeriodUnit MINUTES = ISOChronology.periodMinutes();
-    private static final PeriodUnit SECONDS = ISOChronology.periodSeconds();
+    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
+    private static final PeriodUnit QUARTERS = ISOPeriodUnit.QUARTERS;
+    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
+    private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
+    private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
+    private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
+    private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
@@ -530,7 +530,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     public void test_toEstimatedDuration() {
         Duration test = PeriodField.of(5, DAYS).toEstimatedDuration();
-        Duration fiveDays = ISOChronology.periodDays().getEstimatedDuration().multipliedBy(5);
+        Duration fiveDays = ISOPeriodUnit.DAYS.getEstimatedDuration().multipliedBy(5);
         assertEquals(test, fiveDays);
     }
 
@@ -544,7 +544,7 @@ public class TestPeriodField {
     }
 
     public void test_toDuration_millis() {
-        Duration test = PeriodField.of(5, ISOChronology.periodMillis()).toDuration();
+        Duration test = PeriodField.of(5, ISOPeriodUnit.MILLIS).toDuration();
         Duration fiveMillis = Duration.ofMillis(5);
         assertEquals(test, fiveMillis);
     }

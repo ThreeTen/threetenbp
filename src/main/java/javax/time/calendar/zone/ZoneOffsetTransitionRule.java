@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -60,7 +60,7 @@ import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
  * </ul>
  * These different rule types can be expressed and queried.
  * <p>
- * ZoneOffsetTransitionRule is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -209,6 +209,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
 
     /**
      * Writes the state to the stream.
+     *
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
@@ -247,6 +248,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
 
     /**
      * Reads the state from the stream.
+     *
      * @param in  the input stream, not null
      * @return the created object, never null
      * @throws IOException if an error occurs

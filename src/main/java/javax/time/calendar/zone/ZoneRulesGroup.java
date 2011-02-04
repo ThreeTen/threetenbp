@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -63,7 +63,7 @@ import javax.time.calendar.OffsetDateTime;
  * Each group will provide versioned sets of data for a number of geographical regions.
  * Instances of {@code ZoneRulesGroup} manage the data via region and version IDs.
  * <p>
- * ZoneRulesGroup is thread-safe and immutable.
+ * This class is thread-safe and immutable.
  * <p>
  * Rules may be registered at any time during the life of the application.
  * No rules may be removed however, thus any rules obtained will remain valid.

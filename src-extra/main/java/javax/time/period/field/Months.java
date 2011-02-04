@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,7 +33,7 @@ package javax.time.period.field;
 
 import java.io.Serializable;
 
-import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -131,7 +131,7 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
      */
     @Override
     public PeriodUnit getUnit() {
-        return ISOChronology.periodMonths();
+        return ISOPeriodUnit.MONTHS;
     }
 
     //-----------------------------------------------------------------------

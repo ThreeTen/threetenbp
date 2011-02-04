@@ -13,6 +13,7 @@ import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.Year;
@@ -23,7 +24,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * {@code ThaiBuddhistChronology} defines the rules of the Thai Buddhist calendar system.
  * <p>
- * The Minguo calendar system is the same as the ISO calendar system apart from the year.
+ * The Thai Buddhist calendar system is the same as the ISO calendar system apart from the year.
  * <p>
  * ThaiBuddhistChronology is immutable and thread-safe.
  *
@@ -195,7 +196,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * @return the period unit for eras, never null
      */
     public static PeriodUnit periodEras() {
-        return ISOChronology.periodEras();
+        return ISOPeriodUnit.ERAS;
     }
 
     /**
@@ -209,7 +210,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * @return the period unit for years, never null
      */
     public static PeriodUnit periodYears() {
-        return ISOChronology.periodYears();
+        return ISOPeriodUnit.YEARS;
     }
 
     /**
@@ -223,7 +224,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * @return the period unit for months, never null
      */
     public static PeriodUnit periodMonths() {
-        return ISOChronology.periodMonths();
+        return ISOPeriodUnit.MONTHS;
     }
 
     /**
@@ -235,7 +236,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * @return the period unit for weeks, never null
      */
     public static PeriodUnit periodWeeks() {
-        return ISOChronology.periodWeeks();
+        return ISOPeriodUnit.WEEKS;
     }
 
     /**
@@ -249,7 +250,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * @return the period unit for days, never null
      */
     public static PeriodUnit periodDays() {
-        return ISOChronology.periodDays();
+        return ISOPeriodUnit.DAYS;
     }
 
     //-----------------------------------------------------------------------

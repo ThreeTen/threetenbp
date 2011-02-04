@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,64 +36,63 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
- * Test ISO WeekOfYear rule.
+ * Test ISO HourOfDay rule.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
+public class TestISOHourOfDayRule extends AbstractTestDateTimeFieldRule {
 
-    public TestISOWeekOfYearRule() {
-        super(LocalDate.of(2009, 12, 26), 52, 52);
+    public TestISOHourOfDayRule() {
+        super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), 13, 13);
     }
 
     @Override
     protected DateTimeFieldRule<Integer> rule() {
-        return ISOChronology.weekOfYearRule();
+        return ISOChronology.hourOfDayRule();
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfYearRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.hourOfDayRule();
         assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.WeekOfYear");
-        assertEquals(rule.getName(), "WeekOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 53);
-        assertEquals(rule.getMaximumValue(LocalDate.of(2007, 6, 20)), 53);
-        assertEquals(rule.getSmallestMaximumValue(), 53);
+        assertEquals(rule.getID(), "ISO.HourOfDay");
+        assertEquals(rule.getName(), "HourOfDay");
+        assertEquals(rule.getMinimumValue(), 0);
+        assertEquals(rule.getLargestMinimumValue(), 0);
+        assertEquals(rule.getMaximumValue(), 23);
+        assertEquals(rule.getSmallestMaximumValue(), 23);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
+    }
+
+    public void test_values() throws Exception {
+        LocalDateTime dt = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
+        for (int i = 0; i < 24; i++) {
+            dt = dt.withHourOfDay(i);
+            assertEquals((int) dt.get(rule()), i);
+        }
     }
 
     //-----------------------------------------------------------------------
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_getValue_Calendrical_date_nonLeap() {
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        for (int i = 0; i < 365; i++) {
-            int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
-            date = date.plusDays(1);
-        }
-    }
-
-    public void test_getValue_Calendrical_date_leap() {
-        LocalDate date = LocalDate.of(2008, 1, 1);
-        for (int i = 0; i < 366; i++) {
-            int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
-            date = date.plusDays(1);
-        }
+    public void test_getValue_Calendrical_time() {
+        Calendrical cal = LocalTime.of(13, 30, 40, 50);
+        assertEquals(rule().getValue(cal), (Integer) 13);
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), (Integer) 3);
+        Calendrical cal = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
+        assertEquals(rule().getValue(cal), (Integer) 13);
+    }
+
+    public void test_getValue_Calendrical_dateTimeFields() {
+        Calendrical cal = DateTimeFields.of(rule(), 11);
+        assertEquals(rule().getValue(cal), (Integer) 11);
     }
 
 }

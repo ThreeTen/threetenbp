@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,7 +47,7 @@ public final class MockCenturyFieldRule extends DateTimeFieldRule<Integer> imple
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockCenturyFieldRule() {
-        super(Integer.class, ISOChronology.INSTANCE, "Century", ISOChronology.periodCenturies(), null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
+        super(Integer.class, ISOChronology.INSTANCE, "Century", ISOPeriodUnit.CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
     }
     private Object readResolve() {
         return INSTANCE;

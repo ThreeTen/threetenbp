@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -56,7 +56,7 @@ import javax.time.calendar.ZoneOffset;
  * An example would be when the offset changes from {@code +02:00} to {@code +01:00}.
  * This might be described as 'the clocks will move back one hour tonight at 2am'.
  * <p>
- * ZoneOffsetTransition is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

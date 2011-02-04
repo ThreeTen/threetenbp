@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -67,8 +67,8 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRul
         assertEquals(rule.getMaximumValue(), 53);
         assertEquals(rule.getSmallestMaximumValue(), 52);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodWeeks());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodWeekBasedYears());
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.WEEK_BASED_YEARS);
     }
 
     //-----------------------------------------------------------------------

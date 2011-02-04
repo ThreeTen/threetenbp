@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,11 +37,11 @@ import java.util.Set;
  * A version of time-zone rules from a single group.
  * <p>
  * Zone rule data is provided by organizations or groups.
- * Each group provides multiple versions of their data over time.
+ * Each group typically provides multiple versions of their data over time.
  * This interface models one version of data.
  * <p>
- * ZoneRulesVersion is a service provider interface that can be called
- * by multiple threads. Implementations must be immutable and thread-safe.
+ * This interface is a service provider that can be called by multiple threads.
+ * Implementations must be immutable and thread-safe.
  * <p>
  * Implementations are responsible for caching.
  *

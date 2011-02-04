@@ -1259,7 +1259,7 @@ public final class OffsetDate
         private static final CalendricalRule<OffsetDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(OffsetDate.class, ISOChronology.INSTANCE, "OffsetDate", ISOChronology.periodDays(), null);
+            super(OffsetDate.class, ISOChronology.INSTANCE, "OffsetDate", ISOPeriodUnit.DAYS, null);
         }
         private Object readResolve() {
             return INSTANCE;

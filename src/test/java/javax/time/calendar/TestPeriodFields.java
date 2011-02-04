@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -66,17 +66,17 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodFields {
 
-    private static final PeriodUnit DECADES = ISOChronology.periodDecades();
-    private static final PeriodUnit YEARS = ISOChronology.periodYears();
-    private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
-    private static final PeriodUnit DAYS = ISOChronology.periodDays();
-    private static final PeriodUnit HOURS24 = ISOChronology.period24Hours();
-    private static final PeriodUnit HOURS = ISOChronology.periodHours();
-    private static final PeriodUnit MINUTES = ISOChronology.periodMinutes();
-    private static final PeriodUnit SECONDS = ISOChronology.periodSeconds();
-    private static final PeriodUnit MILLIS = ISOChronology.periodMillis();
-    private static final PeriodUnit MICROS = ISOChronology.periodMicros();
-    private static final PeriodUnit NANOS = ISOChronology.periodNanos();
+    private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
+    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
+    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
+    private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
+    private static final PeriodUnit HOURS24 = ISOPeriodUnit._24_HOURS;
+    private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
+    private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
+    private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
+    private static final PeriodUnit MILLIS = ISOPeriodUnit.MILLIS;
+    private static final PeriodUnit MICROS = ISOPeriodUnit.MICROS;
+    private static final PeriodUnit NANOS = ISOPeriodUnit.NANOS;
 
     private PeriodFields fixtureP2Y5D;
     private PeriodFields fixtureZeroYears;
@@ -1255,8 +1255,8 @@ public class TestPeriodFields {
     //-----------------------------------------------------------------------
     public void test_toEstimatedDuration() {
         Duration test = fixtureP2Y5D.toEstimatedDuration();
-        Duration twoYears = ISOChronology.periodYears().getEstimatedDuration().multipliedBy(2);
-        Duration fiveDays = ISOChronology.periodDays().getEstimatedDuration().multipliedBy(5);
+        Duration twoYears = ISOPeriodUnit.YEARS.getEstimatedDuration().multipliedBy(2);
+        Duration fiveDays = ISOPeriodUnit.DAYS.getEstimatedDuration().multipliedBy(5);
         assertEquals(test, twoYears.plus(fiveDays));
     }
 
@@ -1270,7 +1270,7 @@ public class TestPeriodFields {
     }
 
     public void test_toDuration_millis() {
-        Duration test = PeriodFields.of(5, ISOChronology.periodMillis()).toDuration();
+        Duration test = PeriodFields.of(5, ISOPeriodUnit.MILLIS).toDuration();
         Duration fiveMillis = Duration.ofMillis(5);
         assertEquals(test, fiveMillis);
     }

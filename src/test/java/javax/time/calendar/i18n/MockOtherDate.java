@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,6 +37,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.LocalDate;
 
 /**
@@ -124,7 +125,7 @@ public final class MockOtherDate
         private static final CalendricalRule<MockOtherDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MockOtherDate.class, ISOChronology.INSTANCE, "MockOtherDate", ISOChronology.periodDays(), null);
+            super(MockOtherDate.class, ISOChronology.INSTANCE, "MockOtherDate", ISOPeriodUnit.DAYS, null);
         }
         private Object readResolve() {
             return INSTANCE;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,6 +44,11 @@ import javax.time.calendar.ZoneOffset;
 
 /**
  * Implementation of zone rules for fixed offsets.
+ * <p>
+ * This class allows an offset, normally represented by {@link ZoneOffset}, to be
+ * represented as a time-zone.
+ * <p>
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -59,7 +64,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     private final ZoneOffset offset;
 
     /**
-     * Constructor.
+     * Creates an instance wrapping the offset.
      *
      * @param offset  the zone offset, not null
      */
@@ -80,6 +85,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
 
     /**
      * Writes the state to the stream.
+     *
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
@@ -89,6 +95,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
 
     /**
      * Reads the state from the stream.
+     *
      * @param in  the input stream, not null
      * @return the created object, never null
      * @throws IOException if an error occurs
@@ -175,7 +182,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
      */
     @Override
     public int hashCode() {
-        return offset.hashCode();
+        return offset.hashCode() + 1;
     }
 
     //-----------------------------------------------------------------------

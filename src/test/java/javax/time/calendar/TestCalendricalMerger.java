@@ -55,6 +55,7 @@ public class TestCalendricalMerger {
 //    private static final DateTimeFieldRule<Integer> HOUR_RULE = ISOChronology.hourOfDayRule();
     private static final DateTimeFieldRule<AmPmOfDay> AMPM_RULE = ISOChronology.amPmOfDayRule();
     private static final DateTimeFieldRule<Integer> HOUR_AMPM_RULE = ISOChronology.hourOfAmPmRule();
+    private static final DateTimeFieldRule<Integer> CLOCKHOUR_AMPM_RULE = ISOChronology.clockHourOfAmPmRule();
 //    private static final DateTimeFieldRule<Integer> MIN_RULE = ISOChronology.minuteOfHourRule();
 //    private static final DateTimeFieldRule<Integer> SEC_RULE = ISOChronology.secondOfMinuteRule();
 //    private static final DateTimeFieldRule<Integer> MILLISEC_RULE = ISOChronology.milliOfSecondRule();
@@ -298,6 +299,18 @@ public class TestCalendricalMerger {
         CalendricalMerger m = createMerger(AMPM_RULE, 1, HOUR_AMPM_RULE, 9, STRICT_CONTEXT);  // 9pm
         m.merge();
         assertMerged(m, null, LocalTime.rule(), time(21, 00));  // merged to 21:00
+    }
+
+    public void test_merge_clockHour() {
+        CalendricalMerger m = createMerger(AMPM_RULE, 1, CLOCKHOUR_AMPM_RULE, 9, STRICT_CONTEXT);  // 9pm
+        m.merge();
+        assertMerged(m, null, LocalTime.rule(), time(21, 00));  // merged to 24:00
+    }
+
+    public void test_merge_clockHourEndOfDay() {
+        CalendricalMerger m = createMerger(AMPM_RULE, 1, CLOCKHOUR_AMPM_RULE, 12, STRICT_CONTEXT);  // 12am end-of-day
+        m.merge();
+        assertMerged(m, Period.ofDays(1), LocalTime.rule(), time(0, 00));  // merged to 24:00
     }
 
 //    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,6 +44,8 @@ import javax.time.calendar.ZoneOffset;
 
 /**
  * The shared serialization delegate for this package.
+ * <p>
+ * This class is mutable and should be created once per serialization.
  *
  * @author Stephen Colebourne
  */
@@ -64,13 +66,13 @@ final class Ser implements Externalizable {
     private Object object;
 
     /**
-     * Constructor for serialization.
+     * Constructor for deserialization.
      */
     public Ser() {
     }
 
     /**
-     * Constructor.
+     * Creates an instance for serialization.
      *
      * @param type  the type
      * @param object  the object
@@ -80,6 +82,12 @@ final class Ser implements Externalizable {
         this.object = object;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Implements the {@code Externalizable} interface to write the object.
+     *
+     * @param out  the data stream to write to, not null
+     */
     public void writeExternal(ObjectOutput out) throws IOException {
         writeInternal(type, object, out);
     }
@@ -112,6 +120,12 @@ final class Ser implements Externalizable {
         }
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Implements the {@code Externalizable} interface to read the object.
+     *
+     * @param in  the data to read, not null
+     */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         type = in.readByte();
         object = readInternal(type, in);
@@ -146,9 +160,10 @@ final class Ser implements Externalizable {
          return object;
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Writes the state to the stream.
+     *
      * @param offset  the offset, not null
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
@@ -164,6 +179,7 @@ final class Ser implements Externalizable {
 
     /**
      * Reads the state from the stream.
+     *
      * @param in  the input stream, not null
      * @return the created object, never null
      * @throws IOException if an error occurs
@@ -173,9 +189,10 @@ final class Ser implements Externalizable {
         return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Writes the state to the stream.
+     *
      * @param epochSecs  the epoch seconds, not null
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
@@ -194,6 +211,7 @@ final class Ser implements Externalizable {
 
     /**
      * Reads the state from the stream.
+     *
      * @param in  the input stream, not null
      * @return the epoch seconds, never null
      * @throws IOException if an error occurs

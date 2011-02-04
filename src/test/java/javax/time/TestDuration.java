@@ -2288,7 +2288,7 @@ public class TestDuration {
     }
 
     @Test(expectedExceptions=ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void compareToNonDuration() {
        Comparable c = Duration.ofSeconds(0L);
        c.compareTo(new Object());

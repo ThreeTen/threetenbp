@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -61,15 +61,15 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriod {
 
-    private static final PeriodUnit YEARS = ISOChronology.periodYears();
-    private static final PeriodUnit QUARTERS = ISOChronology.periodQuarters();
-    private static final PeriodUnit MONTHS = ISOChronology.periodMonths();
-    private static final PeriodUnit DAYS = ISOChronology.periodDays();
-    private static final PeriodUnit DAYS24 = ISOChronology.period24Hours();
-    private static final PeriodUnit HOURS = ISOChronology.periodHours();
-    private static final PeriodUnit MINUTES = ISOChronology.periodMinutes();
-    private static final PeriodUnit SECONDS = ISOChronology.periodSeconds();
-    private static final PeriodUnit NANOS = ISOChronology.periodNanos();
+    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
+    private static final PeriodUnit QUARTERS = ISOPeriodUnit.QUARTERS;
+    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
+    private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
+    private static final PeriodUnit DAYS24 = ISOPeriodUnit._24_HOURS;
+    private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
+    private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
+    private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
+    private static final PeriodUnit NANOS = ISOPeriodUnit.NANOS;
     private static final PeriodUnit HISTORIC_MONTHS = HistoricChronology.periodMonths();
 
     private static final BigInteger MAX_BINT = BigInteger.valueOf(Integer.MAX_VALUE);
@@ -2134,8 +2134,8 @@ public class TestPeriod {
 
     public void test_toEstimatedDuration_Days() {
         assertEquals(Period.ZERO.toEstimatedDuration(), Duration.ofSeconds(0));
-        assertEquals(Period.ofDays(2).toEstimatedDuration(), ISOChronology.periodDays().getEstimatedDuration().multipliedBy(2));
-        assertEquals(Period.ofMonths(2).toEstimatedDuration(), ISOChronology.periodMonths().getEstimatedDuration().multipliedBy(2));
+        assertEquals(Period.ofDays(2).toEstimatedDuration(), ISOPeriodUnit.DAYS.getEstimatedDuration().multipliedBy(2));
+        assertEquals(Period.ofMonths(2).toEstimatedDuration(), ISOPeriodUnit.MONTHS.getEstimatedDuration().multipliedBy(2));
     }
 
     //-----------------------------------------------------------------------

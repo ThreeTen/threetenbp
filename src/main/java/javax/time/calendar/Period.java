@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -78,8 +78,8 @@ public final class Period
      * The ISO period units, trusted to not be altered.
      */
     private static final PeriodUnit[] UNITS = new PeriodUnit[] {
-        ISOChronology.periodYears(), ISOChronology.periodMonths(), ISOChronology.periodDays(),
-        ISOChronology.periodHours(), ISOChronology.periodMinutes(), ISOChronology.periodSeconds(), ISOChronology.periodNanos(),
+        ISOPeriodUnit.YEARS, ISOPeriodUnit.MONTHS, ISOPeriodUnit.DAYS,
+        ISOPeriodUnit.HOURS, ISOPeriodUnit.MINUTES, ISOPeriodUnit.SECONDS, ISOPeriodUnit.NANOS,
     };
 
     /**
@@ -179,13 +179,13 @@ public final class Period
         }
         PeriodFields periodFields = PeriodFields.of(periodProvider);
         periodFields = periodFields.toEquivalent(UNITS);
-        int years = periodFields.getAmountInt(ISOChronology.periodYears());
-        int months = periodFields.getAmountInt(ISOChronology.periodMonths());
-        int days = periodFields.getAmountInt(ISOChronology.periodDays());
-        int hours = periodFields.getAmountInt(ISOChronology.periodHours());
-        int minutes = periodFields.getAmountInt(ISOChronology.periodMinutes());
-        int seconds = periodFields.getAmountInt(ISOChronology.periodSeconds());
-        long nanos = periodFields.getAmount(ISOChronology.periodNanos());
+        int years = periodFields.getAmountInt(ISOPeriodUnit.YEARS);
+        int months = periodFields.getAmountInt(ISOPeriodUnit.MONTHS);
+        int days = periodFields.getAmountInt(ISOPeriodUnit.DAYS);
+        int hours = periodFields.getAmountInt(ISOPeriodUnit.HOURS);
+        int minutes = periodFields.getAmountInt(ISOPeriodUnit.MINUTES);
+        int seconds = periodFields.getAmountInt(ISOPeriodUnit.SECONDS);
+        long nanos = periodFields.getAmount(ISOPeriodUnit.NANOS);
         return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
@@ -1544,25 +1544,25 @@ public final class Period
         if (fields == null) {
             TreeMap<PeriodUnit, PeriodField> map = new TreeMap<PeriodUnit, PeriodField>();
             if (years != 0) {
-                map.put(ISOChronology.periodYears(), PeriodField.of(years, ISOChronology.periodYears()));
+                map.put(ISOPeriodUnit.YEARS, PeriodField.of(years, ISOPeriodUnit.YEARS));
             }
             if (months != 0) {
-                map.put(ISOChronology.periodMonths(), PeriodField.of(months, ISOChronology.periodMonths()));
+                map.put(ISOPeriodUnit.MONTHS, PeriodField.of(months, ISOPeriodUnit.MONTHS));
             }
             if (days != 0) {
-                map.put(ISOChronology.periodDays(), PeriodField.of(days, ISOChronology.periodDays()));
+                map.put(ISOPeriodUnit.DAYS, PeriodField.of(days, ISOPeriodUnit.DAYS));
             }
             if (hours != 0) {
-                map.put(ISOChronology.periodHours(), PeriodField.of(hours, ISOChronology.periodHours()));
+                map.put(ISOPeriodUnit.HOURS, PeriodField.of(hours, ISOPeriodUnit.HOURS));
             }
             if (minutes != 0) {
-                map.put(ISOChronology.periodMinutes(), PeriodField.of(minutes, ISOChronology.periodMinutes()));
+                map.put(ISOPeriodUnit.MINUTES, PeriodField.of(minutes, ISOPeriodUnit.MINUTES));
             }
             if (seconds != 0) {
-                map.put(ISOChronology.periodSeconds(), PeriodField.of(seconds, ISOChronology.periodSeconds()));
+                map.put(ISOPeriodUnit.SECONDS, PeriodField.of(seconds, ISOPeriodUnit.SECONDS));
             }
             if (nanos != 0) {
-                map.put(ISOChronology.periodNanos(), PeriodField.of(nanos, ISOChronology.periodNanos()));
+                map.put(ISOPeriodUnit.NANOS, PeriodField.of(nanos, ISOPeriodUnit.NANOS));
             }
             periodFields = fields = PeriodFields.create(map);
         }

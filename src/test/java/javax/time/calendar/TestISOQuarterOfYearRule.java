@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -68,8 +68,8 @@ public class TestISOQuarterOfYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(LocalDate.of(2007, 6, 20)), 4);
         assertEquals(rule.getSmallestMaximumValue(), 4);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOChronology.periodQuarters());
-        assertEquals(rule.getPeriodRange(), ISOChronology.periodYears());
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.QUARTERS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------

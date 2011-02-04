@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -70,7 +70,7 @@ import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 /**
  * A builder that can read the TZDB TimeZone files and build ZoneRules instances.
  * <p>
- * TZDBZoneRulesCompiler is thread-safe.
+ * This class is a mutable builder. A new instance must be created for each compile.
  *
  * @author Stephen Colebourne
  */
@@ -361,7 +361,7 @@ public final class TZDBZoneRulesCompiler {
     private final boolean verbose;
 
     /**
-     * Constructor used if you want to invoke the compiler manually.
+     * Creates an instance if you want to invoke the compiler manually.
      *
      * @param version  the version, such as 2009a, not null
      * @param sourceFiles  the list of source files, not empty, not null
@@ -375,6 +375,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Compile the rules file.
+     *
      * @return the map of region ID to rules, not null
      * @throws Exception if an error occurs
      */
@@ -388,6 +389,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Sets the deduplication map.
+     *
      * @param deduplicateMap  the map to deduplicate items
      */
     void setDeduplicateMap(Map<Object, Object> deduplicateMap) {
@@ -397,6 +399,7 @@ public final class TZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     /**
      * Parses the source files.
+     *
      * @throws Exception if an error occurs
      */
     private void parseFiles() throws Exception {
@@ -408,6 +411,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Parses a source file.
+     *
      * @param file  the file being read, not null
      * @throws Exception if an error occurs
      */
@@ -484,6 +488,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Parses a Rule line.
+     *
      * @param st  the tokenizer, not null
      */
     private void parseRuleLine(StringTokenizer st) {
@@ -506,6 +511,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Parses a Zone line.
+     *
      * @param st  the tokenizer, not null
      * @return true if the zone is complete
      */
@@ -540,6 +546,7 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Parses a Rule line.
+     *
      * @param st  the tokenizer, not null
      * @param mdt  the object to parse into, not null
      */
@@ -679,6 +686,7 @@ public final class TZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     /**
      * Build the rules, zones and links into real zones.
+     *
      * @throws Exception if an error occurs
      */
     private void buildZoneRules() throws Exception {
@@ -736,6 +744,7 @@ public final class TZDBZoneRulesCompiler {
     //-----------------------------------------------------------------------
     /**
      * Prints a verbose message.
+     *
      * @param message  the message, not null
      */
     private void printVerbose(String message) {

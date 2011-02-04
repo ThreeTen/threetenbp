@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,85 +33,66 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.format.MockSimpleCalendrical;
-
 import org.testng.annotations.Test;
 
 /**
- * Test ISO MonthOfYear rule.
+ * Test ISO ClockHourOfAmPm rule.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOMonthOfYearRule extends AbstractTestDateTimeFieldRule {
+public class TestISOClockHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
 
-    public TestISOMonthOfYearRule() {
-        super(LocalDate.of(2009, 12, 26), MonthOfYear.DECEMBER, 12);
+    public TestISOClockHourOfAmPmRule() {
+        super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), 1, 1);
     }
 
     @Override
-    protected DateTimeFieldRule<MonthOfYear> rule() {
-        return ISOChronology.monthOfYearRule();
+    protected DateTimeFieldRule<Integer> rule() {
+        return ISOChronology.clockHourOfAmPmRule();
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<MonthOfYear> rule = ISOChronology.monthOfYearRule();
-        assertEquals(rule.getReifiedType(), MonthOfYear.class);
-        assertEquals(rule.getID(), "ISO.MonthOfYear");
-        assertEquals(rule.getName(), "MonthOfYear");
+        DateTimeFieldRule<Integer> rule = ISOChronology.clockHourOfAmPmRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
+        assertEquals(rule.getID(), "ISO.ClockHourOfAmPm");
+        assertEquals(rule.getName(), "ClockHourOfAmPm");
         assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(new MockSimpleCalendrical()), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 12);
-        assertEquals(rule.getMaximumValue(new MockSimpleCalendrical()), 12);
         assertEquals(rule.getSmallestMaximumValue(), 12);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MONTHS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);
+        assertEquals(rule.getPeriodRange(), ISOPeriodUnit._12_HOURS);
     }
 
-    //-----------------------------------------------------------------------
-    // convertValueToInt(T)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertValueToInt() {
-        assertEquals(rule().convertValueToInt(MonthOfYear.FEBRUARY), 2);
-        assertEquals(rule().convertValueToInt(MonthOfYear.JUNE), 6);
-    }
-
-    //-----------------------------------------------------------------------
-    // convertIntToValue(int)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertIntToValue() {
-        assertEquals(rule().convertIntToValue(2), MonthOfYear.FEBRUARY);
-        assertEquals(rule().convertIntToValue(6), MonthOfYear.JUNE);
+    public void test_values() throws Exception {
+        LocalDateTime dt = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
+        for (int i = 0; i < 24; i++) {
+            dt = dt.withHourOfDay(i);
+            assertEquals((int) dt.get(rule()), i ==0 || i == 12 ? 12 : i % 12);
+        }
     }
 
     //-----------------------------------------------------------------------
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_getValue_Calendrical_date() {
-        Calendrical cal = LocalDate.of(2007, 6, 20);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
+    public void test_getValue_Calendrical_time() {
+        Calendrical cal = LocalTime.of(13, 30, 40, 50);
+        assertEquals(rule().getValue(cal), (Integer) 1);
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
+        Calendrical cal = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
+        assertEquals(rule().getValue(cal), (Integer) 1);
     }
 
-    public void test_getValue_Calendrical_monthDay() {
-        Calendrical cal = MonthDay.of(6, 20);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
-    }
-
-    public void test_getValue_Calendrical_yearMonth() {
-        Calendrical cal = YearMonth.of(2007, 6);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
+    public void test_getValue_Calendrical_dateTimeFields() {
+        Calendrical cal = DateTimeFields.of(rule(), 11);
+        assertEquals(rule().getValue(cal), (Integer) 11);
     }
 
 }

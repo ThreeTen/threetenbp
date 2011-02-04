@@ -1823,7 +1823,7 @@ public final class LocalDateTime
         private static final CalendricalRule<LocalDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalDateTime.class, ISOChronology.INSTANCE, "LocalDateTime", ISOChronology.periodNanos(), null);
+            super(LocalDateTime.class, ISOChronology.INSTANCE, "LocalDateTime", ISOPeriodUnit.NANOS, null);
         }
         private Object readResolve() {
             return INSTANCE;

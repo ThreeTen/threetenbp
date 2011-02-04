@@ -1483,7 +1483,7 @@ public final class LocalDate
         private static final CalendricalRule<LocalDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalDate.class, ISOChronology.INSTANCE, "LocalDate", ISOChronology.periodDays(), null);
+            super(LocalDate.class, ISOChronology.INSTANCE, "LocalDate", ISOPeriodUnit.DAYS, null);
         }
         private Object readResolve() {
             return INSTANCE;
