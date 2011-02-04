@@ -262,6 +262,7 @@ public abstract class DateTimeRule implements Comparable<DateTimeRule>, Serializ
      * This implementation uses {@link #getMinimumValue(DateTimeFields2)}, {@link #getLargestMinimumValue()},
      * {@link #getSmallestMaximumValue()} and {@link #getMaximumValue(DateTimeFields2)}.
      *
+     * @param context  the context of other fields, not null
      * @return true if the set of values is fixed
      */
     public boolean isValueRangeKnown(DateTimeFields2 context) {
@@ -487,6 +488,7 @@ public abstract class DateTimeRule implements Comparable<DateTimeRule>, Serializ
      *
      * @param value  the initial value to roll, within the valid range
      * @param amountToRollBy  the amount to roll by, positive or negative
+     * @param context  the context of other fields, not null
      * @return the new rolled value, never null
      * @throws CalendricalException if the value specified is invalid
      */
