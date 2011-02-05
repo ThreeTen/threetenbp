@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,11 +33,16 @@ package javax.time.calendar;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+
+import javax.time.CalendricalException;
 
 /**
  * A set of date-time fields.
@@ -58,118 +63,121 @@ import java.util.TreeMap;
  */
 public final class DateTimeFields
         implements Calendrical,
-            CalendricalMatcher, Iterable<DateTimeFieldRule<?>>, Serializable {
+            CalendricalMatcher, Iterable<DateTimeField>, Serializable {
 
     /**
      * A singleton empty {@code DateTimeFields}, placing no restrictions on the date-time.
      */
-    public static final DateTimeFields EMPTY = new DateTimeFields(createMap());
-    /** Serialization version. */
+    public static final DateTimeFields EMPTY = new DateTimeFields(Collections.<DateTimeField>emptyList());
+
+    /**
+     * A serialization identifier for this class.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * The date time map, never null, may be empty.
+     * The list of fields which never contains the same rule twice (as in a map), never null, may be empty.
      */
-    private final TreeMap<DateTimeFieldRule<?>, Integer> fieldValueMap;
+    private final List<DateTimeField> fields;
 
     /**
-     * Obtains an instance of {@code DateTimeFields} from a field-value pair.
+     * Obtains a {@code DateTimeFields} from a rule and value.
      * <p>
-     * This factory allows the creation of a fields object with a single field-value pair.
-     * The value must be within the valid range for the field.
+     * The parameters represent the two parts of a phrase like 'MonthOfYear 12'.
      *
-     * @param fieldRule  the rule, not null
-     * @param value  the field value, may be invalid
-     * @return the fields instance, never null
-     * @throws NullPointerException if the field rule is null
-     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @param rule  the rule defining the field, not null
+     * @param value  the value of the rule, not necessarily valid for the rule
+     * @return the date-time fields, never null
      */
-    public static DateTimeFields of(DateTimeFieldRule<?> fieldRule, int value) {
-        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        fieldRule.checkValue(value);
-        TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
-        map.put(fieldRule, value);
-        return new DateTimeFields(map);
+    public static DateTimeFields of(DateTimeFieldRule rule, int value) {
+        return of(DateTimeField.of(rule, value));
     }
 
     /**
-     * Obtains an instance of {@code DateTimeFields} from two field-value pairs.
+     * Obtains a {@code DateTimeFields} from two rule-value pairs.
      * <p>
-     * This factory allows the creation of a fields object with two field-value pairs.
-     * Each value must be within the valid range for that field.
-     * <p>
-     * The two fields are not cross-validated. Thus, you can specify MonthOfYear of June
-     * and DayOfMonth of 31, which is a date that can never occur.
+     * The pair of parameters represent the two parts of a phrase like 'MonthOfYear 12'.
      *
-     * @param fieldRule1  the first rule, not null
-     * @param value1  the first field value
-     * @param fieldRule2  the second rule, not null
-     * @param value2  the second field value
-     * @return the fields instance, never null
-     * @throws NullPointerException if either field rule is null
-     * @throws IllegalCalendarFieldValueException if either value is invalid
+     * @param rule1  the first rule defining the field, not null
+     * @param value1  the first value of the rule, not necessarily valid for the rule
+     * @param rule2  the second rule defining the field, not null
+     * @param value2  the second value of the rule, not necessarily valid for the rule
+     * @return the date-time fields, never null
+     * @throws IllegalArgumentException if any rule is duplicated
      */
-    public static DateTimeFields of(DateTimeFieldRule<?> fieldRule1, int value1, DateTimeFieldRule<?> fieldRule2, int value2) {
-        ISOChronology.checkNotNull(fieldRule1, "First DateTimeFieldRule must not be null");
-        ISOChronology.checkNotNull(fieldRule2, "Second DateTimeFieldRule must not be null");
-        fieldRule1.checkValue(value1);
-        fieldRule2.checkValue(value2);
-        TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
-        map.put(fieldRule1, value1);
-        map.put(fieldRule2, value2);
-        return new DateTimeFields(map);
+    public static DateTimeFields of(DateTimeFieldRule rule1, int value1, DateTimeFieldRule rule2, int value2) {
+        DateTimeField field1 = DateTimeField.of(rule1, value1);
+        DateTimeField field2 = DateTimeField.of(rule2, value2);
+        return of(Arrays.asList(field1, field2));
     }
 
     /**
-     * Obtains an instance of {@code DateTimeFields} from a map of field-value pairs.
+     * Obtains a {@code DateTimeFields} from a {@code DateTimeField}.
      * <p>
-     * This factory allows the creation of a fields object from a map of field-value pairs.
-     * Each value must be within the valid range for that field.
-     * <p>
-     * The fields are not cross-validated. Thus, you can specify MonthOfYear of June
-     * and DayOfMonth of 31, which is a date that can never occur.
+     * The parameters represent the two parts of a phrase like 'MonthOfYear 12'.
      *
-     * @param fieldValueMap  a map of fields that will be used to create a field set,
-     *  not updated by this factory, not null, contains no nulls
-     * @return the fields instance, never null
-     * @throws NullPointerException if the map contains null keys or values
-     * @throws IllegalCalendarFieldValueException if any value is invalid
+     * @param rule  the rule defining the field, not null
+     * @param value  the value of the rule, not necessarily valid for the rule
+     * @return the date-time fields, never null
      */
-    public static DateTimeFields of(Map<DateTimeFieldRule<?>, Integer> fieldValueMap) {
-        ISOChronology.checkNotNull(fieldValueMap, "Field-value map must not be null");
-        if (fieldValueMap.isEmpty()) {
+    public static DateTimeFields of(DateTimeField field) {
+        ISOChronology.checkNotNull(field, "DateTimeField must not be null");
+        return new DateTimeFields(Collections.singletonList(field));
+    }
+
+    /**
+     * Obtains a {@code DateTimeFields} from an array of fields.
+     * <p>
+     * Each field represents a phrase like 'MonthOfYear 12'.
+     * ,p>
+     * The array must provide fields with no duplicate rules.
+     *
+     * @param fieldsIterable  the iterable providing fields
+     * @return the date-time fields, never null
+     * @throws IllegalArgumentException if any rule is duplicated
+     */
+    public static DateTimeFields of(DateTimeField... fields) {
+        ISOChronology.checkNotNull(fields, "Array must not be null");
+        return of(Arrays.asList(fields));
+    }
+
+    /**
+     * Obtains a {@code DateTimeFields} from a collection of fields.
+     * <p>
+     * Each field represents a phrase like 'MonthOfYear 12'.
+     * ,p>
+     * The iterable must provide fields with no duplicate rules.
+     *
+     * @param fieldsIterable  the iterable providing fields
+     * @return the date-time fields, never null
+     * @throws IllegalArgumentException if any rule is duplicated
+     */
+    public static DateTimeFields of(Iterable<DateTimeField> fieldsIterable) {
+        ISOChronology.checkNotNull(fieldsIterable, "Iterable must not be null");
+        Set<DateTimeFieldRule> rules = new HashSet<DateTimeFieldRule>();
+        List<DateTimeField> created = new ArrayList<DateTimeField>();
+        for (DateTimeField field : fieldsIterable) {
+            ISOChronology.checkNotNull(field, "DateTimeField must not be null");
+            if (rules.add(field.getRule()) == false) {
+                throw new IllegalArgumentException("Duplicate rules are not allowed");
+            }
+            created.add(field);
+        }
+        if (created.size() == 0) {
             return EMPTY;
         }
-        // don't use contains() as tree map and others can throw NPE
-        TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
-        for (Map.Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
-            DateTimeFieldRule<?> fieldRule = entry.getKey();
-            Integer value = entry.getValue();
-            ISOChronology.checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
-            ISOChronology.checkNotNull(value, "Null values are not permitted in field-value map");
-            fieldRule.checkValue(value);
-            map.put(fieldRule, value);
-        }
-        return new DateTimeFields(map);
-    }
-
-    /**
-     * Creates a new empty map.
-     *
-     * @return ordered representation of internal map
-     */
-    private static TreeMap<DateTimeFieldRule<?>, Integer> createMap() {
-        return new TreeMap<DateTimeFieldRule<?>, Integer>(Collections.reverseOrder());
+        Collections.sort(created, Collections.reverseOrder());
+        return new DateTimeFields(created);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param assignedMap  the map of fields, which is assigned, not null
+     * @param assignedFields  the list of fields, which is assigned, not null
      */
-    private DateTimeFields(TreeMap<DateTimeFieldRule<?>, Integer> assignedMap) {
-        fieldValueMap = assignedMap;
+    private DateTimeFields(List<DateTimeField> assignedFields) {
+        fields = assignedFields;
     }
 
     /**
@@ -179,7 +187,7 @@ public final class DateTimeFields
      * @throws ObjectStreamException if an error occurs
      */
     private Object readResolve() throws ObjectStreamException {
-        return fieldValueMap.isEmpty() ? EMPTY : this;
+        return fields.isEmpty() ? EMPTY : this;
     }
 
     //-----------------------------------------------------------------------
@@ -191,32 +199,37 @@ public final class DateTimeFields
      * @return number of field-value pairs, zero or greater
      */
     public int size() {
-        return fieldValueMap.size();
+        return fields.size();
     }
 
     /**
-     * Iterates through all the field rules.
+     * Iterates through all the fields.
      * <p>
      * This method fulfills the {@link Iterable} interface and allows looping
-     * around the fields using the for-each loop. The values can be obtained using
-     * {@link #get} or {@link #getInt}.
+     * around the fields using the for-each loop.
      *
-     * @return an iterator over the fields in this object, never null
+     * @return an iterator over the fields, never null
      */
-    public Iterator<DateTimeFieldRule<?>> iterator() {
-        return fieldValueMap.keySet().iterator();
+    public Iterator<DateTimeField> iterator() {
+        return fields.iterator();
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if this object contains a mapping for the specified field.
+     * Checks if this set of fields contains a mapping for the specified rule.
      * <p>
-     * This method returns true if a value can be obtained for the specified field.
+     * This method returns true if a value can be obtained for the specified rule.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to query, null returns false
+     * @return true if these fields contain the rule
      */
-    public boolean contains(DateTimeFieldRule<?> fieldRule) {
-        return fieldRule != null && fieldValueMap.containsKey(fieldRule);
+    public boolean contains(DateTimeFieldRule rule) {
+        for (DateTimeField field : fields) {
+            if (field.getRule().equals(rule)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //-----------------------------------------------------------------------
@@ -233,146 +246,169 @@ public final class DateTimeFields
      */
     public <T> T get(CalendricalRule<T> rule) {
         ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule instanceof DateTimeFieldRule<?>) {
-            Integer value = fieldValueMap.get(rule);
-            if (value != null) {
-                DateTimeFieldRule<T> r = (DateTimeFieldRule<T>) rule;
-                return r.convertIntToValue(value);
-            }
+        if (rule instanceof DateTimeFieldRule) {
+            return rule.reify(get((DateTimeFieldRule) rule));
         }
         return rule.deriveValueFrom(this);
     }
 
     /**
-     * Gets the value for the specified field throwing an exception if the
-     * field is not in the field-value map.
-     * <p>
-     * The value will be within the valid range for the field.
+     * Gets the value for the specified rule throwing an exception if the
+     * rule is not present.
      * <p>
      * No attempt is made to derive values. The result is simply based on
-     * the contents of the stored field-value map. If you want to derive a
-     * value then use {@link #get} or a {@link CalendricalMerger}.
+     * the contents of the set of fields. If you want to derive a
+     * value then use {@link #derive} or a {@link CalendricalMerger}.
      *
-     * @param rule  the rule to query from the map, not null
-     * @return the value mapped to the specified field
-     * @throws UnsupportedRuleException if the field is not in the map
+     * @param rule  the rule to query, not null
+     * @return the field with the specified rule, null if not found
      */
-    public int getInt(DateTimeFieldRule<?> rule) {
+    public DateTimeField get(DateTimeFieldRule rule) {
         ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
-        Integer value = fieldValueMap.get(rule);
-        if (value == null) {
-            throw new UnsupportedRuleException(rule);
+        for (DateTimeField field : fields) {
+            if (field.getRule().equals(rule)) {
+                return field;
+            }
         }
-        return value;
+        return null;
     }
 
     /**
-     * Gets the value for the specified field quietly returning null
-     * if the field is not in the field-value map.
+     * Gets the value for the specified rule.
      * <p>
-     * The value will be within the valid range for the field.
+     * The returned value may not be valid according to the minimum and maximum
+     * values of the rule.
+     * <p>
+     * No attempt is made to derive values.
+     * The result is simply based on the content of the stored field.
      *
-     * @param fieldRule  the rule to query from the map, null returns null
-     * @return the value mapped to the specified field, null if not present
+     * @return the value of the rule
+     * @throws CalendricalException if the field is not present
      */
-    public Integer getQuiet(DateTimeFieldRule<?> fieldRule) {
-        return fieldRule == null ? null : fieldValueMap.get(fieldRule);
+    public int getValue(DateTimeFieldRule rule) {
+        DateTimeField field = get(rule);
+        if (field == null) {
+            throw new CalendricalRuleException("Rule not found: " + rule, rule);
+        }
+        return field.getValue();
+    }
+
+    /**
+     * Gets the value for the specified rule ensuring it is valid.
+     * <p>
+     * A valid value is one where the value is appropriate for the rule.
+     * <p>
+     * No attempt is made to derive values.
+     * The result is simply based on the content of the stored field.
+     *
+     * @return the value of the rule, checked to ensure it is valid
+     * @throws CalendricalException if the field is not present or is invalid
+     */
+    public int getValidValue(DateTimeFieldRule rule) {
+        int value = getValue(rule);
+        rule.checkValue(value);
+        return value;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this DateTimeFields with the specified field value.
+     * Returns a copy of this {@code DateTimeFields} with the specified field.
      * <p>
-     * If this instance already has a value for the field then the value is replaced.
-     * Otherwise the value is added to the map.
+     * This replaces the value of the rule if the rule is present, or adds the field
+     * if the rule is not present.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param fieldRule  the field to set in the returned object, not null
-     * @param value  the value to set in the returned set of fields
-     * @return a new, updated DateTimeFields, never null
-     * @throws NullPointerException if DateTimeFieldRule is null
-     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @param rule  the rule to alter, not null
+     * @param value  the value to use
+     * @return a {@code DateTimeFields} based on this fields with the specified field updated, never null
      */
-    public DateTimeFields with(DateTimeFieldRule<?> fieldRule, int value) {
-        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        fieldRule.checkValue(value);
-        TreeMap<DateTimeFieldRule<?>, Integer> clonedMap = clonedMap();
-        clonedMap.put(fieldRule, value);
-        return new DateTimeFields(clonedMap);
+    public DateTimeFields with(DateTimeFieldRule rule, int value) {
+        return with(DateTimeField.of(rule, value));
     }
 
-//    /**
-//     * Returns a copy of this DateTimeFields with the fields from the specified map added.
-//     * <p>
-//     * If this instance already has a value for any field then the value is replaced.
-//     * Otherwise the value is added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param fieldValueMap  the new map of fields, not null
-//     * @return a new, updated DateTimeFields, never null
-//     * @throws NullPointerException if the map contains null keys or values
-//     * @throws IllegalCalendarFieldValueException if any value is invalid
-//     */
-//    public DateTimeFields with(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-//        ISOChronology.checkNotNull(fieldValueMap, "Field-value map must not be null");
-//        if (fieldValueMap.isEmpty()) {
-//            return this;
-//        }
-//        // don't use contains() as tree map and others can throw NPE
-//        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
-//        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//            DateTimeFieldRule fieldRule = entry.getKey();
-//            Integer value = entry.getValue();
-//            ISOChronology.checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
-//            ISOChronology.checkNotNull(value, "Null values are not permitted in field-value map");
-//            fieldRule.checkValue(value);
-//            clonedMap.put(fieldRule, value);
-//        }
-//        return new DateTimeFields(clonedMap);
-//    }
-
     /**
-     * Returns a copy of this DateTimeFields with the specified fields added.
+     * Returns a copy of this {@code DateTimeFields} with the specified field.
      * <p>
-     * If this instance already has a value for the field then the value is replaced.
-     * Otherwise the value is added.
+     * This replaces the value of the rule if the rule is present, or adds the field
+     * if the rule is not present.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param fields  the fields to add to the returned object, not null
-     * @return a new, updated DateTimeFields, never null
+     * @return a {@code DateTimeFields} based on this fields with the specified field updated, never null
      */
-    public DateTimeFields with(DateTimeFields fields) {
-        ISOChronology.checkNotNull(fields, "DateTimeFields must not be null");
-        if (fields.size() == 0 || fields == this) {
-            return this;
+    public DateTimeFields with(DateTimeField field) {
+        ISOChronology.checkNotNull(fields, "DateTimeField must not be null");
+        List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
+        for (ListIterator<DateTimeField> it = newFields.listIterator(); it.hasNext(); ) {
+            DateTimeField itField = it.next();
+            if (itField.getRule().equals(field.getRule())) {
+                if (itField.getValue() == field.getValue()) {
+                    return this;
+                } else {
+                    it.set(field);
+                    return new DateTimeFields(newFields);
+                }
+            }
         }
-        TreeMap<DateTimeFieldRule<?>, Integer> clonedMap = clonedMap();
-        clonedMap.putAll(fields.fieldValueMap);
-        return new DateTimeFields(clonedMap);
+        newFields.add(field);
+        Collections.sort(newFields, Collections.reverseOrder());
+        return new DateTimeFields(newFields);
     }
 
     /**
-     * Returns a copy of this object with the specified field removed.
+     * Returns a copy of this {@code DateTimeFields} with the specified field removed.
      * <p>
-     * If this instance does not contain the field then the returned instance
-     * is the same as this one.
+     * This removes the specified rule from those in the returned fields.
+     * No error occurs if the rule is not present.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param fieldRule  the field to remove from the returned object, not null
-     * @return a new, updated DateTimeFields, never null
+     * @param rule  the field to remove from the returned fields, not null
+     * @return a {@code DateTimeFields} based on this fields with the specified rule removed, never null
      */
-    public DateTimeFields withFieldRemoved(DateTimeFieldRule<?> fieldRule) {
-        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        TreeMap<DateTimeFieldRule<?>, Integer> clonedMap = clonedMap();
-        if (clonedMap.remove(fieldRule) == null) {
-            return this;
+    public DateTimeFields without(DateTimeFieldRule rule) {
+        ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
+        List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
+        for (Iterator<DateTimeField> it = newFields.iterator(); it.hasNext(); ) {
+            if (it.next().getRule().equals(rule)) {
+                it.remove();
+                if (newFields.size() == 0) {
+                    return EMPTY;
+                }
+                return new DateTimeFields(newFields);
+            }
         }
-        return clonedMap.isEmpty() ? EMPTY : new DateTimeFields(clonedMap);
+        return this;
     }
+
+    //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this {@code DateTimeFields} with the value of the specified rule rolled.
+//     * <p>
+//     * This rolls the value of one rule by the specified amount.
+//     * Rolling is the process of adding or subtracting the value of the field rolling
+//     * around within the range. For example, 'MonthOfYear' is defined as having 12 months.
+//     * Adding 3 to 'MonthOfYear 11' rolls around to result in 'MonthOfYear 2'.
+//     * <p>
+//     * This {@code DateTimeFields} is used as the context for the roll.
+//     * For example, 'DayOfMonth' has a value-range between 28 and 31 depending on the month and year.
+//     * If both the month and year can be derived from this object, then the value-range
+//     * used in the roll will be accurate, otherwise the best estimate will be used.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param rule  the field to roll which must be present, not null
+//     * @param amountToRollBy  the amount to roll by, positive or negative
+//     * @return a {@code DateTimeFields} based on this fields with the specified amount rolled, never null
+//     * @throws CalendricalException if the field is not present or is invalid
+//     */
+//    public DateTimeFields roll(DateTimeFieldRule rule, long amountToRollBy) {
+//        long value = getValidValue(rule);
+//        long rolled = rule.roll(value, amountToRollBy, this);
+//        return with(rule, rolled);
+//    }  // TODO
 
     //-----------------------------------------------------------------------
     /**
@@ -385,81 +421,54 @@ public final class DateTimeFields
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
-        for (Map.Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
-            Integer dateValue = entry.getKey().getInteger(calendrical);
-            if (dateValue != null && dateValue.equals(entry.getValue()) == false) {
+        for (DateTimeField field : fields) {
+            DateTimeField calField = field.getRule().getValue(calendrical);
+            if (calField != null && calField.equals(field) == false) {  // TODO check logic
                 return false;
             }
         }
         return true;
     }
-
     //-----------------------------------------------------------------------
     /**
-     * Converts this object to a map of fields to values.
+     * Checks if this {@code DateTimeFields} is equal to the specified set of fields.
      * <p>
-     * The returned map will never be null, however it may be empty.
-     * It is independent of this object - changes will not be reflected back.
+     * The comparison is based on the complete set of fields.
      *
-     * @return an independent, modifiable copy of the field-value map, never null
-     */
-    public SortedMap<DateTimeFieldRule<?>, Integer> toFieldValueMap() {
-        return new TreeMap<DateTimeFieldRule<?>, Integer>(fieldValueMap);
-    }
-
-    /**
-     * Clones the field-value map.
-     *
-     * @return a clone of the field-value map, never null
-     */
-    private TreeMap<DateTimeFieldRule<?>, Integer> clonedMap() {
-        TreeMap<DateTimeFieldRule<?>, Integer> cloned = createMap();
-        cloned.putAll(fieldValueMap);
-        return cloned;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this object equal to the specified object.
-     * <p>
-     * This compares the map of field-value pairs.
-     *
-     * @param obj  the other fields to compare to, null returns false
-     * @return true if this instance is equal to the specified field set
+     * @param other  the other fields to compare to, null returns false
+     * @return true if this is equal to the specified fields
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (obj instanceof DateTimeFields) {
-            DateTimeFields other = (DateTimeFields) obj;
-            return fieldValueMap.equals(other.fieldValueMap);
+        if (other instanceof DateTimeFields) {
+            DateTimeFields otherFields = (DateTimeFields) other;
+            return fields.equals(otherFields.fields);
         }
         return false;
     }
 
     /**
-     * A hash code for these fields.
+     * A hash code for this set of fields.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return fieldValueMap.hashCode();
+        return fields.hashCode();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the fields as a {@code String}.
-     * <p>
-     * The output will consist of the field-value map in standard map format.
+     * Outputs this fields as a {@code String}, such as {@code [MonthOfYear 12, DayOfMonth 3]}.
      *
-     * @return the formatted date-time string, never null
+     * @return a descriptive representation of this field, not null
      */
     @Override
     public String toString() {
-        return fieldValueMap.toString();
+        return fields.toString();
     }
 
 }

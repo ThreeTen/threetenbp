@@ -138,12 +138,12 @@ public class TestThaiBuddhistDate {
     
     @Test
     public void testGet() throws Exception {
-        assertEquals(testDate.get(ThaiBuddhistChronology.eraRule()), testDate.getEra());
-        assertEquals(testDate.get(ThaiBuddhistChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
-        assertEquals(testDate.get(ThaiBuddhistChronology.monthOfYearRule()), testDate.getMonthOfYear());
-        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
-        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfWeekRule()), testDate.getDayOfWeek());
+        assertEquals(testDate.get(ThaiBuddhistChronology.eraRule()), ThaiBuddhistChronology.eraRule().field(testDate.getEra().getValue()));
+        assertEquals(testDate.get(ThaiBuddhistChronology.yearOfEraRule()), ThaiBuddhistChronology.yearOfEraRule().field(testDate.getYearOfEra()));
+        assertEquals(testDate.get(ThaiBuddhistChronology.monthOfYearRule()), ThaiBuddhistChronology.monthOfYearRule().field(testDate.getMonthOfYear().getValue()));
+        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfMonthRule()), ThaiBuddhistChronology.dayOfMonthRule().field(testDate.getDayOfMonth()));
+        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfYearRule()), ThaiBuddhistChronology.dayOfYearRule().field(testDate.getDayOfYear()));
+        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfWeekRule()), ThaiBuddhistChronology.dayOfWeekRule().field(testDate.getDayOfWeek().getValue()));
     }
     
     public void testGetUnsupported() throws Exception {

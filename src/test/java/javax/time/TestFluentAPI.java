@@ -132,7 +132,7 @@ public class TestFluentAPI {
 //        c.month = date.month().getText(symbols);
 //        c.day = date.day().getValue();
         
-        QuarterOfYear q = date.get(quarterOfYearRule());
+        QuarterOfYear q = date.getMonthOfYear().getQuarterOfYear();
         //int hourOfDay = HourOfDay.of(tod).get();
         
 //        CalendarDateTime dt = CalendarDateTime.calendarDateTime(2007, february(), 21, 12, 30);

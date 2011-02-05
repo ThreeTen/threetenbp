@@ -138,12 +138,12 @@ public class TestMinguoDate {
     
     @Test
     public void testGet() throws Exception {
-        assertEquals(testDate.get(MinguoChronology.eraRule()), testDate.getEra());
-        assertEquals(testDate.get(MinguoChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
-        assertEquals(testDate.get(MinguoChronology.monthOfYearRule()), testDate.getMonthOfYear());
-        assertEquals(testDate.get(MinguoChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
-        assertEquals(testDate.get(MinguoChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(MinguoChronology.dayOfWeekRule()), testDate.getDayOfWeek());
+        assertEquals(testDate.get(MinguoChronology.eraRule()), MinguoChronology.eraRule().field(testDate.getEra().getValue()));
+        assertEquals(testDate.get(MinguoChronology.yearOfEraRule()), MinguoChronology.yearOfEraRule().field(testDate.getYearOfEra()));
+        assertEquals(testDate.get(MinguoChronology.monthOfYearRule()), MinguoChronology.monthOfYearRule().field(testDate.getMonthOfYear().getValue()));
+        assertEquals(testDate.get(MinguoChronology.dayOfMonthRule()), MinguoChronology.dayOfMonthRule().field(testDate.getDayOfMonth()));
+        assertEquals(testDate.get(MinguoChronology.dayOfYearRule()), MinguoChronology.dayOfYearRule().field(testDate.getDayOfYear()));
+        assertEquals(testDate.get(MinguoChronology.dayOfWeekRule()), MinguoChronology.dayOfWeekRule().field(testDate.getDayOfWeek().getValue()));
     }
     
     public void testGetUnsupported() throws Exception {

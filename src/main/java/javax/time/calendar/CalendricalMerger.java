@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -223,7 +223,26 @@ public final class CalendricalMerger implements Calendrical {
      * <p>
      * The merged value should be within the valid range for the rule.
      *
-     * @param rule  the field to store, not null
+     * @param rule  the rule to store, not null
+     * @param value  the value to store, not null
+     * @throws CalendricalException if the input field does not match a previously stored field
+     */
+    public void storeMerged(DateTimeFieldRule rule, int value) {
+        storeMerged(rule, DateTimeField.of(rule, value));
+    }
+
+    /**
+     * Stores a rule-value pair into this map ensuring that it does not clash
+     * with any previous value defined for that rule.
+     * <p>
+     * This method adds the specified rule-value pair to the map.
+     * If this instance already has a value for the rule then the value is checked
+     * to see if it is the same with an exception being thrown if it is not.
+     * If this instance does not hold the rule already, then the value is simply added.
+     * <p>
+     * The merged value should be within the valid range for the rule.
+     *
+     * @param rule  the rule to store, not null
      * @param value  the value to store, not null
      * @throws CalendricalException if the input field does not match a previously stored field
      */

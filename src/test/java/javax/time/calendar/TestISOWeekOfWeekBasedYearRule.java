@@ -45,11 +45,11 @@ import org.testng.annotations.Test;
 public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOWeekOfWeekBasedYearRule() {
-        super(LocalDate.of(2009, 12, 26), 52, 52);
+        super(LocalDate.of(2009, 12, 26), 52);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.weekOfWeekBasedYearRule();
     }
 
@@ -57,8 +57,8 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRul
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfWeekBasedYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.weekOfWeekBasedYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekOfWeekBasedYear");
         assertEquals(rule.getName(), "WeekOfWeekBasedYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -105,37 +105,37 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRul
         LocalDate date = LocalDate.of(2007, 1, 1);  // 2007-W1-1
         for (int i = 0; i < 364; i++) {  // 52 weeks
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
         assertEquals(date, LocalDate.of(2007, 12, 31));
-        assertEquals(rule().getValue(date), (Integer) 1);  // 2008-W1-1
+        assertEquals(rule().getValue(date), rule().field(1));  // 2008-W1-1
     }
 
     public void test_getValue_Calendrical_date_leap_52weeks() {
         LocalDate date = LocalDate.of(2007, 12, 31);  // 2008-W1-1
         for (int i = 0; i < 364; i++) {  // 52 weeks
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
         assertEquals(date, LocalDate.of(2008, 12, 29));
-        assertEquals(rule().getValue(date), (Integer) 1);  // 2009-W1-1
+        assertEquals(rule().getValue(date), rule().field(1));  // 2009-W1-1
     }
 
     public void test_getValue_Calendrical_date_nonLeap_53weeks() {
         LocalDate date = LocalDate.of(2008, 12, 29);  // 2009-W1-1
         for (int i = 0; i < 371; i++) {  // 53 weeks
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
         assertEquals(date, LocalDate.of(2010, 1, 4));
-        assertEquals(rule().getValue(date), (Integer) 1);  // 2010-W1-1
+        assertEquals(rule().getValue(date), rule().field(1));  // 2010-W1-1
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), (Integer) 3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), rule().field(3));
     }
 
 }

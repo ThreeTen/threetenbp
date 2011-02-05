@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.format.MockSimpleCalendrical;
-
 import org.testng.annotations.Test;
 
 /**
@@ -46,11 +44,11 @@ import org.testng.annotations.Test;
 public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
 
     public TestISODayOfMonthRule() {
-        super(LocalDate.of(2009, 12, 26), 26, 26);
+        super(LocalDate.of(2009, 12, 26), 26);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.dayOfMonthRule();
     }
 
@@ -58,8 +56,8 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.dayOfMonthRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.dayOfMonthRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -96,17 +94,17 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getMaximumValue_Calendrical_juneNoYear() {
-        Calendrical cal = new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.JUNE);
+        Calendrical cal = DateTimeField.of(ISOChronology.monthOfYearRule(), 6);
         assertEquals(rule().getMaximumValue(cal), 30);
     }
 
     public void test_getMaximumValue_Calendrical_julyNoYear() {
-        Calendrical cal = new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.JULY);
+        Calendrical cal = DateTimeField.of(ISOChronology.monthOfYearRule(), 7);
         assertEquals(rule().getMaximumValue(cal), 31);
     }
 
     public void test_getMaximumValue_Calendrical_febNoYear() {
-        Calendrical cal = new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.FEBRUARY);
+        Calendrical cal = DateTimeField.of(ISOChronology.monthOfYearRule(), 2);
         assertEquals(rule().getMaximumValue(cal), 29);
     }
 
@@ -115,22 +113,22 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.of(2007, 6, 20);
-        assertEquals(rule().getValue(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), rule().field(20));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValue(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), rule().field(20));
     }
 
     public void test_getValue_Calendrical_monthDay() {
         Calendrical cal = MonthDay.of(6, 20);
-        assertEquals(rule().getValue(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), rule().field(20));
     }
 
     public void test_getValue_Calendrical_dateTimeFields() {
         Calendrical cal = DateTimeFields.of(rule(), 20);
-        assertEquals(rule().getValue(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), rule().field(20));
     }
 
 }

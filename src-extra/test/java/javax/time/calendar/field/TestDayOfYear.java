@@ -69,7 +69,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfYear {
 
-    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.dayOfYearRule();
+    private static final DateTimeFieldRule RULE = ISOChronology.dayOfYearRule();
     private static final Year YEAR_STANDARD = Year.of(2007);
     private static final Year YEAR_LEAP = Year.of(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;

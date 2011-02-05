@@ -44,11 +44,11 @@ import org.testng.annotations.Test;
 public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOWeekOfYearRule() {
-        super(LocalDate.of(2009, 12, 26), 52, 52);
+        super(LocalDate.of(2009, 12, 26), 52);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.weekOfYearRule();
     }
 
@@ -56,8 +56,8 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.weekOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekOfYear");
         assertEquals(rule.getName(), "WeekOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -78,7 +78,7 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
         LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 0; i < 365; i++) {
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
     }
@@ -87,13 +87,13 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
         LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 0; i < 366; i++) {
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), (Integer) 3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), rule().field(3));
     }
 
 }

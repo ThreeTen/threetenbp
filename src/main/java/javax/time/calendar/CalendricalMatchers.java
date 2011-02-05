@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -133,53 +133,53 @@ public final class CalendricalMatchers {
         LEAP_YEAR {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                Integer yearVal = calendrical.get(ISOChronology.yearRule());
-                return yearVal != null && ISOChronology.isLeapYear(yearVal);
+                DateTimeField yearVal = calendrical.get(ISOChronology.yearRule());
+                return yearVal != null && ISOChronology.isLeapYear(yearVal.getValue());
             }
         },
         /** Leap day matcher. */
         LEAP_DAY {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
-                Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
-                return domVal != null && domVal == 29 && moy == MonthOfYear.FEBRUARY;
+                DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
+                DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                return domVal != null && domVal.getValue() == 29 && moy.getValue() == 2;
             }
         },
         /** Last day-of-month matcher. */
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                Integer yearVal = calendrical.get(ISOChronology.yearRule());
-                MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
-                Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                DateTimeField yearVal = calendrical.get(ISOChronology.yearRule());
+                DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
+                DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
                 return yearVal != null && moy != null && domVal != null &&
-                        domVal == moy.getLastDayOfMonth(ISOChronology.isLeapYear(yearVal));
+                        domVal.getValue() == MonthOfYear.of(moy.getValue()).getLastDayOfMonth(ISOChronology.isLeapYear(yearVal.getValue()));
             }
         },
         /** Last day-of-year matcher. */
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
-                Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
-                return domVal != null && domVal == 31 && moy == MonthOfYear.DECEMBER;
+                DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
+                DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                return domVal != null && domVal.getValue() == 31 && moy.getValue() == 12;
             }
         },
         /** Non weekend matcher. */
         WEEKEND_DAY {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
-                return dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY;
+                DateTimeField dow = calendrical.get(ISOChronology.dayOfWeekRule());
+                return dow != null && (dow.getValue() == 6 || dow.getValue() == 7);
             }
         },
         /** Non weekend matcher. */
         NON_WEEKEND_DAY {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
-                return dow != null && dow != DayOfWeek.SATURDAY && dow != DayOfWeek.SUNDAY;
+                DateTimeField dow = calendrical.get(ISOChronology.dayOfWeekRule());
+                return dow != null && dow.getValue() >= 1 && dow.getValue() <= 5;
             }
         },
     }
@@ -242,12 +242,12 @@ public final class CalendricalMatchers {
         }
         /** {@inheritDoc} */
         public boolean matchesCalendrical(Calendrical calendrical) {
-            Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
-            DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
-            if (dow != dayOfWeek || domVal == null) {
+            DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+            DateTimeField dowVal = calendrical.get(ISOChronology.dayOfWeekRule());
+            if (dowVal == null || domVal == null || dowVal.getValue() != dayOfWeek.getValue()) {
                 return false;
             }
-            return (domVal - 1) / 7 == ordinal - 1;
+            return (domVal.getValidValue() - 1) / 7 == ordinal - 1;
         }
         /** {@inheritDoc} */
         @Override

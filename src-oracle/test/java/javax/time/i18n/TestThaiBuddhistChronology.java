@@ -12,9 +12,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.MonthOfYear;
 
 import org.testng.annotations.Test;
 
@@ -61,7 +60,8 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule<ThaiBuddhistEra> rule = ThaiBuddhistChronology.eraRule();
+        DateTimeFieldRule rule = ThaiBuddhistChronology.eraRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.Era");
         assertEquals(rule.getName(), "Era");
         assertEquals(rule.getMinimumValue(), 0);
@@ -76,7 +76,8 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule<Integer> rule = ThaiBuddhistChronology.yearOfEraRule();
+        DateTimeFieldRule rule = ThaiBuddhistChronology.yearOfEraRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
         assertEquals(rule.getMinimumValue(), ThaiBuddhistDate.MIN_YEAR_OF_ERA);
@@ -91,7 +92,8 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule<MonthOfYear> rule = ThaiBuddhistChronology.monthOfYearRule();
+        DateTimeFieldRule rule = ThaiBuddhistChronology.monthOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -105,7 +107,8 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule<Integer> rule = ThaiBuddhistChronology.dayOfMonthRule();
+        DateTimeFieldRule rule = ThaiBuddhistChronology.dayOfMonthRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -120,7 +123,8 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule<Integer> rule = ThaiBuddhistChronology.dayOfYearRule();
+        DateTimeFieldRule rule = ThaiBuddhistChronology.dayOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -136,8 +140,8 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule<DayOfWeek> rule = ThaiBuddhistChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DayOfWeek.class);
+        DateTimeFieldRule rule = ThaiBuddhistChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -154,7 +158,7 @@ public class TestThaiBuddhistChronology {
         assertEquals(ThaiBuddhistChronology.INSTANCE.toString(), "ThaiBuddhist");
     }
 
-    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
+    private void serialize(DateTimeFieldRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

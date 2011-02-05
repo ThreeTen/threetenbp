@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -57,7 +57,7 @@ package javax.time.calendar;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear implements Calendrical {
+public enum QuarterOfYear {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -123,21 +123,21 @@ public enum QuarterOfYear implements Calendrical {
         return ordinal() + 1;
     }
 
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This returns the one of the quarter values if the type of the rule
-     * is {@code QuarterOfYear}. Other rules will return {@code null}.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule.getReifiedType() != QuarterOfYear.class) {
-            return null;
-        }
-        return rule.reify(this);
-    }
+//    /**
+//     * Gets the value of the specified calendrical rule.
+//     * <p>
+//     * This returns the one of the quarter values if the type of the rule
+//     * is {@code QuarterOfYear}. Other rules will return {@code null}.
+//     *
+//     * @param rule  the rule to use, not null
+//     * @return the value for the rule, null if the value cannot be returned
+//     */
+//    public <T> T get(CalendricalRule<T> rule) {
+//        if (rule.getReifiedType() != QuarterOfYear.class) {
+//            return null;
+//        }
+//        return rule.reify(this);
+//    }
 
     //-----------------------------------------------------------------------
     /**

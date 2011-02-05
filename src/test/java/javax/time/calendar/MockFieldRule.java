@@ -39,7 +39,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public class MockFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
+public class MockFieldRule extends DateTimeFieldRule implements Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -48,7 +48,7 @@ public class MockFieldRule extends DateTimeFieldRule<Integer> implements Seriali
 
     /** Constructor. */
     MockFieldRule() {
-        super(Integer.class, ISOChronology.INSTANCE, "Century", ISOPeriodUnit.CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
+        super(ISOChronology.INSTANCE, "Century", ISOPeriodUnit.CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
     }
 
 }

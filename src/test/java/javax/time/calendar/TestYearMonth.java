@@ -71,9 +71,9 @@ public class TestYearMonth {
     private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
     private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
     private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
-    private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule<MonthOfYear> RULE_MONTH = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule RULE_MONTH = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
     private YearMonth TEST_2008_06;
 
     @BeforeMethod
@@ -230,7 +230,7 @@ public class TestYearMonth {
 
     //-----------------------------------------------------------------------
     public void factory_Calendrical() {
-        Calendrical cal = new MockSimpleCalendrical(RULE_YEAR, 2008, RULE_MONTH, MonthOfYear.JUNE);
+        Calendrical cal = new MockSimpleCalendrical(RULE_YEAR, RULE_YEAR.field(2008), RULE_MONTH, RULE_MONTH.field(6));
         assertEquals(YearMonth.of(cal), TEST_2008_06);
     }
 
@@ -388,9 +388,9 @@ public class TestYearMonth {
     public void test_get_CalendricalRule() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
-        assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
-        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
+        assertEquals(test.get(ISOChronology.yearRule()).getValue(), 2008);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()).getValue(), 6);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()).getValue(), 3);
     }
 
     @Test(expectedExceptions=NullPointerException.class )

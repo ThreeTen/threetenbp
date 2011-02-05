@@ -41,7 +41,7 @@ public enum ThaiBuddhistEra implements Calendrical {
      *
      * @return the era rule, never null
      */
-    public static DateTimeFieldRule<ThaiBuddhistEra> rule() {
+    public static DateTimeFieldRule rule() {
         return ThaiBuddhistChronology.eraRule();
     }
 
@@ -79,7 +79,7 @@ public enum ThaiBuddhistEra implements Calendrical {
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
     public static ThaiBuddhistEra from(Calendrical calendrical) {
-        return rule().getValueChecked(calendrical);
+        return of(rule().getValueChecked(calendrical).getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -94,7 +94,7 @@ public enum ThaiBuddhistEra implements Calendrical {
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ThaiBuddhistChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(getValue()), this, ThaiBuddhistChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

@@ -37,8 +37,8 @@ import javax.time.Duration;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -217,7 +217,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the year field, never null
      */
-    public DateTimeFieldRule<HistoricEra> eraRule() {
+    public DateTimeFieldRule eraRule() {
         return new EraRule(this);
     }
 
@@ -226,7 +226,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the year field, never null
      */
-    public DateTimeFieldRule<Integer> yearOfEraRule() {
+    public DateTimeFieldRule yearOfEraRule() {
         return new YearRule(this);
     }
 
@@ -235,7 +235,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the year field, never null
      */
-    public DateTimeFieldRule<Integer> yearRule() {
+    public DateTimeFieldRule yearRule() {
         return new YearRule(this);
     }
 
@@ -244,7 +244,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the month-of-year field, never null
      */
-    public DateTimeFieldRule<MonthOfYear> monthOfYearRule() {
+    public DateTimeFieldRule monthOfYearRule() {
         return new MonthOfYearRule(this);
     }
 
@@ -253,7 +253,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-month field, never null
      */
-    public DateTimeFieldRule<Integer> dayOfMonthRule() {
+    public DateTimeFieldRule dayOfMonthRule() {
         return new DayOfMonthRule(this);
     }
 
@@ -262,7 +262,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-year field, never null
      */
-    public DateTimeFieldRule<Integer> dayOfYearRule() {
+    public DateTimeFieldRule dayOfYearRule() {
         return new DayOfYearRule(this);
     }
 
@@ -271,7 +271,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-week field, never null
      */
-    public DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
+    public DateTimeFieldRule dayOfWeekRule() {
         return new DayOfWeekRule(this);
     }
 
@@ -350,62 +350,31 @@ public final class HistoricChronology extends Chronology implements Serializable
 
     //-----------------------------------------------------------------------
     /**
-     * Rule implementation.
+     * Merges the fields.
+     * 
+     * @param merger  the merge context
      */
-    private static final class EraRule extends DateTimeFieldRule<HistoricEra> implements Serializable {
-        /** The chronology. */
-        private final HistoricChronology chrono;
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private EraRule(HistoricChronology chrono) {
-            super(HistoricEra.class, chrono, "Era", periodEras(), null, 0, 1);
-            this.chrono = chrono;
-        }
-        @Override
-        protected HistoricEra derive(Calendrical calendrical) {
-            HistoricDate cd = calendrical.get(HistoricDate.rule());
-            return cd != null ? cd.getEra() : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    private static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** The chronology. */
-        private final HistoricChronology chrono;
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private YearRule(HistoricChronology chrono) {
-            super(Integer.class, chrono, "Year", YEARS, null, -(HistoricDate.MAX_YEAR - 1), HistoricDate.MAX_YEAR);
-            this.chrono = chrono;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            HistoricDate cd = calendrical.get(HistoricDate.rule());
-            return cd != null ? cd.getYear() : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            MonthOfYear moy = merger.getValue(chrono.monthOfYearRule());
-            Integer domVal = merger.getValue(chrono.dayOfMonthRule());
-            if (moy != null && domVal != null) {
-                int year = merger.getValue(this);
-                HistoricDate date;
-                if (merger.getContext().isStrict()) {
-                    date = HistoricDate.of(year, moy, domVal);
-                } else {
-                    // TODO: date in cutover
-                    date = HistoricDate.of(year, MonthOfYear.JANUARY, 1)
-                                .plusMonths(moy.getValue() - 1).plusMonths(-1).plusDays(domVal).plusDays(-1);
-                }
-                merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-                merger.removeProcessed(this);
-                merger.removeProcessed(chrono.monthOfYearRule());
-                merger.removeProcessed(chrono.dayOfMonthRule());
+    void merge(CalendricalMerger merger) {
+        // TODO: era
+        DateTimeField year = merger.getValue(yearRule());
+        if (year != null) {
+            // year-month-day
+            DateTimeField moy = merger.getValue(monthOfYearRule());
+            DateTimeField dom = merger.getValue(dayOfMonthRule());
+            if (moy != null && dom != null) {
+                HistoricDate date = HistoricDate.of(year.getValidValue(), MonthOfYear.of(moy.getValidValue()), dom.getValidValue());
+                merger.storeMerged(HistoricDate.rule(), date);
+                merger.removeProcessed(yearRule());
+                merger.removeProcessed(monthOfYearRule());
+                merger.removeProcessed(dayOfMonthRule());
+            }
+            // year-day
+            DateTimeField doy = merger.getValue(dayOfYearRule());
+            if (doy != null) {
+                HistoricDate date = HistoricDate.of(year.getValidValue(), MonthOfYear.JANUARY, 1).withDayOfYear(doy.getValidValue());
+                merger.storeMerged(HistoricDate.rule(), date);
+                merger.removeProcessed(yearRule());
+                merger.removeProcessed(dayOfYearRule());
             }
         }
     }
@@ -414,20 +383,17 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule<MonthOfYear> implements Serializable {
-        /** The chronology. */
-        private final HistoricChronology chrono;
+    private static final class EraRule extends DateTimeFieldRule implements Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
-        private MonthOfYearRule(HistoricChronology chrono) {
-            super(MonthOfYear.class, chrono, "MonthOfYear", MONTHS, YEARS, 1, 13);
-            this.chrono = chrono;
+        private EraRule(HistoricChronology chrono) {
+            super(chrono, "Era", periodEras(), null, 0, 1);
         }
         @Override
-        protected MonthOfYear derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             HistoricDate cd = calendrical.get(HistoricDate.rule());
-            return cd != null ? cd.getMonthOfYear() : null;
+            return cd != null ? field(cd.getEra().getValue()) : null;
         }
     }
 
@@ -435,14 +401,57 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class YearRule extends DateTimeFieldRule implements Serializable {
+        /** The chronology. */
+        private final HistoricChronology chrono;
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private YearRule(HistoricChronology chrono) {
+            super(chrono, "Year", YEARS, null, -(HistoricDate.MAX_YEAR - 1), HistoricDate.MAX_YEAR);
+            this.chrono = chrono;
+        }
+        @Override
+        protected DateTimeField derive(Calendrical calendrical) {
+            HistoricDate cd = calendrical.get(HistoricDate.rule());
+            return cd != null ? field(cd.getYear()) : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            chrono.merge(merger);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private MonthOfYearRule(HistoricChronology chrono) {
+            super(chrono, "MonthOfYear", MONTHS, YEARS, 1, 13);
+        }
+        @Override
+        protected DateTimeField derive(Calendrical calendrical) {
+            HistoricDate cd = calendrical.get(HistoricDate.rule());
+            return cd != null ? field(cd.getMonthOfYear().getValue()) : null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule(HistoricChronology chrono) {
-            super(Integer.class, chrono, "DayOfMonth", periodDays(), MONTHS, 1, 30);
+            super(chrono, "DayOfMonth", periodDays(), MONTHS, 1, 30);
             this.chrono = chrono;
         }
         @Override
@@ -451,21 +460,21 @@ public final class HistoricChronology extends Chronology implements Serializable
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.get(chrono.yearRule());
-            MonthOfYear moy = calendrical.get(chrono.monthOfYearRule());
+            DateTimeField year = calendrical.get(chrono.yearRule());
+            DateTimeField moy = calendrical.get(chrono.monthOfYearRule());
             if (moy != null) {
                 if (year != null) {
-                    return moy.lengthInDays(chrono.isLeapYear(year));
+                    return MonthOfYear.of(moy.getValidValue()).lengthInDays(chrono.isLeapYear(year.getValidValue()));
                 } else {
-                    return moy.maxLengthInDays();
+                    return MonthOfYear.of(moy.getValidValue()).maxLengthInDays();
                 }
             }
             return getMaximumValue();
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             HistoricDate cd = calendrical.get(HistoricDate.rule());
-            return cd != null ? cd.getDayOfMonth() : null;
+            return cd != null ? field(cd.getDayOfMonth()) : null;
         }
     }
 
@@ -473,14 +482,14 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule(HistoricChronology chrono) {
-            super(Integer.class, chrono, "DayOfYear", periodDays(), YEARS, 1, 366);
+            super(chrono, "DayOfYear", periodDays(), YEARS, 1, 366);
             this.chrono = chrono;
         }
         @Override
@@ -489,32 +498,16 @@ public final class HistoricChronology extends Chronology implements Serializable
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.get(chrono.yearRule());
+            DateTimeField year = calendrical.get(chrono.yearRule());
             if (year != null) {
-                return chrono.isLeapYear(year) ? 366 : 365;
+                return chrono.isLeapYear(year.getValidValue()) ? 366 : 365;
             }
             return getMaximumValue();
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             HistoricDate cd = calendrical.get(HistoricDate.rule());
-            return cd != null ? cd.getDayOfYear() : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer yearVal = merger.getValue(chrono.yearRule());
-            if (yearVal != null) {
-                int doy = merger.getValue(this);
-                HistoricDate date;
-                if (merger.getContext().isStrict()) {
-                    date = HistoricDate.of(yearVal, MonthOfYear.JANUARY, 1).withDayOfYear(doy);
-                } else {
-                    date = HistoricDate.of(yearVal, MonthOfYear.JANUARY, 1).plusDays(doy).plusDays(-1);
-                }
-                merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-                merger.removeProcessed(this);
-                merger.removeProcessed(chrono.yearRule());
-            }
+            return cd != null ? field(cd.getDayOfYear()) : null;
         }
     }
 
@@ -522,20 +515,17 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
-        /** The chronology. */
-        private final HistoricChronology chrono;
+    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule(HistoricChronology chrono) {
-            super(DayOfWeek.class, chrono, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
-            this.chrono = chrono;
+            super(chrono, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         @Override
-        protected DayOfWeek derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             HistoricDate cd = calendrical.get(HistoricDate.rule());
-            return cd != null ? cd.getDayOfWeek() : null;
+            return cd != null ? field(cd.getDayOfWeek().getValue()) : null;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,7 +51,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The rule to output, not null.
      */
-    private final DateTimeFieldRule<?> rule;
+    private final DateTimeFieldRule rule;
     /**
      * The text style, not null.
      */
@@ -68,7 +68,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param rule  the rule to output, not null
      * @param textStyle  the text style, not null
      */
-    TextPrinterParser(DateTimeFieldRule<?> rule, TextStyle textStyle) {
+    TextPrinterParser(DateTimeFieldRule rule, TextStyle textStyle) {
         // validated by caller
         this.rule = rule;
         this.textStyle = textStyle;
@@ -77,7 +77,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = rule.getInt(calendrical);
+        int value = rule.getValueChecked(calendrical).getValue();
         TextStore textStore = rule.getTextStore(symbols.getLocale(), textStyle);
         String text = (textStore != null ? textStore.getValueText(value) : null);
         if (text != null) {

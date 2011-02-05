@@ -113,8 +113,8 @@ public class TestISOChronology {
 
     //-----------------------------------------------------------------------
     public void test_minuteOfHourRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.minuteOfHourRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.minuteOfHourRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MinuteOfHour");
         assertEquals(rule.getName(), "MinuteOfHour");
         assertEquals(rule.getMinimumValue(), 0);
@@ -128,8 +128,8 @@ public class TestISOChronology {
     }
 
     public void test_secondOfMinuteRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.secondOfMinuteRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.secondOfMinuteRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.SecondOfMinute");
         assertEquals(rule.getName(), "SecondOfMinute");
         assertEquals(rule.getMinimumValue(), 0);
@@ -143,8 +143,8 @@ public class TestISOChronology {
     }
 
     public void test_nanoOfSecondRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.nanoOfSecondRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.nanoOfSecondRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.NanoOfSecond");
         assertEquals(rule.getName(), "NanoOfSecond");
         assertEquals(rule.getMinimumValue(), 0);
@@ -159,8 +159,8 @@ public class TestISOChronology {
 
     //-----------------------------------------------------------------------
     public void test_secondOfDayRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.secondOfDayRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.secondOfDayRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.SecondOfDay");
         assertEquals(rule.getName(), "SecondOfDay");
         assertEquals(rule.getMinimumValue(), 0);
@@ -174,8 +174,8 @@ public class TestISOChronology {
     }
 
     public void test_milliOfDayRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.milliOfDayRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.milliOfDayRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MilliOfDay");
         assertEquals(rule.getName(), "MilliOfDay");
         assertEquals(rule.getMinimumValue(), 0);
@@ -189,8 +189,8 @@ public class TestISOChronology {
     }
 
     public void test_milliOfSecondRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.milliOfSecondRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.milliOfSecondRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MilliOfSecond");
         assertEquals(rule.getName(), "MilliOfSecond");
         assertEquals(rule.getMinimumValue(), 0);
@@ -538,7 +538,7 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
+    private void serialize(DateTimeFieldRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

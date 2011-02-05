@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum AmPmOfDay implements Calendrical {
+public enum AmPmOfDay {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -110,21 +110,21 @@ public enum AmPmOfDay implements Calendrical {
         return ordinal();
     }
 
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This returns the one of the AM/PM values if the type of the rule
-     * is {@code AmPmOfDay}. Other rules will return {@code null}.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule.getReifiedType() != AmPmOfDay.class) {
-            return null;
-        }
-        return rule.reify(this);
-    }
+//    /**
+//     * Gets the value of the specified calendrical rule.
+//     * <p>
+//     * This returns the one of the AM/PM values if the type of the rule
+//     * is {@code AmPmOfDay}. Other rules will return {@code null}.
+//     *
+//     * @param rule  the rule to use, not null
+//     * @return the value for the rule, null if the value cannot be returned
+//     */
+//    public <T> T get(CalendricalRule<T> rule) {
+//        if (rule.getReifiedType() != AmPmOfDay.class) {
+//            return null;
+//        }
+//        return rule.reify(this);
+//    }
 
     //-----------------------------------------------------------------------
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,25 +54,22 @@ import org.testng.annotations.Test;
 public abstract class AbstractTestDateTimeFieldRule {
 
     private Calendrical testingCalendrical;
-    private Object testingValue;
-    private int testingInt;
+    private int testingValue;
 
     /**
      * Specify a valid set of fields for testing.
      * @param cal
-     * @param value
-     * @param intValue
+     * @param testingValue
      */
-    protected AbstractTestDateTimeFieldRule(Calendrical cal, Object value, int intValue) {
-        testingCalendrical = cal;
-        testingValue = value;
-        testingInt = intValue;
+    protected AbstractTestDateTimeFieldRule(Calendrical cal, int testingValue) {
+        this.testingCalendrical = cal;
+        this.testingValue = testingValue;
     }
 
     //-----------------------------------------------------------------------
     // Rule
     //-----------------------------------------------------------------------
-    protected abstract DateTimeFieldRule<?> rule();
+    protected abstract DateTimeFieldRule rule();
 
     //-----------------------------------------------------------------------
     // Basics
@@ -116,26 +111,6 @@ public abstract class AbstractTestDateTimeFieldRule {
         oos.close();
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), rule());
-    }
-
-    //-----------------------------------------------------------------------
-    // convertValueToInt(T)
-    //-----------------------------------------------------------------------
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void test_convertValueToInt() {
-        DateTimeFieldRule rule = rule();
-        assertEquals(rule.convertValueToInt(1), 1);
-        assertEquals(rule.convertValueToInt(6), 6);
-    }
-
-    //-----------------------------------------------------------------------
-    // convertIntToValue(int)
-    //-----------------------------------------------------------------------
-    @SuppressWarnings("rawtypes")
-    public void test_convertIntToValue() {
-        DateTimeFieldRule rule = rule();
-        assertEquals(rule.convertIntToValue(1), 1);
-        assertEquals(rule.convertIntToValue(3), 3);
     }
 
     //-----------------------------------------------------------------------
@@ -214,7 +189,7 @@ public abstract class AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_fromTestingFields() {
-        assertEquals(rule().getValue(testingCalendrical), testingValue);
+        assertEquals(rule().getValue(testingCalendrical), DateTimeField.of(rule(), testingValue));
     }
 
     public void test_getValue_Calendrical_cannotDerive() {
@@ -226,7 +201,7 @@ public abstract class AbstractTestDateTimeFieldRule {
     // getValueChecked(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValueChecked_fromTestingFields() {
-        assertEquals(rule().getValueChecked(testingCalendrical), testingValue);
+        assertEquals(rule().getValueChecked(testingCalendrical), DateTimeField.of(rule(), testingValue));
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
@@ -236,28 +211,10 @@ public abstract class AbstractTestDateTimeFieldRule {
     }
 
     //-----------------------------------------------------------------------
-    // getInteger(Calendrical)
+    // field(int)
     //-----------------------------------------------------------------------
-    public void test_getInteger_fromTestingFields() {
-        assertEquals(rule().getInteger(testingCalendrical), (Integer) testingInt);
-    }
-
-    public void test_getInteger_Calendrical_cannotDerive() {
-        Calendrical cal = new MockSimpleCalendrical();
-        assertEquals(rule().getInteger(cal), null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getInt(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_getInt_fromTestingFields() {
-        assertEquals(rule().getInt(testingCalendrical), testingInt);
-    }
-
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_getInt_Calendrical_cannotDerive() {
-        Calendrical cal = new MockSimpleCalendrical();
-        rule().getInt(cal);
+    public void test_field_int() {
+        assertEquals(rule().field(testingValue), DateTimeField.of(rule(), testingValue));
     }
 
 }

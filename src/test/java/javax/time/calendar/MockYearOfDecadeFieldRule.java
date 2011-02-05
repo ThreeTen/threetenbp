@@ -38,21 +38,21 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class MockYearOfDecadeFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
+public final class MockYearOfDecadeFieldRule extends DateTimeFieldRule implements Serializable {
     /** Singleton instance. */
-    public static final DateTimeFieldRule<Integer> INSTANCE = new MockYearOfDecadeFieldRule();
+    public static final DateTimeFieldRule INSTANCE = new MockYearOfDecadeFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockYearOfDecadeFieldRule() {
-        super(Integer.class, ISOChronology.INSTANCE, "YearOfDecade", ISOPeriodUnit.YEARS, ISOPeriodUnit.DECADES, 0, 9);
+        super(ISOChronology.INSTANCE, "YearOfDecade", ISOPeriodUnit.YEARS, ISOPeriodUnit.DECADES, 0, 9);
     }
     private Object readResolve() {
         return INSTANCE;
     }
     @Override
-    protected Integer derive(Calendrical calendrical) {
-        Integer yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
-        return (yocVal == null ? null : yocVal % 10);
+    protected DateTimeField derive(Calendrical calendrical) {
+        DateTimeField yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
+        return (yocVal == null ? null : field(yocVal.getValidValue() % 10));
     }
 }

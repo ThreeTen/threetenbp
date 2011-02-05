@@ -44,11 +44,11 @@ import org.testng.annotations.Test;
 public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISODayOfYearRule() {
-        super(LocalDate.of(2009, 12, 26), 360, 360);
+        super(LocalDate.of(2009, 12, 26), 360);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.dayOfYearRule();
     }
 
@@ -56,8 +56,8 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.dayOfYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.dayOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -88,12 +88,12 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.of(2007, 6, 20);
-        assertEquals(rule().getValue(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
+        assertEquals(rule().getValue(cal), rule().field(31 + 28 + 31 + 30 + 31 + 20));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValue(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
+        assertEquals(rule().getValue(cal), rule().field(31 + 28 + 31 + 30 + 31 + 20));
     }
 
 }

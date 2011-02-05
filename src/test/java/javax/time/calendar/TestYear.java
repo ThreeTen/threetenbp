@@ -56,7 +56,7 @@ public class TestYear {
     private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
     private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
     private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
-    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.yearRule();
+    private static final DateTimeFieldRule RULE = ISOChronology.yearRule();
 
     @BeforeMethod
     public void setUp() {
@@ -144,11 +144,11 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // get(CalendricalField)
+    // get()
     //-----------------------------------------------------------------------
     public void test_get() {
-        assertEquals(Year.of(1999).get(RULE), (Integer) 1999);
-        assertEquals(Year.of(1999).get(MockDecadeOfCenturyFieldRule.INSTANCE), (Integer) 9);
+        assertEquals(Year.of(1999).get(RULE).getValue(), 1999);
+        assertEquals(Year.of(1999).get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
     }
 
     public void test_get_unsupportedField() {

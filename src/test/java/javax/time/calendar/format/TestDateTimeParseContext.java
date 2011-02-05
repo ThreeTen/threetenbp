@@ -39,7 +39,6 @@ import java.util.Map;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 
@@ -54,9 +53,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeParseContext {
 
-    private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule<MonthOfYear> RULE_MOY = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
 
     private DateTimeFormatSymbols symbols;
     private DateTimeParseContext context;

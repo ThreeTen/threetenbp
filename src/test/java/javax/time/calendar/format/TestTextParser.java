@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,14 +31,12 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -53,9 +51,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestTextParser {
 
-    private static final DateTimeFieldRule<DayOfWeek> RULE_DOW = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule<MonthOfYear> RULE_MOY = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule RULE_DOW = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
 
     private DateTimeFormatSymbols symbols;
 
@@ -190,7 +188,7 @@ public class TestTextParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parseText(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parseText(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input, 0);
@@ -199,7 +197,7 @@ public class TestTextParser {
     }
 
     @Test(dataProvider="parseNumber")
-    public void test_parseNumber(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parseNumber(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input, 0);
@@ -209,7 +207,7 @@ public class TestTextParser {
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseUpper(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseUpper(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
@@ -219,7 +217,7 @@ public class TestTextParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseUpper(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseUpper(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
@@ -230,7 +228,7 @@ public class TestTextParser {
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseLower(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseLower(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
@@ -240,7 +238,7 @@ public class TestTextParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseLower(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseLower(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(rule, style);

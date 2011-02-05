@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
@@ -83,7 +84,7 @@ public final class NanoOfSecond
      *
      * @return the nano-of-second rule, never null
      */
-    public static DateTimeFieldRule<Integer> rule() {
+    public static DateTimeFieldRule rule() {
         return ISOChronology.nanoOfSecondRule();
     }
 
@@ -113,7 +114,7 @@ public final class NanoOfSecond
      * @throws UnsupportedRuleException if the nano-of-second cannot be obtained
      */
     public static NanoOfSecond nanoOfSecond(Calendrical calendrical) {
-        return nanoOfSecond(rule().getInt(calendrical));
+        return nanoOfSecond(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -138,7 +139,7 @@ public final class NanoOfSecond
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, nanoOfSecond, this, ISOChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(nanoOfSecond), this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -171,8 +172,8 @@ public final class NanoOfSecond
      * @return true if the calendrical matches, false otherwise
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
-        Integer calValue = calendrical.get(rule());
-        return calValue != null && calValue == getValue();
+        DateTimeField calValue = calendrical.get(rule());
+        return calValue != null && calValue.getValue() == getValue();
     }
 
     /**

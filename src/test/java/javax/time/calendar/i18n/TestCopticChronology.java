@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,7 @@
  */
 package javax.time.calendar.i18n;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,8 +43,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -103,8 +101,8 @@ public class TestCopticChronology {
 
     //-----------------------------------------------------------------------
     public void test_yearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = CopticChronology.yearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = CopticChronology.yearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.Year");
         assertEquals(rule.getName(), "Year");
         assertEquals(rule.getMinimumValue(), CopticDate.MIN_YEAR);
@@ -118,8 +116,8 @@ public class TestCopticChronology {
     }
 
     public void test_monthOfYearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = CopticChronology.monthOfYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = CopticChronology.monthOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -133,8 +131,8 @@ public class TestCopticChronology {
     }
 
     public void test_dayOfMonthRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = CopticChronology.dayOfMonthRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = CopticChronology.dayOfMonthRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -148,8 +146,8 @@ public class TestCopticChronology {
     }
 
     public void test_dayOfYearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = CopticChronology.dayOfYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = CopticChronology.dayOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -163,8 +161,8 @@ public class TestCopticChronology {
     }
 
     public void test_dayOfWeekRule() throws Exception {
-        DateTimeFieldRule<DayOfWeek> rule = CopticChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DayOfWeek.class);
+        DateTimeFieldRule rule = CopticChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -183,7 +181,7 @@ public class TestCopticChronology {
     }
 
     //-----------------------------------------------------------------------
-    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
+    private void serialize(DateTimeFieldRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

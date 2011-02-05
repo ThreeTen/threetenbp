@@ -11,8 +11,8 @@ import javax.time.Duration;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
@@ -126,7 +126,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
 //     *
 //     * @return the rule for the year field, never null
 //     */
-//    public static DateTimeFieldRule<Integer> yearRule() {
+//    public static DateTimeFieldRule yearRule() {
 //        return YearRule.INSTANCE;
 //    }
 
@@ -135,7 +135,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
      *
      * @return the rule for the year field, never null
      */
-    public static DateTimeFieldRule<JapaneseEra> eraRule() {
+    public static DateTimeFieldRule eraRule() {
         return EraRule.INSTANCE;
     }
 
@@ -144,7 +144,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
      *
      * @return the rule for the year of era field, never null
      */
-    public static DateTimeFieldRule<Integer> yearOfEraRule() {
+    public static DateTimeFieldRule yearOfEraRule() {
         return YearOfEraRule.INSTANCE;
     }
 
@@ -153,7 +153,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
      *
      * @return the rule for the month-of-year field, never null
      */
-    public static DateTimeFieldRule<MonthOfYear> monthOfYearRule() {
+    public static DateTimeFieldRule monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -162,7 +162,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-month field, never null
      */
-    public static DateTimeFieldRule<Integer> dayOfMonthRule() {
+    public static DateTimeFieldRule dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
@@ -171,7 +171,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-year field, never null
      */
-    public static DateTimeFieldRule<Integer> dayOfYearRule() {
+    public static DateTimeFieldRule dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
@@ -180,7 +180,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-week field, never null
      */
-    public static DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
+    public static DateTimeFieldRule dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
@@ -258,10 +258,10 @@ public final class JapaneseChronology extends Chronology implements Serializable
 //    /**
 //     * Rule implementation.
 //     */
-//    private static final class YearRule extends DateTimeFieldRule<Integer> implements
+//    private static final class YearRule extends DateTimeFieldRule implements
 //            Serializable {
 //        /** Singleton instance. */
-//        private static final DateTimeFieldRule<Integer> INSTANCE = new YearRule();
+//        private static final DateTimeFieldRule INSTANCE = new YearRule();
 //        /** A serialization identifier for this class. */
 //        private static final long serialVersionUID = 1L;
 //        /** Constructor. */
@@ -306,33 +306,33 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class EraRule extends DateTimeFieldRule<JapaneseEra> implements Serializable {
+    private static final class EraRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<JapaneseEra> INSTANCE = new EraRule();
+        private static final DateTimeFieldRule INSTANCE = new EraRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            super(JapaneseEra.class, JapaneseChronology.INSTANCE, "Era", periodEras(), null, -3, 2);
+            super(JapaneseChronology.INSTANCE, "Era", periodEras(), null, -3, 2);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected JapaneseEra derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
-            return date != null ? date.getEra() : null;
+            return date != null ? field(date.getEra().getValue()) : null;
         }
         @Override
         protected void merge(CalendricalMerger merger) {
-            Integer yoeVal = merger.getValue(JapaneseChronology.yearOfEraRule());
+            DateTimeField yoeVal = merger.getValue(JapaneseChronology.yearOfEraRule());
             if (yoeVal != null) {
                 // era, year, month, day-of-month
-                JapaneseEra era = merger.getValue(this);
-                MonthOfYear moy = merger.getValue(JapaneseChronology.monthOfYearRule());
-                Integer domVal = merger.getValue(JapaneseChronology.dayOfMonthRule());
-                if (moy != null && domVal != null) {
-                    JapaneseDate date = JapaneseDate.of(era, yoeVal, moy, domVal);
+                JapaneseEra era = JapaneseEra.of(merger.getValue(this).getValidValue());
+                DateTimeField moyVal = merger.getValue(JapaneseChronology.monthOfYearRule());
+                DateTimeField domVal = merger.getValue(JapaneseChronology.dayOfMonthRule());
+                if (moyVal != null && domVal != null) {
+                    JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidValue(), MonthOfYear.of(moyVal.getValidValue()), domVal.getValidValue());
                     merger.storeMerged(JapaneseDate.rule(), date);
                     merger.removeProcessed(this);
                     merger.removeProcessed(JapaneseChronology.yearOfEraRule());
@@ -340,9 +340,9 @@ public final class JapaneseChronology extends Chronology implements Serializable
                     merger.removeProcessed(JapaneseChronology.dayOfMonthRule());
                 }
                 // era, year, day-of-year
-                Integer doyVal = merger.getValue(JapaneseChronology.dayOfYearRule());
+                DateTimeField doyVal = merger.getValue(JapaneseChronology.dayOfYearRule());
                 if (doyVal != null) {
-                    JapaneseDate date = JapaneseDate.of(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
+                    JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidValue(), MonthOfYear.JANUARY, 1).plusDays(doyVal.getValidValue() - 1);
                     merger.storeMerged(JapaneseDate.rule(), date);
                     merger.removeProcessed(this);
                     merger.removeProcessed(JapaneseChronology.yearOfEraRule());
@@ -382,14 +382,14 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class YearOfEraRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class YearOfEraRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new YearOfEraRule();
+        private static final DateTimeFieldRule INSTANCE = new YearOfEraRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearOfEraRule() {
-            super(Integer.class, JapaneseChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
+            super(JapaneseChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
                     JapaneseDate.MIN_YEAR_OF_ERA, JapaneseDate.MAX_YEAR_OF_ERA);
         }
         private Object readResolve() {
@@ -397,9 +397,9 @@ public final class JapaneseChronology extends Chronology implements Serializable
         }
         // TODO: min/max years based on era
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
-            return date != null ? date.getYearOfEra() : null;
+            return date != null ? field(date.getYearOfEra()) : null;
         }
     }
 
@@ -407,22 +407,22 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule<MonthOfYear> implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<MonthOfYear> INSTANCE = new MonthOfYearRule();
+        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(MonthOfYear.class, JapaneseChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
+            super(JapaneseChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected MonthOfYear derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
-            return date != null ? date.getMonthOfYear() : null;
+            return date != null ? field(date.getMonthOfYear().getValue()) : null;
         }
     }
 
@@ -430,14 +430,14 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfMonthRule();
+        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(Integer.class, JapaneseChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, 31);
+            super(JapaneseChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, 31);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -448,12 +448,14 @@ public final class JapaneseChronology extends Chronology implements Serializable
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            MonthOfYear moy = calendrical.get(JapaneseChronology.monthOfYearRule());
-            if (moy != null) {
-                JapaneseEra era = calendrical.get(JapaneseEra.rule());
-                Integer yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
-                if (era != null && yoeVal != null) {
-                    int isoYear = era.getYearOffset() + yoeVal;
+            DateTimeField moyVal = calendrical.get(JapaneseChronology.monthOfYearRule());
+            if (moyVal != null) {
+                MonthOfYear moy = MonthOfYear.of(moyVal.getValidValue());
+                DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
+                DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
+                if (eraVal != null && yoeVal != null) {
+                    JapaneseEra era = JapaneseEra.of(eraVal.getValidValue());
+                    int isoYear = era.getYearOffset() + yoeVal.getValidValue();
                     return moy.lengthInDays(ISOChronology.isLeapYear(isoYear));
                 } else {
                     return moy.maxLengthInDays();
@@ -462,9 +464,9 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return getMaximumValue();
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
-            return date != null ? date.getDayOfMonth() : null;
+            return date != null ? field(date.getDayOfMonth()) : null;
         }
     }
 
@@ -472,14 +474,14 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfYearRule();
+        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(Integer.class, JapaneseChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, 366);
+            super(JapaneseChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -490,19 +492,20 @@ public final class JapaneseChronology extends Chronology implements Serializable
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            JapaneseEra era = calendrical.get(JapaneseEra.rule());
-            Integer yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
-            if (era != null && yoeVal != null) {
-                int isoYear = era.getYearOffset() + yoeVal;
+            DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
+            DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
+            if (eraVal != null && yoeVal != null) {
+                JapaneseEra era = JapaneseEra.of(eraVal.getValidValue());
+                int isoYear = era.getYearOffset() + yoeVal.getValidValue();
                 Year year = Year.of(isoYear);
                 return year.lengthInDays();
             }
             return getMaximumValue();
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
-            return date != null ? date.getDayOfYear() : null;
+            return date != null ? field(date.getDayOfYear()) : null;
         }
     }
 
@@ -510,22 +513,22 @@ public final class JapaneseChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
+        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(DayOfWeek.class, JapaneseChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super(JapaneseChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected DayOfWeek derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
-            return date != null ? date.getDayOfWeek() : null;
+            return date != null ? field(date.getDayOfWeek().getValue()) : null;
         }
     }
 

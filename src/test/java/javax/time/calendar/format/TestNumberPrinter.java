@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,9 +38,9 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
@@ -72,7 +72,7 @@ public class TestNumberPrinter {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), 3);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -99,7 +99,7 @@ public class TestNumberPrinter {
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), 3);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -108,7 +108,7 @@ public class TestNumberPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), 3);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -206,7 +206,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), value);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), minPad, maxPad, SignStyle.NOT_NEGATIVE);
         try {
             pp.print(calendrical, buf, symbols);
@@ -226,7 +226,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NEVER(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), value);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), minPad, maxPad, SignStyle.NEVER);
         try {
             pp.print(calendrical, buf, symbols);
@@ -245,7 +245,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NORMAL(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), value);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), minPad, maxPad, SignStyle.NORMAL);
         try {
             pp.print(calendrical, buf, symbols);
@@ -264,7 +264,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_ALWAYS(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), value);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), minPad, maxPad, SignStyle.ALWAYS);
         try {
             pp.print(calendrical, buf, symbols);
@@ -283,7 +283,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.dayOfMonthRule(), value);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.dayOfMonthRule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.dayOfMonthRule(), minPad, maxPad, SignStyle.EXCEEDS_PAD);
         try {
             pp.print(calendrical, buf, symbols);
@@ -305,7 +305,7 @@ public class TestNumberPrinter {
 
     //-----------------------------------------------------------------------
     public void test_derivedValue() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.hourOfDayRule(), 13);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.hourOfDayRule(), 13);
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.hourOfAmPmRule(), 2, 2, SignStyle.NOT_NEGATIVE);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "01");   // 1PM
@@ -314,12 +314,12 @@ public class TestNumberPrinter {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.hourOfAmPmRule(), 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical(ISOChronology.hourOfAmPmRule(), 4)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(ISOChronology.hourOfAmPmRule(), 4)), true);
     }
 
     public void test_isPrintDataAvailable_trueDerived() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(ISOChronology.quarterOfYearRule(), 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.APRIL)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(ISOChronology.monthOfYearRule(), 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {

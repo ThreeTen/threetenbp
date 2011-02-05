@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -50,7 +50,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The rule to output, not null.
      */
-    private final DateTimeFieldRule<?> rule;
+    private final DateTimeFieldRule rule;
     /**
      * The minimum width, from 0 to 9.
      */
@@ -67,7 +67,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param minWidth  the minimum width to output, from 0 to 9
      * @param maxWidth  the maximum width to output, from 0 to 9
      */
-    FractionPrinterParser(DateTimeFieldRule<?> rule, int minWidth, int maxWidth) {
+    FractionPrinterParser(DateTimeFieldRule rule, int minWidth, int maxWidth) {
         // validated by caller
         this.rule = rule;
         this.minWidth = minWidth;
@@ -77,7 +77,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = rule.getInt(calendrical);
+        int value = rule.getValueChecked(calendrical).getValue();
         BigDecimal fraction = rule.convertIntToFraction(value);
         if (fraction.scale() == 0) {  // scale is zero if value is zero
             if (minWidth > 0) {

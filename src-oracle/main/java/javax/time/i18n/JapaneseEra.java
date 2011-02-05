@@ -77,7 +77,7 @@ public enum JapaneseEra implements Calendrical {
      *
      * @return the era rule, never null
      */
-    public static DateTimeFieldRule<JapaneseEra> rule() {
+    public static DateTimeFieldRule rule() {
         return JapaneseChronology.eraRule();
     }
 
@@ -140,7 +140,7 @@ public enum JapaneseEra implements Calendrical {
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
     public static JapaneseEra from(Calendrical calendrical) {
-        return rule().getValueChecked(calendrical);
+        return of(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -155,7 +155,7 @@ public enum JapaneseEra implements Calendrical {
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, JapaneseChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(getValue()), this, JapaneseChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

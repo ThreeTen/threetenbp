@@ -40,30 +40,30 @@ import javax.time.MathUtils;
  *
  * @author Stephen Colebourne
  */
-public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
+public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule implements Serializable {
 
     /** Singleton instance. */
-    public static final DateTimeFieldRule<Integer> INSTANCE = new MockDecadeOfCenturyFieldRule();
+    public static final DateTimeFieldRule INSTANCE = new MockDecadeOfCenturyFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockDecadeOfCenturyFieldRule() {
-        super(Integer.class, ISOChronology.INSTANCE, "DecadeOfCentury", ISOPeriodUnit.DECADES, ISOPeriodUnit.CENTURIES, 0, 9);
+        super(ISOChronology.INSTANCE, "DecadeOfCentury", ISOPeriodUnit.DECADES, ISOPeriodUnit.CENTURIES, 0, 9);
     }
     private Object readResolve() {
         return INSTANCE;
     }
     @Override
-    protected Integer derive(Calendrical calendrical) {
-        Integer yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
-        return (yocVal == null ? null : yocVal / 10);
+    protected DateTimeField derive(Calendrical calendrical) {
+        DateTimeField yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
+        return (yocVal == null ? null : field(yocVal.getValidValue() / 10));
     }
     @Override
     protected void merge(CalendricalMerger merger) {
-        Integer yodVal = merger.getValue(MockYearOfDecadeFieldRule.INSTANCE);
+        DateTimeField yodVal = merger.getValue(MockYearOfDecadeFieldRule.INSTANCE);
         if (yodVal != null) {
-            int doc = merger.getValue(this);
-            int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc, 10), yodVal);
+            DateTimeField doc = merger.getValue(this);
+            int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc.getValidValue(), 10), yodVal.getValidValue());
             merger.storeMerged(MockYearOfCenturyFieldRule.INSTANCE, yoc);
             merger.removeProcessed(this);
             merger.removeProcessed(MockYearOfDecadeFieldRule.INSTANCE);

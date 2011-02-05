@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,10 +38,10 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
@@ -56,7 +56,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestReducedPrinter {
 
-    private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
     private StringBuilder buf;
     private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;
@@ -68,7 +68,7 @@ public class TestReducedPrinter {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
         emptyCalendrical = DateTimeFields.EMPTY;
-        calendrical2012 = new MockSimpleCalendrical(RULE_YEAR, 2012);
+        calendrical2012 = DateTimeField.of(RULE_YEAR, 2012);
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
@@ -168,7 +168,7 @@ public class TestReducedPrinter {
 
     @Test(dataProvider="Pivot") 
     public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(RULE_YEAR, value);
+        Calendrical calendrical = DateTimeField.of(RULE_YEAR, value);
         ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, width, baseValue);
         try {
             pp.print(calendrical, buf, symbols);
@@ -188,7 +188,7 @@ public class TestReducedPrinter {
 
     //-----------------------------------------------------------------------
     public void test_derivedValue() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(ISOChronology.hourOfDayRule(), 13);
+        Calendrical calendrical = DateTimeField.of(ISOChronology.hourOfDayRule(), 13);
         ReducedPrinterParser pp = new ReducedPrinterParser(ISOChronology.hourOfAmPmRule(), 2, 0);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "01");   // 1PM
@@ -197,12 +197,12 @@ public class TestReducedPrinter {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
-        assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical(RULE_YEAR, 2015)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(RULE_YEAR, 2015)), true);
     }
 
     public void test_isPrintDataAvailable_trueDerived() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(ISOChronology.quarterOfYearRule(), 2, 3);
-        assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.APRIL)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(ISOChronology.monthOfYearRule(), 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {

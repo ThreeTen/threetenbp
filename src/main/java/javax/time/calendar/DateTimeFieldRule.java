@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -59,14 +59,11 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe and must
  * ensure serialization works correctly.
- * 
- * @param <T> the underlying type representing the data, typically a {@code Calendrical},
- *  {@code Number} or {@code Enum}, must be immutable, should be comparable
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
+public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
     // TODO: broken serialization
 
     /** A serialization identifier for this class. */
@@ -86,7 +83,6 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /**
      * Constructor.
      *
-     * @param reifiedClass  the reified class, not null
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
@@ -95,20 +91,18 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * @param maximumValue  the minimum value
      */
     protected DateTimeFieldRule(
-            Class<T> reifiedClass,
             Chronology chronology,
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             int minimumValue,
             int maximumValue) {
-        this(reifiedClass, chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
+        this(chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
     }
 
     /**
      * Constructor.
      *
-     * @param reifiedClass  the reified class, not null
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
@@ -118,7 +112,6 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * @param hasText  true if this field has a text representation
      */
     protected DateTimeFieldRule(
-            Class<T> reifiedClass,
             Chronology chronology,
             String name,
             PeriodUnit periodUnit,
@@ -126,151 +119,29 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
             int minimumValue,
             int maximumValue,
             boolean hasText) {
-        super(reifiedClass, chronology, name, periodUnit, periodRange);
+        super(DateTimeField.class, chronology, name, periodUnit, periodRange);
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
         this.textStores = (hasText ? new ConcurrentHashMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>>() : null);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the {@code Integer} value of this field from the specified calendrical
-     * returning {@code null} if the value cannot be returned.
+     * Interprets the specified value.
      * <p>
-     * This uses {@link #getValue(Calendrical)} to find the value and then
-     * converts it to an {@code Integer}.
+     * Before this method is called, the value will be checked to ensure it is not of
+     * the type of this rule.
      *
-     * @param calendrical  the calendrical to get the field value from, not null
-     * @return the value of the field, null if unable to extract the field
+     * @param merger  the merger instance controlling the merge process, not null
+     * @param value  the value to interpret, null if unable to interpret the value
+     * @return the interpreted value
      */
-    public final Integer getInteger(Calendrical calendrical) {
-        T value = getValue(calendrical);
-        return value == null ? null : convertValueToInteger(value);
-    }
-
-    /**
-     * Gets the {@code int} value of this field from the specified calendrical
-     * throwing an exception if the value cannot be returned.
-     * <p>
-     * This uses {@link #getValue(Calendrical)} to find the value and then
-     * converts it to an {@code int} ensuring it isn't {@code null}.
-     *
-     * @param calendrical  the calendrical to get the field value from, not null
-     * @return the value of the field, never null
-     * @throws UnsupportedRuleException if the field cannot be extracted
-     */
-    public final int getInt(Calendrical calendrical) {
-        T value = getValue(calendrical);
-        if (value == null) {
-            throw new UnsupportedRuleException(this);
+    @Override
+    protected DateTimeField interpret(CalendricalMerger merger, Object value) {
+        if (value instanceof Integer) {
+            return field((Integer) value);
         }
-        return convertValueToInt(value);
+        return null;
     }
-
-    /**
-     * Converts the typed value of the rule to the {@code Integer} equivalent.
-     * <p>
-     * This method avoids boxing and unboxing when the value is an Integer.
-     *
-     * @param value  the value to convert, not null
-     * @return the int value of the field
-     */
-    private Integer convertValueToInteger(T value) {
-        if (getReifiedType() == Integer.class) {
-            return (Integer) value;
-        }
-        return convertValueToInt(value);
-    }
-
-    /**
-     * Converts the typed value of the rule to the {@code int} equivalent.
-     * <p>
-     * This default implementation handles {@code Integer} and {@code Enum}.
-     * When the reified type is another type, this method must be overridden.
-     *
-     * @param value  the value to convert, not null
-     * @return the int value of the field
-     * @throws ClassCastException if the value cannot be converted
-     */
-    public int convertValueToInt(T value) {
-        if (value instanceof Enum<?>) {
-            return ((Enum<?>) value).ordinal() + getMinimumValue();
-        }
-        return (Integer) value;
-    }
-
-    /**
-     * Converts the {@code int} to a typed value of the rule.
-     * <p>
-     * The {@code int} will be checked to ensure that it is within the
-     * valid range of values for the field.
-     * <p>
-     * This default implementation handles {@code Integer} and {@code Enum}.
-     * When the reified type is another type, this method must be overridden.
-     *
-     * @param value  the value to convert, not null
-     * @return the int value of the field
-     * @throws IllegalCalendarFieldValueException if the value is invalid
-     * @throws ClassCastException if the value cannot be converted
-     */
-    public T convertIntToValue(int value) {
-        checkValue(value);
-        if (Enum.class.isAssignableFrom(getReifiedType())) {
-            return getReifiedType().getEnumConstants()[value - getMinimumValue()];
-        }
-        return reify(value);
-    }
-
-//    /**
-//     * Interprets the numeric value ensuring it is within the valid range for this rule.
-//     * <p>
-//     * If the value is outside the valid range, the implementation must add/subtract
-//     * until the value is within the range. The amount added is stored in the overflow
-//     * on the merger.
-//     *
-//     * @param merger  the merger instance controlling the merge process, not null
-//     * @param value  the value to interpret, not null
-//     */
-//    protected Object interpretNumber(CalendricalMerger merger, Number value) {
-//        // TODO: overkill - just go straight to int?
-//        long longVal = value.longValue();
-//        int val = MathUtils.safeToInt(longVal);
-//        return interpretNumber(merger, val);
-//    }
-//
-//    /**
-//     * Interprets the numeric value ensuring it is within the valid range for this rule.
-//     * <p>
-//     * If the value is outside the valid range, the implementation must add/subtract
-//     * until the value is within the range. The amount added is stored in the overflow
-//     * on the merger.
-//     *
-//     * @param merger  the merger instance controlling the merge process, not null
-//     * @param value  the value to interpret, not null
-//     */
-//    protected int interpretNumber(CalendricalMerger merger, int value) {
-//        if (value > getMaximumValue()) {
-//            merger.addToOverflow(createPeriod(value - getMaximumValue()));
-//            return getMaximumValue();
-//        }
-//        if (value > getMinimumValue()) {
-//            merger.addToOverflow(createPeriod(value - getMinimumValue()));
-//            return getMinimumValue();
-//        }
-//        return value;
-//    }
-
-//    /**
-//     * Creates a period in the unit of this rule.
-//     * <p>
-//     * For example, if this represents the day-of-month, the the unit is the day
-//     * and the period created will have the days field set.
-//     *
-//     * @param amount  the amount that the period should represent
-//     */
-//    protected Period createPeriod(int amount) {
-//        throw new UnsupportedOperationException();
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -580,6 +451,17 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
             throw new IllegalCalendarFieldValueException("The fractional value " + fraction + " of " + getName() +
                     " cannot be converted as it is not in the range 0 (inclusive) to 1 (exclusive)", this);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a field for this rule.
+     * 
+     * @param value  the value to store in the field, may be out of range for the rule
+     * @return the created field, not null
+     */
+    public DateTimeField field(int value) {
+       return DateTimeField.of(this, value); 
     }
 
     //-----------------------------------------------------------------------

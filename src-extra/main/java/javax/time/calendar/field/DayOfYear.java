@@ -39,6 +39,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -87,7 +88,7 @@ public final class DayOfYear
      *
      * @return the day-of-year rule, never null
      */
-    public static DateTimeFieldRule<Integer> rule() {
+    public static DateTimeFieldRule rule() {
         return ISOChronology.dayOfYearRule();
     }
 
@@ -127,7 +128,7 @@ public final class DayOfYear
      * @throws UnsupportedRuleException if the day-of-year cannot be obtained
      */
     public static DayOfYear dayOfYear(Calendrical calendrical) {
-        return dayOfYear(rule().getInt(calendrical));
+        return dayOfYear(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -161,7 +162,7 @@ public final class DayOfYear
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, dayOfYear, this, ISOChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(dayOfYear), this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -227,8 +228,8 @@ public final class DayOfYear
      * @return true if the calendrical matches, false otherwise
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
-        Integer calValue = calendrical.get(rule());
-        return calValue != null && calValue == getValue();
+        DateTimeField calValue = calendrical.get(rule());
+        return calValue != null && calValue.getValue() == getValue();
     }
 
     /**

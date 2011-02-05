@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -50,8 +50,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestReducedParser {
 
-    private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule<Integer> RULE_DOY = ISOChronology.dayOfYearRule();
+    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule RULE_DOY = ISOChronology.dayOfYearRule();
 
     private DateTimeFormatSymbols symbols;
     private DateTimeParseContext context;;

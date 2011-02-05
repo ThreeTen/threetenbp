@@ -138,12 +138,12 @@ public class TestJapaneseDate {
     
     @Test
     public void testGet() throws Exception {
-        assertEquals(testDate.get(JapaneseChronology.eraRule()), testDate.getEra());
-        assertEquals(testDate.get(JapaneseChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
-        assertEquals(testDate.get(JapaneseChronology.monthOfYearRule()), testDate.getMonthOfYear());
-        assertEquals(testDate.get(JapaneseChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
-        assertEquals(testDate.get(JapaneseChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(JapaneseChronology.dayOfWeekRule()), testDate.getDayOfWeek());
+        assertEquals(testDate.get(JapaneseChronology.eraRule()), JapaneseChronology.eraRule().field(testDate.getEra().getValue()));
+        assertEquals(testDate.get(JapaneseChronology.yearOfEraRule()), JapaneseChronology.yearOfEraRule().field(testDate.getYearOfEra()));
+        assertEquals(testDate.get(JapaneseChronology.monthOfYearRule()), JapaneseChronology.monthOfYearRule().field(testDate.getMonthOfYear().getValue()));
+        assertEquals(testDate.get(JapaneseChronology.dayOfMonthRule()), JapaneseChronology.dayOfMonthRule().field(testDate.getDayOfMonth()));
+        assertEquals(testDate.get(JapaneseChronology.dayOfYearRule()), JapaneseChronology.dayOfYearRule().field(testDate.getDayOfYear()));
+        assertEquals(testDate.get(JapaneseChronology.dayOfWeekRule()), JapaneseChronology.dayOfWeekRule().field(testDate.getDayOfWeek().getValue()));
     }
     
     public void testGetUnsupported() throws Exception {

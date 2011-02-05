@@ -66,9 +66,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestMonthDay {
 
-//    private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule<MonthOfYear> RULE_MONTH = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
+//    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule RULE_MONTH = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
     private MonthDay TEST_07_15;
 
     @BeforeMethod
@@ -224,7 +224,7 @@ public class TestMonthDay {
 
     //-----------------------------------------------------------------------
     public void factory_Calendrical() {
-        Calendrical cal = new MockSimpleCalendrical(RULE_MONTH, MonthOfYear.JULY, RULE_DOM, 15);
+        Calendrical cal = new MockSimpleCalendrical(RULE_MONTH, DateTimeField.of(RULE_MONTH, 7), RULE_DOM, DateTimeField.of(RULE_DOM, 15));
         assertEquals(MonthDay.of(cal), TEST_07_15);
     }
 
@@ -361,9 +361,9 @@ public class TestMonthDay {
     public void test_get_CalendricalRule() {
         MonthDay test = MonthDay.of(6, 12);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
-        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
-        assertEquals(test.get(ISOChronology.dayOfMonthRule()), (Integer) 12);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), RULE_MONTH.field(6));
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), ISOChronology.monthOfQuarterRule().field(3));
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()), RULE_DOM.field(12));
     }
 
     @Test(expectedExceptions=NullPointerException.class )

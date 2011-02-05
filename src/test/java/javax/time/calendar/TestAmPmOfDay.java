@@ -83,15 +83,15 @@ public class TestAmPmOfDay {
         AmPmOfDay.of(2);
     }
 
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(AmPmOfDay.AM.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.AM);
-        assertEquals(AmPmOfDay.PM.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
-        
-        assertEquals(AmPmOfDay.AM.get(ISOChronology.hourOfAmPmRule()), null);
-    }
+//    //-----------------------------------------------------------------------
+//    // get()
+//    //-----------------------------------------------------------------------
+//    public void test_get() {
+//        assertEquals(AmPmOfDay.AM.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.AM);
+//        assertEquals(AmPmOfDay.PM.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
+//        
+//        assertEquals(AmPmOfDay.AM.get(ISOChronology.hourOfAmPmRule()), null);
+//    }
 
     //-----------------------------------------------------------------------
     // getShortText()

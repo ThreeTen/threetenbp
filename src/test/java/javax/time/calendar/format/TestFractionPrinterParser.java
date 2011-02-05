@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,8 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -54,8 +55,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestFractionPrinterParser {
 
-    private static DateTimeFieldRule<Integer> NANO_RULE = ISOChronology.nanoOfSecondRule();
-    private static DateTimeFieldRule<Integer> SECOND_RULE = ISOChronology.secondOfMinuteRule();
+    private static DateTimeFieldRule NANO_RULE = ISOChronology.nanoOfSecondRule();
+    private static DateTimeFieldRule SECOND_RULE = ISOChronology.secondOfMinuteRule();
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;
@@ -262,7 +263,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
         } else {
-            assertEquals(context.getParsed(NANO_RULE), (Integer) expectedValue);
+            assertEquals(context.getParsed(NANO_RULE), expectedValue);
         }
     }
 
@@ -276,7 +277,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
         } else {
-            assertEquals(context.getParsed(NANO_RULE), (Integer) expectedValue);
+            assertEquals(context.getParsed(NANO_RULE), expectedValue);
         }
     }
 
@@ -290,7 +291,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
         } else {
-            assertEquals(context.getParsed(NANO_RULE), (Integer) expectedValue);
+            assertEquals(context.getParsed(NANO_RULE), expectedValue);
         }
     }
 
@@ -311,7 +312,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(SECOND_RULE), false);
         } else {
-            assertEquals(context.getParsed(SECOND_RULE), (Integer) value);
+            assertEquals(context.getParsed(SECOND_RULE), value);
         }
     }
 

@@ -44,11 +44,11 @@ import org.testng.annotations.Test;
 public class TestISOAmPmOfDayRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOAmPmOfDayRule() {
-        super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), AmPmOfDay.PM, 1);
+        super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), 1);
     }
 
     @Override
-    protected DateTimeFieldRule<AmPmOfDay> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.amPmOfDayRule();
     }
 
@@ -56,8 +56,8 @@ public class TestISOAmPmOfDayRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<AmPmOfDay> rule = ISOChronology.amPmOfDayRule();
-        assertEquals(rule.getReifiedType(), AmPmOfDay.class);
+        DateTimeFieldRule rule = ISOChronology.amPmOfDayRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.AmPmOfDay");
         assertEquals(rule.getName(), "AmPmOfDay");
         assertEquals(rule.getMinimumValue(), 0);
@@ -73,26 +73,8 @@ public class TestISOAmPmOfDayRule extends AbstractTestDateTimeFieldRule {
         LocalDateTime dt = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
         for (int i = 0; i < 24; i++) {
             dt = dt.withHourOfDay(i);
-            assertEquals(dt.get(rule()), i < 12 ? AmPmOfDay.AM : AmPmOfDay.PM);
+            assertEquals(dt.get(rule()), i < 12 ? rule().field(0) : rule().field(1));
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // convertValueToInt(T)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertValueToInt() {
-        assertEquals(rule().convertValueToInt(AmPmOfDay.AM), 0);
-        assertEquals(rule().convertValueToInt(AmPmOfDay.PM), 1);
-    }
-
-    //-----------------------------------------------------------------------
-    // convertIntToValue(int)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertIntToValue() {
-        assertEquals(rule().convertIntToValue(0), AmPmOfDay.AM);
-        assertEquals(rule().convertIntToValue(1), AmPmOfDay.PM);
     }
 
     //-----------------------------------------------------------------------
@@ -100,17 +82,17 @@ public class TestISOAmPmOfDayRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_time() {
         Calendrical cal = LocalTime.of(13, 30, 40, 50);
-        assertEquals(rule().getValue(cal), AmPmOfDay.PM);
+        assertEquals(rule().getValue(cal), rule().field(1));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
-        assertEquals(rule().getValue(cal), AmPmOfDay.PM);
+        assertEquals(rule().getValue(cal), rule().field(1));
     }
 
     public void test_getValue_Calendrical_dateTimeFields() {
         Calendrical cal = DateTimeFields.of(rule(), 0);
-        assertEquals(rule().getValue(cal), AmPmOfDay.AM);
+        assertEquals(rule().getValue(cal), rule().field(0));
     }
 
 }

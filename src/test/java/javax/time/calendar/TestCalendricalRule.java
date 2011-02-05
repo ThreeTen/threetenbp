@@ -65,8 +65,8 @@ public class TestCalendricalRule {
         }
         @Override
         protected BigInteger derive(Calendrical calendrical) {
-            Integer year = calendrical.get(ISOChronology.yearRule());
-            return year != null ? BigInteger.valueOf(year) : null;
+            DateTimeField year = calendrical.get(ISOChronology.yearRule());
+            return year != null ? BigInteger.valueOf(year.getValidValue()) : null;
         }
     }
 

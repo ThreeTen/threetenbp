@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,9 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -53,11 +51,11 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatterBuilder {
 
-    private static final DateTimeFieldRule<Integer> YEAR_RULE = ISOChronology.yearRule();
-    private static final DateTimeFieldRule<MonthOfYear> MOY_RULE = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule<Integer> DOM_RULE = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule<DayOfWeek> DOW_RULE = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule<Integer> MIN_RULE = ISOChronology.minuteOfHourRule();
+    private static final DateTimeFieldRule YEAR_RULE = ISOChronology.yearRule();
+    private static final DateTimeFieldRule MOY_RULE = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule DOM_RULE = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule DOW_RULE = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
 
     private DateTimeFormatterBuilder builder;
 

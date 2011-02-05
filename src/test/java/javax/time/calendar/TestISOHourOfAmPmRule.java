@@ -44,11 +44,11 @@ import org.testng.annotations.Test;
 public class TestISOHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOHourOfAmPmRule() {
-        super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), 1, 1);
+        super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), 1);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.hourOfAmPmRule();
     }
 
@@ -56,8 +56,8 @@ public class TestISOHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.hourOfAmPmRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.hourOfAmPmRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.HourOfAmPm");
         assertEquals(rule.getName(), "HourOfAmPm");
         assertEquals(rule.getMinimumValue(), 0);
@@ -73,7 +73,7 @@ public class TestISOHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
         LocalDateTime dt = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
         for (int i = 0; i < 24; i++) {
             dt = dt.withHourOfDay(i);
-            assertEquals((int) dt.get(rule()), i % 12);
+            assertEquals(dt.get(rule()), rule().field(i % 12));
         }
     }
 
@@ -82,17 +82,17 @@ public class TestISOHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_time() {
         Calendrical cal = LocalTime.of(13, 30, 40, 50);
-        assertEquals(rule().getValue(cal), (Integer) 1);
+        assertEquals(rule().getValue(cal), rule().field(1));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50);
-        assertEquals(rule().getValue(cal), (Integer) 1);
+        assertEquals(rule().getValue(cal), rule().field(1));
     }
 
     public void test_getValue_Calendrical_dateTimeFields() {
         Calendrical cal = DateTimeFields.of(rule(), 11);
-        assertEquals(rule().getValue(cal), (Integer) 11);
+        assertEquals(rule().getValue(cal), rule().field(11));
     }
 
 }

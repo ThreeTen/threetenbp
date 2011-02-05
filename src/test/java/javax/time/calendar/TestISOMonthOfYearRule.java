@@ -46,11 +46,11 @@ import org.testng.annotations.Test;
 public class TestISOMonthOfYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOMonthOfYearRule() {
-        super(LocalDate.of(2009, 12, 26), MonthOfYear.DECEMBER, 12);
+        super(LocalDate.of(2009, 12, 26), 12);
     }
 
     @Override
-    protected DateTimeFieldRule<MonthOfYear> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.monthOfYearRule();
     }
 
@@ -58,8 +58,8 @@ public class TestISOMonthOfYearRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<MonthOfYear> rule = ISOChronology.monthOfYearRule();
-        assertEquals(rule.getReifiedType(), MonthOfYear.class);
+        DateTimeFieldRule rule = ISOChronology.monthOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -74,44 +74,26 @@ public class TestISOMonthOfYearRule extends AbstractTestDateTimeFieldRule {
     }
 
     //-----------------------------------------------------------------------
-    // convertValueToInt(T)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertValueToInt() {
-        assertEquals(rule().convertValueToInt(MonthOfYear.FEBRUARY), 2);
-        assertEquals(rule().convertValueToInt(MonthOfYear.JUNE), 6);
-    }
-
-    //-----------------------------------------------------------------------
-    // convertIntToValue(int)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertIntToValue() {
-        assertEquals(rule().convertIntToValue(2), MonthOfYear.FEBRUARY);
-        assertEquals(rule().convertIntToValue(6), MonthOfYear.JUNE);
-    }
-
-    //-----------------------------------------------------------------------
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.of(2007, 6, 20);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
+        assertEquals(rule().getValue(cal), rule().field(6));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
+        assertEquals(rule().getValue(cal), rule().field(6));
     }
 
     public void test_getValue_Calendrical_monthDay() {
         Calendrical cal = MonthDay.of(6, 20);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
+        assertEquals(rule().getValue(cal), rule().field(6));
     }
 
     public void test_getValue_Calendrical_yearMonth() {
         Calendrical cal = YearMonth.of(2007, 6);
-        assertEquals(rule().getValue(cal), MonthOfYear.JUNE);
+        assertEquals(rule().getValue(cal), rule().field(6));
     }
 
 }

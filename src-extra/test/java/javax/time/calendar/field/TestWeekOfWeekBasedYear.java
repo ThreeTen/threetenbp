@@ -67,7 +67,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestWeekOfWeekBasedYear {
 
-    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.weekOfWeekBasedYearRule();
+    private static final DateTimeFieldRule RULE = ISOChronology.weekOfWeekBasedYearRule();
     private static final int MAX_LENGTH = 53;
 
     //-----------------------------------------------------------------------

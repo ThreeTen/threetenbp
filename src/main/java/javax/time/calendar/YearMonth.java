@@ -157,9 +157,9 @@ public final class YearMonth
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
     public static YearMonth of(Calendrical calendrical) {
-        Integer year = ISOChronology.yearRule().getValueChecked(calendrical);
-        MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
-        return of(year, month);
+        DateTimeField year = ISOChronology.yearRule().getValueChecked(calendrical);
+        DateTimeField month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
+        return of(year.getValidValue(), month.getValidValue());
     }
 
     //-------------------------------------------------------------------------
@@ -248,13 +248,14 @@ public final class YearMonth
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
         ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
         if (rule.equals(ISOChronology.yearRule())) {
-            return rule.reify(year);
+            return (T) ISOChronology.yearRule().field(year);
         }
         if (rule.equals(ISOChronology.monthOfYearRule())) {
-            return rule.reify(month);
+            return (T) ISOChronology.monthOfYearRule().field(month.getValue());
         }
         return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
     }
@@ -723,9 +724,9 @@ public final class YearMonth
         }
         @Override
         protected YearMonth derive(Calendrical calendrical) {
-            Integer year = calendrical.get(ISOChronology.yearRule());
-            MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
-            return year != null && moy != null ? YearMonth.of(year, moy) : null;
+            DateTimeField year = calendrical.get(ISOChronology.yearRule());
+            DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
+            return year != null && moy != null ? YearMonth.of(year.getValidValue(), moy.getValidValue()) : null;
         }
     }
 

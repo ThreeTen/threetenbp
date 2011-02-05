@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -84,7 +85,7 @@ public final class SecondOfMinute
      *
      * @return the second-of-minute rule, never null
      */
-    public static DateTimeFieldRule<Integer> rule() {
+    public static DateTimeFieldRule rule() {
         return ISOChronology.secondOfMinuteRule();
     }
 
@@ -122,7 +123,7 @@ public final class SecondOfMinute
      * @throws UnsupportedRuleException if the second-of-minute cannot be obtained
      */
     public static SecondOfMinute secondOfMinute(Calendrical calendrical) {
-        return secondOfMinute(rule().getInt(calendrical));
+        return secondOfMinute(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -156,7 +157,7 @@ public final class SecondOfMinute
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, secondOfMinute, this, ISOChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(secondOfMinute), this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -177,8 +178,8 @@ public final class SecondOfMinute
      * @return true if the calendrical matches, false otherwise
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
-        Integer calValue = calendrical.get(rule());
-        return calValue != null && calValue == getValue();
+        DateTimeField calValue = calendrical.get(rule());
+        return calValue != null && calValue.getValue() == getValue();
     }
 
     /**

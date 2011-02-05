@@ -44,11 +44,11 @@ import org.testng.annotations.Test;
 public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOWeekOfMonthRule() {
-        super(LocalDate.of(2009, 12, 26), 4, 4);
+        super(LocalDate.of(2009, 12, 26), 4);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.weekOfMonthRule();
     }
 
@@ -56,8 +56,8 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfMonthRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.weekOfMonthRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekOfMonth");
         assertEquals(rule.getName(), "WeekOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -100,7 +100,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
         LocalDate date = LocalDate.of(2007, 2, 1);
         for (int i = 0; i < 28; i++) {
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
     }
@@ -109,7 +109,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
         LocalDate date = LocalDate.of(2008, 2, 1);
         for (int i = 0; i < 29; i++) {
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
     }
@@ -118,7 +118,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
         LocalDate date = LocalDate.of(2007, 6, 1);
         for (int i = 0; i < 30; i++) {
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
     }
@@ -127,13 +127,13 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
         LocalDate date = LocalDate.of(2008, 6, 1);
         for (int i = 0; i < 30; i++) {
             int week = (i / 7) + 1;
-            assertEquals(rule().getValue(date), (Integer) week);
+            assertEquals(rule().getValue(date), rule().field(week));
             date = date.plusDays(1);
         }
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 2, 20, 12, 30)), (Integer) 3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 2, 20, 12, 30)), rule().field(3));
     }
 
 }

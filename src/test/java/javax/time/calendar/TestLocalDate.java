@@ -483,15 +483,15 @@ public class TestLocalDate {
     public void test_get_CalendricalRule() {
         LocalDate test = LocalDate.of(2008, 6, 30);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
-        assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
-        assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
-        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
-        assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
-        assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
-        assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
-        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) 27);
-        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) 2008);
+        assertEquals(test.get(ISOChronology.yearRule()).getValue(), 2008);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()).getValue(), 2);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()).getValue(), 6);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()).getValue(), 3);
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()).getValue(), 30);
+        assertEquals(test.get(ISOChronology.dayOfWeekRule()).getValue(), 1);
+        assertEquals(test.get(ISOChronology.dayOfYearRule()).getValue(), 182);
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()).getValue(), 27);
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()).getValue(), 2008);
         
         assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
         assertEquals(test.get(ISOChronology.minuteOfHourRule()), null);

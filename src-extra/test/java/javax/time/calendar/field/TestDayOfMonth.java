@@ -69,7 +69,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfMonth {
 
-    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE = ISOChronology.dayOfMonthRule();
     private static final int STANDARD_YEAR_LENGTH = 365;
     private static final int LEAP_YEAR_LENGTH = 366;
     private static final int MAX_LENGTH = 31;

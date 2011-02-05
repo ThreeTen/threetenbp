@@ -146,12 +146,12 @@ public class TestHijrahDate {
     
     @Test
     public void testGet() throws Exception {
-        assertEquals(testDate.get(HijrahChronology.eraRule()), testDate.getEra());
-        assertEquals(testDate.get(HijrahChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
-        assertEquals(testDate.get(HijrahChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
-        assertEquals(testDate.get(HijrahChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
-        assertEquals(testDate.get(HijrahChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(HijrahChronology.dayOfWeekRule()), testDate.getDayOfWeek());
+        assertEquals(testDate.get(HijrahChronology.eraRule()), HijrahChronology.eraRule().field(testDate.getEra().getValue()));
+        assertEquals(testDate.get(HijrahChronology.yearOfEraRule()), HijrahChronology.yearOfEraRule().field(testDate.getYearOfEra()));
+        assertEquals(testDate.get(HijrahChronology.monthOfYearRule()), HijrahChronology.monthOfYearRule().field(testDate.getMonthOfYear()));
+        assertEquals(testDate.get(HijrahChronology.dayOfMonthRule()), HijrahChronology.dayOfMonthRule().field(testDate.getDayOfMonth()));
+        assertEquals(testDate.get(HijrahChronology.dayOfYearRule()), HijrahChronology.dayOfYearRule().field(testDate.getDayOfYear()));
+        assertEquals(testDate.get(HijrahChronology.dayOfWeekRule()), HijrahChronology.dayOfWeekRule().field(testDate.getDayOfWeek().getValue()));
     }
     
     public void testGetUnsupported() throws Exception {

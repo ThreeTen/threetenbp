@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,15 +38,15 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class MockOtherChronologyRule extends DateTimeFieldRule<Integer> implements Serializable {
+public final class MockOtherChronologyRule extends DateTimeFieldRule implements Serializable {
 
     /** Singleton instance. */
-    public static final DateTimeFieldRule<Integer> INSTANCE = new MockOtherChronologyRule();
+    public static final DateTimeFieldRule INSTANCE = new MockOtherChronologyRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockOtherChronologyRule() {
-        super(Integer.class, MockOtherChronology.INSTANCE, "Months", MockOtherChronology.OTHER_MONTHS, null, 0, 1000000000);
+        super(MockOtherChronology.INSTANCE, "Months", MockOtherChronology.OTHER_MONTHS, null, 0, 1000000000);
     }
     private Object readResolve() {
         return INSTANCE;

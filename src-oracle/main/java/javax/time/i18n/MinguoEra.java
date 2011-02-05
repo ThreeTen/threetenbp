@@ -68,7 +68,7 @@ public enum MinguoEra implements Calendrical {
      *
      * @return the era rule, never null
      */
-    public static DateTimeFieldRule<MinguoEra> rule() {
+    public static DateTimeFieldRule rule() {
         return MinguoChronology.eraRule();
     }
 
@@ -106,7 +106,7 @@ public enum MinguoEra implements Calendrical {
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
     public static MinguoEra from(Calendrical calendrical) {
-        return rule().getValueChecked(calendrical);
+        return of(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -121,7 +121,7 @@ public enum MinguoEra implements Calendrical {
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, MinguoChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(getValue()), this, MinguoChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

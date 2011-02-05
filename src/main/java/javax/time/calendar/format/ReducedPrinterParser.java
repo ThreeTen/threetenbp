@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -61,7 +61,7 @@ final class ReducedPrinterParser extends NumberPrinterParser {
      * @param width  the field width, from 1 to 9
      * @param baseValue  the base value
      */
-    ReducedPrinterParser(DateTimeFieldRule<?> rule, int width, int baseValue) {
+    ReducedPrinterParser(DateTimeFieldRule rule, int width, int baseValue) {
         super(rule, width, width, SignStyle.NOT_NEGATIVE);
         if (width < 1 || width > 9) {
             throw new IllegalArgumentException("The width must be from 1 to 9 inclusive but was " + width);
@@ -80,7 +80,7 @@ final class ReducedPrinterParser extends NumberPrinterParser {
     /** {@inheritDoc} */
     @Override
     int getValue(Calendrical calendrical) {
-        int value = rule.getInt(calendrical);
+        int value = rule.getValueChecked(calendrical).getValue();
         return Math.abs(value % range);
     }
 

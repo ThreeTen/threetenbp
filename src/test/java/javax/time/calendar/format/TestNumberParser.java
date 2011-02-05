@@ -52,8 +52,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestNumberParser {
 
-    private static final DateTimeFieldRule<DayOfWeek> RULE_DOW = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE_DOW = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
 //    private static final DateTimeFieldRule<MonthOfYear> RULE_MOY = ISOChronology.monthOfYearRule();
 
     private DateTimeFormatSymbols symbols;

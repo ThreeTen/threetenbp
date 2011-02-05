@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,22 +44,22 @@ import org.testng.annotations.Test;
 @Test
 public class TestCalendricalMerger {
 
-    private static final DateTimeFieldRule<?> NULL_RULE = null;
-    private static final DateTimeFieldRule<Integer> YEAR_RULE = ISOChronology.yearRule();
+    private static final DateTimeFieldRule NULL_RULE = null;
+    private static final DateTimeFieldRule YEAR_RULE = ISOChronology.yearRule();
 //    private static final DateTimeFieldRule<MonthOfYear> MOY_RULE = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule<Integer> DOM_RULE = ISOChronology.dayOfMonthRule();
-//    private static final DateTimeFieldRule<Integer> DOY_RULE = ISOChronology.dayOfYearRule();
+    private static final DateTimeFieldRule DOM_RULE = ISOChronology.dayOfMonthRule();
+//    private static final DateTimeFieldRule DOY_RULE = ISOChronology.dayOfYearRule();
 //    private static final DateTimeFieldRule<DayOfWeek> DOW_RULE = ISOChronology.dayOfWeekRule();
 //    private static final DateTimeFieldRule<QuarterOfYear> QOY_RULE = ISOChronology.quarterOfYearRule();
-//    private static final DateTimeFieldRule<Integer> MOQ_RULE = ISOChronology.monthOfQuarterRule();
-//    private static final DateTimeFieldRule<Integer> HOUR_RULE = ISOChronology.hourOfDayRule();
-    private static final DateTimeFieldRule<AmPmOfDay> AMPM_RULE = ISOChronology.amPmOfDayRule();
-    private static final DateTimeFieldRule<Integer> HOUR_AMPM_RULE = ISOChronology.hourOfAmPmRule();
-    private static final DateTimeFieldRule<Integer> CLOCKHOUR_AMPM_RULE = ISOChronology.clockHourOfAmPmRule();
-//    private static final DateTimeFieldRule<Integer> MIN_RULE = ISOChronology.minuteOfHourRule();
-//    private static final DateTimeFieldRule<Integer> SEC_RULE = ISOChronology.secondOfMinuteRule();
-//    private static final DateTimeFieldRule<Integer> MILLISEC_RULE = ISOChronology.milliOfSecondRule();
-//    private static final DateTimeFieldRule<Integer> MILLIDAY_RULE = ISOChronology.milliOfDayRule();
+//    private static final DateTimeFieldRule MOQ_RULE = ISOChronology.monthOfQuarterRule();
+//    private static final DateTimeFieldRule HOUR_RULE = ISOChronology.hourOfDayRule();
+    private static final DateTimeFieldRule AMPM_RULE = ISOChronology.amPmOfDayRule();
+    private static final DateTimeFieldRule HOUR_AMPM_RULE = ISOChronology.hourOfAmPmRule();
+    private static final DateTimeFieldRule CLOCKHOUR_AMPM_RULE = ISOChronology.clockHourOfAmPmRule();
+//    private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
+//    private static final DateTimeFieldRule SEC_RULE = ISOChronology.secondOfMinuteRule();
+//    private static final DateTimeFieldRule MILLISEC_RULE = ISOChronology.milliOfSecondRule();
+//    private static final DateTimeFieldRule MILLIDAY_RULE = ISOChronology.milliOfDayRule();
 
     private static final CalendricalContext STRICT_CONTEXT = new CalendricalContext(true, true);
 //    private static final CalendricalContext STRICT_DISCARD_UNUSED_CONTEXT = new CalendricalContext(true, false);
@@ -74,12 +74,12 @@ public class TestCalendricalMerger {
     // getValue()
     //-----------------------------------------------------------------------
     public void test_getValue() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
-                assertEquals(merger.getValue(YEAR_RULE), (Integer) 2008);
-                assertEquals(merger.getValue(this), (Integer) 20);
+                assertEquals(merger.getValue(YEAR_RULE), YEAR_RULE.field(2008));
+                assertEquals(merger.getValue(this), field(20));
             }
         };
         CalendricalMerger m = createMerger(YEAR_RULE, 2008, rule, 20, STRICT_CONTEXT);
@@ -88,7 +88,7 @@ public class TestCalendricalMerger {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getValue_null() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -100,7 +100,7 @@ public class TestCalendricalMerger {
     }
 
     public void test_getValue_fieldNotPresent() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -113,7 +113,7 @@ public class TestCalendricalMerger {
 
 //    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
 //    public void test_getValue_strictInvalidValue() {
-//        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+//        DateTimeFieldRule rule = new MockFieldRule() {
 //            private static final long serialVersionUID = 1L;
 //            @Override
 //            protected void merge(CalendricalMerger merger) {
@@ -131,7 +131,7 @@ public class TestCalendricalMerger {
 //    }
 //
 //    public void test_getValue_lenientInvalidValue() {
-//        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+//        DateTimeFieldRule rule = new MockFieldRule() {
 //            private static final long serialVersionUID = 1L;
 //            @Override
 //            protected void merge(CalendricalMerger merger) {
@@ -207,7 +207,7 @@ public class TestCalendricalMerger {
     // storeMergedField()
     //-----------------------------------------------------------------------
     public void test_storeMergedField() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -216,11 +216,11 @@ public class TestCalendricalMerger {
         };
         CalendricalMerger m = createMerger(YEAR_RULE, 2008, rule, 20, STRICT_CONTEXT);
         m.merge();
-        assertMerged(m, null, YEAR_RULE, 2008, rule, 20, DOM_RULE, 30);
+        assertMerged(m, null, YEAR_RULE, YEAR_RULE.field(2008), rule, rule.field(20), DOM_RULE, DOM_RULE.field(30));
     }
 
     public void test_storeMergedField_invalidValueOK() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -229,11 +229,11 @@ public class TestCalendricalMerger {
         };
         CalendricalMerger m = createMerger(YEAR_RULE, 2008, rule, 20, STRICT_CONTEXT);
         m.merge();
-        assertMerged(m, null, YEAR_RULE, 2008, rule, 20, DOM_RULE, -1);
+        assertMerged(m, null, YEAR_RULE, YEAR_RULE.field(2008), rule, rule.field(20), DOM_RULE, DOM_RULE.field(-1));
     }
 
     public void test_storeMergedField_sameField_sameValue() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -242,12 +242,12 @@ public class TestCalendricalMerger {
         };
         CalendricalMerger m = createMerger(YEAR_RULE, 2008, rule, 20, STRICT_CONTEXT);
         m.merge();
-        assertMerged(m, null, YEAR_RULE, 2008, rule, 20);
+        assertMerged(m, null, YEAR_RULE, YEAR_RULE.field(2008), rule, rule.field(20));
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_storeMergedField_sameField_differentValue() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -260,14 +260,14 @@ public class TestCalendricalMerger {
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(YEAR_RULE, ex.getRule());
-            assertMerged(m, null, YEAR_RULE, 2008, rule, 20);
+            assertMerged(m, null, YEAR_RULE, YEAR_RULE.field(2008), rule, rule.field(20));
             throw ex;
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_storeMergedField_null() {
-        DateTimeFieldRule<Integer> rule = new MockFieldRule() {
+        DateTimeFieldRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -278,7 +278,7 @@ public class TestCalendricalMerger {
         try {
             m.merge();
         } catch (NullPointerException ex) {
-            assertMerged(m, null, YEAR_RULE, 2008, rule, 20);
+            assertMerged(m, null, YEAR_RULE, YEAR_RULE.field(2008), rule, rule.field(20));
             throw ex;
         }
     }

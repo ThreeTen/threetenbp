@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -94,7 +94,7 @@ public final class Year
      *
      * @return the year rule, never null
      */
-    public static DateTimeFieldRule<Integer> rule() {
+    public static DateTimeFieldRule rule() {
         return ISOChronology.yearRule();
     }
 
@@ -160,7 +160,7 @@ public final class Year
      * @throws UnsupportedRuleException if the year cannot be obtained
      */
     public static Year of(Calendrical calendrical) {
-        return Year.of(rule().getInt(calendrical));
+        return Year.of(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -195,7 +195,7 @@ public final class Year
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, year, this, ISOChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(year), this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -371,8 +371,8 @@ public final class Year
      * @return true if the calendrical matches, false otherwise
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
-        Integer calValue = calendrical.get(rule());
-        return calValue != null && calValue == getValue();
+        DateTimeField calValue = calendrical.get(rule());
+        return calValue != null && calValue.getValue() == getValue();
     }
 
     /**

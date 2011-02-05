@@ -68,7 +68,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestNanoOfSecond {
 
-    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.nanoOfSecondRule();
+    private static final DateTimeFieldRule RULE = ISOChronology.nanoOfSecondRule();
     private static final int MAX_LENGTH = 999999999;
     private static final int SKIP = 500000;
 

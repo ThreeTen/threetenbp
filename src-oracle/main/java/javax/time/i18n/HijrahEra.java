@@ -41,7 +41,7 @@ public enum HijrahEra implements Calendrical {
      *
      * @return the era rule, never null
      */
-    public static DateTimeFieldRule<HijrahEra> rule() {
+    public static DateTimeFieldRule rule() {
         return HijrahChronology.eraRule();
     }
 
@@ -79,7 +79,7 @@ public enum HijrahEra implements Calendrical {
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
     public static HijrahEra from(Calendrical calendrical) {
-        return rule().getValueChecked(calendrical);
+        return of(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -94,7 +94,7 @@ public enum HijrahEra implements Calendrical {
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, HijrahChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(getValue()), this, HijrahChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -39,9 +39,7 @@ import java.util.Locale;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -57,9 +55,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestTextPrinter {
 
-    private static final DateTimeFieldRule<DayOfWeek> RULE_DOW = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule<MonthOfYear> RULE_MOY = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule RULE_DOW = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;
@@ -162,7 +160,7 @@ public class TestTextPrinter {
     }
 
     @Test(dataProvider="print") 
-    public void test_print(DateTimeFieldRule<?> rule, TextStyle style, int dow, String expected) throws Exception {
+    public void test_print(DateTimeFieldRule rule, TextStyle style, int dow, String expected) throws Exception {
         Calendrical calendrical = DateTimeFields.of(rule, dow);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(calendrical, buf, symbols);

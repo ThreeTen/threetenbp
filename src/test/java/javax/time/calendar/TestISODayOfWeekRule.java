@@ -46,11 +46,11 @@ import org.testng.annotations.Test;
 public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
 
     public TestISODayOfWeekRule() {
-        super(LocalDate.of(2009, 12, 26), DayOfWeek.SATURDAY, 6);
+        super(LocalDate.of(2009, 12, 26), 6);
     }
 
     @Override
-    protected DateTimeFieldRule<DayOfWeek> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.dayOfWeekRule();
     }
 
@@ -58,8 +58,8 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<DayOfWeek> rule = ISOChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DayOfWeek.class);
+        DateTimeFieldRule rule = ISOChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -74,34 +74,16 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
     }
 
     //-----------------------------------------------------------------------
-    // convertValueToInt(T)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertValueToInt() {
-        assertEquals(rule().convertValueToInt(DayOfWeek.MONDAY), 1);
-        assertEquals(rule().convertValueToInt(DayOfWeek.SATURDAY), 6);
-    }
-
-    //-----------------------------------------------------------------------
-    // convertIntToValue(int)
-    //-----------------------------------------------------------------------
-    @Override
-    public void test_convertIntToValue() {
-        assertEquals(rule().convertIntToValue(1), DayOfWeek.MONDAY);
-        assertEquals(rule().convertIntToValue(6), DayOfWeek.SATURDAY);
-    }
-
-    //-----------------------------------------------------------------------
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.of(2009, 12, 26);
-        assertEquals(rule().getValue(cal), DayOfWeek.SATURDAY);
+        assertEquals(rule().getValue(cal), rule().field(6));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.of(2009, 12, 26, 12, 30);
-        assertEquals(rule().getValue(cal), DayOfWeek.SATURDAY);
+        assertEquals(rule().getValue(cal), rule().field(6));
     }
 
 }

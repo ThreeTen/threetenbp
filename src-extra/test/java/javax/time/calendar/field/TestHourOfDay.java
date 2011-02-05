@@ -67,7 +67,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestHourOfDay {
 
-    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.hourOfDayRule();
+    private static final DateTimeFieldRule RULE = ISOChronology.hourOfDayRule();
     private static final int MAX_LENGTH = 23;
 
     @BeforeMethod

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -209,7 +209,7 @@ public final class DateTimeParseContext {
      * @param rule  the rule to set in the rule-value map, not null
      * @param value  the value to set in the rule-value map
      */
-    public void setParsed(DateTimeFieldRule<?> rule, int value) {
+    public void setParsed(DateTimeFieldRule rule, int value) {
         DateTimeFormatter.checkNotNull(rule, "DateTimeFieldRule must not be null");
         currentCalendrical().values.put(rule, value);
     }

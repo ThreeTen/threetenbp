@@ -179,9 +179,9 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
     public static MonthDay of(Calendrical calendrical) {
-        MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
-        Integer dom = ISOChronology.dayOfMonthRule().getValueChecked(calendrical);
-        return of(month, dom);
+        DateTimeField month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
+        DateTimeField dom = ISOChronology.dayOfMonthRule().getValueChecked(calendrical);
+        return of(month.getValidValue(), dom.getValidValue());
     }
 
     //-------------------------------------------------------------------------
@@ -268,13 +268,14 @@ public final class MonthDay
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
         ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
         if (rule.equals(ISOChronology.monthOfYearRule())) {
-            return rule.reify(month);
+            return (T) ISOChronology.monthOfYearRule().field(month.getValue());
         }
         if (rule.equals(ISOChronology.dayOfMonthRule())) {
-            return rule.reify(day);
+            return (T) ISOChronology.dayOfMonthRule().field(day);
         }
         return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
     }
@@ -629,9 +630,9 @@ public final class MonthDay
         }
         @Override
         protected MonthDay derive(Calendrical calendrical) {
-            MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
-            Integer dom = calendrical.get(ISOChronology.dayOfMonthRule());
-            return moy != null && dom != null ? MonthDay.of(moy, dom) : null;
+            DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
+            DateTimeField dom = calendrical.get(ISOChronology.dayOfMonthRule());
+            return moy != null && dom != null ? MonthDay.of(moy.getValidValue(), dom.getValidValue()) : null;
         }
     }
 

@@ -235,7 +235,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule is null
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule<?> rule) {
+    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule rule) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
         NumberPrinterParser pp = new NumberPrinterParser(rule, 1, 10, SignStyle.NORMAL);
         active.valueParserIndex = appendInternal(pp, pp);
@@ -290,7 +290,7 @@ public final class DateTimeFormatterBuilder {
      * @throws NullPointerException if the field rule is null
      * @throws IllegalArgumentException if the width is invalid
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule<?> rule, int width) {
+    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule rule, int width) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
         if (width < 1 || width > 10) {
             throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
@@ -322,7 +322,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
-            DateTimeFieldRule<?> rule, int minWidth, int maxWidth, SignStyle signStyle) {
+            DateTimeFieldRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
             return appendValue(rule, maxWidth);
         }
@@ -378,7 +378,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the width or base value is invalid
      */
     public DateTimeFormatterBuilder appendValueReduced(
-            DateTimeFieldRule<?> rule, int width, int baseValue) {
+            DateTimeFieldRule rule, int width, int baseValue) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
         ReducedPrinterParser pp = new ReducedPrinterParser(rule, width, baseValue);
         appendFixedWidth(width, pp);
@@ -437,7 +437,7 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendFraction(
-            DateTimeFieldRule<?> rule, int minWidth, int maxWidth) {
+            DateTimeFieldRule rule, int minWidth, int maxWidth) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
         if (rule.isFixedValueSet() == false) {
             throw new IllegalArgumentException("The field does not have a fixed set of values");
@@ -476,7 +476,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule is null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeFieldRule<?> rule) {
+    public DateTimeFormatterBuilder appendText(DateTimeFieldRule rule) {
         return appendText(rule, TextStyle.FULL);
     }
 
@@ -495,7 +495,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule or text style is null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeFieldRule<?> rule, TextStyle textStyle) {
+    public DateTimeFormatterBuilder appendText(DateTimeFieldRule rule, TextStyle textStyle) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
         checkNotNull(textStyle, "TextStyle must not be null");
         TextPrinterParser pp = new TextPrinterParser(rule, textStyle);
@@ -893,7 +893,7 @@ public final class DateTimeFormatterBuilder {
                                 "Fraction letter 'f' must be followed by valid fraction pattern: " + pattern);
                     }
                 }
-                DateTimeFieldRule<?> rule = RULE_MAP.get(cur);
+                DateTimeFieldRule rule = RULE_MAP.get(cur);
                 if (rule == null) {
                     if (cur == 'z') {
                         if (count < 4) {
@@ -951,7 +951,7 @@ public final class DateTimeFormatterBuilder {
         }
     }
 
-    private void parseRule(char cur, int count, DateTimeFieldRule<?> rule, int fraction) {
+    private void parseRule(char cur, int count, DateTimeFieldRule rule, int fraction) {
         switch (cur) {
             case 'x':
             case 'y':
@@ -1002,7 +1002,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     /** Map of letters to rules. */
-    private static final Map<Character, DateTimeFieldRule<?>> RULE_MAP = new HashMap<Character, DateTimeFieldRule<?>>();
+    private static final Map<Character, DateTimeFieldRule> RULE_MAP = new HashMap<Character, DateTimeFieldRule>();
     static {
         // TODO: cross check with CLDR for letters
 //        RULE_MAP.put('G', ISOChronology.eraRule());

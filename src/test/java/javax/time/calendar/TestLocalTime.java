@@ -592,12 +592,12 @@ public class TestLocalTime {
         assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), null);
         assertEquals(test.get(ISOChronology.weekBasedYearRule()), null);
         
-        assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
-        assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
-        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), (Integer) 40);
-        assertEquals(test.get(ISOChronology.nanoOfSecondRule()), (Integer) 987654321);
-        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), (Integer) 0);
-        assertEquals(test.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()).getValue(), 12);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()).getValue(), 30);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()).getValue(), 40);
+        assertEquals(test.get(ISOChronology.nanoOfSecondRule()).getValue(), 987654321);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()).getValue(), 0);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()).getValue(), AmPmOfDay.PM.getValue());
         
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(LocalTime.rule()), test);

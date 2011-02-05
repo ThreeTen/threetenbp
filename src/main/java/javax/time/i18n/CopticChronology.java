@@ -37,10 +37,9 @@ import javax.time.Duration;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOPeriodUnit;
-import javax.time.calendar.LocalDate;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -183,7 +182,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the year field, never null
      */
-    public static DateTimeFieldRule<Integer> yearRule() {
+    public static DateTimeFieldRule yearRule() {
         return YearRule.INSTANCE;
     }
 
@@ -192,7 +191,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month-of-year field, never null
      */
-    public static DateTimeFieldRule<Integer> monthOfYearRule() {
+    public static DateTimeFieldRule monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -201,7 +200,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-month field, never null
      */
-    public static DateTimeFieldRule<Integer> dayOfMonthRule() {
+    public static DateTimeFieldRule dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
@@ -210,7 +209,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-year field, never null
      */
-    public static DateTimeFieldRule<Integer> dayOfYearRule() {
+    public static DateTimeFieldRule dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
@@ -219,7 +218,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-week field, never null
      */
-    public static DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
+    public static DateTimeFieldRule dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
@@ -282,42 +281,30 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Rule implementation.
+     * Merges the fields.
+     * 
+     * @param merger  the merge context
      */
-    private static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new YearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private YearRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "Year", YEARS, null, CopticDate.MIN_YEAR, CopticDate.MAX_YEAR);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Integer derive(Calendrical calendrical) {
-            CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? cd.getYear() : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer moyVal = merger.getValue(CopticChronology.monthOfYearRule());
-            Integer domVal = merger.getValue(CopticChronology.dayOfMonthRule());
-            if (moyVal != null && domVal != null) {
-                int year = merger.getValue(this);
-                CopticDate date;
-                if (merger.getContext().isStrict()) {
-                    date = CopticDate.of(year, moyVal, domVal);
-                } else {
-                    date = CopticDate.of(year, 1, 1)
-                                .plusMonths(moyVal).plusMonths(-1).plusDays(domVal).plusDays(-1);
-                }
-                merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-                merger.removeProcessed(this);
-                merger.removeProcessed(CopticChronology.monthOfYearRule());
-                merger.removeProcessed(CopticChronology.dayOfMonthRule());
+    static void merge(CalendricalMerger merger) {
+        DateTimeField year = merger.getValue(yearRule());
+        if (year != null) {
+            // year-month-day
+            DateTimeField moy = merger.getValue(monthOfYearRule());
+            DateTimeField dom = merger.getValue(dayOfMonthRule());
+            if (moy != null && dom != null) {
+                CopticDate date = CopticDate.of(year.getValidValue(), moy.getValidValue(), dom.getValidValue());
+                merger.storeMerged(CopticDate.rule(), date);
+                merger.removeProcessed(yearRule());
+                merger.removeProcessed(monthOfYearRule());
+                merger.removeProcessed(dayOfMonthRule());
+            }
+            // year-day
+            DateTimeField doy = merger.getValue(dayOfYearRule());
+            if (doy != null) {
+                CopticDate date = CopticDate.of(year.getValidValue(), 1, 1).withDayOfYear(doy.getValidValue());
+                merger.storeMerged(CopticDate.rule(), date);
+                merger.removeProcessed(yearRule());
+                merger.removeProcessed(dayOfYearRule());
             }
         }
     }
@@ -326,22 +313,26 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class YearRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new MonthOfYearRule();
+        private static final DateTimeFieldRule INSTANCE = new YearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
-        private MonthOfYearRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 13);
+        private YearRule() {
+            super(CopticChronology.INSTANCE, "Year", YEARS, null, CopticDate.MIN_YEAR, CopticDate.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? cd.getMonthOfYear() : null;
+            return cd != null ? field(cd.getYear()) : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            CopticChronology.merge(merger);
         }
     }
 
@@ -349,14 +340,37 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfMonthRule();
+        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private MonthOfYearRule() {
+            super(CopticChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 13);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected DateTimeField derive(Calendrical calendrical) {
+            CopticDate cd = calendrical.get(CopticDate.rule());
+            return cd != null ? field(cd.getMonthOfYear()) : null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "DayOfMonth", periodDays(), MONTHS, 1, 30);
+            super(CopticChronology.INSTANCE, "DayOfMonth", periodDays(), MONTHS, 1, 30);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -367,11 +381,11 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.get(CopticChronology.yearRule());
-            Integer moy = calendrical.get(CopticChronology.monthOfYearRule());
+            DateTimeField year = calendrical.get(CopticChronology.yearRule());
+            DateTimeField moy = calendrical.get(CopticChronology.monthOfYearRule());
             if (year != null && moy != null) {
-                if (moy == 13) {
-                    return isLeapYear(year) ? 6 : 5;
+                if (moy.getValidValue() == 13) {
+                    return isLeapYear(year.getValidValue()) ? 6 : 5;
                 } else {
                     return 30;
                 }
@@ -379,9 +393,9 @@ public final class CopticChronology extends Chronology implements Serializable {
             return getMaximumValue();
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? cd.getDayOfMonth() : null;
+            return cd != null ? field(cd.getDayOfMonth()) : null;
         }
     }
 
@@ -389,14 +403,14 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfYearRule();
+        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "DayOfYear", periodDays(), YEARS, 1, 366);
+            super(CopticChronology.INSTANCE, "DayOfYear", periodDays(), YEARS, 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -407,32 +421,16 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.get(CopticChronology.yearRule());
+            DateTimeField year = calendrical.get(CopticChronology.yearRule());
             if (year != null) {
-                return isLeapYear(year) ? 366 : 365;
+                return isLeapYear(year.getValidValue()) ? 366 : 365;
             }
             return getMaximumValue();
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? cd.getDayOfYear() : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer yearVal = merger.getValue(CopticChronology.yearRule());
-            if (yearVal != null) {
-                int doy = merger.getValue(this);
-                CopticDate date;
-                if (merger.getContext().isStrict()) {
-                    date = CopticDate.of(yearVal, 1, 1).withDayOfYear(doy);
-                } else {
-                    date = CopticDate.of(yearVal, 1, 1).plusDays(doy).plusDays(-1);
-                }
-                merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-                merger.removeProcessed(this);
-                merger.removeProcessed(CopticChronology.yearRule());
-            }
+            return cd != null ? field(cd.getDayOfYear()) : null;
         }
     }
 
@@ -440,22 +438,22 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
+        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(DayOfWeek.class, CopticChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super(CopticChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected DayOfWeek derive(Calendrical calendrical) {
+        protected DateTimeField derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? cd.getDayOfWeek() : null;
+            return cd != null ? field(cd.getDayOfWeek().getValue()) : null;
         }
     }
 

@@ -1,8 +1,6 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,9 +12,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.MonthOfYear;
 
 import org.testng.annotations.Test;
 
@@ -63,7 +60,8 @@ public class TestMinguoChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule<MinguoEra> rule = MinguoChronology.eraRule();
+        DateTimeFieldRule rule = MinguoChronology.eraRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.Era");
         assertEquals(rule.getName(), "Era");
         assertEquals(rule.getMinimumValue(), 0);
@@ -78,7 +76,8 @@ public class TestMinguoChronology {
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule<Integer> rule = MinguoChronology.yearOfEraRule();
+        DateTimeFieldRule rule = MinguoChronology.yearOfEraRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
         assertEquals(rule.getMinimumValue(), MinguoDate.MIN_YEAR_OF_ERA);
@@ -93,7 +92,8 @@ public class TestMinguoChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule<MonthOfYear> rule = MinguoChronology.monthOfYearRule();
+        DateTimeFieldRule rule = MinguoChronology.monthOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -107,7 +107,8 @@ public class TestMinguoChronology {
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule<Integer> rule = MinguoChronology.dayOfMonthRule();
+        DateTimeFieldRule rule = MinguoChronology.dayOfMonthRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -122,7 +123,8 @@ public class TestMinguoChronology {
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule<Integer> rule = MinguoChronology.dayOfYearRule();
+        DateTimeFieldRule rule = MinguoChronology.dayOfYearRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -138,8 +140,8 @@ public class TestMinguoChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule<DayOfWeek> rule = MinguoChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DayOfWeek.class);
+        DateTimeFieldRule rule = MinguoChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -156,7 +158,7 @@ public class TestMinguoChronology {
         assertEquals(MinguoChronology.INSTANCE.toString(), "Minguo");
     }
 
-    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
+    private void serialize(DateTimeFieldRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

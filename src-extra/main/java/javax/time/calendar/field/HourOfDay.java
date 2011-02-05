@@ -38,6 +38,7 @@ import javax.time.calendar.AmPmOfDay;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -85,7 +86,7 @@ public final class HourOfDay
      *
      * @return the hour-of-day rule, never null
      */
-    public static DateTimeFieldRule<Integer> rule() {
+    public static DateTimeFieldRule rule() {
         return ISOChronology.hourOfDayRule();
     }
 
@@ -137,7 +138,7 @@ public final class HourOfDay
      * @throws UnsupportedRuleException if the hour-of-day cannot be obtained
      */
     public static HourOfDay hourOfDay(Calendrical calendrical) {
-        return hourOfDay(rule().getInt(calendrical));
+        return hourOfDay(rule().getValueChecked(calendrical).getValidValue());
     }
 
     //-----------------------------------------------------------------------
@@ -171,7 +172,7 @@ public final class HourOfDay
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, hourOfDay, this, ISOChronology.INSTANCE);
+        return rule().deriveValueFor(rule, rule().field(hourOfDay), this, ISOChronology.INSTANCE);
     }
 
     //-----------------------------------------------------------------------
@@ -192,8 +193,8 @@ public final class HourOfDay
      * @return true if the calendrical matches, false otherwise
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
-        Integer calValue = calendrical.get(rule());
-        return calValue != null && calValue == getValue();
+        DateTimeField calValue = calendrical.get(rule());
+        return calValue != null && calValue.getValue() == getValue();
     }
 
     /**

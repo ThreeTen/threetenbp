@@ -44,11 +44,11 @@ import org.testng.annotations.Test;
 public class TestISOMonthOfQuarterRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOMonthOfQuarterRule() {
-        super(LocalDate.of(2009, 12, 26), 3, 3);
+        super(LocalDate.of(2009, 12, 26), 3);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
+    protected DateTimeFieldRule rule() {
         return ISOChronology.monthOfQuarterRule();
     }
 
@@ -56,8 +56,8 @@ public class TestISOMonthOfQuarterRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.monthOfQuarterRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule rule = ISOChronology.monthOfQuarterRule();
+        assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MonthOfQuarter");
         assertEquals(rule.getName(), "MonthOfQuarter");
         assertEquals(rule.getMinimumValue(), 1);
@@ -75,33 +75,33 @@ public class TestISOMonthOfQuarterRule extends AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
-        assertEquals(rule().getValue(LocalDate.of(2007, 1, 20)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDate.of(2007, 2, 20)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDate.of(2007, 3, 20)), (Integer) 3);
-        assertEquals(rule().getValue(LocalDate.of(2007, 4, 20)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDate.of(2007, 5, 20)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDate.of(2007, 6, 20)), (Integer) 3);
-        assertEquals(rule().getValue(LocalDate.of(2007, 7, 20)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDate.of(2007, 8, 20)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDate.of(2007, 9, 20)), (Integer) 3);
-        assertEquals(rule().getValue(LocalDate.of(2007, 10, 20)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDate.of(2007, 11, 20)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDate.of(2007, 12, 20)), (Integer) 3);
+        assertEquals(rule().getValue(LocalDate.of(2007, 1, 20)), rule().field(1));
+        assertEquals(rule().getValue(LocalDate.of(2007, 2, 20)), rule().field(2));
+        assertEquals(rule().getValue(LocalDate.of(2007, 3, 20)), rule().field(3));
+        assertEquals(rule().getValue(LocalDate.of(2007, 4, 20)), rule().field(1));
+        assertEquals(rule().getValue(LocalDate.of(2007, 5, 20)), rule().field(2));
+        assertEquals(rule().getValue(LocalDate.of(2007, 6, 20)), rule().field(3));
+        assertEquals(rule().getValue(LocalDate.of(2007, 7, 20)), rule().field(1));
+        assertEquals(rule().getValue(LocalDate.of(2007, 8, 20)), rule().field(2));
+        assertEquals(rule().getValue(LocalDate.of(2007, 9, 20)), rule().field(3));
+        assertEquals(rule().getValue(LocalDate.of(2007, 10, 20)), rule().field(1));
+        assertEquals(rule().getValue(LocalDate.of(2007, 11, 20)), rule().field(2));
+        assertEquals(rule().getValue(LocalDate.of(2007, 12, 20)), rule().field(3));
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 2, 20, 12, 30)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 3, 20, 12, 30)), (Integer) 3);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 4, 20, 12, 30)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 5, 20, 12, 30)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 6, 20, 12, 30)), (Integer) 3);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 7, 20, 12, 30)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 8, 20, 12, 30)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 9, 20, 12, 30)), (Integer) 3);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 10, 20, 12, 30)), (Integer) 1);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 11, 20, 12, 30)), (Integer) 2);
-        assertEquals(rule().getValue(LocalDateTime.of(2007, 12, 20, 12, 30)), (Integer) 3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), rule().field(1));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 2, 20, 12, 30)), rule().field(2));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 3, 20, 12, 30)), rule().field(3));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 4, 20, 12, 30)), rule().field(1));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 5, 20, 12, 30)), rule().field(2));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 6, 20, 12, 30)), rule().field(3));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 7, 20, 12, 30)), rule().field(1));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 8, 20, 12, 30)), rule().field(2));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 9, 20, 12, 30)), rule().field(3));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 10, 20, 12, 30)), rule().field(1));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 11, 20, 12, 30)), rule().field(2));
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 12, 20, 12, 30)), rule().field(3));
     }
 
 }

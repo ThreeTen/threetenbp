@@ -81,15 +81,15 @@ public class TestQuarterOfYear {
         QuarterOfYear.of(5);
     }
 
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(QuarterOfYear.Q1.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q1);
-        assertEquals(QuarterOfYear.Q3.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q3);
-        
-        assertEquals(QuarterOfYear.Q1.get(ISOChronology.monthOfYearRule()), null);
-    }
+//    //-----------------------------------------------------------------------
+//    // get()
+//    //-----------------------------------------------------------------------
+//    public void test_get() {
+//        assertEquals(QuarterOfYear.Q1.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q1);
+//        assertEquals(QuarterOfYear.Q3.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q3);
+//        
+//        assertEquals(QuarterOfYear.Q1.get(ISOChronology.monthOfYearRule()), null);
+//    }
 
     //-----------------------------------------------------------------------
     // is...()

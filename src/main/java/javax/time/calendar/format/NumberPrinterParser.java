@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -65,7 +65,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The rule to output, not null.
      */
-    final DateTimeFieldRule<?> rule;
+    final DateTimeFieldRule rule;
     /**
      * The minimum width allowed, zero padding is used up to this width, from 1 to 10.
      */
@@ -91,7 +91,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param maxWidth  the maximum field width, from minWidth to 10
      * @param signStyle  the positive/negative sign style, not null
      */
-    NumberPrinterParser(DateTimeFieldRule<?> rule, int minWidth, int maxWidth, SignStyle signStyle) {
+    NumberPrinterParser(DateTimeFieldRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
         // validated by caller
         this.rule = rule;
         this.minWidth = minWidth;
@@ -109,7 +109,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param signStyle  the positive/negative sign style, not null
      * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
      */
-    private NumberPrinterParser(DateTimeFieldRule<?> rule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
+    private NumberPrinterParser(DateTimeFieldRule rule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
         // validated by caller
         this.rule = rule;
         this.minWidth = minWidth;
@@ -172,7 +172,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @return the value
      */
     int getValue(Calendrical calendrical) {
-        return rule.getInt(calendrical);
+        return rule.getValueChecked(calendrical).getValue();
     }
 
     /** {@inheritDoc} */

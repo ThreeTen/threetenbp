@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -61,7 +61,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatter {
 
-    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
     private List<DateTimePrinter> printers;
     private List<DateTimeParser> parsers;
     private StringLiteralPrinterParser stringPP;
@@ -288,7 +288,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.toCalendricalMerger().getInputMap().size(), 1);
-        assertEquals(result.getParsed(RULE_DOM), (Integer) 30);
+        assertEquals(result.getParsed(RULE_DOM), 30);
     }
 
     public void test_parse_StringParsePosition_parseError() throws Exception {
@@ -420,7 +420,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getValue(RULE_DOM), (Integer) 30);
+        assertEquals(result.getValue(RULE_DOM), RULE_DOM.field(30));
     }
 
     public void test_toFormat_parseObject_StringParsePosition_parseError() throws Exception {

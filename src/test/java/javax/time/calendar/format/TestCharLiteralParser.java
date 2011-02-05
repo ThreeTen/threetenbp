@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
