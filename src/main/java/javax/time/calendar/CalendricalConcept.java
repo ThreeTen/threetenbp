@@ -47,43 +47,43 @@ import javax.time.Instant;
 public enum CalendricalConcept {
 
     /**
-     * The local calendrical.
+     * The local calendrical, represented by {@code DateTimeCalendrical}.
      */
-    LOCAL_CALENDRICAL(LocalCalendrical2.class),
+    DATE_TIME_CALENDRICAL(DateTimeCalendrical.class),
     /**
-     * The local date.
+     * The local date, represented by {@code LocalDate}.
      */
     LOCAL_DATE(LocalDate.class),
     /**
-     * The local time.
+     * The local time, represented by {@code LocalTime}.
      */
     LOCAL_TIME(LocalTime.class),
     /**
-     * The local date and time.
+     * The local date-time, represented by {@code LocalDateTime}.
      */
     LOCAL_DATE_TIME(LocalDateTime.class),
     /**
-     * The zone-offset.
+     * The zone-offset, represented by {@code ZoneOffset}.
      */
     ZONE_OFFSET(ZoneOffset.class),
     /**
-     * The time-zone.
+     * The time-zone, represented by {@code ZoneId}.
      */
     ZONE_ID(ZoneId.class),
     /**
-     * The instant.
+     * The instant, represented by {@code Instant}.
      */
     INSTANT(Instant.class),
 //    /**
-//     * The UTC instant.
+//     * The UTC instant, represented by {@code UTCInstant}.
 //     */
 //    UTC_INSTANT(UTCInstant),
 //    /**
-//     * The TAI instant.
+//     * The TAI instant, represented by {@code TAIInstant.class}.
 //     */
 //    TAI_INSTANT(TAIInstant.class),
     /**
-     * The chronology.
+     * The chronology, represented by {@code Chronology}.
      */
     CHRONOLOGY(Chronology.class),
     ;
@@ -102,15 +102,19 @@ public enum CalendricalConcept {
         this.clazz = clazz;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Restricted constructor.
+     * Gets the class that is associated with the concept.
+     * <p>
+     * For example, {@code LOCAL_DATE} will return {@code LocalDate.class}.
      * 
-     * @param clazz  the standard class associated with the concept
+     * @param clazz  the class associated with the concept, not null
      */
     public Class<?> getConceptClass() {
         return clazz;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a {@code Comparator} that compares the concept values extracted from
      * {@code Calendrical} instances.
@@ -132,7 +136,6 @@ public enum CalendricalConcept {
     public Comparator<Calendrical2> comparator() {
         return new Comparator<Calendrical2>() {
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            @Override
             public int compare(Calendrical2 cal1, Calendrical2 cal2) {
                 Comparable c1 = (Comparable) cal1.extractCalendrical(CalendricalConcept.this);
                 Comparable c2 = (Comparable) cal2.extractCalendrical(CalendricalConcept.this);
@@ -148,10 +151,9 @@ public enum CalendricalConcept {
     // TODO not here, doesn't depend on CalendricalConcept.this
     public static Comparator<Calendrical2> comparator(final DateTimeRule rule) {
         return new Comparator<Calendrical2>() {
-            @Override
             public int compare(Calendrical2 cal1, Calendrical2 cal2) {
-                LocalCalendrical2 c1 = (LocalCalendrical2) cal1.extractCalendrical(LOCAL_CALENDRICAL);
-                LocalCalendrical2 c2 = (LocalCalendrical2) cal2.extractCalendrical(LOCAL_CALENDRICAL);
+                DateTimeCalendrical c1 = (DateTimeCalendrical) cal1.extractCalendrical(DATE_TIME_CALENDRICAL);
+                DateTimeCalendrical c2 = (DateTimeCalendrical) cal2.extractCalendrical(DATE_TIME_CALENDRICAL);
                 if (c1 == null || c2 == null) {
                     throw new NullPointerException("Cannot extract LocalCalendrical");
                 }

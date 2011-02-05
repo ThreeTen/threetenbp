@@ -64,7 +64,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, Calendrical2, LocalCalendrical2, CalendricalMatcher, DateAdjuster, Comparable<MonthDay>, Serializable {
+        implements Calendrical, Calendrical2, DateTimeCalendrical, CalendricalMatcher, DateAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -123,7 +123,7 @@ public final class MonthDay
         if (date != null) {
             return of(date.getMonthOfYear(), date.getDayOfMonth());
         }
-        LocalCalendrical2 lcal = (LocalCalendrical2) calendrical.extractCalendrical(CalendricalConcept.LOCAL_CALENDRICAL);
+        DateTimeCalendrical lcal = (DateTimeCalendrical) calendrical.extractCalendrical(CalendricalConcept.DATE_TIME_CALENDRICAL);
         if (lcal != null) {
             DateTimeField moyField = lcal.extractLocalField(null);
             DateTimeField domField = lcal.extractLocalField(null);
@@ -151,7 +151,7 @@ public final class MonthDay
      */
     public Object extractCalendrical(CalendricalConcept concept) {
         switch (concept) {
-            case LOCAL_CALENDRICAL:
+            case DATE_TIME_CALENDRICAL:
                 return this;
             case CHRONOLOGY:
                 return getChronology();
@@ -159,7 +159,6 @@ public final class MonthDay
         return null;
     }
 
-    @Override
     public DateTimeField extractLocalField(DateTimeRule rule) {
 //        if (rule == null) {
 //            return DateTimeField.of(null, month.getValue());

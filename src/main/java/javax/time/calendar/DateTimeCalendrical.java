@@ -40,7 +40,7 @@ package javax.time.calendar;
  * 
  * @author Stephen Colebourne
  */
-public interface LocalCalendrical2 {
+public interface DateTimeCalendrical {
 
     /**
      * Extracts a date-time field by rule.

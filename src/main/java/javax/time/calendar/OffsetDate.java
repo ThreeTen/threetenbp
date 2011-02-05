@@ -126,7 +126,7 @@ public final class OffsetDate
      */
     public Object extractCalendrical(CalendricalConcept concept) {
         switch (concept) {
-            case LOCAL_CALENDRICAL:
+            case DATE_TIME_CALENDRICAL:
             case LOCAL_DATE:
                 return date;
             case ZONE_OFFSET:

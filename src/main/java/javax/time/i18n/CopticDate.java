@@ -47,7 +47,7 @@ import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalCalendrical2;
+import javax.time.calendar.DateTimeCalendrical;
 import javax.time.calendar.LocalDate;
 
 /**
@@ -65,7 +65,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class CopticDate
-        implements DateProvider, Calendrical, Calendrical2, LocalCalendrical2, Comparable<CopticDate>, Serializable {
+        implements DateProvider, Calendrical, Calendrical2, DateTimeCalendrical, Comparable<CopticDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -151,7 +151,7 @@ public final class CopticDate
             long epochDays = ld.toModifiedJulianDays() + MJD_TO_COPTIC;
             return copticDateFromEpochDays((int) epochDays);
         }
-        LocalCalendrical2 lcal = (LocalCalendrical2) calendrical.extractCalendrical(CalendricalConcept.LOCAL_CALENDRICAL);
+        DateTimeCalendrical lcal = (DateTimeCalendrical) calendrical.extractCalendrical(CalendricalConcept.DATE_TIME_CALENDRICAL);
         if (lcal != null) {
             DateTimeField cyearField = lcal.extractLocalField(null);
             DateTimeField cmoyField = lcal.extractLocalField(null);
@@ -181,7 +181,7 @@ public final class CopticDate
      */
     public Object extractCalendrical(CalendricalConcept concept) {
         switch (concept) {
-            case LOCAL_CALENDRICAL:
+            case DATE_TIME_CALENDRICAL:
             case LOCAL_DATE:
                 return toLocalDate();
             case CHRONOLOGY:
@@ -190,7 +190,6 @@ public final class CopticDate
         return null;
     }
 
-    @Override
     public DateTimeField extractLocalField(DateTimeRule rule) {
 //        if (rule == null) {
 //            return DateTimeField.of(null, month.getValue());

@@ -68,7 +68,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, Calendrical2, LocalCalendrical2, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements Calendrical, Calendrical2, DateTimeCalendrical, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -121,7 +121,7 @@ public final class LocalDate
         if (date != null) {
             return date;
         }
-        LocalCalendrical2 lcal = (LocalCalendrical2) calendrical.extractCalendrical(CalendricalConcept.LOCAL_CALENDRICAL);
+        DateTimeCalendrical lcal = (DateTimeCalendrical) calendrical.extractCalendrical(CalendricalConcept.DATE_TIME_CALENDRICAL);
         if (lcal != null) {
             DateTimeField yField = lcal.extractLocalField(null);
             DateTimeField moyField = lcal.extractLocalField(null);
@@ -148,7 +148,7 @@ public final class LocalDate
      */
     public Object extractCalendrical(CalendricalConcept concept) {
         switch (concept) {
-            case LOCAL_CALENDRICAL:
+            case DATE_TIME_CALENDRICAL:
             case LOCAL_DATE:
                 return this;
             case CHRONOLOGY:
@@ -157,7 +157,6 @@ public final class LocalDate
         return null;
     }
 
-    @Override
     public DateTimeField extractLocalField(DateTimeRule rule) {
 //        if (rule == null) {
 //            return DateTimeField.of(null, year);
