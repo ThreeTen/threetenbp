@@ -188,6 +188,26 @@ public final class DateTimeField
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * an attempt is made to derive the value.
+     * If that fails, {@code null} will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
+        if (this.rule.equals(rule)) {
+            return rule.reify(this);
+        }
+        return rule.deriveValueFrom(this);
+    }
+
+//    //-----------------------------------------------------------------------
 //    /**
 //     * Returns a copy of this field with the value rolled.
 //     * <p>
@@ -207,27 +227,7 @@ public final class DateTimeField
 //     */
 //    public DateTimeField roll(long amountToRollBy) {
 //        return withValue(rule.roll(value, amountToRollBy));
-//    }  // TODO
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * an attempt is made to derive the value.
-     * If that fails, {@code null} will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (this.rule.equals(rule)) {
-            return rule.reify(this);
-        }
-        return rule.deriveValueFrom(this);
-    }
+//    }  TODO
 
     //-----------------------------------------------------------------------
     /**

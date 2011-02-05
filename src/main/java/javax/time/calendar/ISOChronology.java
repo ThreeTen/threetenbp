@@ -332,7 +332,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the month-of-year field, never null
      */
     public static DateTimeFieldRule monthOfYearRule() {
-        return MonthOfYearRule.INSTANCE;
+        return MONTH_OF_YEAR;
     }
 
     /**
@@ -404,7 +404,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the day-of-week field, never null
      */
     public static DateTimeFieldRule dayOfWeekRule() {
-        return DayOfWeekRule.INSTANCE;
+        return DAY_OF_WEEK;
     }
 
     /**
@@ -430,7 +430,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the quarter-of-year field, never null
      */
     public static DateTimeFieldRule quarterOfYearRule() {
-        return QuarterOfYearRule.INSTANCE;
+        return QUARTER_OF_YEAR;
     }
 
     /**
@@ -564,7 +564,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the rule for the am/pm of day field, never null
      */
     public static DateTimeFieldRule amPmOfDayRule() {
-        return AmPmOfDayRule.INSTANCE;
+        return AMPM_OF_DAY;
     }
 
     /**
@@ -850,241 +850,6 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private MonthOfYearRule() {
-            super(ISOChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12, true);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? field(date.getMonthOfYear().getValue()) : null;
-        }
-//        @Override
-//        public int convertValueToInt(MonthOfYear value) {
-//            return value.getValue();
-//        }
-//        @Override
-//        public MonthOfYear convertIntToValue(int value) {
-//            return MonthOfYear.of(value);
-//        }
-        @Override
-        protected DateTimeField interpret(CalendricalMerger merger, Object value) {
-            if (value instanceof Integer) {
-                int val = (Integer) value;
-                if (val < 1 || val > 12) {
-                    merger.addToOverflow(Period.ofMonths(val - 1));  // TODO: MIN_VALUE overflow
-                    val = 1;
-                }
-                return field(val);
-            }
-            return null;
-        }
-        @Override
-        protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
-            DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
-            String[] array = oldSymbols.getMonths();
-            Map<Integer, String> map = new HashMap<Integer, String>();
-            map.put(1, array[Calendar.JANUARY]);
-            map.put(2, array[Calendar.FEBRUARY]);
-            map.put(3, array[Calendar.MARCH]);
-            map.put(4, array[Calendar.APRIL]);
-            map.put(5, array[Calendar.MAY]);
-            map.put(6, array[Calendar.JUNE]);
-            map.put(7, array[Calendar.JULY]);
-            map.put(8, array[Calendar.AUGUST]);
-            map.put(9, array[Calendar.SEPTEMBER]);
-            map.put(10, array[Calendar.OCTOBER]);
-            map.put(11, array[Calendar.NOVEMBER]);
-            map.put(12, array[Calendar.DECEMBER]);
-            textStores.put(TextStyle.FULL, new TextStore(locale, map));
-            array = oldSymbols.getShortMonths();
-            map.clear();
-            map.put(1, array[Calendar.JANUARY]);
-            map.put(2, array[Calendar.FEBRUARY]);
-            map.put(3, array[Calendar.MARCH]);
-            map.put(4, array[Calendar.APRIL]);
-            map.put(5, array[Calendar.MAY]);
-            map.put(6, array[Calendar.JUNE]);
-            map.put(7, array[Calendar.JULY]);
-            map.put(8, array[Calendar.AUGUST]);
-            map.put(9, array[Calendar.SEPTEMBER]);
-            map.put(10, array[Calendar.OCTOBER]);
-            map.put(11, array[Calendar.NOVEMBER]);
-            map.put(12, array[Calendar.DECEMBER]);
-            textStores.put(TextStyle.SHORT, new TextStore(locale, map));
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DayOfWeekRule() {
-            super(ISOChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7, true);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? field(getDayOfWeekFromDate(date).getValue()) : null;
-        }
-//        @Override
-//        public int convertValueToInt(DayOfWeek value) {
-//            return value.getValue();
-//        }
-//        @Override
-//        public DayOfWeek convertIntToValue(int value) {
-//            return DayOfWeek.of(value);
-//        }
-        @Override
-        protected DateTimeField interpret(CalendricalMerger merger, Object value) {
-            if (value instanceof Integer) {
-                int val = (Integer) value;
-                if (val < 1 || val > 7) {
-                    merger.addToOverflow(Period.ofDays(val - 1));  // TODO: MIN_VALUE overflow
-                    val = 1;
-                }
-                return field(val);
-            }
-            return null;
-        }
-        @Override
-        protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
-            DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
-            String[] array = oldSymbols.getWeekdays();
-            Map<Integer, String> map = new HashMap<Integer, String>();
-            map.put(1, array[Calendar.MONDAY]);
-            map.put(2, array[Calendar.TUESDAY]);
-            map.put(3, array[Calendar.WEDNESDAY]);
-            map.put(4, array[Calendar.THURSDAY]);
-            map.put(5, array[Calendar.FRIDAY]);
-            map.put(6, array[Calendar.SATURDAY]);
-            map.put(7, array[Calendar.SUNDAY]);
-            textStores.put(TextStyle.FULL, new TextStore(locale, map));
-            array = oldSymbols.getShortWeekdays();
-            map.clear();
-            map.put(1, array[Calendar.MONDAY]);
-            map.put(2, array[Calendar.TUESDAY]);
-            map.put(3, array[Calendar.WEDNESDAY]);
-            map.put(4, array[Calendar.THURSDAY]);
-            map.put(5, array[Calendar.FRIDAY]);
-            map.put(6, array[Calendar.SATURDAY]);
-            map.put(7, array[Calendar.SUNDAY]);
-            textStores.put(TextStyle.SHORT, new TextStore(locale, map));
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class QuarterOfYearRule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule INSTANCE = new QuarterOfYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private QuarterOfYearRule() {
-            super(ISOChronology.INSTANCE, "QuarterOfYear", QUARTERS, YEARS, 1, 4);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            DateTimeField moy = calendrical.get(monthOfYearRule());
-            return moy != null ? field((moy.getValidValue() - 1) / 3 + 1) : null;
-        }
-//        @Override
-//        public int convertValueToInt(QuarterOfYear value) {
-//            return value.getValue();
-//        }
-//        @Override
-//        public QuarterOfYear convertIntToValue(int value) {
-//            return QuarterOfYear.of(value);
-//        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class AmPmOfDayRule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        static final DateTimeFieldRule INSTANCE = new AmPmOfDayRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private AmPmOfDayRule() {
-            super(ISOChronology.INSTANCE, "AmPmOfDay", _12_HOURS, DAYS, 0, 1, true);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            DateTimeField hourVal = calendrical.get(hourOfDayRule());
-            if (hourVal == null) {
-                return null;
-            }
-            int hour = hourVal.getValidValue();
-            hour = (hour < 0 ? 1073741832 + hour + 1073741832 : hour);  // add multiple of 24 to make positive
-            return field((hour % 24) / 12);
-        }
-//        @Override
-//        public int convertValueToInt(AmPmOfDay value) {
-//            return value.getValue();
-//        }
-//        @Override
-//        public AmPmOfDay convertIntToValue(int value) {
-//            return AmPmOfDay.of(value);
-//        }
-        @Override
-        protected DateTimeField interpret(CalendricalMerger merger, Object value) {
-            if (value instanceof Integer) {
-                int val = (Integer) value;
-                if (val < 0 || val > 1) {  // TODO: check this logic
-                    int days = val > 0 ? val / 2 : ((val + 1) / 2) - 1;
-                    merger.addToOverflow(Period.ofDays(days));
-                    val = (val > 0 ? val % 2 : -(val % 2));
-                }
-                return field(val);
-            }
-            return null;
-        }
-        @Override
-        protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
-            DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
-            String[] array = oldSymbols.getAmPmStrings();
-            Map<Integer, String> map = new HashMap<Integer, String>();
-            map.put(0, array[Calendar.AM]);
-            map.put(1, array[Calendar.PM]);
-            TextStore textStore = new TextStore(locale, map);
-            textStores.put(TextStyle.FULL, textStore);
-            textStores.put(TextStyle.SHORT, textStore);  // re-use, as we don't have different data
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
     static final class EpochDaysRule extends CalendricalRule<Long> implements Serializable {
         /** Singleton instance. */
         static final CalendricalRule<Long> INSTANCE = new EpochDaysRule();
@@ -1154,7 +919,8 @@ public final class ISOChronology extends Chronology implements Serializable {
                 int minimumValue,
                 int maximumValue,
                 int smallestMaximum) {
-            super(ISOChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue);
+            super(ISOChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue,
+                    ordinal == AMPM_OF_DAY_ORDINAL || ordinal == DAY_OF_WEEK_ORDINAL || ordinal == MONTH_OF_YEAR_ORDINAL);
             this.ordinal = ordinal;  // allow space for new rules
             this.smallestMaximum = smallestMaximum;
         }
@@ -1164,77 +930,79 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
             switch (ordinal) {
-                case NANO_OF_SECOND_ORDINAL: {
+                case NANO_OF_SECOND_ORDINAL:
+                case MILLI_OF_SECOND_ORDINAL:
+                case MILLI_OF_DAY_ORDINAL:
+                case SECOND_OF_MINUTE_ORDINAL:
+                case SECOND_OF_DAY_ORDINAL:
+                case MINUTE_OF_HOUR_ORDINAL:
+                case HOUR_OF_DAY_ORDINAL: {
                     LocalTime time = calendrical.get(LocalTime.rule());
-                    return time != null ? NANO_OF_SECOND.field(time.getNanoOfSecond()) : null;
+                    if (time != null) {
+                        switch (ordinal) {
+                            case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
+                            case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
+                            case MILLI_OF_DAY_ORDINAL: return field((int) (time.toNanoOfDay() / 1000000L));
+                            case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
+                            case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
+                            case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
+                            case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
+                        }
+                    }
+                    break;
                 }
-                case MILLI_OF_SECOND_ORDINAL: {
-                    LocalTime time = calendrical.get(LocalTime.rule());
-                    return time != null ? MILLI_OF_SECOND.field(time.getNanoOfSecond() / 1000000) : null;
-                }
-                case MILLI_OF_DAY_ORDINAL: {
-                    LocalTime time = calendrical.get(LocalTime.rule());
-                    return time != null ? MILLI_OF_DAY.field((int) (time.toNanoOfDay() / 1000000L)) : null;
-                }
-                case SECOND_OF_MINUTE_ORDINAL: {
-                    LocalTime time = calendrical.get(LocalTime.rule());
-                    return time != null ? SECOND_OF_MINUTE.field(time.getSecondOfMinute()) : null;
-                }
-                case SECOND_OF_DAY_ORDINAL: {
-                    LocalTime time = calendrical.get(LocalTime.rule());
-                    return time != null ? SECOND_OF_DAY.field(time.toSecondOfDay()) : null;
-                }
-                case MINUTE_OF_HOUR_ORDINAL: {
-                    LocalTime time = calendrical.get(LocalTime.rule());
-                    return time != null ? MINUTE_OF_HOUR.field(time.getMinuteOfHour()) : null;
+                case DAY_OF_WEEK_ORDINAL:
+                case DAY_OF_MONTH_ORDINAL:
+                case DAY_OF_YEAR_ORDINAL:
+                case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
+                case WEEK_BASED_YEAR_ORDINAL:
+                case MONTH_OF_YEAR_ORDINAL:
+                case YEAR_ORDINAL: {
+                    LocalDate date = calendrical.get(LocalDate.rule());
+                    if (date != null) {
+                        switch (ordinal) {
+                            case DAY_OF_WEEK_ORDINAL: return field(getDayOfWeekFromDate(date).getValue());
+                            case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
+                            case DAY_OF_YEAR_ORDINAL: return field(getDayOfYearFromDate(date));
+                            case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(getWeekOfWeekBasedYearFromDate(date));
+                            case WEEK_BASED_YEAR_ORDINAL: return field(getWeekBasedYearFromDate(date));
+                            case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
+                            case YEAR_ORDINAL: return field(date.getYear());
+                        }
+                    }
+                    break;
                 }
                 case CLOCK_HOUR_OF_AMPM_ORDINAL: {
                     DateTimeField hourVal = calendrical.get(hourOfAmPmRule());
-                    return hourVal != null ? CLOCK_HOUR_OF_AMPM.field(((hourVal.getValidValue() + 11) % 12) + 1) : null;
+                    return hourVal != null ? field(((hourVal.getValidValue() + 11) % 12) + 1) : null;
                 }
                 case HOUR_OF_AMPM_ORDINAL: {
                     DateTimeField hourVal = calendrical.get(hourOfDayRule());
-                    return hourVal != null ? HOUR_OF_AMPM.field(hourVal.getValidValue() % 12) : null;
+                    return hourVal != null ? field(hourVal.getValidValue() % 12) : null;
                 }
                 case CLOCK_HOUR_OF_DAY_ORDINAL: {
                     DateTimeField hourVal = calendrical.get(hourOfDayRule());
-                    return hourVal != null ? CLOCK_HOUR_OF_DAY.field(((hourVal.getValidValue() + 23) % 24) + 1) : null;
+                    return hourVal != null ? field(((hourVal.getValidValue() + 23) % 24) + 1) : null;
                 }
-                case HOUR_OF_DAY_ORDINAL: {
-                    LocalTime time = calendrical.get(LocalTime.rule());
-                    return time != null ? HOUR_OF_DAY.field(time.getHourOfDay()) : null;
-                }
-                case DAY_OF_MONTH_ORDINAL: {
-                    LocalDate date = calendrical.get(LocalDate.rule());
-                    return date != null ? DAY_OF_MONTH.field(date.getDayOfMonth()) : null;
-                }
-                case DAY_OF_YEAR_ORDINAL: {
-                    LocalDate date = calendrical.get(LocalDate.rule());
-                    return date != null ? DAY_OF_YEAR.field(getDayOfYearFromDate(date)) : null;
+                case AMPM_OF_DAY_ORDINAL: {
+                    DateTimeField hourVal = calendrical.get(hourOfDayRule());
+                    return hourVal != null ? field(hourVal.getValidValue() / 12) : null;
                 }
                 case MONTH_OF_QUARTER_ORDINAL: {
                     DateTimeField moy = calendrical.get(monthOfYearRule());
-                    return moy != null ? MONTH_OF_QUARTER.field(((moy.getValidValue() - 1) % 3 + 1)) : null;
+                    return moy != null ? field(((moy.getValidValue() - 1) % 3 + 1)) : null;
+                }
+                case QUARTER_OF_YEAR_ORDINAL: {
+                    DateTimeField moy = calendrical.get(monthOfYearRule());
+                    return moy != null ? field((moy.getValidValue() - 1) / 3 + 1) : null;
                 }
                 case WEEK_OF_MONTH_ORDINAL: {
                     DateTimeField domVal = calendrical.get(dayOfMonthRule());
-                    return domVal != null ? WEEK_OF_MONTH.field((domVal.getValidValue() + 6) / 7) : null;
-                }
-                case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: {
-                    LocalDate date = calendrical.get(LocalDate.rule());
-                    return date != null ? WEEK_OF_WEEK_BASED_YEAR.field(getWeekOfWeekBasedYearFromDate(date)) : null;
+                    return domVal != null ? field((domVal.getValidValue() + 6) / 7) : null;
                 }
                 case WEEK_OF_YEAR_ORDINAL: {
                     DateTimeField doyVal = calendrical.get(dayOfYearRule());
-                    return doyVal != null ? WEEK_OF_YEAR.field((doyVal.getValidValue() + 6) / 7) : null;
-                }
-                case WEEK_BASED_YEAR_ORDINAL: {
-                    LocalDate date = calendrical.get(LocalDate.rule());
-                    return date != null ? WEEK_BASED_YEAR.field(getWeekBasedYearFromDate(date)) : null;
-                }
-                case YEAR_ORDINAL: {
-                    LocalDate date = calendrical.get(LocalDate.rule());
-                    return date != null ? YEAR.field(date.getYear()) : null;
+                    return doyVal != null ? field((doyVal.getValidValue() + 6) / 7) : null;
                 }
             }
             return null;
@@ -1286,6 +1054,78 @@ public final class ISOChronology extends Chronology implements Serializable {
             return super.getMaximumValue();
         }
         @Override
+        protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
+            DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
+            switch (ordinal) {
+                case AMPM_OF_DAY_ORDINAL: {
+                    String[] array = oldSymbols.getAmPmStrings();
+                    Map<Integer, String> map = new HashMap<Integer, String>();
+                    map.put(0, array[Calendar.AM]);
+                    map.put(1, array[Calendar.PM]);
+                    TextStore textStore = new TextStore(locale, map);
+                    textStores.put(TextStyle.FULL, textStore);
+                    textStores.put(TextStyle.SHORT, textStore);  // re-use, as we don't have different data
+                    break;
+                }
+                case DAY_OF_WEEK_ORDINAL: {
+                    String[] array = oldSymbols.getWeekdays();
+                    Map<Integer, String> map = new HashMap<Integer, String>();
+                    map.put(1, array[Calendar.MONDAY]);
+                    map.put(2, array[Calendar.TUESDAY]);
+                    map.put(3, array[Calendar.WEDNESDAY]);
+                    map.put(4, array[Calendar.THURSDAY]);
+                    map.put(5, array[Calendar.FRIDAY]);
+                    map.put(6, array[Calendar.SATURDAY]);
+                    map.put(7, array[Calendar.SUNDAY]);
+                    textStores.put(TextStyle.FULL, new TextStore(locale, map));
+                    array = oldSymbols.getShortWeekdays();
+                    map.clear();
+                    map.put(1, array[Calendar.MONDAY]);
+                    map.put(2, array[Calendar.TUESDAY]);
+                    map.put(3, array[Calendar.WEDNESDAY]);
+                    map.put(4, array[Calendar.THURSDAY]);
+                    map.put(5, array[Calendar.FRIDAY]);
+                    map.put(6, array[Calendar.SATURDAY]);
+                    map.put(7, array[Calendar.SUNDAY]);
+                    textStores.put(TextStyle.SHORT, new TextStore(locale, map));
+                    break;
+                }
+                case MONTH_OF_YEAR_ORDINAL: {
+                    String[] array = oldSymbols.getMonths();
+                    Map<Integer, String> map = new HashMap<Integer, String>();
+                    map.put(1, array[Calendar.JANUARY]);
+                    map.put(2, array[Calendar.FEBRUARY]);
+                    map.put(3, array[Calendar.MARCH]);
+                    map.put(4, array[Calendar.APRIL]);
+                    map.put(5, array[Calendar.MAY]);
+                    map.put(6, array[Calendar.JUNE]);
+                    map.put(7, array[Calendar.JULY]);
+                    map.put(8, array[Calendar.AUGUST]);
+                    map.put(9, array[Calendar.SEPTEMBER]);
+                    map.put(10, array[Calendar.OCTOBER]);
+                    map.put(11, array[Calendar.NOVEMBER]);
+                    map.put(12, array[Calendar.DECEMBER]);
+                    textStores.put(TextStyle.FULL, new TextStore(locale, map));
+                    array = oldSymbols.getShortMonths();
+                    map.clear();
+                    map.put(1, array[Calendar.JANUARY]);
+                    map.put(2, array[Calendar.FEBRUARY]);
+                    map.put(3, array[Calendar.MARCH]);
+                    map.put(4, array[Calendar.APRIL]);
+                    map.put(5, array[Calendar.MAY]);
+                    map.put(6, array[Calendar.JUNE]);
+                    map.put(7, array[Calendar.JULY]);
+                    map.put(8, array[Calendar.AUGUST]);
+                    map.put(9, array[Calendar.SEPTEMBER]);
+                    map.put(10, array[Calendar.OCTOBER]);
+                    map.put(11, array[Calendar.NOVEMBER]);
+                    map.put(12, array[Calendar.DECEMBER]);
+                    textStores.put(TextStyle.SHORT, new TextStore(locale, map));
+                    break;
+                }
+            }
+        }
+        @Override
         public int compareTo(CalendricalRule<?> other) {
             if (other instanceof Rule) {
                 return ordinal - ((Rule) other).ordinal;
@@ -1316,14 +1156,18 @@ public final class ISOChronology extends Chronology implements Serializable {
     private static final int HOUR_OF_AMPM_ORDINAL = 7 * 16;
     private static final int CLOCK_HOUR_OF_DAY_ORDINAL = 8 * 16;
     private static final int HOUR_OF_DAY_ORDINAL = 9 * 16;
-    private static final int DAY_OF_MONTH_ORDINAL = 10 * 16;
-    private static final int DAY_OF_YEAR_ORDINAL = 11 * 16;
-    private static final int WEEK_OF_MONTH_ORDINAL = 12 * 16;
-    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 13 * 16;
-    private static final int WEEK_OF_YEAR_ORDINAL = 14 * 16;
-    private static final int MONTH_OF_QUARTER_ORDINAL = 15 * 16;
-    private static final int WEEK_BASED_YEAR_ORDINAL = 16 * 16;
-    private static final int YEAR_ORDINAL = 17 * 16;
+    private static final int AMPM_OF_DAY_ORDINAL = 10 * 16;
+    private static final int DAY_OF_WEEK_ORDINAL = 11 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL = 12 * 16;
+    private static final int DAY_OF_YEAR_ORDINAL = 13 * 16;
+    private static final int WEEK_OF_MONTH_ORDINAL = 14 * 16;
+    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 15 * 16;
+    private static final int WEEK_OF_YEAR_ORDINAL = 16 * 16;
+    private static final int MONTH_OF_QUARTER_ORDINAL = 17 * 16;
+    private static final int MONTH_OF_YEAR_ORDINAL = 18 * 16;
+    private static final int QUARTER_OF_YEAR_ORDINAL = 19 * 16;
+    private static final int WEEK_BASED_YEAR_ORDINAL = 20 * 16;
+    private static final int YEAR_ORDINAL = 21 * 16;
     
     //-----------------------------------------------------------------------
     private static final Rule NANO_OF_SECOND = new Rule(NANO_OF_SECOND_ORDINAL, "NanoOfSecond", NANOS, SECONDS, 0, 999999999, 999999999);
@@ -1336,12 +1180,16 @@ public final class ISOChronology extends Chronology implements Serializable {
     private static final Rule HOUR_OF_AMPM = new Rule(HOUR_OF_AMPM_ORDINAL, "HourOfAmPm", HOURS, _12_HOURS, 0, 11, 11);
     private static final Rule CLOCK_HOUR_OF_DAY = new Rule(CLOCK_HOUR_OF_DAY_ORDINAL, "ClockHourOfDay", HOURS, DAYS, 1, 24, 24);
     private static final Rule HOUR_OF_DAY = new Rule(HOUR_OF_DAY_ORDINAL, "HourOfDay", HOURS, DAYS, 0, 23, 23);
+    private static final Rule AMPM_OF_DAY = new Rule(AMPM_OF_DAY_ORDINAL, "AmPmOfDay", _12_HOURS, DAYS, 0, 1, 1);
+    private static final Rule DAY_OF_WEEK = new Rule(DAY_OF_WEEK_ORDINAL, "DayOfWeek", DAYS, WEEKS, 1, 7, 7);
     private static final Rule DAY_OF_MONTH = new Rule(DAY_OF_MONTH_ORDINAL, "DayOfMonth", DAYS, MONTHS, 1, 31, 28);
     private static final Rule DAY_OF_YEAR = new Rule(DAY_OF_YEAR_ORDINAL, "DayOfYear", DAYS, YEARS, 1, 366, 365);
     private static final Rule WEEK_OF_MONTH = new Rule(WEEK_OF_MONTH_ORDINAL, "WeekOfMonth", WEEKS, MONTHS, 1, 5, 4);
     private static final Rule WEEK_OF_WEEK_BASED_YEAR = new Rule(WEEK_OF_WEEK_BASED_YEAR_ORDINAL, "WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, 1, 53, 52);
     private static final Rule WEEK_OF_YEAR = new Rule(WEEK_OF_YEAR_ORDINAL, "WeekOfYear", WEEKS, YEARS, 1, 53, 53);
     private static final Rule MONTH_OF_QUARTER = new Rule(MONTH_OF_QUARTER_ORDINAL, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3, 3);
+    private static final Rule MONTH_OF_YEAR = new Rule(MONTH_OF_YEAR_ORDINAL, "MonthOfYear", MONTHS, YEARS, 1, 12, 12);
+    private static final Rule QUARTER_OF_YEAR = new Rule(QUARTER_OF_YEAR_ORDINAL, "QuarterOfYear", QUARTERS, YEARS, 1, 4, 4);
     private static final Rule WEEK_BASED_YEAR = new Rule(WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
     private static final Rule YEAR = new Rule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR);
 
@@ -1352,10 +1200,10 @@ public final class ISOChronology extends Chronology implements Serializable {
     private static final Rule[] RULE_CACHE = new Rule[] {
         NANO_OF_SECOND, MILLI_OF_SECOND, MILLI_OF_DAY,
         SECOND_OF_MINUTE, SECOND_OF_DAY, MINUTE_OF_HOUR,
-        CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY,
-        DAY_OF_MONTH, DAY_OF_YEAR,
+        CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY, AMPM_OF_DAY,
+        DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR,
         WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_YEAR,
-        MONTH_OF_QUARTER,
+        MONTH_OF_QUARTER, MONTH_OF_YEAR, QUARTER_OF_YEAR,
         WEEK_BASED_YEAR, YEAR,
     };
 

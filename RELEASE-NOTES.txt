@@ -38,7 +38,7 @@
 - OffsetTime.compareTo fixed
 - OffsetDateTime.compareTo doesn't handle nanos
 - Add OffsetDate.atTime(OffsetTime)
-- Ensure date-time plus/minus uses int not long
+- Ensure date-time plus/minus uses long not int
 - Fix Period.of(Duration)
 - Add LocalTime/OffsetTime/LocalDateTime/OffsetDateTime/ZonedDateTime.plus/minus(Duration)
 - Remove CopticDate/HistoricDate.isLeapDay()
@@ -49,6 +49,7 @@
 - Fix clock hour of day and of am-pm
 - Fix/Weaken contract of CalendricalRule comparator
 - Change period units to be standalone class for ISO
+- Remove generics from DateTimeField
 
 0.6.3
 ===============================================================================

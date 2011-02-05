@@ -141,9 +141,9 @@ public final class CalendricalMatchers {
         LEAP_DAY {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
+                DateTimeField moyVal = calendrical.get(ISOChronology.monthOfYearRule());
                 DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
-                return domVal != null && domVal.getValue() == 29 && moy.getValue() == 2;
+                return domVal != null && moyVal != null && domVal.getValue() == 29 && moyVal.getValue() == 2;
             }
         },
         /** Last day-of-month matcher. */
@@ -161,9 +161,9 @@ public final class CalendricalMatchers {
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
+                DateTimeField moyVal = calendrical.get(ISOChronology.monthOfYearRule());
                 DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
-                return domVal != null && domVal.getValue() == 31 && moy.getValue() == 12;
+                return domVal != null && moyVal != null && domVal.getValue() == 31 && moyVal.getValue() == 12;
             }
         },
         /** Non weekend matcher. */
