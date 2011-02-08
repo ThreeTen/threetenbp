@@ -31,11 +31,28 @@
  */
 package javax.time;
 
-import static javax.time.calendar.DateAdjusters.*;
-import static javax.time.calendar.DayOfWeek.*;
-import static javax.time.calendar.ISOChronology.*;
-import static javax.time.calendar.MonthOfYear.*;
-import static javax.time.calendar.Period.*;
+import static javax.time.calendar.DateAdjusters.dayOfWeekInMonth;
+import static javax.time.calendar.DateAdjusters.firstInMonth;
+import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
+import static javax.time.calendar.DateAdjusters.next;
+import static javax.time.calendar.DateAdjusters.nextNonWeekendDay;
+import static javax.time.calendar.DateAdjusters.nextOrCurrent;
+import static javax.time.calendar.DayOfWeek.FRIDAY;
+import static javax.time.calendar.DayOfWeek.MONDAY;
+import static javax.time.calendar.DayOfWeek.TUESDAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.MonthOfYear.AUGUST;
+import static javax.time.calendar.MonthOfYear.DECEMBER;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
+import static javax.time.calendar.MonthOfYear.MARCH;
+import static javax.time.calendar.Period.ofDateFields;
+import static javax.time.calendar.Period.ofDays;
+import static javax.time.calendar.Period.ofHours;
+import static javax.time.calendar.Period.ofMinutes;
+import static javax.time.calendar.Period.ofMonths;
+import static javax.time.calendar.Period.ofSeconds;
+import static javax.time.calendar.Period.ofYears;
 
 import javax.time.calendar.Clock;
 import javax.time.calendar.DateResolvers;
@@ -49,9 +66,9 @@ import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.Period;
 import javax.time.calendar.QuarterOfYear;
-import javax.time.calendar.ZoneId;
 import javax.time.calendar.Year;
 import javax.time.calendar.YearMonth;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.zone.ZoneOffsetTransition;
@@ -102,11 +119,11 @@ public class TestFluentAPI {
         date = date.with(firstInMonth(MONDAY));
         date = date.with(Year.of(2009));
         date = date.with(MonthOfYear.of(6));
-        date = date.with(MonthOfYear.AUGUST);
-        date.with(MonthOfYear.DECEMBER, DateResolvers.strict());
+        date = date.with(AUGUST);
+        date.with(DECEMBER, DateResolvers.strict());
         
         DateTimeFields fri13 = DateTimeFields.of(
-                dayOfWeekRule(), FRIDAY.getValue(), dayOfMonthRule(), 13);
+                DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
         if (date.matches(fri13)) {
             System.out.println("Spooky");
         }
@@ -145,9 +162,9 @@ public class TestFluentAPI {
         md = md.with(MARCH);
         md = md.rollDayOfMonth(3);
         
-        dayOfMonthRule().getMaximumValue();
+        DAY_OF_MONTH.getMaximumValue();
         date.getMonthOfYear().maxLengthInDays();
-        dayOfMonthRule().getMaximumValue(date);
+        DAY_OF_MONTH.getMaximumValue(date);
         FEBRUARY.maxLengthInDays();
 //        DayOfMonth.RULE.getMaximumValue(february());
         

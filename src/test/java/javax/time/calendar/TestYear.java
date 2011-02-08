@@ -31,6 +31,10 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISOPeriodUnit.DECADES;
+import static javax.time.calendar.ISOPeriodUnit.MONTHS;
+import static javax.time.calendar.ISOPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -53,11 +57,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestYear {
 
-    private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
-    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
-    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
-    private static final DateTimeFieldRule RULE = ISOChronology.yearRule();
-
     @BeforeMethod
     public void setUp() {
     }
@@ -73,7 +72,7 @@ public class TestYear {
 
     //-----------------------------------------------------------------------
     public void test_rule() {
-        assertEquals(Year.rule(), RULE);
+        assertEquals(Year.rule(), YEAR);
     }
 
     //-----------------------------------------------------------------------
@@ -147,12 +146,12 @@ public class TestYear {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
-        assertEquals(Year.of(1999).get(RULE).getValue(), 1999);
+        assertEquals(Year.of(1999).get(YEAR).getValue(), 1999);
         assertEquals(Year.of(1999).get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
     }
 
     public void test_get_unsupportedField() {
-        assertEquals(Year.of(1999).get(ISOChronology.weekBasedYearRule()), null);
+        assertEquals(Year.of(1999).get(ISODateTimeRule.WEEK_BASED_YEAR), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -523,7 +522,7 @@ public class TestYear {
         try {
             test.adjustDate(base, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -718,7 +717,7 @@ public class TestYear {
         try {
             test.atMonth(13);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.monthOfYearRule());
+            assertEquals(ex.getRule(), ISODateTimeRule.MONTH_OF_YEAR);
             throw ex;
         }
     }
@@ -743,7 +742,7 @@ public class TestYear {
         try {
             test.atMonthDay(MonthDay.of(6, 31));
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -766,7 +765,7 @@ public class TestYear {
         try {
             test.atDay(366);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfYearRule());
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
             throw ex;
         }
     }
@@ -786,7 +785,7 @@ public class TestYear {
         try {
             test.atDay(0);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfYearRule());
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
             throw ex;
         }
     }
@@ -797,7 +796,7 @@ public class TestYear {
         try {
             test.atDay(367);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfYearRule());
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
             throw ex;
         }
     }

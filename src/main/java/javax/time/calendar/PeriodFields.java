@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOPeriodUnit.NANOS;
+import static javax.time.calendar.ISOPeriodUnit.SECONDS;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -216,8 +219,8 @@ public final class PeriodFields
     public static PeriodFields of(Duration duration) {
         checkNotNull(duration, "Duration must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
-        internalMap.put(ISOPeriodUnit.SECONDS, PeriodField.of(duration.getSeconds(), ISOPeriodUnit.SECONDS));
-        internalMap.put(ISOPeriodUnit.NANOS, PeriodField.of(duration.getNanoOfSecond(), ISOPeriodUnit.NANOS));
+        internalMap.put(SECONDS, PeriodField.of(duration.getSeconds(), SECONDS));
+        internalMap.put(NANOS, PeriodField.of(duration.getNanoOfSecond(), NANOS));
         return create(internalMap);
     }
 
@@ -970,8 +973,8 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
-        PeriodFields period = toEquivalent(ISOPeriodUnit.SECONDS, ISOPeriodUnit.NANOS);
-        return Duration.ofSeconds(period.getAmount(ISOPeriodUnit.SECONDS), period.getAmount(ISOPeriodUnit.NANOS));
+        PeriodFields period = toEquivalent(SECONDS, NANOS);
+        return Duration.ofSeconds(period.getAmount(SECONDS), period.getAmount(NANOS));
     }
 
     //-----------------------------------------------------------------------

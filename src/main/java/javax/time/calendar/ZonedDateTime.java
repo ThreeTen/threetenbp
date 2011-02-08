@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOPeriodUnit.NANOS;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -2130,7 +2132,7 @@ public final class ZonedDateTime
         private static final CalendricalRule<ZonedDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZonedDateTime.class, ISOChronology.INSTANCE, "ZonedDateTime", ISOPeriodUnit.NANOS, null);
+            super(ZonedDateTime.class, ISOChronology.INSTANCE, "ZonedDateTime", NANOS, null);
         }
         private Object readResolve() {
             return INSTANCE;

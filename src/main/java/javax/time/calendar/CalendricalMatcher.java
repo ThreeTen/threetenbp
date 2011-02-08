@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -57,7 +57,7 @@ public interface CalendricalMatcher {
      * Saturday or Sunday:
      * <pre>
      *  public boolean matchesCalendrical(Calendrical calendrical) {
-     *    DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
+     *    DayOfWeek dow = calendrical.get(ISODateTimeRule.DAY_OF_WEEK);
      *    return dow != null && (dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY);
      *  }
      * </pre>

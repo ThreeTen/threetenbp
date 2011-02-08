@@ -31,6 +31,10 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISOPeriodUnit.CENTURIES;
+import static javax.time.calendar.ISOPeriodUnit.YEARS;
+
 import java.io.Serializable;
 
 /**
@@ -45,14 +49,14 @@ public final class MockYearOfCenturyFieldRule extends DateTimeFieldRule implemen
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockYearOfCenturyFieldRule() {
-        super(ISOChronology.INSTANCE, "YearOfCentury", ISOPeriodUnit.YEARS, ISOPeriodUnit.CENTURIES, 0, 99);
+        super(ISOChronology.INSTANCE, "YearOfCentury", YEARS, CENTURIES, 0, 99);
     }
     private Object readResolve() {
         return INSTANCE;
     }
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
-        DateTimeField yearVal = calendrical.get(ISOChronology.yearRule());
+        DateTimeField yearVal = calendrical.get(YEAR);
         return (yearVal == null ? null : field(yearVal.getValidValue() % 100));
     }
 }

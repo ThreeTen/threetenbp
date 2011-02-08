@@ -31,6 +31,22 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -399,7 +415,7 @@ public class TestLocalTime {
         try {
             LocalTime.ofSecondOfDay(-1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), SECOND_OF_DAY);
             throw ex;
         }
     }
@@ -409,7 +425,7 @@ public class TestLocalTime {
         try {
             LocalTime.ofSecondOfDay(24 * 60 * 60);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), SECOND_OF_DAY);
             throw ex;
         }
     }
@@ -435,7 +451,7 @@ public class TestLocalTime {
         try {
             LocalTime.ofSecondOfDay(-1, 0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), SECOND_OF_DAY);
             throw ex;
         }
     }
@@ -445,7 +461,7 @@ public class TestLocalTime {
         try {
             LocalTime.ofSecondOfDay(24 * 60 * 60, 0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), SECOND_OF_DAY);
             throw ex;
         }
     }
@@ -455,7 +471,7 @@ public class TestLocalTime {
         try {
             LocalTime.ofSecondOfDay(0, -1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.nanoOfSecondRule());
+            assertEquals(ex.getRule(), NANO_OF_SECOND);
             throw ex;
         }
     }
@@ -465,7 +481,7 @@ public class TestLocalTime {
         try {
             LocalTime.ofSecondOfDay(0, 1000000000);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.nanoOfSecondRule());
+            assertEquals(ex.getRule(), NANO_OF_SECOND);
             throw ex;
         }
     }
@@ -582,22 +598,22 @@ public class TestLocalTime {
     public void test_get_CalendricalRule() {
         LocalTime test = TEST_12_30_40_987654321;
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(ISOChronology.yearRule()), null);
-        assertEquals(test.get(ISOChronology.quarterOfYearRule()), null);
-        assertEquals(test.get(ISOChronology.monthOfYearRule()), null);
-        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), null);
-        assertEquals(test.get(ISOChronology.dayOfMonthRule()), null);
-        assertEquals(test.get(ISOChronology.dayOfWeekRule()), null);
-        assertEquals(test.get(ISOChronology.dayOfYearRule()), null);
-        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), null);
-        assertEquals(test.get(ISOChronology.weekBasedYearRule()), null);
+        assertEquals(test.get(YEAR), null);
+        assertEquals(test.get(QUARTER_OF_YEAR), null);
+        assertEquals(test.get(MONTH_OF_YEAR), null);
+        assertEquals(test.get(MONTH_OF_QUARTER), null);
+        assertEquals(test.get(DAY_OF_MONTH), null);
+        assertEquals(test.get(DAY_OF_WEEK), null);
+        assertEquals(test.get(DAY_OF_YEAR), null);
+        assertEquals(test.get(WEEK_OF_WEEK_BASED_YEAR), null);
+        assertEquals(test.get(WEEK_BASED_YEAR), null);
         
-        assertEquals(test.get(ISOChronology.hourOfDayRule()).getValue(), 12);
-        assertEquals(test.get(ISOChronology.minuteOfHourRule()).getValue(), 30);
-        assertEquals(test.get(ISOChronology.secondOfMinuteRule()).getValue(), 40);
-        assertEquals(test.get(ISOChronology.nanoOfSecondRule()).getValue(), 987654321);
-        assertEquals(test.get(ISOChronology.hourOfAmPmRule()).getValue(), 0);
-        assertEquals(test.get(ISOChronology.amPmOfDayRule()).getValue(), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(HOUR_OF_DAY).getValue(), 12);
+        assertEquals(test.get(MINUTE_OF_HOUR).getValue(), 30);
+        assertEquals(test.get(SECOND_OF_MINUTE).getValue(), 40);
+        assertEquals(test.get(NANO_OF_SECOND).getValue(), 987654321);
+        assertEquals(test.get(HOUR_OF_AMPM).getValue(), 0);
+        assertEquals(test.get(AMPM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
         
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(LocalTime.rule()), test);

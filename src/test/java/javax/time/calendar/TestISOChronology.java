@@ -113,7 +113,7 @@ public class TestISOChronology {
 
     //-----------------------------------------------------------------------
     public void test_minuteOfHourRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.minuteOfHourRule();
+        DateTimeFieldRule rule = ISODateTimeRule.MINUTE_OF_HOUR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MinuteOfHour");
         assertEquals(rule.getName(), "MinuteOfHour");
@@ -128,7 +128,7 @@ public class TestISOChronology {
     }
 
     public void test_secondOfMinuteRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.secondOfMinuteRule();
+        DateTimeFieldRule rule = ISODateTimeRule.SECOND_OF_MINUTE;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.SecondOfMinute");
         assertEquals(rule.getName(), "SecondOfMinute");
@@ -143,7 +143,7 @@ public class TestISOChronology {
     }
 
     public void test_nanoOfSecondRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.nanoOfSecondRule();
+        DateTimeFieldRule rule = ISODateTimeRule.NANO_OF_SECOND;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.NanoOfSecond");
         assertEquals(rule.getName(), "NanoOfSecond");
@@ -159,7 +159,7 @@ public class TestISOChronology {
 
     //-----------------------------------------------------------------------
     public void test_secondOfDayRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.secondOfDayRule();
+        DateTimeFieldRule rule = ISODateTimeRule.SECOND_OF_DAY;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.SecondOfDay");
         assertEquals(rule.getName(), "SecondOfDay");
@@ -174,7 +174,7 @@ public class TestISOChronology {
     }
 
     public void test_milliOfDayRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.milliOfDayRule();
+        DateTimeFieldRule rule = ISODateTimeRule.MILLI_OF_DAY;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MilliOfDay");
         assertEquals(rule.getName(), "MilliOfDay");
@@ -189,7 +189,7 @@ public class TestISOChronology {
     }
 
     public void test_milliOfSecondRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.milliOfSecondRule();
+        DateTimeFieldRule rule = ISODateTimeRule.MILLI_OF_SECOND;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MilliOfSecond");
         assertEquals(rule.getName(), "MilliOfSecond");
@@ -498,29 +498,29 @@ public class TestISOChronology {
 
     public void test_compareTo_fields() {
         List<CalendricalRule<?>> list = new ArrayList<CalendricalRule<?>>();
-        list.add(ISOChronology.nanoOfSecondRule());
+        list.add(ISODateTimeRule.NANO_OF_SECOND);
         list.add(ISOChronology.nanoOfDayRule());
-        list.add(ISOChronology.milliOfSecondRule());
-        list.add(ISOChronology.milliOfDayRule());
-        list.add(ISOChronology.secondOfMinuteRule());
-        list.add(ISOChronology.secondOfDayRule());
-        list.add(ISOChronology.minuteOfHourRule());
-        list.add(ISOChronology.clockHourOfAmPmRule());
-        list.add(ISOChronology.hourOfAmPmRule());
-        list.add(ISOChronology.clockHourOfDayRule());
-        list.add(ISOChronology.hourOfDayRule());
-        list.add(ISOChronology.amPmOfDayRule());
-        list.add(ISOChronology.dayOfWeekRule());
-        list.add(ISOChronology.dayOfMonthRule());
-        list.add(ISOChronology.dayOfYearRule());
-        list.add(ISOChronology.weekOfMonthRule());
-        list.add(ISOChronology.weekOfWeekBasedYearRule());
-        list.add(ISOChronology.weekOfYearRule());
-        list.add(ISOChronology.monthOfQuarterRule());
-        list.add(ISOChronology.monthOfYearRule());
-        list.add(ISOChronology.quarterOfYearRule());
-        list.add(ISOChronology.weekBasedYearRule());
-        list.add(ISOChronology.yearRule());
+        list.add(ISODateTimeRule.MILLI_OF_SECOND);
+        list.add(ISODateTimeRule.MILLI_OF_DAY);
+        list.add(ISODateTimeRule.SECOND_OF_MINUTE);
+        list.add(ISODateTimeRule.SECOND_OF_DAY);
+        list.add(ISODateTimeRule.MINUTE_OF_HOUR);
+        list.add(ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
+        list.add(ISODateTimeRule.HOUR_OF_AMPM);
+        list.add(ISODateTimeRule.CLOCK_HOUR_OF_DAY);
+        list.add(ISODateTimeRule.HOUR_OF_DAY);
+        list.add(ISODateTimeRule.AMPM_OF_DAY);
+        list.add(ISODateTimeRule.DAY_OF_WEEK);
+        list.add(ISODateTimeRule.DAY_OF_MONTH);
+        list.add(ISODateTimeRule.DAY_OF_YEAR);
+        list.add(ISODateTimeRule.WEEK_OF_MONTH);
+        list.add(ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
+        list.add(ISODateTimeRule.WEEK_OF_YEAR);
+        list.add(ISODateTimeRule.MONTH_OF_QUARTER);
+        list.add(ISODateTimeRule.MONTH_OF_YEAR);
+        list.add(ISODateTimeRule.QUARTER_OF_YEAR);
+        list.add(ISODateTimeRule.WEEK_BASED_YEAR);
+        list.add(ISODateTimeRule.YEAR);
         
         List<CalendricalRule<?>> test = new ArrayList<CalendricalRule<?>>(list);
         Collections.shuffle(test);

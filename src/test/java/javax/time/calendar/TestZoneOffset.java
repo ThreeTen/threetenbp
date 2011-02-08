@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -544,8 +546,8 @@ public class TestZoneOffset {
     public void test_get_CalendricalRule() {
         ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
         assertEquals(test.get(Chronology.rule()), null);
-        assertEquals(test.get(ISOChronology.yearRule()), null);
-        assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
+        assertEquals(test.get(YEAR), null);
+        assertEquals(test.get(HOUR_OF_DAY), null);
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), test);
         assertEquals(test.get(ZoneId.rule()), null);

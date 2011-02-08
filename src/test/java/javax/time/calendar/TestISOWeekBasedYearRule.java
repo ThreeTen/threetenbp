@@ -49,23 +49,23 @@ public class TestISOWeekBasedYearRule extends AbstractTestDateTimeFieldRule {
 
     @Override
     protected DateTimeFieldRule rule() {
-        return ISOChronology.weekBasedYearRule();
+        return ISODateTimeRule.WEEK_BASED_YEAR;
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekBasedYearRule();
+        DateTimeFieldRule rule = ISODateTimeRule.WEEK_BASED_YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekBasedYear");
         assertEquals(rule.getName(), "WeekBasedYear");
-        assertEquals(rule.getMinimumValue(), ISOChronology.MIN_WEEK_BASED_YEAR);
-        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), ISOChronology.MIN_WEEK_BASED_YEAR);
-        assertEquals(rule.getLargestMinimumValue(), ISOChronology.MIN_WEEK_BASED_YEAR);
-        assertEquals(rule.getMaximumValue(), ISOChronology.MAX_WEEK_BASED_YEAR);
-        assertEquals(rule.getMaximumValue(LocalDate.of(2007, 6, 20)), ISOChronology.MAX_WEEK_BASED_YEAR);
-        assertEquals(rule.getSmallestMaximumValue(), ISOChronology.MAX_WEEK_BASED_YEAR);
+        assertEquals(rule.getMinimumValue(), Year.MIN_YEAR);  // TODO: check numbers
+        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), Year.MIN_YEAR);
+        assertEquals(rule.getLargestMinimumValue(), Year.MIN_YEAR);
+        assertEquals(rule.getMaximumValue(), Year.MAX_YEAR);
+        assertEquals(rule.getMaximumValue(LocalDate.of(2007, 6, 20)), Year.MAX_YEAR);
+        assertEquals(rule.getSmallestMaximumValue(), Year.MAX_YEAR);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEK_BASED_YEARS);
         assertEquals(rule.getPeriodRange(), null);

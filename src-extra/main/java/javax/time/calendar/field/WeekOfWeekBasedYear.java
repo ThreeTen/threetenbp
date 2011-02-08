@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -88,7 +90,7 @@ public final class WeekOfWeekBasedYear
      * @return the week of week-based-year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.weekOfWeekBasedYearRule();
+        return WEEK_OF_WEEK_BASED_YEAR;
     }
 
     //-----------------------------------------------------------------------

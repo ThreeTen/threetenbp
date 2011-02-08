@@ -33,7 +33,11 @@ package javax.time;
 
 import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendar.DayOfWeek.FRIDAY;
-import static javax.time.calendar.ISOChronology.*;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
 import static javax.time.calendar.Period.ofDateFields;
 
@@ -41,20 +45,19 @@ import java.util.Locale;
 
 import javax.time.calendar.Clock;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.Period;
-import javax.time.calendar.ZoneId;
 import javax.time.calendar.Year;
+import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneResolvers;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
-import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
+import javax.time.calendar.format.DateTimeFormatters;
 
 /**
  * Examples for this project.
@@ -112,7 +115,7 @@ public class Examples {
         
         LocalDate tempDate = clock.today();
         DateTimeFields fri13matcher = DateTimeFields.of(
-                ISOChronology.dayOfWeekRule(), FRIDAY.getValue(), ISOChronology.dayOfMonthRule(), 13);
+                DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
         boolean fri13 = tempDate.matches(fri13matcher);
         System.out.println("Is Friday the Thirteenth: " + fri13);
         
@@ -126,16 +129,16 @@ public class Examples {
         System.out.println("...printed as RFC1123: " + formattedRFC);
         
         DateTimeFormatter f = new DateTimeFormatterBuilder()
-            .appendValue(yearRule(), 4, 10, SignStyle.ALWAYS)
+            .appendValue(YEAR, 4, 10, SignStyle.ALWAYS)
             .appendLiteral('Q')
-            .appendValue(quarterOfYearRule())
+            .appendValue(QUARTER_OF_YEAR)
             .appendLiteral(' ')
-            .appendText(monthOfYearRule())
+            .appendText(MONTH_OF_YEAR)
             .appendLiteral('(')
-            .appendValue(monthOfYearRule())
+            .appendValue(MONTH_OF_YEAR)
             .appendLiteral(')')
             .appendLiteral(' ')
-            .appendValue(dayOfMonthRule(), 2)
+            .appendValue(DAY_OF_MONTH, 2)
             .toFormatter(Locale.ENGLISH);
         String formatted = f.print(resolved);
         System.out.println("...printed using complex format: " + formatted);

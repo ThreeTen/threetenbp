@@ -31,11 +31,14 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.CalendricalMerger;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -50,12 +53,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDateTimeFormatterBuilder {
-
-    private static final DateTimeFieldRule YEAR_RULE = ISOChronology.yearRule();
-    private static final DateTimeFieldRule MOY_RULE = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule DOM_RULE = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule DOW_RULE = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
 
     private DateTimeFormatterBuilder builder;
 
@@ -92,7 +89,7 @@ public class TestDateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     public void test_appendValue_1arg() throws Exception {
-        builder.appendValue(DOM_RULE);
+        builder.appendValue(DAY_OF_MONTH);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.DayOfMonth)");
     }
@@ -104,7 +101,7 @@ public class TestDateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     public void test_appendValue_2arg() throws Exception {
-        builder.appendValue(DOM_RULE, 3);
+        builder.appendValue(DAY_OF_MONTH, 3);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.DayOfMonth,3)");
     }
@@ -116,17 +113,17 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_2arg_widthTooSmall() throws Exception {
-        builder.appendValue(DOM_RULE, 0);
+        builder.appendValue(DAY_OF_MONTH, 0);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_2arg_widthTooBig() throws Exception {
-        builder.appendValue(DOM_RULE, 11);
+        builder.appendValue(DAY_OF_MONTH, 11);
     }
 
     //-----------------------------------------------------------------------
     public void test_appendValue_3arg() throws Exception {
-        builder.appendValue(DOM_RULE, 2, 3, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 2, 3, SignStyle.NORMAL);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.DayOfMonth,2,3,NORMAL)");
     }
@@ -138,73 +135,73 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_3arg_minWidthTooSmall() throws Exception {
-        builder.appendValue(DOM_RULE, 0, 2, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 0, 2, SignStyle.NORMAL);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_3arg_minWidthTooBig() throws Exception {
-        builder.appendValue(DOM_RULE, 11, 2, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 11, 2, SignStyle.NORMAL);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_3arg_maxWidthTooSmall() throws Exception {
-        builder.appendValue(DOM_RULE, 2, 0, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 2, 0, SignStyle.NORMAL);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_3arg_maxWidthTooBig() throws Exception {
-        builder.appendValue(DOM_RULE, 2, 11, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 2, 11, SignStyle.NORMAL);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_3arg_maxWidthMinWidth() throws Exception {
-        builder.appendValue(DOM_RULE, 4, 2, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 4, 2, SignStyle.NORMAL);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_appendValue_3arg_nullSignStyle() throws Exception {
-        builder.appendValue(DOM_RULE, 2, 3, null);
+        builder.appendValue(DAY_OF_MONTH, 2, 3, null);
     }
 
     //-----------------------------------------------------------------------
     public void test_appendValue_subsequent2_parse3() throws Exception {
-        builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValue(DOM_RULE, 2);
+        builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
-        assertEquals(cal.getInputMap().get(DOM_RULE), 23);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23);
     }
 
     public void test_appendValue_subsequent2_parse4() throws Exception {
-        builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValue(DOM_RULE, 2);
+        builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("0123");
-        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
-        assertEquals(cal.getInputMap().get(DOM_RULE), 23);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23);
     }
 
     public void test_appendValue_subsequent2_parse5() throws Exception {
-        builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValue(DOM_RULE, 2).appendLiteral('4');
+        builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2).appendLiteral('4');
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)'4'");
         CalendricalMerger cal = f.parse("01234");
-        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
-        assertEquals(cal.getInputMap().get(DOM_RULE), 23);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23);
     }
 
     public void test_appendValue_subsequent3_parse6() throws Exception {
         builder
-            .appendValue(YEAR_RULE, 4, 10, SignStyle.EXCEEDS_PAD)
-            .appendValue(MOY_RULE, 2)
-            .appendValue(DOM_RULE, 2);
+            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(MONTH_OF_YEAR, 2)
+            .appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.Year,4,10,EXCEEDS_PAD)Value(ISO.MonthOfYear,2)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("20090630");
-        assertEquals(cal.getInputMap().get(YEAR_RULE), 2009);
-        assertEquals(cal.getInputMap().get(MOY_RULE), 6);
-        assertEquals(cal.getInputMap().get(DOM_RULE), 30);
+        assertEquals(cal.getInputMap().get(YEAR), 2009);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 6);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 30);
     }
 
     //-----------------------------------------------------------------------
@@ -214,27 +211,27 @@ public class TestDateTimeFormatterBuilder {
     }
 
     public void test_appendValueReduced() throws Exception {
-        builder.appendValueReduced(YEAR_RULE, 2, 2000);
+        builder.appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(ISO.Year,2,2000)");
         CalendricalMerger cal = f.parse("12");
-        assertEquals(cal.getInputMap().get(YEAR_RULE), 2012);
+        assertEquals(cal.getInputMap().get(YEAR), 2012);
     }
 
     public void test_appendValueReduced_subsequent_parse() throws Exception {
-        builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR_RULE, 2, 2000);
+        builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)ReducedValue(ISO.Year,2,2000)");
         CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
-        assertEquals(cal.getInputMap().get(YEAR_RULE), 2023);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
+        assertEquals(cal.getInputMap().get(YEAR), 2023);
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_appendFraction_3arg() throws Exception {
-        builder.appendFraction(MIN_RULE, 1, 9);
+        builder.appendFraction(MINUTE_OF_HOUR, 1, 9);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Fraction(ISO.MinuteOfHour,1,9)");
     }
@@ -246,44 +243,44 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_invalidRuleNotFixedSet() throws Exception {
-        builder.appendFraction(DOM_RULE, 1, 9);
+        builder.appendFraction(DAY_OF_MONTH, 1, 9);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_invalidRuleNotMinZero() throws Exception {
-        builder.appendFraction(MOY_RULE, 1, 9);
+        builder.appendFraction(MONTH_OF_YEAR, 1, 9);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_minTooSmall() throws Exception {
-        builder.appendFraction(MIN_RULE, -1, 9);
+        builder.appendFraction(MINUTE_OF_HOUR, -1, 9);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_minTooBig() throws Exception {
-        builder.appendFraction(MIN_RULE, 10, 9);
+        builder.appendFraction(MINUTE_OF_HOUR, 10, 9);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_maxTooSmall() throws Exception {
-        builder.appendFraction(MIN_RULE, 0, -1);
+        builder.appendFraction(MINUTE_OF_HOUR, 0, -1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_maxTooBig() throws Exception {
-        builder.appendFraction(MIN_RULE, 1, 10);
+        builder.appendFraction(MINUTE_OF_HOUR, 1, 10);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_maxWidthMinWidth() throws Exception {
-        builder.appendFraction(MIN_RULE, 9, 3);
+        builder.appendFraction(MINUTE_OF_HOUR, 9, 3);
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_appendText_1arg() throws Exception {
-        builder.appendText(MOY_RULE);
+        builder.appendText(MONTH_OF_YEAR);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Text(ISO.MonthOfYear)");
     }
@@ -295,7 +292,7 @@ public class TestDateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     public void test_appendText_2arg() throws Exception {
-        builder.appendText(MOY_RULE, TextStyle.SHORT);
+        builder.appendText(MONTH_OF_YEAR, TextStyle.SHORT);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Text(ISO.MonthOfYear,SHORT)");
     }
@@ -307,7 +304,7 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_appendText_2arg_nullStyle() throws Exception {
-        builder.appendText(MOY_RULE, null);
+        builder.appendText(MONTH_OF_YEAR, null);
     }
 
     //-----------------------------------------------------------------------
@@ -354,7 +351,7 @@ public class TestDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_padNext_1arg() throws Exception {
-        builder.appendValue(MOY_RULE).padNext(2).appendValue(DOM_RULE).appendValue(DOW_RULE);
+        builder.appendValue(MONTH_OF_YEAR).padNext(2).appendValue(DAY_OF_MONTH).appendValue(DAY_OF_WEEK);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),2)Value(ISO.DayOfWeek)");
     }
@@ -366,7 +363,7 @@ public class TestDateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     public void test_padNext_2arg_dash() throws Exception {
-        builder.appendValue(MOY_RULE).padNext(2, '-').appendValue(DOM_RULE).appendValue(DOW_RULE);
+        builder.appendValue(MONTH_OF_YEAR).padNext(2, '-').appendValue(DAY_OF_MONTH).appendValue(DAY_OF_WEEK);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),2,'-')Value(ISO.DayOfWeek)");
     }
@@ -378,7 +375,7 @@ public class TestDateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     public void test_padOptional() throws Exception {
-        builder.appendValue(MOY_RULE).padNext(5).optionalStart().appendValue(DOM_RULE).optionalEnd().appendValue(DOW_RULE);
+        builder.appendValue(MONTH_OF_YEAR).padNext(5).optionalStart().appendValue(DAY_OF_MONTH).optionalEnd().appendValue(DAY_OF_WEEK);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad([Value(ISO.DayOfMonth)],5)Value(ISO.DayOfWeek)");
     }
@@ -387,51 +384,51 @@ public class TestDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_optionalStart_noEnd() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE).appendValue(DOW_RULE);
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().appendValue(DAY_OF_MONTH).appendValue(DAY_OF_WEEK);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)Value(ISO.DayOfWeek)]");
     }
 
     public void test_optionalStart2_noEnd() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE).optionalStart().appendValue(DOW_RULE);
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().appendValue(DAY_OF_MONTH).optionalStart().appendValue(DAY_OF_WEEK);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)[Value(ISO.DayOfWeek)]]");
     }
 
     public void test_optionalStart_doubleStart() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().optionalStart().appendValue(DOM_RULE);
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().optionalStart().appendValue(DAY_OF_MONTH);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)[[Value(ISO.DayOfMonth)]]");
     }
 
     //-----------------------------------------------------------------------
     public void test_optionalEnd() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE).optionalEnd().appendValue(DOW_RULE);
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().appendValue(DAY_OF_MONTH).optionalEnd().appendValue(DAY_OF_WEEK);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)]Value(ISO.DayOfWeek)");
     }
 
     public void test_optionalEnd2() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE)
-            .optionalStart().appendValue(DOW_RULE).optionalEnd().appendValue(DOM_RULE).optionalEnd();
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().appendValue(DAY_OF_MONTH)
+            .optionalStart().appendValue(DAY_OF_WEEK).optionalEnd().appendValue(DAY_OF_MONTH).optionalEnd();
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)[Value(ISO.DayOfWeek)]Value(ISO.DayOfMonth)]");
     }
 
     public void test_optionalEnd_doubleStartSingleEnd() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().optionalStart().appendValue(DOM_RULE).optionalEnd();
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().optionalStart().appendValue(DAY_OF_MONTH).optionalEnd();
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)[[Value(ISO.DayOfMonth)]]");
     }
 
     public void test_optionalEnd_doubleStartDoubleEnd() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().optionalStart().appendValue(DOM_RULE).optionalEnd().optionalEnd();
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().optionalStart().appendValue(DAY_OF_MONTH).optionalEnd().optionalEnd();
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)[[Value(ISO.DayOfMonth)]]");
     }
 
     public void test_optionalStartEnd_immediateStartEnd() throws Exception {
-        builder.appendValue(MOY_RULE).optionalStart().optionalEnd().appendValue(DOM_RULE);
+        builder.appendValue(MONTH_OF_YEAR).optionalStart().optionalEnd().appendValue(DAY_OF_MONTH);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)Value(ISO.DayOfMonth)");
     }

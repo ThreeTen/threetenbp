@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -66,9 +69,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestMonthDay {
 
-//    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule RULE_MONTH = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
     private MonthDay TEST_07_15;
 
     @BeforeMethod
@@ -156,7 +156,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(MonthOfYear.JANUARY, 0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -166,7 +166,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(MonthOfYear.JANUARY, 32);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -186,7 +186,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(1, 0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -196,7 +196,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(1, 32);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -207,7 +207,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(0, 1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), MONTH_OF_YEAR);
             throw ex;
         }
     }
@@ -217,14 +217,14 @@ public class TestMonthDay {
         try {
             MonthDay.of(13, 1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), MONTH_OF_YEAR);
             throw ex;
         }
     }
 
     //-----------------------------------------------------------------------
     public void factory_Calendrical() {
-        Calendrical cal = new MockSimpleCalendrical(RULE_MONTH, DateTimeField.of(RULE_MONTH, 7), RULE_DOM, DateTimeField.of(RULE_DOM, 15));
+        Calendrical cal = new MockSimpleCalendrical(MONTH_OF_YEAR, DateTimeField.of(MONTH_OF_YEAR, 7), DAY_OF_MONTH, DateTimeField.of(DAY_OF_MONTH, 15));
         assertEquals(MonthDay.of(cal), TEST_07_15);
     }
 
@@ -361,9 +361,9 @@ public class TestMonthDay {
     public void test_get_CalendricalRule() {
         MonthDay test = MonthDay.of(6, 12);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(ISOChronology.monthOfYearRule()), RULE_MONTH.field(6));
-        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), ISOChronology.monthOfQuarterRule().field(3));
-        assertEquals(test.get(ISOChronology.dayOfMonthRule()), RULE_DOM.field(12));
+        assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
+        assertEquals(test.get(MONTH_OF_QUARTER), MONTH_OF_QUARTER.field(3));
+        assertEquals(test.get(DAY_OF_MONTH), DAY_OF_MONTH.field(12));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
@@ -450,7 +450,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(6, 30).withMonthOfYear(0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), MONTH_OF_YEAR);
             throw ex;
         }
     }
@@ -460,7 +460,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(6, 30).withMonthOfYear(13);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), MONTH_OF_YEAR);
             throw ex;
         }
     }
@@ -477,7 +477,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(6, 30).withDayOfMonth(31);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -496,7 +496,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(6, 30).withDayOfMonth(0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -506,7 +506,7 @@ public class TestMonthDay {
         try {
             MonthDay.of(6, 30).withDayOfMonth(32);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -587,7 +587,7 @@ public class TestMonthDay {
         try {
             test.adjustDate(date);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -623,7 +623,7 @@ public class TestMonthDay {
         try {
             test.adjustDate(date, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }
@@ -701,7 +701,7 @@ public class TestMonthDay {
         try {
             test.atYear(2005);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
     }

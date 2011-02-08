@@ -31,6 +31,10 @@
  */
 package javax.time.calendar.zone;
 
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -82,9 +86,9 @@ public final class TZDBZoneRulesCompiler {
     private static final DateTimeFormatter TIME_PARSER;
     static {
         TIME_PARSER = new DateTimeFormatterBuilder()
-            .appendValue(ISOChronology.hourOfDayRule())
-            .optionalStart().appendLiteral(':').appendValue(ISOChronology.minuteOfHourRule(), 2)
-            .optionalStart().appendLiteral(':').appendValue(ISOChronology.secondOfMinuteRule(), 2)
+            .appendValue(HOUR_OF_DAY)
+            .optionalStart().appendLiteral(':').appendValue(MINUTE_OF_HOUR, 2)
+            .optionalStart().appendLiteral(':').appendValue(SECOND_OF_MINUTE, 2)
             .toFormatter();
     }
 
@@ -640,9 +644,9 @@ public final class TZDBZoneRulesCompiler {
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        int hour = (Integer) cal.getParsed(ISOChronology.hourOfDayRule());
-        Integer min = (Integer) cal.getParsed(ISOChronology.minuteOfHourRule());
-        Integer sec = (Integer) cal.getParsed(ISOChronology.secondOfMinuteRule());
+        int hour = (Integer) cal.getParsed(HOUR_OF_DAY);
+        Integer min = (Integer) cal.getParsed(MINUTE_OF_HOUR);
+        Integer sec = (Integer) cal.getParsed(SECOND_OF_MINUTE);
         int secs = hour * 60 * 60 +
             (min != null ? min : 0) * 60 + (sec != null ? sec : 0);
         if (pos == 1) {

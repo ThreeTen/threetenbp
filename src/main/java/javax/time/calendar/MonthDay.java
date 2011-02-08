@@ -31,6 +31,11 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISOPeriodUnit.DAYS;
+import static javax.time.calendar.ISOPeriodUnit.YEARS;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -75,9 +80,9 @@ public final class MonthDay
      */
     private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
         .appendLiteral("--")
-        .appendValue(ISOChronology.monthOfYearRule(), 2)
+        .appendValue(MONTH_OF_YEAR, 2)
         .appendLiteral('-')
-        .appendValue(ISOChronology.dayOfMonthRule(), 2)
+        .appendValue(DAY_OF_MONTH, 2)
         .toFormatter();
 
     /**
@@ -139,10 +144,10 @@ public final class MonthDay
      */
     public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        DAY_OF_MONTH.checkValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                    " is not valid for month " + monthOfYear.name(), ISOChronology.dayOfMonthRule());
+                    " is not valid for month " + monthOfYear.name(), DAY_OF_MONTH);
         }
         return new MonthDay(monthOfYear, dayOfMonth);
     }
@@ -179,8 +184,8 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
     public static MonthDay of(Calendrical calendrical) {
-        DateTimeField month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
-        DateTimeField dom = ISOChronology.dayOfMonthRule().getValueChecked(calendrical);
+        DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
+        DateTimeField dom = DAY_OF_MONTH.getValueChecked(calendrical);
         return of(month.getValidValue(), dom.getValidValue());
     }
 
@@ -271,11 +276,11 @@ public final class MonthDay
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
         ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule.equals(ISOChronology.monthOfYearRule())) {
-            return (T) ISOChronology.monthOfYearRule().field(month.getValue());
+        if (rule.equals(MONTH_OF_YEAR)) {
+            return (T) MONTH_OF_YEAR.field(month.getValue());
         }
-        if (rule.equals(ISOChronology.dayOfMonthRule())) {
-            return (T) ISOChronology.dayOfMonthRule().field(day);
+        if (rule.equals(DAY_OF_MONTH)) {
+            return (T) DAY_OF_MONTH.field(day);
         }
         return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
     }
@@ -362,11 +367,11 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
-        ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        DAY_OF_MONTH.checkValue(dayOfMonth);
         int maxDays = month.maxLengthInDays();
         if (dayOfMonth > maxDays) {
             throw new InvalidCalendarFieldException("Day of month cannot be changed to " +
-                    dayOfMonth + " for the month " + month, ISOChronology.dayOfMonthRule());
+                    dayOfMonth + " for the month " + month, DAY_OF_MONTH);
         }
         return with(month, dayOfMonth);
     }
@@ -623,15 +628,15 @@ public final class MonthDay
         private static final CalendricalRule<MonthDay> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay", ISOPeriodUnit.DAYS, ISOPeriodUnit.YEARS);
+            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay", DAYS, YEARS);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
         protected MonthDay derive(Calendrical calendrical) {
-            DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
-            DateTimeField dom = calendrical.get(ISOChronology.dayOfMonthRule());
+            DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
+            DateTimeField dom = calendrical.get(DAY_OF_MONTH);
             return moy != null && dom != null ? MonthDay.of(moy.getValidValue(), dom.getValidValue()) : null;
         }
     }

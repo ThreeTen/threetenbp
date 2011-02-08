@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -86,7 +88,7 @@ public final class SecondOfMinute
      * @return the second-of-minute rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.secondOfMinuteRule();
+        return SECOND_OF_MINUTE;
     }
 
     //-----------------------------------------------------------------------

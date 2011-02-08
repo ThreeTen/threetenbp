@@ -126,19 +126,19 @@ public final class CopticChronology extends Chronology implements Serializable {
 //            return rule;
 //        }
 //        rule = convertToISO(rule);
-//        if (rule.equals(ISOChronology.yearRule())) {
+//        if (rule.equals(ISODateTimeRule.YEAR)) {
 //            return year();
 //        }
-//        if (rule.equals(ISOChronology.monthOfYearRule())) {
+//        if (rule.equals(ISODateTimeRule.MONTH_OF_YEAR)) {
 //            return monthOfYear();
 //        }
-//        if (rule.equals(ISOChronology.dayOfMonthRule())) {
+//        if (rule.equals(ISODateTimeRule.DAY_OF_MONTH)) {
 //            return dayOfMonth();
 //        }
-//        if (rule.equals(ISOChronology.dayOfYearRule())) {
+//        if (rule.equals(ISODateTimeRule.DAY_OF_YEAR)) {
 //            return dayOfYear();
 //        }
-//        if (rule.equals(ISOChronology.dayOfWeekRule())) {
+//        if (rule.equals(ISODateTimeRule.DAY_OF_WEEK)) {
 //            return dayOfWeek();
 //        }
 //        return null;
@@ -159,19 +159,19 @@ public final class CopticChronology extends Chronology implements Serializable {
 //            return rule;
 //        }
 //        if (rule.equals(year())) {
-//            return ISOChronology.yearRule();
+//            return ISODateTimeRule.YEAR;
 //        }
 //        if (rule.equals(monthOfYear())) {
-//            return ISOChronology.monthOfYearRule();
+//            return ISODateTimeRule.MONTH_OF_YEAR;
 //        }
 //        if (rule.equals(dayOfMonth())) {
-//            return ISOChronology.dayOfMonthRule();
+//            return ISODateTimeRule.DAY_OF_MONTH;
 //        }
 //        if (rule.equals(dayOfYear())) {
-//            return ISOChronology.dayOfYearRule();
+//            return ISODateTimeRule.DAY_OF_YEAR;
 //        }
 //        if (rule.equals(dayOfWeek())) {
-//            return ISOChronology.dayOfWeekRule();
+//            return ISODateTimeRule.DAY_OF_WEEK;
 //        }
 //        return null;
 //    }

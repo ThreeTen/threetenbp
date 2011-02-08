@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,22 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -220,11 +231,11 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_LOCAL_DATE;
     static {
         ISO_LOCAL_DATE = new DateTimeFormatterBuilder()
-            .appendValue(ISOChronology.yearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
-            .appendValue(ISOChronology.monthOfYearRule(), 2)
+            .appendValue(MONTH_OF_YEAR, 2)
             .appendLiteral('-')
-            .appendValue(ISOChronology.dayOfMonthRule(), 2)
+            .appendValue(DAY_OF_MONTH, 2)
             .toFormatter();
     }
 
@@ -317,14 +328,14 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter ISO_LOCAL_TIME;
     static {
         ISO_LOCAL_TIME = new DateTimeFormatterBuilder()
-            .appendValue(ISOChronology.hourOfDayRule(), 2)
+            .appendValue(HOUR_OF_DAY, 2)
             .appendLiteral(':')
-            .appendValue(ISOChronology.minuteOfHourRule(), 2)
+            .appendValue(MINUTE_OF_HOUR, 2)
             .optionalStart()
             .appendLiteral(':')
-            .appendValue(ISOChronology.secondOfMinuteRule(), 2)
+            .appendValue(SECOND_OF_MINUTE, 2)
             .optionalStart()
-            .appendFraction(ISOChronology.nanoOfSecondRule(), 0, 9)
+            .appendFraction(NANO_OF_SECOND, 0, 9)
             .toFormatter();
     }
 
@@ -563,9 +574,9 @@ public final class DateTimeFormatters {
     static {
         ISO_ORDINAL_DATE = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(ISOChronology.yearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
-            .appendValue(ISOChronology.dayOfYearRule(), 3)
+            .appendValue(DAY_OF_YEAR, 3)
             .optionalStart()
             .appendOffsetId()
             .optionalStart()
@@ -596,11 +607,11 @@ public final class DateTimeFormatters {
     static {
         ISO_WEEK_DATE = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(ISOChronology.weekBasedYearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(WEEK_BASED_YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
-            .appendValue(ISOChronology.weekOfWeekBasedYearRule(), 2)
+            .appendValue(WEEK_OF_WEEK_BASED_YEAR, 2)
             .appendLiteral('-')
-            .appendValue(ISOChronology.dayOfWeekRule(), 1)
+            .appendValue(DAY_OF_WEEK, 1)
             .optionalStart()
             .appendOffsetId()
             .optionalStart()
@@ -631,9 +642,9 @@ public final class DateTimeFormatters {
     static {
         BASIC_ISO_DATE = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
-            .appendValue(ISOChronology.yearRule(), 4)
-            .appendValue(ISOChronology.monthOfYearRule(), 2)
-            .appendValue(ISOChronology.dayOfMonthRule(), 2)
+            .appendValue(YEAR, 4)
+            .appendValue(MONTH_OF_YEAR, 2)
+            .appendValue(DAY_OF_MONTH, 2)
             .optionalStart()
             .appendOffset("Z", false, false)
             .optionalStart()
@@ -662,19 +673,19 @@ public final class DateTimeFormatters {
     private static final DateTimeFormatter RFC_1123_DATE_TIME;
     static {
         RFC_1123_DATE_TIME = new DateTimeFormatterBuilder()
-            .appendText(ISOChronology.dayOfWeekRule(), TextStyle.SHORT)
+            .appendText(DAY_OF_WEEK, TextStyle.SHORT)
             .appendLiteral(", ")
-            .appendValue(ISOChronology.dayOfMonthRule(), 2)
+            .appendValue(DAY_OF_MONTH, 2)
             .appendLiteral(' ')
-            .appendText(ISOChronology.monthOfYearRule(), TextStyle.SHORT)
+            .appendText(MONTH_OF_YEAR, TextStyle.SHORT)
             .appendLiteral(' ')
-            .appendValue(ISOChronology.yearRule(), 4, 4, SignStyle.NOT_NEGATIVE)
+            .appendValue(YEAR, 4, 4, SignStyle.NOT_NEGATIVE)
             .appendLiteral(' ')
-            .appendValue(ISOChronology.hourOfDayRule(), 2)
+            .appendValue(HOUR_OF_DAY, 2)
             .appendLiteral(':')
-            .appendValue(ISOChronology.minuteOfHourRule(), 2)
+            .appendValue(MINUTE_OF_HOUR, 2)
             .appendLiteral(':')
-            .appendValue(ISOChronology.secondOfMinuteRule(), 2)
+            .appendValue(SECOND_OF_MINUTE, 2)
             .appendLiteral(' ')
             .appendOffset("Z", false, false)
             .toFormatter()

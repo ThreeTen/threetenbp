@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -1325,8 +1327,8 @@ public class TestZoneId {
     public void test_get_CalendricalRule() {
         ZoneId test = ZoneId.of("Europe/London");
         assertEquals(test.get(Chronology.rule()), null);
-        assertEquals(test.get(ISOChronology.yearRule()), null);
-        assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
+        assertEquals(test.get(YEAR), null);
+        assertEquals(test.get(HOUR_OF_DAY), null);
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), null);
         assertEquals(test.get(ZoneId.rule()), test);
@@ -1335,8 +1337,8 @@ public class TestZoneId {
     public void test_get_CalendricalRule_fixedOffset() {
         ZoneId test = ZoneId.of("UTC+03:00");
         assertEquals(test.get(Chronology.rule()), null);
-        assertEquals(test.get(ISOChronology.yearRule()), null);
-        assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
+        assertEquals(test.get(YEAR), null);
+        assertEquals(test.get(HOUR_OF_DAY), null);
         assertEquals(test.get(LocalDate.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), ZoneOffset.ofHours(3));
         assertEquals(test.get(ZoneId.rule()), test);

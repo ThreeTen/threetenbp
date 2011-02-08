@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+
 /**
  * A quarter-of-year, such as 'Q2'.
  * <p>
@@ -106,7 +108,7 @@ public enum QuarterOfYear {
             case 4:
                 return Q4;
             default:
-                throw new IllegalCalendarFieldValueException(ISOChronology.quarterOfYearRule(), quarterOfYear, 1, 4);
+                throw new IllegalCalendarFieldValueException(QUARTER_OF_YEAR, quarterOfYear, 1, 4);
         }
     }
 

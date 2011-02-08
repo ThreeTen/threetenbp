@@ -31,6 +31,11 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+
 import java.io.Serializable;
 
 /**
@@ -133,7 +138,7 @@ public final class CalendricalMatchers {
         LEAP_YEAR {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField yearVal = calendrical.get(ISOChronology.yearRule());
+                DateTimeField yearVal = calendrical.get(YEAR);
                 return yearVal != null && ISOChronology.isLeapYear(yearVal.getValue());
             }
         },
@@ -141,8 +146,8 @@ public final class CalendricalMatchers {
         LEAP_DAY {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField moyVal = calendrical.get(ISOChronology.monthOfYearRule());
-                DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
+                DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
                 return domVal != null && moyVal != null && domVal.getValue() == 29 && moyVal.getValue() == 2;
             }
         },
@@ -150,9 +155,9 @@ public final class CalendricalMatchers {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField yearVal = calendrical.get(ISOChronology.yearRule());
-                DateTimeField moy = calendrical.get(ISOChronology.monthOfYearRule());
-                DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                DateTimeField yearVal = calendrical.get(YEAR);
+                DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
+                DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
                 return yearVal != null && moy != null && domVal != null &&
                         domVal.getValue() == MonthOfYear.of(moy.getValue()).getLastDayOfMonth(ISOChronology.isLeapYear(yearVal.getValue()));
             }
@@ -161,8 +166,8 @@ public final class CalendricalMatchers {
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField moyVal = calendrical.get(ISOChronology.monthOfYearRule());
-                DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
+                DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
                 return domVal != null && moyVal != null && domVal.getValue() == 31 && moyVal.getValue() == 12;
             }
         },
@@ -170,7 +175,7 @@ public final class CalendricalMatchers {
         WEEKEND_DAY {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField dow = calendrical.get(ISOChronology.dayOfWeekRule());
+                DateTimeField dow = calendrical.get(DAY_OF_WEEK);
                 return dow != null && (dow.getValue() == 6 || dow.getValue() == 7);
             }
         },
@@ -178,7 +183,7 @@ public final class CalendricalMatchers {
         NON_WEEKEND_DAY {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField dow = calendrical.get(ISOChronology.dayOfWeekRule());
+                DateTimeField dow = calendrical.get(DAY_OF_WEEK);
                 return dow != null && dow.getValue() >= 1 && dow.getValue() <= 5;
             }
         },
@@ -242,8 +247,8 @@ public final class CalendricalMatchers {
         }
         /** {@inheritDoc} */
         public boolean matchesCalendrical(Calendrical calendrical) {
-            DateTimeField domVal = calendrical.get(ISOChronology.dayOfMonthRule());
-            DateTimeField dowVal = calendrical.get(ISOChronology.dayOfWeekRule());
+            DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
+            DateTimeField dowVal = calendrical.get(DAY_OF_WEEK);
             if (dowVal == null || domVal == null || dowVal.getValue() != dayOfWeek.getValue()) {
                 return false;
             }

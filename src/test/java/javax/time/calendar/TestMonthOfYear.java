@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -88,10 +88,10 @@ public class TestMonthOfYear {
 //    // get()
 //    //-----------------------------------------------------------------------
 //    public void test_get() {
-//        assertEquals(MonthOfYear.JANUARY.get(ISOChronology.monthOfYearRule()), MonthOfYear.JANUARY);
-//        assertEquals(MonthOfYear.AUGUST.get(ISOChronology.monthOfYearRule()), MonthOfYear.AUGUST);
+//        assertEquals(MonthOfYear.JANUARY.get(ISODateTimeRule.MONTH_OF_YEAR), MonthOfYear.JANUARY);
+//        assertEquals(MonthOfYear.AUGUST.get(ISODateTimeRule.MONTH_OF_YEAR), MonthOfYear.AUGUST);
 //        
-//        assertEquals(MonthOfYear.JANUARY.get(ISOChronology.quarterOfYearRule()), null);
+//        assertEquals(MonthOfYear.JANUARY.get(ISODateTimeRule.QUARTER_OF_YEAR), null);
 //    }
 
     //-----------------------------------------------------------------------

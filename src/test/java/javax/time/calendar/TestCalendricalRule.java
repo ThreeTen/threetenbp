@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -65,7 +66,7 @@ public class TestCalendricalRule {
         }
         @Override
         protected BigInteger derive(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(ISOChronology.yearRule());
+            DateTimeField year = calendrical.get(YEAR);
             return year != null ? BigInteger.valueOf(year.getValidValue()) : null;
         }
     }

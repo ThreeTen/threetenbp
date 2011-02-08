@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -89,7 +91,7 @@ public final class DayOfMonth
      * @return the day-of-month rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.dayOfMonthRule();
+        return DAY_OF_MONTH;
     }
 
     //-----------------------------------------------------------------------

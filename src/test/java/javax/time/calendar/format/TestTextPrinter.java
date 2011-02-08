@@ -31,6 +31,9 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
@@ -39,7 +42,6 @@ import java.util.Locale;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -54,10 +56,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestTextPrinter {
-
-    private static final DateTimeFieldRule RULE_DOW = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;
@@ -75,34 +73,34 @@ public class TestTextPrinter {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
-        TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
+        Calendrical calendrical = DateTimeFields.of(DAY_OF_WEEK, 3);
+        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.print(calendrical, (Appendable) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullDateTime() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
+        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.print((Calendrical) null, buf, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
-        TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
+        Calendrical calendrical = DateTimeFields.of(DAY_OF_WEEK, 3);
+        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.print(calendrical, buf, null);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
+        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.print(emptyCalendrical, buf, symbols);
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
-        TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
+        Calendrical calendrical = DateTimeFields.of(DAY_OF_WEEK, 3);
+        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTINGWednesday");
@@ -110,8 +108,8 @@ public class TestTextPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(RULE_DOW, 3);
-        TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
+        Calendrical calendrical = DateTimeFields.of(DAY_OF_WEEK, 3);
+        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
 
@@ -119,43 +117,43 @@ public class TestTextPrinter {
     @DataProvider(name="print")
     Object[][] provider_dow() {
         return new Object[][] {
-            {RULE_DOW, TextStyle.FULL, 1, "Monday"},
-            {RULE_DOW, TextStyle.FULL, 2, "Tuesday"},
-            {RULE_DOW, TextStyle.FULL, 3, "Wednesday"},
-            {RULE_DOW, TextStyle.FULL, 4, "Thursday"},
-            {RULE_DOW, TextStyle.FULL, 5, "Friday"},
-            {RULE_DOW, TextStyle.FULL, 6, "Saturday"},
-            {RULE_DOW, TextStyle.FULL, 7, "Sunday"},
+            {DAY_OF_WEEK, TextStyle.FULL, 1, "Monday"},
+            {DAY_OF_WEEK, TextStyle.FULL, 2, "Tuesday"},
+            {DAY_OF_WEEK, TextStyle.FULL, 3, "Wednesday"},
+            {DAY_OF_WEEK, TextStyle.FULL, 4, "Thursday"},
+            {DAY_OF_WEEK, TextStyle.FULL, 5, "Friday"},
+            {DAY_OF_WEEK, TextStyle.FULL, 6, "Saturday"},
+            {DAY_OF_WEEK, TextStyle.FULL, 7, "Sunday"},
             
-            {RULE_DOW, TextStyle.SHORT, 1, "Mon"},
-            {RULE_DOW, TextStyle.SHORT, 2, "Tue"},
-            {RULE_DOW, TextStyle.SHORT, 3, "Wed"},
-            {RULE_DOW, TextStyle.SHORT, 4, "Thu"},
-            {RULE_DOW, TextStyle.SHORT, 5, "Fri"},
-            {RULE_DOW, TextStyle.SHORT, 6, "Sat"},
-            {RULE_DOW, TextStyle.SHORT, 7, "Sun"},
+            {DAY_OF_WEEK, TextStyle.SHORT, 1, "Mon"},
+            {DAY_OF_WEEK, TextStyle.SHORT, 2, "Tue"},
+            {DAY_OF_WEEK, TextStyle.SHORT, 3, "Wed"},
+            {DAY_OF_WEEK, TextStyle.SHORT, 4, "Thu"},
+            {DAY_OF_WEEK, TextStyle.SHORT, 5, "Fri"},
+            {DAY_OF_WEEK, TextStyle.SHORT, 6, "Sat"},
+            {DAY_OF_WEEK, TextStyle.SHORT, 7, "Sun"},
             
-            {RULE_DOM, TextStyle.FULL, 1, "1"},
-            {RULE_DOM, TextStyle.FULL, 2, "2"},
-            {RULE_DOM, TextStyle.FULL, 3, "3"},
-            {RULE_DOM, TextStyle.FULL, 28, "28"},
-            {RULE_DOM, TextStyle.FULL, 29, "29"},
-            {RULE_DOM, TextStyle.FULL, 30, "30"},
-            {RULE_DOM, TextStyle.FULL, 31, "31"},
+            {DAY_OF_MONTH, TextStyle.FULL, 1, "1"},
+            {DAY_OF_MONTH, TextStyle.FULL, 2, "2"},
+            {DAY_OF_MONTH, TextStyle.FULL, 3, "3"},
+            {DAY_OF_MONTH, TextStyle.FULL, 28, "28"},
+            {DAY_OF_MONTH, TextStyle.FULL, 29, "29"},
+            {DAY_OF_MONTH, TextStyle.FULL, 30, "30"},
+            {DAY_OF_MONTH, TextStyle.FULL, 31, "31"},
             
-            {RULE_DOM, TextStyle.SHORT, 1, "1"},
-            {RULE_DOM, TextStyle.SHORT, 2, "2"},
-            {RULE_DOM, TextStyle.SHORT, 3, "3"},
-            {RULE_DOM, TextStyle.SHORT, 28, "28"},
-            {RULE_DOM, TextStyle.SHORT, 29, "29"},
-            {RULE_DOM, TextStyle.SHORT, 30, "30"},
-            {RULE_DOM, TextStyle.SHORT, 31, "31"},
+            {DAY_OF_MONTH, TextStyle.SHORT, 1, "1"},
+            {DAY_OF_MONTH, TextStyle.SHORT, 2, "2"},
+            {DAY_OF_MONTH, TextStyle.SHORT, 3, "3"},
+            {DAY_OF_MONTH, TextStyle.SHORT, 28, "28"},
+            {DAY_OF_MONTH, TextStyle.SHORT, 29, "29"},
+            {DAY_OF_MONTH, TextStyle.SHORT, 30, "30"},
+            {DAY_OF_MONTH, TextStyle.SHORT, 31, "31"},
             
-            {RULE_MOY, TextStyle.FULL, 1, "January"},
-            {RULE_MOY, TextStyle.FULL, 12, "December"},
+            {MONTH_OF_YEAR, TextStyle.FULL, 1, "January"},
+            {MONTH_OF_YEAR, TextStyle.FULL, 12, "December"},
             
-            {RULE_MOY, TextStyle.SHORT, 1, "Jan"},
-            {RULE_MOY, TextStyle.SHORT, 12, "Dec"},
+            {MONTH_OF_YEAR, TextStyle.SHORT, 1, "Jan"},
+            {MONTH_OF_YEAR, TextStyle.SHORT, 12, "Dec"},
        };
     }
 
@@ -169,23 +167,23 @@ public class TestTextPrinter {
 
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.of(RULE_MOY, 4)), true);
+        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.of(MONTH_OF_YEAR, 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
+        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_toString1() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
+        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         assertEquals(pp.toString(), "Text(ISO.MonthOfYear)");
     }
 
     public void test_toString2() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
+        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         assertEquals(pp.toString(), "Text(ISO.MonthOfYear,SHORT)");
     }
 

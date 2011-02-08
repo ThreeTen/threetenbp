@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -108,10 +108,10 @@ public class TestDayOfWeek {
 //    // get()
 //    //-----------------------------------------------------------------------
 //    public void test_get() {
-//        assertEquals(DayOfWeek.MONDAY.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
-//        assertEquals(DayOfWeek.THURSDAY.get(ISOChronology.dayOfWeekRule()), DayOfWeek.THURSDAY);
+//        assertEquals(DayOfWeek.MONDAY.get(ISODateTimeRule.DAY_OF_WEEK), DayOfWeek.MONDAY);
+//        assertEquals(DayOfWeek.THURSDAY.get(ISODateTimeRule.DAY_OF_WEEK), DayOfWeek.THURSDAY);
 //        
-//        assertEquals(DayOfWeek.MONDAY.get(ISOChronology.monthOfYearRule()), null);
+//        assertEquals(DayOfWeek.MONDAY.get(ISODateTimeRule.MONTH_OF_YEAR), null);
 //    }
 
     //-----------------------------------------------------------------------

@@ -31,10 +31,10 @@
  */
 package javax.time.calendar.i18n;
 
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
@@ -64,7 +64,7 @@ public class TestInterCalendarSystem {
     public void test_get_ISO_quarterOfYear_with_Coptic() {
         LocalDate baseDate = LocalDate.of(2009, 6, 30);
         CopticDate copticDate = CopticDate.of(baseDate);
-        DateTimeField test = copticDate.get(ISOChronology.quarterOfYearRule());
+        DateTimeField test = copticDate.get(QUARTER_OF_YEAR);
         assertEquals(test.getValidValue(), 2);
     }
 

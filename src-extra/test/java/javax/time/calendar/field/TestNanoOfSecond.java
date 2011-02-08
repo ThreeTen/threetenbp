@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,7 +48,7 @@ import java.math.BigDecimal;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
@@ -68,7 +68,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestNanoOfSecond {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.nanoOfSecondRule();
+    private static final DateTimeFieldRule RULE = ISODateTimeRule.NANO_OF_SECOND;
     private static final int MAX_LENGTH = 999999999;
     private static final int SKIP = 500000;
 

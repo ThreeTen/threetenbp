@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISOPeriodUnit.CENTURIES;
+
 import java.io.Serializable;
 
 import javax.time.MathUtils;
@@ -47,14 +50,14 @@ public final class MockCenturyFieldRule extends DateTimeFieldRule implements Ser
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockCenturyFieldRule() {
-        super(ISOChronology.INSTANCE, "Century", ISOPeriodUnit.CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
+        super(ISOChronology.INSTANCE, "Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
     }
     private Object readResolve() {
         return INSTANCE;
     }
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
-        DateTimeField yearVal = calendrical.get(ISOChronology.yearRule());
+        DateTimeField yearVal = calendrical.get(YEAR);
         return (yearVal == null ? null : field(yearVal.getValidValue() / 100));
     }
     @Override
@@ -63,7 +66,7 @@ public final class MockCenturyFieldRule extends DateTimeFieldRule implements Ser
         if (yocVal != null) {
             DateTimeField cen = merger.getValue(this);
             int year = MathUtils.safeAdd(MathUtils.safeMultiply(cen.getValidValue(), 100), yocVal.getValidValue());
-            merger.storeMerged(ISOChronology.yearRule(), year);
+            merger.storeMerged(YEAR, year);
             merger.removeProcessed(this);
             merger.removeProcessed(MockYearOfCenturyFieldRule.INSTANCE);
         }

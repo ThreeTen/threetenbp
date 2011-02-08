@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,7 +48,7 @@ import java.lang.reflect.Modifier;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
@@ -67,7 +67,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestWeekOfWeekBasedYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.weekOfWeekBasedYearRule();
+    private static final DateTimeFieldRule RULE = ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
     private static final int MAX_LENGTH = 53;
 
     //-----------------------------------------------------------------------

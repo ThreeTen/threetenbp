@@ -49,14 +49,14 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
 
     @Override
     protected DateTimeFieldRule rule() {
-        return ISOChronology.dayOfYearRule();
+        return ISODateTimeRule.DAY_OF_YEAR;
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.dayOfYearRule();
+        DateTimeFieldRule rule = ISODateTimeRule.DAY_OF_YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");

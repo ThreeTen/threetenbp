@@ -49,14 +49,14 @@ public class TestISOHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
 
     @Override
     protected DateTimeFieldRule rule() {
-        return ISOChronology.hourOfAmPmRule();
+        return ISODateTimeRule.HOUR_OF_AMPM;
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.hourOfAmPmRule();
+        DateTimeFieldRule rule = ISODateTimeRule.HOUR_OF_AMPM;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.HourOfAmPm");
         assertEquals(rule.getName(), "HourOfAmPm");

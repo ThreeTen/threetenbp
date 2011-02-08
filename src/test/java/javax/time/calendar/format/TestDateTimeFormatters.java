@@ -31,7 +31,20 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -44,7 +57,6 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
@@ -848,7 +860,7 @@ public class TestDateTimeFormatters {
     }
 
     public void test_print_isoOrdinalDate_fields() {
-        Calendrical test = DateTimeFields.of(ISOChronology.yearRule(), 2008, ISOChronology.dayOfYearRule(), 231);
+        Calendrical test = DateTimeFields.of(YEAR, 2008, DAY_OF_YEAR, 231);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-231");
     }
 
@@ -858,19 +870,19 @@ public class TestDateTimeFormatters {
             DateTimeFormatters.isoOrdinalDate().print(test);
             fail();
         } catch (CalendricalPrintFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfYearRule());
+            assertEquals(ex.getRule(), DAY_OF_YEAR);
             assertEquals(ex.getValue(), null);
         }
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_isoOrdinalDate() {
-        MockSimpleCalendrical expected = new MockSimpleCalendrical(ISOChronology.yearRule(), ISOChronology.yearRule().field(2008), ISOChronology.dayOfYearRule(), ISOChronology.dayOfYearRule().field(123));
+        MockSimpleCalendrical expected = new MockSimpleCalendrical(YEAR, YEAR.field(2008), DAY_OF_YEAR, DAY_OF_YEAR.field(123));
         assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("2008-123"), expected);
     }
 
     public void test_parse_isoOrdinalDate_largeYear() {
-        MockSimpleCalendrical expected = new MockSimpleCalendrical(ISOChronology.yearRule(), ISOChronology.yearRule().field(123456), ISOChronology.dayOfYearRule(), ISOChronology.dayOfYearRule().field(123));
+        MockSimpleCalendrical expected = new MockSimpleCalendrical(YEAR, YEAR.field(123456), DAY_OF_YEAR, DAY_OF_YEAR.field(123));
         assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("+123456-123"), expected);
     }
 
@@ -898,7 +910,7 @@ public class TestDateTimeFormatters {
             Calendrical test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
             DateTimeFormatters.basicIsoDate().print(test);
         } catch (CalendricalPrintFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.yearRule());
+            assertEquals(ex.getRule(), YEAR);
             throw ex;
         }
     }
@@ -914,7 +926,7 @@ public class TestDateTimeFormatters {
             DateTimeFormatters.basicIsoDate().print(test);
             fail();
         } catch (CalendricalPrintFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
             assertEquals(ex.getValue(), null);
         }
     }
@@ -984,19 +996,19 @@ public class TestDateTimeFormatters {
 
     public void test_print_isoWeekDate_fields() {
         MockSimpleCalendrical test = new MockSimpleCalendrical();
-        test.put(ISOChronology.weekBasedYearRule(), ISOChronology.weekBasedYearRule().field(2004));
-        test.put(ISOChronology.weekOfWeekBasedYearRule(), ISOChronology.weekOfWeekBasedYearRule().field(5));
-        test.put(ISOChronology.dayOfWeekRule(), ISOChronology.dayOfWeekRule().field(2));
+        test.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(2004));
+        test.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(5));
+        test.put(DAY_OF_WEEK, DAY_OF_WEEK.field(2));
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "2004-W05-2");
     }
 
     public void test_print_isoWeekDate_missingField() {
         try {
-            Calendrical test = DateTimeFields.of(ISOChronology.weekBasedYearRule(), 2004, ISOChronology.weekOfWeekBasedYearRule(), 1);
+            Calendrical test = DateTimeFields.of(WEEK_BASED_YEAR, 2004, WEEK_OF_WEEK_BASED_YEAR, 1);
             DateTimeFormatters.isoWeekDate().print(test);
             fail();
         } catch (CalendricalPrintFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfWeekRule());
+            assertEquals(ex.getRule(), DAY_OF_WEEK);
             assertEquals(ex.getValue(), null);
         }
     }
@@ -1004,17 +1016,17 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     public void test_parse_weekDate() {
         MockSimpleCalendrical expected = new MockSimpleCalendrical();
-        expected.put(ISOChronology.weekBasedYearRule(), ISOChronology.weekBasedYearRule().field(2004));
-        expected.put(ISOChronology.weekOfWeekBasedYearRule(), ISOChronology.weekOfWeekBasedYearRule().field(1));
-        expected.put(ISOChronology.dayOfWeekRule(), ISOChronology.dayOfWeekRule().field(1));
+        expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(2004));
+        expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(1));
+        expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(1));
         assertParseMatch(DateTimeFormatters.isoWeekDate().parse("2004-W01-1"), expected);
     }
 
     public void test_parse_weekDate_largeYear() {
         MockSimpleCalendrical expected = new MockSimpleCalendrical();
-        expected.put(ISOChronology.weekBasedYearRule(), ISOChronology.weekBasedYearRule().field(123456));
-        expected.put(ISOChronology.weekOfWeekBasedYearRule(), ISOChronology.weekOfWeekBasedYearRule().field(4));
-        expected.put(ISOChronology.dayOfWeekRule(), ISOChronology.dayOfWeekRule().field(5));
+        expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(123456));
+        expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(4));
+        expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(5));
         assertParseMatch(DateTimeFormatters.isoWeekDate().parse("+123456-W04-5"), expected);
     }
 
@@ -1032,7 +1044,7 @@ public class TestDateTimeFormatters {
             DateTimeFormatters.rfc1123().print(test);
             fail();
         } catch (CalendricalPrintFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfWeekRule());
+            assertEquals(ex.getRule(), DAY_OF_WEEK);
             assertEquals(ex.getValue(), null);
         }
     }
@@ -1043,13 +1055,13 @@ public class TestDateTimeFormatters {
     private MockSimpleCalendrical createDate(Integer year, Integer month, Integer day) {
         MockSimpleCalendrical test = new MockSimpleCalendrical();
         if (year != null) {
-            test.put(ISOChronology.yearRule(), ISOChronology.yearRule().field(year));
+            test.put(YEAR, YEAR.field(year));
         }
         if (month != null) {
-            test.put(ISOChronology.monthOfYearRule(), ISOChronology.monthOfYearRule().field(month));
+            test.put(MONTH_OF_YEAR, MONTH_OF_YEAR.field(month));
         }
         if (day != null) {
-            test.put(ISOChronology.dayOfMonthRule(), ISOChronology.dayOfMonthRule().field(day));
+            test.put(DAY_OF_MONTH, DAY_OF_MONTH.field(day));
         }
         return test;
     }
@@ -1057,16 +1069,16 @@ public class TestDateTimeFormatters {
     private MockSimpleCalendrical createTime(Integer hour, Integer min, Integer sec, Integer nano) {
         MockSimpleCalendrical test = new MockSimpleCalendrical();
         if (hour != null) {
-            test.put(ISOChronology.hourOfDayRule(), ISOChronology.hourOfDayRule().field(hour));
+            test.put(HOUR_OF_DAY, HOUR_OF_DAY.field(hour));
         }
         if (min != null) {
-            test.put(ISOChronology.minuteOfHourRule(), ISOChronology.minuteOfHourRule().field(min));
+            test.put(MINUTE_OF_HOUR, MINUTE_OF_HOUR.field(min));
         }
         if (sec != null) {
-            test.put(ISOChronology.secondOfMinuteRule(), ISOChronology.secondOfMinuteRule().field(sec));
+            test.put(SECOND_OF_MINUTE, SECOND_OF_MINUTE.field(sec));
         }
         if (nano != null) {
-            test.put(ISOChronology.nanoOfSecondRule(), ISOChronology.nanoOfSecondRule().field(nano));
+            test.put(NANO_OF_SECOND, NANO_OF_SECOND.field(nano));
         }
         return test;
     }
@@ -1076,25 +1088,25 @@ public class TestDateTimeFormatters {
             Integer hour, Integer min, Integer sec, Integer nano) {
         MockSimpleCalendrical test = new MockSimpleCalendrical();
         if (year != null) {
-            test.put(ISOChronology.yearRule(), ISOChronology.yearRule().field(year));
+            test.put(YEAR, YEAR.field(year));
         }
         if (month != null) {
-            test.put(ISOChronology.monthOfYearRule(), ISOChronology.monthOfYearRule().field(month));
+            test.put(MONTH_OF_YEAR, MONTH_OF_YEAR.field(month));
         }
         if (day != null) {
-            test.put(ISOChronology.dayOfMonthRule(), ISOChronology.dayOfMonthRule().field(day));
+            test.put(DAY_OF_MONTH, DAY_OF_MONTH.field(day));
         }
         if (hour != null) {
-            test.put(ISOChronology.hourOfDayRule(), ISOChronology.hourOfDayRule().field(hour));
+            test.put(HOUR_OF_DAY, HOUR_OF_DAY.field(hour));
         }
         if (min != null) {
-            test.put(ISOChronology.minuteOfHourRule(), ISOChronology.minuteOfHourRule().field(min));
+            test.put(MINUTE_OF_HOUR, MINUTE_OF_HOUR.field(min));
         }
         if (sec != null) {
-            test.put(ISOChronology.secondOfMinuteRule(), ISOChronology.secondOfMinuteRule().field(sec));
+            test.put(SECOND_OF_MINUTE, SECOND_OF_MINUTE.field(sec));
         }
         if (nano != null) {
-            test.put(ISOChronology.nanoOfSecondRule(), ISOChronology.nanoOfSecondRule().field(nano));
+            test.put(NANO_OF_SECOND, NANO_OF_SECOND.field(nano));
         }
         return test;
     }

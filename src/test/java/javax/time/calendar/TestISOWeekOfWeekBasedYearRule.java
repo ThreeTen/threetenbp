@@ -50,14 +50,14 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRul
 
     @Override
     protected DateTimeFieldRule rule() {
-        return ISOChronology.weekOfWeekBasedYearRule();
+        return ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekOfWeekBasedYearRule();
+        DateTimeFieldRule rule = ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekOfWeekBasedYear");
         assertEquals(rule.getName(), "WeekOfWeekBasedYear");

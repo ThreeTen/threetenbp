@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -94,7 +96,7 @@ public enum AmPmOfDay {
             case 1:
                 return PM;
             default:
-                throw new IllegalCalendarFieldValueException(ISOChronology.amPmOfDayRule(), amPmOfDay, 0, 1);
+                throw new IllegalCalendarFieldValueException(AMPM_OF_DAY, amPmOfDay, 0, 1);
         }
     }
 
@@ -142,7 +144,7 @@ public enum AmPmOfDay {
      * @return the short text value of the AM/PM, never null
      */
     public String getShortText(Locale locale) {
-        return ISOChronology.amPmOfDayRule().getText(getValue(), locale, TextStyle.SHORT);
+        return AMPM_OF_DAY.getText(getValue(), locale, TextStyle.SHORT);
     }
 
     /**
@@ -160,7 +162,7 @@ public enum AmPmOfDay {
      * @return the long text value of the AM/PM, never null
      */
     public String getText(Locale locale) {
-        return ISOChronology.amPmOfDayRule().getText(getValue(), locale, TextStyle.FULL);
+        return AMPM_OF_DAY.getText(getValue(), locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------

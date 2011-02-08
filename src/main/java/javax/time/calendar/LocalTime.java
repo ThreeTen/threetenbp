@@ -31,6 +31,14 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendar.ISOPeriodUnit.DAYS;
+import static javax.time.calendar.ISOPeriodUnit.NANOS;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -175,11 +183,11 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour) {
-        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        HOUR_OF_DAY.checkValue(hourOfDay);
         if (minuteOfHour == 0) {
             return HOURS[hourOfDay];  // for performance
         }
-        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
+        MINUTE_OF_HOUR.checkValue(minuteOfHour);
         return new LocalTime(hourOfDay, minuteOfHour, 0, 0);
     }
 
@@ -197,12 +205,12 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        HOUR_OF_DAY.checkValue(hourOfDay);
         if ((minuteOfHour | secondOfMinute) == 0) {
             return HOURS[hourOfDay];  // for performance
         }
-        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
-        ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
+        MINUTE_OF_HOUR.checkValue(minuteOfHour);
+        SECOND_OF_MINUTE.checkValue(secondOfMinute);
         return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
     }
 
@@ -240,10 +248,10 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
-        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
-        ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
-        ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
+        HOUR_OF_DAY.checkValue(hourOfDay);
+        MINUTE_OF_HOUR.checkValue(minuteOfHour);
+        SECOND_OF_MINUTE.checkValue(secondOfMinute);
+        NANO_OF_SECOND.checkValue(nanoOfSecond);
         return create(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
     }
 
@@ -278,7 +286,7 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay) {
-        ISOChronology.secondOfDayRule().checkValue(secondOfDay);
+        SECOND_OF_DAY.checkValue(secondOfDay);
         int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
         secondOfDay -= hours * SECONDS_PER_HOUR;
         int minutes = (int) (secondOfDay / SECONDS_PER_MINUTE);
@@ -298,8 +306,8 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the either input value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
-        ISOChronology.secondOfDayRule().checkValue(secondOfDay);
-        ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
+        SECOND_OF_DAY.checkValue(secondOfDay);
+        NANO_OF_SECOND.checkValue(nanoOfSecond);
         int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
         secondOfDay -= hours * SECONDS_PER_HOUR;
         int minutes = (int) (secondOfDay / SECONDS_PER_MINUTE);
@@ -536,7 +544,7 @@ public final class LocalTime
         if (hourOfDay == hour) {
             return this;
         }
-        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        HOUR_OF_DAY.checkValue(hourOfDay);
         return create(hourOfDay, minute, second, nano);
     }
 
@@ -553,7 +561,7 @@ public final class LocalTime
         if (minuteOfHour == minute) {
             return this;
         }
-        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
+        MINUTE_OF_HOUR.checkValue(minuteOfHour);
         return create(hour, minuteOfHour, second, nano);
     }
 
@@ -570,7 +578,7 @@ public final class LocalTime
         if (secondOfMinute == second) {
             return this;
         }
-        ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
+        SECOND_OF_MINUTE.checkValue(secondOfMinute);
         return create(hour, minute, secondOfMinute, nano);
     }
 
@@ -587,7 +595,7 @@ public final class LocalTime
         if (nanoOfSecond == nano) {
             return this;
         }
-        ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
+        NANO_OF_SECOND.checkValue(nanoOfSecond);
         return create(hour, minute, second, nanoOfSecond);
     }
 
@@ -1238,7 +1246,7 @@ public final class LocalTime
 //
 //        @Override
 //        public <T> T get(CalendricalRule<T> rule) {
-//            if (rule == ISOChronology.hourOfDayRule() && time == null) {
+//            if (rule == HOUR_OF_DAY && time == null) {
 //                return rule.reify(24);
 //            }
 //            return rule().deriveValueFor(rule, time, time);
@@ -1407,7 +1415,7 @@ public final class LocalTime
         private static final CalendricalRule<LocalTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime", ISOPeriodUnit.NANOS, ISOPeriodUnit.DAYS);
+            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime", NANOS, DAYS);
         }
         private Object readResolve() {
             return INSTANCE;

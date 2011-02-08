@@ -31,14 +31,15 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 import java.util.Map;
 
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 
@@ -52,10 +53,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDateTimeParseContext {
-
-    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
 
     private DateTimeFormatSymbols symbols;
     private DateTimeParseContext context;
@@ -98,13 +95,13 @@ public class TestDateTimeParseContext {
 
     //-----------------------------------------------------------------------
     public void test_fields_oneField() throws Exception {
-        context.setParsed(RULE_YEAR, 2008);
+        context.setParsed(YEAR, 2008);
         
         assertEquals(context.getParsedRules().size(), 1);
-        assertEquals(context.getParsed(RULE_YEAR), 2008);
+        assertEquals(context.getParsed(YEAR), 2008);
         Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 1);
-        assertEquals(map.get(RULE_YEAR), Integer.valueOf(2008));
+        assertEquals(map.get(YEAR), Integer.valueOf(2008));
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
@@ -112,22 +109,22 @@ public class TestDateTimeParseContext {
     }
 
     public void test_fields_twoFields() throws Exception {
-        context.setParsed(RULE_YEAR, 2008);
-        context.setParsed(RULE_MOY, 6);
+        context.setParsed(YEAR, 2008);
+        context.setParsed(MONTH_OF_YEAR, 6);
         
         assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(RULE_YEAR), 2008);
-        assertEquals(context.getParsed(RULE_MOY), 6);
+        assertEquals(context.getParsed(YEAR), 2008);
+        assertEquals(context.getParsed(MONTH_OF_YEAR), 6);
         Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 2);
-        assertEquals(map.get(RULE_YEAR), Integer.valueOf(2008));
-        assertEquals(map.get(RULE_MOY), Integer.valueOf(6));
+        assertEquals(map.get(YEAR), Integer.valueOf(2008));
+        assertEquals(map.get(MONTH_OF_YEAR), Integer.valueOf(6));
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
         assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(RULE_YEAR), 2008);
-        assertEquals(context.getParsed(RULE_MOY), 6);
+        assertEquals(context.getParsed(YEAR), 2008);
+        assertEquals(context.getParsed(MONTH_OF_YEAR), 6);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -136,7 +133,7 @@ public class TestDateTimeParseContext {
     }
 
     public void test_fields_get_notPresent() throws Exception {
-        assertEquals(context.getParsed(RULE_DOM), null);
+        assertEquals(context.getParsed(DAY_OF_MONTH), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -146,20 +143,20 @@ public class TestDateTimeParseContext {
 
     //-----------------------------------------------------------------------
     public void test_getParsedRules_set() throws Exception {
-        context.setParsed(RULE_DOM, 2);
+        context.setParsed(DAY_OF_MONTH, 2);
         
         assertEquals(context.getParsedRules().size(), 1);
-        assertEquals(context.getParsedRules().iterator().next(), RULE_DOM);
+        assertEquals(context.getParsedRules().iterator().next(), DAY_OF_MONTH);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_getParsedRules_noAdd() throws Exception {
-        context.getParsedRules().add(RULE_MOY);
+        context.getParsedRules().add(MONTH_OF_YEAR);
     }
 
     public void test_getParsedRules_remove() throws Exception {
-        context.setParsed(RULE_DOM, 2);
-        context.getParsedRules().remove(RULE_DOM);
+        context.setParsed(DAY_OF_MONTH, 2);
+        context.getParsedRules().remove(DAY_OF_MONTH);
     }
 
     //-----------------------------------------------------------------------
@@ -182,8 +179,8 @@ public class TestDateTimeParseContext {
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
-        context.setParsed(RULE_YEAR, 2008);
-        context.setParsed(RULE_MOY, 6);
+        context.setParsed(YEAR, 2008);
+        context.setParsed(MONTH_OF_YEAR, 6);
         context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(16));
         context.setParsed(ZoneId.rule(),ZoneId.of(ZoneOffset.ofHours(18)));
         

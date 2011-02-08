@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOPeriodUnit.NANOS;
+import static javax.time.calendar.ISOPeriodUnit.SECONDS;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -398,11 +401,11 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
-        PeriodField equivalent = unit.getEquivalentPeriod(ISOPeriodUnit.SECONDS);
+        PeriodField equivalent = unit.getEquivalentPeriod(SECONDS);
         if (equivalent != null) {
             return equivalent.multipliedBy(amount).toEstimatedDuration();
         }
-        equivalent = unit.getEquivalentPeriod(ISOPeriodUnit.NANOS);
+        equivalent = unit.getEquivalentPeriod(NANOS);
         if (equivalent != null) {
             return equivalent.multipliedBy(amount).toEstimatedDuration();
         }

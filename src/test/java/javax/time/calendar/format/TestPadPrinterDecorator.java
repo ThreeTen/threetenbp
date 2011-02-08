@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,7 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
@@ -38,7 +39,6 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 
 import org.testng.annotations.BeforeMethod;
@@ -68,7 +68,7 @@ public class TestPadPrinterDecorator {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(ISOChronology.dayOfMonthRule(), 3);
+        Calendrical calendrical = DateTimeFields.of(DAY_OF_MONTH, 3);
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, (Appendable) null, symbols);
     }

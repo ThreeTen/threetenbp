@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -85,7 +87,7 @@ public final class NanoOfSecond
      * @return the nano-of-second rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.nanoOfSecondRule();
+        return NANO_OF_SECOND;
     }
 
     //-----------------------------------------------------------------------

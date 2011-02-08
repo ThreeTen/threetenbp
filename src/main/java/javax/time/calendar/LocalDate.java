@@ -31,6 +31,11 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISOPeriodUnit.DAYS;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -137,9 +142,9 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static LocalDate of(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        ISOChronology.yearRule().checkValue(year);
+        YEAR.checkValue(year);
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        DAY_OF_MONTH.checkValue(dayOfMonth);
         return create(year, monthOfYear, dayOfMonth);
     }
 
@@ -156,9 +161,9 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static LocalDate of(int year, int monthOfYear, int dayOfMonth) {
-        ISOChronology.yearRule().checkValue(year);
-        ISOChronology.monthOfYearRule().checkValue(monthOfYear);
-        ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        YEAR.checkValue(year);
+        MONTH_OF_YEAR.checkValue(monthOfYear);
+        DAY_OF_MONTH.checkValue(dayOfMonth);
         return create(year, MonthOfYear.of(monthOfYear), dayOfMonth);
     }
 
@@ -247,7 +252,7 @@ public final class LocalDate
         yearEst += marchMonth0 / 10;
         
         // check year now we are certain it is correct
-        int year = ISOChronology.yearRule().checkValue(yearEst);
+        int year = YEAR.checkValue(yearEst);
         return new LocalDate(year, MonthOfYear.of(month), dom);
     }
 
@@ -305,10 +310,10 @@ public final class LocalDate
         if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(ISOChronology.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
-                        year + " is not a leap year", ISOChronology.dayOfMonthRule());
+                        year + " is not a leap year", DAY_OF_MONTH);
             } else {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                        " is not valid for month " + monthOfYear.name(), ISOChronology.dayOfMonthRule());
+                        " is not valid for month " + monthOfYear.name(), DAY_OF_MONTH);
             }
         }
         return new LocalDate(year, monthOfYear, dayOfMonth);
@@ -457,8 +462,8 @@ public final class LocalDate
      * @throws NullPointerException if the resolver returned null
      */
     private LocalDate resolveDate(DateResolver dateResolver, int year, MonthOfYear month, int day) {
-        ISOChronology.yearRule().checkValue(year);  // TODO: make resolver handle this
-        ISOChronology.dayOfMonthRule().checkValue(day);  // TODO: make resolver handle this
+        YEAR.checkValue(year);  // TODO: make resolver handle this
+        DAY_OF_MONTH.checkValue(day);  // TODO: make resolver handle this
         LocalDate date = dateResolver.resolveDate(year, month, day);
         ISOChronology.checkNotNull(date, "DateResolver implementation must not return null");
         return date;
@@ -694,7 +699,7 @@ public final class LocalDate
         }
         long monthCount = ((long) year) * 12 + (month.getValue() - 1);
         long calcMonths = monthCount + periodMonths;  // safe overflow
-        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        int newYear = YEAR.checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
@@ -754,7 +759,7 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        int newYear = ISOChronology.yearRule().checkValue(year + years);  // safe overflow
+        int newYear = YEAR.checkValue(year + years);  // safe overflow
         return resolveDate(dateResolver, newYear, month, day);
     }
 
@@ -809,7 +814,7 @@ public final class LocalDate
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount + months;  // safe overflow
-        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        int newYear = YEAR.checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return resolveDate(dateResolver, newYear, newMonth, day);
     }
@@ -919,7 +924,7 @@ public final class LocalDate
         }
         long monthCount = ((long) year) * 12 + (month.getValue() - 1);
         long calcMonths = monthCount - periodMonths;  // safe overflow
-        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        int newYear = YEAR.checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
@@ -979,7 +984,7 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        int newYear = ISOChronology.yearRule().checkValue(year - years);  // safe overflow
+        int newYear = YEAR.checkValue(year - years);  // safe overflow
         return resolveDate(dateResolver, newYear, month, day);
     }
 
@@ -1034,7 +1039,7 @@ public final class LocalDate
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount - months;  // safe overflow
-        int newYear = ISOChronology.yearRule().checkValue(MathUtils.floorDiv(calcMonths, 12));
+        int newYear = YEAR.checkValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return resolveDate(dateResolver, newYear, newMonth, day);
     }
@@ -1483,7 +1488,7 @@ public final class LocalDate
         private static final CalendricalRule<LocalDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalDate.class, ISOChronology.INSTANCE, "LocalDate", ISOPeriodUnit.DAYS, null);
+            super(LocalDate.class, ISOChronology.INSTANCE, "LocalDate", DAYS, null);
         }
         private Object readResolve() {
             return INSTANCE;

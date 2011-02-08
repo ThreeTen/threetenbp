@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -86,7 +88,7 @@ public final class MinuteOfHour
      * @return the minute-of-hour rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.minuteOfHourRule();
+        return MINUTE_OF_HOUR;
     }
 
     //-----------------------------------------------------------------------

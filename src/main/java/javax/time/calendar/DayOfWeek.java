@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+
 import java.util.Locale;
 
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -130,7 +132,7 @@ public enum DayOfWeek {
             case 7:
                 return SUNDAY;
             default:
-                throw new IllegalCalendarFieldValueException(ISOChronology.dayOfWeekRule(), dayOfWeek, 1, 7);
+                throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek, 1, 7);
         }
     }
 
@@ -202,7 +204,7 @@ public enum DayOfWeek {
      * @return the short text value of the day-of-week, never null
      */
     public String getShortText(Locale locale) {
-        return ISOChronology.dayOfWeekRule().getText(getValue(), locale, TextStyle.SHORT);
+        return DAY_OF_WEEK.getText(getValue(), locale, TextStyle.SHORT);
     }
 
     /**
@@ -220,7 +222,7 @@ public enum DayOfWeek {
      * @return the full text value of the day-of-week, never null
      */
     public String getText(Locale locale) {
-        return ISOChronology.dayOfWeekRule().getText(getValue(), locale, TextStyle.FULL);
+        return DAY_OF_WEEK.getText(getValue(), locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------

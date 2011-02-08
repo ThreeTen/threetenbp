@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -87,10 +87,10 @@ public class TestAmPmOfDay {
 //    // get()
 //    //-----------------------------------------------------------------------
 //    public void test_get() {
-//        assertEquals(AmPmOfDay.AM.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.AM);
-//        assertEquals(AmPmOfDay.PM.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
+//        assertEquals(AmPmOfDay.AM.get(ISODateTimeRule.AMPM_OF_DAY), AmPmOfDay.AM);
+//        assertEquals(AmPmOfDay.PM.get(ISODateTimeRule.AMPM_OF_DAY), AmPmOfDay.PM);
 //        
-//        assertEquals(AmPmOfDay.AM.get(ISOChronology.hourOfAmPmRule()), null);
+//        assertEquals(AmPmOfDay.AM.get(ISODateTimeRule.HOUR_OF_AMPM), null);
 //    }
 
     //-----------------------------------------------------------------------

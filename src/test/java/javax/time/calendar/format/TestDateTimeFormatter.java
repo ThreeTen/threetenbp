@@ -31,6 +31,7 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
@@ -44,8 +45,6 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -61,7 +60,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatter {
 
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
     private List<DateTimePrinter> printers;
     private List<DateTimeParser> parsers;
     private StringLiteralPrinterParser stringPP;
@@ -73,7 +71,7 @@ public class TestDateTimeFormatter {
         printers = new ArrayList<DateTimePrinter>();
         parsers = new ArrayList<DateTimeParser>();
         stringPP = new StringLiteralPrinterParser("ONE");
-        numberPP = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NOT_NEGATIVE);
+        numberPP = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NOT_NEGATIVE);
         printers.add(stringPP);
         printers.add(numberPP);
         parsers.add(stringPP);
@@ -224,7 +222,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         CalendricalMerger result = test.parse("ONE30");
         assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getInputMap().get(RULE_DOM), 30);
+        assertEquals(result.getInputMap().get(DAY_OF_MONTH), 30);
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
@@ -288,7 +286,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.toCalendricalMerger().getInputMap().size(), 1);
-        assertEquals(result.getParsed(RULE_DOM), 30);
+        assertEquals(result.getParsed(DAY_OF_MONTH), 30);
     }
 
     public void test_parse_StringParsePosition_parseError() throws Exception {
@@ -365,7 +363,7 @@ public class TestDateTimeFormatter {
         Format format = test.toFormat();
         CalendricalMerger result = (CalendricalMerger) format.parseObject("ONE30");
         assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getInputMap().get(RULE_DOM), 30);
+        assertEquals(result.getInputMap().get(DAY_OF_MONTH), 30);
     }
 
     @Test(expectedExceptions=ParseException.class)
@@ -420,7 +418,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getValue(RULE_DOM), RULE_DOM.field(30));
+        assertEquals(result.getValue(DAY_OF_MONTH), DAY_OF_MONTH.field(30));
     }
 
     public void test_toFormat_parseObject_StringParsePosition_parseError() throws Exception {

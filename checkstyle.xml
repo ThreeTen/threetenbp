@@ -93,7 +93,9 @@
     <module name="JavadocStyle"/>
     <module name="ClassTypeParameterName"/>
     <module name="MethodTypeParameterName"/>
-    <module name="ImportOrder"/>
+    <module name="ImportOrder">
+      <property name="option" value="top" />
+    </module>
     <module name="GenericWhitespace"/>
     <module name="MethodParamPad"/>
     <module name="CovariantEquals"/>

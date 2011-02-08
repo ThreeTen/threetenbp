@@ -31,12 +31,11 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
-
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -50,9 +49,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestReducedParser {
 
-    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule RULE_DOY = ISOChronology.dayOfYearRule();
-
     private DateTimeFormatSymbols symbols;
     private DateTimeParseContext context;;
 
@@ -65,110 +61,110 @@ public class TestReducedParser {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullContext() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.parse((DateTimeParseContext) null, "12", 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullNumber() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.parse(context, (String) null, 0);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooSmall() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.parse(context, "12", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooBig() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.parse(context, "12", 3);
     }
 
     public void test_parse_negativeZero() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 1, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 1, 2010);
         int newPos = pp.parse(context, "-0", 0);
         assertEquals(newPos, ~0);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_replaceContextValue() throws Exception {
-        context.setParsed(RULE_YEAR, 2001);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        context.setParsed(YEAR, 2001);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "12", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getParsed(RULE_YEAR), 2012);
+        assertEquals(context.getParsed(YEAR), 2012);
     }
 
     public void test_parse_midStr() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "Xxx12Xxx", 3);
         assertEquals(newPos, 5);
-        assertEquals(context.getParsed(RULE_YEAR), 2012);
+        assertEquals(context.getParsed(YEAR), 2012);
     }
 
     public void test_parse_remainderIgnored_maxWidth() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "12345", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getParsed(RULE_YEAR), 2012);
+        assertEquals(context.getParsed(YEAR), 2012);
     }
 
     public void test_parse_remainderIgnored_nonDigit1() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "12-45", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getParsed(RULE_YEAR), 2012);
+        assertEquals(context.getParsed(YEAR), 2012);
     }
 
     public void test_parse_fieldRangeIgnored() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_DOY, 3, 10);
+        ReducedPrinterParser pp = new ReducedPrinterParser(DAY_OF_YEAR, 3, 10);
         int newPos = pp.parse(context, "456", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getParsed(RULE_DOY), 456);  // parsed dayOfYear=456
+        assertEquals(context.getParsed(DAY_OF_YEAR), 456);  // parsed dayOfYear=456
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_noMatch1() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "A1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_YEAR), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), false);
     }
 
     public void test_parse_noMatch2() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "  1", 1);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_YEAR), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), false);
     }
 
     public void test_parse_noMatch_notMinWidthLeft1() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_YEAR), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), false);
     }
 
     public void test_parse_noMatch_notMinWidthLeft2_atEnd() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "1", 1);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_YEAR), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), false);
     }
 
     public void test_parse_noMatch_notMinWidthLeft_beforeNonDigit() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "1-2", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_YEAR), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), false);
     }
 
     //-----------------------------------------------------------------------
@@ -216,22 +212,22 @@ public class TestReducedParser {
     @Test(dataProvider="Parse") 
     public void test_parse(String input, int width, int baseValue, int parseLen, Integer parseVal) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, width, baseValue);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(RULE_YEAR), parseVal);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_YEAR), parseVal != null);
+        assertEquals(context.getParsed(YEAR), parseVal);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), parseVal != null);
     }
 
     @Test(dataProvider="Parse") 
     public void test_parseLenient(String input, int width, int baseValue, int parseLen, Integer parseVal) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setStrict(false);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, width, baseValue);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(RULE_YEAR), parseVal);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_YEAR), parseVal != null);
+        assertEquals(context.getParsed(YEAR), parseVal);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), parseVal != null);
     }
 
 }

@@ -31,6 +31,21 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -211,7 +226,7 @@ public class TestLocalDateTime {
         try {
             LocalDateTime.now(clock);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.yearRule());
+            assertEquals(ex.getRule(), YEAR);
             throw ex;
         }
     }
@@ -228,7 +243,7 @@ public class TestLocalDateTime {
         try {
             LocalDateTime.now(clock);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ISOChronology.yearRule());
+            assertEquals(ex.getRule(), YEAR);
             throw ex;
         }
     }
@@ -787,22 +802,22 @@ public class TestLocalDateTime {
     public void test_get_CalendricalRule() {
         LocalDateTime test = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(ISOChronology.yearRule()).getValue(), 2008);
-        assertEquals(test.get(ISOChronology.quarterOfYearRule()).getValue(), 2);
-        assertEquals(test.get(ISOChronology.monthOfYearRule()).getValue(), 6);
-        assertEquals(test.get(ISOChronology.monthOfQuarterRule()).getValue(), 3);
-        assertEquals(test.get(ISOChronology.dayOfMonthRule()).getValue(), 30);
-        assertEquals(test.get(ISOChronology.dayOfWeekRule()).getValue(), 1);
-        assertEquals(test.get(ISOChronology.dayOfYearRule()).getValue(), 182);
-        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()).getValue(), 27);
-        assertEquals(test.get(ISOChronology.weekBasedYearRule()).getValue(), 2008);
+        assertEquals(test.get(YEAR).getValue(), 2008);
+        assertEquals(test.get(QUARTER_OF_YEAR).getValue(), 2);
+        assertEquals(test.get(MONTH_OF_YEAR).getValue(), 6);
+        assertEquals(test.get(MONTH_OF_QUARTER).getValue(), 3);
+        assertEquals(test.get(DAY_OF_MONTH).getValue(), 30);
+        assertEquals(test.get(DAY_OF_WEEK).getValue(), 1);
+        assertEquals(test.get(DAY_OF_YEAR).getValue(), 182);
+        assertEquals(test.get(WEEK_OF_WEEK_BASED_YEAR).getValue(), 27);
+        assertEquals(test.get(WEEK_BASED_YEAR).getValue(), 2008);
         
-        assertEquals(test.get(ISOChronology.hourOfDayRule()).getValue(), 12);
-        assertEquals(test.get(ISOChronology.minuteOfHourRule()).getValue(), 30);
-        assertEquals(test.get(ISOChronology.secondOfMinuteRule()).getValue(), 40);
-        assertEquals(test.get(ISOChronology.nanoOfSecondRule()).getValue(), 987654321);
-        assertEquals(test.get(ISOChronology.hourOfAmPmRule()).getValue(), 0);
-        assertEquals(test.get(ISOChronology.amPmOfDayRule()).getValue(), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(HOUR_OF_DAY).getValue(), 12);
+        assertEquals(test.get(MINUTE_OF_HOUR).getValue(), 30);
+        assertEquals(test.get(SECOND_OF_MINUTE).getValue(), 40);
+        assertEquals(test.get(NANO_OF_SECOND).getValue(), 987654321);
+        assertEquals(test.get(HOUR_OF_AMPM).getValue(), 0);
+        assertEquals(test.get(AMPM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
         
         assertEquals(test.get(LocalDate.rule()), test.toLocalDate());
         assertEquals(test.get(LocalTime.rule()), test.toLocalTime());

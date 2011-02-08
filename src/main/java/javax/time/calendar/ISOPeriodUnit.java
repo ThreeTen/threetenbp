@@ -100,7 +100,7 @@ public final class ISOPeriodUnit extends PeriodUnit {
 
     @Override
     public int hashCode() {
-        return ordinal;
+        return ISOPeriodUnit.class.hashCode() + ordinal;
     }
 
     //-----------------------------------------------------------------------

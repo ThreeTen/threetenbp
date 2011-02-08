@@ -31,6 +31,9 @@
  */
 package javax.time.calendar.field;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -89,7 +92,7 @@ public final class DayOfYear
      * @return the day-of-year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.dayOfYearRule();
+        return DAY_OF_YEAR;
     }
 
     //-----------------------------------------------------------------------
@@ -270,7 +273,7 @@ public final class DayOfYear
      * @throws IllegalCalendarFieldValueException if the year is out of range
      */
     public boolean isValid(int year) {
-        ISOChronology.yearRule().checkValue(year);
+        YEAR.checkValue(year);
         return (dayOfYear < 366 || ISOChronology.isLeapYear(year));
     }
 

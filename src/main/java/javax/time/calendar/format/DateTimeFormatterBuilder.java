@@ -41,6 +41,7 @@ import java.util.Map;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 
@@ -1006,27 +1007,27 @@ public final class DateTimeFormatterBuilder {
     static {
         // TODO: cross check with CLDR for letters
 //        RULE_MAP.put('G', ISOChronology.eraRule());
-        RULE_MAP.put('y', ISOChronology.yearRule());
-        RULE_MAP.put('x', ISOChronology.weekBasedYearRule());  // new
-        RULE_MAP.put('Q', ISOChronology.quarterOfYearRule());  // new
-        RULE_MAP.put('M', ISOChronology.monthOfYearRule());
-        RULE_MAP.put('q', ISOChronology.monthOfQuarterRule());  // new
-        RULE_MAP.put('w', ISOChronology.weekOfWeekBasedYearRule());
+        RULE_MAP.put('y', ISODateTimeRule.YEAR);
+        RULE_MAP.put('x', ISODateTimeRule.WEEK_BASED_YEAR);  // new
+        RULE_MAP.put('Q', ISODateTimeRule.QUARTER_OF_YEAR);  // new
+        RULE_MAP.put('M', ISODateTimeRule.MONTH_OF_YEAR);
+        RULE_MAP.put('q', ISODateTimeRule.MONTH_OF_QUARTER);  // new
+        RULE_MAP.put('w', ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
 //        RULE_MAP.put('W', ISOChronology.weekOfWeekBasedMonthRule());
-        RULE_MAP.put('D', ISOChronology.dayOfYearRule());
-        RULE_MAP.put('d', ISOChronology.dayOfMonthRule());
-        RULE_MAP.put('F', ISOChronology.weekOfMonthRule());
-        RULE_MAP.put('E', ISOChronology.dayOfWeekRule());
-        RULE_MAP.put('e', ISOChronology.dayOfWeekRule());
-        RULE_MAP.put('a', ISOChronology.amPmOfDayRule());
-        RULE_MAP.put('H', ISOChronology.hourOfDayRule());
-        RULE_MAP.put('k', ISOChronology.clockHourOfDayRule());
-        RULE_MAP.put('K', ISOChronology.hourOfAmPmRule());
-        RULE_MAP.put('h', ISOChronology.clockHourOfAmPmRule());
-        RULE_MAP.put('m', ISOChronology.minuteOfHourRule());
-        RULE_MAP.put('s', ISOChronology.secondOfMinuteRule());
-        RULE_MAP.put('S', ISOChronology.milliOfSecondRule());
-        RULE_MAP.put('n', ISOChronology.nanoOfSecondRule());  // new
+        RULE_MAP.put('D', ISODateTimeRule.DAY_OF_YEAR);
+        RULE_MAP.put('d', ISODateTimeRule.DAY_OF_MONTH);
+        RULE_MAP.put('F', ISODateTimeRule.WEEK_OF_MONTH);
+        RULE_MAP.put('E', ISODateTimeRule.DAY_OF_WEEK);
+        RULE_MAP.put('e', ISODateTimeRule.DAY_OF_WEEK);
+        RULE_MAP.put('a', ISODateTimeRule.AMPM_OF_DAY);
+        RULE_MAP.put('H', ISODateTimeRule.HOUR_OF_DAY);
+        RULE_MAP.put('k', ISODateTimeRule.CLOCK_HOUR_OF_DAY);
+        RULE_MAP.put('K', ISODateTimeRule.HOUR_OF_AMPM);
+        RULE_MAP.put('h', ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
+        RULE_MAP.put('m', ISODateTimeRule.MINUTE_OF_HOUR);
+        RULE_MAP.put('s', ISODateTimeRule.SECOND_OF_MINUTE);
+        RULE_MAP.put('S', ISODateTimeRule.MILLI_OF_SECOND);
+        RULE_MAP.put('n', ISODateTimeRule.NANO_OF_SECOND);  // new
         // reserved - z,Z,I,f
     }
 

@@ -31,6 +31,11 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -39,9 +44,7 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
@@ -56,7 +59,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestReducedPrinter {
 
-    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
     private StringBuilder buf;
     private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;
@@ -68,33 +70,33 @@ public class TestReducedPrinter {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
         emptyCalendrical = DateTimeFields.EMPTY;
-        calendrical2012 = DateTimeField.of(RULE_YEAR, 2012);
+        calendrical2012 = DateTimeField.of(YEAR, 2012);
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.print(calendrical2012, (Appendable) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullDateTime() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.print((Calendrical) null, buf, symbols);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.print(emptyCalendrical, buf, symbols);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_append() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         buf.append("EXISTING");
         pp.print(calendrical2012, buf, symbols);
         assertEquals(buf.toString(), "EXISTING12");
@@ -102,7 +104,7 @@ public class TestReducedPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.print(calendrical2012, exceptionAppenable, symbols);
     }
 
@@ -168,8 +170,8 @@ public class TestReducedPrinter {
 
     @Test(dataProvider="Pivot") 
     public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
-        Calendrical calendrical = DateTimeField.of(RULE_YEAR, value);
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, width, baseValue);
+        Calendrical calendrical = DateTimeField.of(YEAR, value);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         try {
             pp.print(calendrical, buf, symbols);
             if (result == null) {
@@ -178,7 +180,7 @@ public class TestReducedPrinter {
             assertEquals(buf.toString(), result);
         } catch (CalendricalPrintFieldException ex) {
             if (result == null || value < 0) {
-                assertEquals(ex.getRule(), RULE_YEAR);
+                assertEquals(ex.getRule(), YEAR);
                 assertEquals(ex.getValue(), (Integer) value);
             } else {
                 throw ex;
@@ -188,31 +190,31 @@ public class TestReducedPrinter {
 
     //-----------------------------------------------------------------------
     public void test_derivedValue() throws Exception {
-        Calendrical calendrical = DateTimeField.of(ISOChronology.hourOfDayRule(), 13);
-        ReducedPrinterParser pp = new ReducedPrinterParser(ISOChronology.hourOfAmPmRule(), 2, 0);
+        Calendrical calendrical = DateTimeField.of(HOUR_OF_DAY, 13);
+        ReducedPrinterParser pp = new ReducedPrinterParser(HOUR_OF_AMPM, 2, 0);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "01");   // 1PM
     }
 
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2010);
-        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(RULE_YEAR, 2015)), true);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
+        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(YEAR, 2015)), true);
     }
 
     public void test_isPrintDataAvailable_trueDerived() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(ISOChronology.quarterOfYearRule(), 2, 3);
-        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(ISOChronology.monthOfYearRule(), 4)), true);
+        ReducedPrinterParser pp = new ReducedPrinterParser(QUARTER_OF_YEAR, 2, 3);
+        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(MONTH_OF_YEAR, 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(ISOChronology.hourOfAmPmRule(), 2, 11);
+        ReducedPrinterParser pp = new ReducedPrinterParser(HOUR_OF_AMPM, 2, 11);
         assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical()), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(RULE_YEAR, 2, 2005);
+        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2005);
         assertEquals(pp.toString(), "ReducedValue(ISO.Year,2,2005)");
     }
 

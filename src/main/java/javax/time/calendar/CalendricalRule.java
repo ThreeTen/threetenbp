@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -339,7 +339,7 @@ public abstract class CalendricalRule<T>
      * A typical implementation of this method obtains the parent value and performs a calculation.
      * For example, here is a simple implementation for the quarter-of-year field:
      * <pre>
-     * Integer moyVal = calendrical.get(ISOChronology.monthOfYearRule());
+     * Integer moyVal = calendrical.get(ISODateTimeRule.MONTH_OF_YEAR);
      * return (moyVal != null ? ((moyVal - 1) % 4) + 1) : null;
      * </pre>
      * <p>
@@ -409,13 +409,13 @@ public abstract class CalendricalRule<T>
      * <p>
      * An example to merge two fields into one - hour of AM/PM and AM/PM:
      * <pre>
-     *  Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
+     *  Integer hapVal = merger.getValue(ISODateTimeRule.HOUR_OF_AMPM);
      *  if (hapVal != null) {
      *    AmPmOfDay amPm = merger.getValue(this);
      *    int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
-     *    merger.storeMerged(ISOChronology.hourOfDayRule(), hourOfDay);
+     *    merger.storeMerged(ISODateTimeRule.HOUR_OF_DAY, hourOfDay);
      *    merger.removeProcessed(this);
-     *    merger.removeProcessed(ISOChronology.hourOfAmPmRule());
+     *    merger.removeProcessed(ISODateTimeRule.HOUR_OF_AMPM);
      *  }
      * </pre>
      *
@@ -440,7 +440,7 @@ public abstract class CalendricalRule<T>
      * and {@code ZonedDateTime}:
      * <pre>
      *  List<Calendrical> list = ...
-     *  Collections.sort(list, ISOChronology.yearRule());
+     *  Collections.sort(list, ISODateTimeRule.YEAR);
      * </pre>
      * If the value of this rule cannot be obtained from a calendrical, then
      * an exception is thrown.

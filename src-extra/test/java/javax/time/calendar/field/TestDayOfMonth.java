@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,9 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +50,7 @@ import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
@@ -69,7 +71,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfMonth {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule RULE = ISODateTimeRule.DAY_OF_MONTH;
     private static final int STANDARD_YEAR_LENGTH = 365;
     private static final int LEAP_YEAR_LENGTH = 366;
     private static final int MAX_LENGTH = 31;

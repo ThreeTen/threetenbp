@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOPeriodUnit.DAYS;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -1259,7 +1261,7 @@ public final class OffsetDate
         private static final CalendricalRule<OffsetDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(OffsetDate.class, ISOChronology.INSTANCE, "OffsetDate", ISOPeriodUnit.DAYS, null);
+            super(OffsetDate.class, ISOChronology.INSTANCE, "OffsetDate", DAYS, null);
         }
         private Object readResolve() {
             return INSTANCE;

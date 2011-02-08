@@ -31,6 +31,9 @@
  */
 package javax.time.calendar.field;
 
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -87,7 +90,7 @@ public final class HourOfDay
      * @return the hour-of-day rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.hourOfDayRule();
+        return HOUR_OF_DAY;
     }
 
     //-----------------------------------------------------------------------
@@ -122,7 +125,7 @@ public final class HourOfDay
      * @throws IllegalCalendarFieldValueException if the input is invalid
      */
     public static HourOfDay hourOfDay(AmPmOfDay amPm, int hourOfAmPm) {
-        ISOChronology.hourOfAmPmRule().checkValue(hourOfAmPm);
+        HOUR_OF_AMPM.checkValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return hourOfDay(hourOfDay);
     }

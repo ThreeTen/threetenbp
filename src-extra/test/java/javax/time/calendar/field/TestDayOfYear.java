@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,7 +48,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
@@ -69,7 +69,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.dayOfYearRule();
+    private static final DateTimeFieldRule RULE = ISODateTimeRule.DAY_OF_YEAR;
     private static final Year YEAR_STANDARD = Year.of(2007);
     private static final Year YEAR_LEAP = Year.of(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;

@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+
 import java.util.Locale;
 
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -166,7 +168,7 @@ public enum MonthOfYear {
             case 12:
                 return DECEMBER;
             default:
-                throw new IllegalCalendarFieldValueException(ISOChronology.monthOfYearRule(), monthOfYear, 1, 12);
+                throw new IllegalCalendarFieldValueException(MONTH_OF_YEAR, monthOfYear, 1, 12);
         }
     }
 
@@ -215,7 +217,7 @@ public enum MonthOfYear {
      * @return the short text value of the month-of-year, never null
      */
     public String getShortText(Locale locale) {
-        return ISOChronology.monthOfYearRule().getText(getValue(), locale, TextStyle.SHORT);
+        return MONTH_OF_YEAR.getText(getValue(), locale, TextStyle.SHORT);
     }
 
     /**
@@ -233,7 +235,7 @@ public enum MonthOfYear {
      * @return the full text value of the month-of-year, never null
      */
     public String getText(Locale locale) {
-        return ISOChronology.monthOfYearRule().getText(getValue(), locale, TextStyle.FULL);
+        return MONTH_OF_YEAR.getText(getValue(), locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------

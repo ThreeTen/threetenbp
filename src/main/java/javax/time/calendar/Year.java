@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -95,7 +98,7 @@ public final class Year
      * @return the year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.yearRule();
+        return YEAR;
     }
 
     //-----------------------------------------------------------------------
@@ -591,9 +594,9 @@ public final class Year
      * @throws InvalidCalendarFieldException if the day of year is 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
-        ISOChronology.dayOfYearRule().checkValue(dayOfYear);
+        DAY_OF_YEAR.checkValue(dayOfYear);
         if (dayOfYear == 366 && !isLeap()) {
-            throw new InvalidCalendarFieldException("Day of year 366 is invalid for year " + year, ISOChronology.dayOfYearRule());
+            throw new InvalidCalendarFieldException("Day of year 366 is invalid for year " + year, DAY_OF_YEAR);
         }
         return LocalDate.of(year, 1, 1).plusDays(dayOfYear - 1);
     }

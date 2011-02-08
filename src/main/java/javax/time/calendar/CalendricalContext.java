@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -30,6 +30,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package javax.time.calendar;
+
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 
 import java.io.Serializable;
 
@@ -130,8 +133,8 @@ public final class CalendricalContext
      */
     public LocalDate resolveDate(int year, int month, int dayOfMonth) {
         if (dateResolver != null) {
-            ISOChronology.yearRule().checkValue(year);  // TODO: make resolver handle this
-            ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);  // TODO: make resolver handle this
+            YEAR.checkValue(year);  // TODO: make resolver handle this
+            DAY_OF_MONTH.checkValue(dayOfMonth);  // TODO: make resolver handle this
             return dateResolver.resolveDate(year, MonthOfYear.of(month), dayOfMonth);
         }
         if (strict) {
