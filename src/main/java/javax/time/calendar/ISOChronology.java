@@ -31,7 +31,27 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MILLI_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendar.ISODateTimeRule.WEEK_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.NANOS;
 
@@ -287,40 +307,40 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     void merge(CalendricalMerger merger) {
         // milli-of-day
-        DateTimeField modVal = merger.getValue(ISODateTimeRule.MILLI_OF_DAY);
+        DateTimeField modVal = merger.getValue(MILLI_OF_DAY);
         if (modVal != null) {
             merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(modVal.getValidValue() * 1000000L));
-            merger.removeProcessed(ISODateTimeRule.MILLI_OF_DAY);
+            merger.removeProcessed(MILLI_OF_DAY);
         }
         
         // second-of-day
-        DateTimeField sodVal = merger.getValue(ISODateTimeRule.SECOND_OF_DAY);
+        DateTimeField sodVal = merger.getValue(SECOND_OF_DAY);
         if (modVal != null) {
-            DateTimeField nosVal = merger.getValue(ISODateTimeRule.NANO_OF_SECOND);
+            DateTimeField nosVal = merger.getValue(NANO_OF_SECOND);
             if (nosVal != null) {
                 merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidValue(), nosVal.getValidValue()));
-                merger.removeProcessed(ISODateTimeRule.NANO_OF_SECOND);
+                merger.removeProcessed(NANO_OF_SECOND);
             } else {
-                DateTimeField mosVal = merger.getValue(ISODateTimeRule.MILLI_OF_SECOND);
+                DateTimeField mosVal = merger.getValue(MILLI_OF_SECOND);
                 if (mosVal != null) {
                     merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidValue(), mosVal.getValidValue() * 1000000));
-                    merger.removeProcessed(ISODateTimeRule.MILLI_OF_SECOND);
+                    merger.removeProcessed(MILLI_OF_SECOND);
                 } else {
                     merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidValue()));
                 }
             }
-            merger.removeProcessed(ISODateTimeRule.SECOND_OF_DAY);
+            merger.removeProcessed(SECOND_OF_DAY);
         }
         
         // am-hour
-        DateTimeField amPm = merger.getValue(ISODateTimeRule.AMPM_OF_DAY);
+        DateTimeField amPm = merger.getValue(AMPM_OF_DAY);
         if (amPm != null) {
-            DateTimeField hapVal = merger.getValue(ISODateTimeRule.HOUR_OF_AMPM);
+            DateTimeField hapVal = merger.getValue(HOUR_OF_AMPM);
             if (hapVal != null) {
                 int hourOfDay = amPm.getValidValue() * 12 + hapVal.getValidValue();
-                merger.storeMerged(ISODateTimeRule.HOUR_OF_DAY, hourOfDay);
-                merger.removeProcessed(ISODateTimeRule.AMPM_OF_DAY);
-                merger.removeProcessed(ISODateTimeRule.HOUR_OF_AMPM);
+                merger.storeMerged(HOUR_OF_DAY, hourOfDay);
+                merger.removeProcessed(AMPM_OF_DAY);
+                merger.removeProcessed(HOUR_OF_AMPM);
             }
             DateTimeField chapVal = merger.getValue(ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
             if (chapVal != null) {
@@ -329,110 +349,110 @@ public final class ISOChronology extends Chronology implements Serializable {
                     merger.addToOverflow(Period.ofDays(1));
                     hourOfDay = 0;
                 }
-                merger.storeMerged(ISODateTimeRule.HOUR_OF_DAY, hourOfDay);
-                merger.removeProcessed(ISODateTimeRule.AMPM_OF_DAY);
-                merger.removeProcessed(ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
+                merger.storeMerged(HOUR_OF_DAY, hourOfDay);
+                merger.removeProcessed(AMPM_OF_DAY);
+                merger.removeProcessed(CLOCK_HOUR_OF_AMPM);
             }
         }
         
         // hour-minute-second-nano
-        DateTimeField hourVal = merger.getValue(ISODateTimeRule.HOUR_OF_DAY);
+        DateTimeField hourVal = merger.getValue(HOUR_OF_DAY);
         if (hourVal != null) {
-            DateTimeField minuteVal = merger.getValue(ISODateTimeRule.MINUTE_OF_HOUR);
-            DateTimeField secondVal = merger.getValue(ISODateTimeRule.SECOND_OF_MINUTE);
-            DateTimeField mosVal = merger.getValue(ISODateTimeRule.MILLI_OF_SECOND);
-            DateTimeField nanoVal = merger.getValue(ISODateTimeRule.NANO_OF_SECOND);
+            DateTimeField minuteVal = merger.getValue(MINUTE_OF_HOUR);
+            DateTimeField secondVal = merger.getValue(SECOND_OF_MINUTE);
+            DateTimeField mosVal = merger.getValue(MILLI_OF_SECOND);
+            DateTimeField nanoVal = merger.getValue(NANO_OF_SECOND);
             if (minuteVal != null && secondVal != null && nanoVal != null) {
                 merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), secondVal.getValidValue(), nanoVal.getValidValue()));
-                merger.removeProcessed(ISODateTimeRule.HOUR_OF_DAY);
-                merger.removeProcessed(ISODateTimeRule.MINUTE_OF_HOUR);
-                merger.removeProcessed(ISODateTimeRule.SECOND_OF_MINUTE);
-                merger.removeProcessed(ISODateTimeRule.NANO_OF_SECOND);
+                merger.removeProcessed(HOUR_OF_DAY);
+                merger.removeProcessed(MINUTE_OF_HOUR);
+                merger.removeProcessed(SECOND_OF_MINUTE);
+                merger.removeProcessed(NANO_OF_SECOND);
             } else if (minuteVal != null && secondVal != null && mosVal != null) {
                 merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), secondVal.getValidValue(), mosVal.getValidValue() * 1000000));
-                merger.removeProcessed(ISODateTimeRule.HOUR_OF_DAY);
-                merger.removeProcessed(ISODateTimeRule.MINUTE_OF_HOUR);
-                merger.removeProcessed(ISODateTimeRule.SECOND_OF_MINUTE);
-                merger.removeProcessed(ISODateTimeRule.MILLI_OF_SECOND);
+                merger.removeProcessed(HOUR_OF_DAY);
+                merger.removeProcessed(MINUTE_OF_HOUR);
+                merger.removeProcessed(SECOND_OF_MINUTE);
+                merger.removeProcessed(MILLI_OF_SECOND);
             } else if (minuteVal != null && secondVal != null) {
                 merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), secondVal.getValidValue(), 0));
-                merger.removeProcessed(ISODateTimeRule.HOUR_OF_DAY);
-                merger.removeProcessed(ISODateTimeRule.MINUTE_OF_HOUR);
-                merger.removeProcessed(ISODateTimeRule.SECOND_OF_MINUTE);
+                merger.removeProcessed(HOUR_OF_DAY);
+                merger.removeProcessed(MINUTE_OF_HOUR);
+                merger.removeProcessed(SECOND_OF_MINUTE);
             } else if (minuteVal != null) {
                 merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), 0, 0));
-                merger.removeProcessed(ISODateTimeRule.HOUR_OF_DAY);
-                merger.removeProcessed(ISODateTimeRule.MINUTE_OF_HOUR);
+                merger.removeProcessed(HOUR_OF_DAY);
+                merger.removeProcessed(MINUTE_OF_HOUR);
             } else {
                 merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), 0));
-                merger.removeProcessed(ISODateTimeRule.HOUR_OF_DAY);
+                merger.removeProcessed(HOUR_OF_DAY);
             }
         }
         
         // quarter-of-year and month-of-quarter
-        DateTimeField qoy = merger.getValue(ISODateTimeRule.QUARTER_OF_YEAR);
-        DateTimeField moqVal = merger.getValue(ISODateTimeRule.MONTH_OF_QUARTER);
+        DateTimeField qoy = merger.getValue(QUARTER_OF_YEAR);
+        DateTimeField moqVal = merger.getValue(MONTH_OF_QUARTER);
         if (qoy != null && moqVal != null) {
             int moy = (qoy.getValidValue() - 1) * 3 + moqVal.getValidValue();
-            merger.storeMerged(ISODateTimeRule.MONTH_OF_YEAR, moy);
-            merger.removeProcessed(ISODateTimeRule.QUARTER_OF_YEAR);
-            merger.removeProcessed(ISODateTimeRule.MONTH_OF_QUARTER);
+            merger.storeMerged(MONTH_OF_YEAR, moy);
+            merger.removeProcessed(QUARTER_OF_YEAR);
+            merger.removeProcessed(MONTH_OF_QUARTER);
         }
         
         // year
-        DateTimeField yearVal = merger.getValue(ISODateTimeRule.YEAR);
+        DateTimeField yearVal = merger.getValue(YEAR);
         if (yearVal != null) {
             // year-month-day
-            DateTimeField moy = merger.getValue(ISODateTimeRule.MONTH_OF_YEAR);
-            DateTimeField domVal = merger.getValue(ISODateTimeRule.DAY_OF_MONTH);
+            DateTimeField moy = merger.getValue(MONTH_OF_YEAR);
+            DateTimeField domVal = merger.getValue(DAY_OF_MONTH);
             if (moy != null && domVal != null) {
                 LocalDate date = merger.getContext().resolveDate(yearVal.getValidValue(), moy.getValidValue(), domVal.getValidValue());
                 merger.storeMerged(LocalDate.rule(), date);
-                merger.removeProcessed(ISODateTimeRule.YEAR);
-                merger.removeProcessed(ISODateTimeRule.MONTH_OF_YEAR);
-                merger.removeProcessed(ISODateTimeRule.DAY_OF_MONTH);
+                merger.removeProcessed(YEAR);
+                merger.removeProcessed(MONTH_OF_YEAR);
+                merger.removeProcessed(DAY_OF_MONTH);
             }
             // year-day
-            DateTimeField doyVal = merger.getValue(ISODateTimeRule.DAY_OF_YEAR);
+            DateTimeField doyVal = merger.getValue(DAY_OF_YEAR);
             if (doyVal != null) {
                 merger.storeMerged(LocalDate.rule(), getDateFromDayOfYear(yearVal.getValidValue(), doyVal.getValidValue()));
-                merger.removeProcessed(ISODateTimeRule.YEAR);
-                merger.removeProcessed(ISODateTimeRule.DAY_OF_YEAR);
+                merger.removeProcessed(YEAR);
+                merger.removeProcessed(DAY_OF_YEAR);
             }
             // year-week-day
-            DateTimeField woyVal = merger.getValue(ISODateTimeRule.WEEK_OF_YEAR);
-            DateTimeField dow = merger.getValue(ISODateTimeRule.DAY_OF_WEEK);
+            DateTimeField woyVal = merger.getValue(WEEK_OF_YEAR);
+            DateTimeField dow = merger.getValue(DAY_OF_WEEK);
             if (woyVal != null && dow != null) {
                 LocalDate date = LocalDate.of(yearVal.getValidValue(), 1, 1).plusWeeks(woyVal.getValidValue() - 1);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidValue())));
                 merger.storeMerged(LocalDate.rule(), date);
-                merger.removeProcessed(ISODateTimeRule.YEAR);
-                merger.removeProcessed(ISODateTimeRule.WEEK_OF_YEAR);
-                merger.removeProcessed(ISODateTimeRule.DAY_OF_WEEK);
+                merger.removeProcessed(YEAR);
+                merger.removeProcessed(WEEK_OF_YEAR);
+                merger.removeProcessed(DAY_OF_WEEK);
             }
             // year-month-week-day
-            DateTimeField womVal = merger.getValue(ISODateTimeRule.WEEK_OF_MONTH);
+            DateTimeField womVal = merger.getValue(WEEK_OF_MONTH);
             if (moy != null && womVal != null && dow != null) {
                 LocalDate date = LocalDate.of(yearVal.getValidValue(), moy.getValidValue(), 1).plusWeeks(womVal.getValidValue() - 1);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidValue())));
                 merger.storeMerged(LocalDate.rule(), date);
-                merger.removeProcessed(ISODateTimeRule.YEAR);
-                merger.removeProcessed(ISODateTimeRule.MONTH_OF_YEAR);
-                merger.removeProcessed(ISODateTimeRule.WEEK_OF_MONTH);
-                merger.removeProcessed(ISODateTimeRule.DAY_OF_WEEK);
+                merger.removeProcessed(YEAR);
+                merger.removeProcessed(MONTH_OF_YEAR);
+                merger.removeProcessed(WEEK_OF_MONTH);
+                merger.removeProcessed(DAY_OF_WEEK);
             }
         }
         
         // weekyear-week-day
-        DateTimeField wbyVal = merger.getValue(ISODateTimeRule.WEEK_BASED_YEAR);
+        DateTimeField wbyVal = merger.getValue(WEEK_BASED_YEAR);
         if (wbyVal != null) {
-            DateTimeField woy = merger.getValue(ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
-            DateTimeField dow = merger.getValue(ISODateTimeRule.DAY_OF_WEEK);
+            DateTimeField woy = merger.getValue(WEEK_OF_WEEK_BASED_YEAR);
+            DateTimeField dow = merger.getValue(DAY_OF_WEEK);
             if (woy != null && dow != null) {
                 // TODO: implement
-                merger.removeProcessed(ISODateTimeRule.WEEK_BASED_YEAR);
-                merger.removeProcessed(ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
-                merger.removeProcessed(ISODateTimeRule.DAY_OF_WEEK);
+                merger.removeProcessed(WEEK_BASED_YEAR);
+                merger.removeProcessed(WEEK_OF_WEEK_BASED_YEAR);
+                merger.removeProcessed(DAY_OF_WEEK);
             }
         }
         
@@ -495,6 +515,21 @@ public final class ISOChronology extends Chronology implements Serializable {
             }
             merger.removeProcessed(OffsetDateTime.rule());
             merger.removeProcessed(ZoneId.rule());
+        }
+    }
+
+    private void merge(CalendricalMerger merger, DateTimeFieldRule destRule, DateTimeFieldRule rule1, DateTimeFieldRule rule2) {
+        DateTimeField field1 = merger.getValue(rule1);
+        if (field1 != null) {
+            DateTimeField field2 = merger.getValue(rule2);
+            if (field2 != null) {
+                // TODO: non-zero base
+                PeriodField conversion = rule1.getPeriodUnit().getEquivalentPeriod(rule2.getPeriodUnit());
+                PeriodField result = conversion.multipliedBy(field1.getValidValue()).plus(field2.getValidValue());
+                merger.storeMerged(destRule, result.getAmountInt());  // TODO: long
+                merger.removeProcessed(rule1);
+                merger.removeProcessed(rule2);
+            }
         }
     }
 
