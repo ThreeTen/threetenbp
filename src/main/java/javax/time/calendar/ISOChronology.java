@@ -335,13 +335,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         // am-hour
         DateTimeField amPm = merger.getValue(AMPM_OF_DAY);
         if (amPm != null) {
-            DateTimeField hapVal = merger.getValue(HOUR_OF_AMPM);
-            if (hapVal != null) {
-                int hourOfDay = amPm.getValidValue() * 12 + hapVal.getValidValue();
-                merger.storeMerged(HOUR_OF_DAY, hourOfDay);
-                merger.removeProcessed(AMPM_OF_DAY);
-                merger.removeProcessed(HOUR_OF_AMPM);
-            }
+            merge(merger, HOUR_OF_DAY, AMPM_OF_DAY, HOUR_OF_AMPM);
             DateTimeField chapVal = merger.getValue(ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
             if (chapVal != null) {
                 int hourOfDay = amPm.getValidValue() * 12 + chapVal.getValidValue();
