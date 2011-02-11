@@ -542,7 +542,8 @@ public final class ISODateTimeRule extends DateTimeFieldRule {
      * The week-based-year will either be 52 or 53 weeks long, depending on the
      * result of the algorithm for a particular date.
      */
-    public static final ISODateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
+    public static final ISODateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear",
+            WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
     /**
      * The rule for the year field in the ISO chronology.
      * <p>
