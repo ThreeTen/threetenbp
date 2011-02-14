@@ -79,7 +79,7 @@ public enum HijrahEra implements Calendrical {
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
     public static HijrahEra from(Calendrical calendrical) {
-        return of(rule().getValueChecked(calendrical).getValidValue());
+        return of(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

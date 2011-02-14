@@ -175,11 +175,11 @@ public class TestCopticDate {
 
     //-----------------------------------------------------------------------
     public void test_get() throws Exception {
-        assertEquals(TEST_1234_7_15.get(CopticChronology.yearRule()).getValidValue(), TEST_1234_7_15.getYear());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.monthOfYearRule()).getValidValue(), TEST_1234_7_15.getMonthOfYear());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfMonthRule()).getValidValue(), TEST_1234_7_15.getDayOfMonth());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfYearRule()).getValidValue(), TEST_1234_7_15.getDayOfYear());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfWeekRule()).getValidValue(), TEST_1234_7_15.getDayOfWeek().getValue());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.yearRule()).getValidIntValue(), TEST_1234_7_15.getYear());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.monthOfYearRule()).getValidIntValue(), TEST_1234_7_15.getMonthOfYear());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfMonthRule()).getValidIntValue(), TEST_1234_7_15.getDayOfMonth());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfYearRule()).getValidIntValue(), TEST_1234_7_15.getDayOfYear());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfWeekRule()).getValidIntValue(), TEST_1234_7_15.getDayOfWeek().getValue());
     }
 
     public void test_get_unsupported() throws Exception {

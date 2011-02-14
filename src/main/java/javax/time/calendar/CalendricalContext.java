@@ -133,8 +133,8 @@ public final class CalendricalContext
      */
     public LocalDate resolveDate(int year, int month, int dayOfMonth) {
         if (dateResolver != null) {
-            YEAR.checkValue(year);  // TODO: make resolver handle this
-            DAY_OF_MONTH.checkValue(dayOfMonth);  // TODO: make resolver handle this
+            YEAR.checkValidValue(year);  // TODO: make resolver handle this
+            DAY_OF_MONTH.checkValidValue(dayOfMonth);  // TODO: make resolver handle this
             return dateResolver.resolveDate(year, MonthOfYear.of(month), dayOfMonth);
         }
         if (strict) {

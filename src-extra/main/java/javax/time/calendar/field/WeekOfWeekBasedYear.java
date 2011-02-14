@@ -130,7 +130,7 @@ public final class WeekOfWeekBasedYear
      * @throws UnsupportedRuleException if the week-of-week-based-year cannot be obtained
      */
     public static WeekOfWeekBasedYear weekOfWeekBasedYear(Calendrical calendrical) {
-        return weekOfWeekBasedYear(rule().getValueChecked(calendrical).getValidValue());
+        return weekOfWeekBasedYear(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

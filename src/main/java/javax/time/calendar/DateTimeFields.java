@@ -86,10 +86,10 @@ public final class DateTimeFields
      * The parameters represent the two parts of a phrase like 'MonthOfYear 12'.
      *
      * @param rule  the rule defining the field, not null
-     * @param value  the value of the rule, not necessarily valid for the rule
+     * @param value  the value of the rule, may be outside the valid range for the rule
      * @return the date-time fields, never null
      */
-    public static DateTimeFields of(DateTimeFieldRule rule, int value) {
+    public static DateTimeFields of(DateTimeFieldRule rule, long value) {
         return of(DateTimeField.of(rule, value));
     }
 
@@ -99,13 +99,13 @@ public final class DateTimeFields
      * The pair of parameters represent the two parts of a phrase like 'MonthOfYear 12'.
      *
      * @param rule1  the first rule defining the field, not null
-     * @param value1  the first value of the rule, not necessarily valid for the rule
+     * @param value1  the first value of the rule, may be outside the valid range for the rule
      * @param rule2  the second rule defining the field, not null
-     * @param value2  the second value of the rule, not necessarily valid for the rule
+     * @param value2  the second value of the rule, may be outside the valid range for the rule
      * @return the date-time fields, never null
      * @throws IllegalArgumentException if any rule is duplicated
      */
-    public static DateTimeFields of(DateTimeFieldRule rule1, int value1, DateTimeFieldRule rule2, int value2) {
+    public static DateTimeFields of(DateTimeFieldRule rule1, long value1, DateTimeFieldRule rule2, long value2) {
         DateTimeField field1 = DateTimeField.of(rule1, value1);
         DateTimeField field2 = DateTimeField.of(rule2, value2);
         return of(Arrays.asList(field1, field2));
@@ -282,10 +282,10 @@ public final class DateTimeFields
      * No attempt is made to derive values.
      * The result is simply based on the content of the stored field.
      *
-     * @return the value of the rule
+     * @return the value of the rule, may be outside the valid range for the rule
      * @throws CalendricalException if the field is not present
      */
-    public int getValue(DateTimeFieldRule rule) {
+    public long getValue(DateTimeFieldRule rule) {
         DateTimeField field = get(rule);
         if (field == null) {
             throw new CalendricalRuleException("Rule not found: " + rule, rule);
@@ -305,9 +305,8 @@ public final class DateTimeFields
      * @throws CalendricalException if the field is not present or is invalid
      */
     public int getValidValue(DateTimeFieldRule rule) {
-        int value = getValue(rule);
-        rule.checkValue(value);
-        return value;
+        long value = getValue(rule);
+        return rule.checkValidIntValue(value);
     }
 
     //-----------------------------------------------------------------------
@@ -320,10 +319,10 @@ public final class DateTimeFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param rule  the rule to alter, not null
-     * @param value  the value to use
+     * @param value  the value to use, may be outside the valid range for the rule
      * @return a {@code DateTimeFields} based on this fields with the specified field updated, never null
      */
-    public DateTimeFields with(DateTimeFieldRule rule, int value) {
+    public DateTimeFields with(DateTimeFieldRule rule, long value) {
         return with(DateTimeField.of(rule, value));
     }
 

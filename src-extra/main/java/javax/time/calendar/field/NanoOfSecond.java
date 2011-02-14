@@ -98,7 +98,7 @@ public final class NanoOfSecond
      * @return the created NanoOfSecond
      */
     public static NanoOfSecond nanoOfSecond(int nanoOfSecond) {
-        rule().checkValue(nanoOfSecond);
+        rule().checkValidValue(nanoOfSecond);
         if (nanoOfSecond == 0) {
             return ZERO;
         }
@@ -116,7 +116,7 @@ public final class NanoOfSecond
      * @throws UnsupportedRuleException if the nano-of-second cannot be obtained
      */
     public static NanoOfSecond nanoOfSecond(Calendrical calendrical) {
-        return nanoOfSecond(rule().getValueChecked(calendrical).getValidValue());
+        return nanoOfSecond(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------
@@ -163,7 +163,7 @@ public final class NanoOfSecond
      * @return the nano-of-second, from 0 to 0.999,999,999, never null
      */
     public BigDecimal getFractionalValue() {
-        return rule().convertIntToFraction(nanoOfSecond);
+        return rule().convertToFraction(nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------

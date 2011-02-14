@@ -41,6 +41,7 @@ import javax.time.calendar.UnsupportedRuleException;
  * @author Stephen Colebourne
  */
 public class CalendricalPrintFieldException extends CalendricalPrintException {
+    // TODO: simplify or remove (DateTimeField)
 
     /**
      * A serialization identifier for this class.
@@ -54,7 +55,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
     /**
      * The value of the field that caused the exception.
      */
-    private final Integer value;
+    private final Long value;
 
     /**
      * Constructs a new exception wrapping the unsupported field exception.
@@ -75,7 +76,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
      * @param fieldRule  the rule of the field that caused the exception, may be null
      * @param value  the value of the field that caused the exception
      */
-    public CalendricalPrintFieldException(DateTimeFieldRule fieldRule, int value) {
+    public CalendricalPrintFieldException(DateTimeFieldRule fieldRule, long value) {
         super("Rule " + (fieldRule == null ? "null" : fieldRule.getName()) +
                 " cannot be printed as the value " + value +
                 " cannot be negative according to the SignStyle");
@@ -91,7 +92,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
      * @param value  the value of the field that caused the exception
      * @param maxWidth  the maximum print width
      */
-    public CalendricalPrintFieldException(DateTimeFieldRule fieldRule, int value, int maxWidth) {
+    public CalendricalPrintFieldException(DateTimeFieldRule fieldRule, long value, int maxWidth) {
         super("Rule " + (fieldRule == null ? "null" : fieldRule.getName()) +
                 " cannot be printed as the value " + value +
                 " exceeds the maximum print width of " + maxWidth);
@@ -105,7 +106,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
      * @param fieldRule  the rule of the field that caused the exception, may be null
      * @param value  the value of the field that caused the exception
      */
-    public CalendricalPrintFieldException(String msg, DateTimeFieldRule fieldRule, int value) {
+    public CalendricalPrintFieldException(String msg, DateTimeFieldRule fieldRule, long value) {
         super(msg);
         this.rule = fieldRule;
         this.value = value;
@@ -126,7 +127,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
      *
      * @return the field value, null if unknown
      */
-    public Integer getValue() {
+    public Long getValue() {
         return value;
     }
 

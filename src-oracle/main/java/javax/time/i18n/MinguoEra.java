@@ -106,7 +106,7 @@ public enum MinguoEra implements Calendrical {
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
     public static MinguoEra from(Calendrical calendrical) {
-        return of(rule().getValueChecked(calendrical).getValidValue());
+        return of(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

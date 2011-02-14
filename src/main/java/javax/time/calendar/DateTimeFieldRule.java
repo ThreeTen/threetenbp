@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -74,9 +75,9 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
     private static final MathContext VALUE_CONTEXT = new MathContext(0, RoundingMode.FLOOR);
 
     /** The minimum value for the field. */
-    private final int minimumValue;
+    private final long minimumValue;
     /** The maximum value for the field. */
-    private final int maximumValue;
+    private final long maximumValue;
     /** The cached text for this rule. */
     private final transient ConcurrentMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>> textStores;
 
@@ -95,8 +96,8 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
-            int minimumValue,
-            int maximumValue) {
+            long minimumValue,
+            long maximumValue) {
         this(chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
     }
 
@@ -116,8 +117,8 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
-            int minimumValue,
-            int maximumValue,
+            long minimumValue,
+            long maximumValue,
             boolean hasText) {
         super(DateTimeField.class, chronology, name, periodUnit, periodRange);
         this.minimumValue = minimumValue;
@@ -125,6 +126,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
         this.textStores = (hasText ? new ConcurrentHashMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>>() : null);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Interprets the specified value.
      * <p>
@@ -137,82 +139,125 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      */
     @Override
     protected DateTimeField interpret(CalendricalMerger merger, Object value) {
-        if (value instanceof Integer) {
-            return field((Integer) value);
+        if (value instanceof Long) {
+            return field((Long) value);
         }
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the value is valid or invalid for this field.
+     * Checks if the rule defines values that fit in an {@code int}.
      * <p>
-     * This method has no knowledge of other calendrical fields, thus only the
-     * outer minimum and maximum range for the field is validated.
+     * This checks that all valid values are within the bounds of an {@code int}.
      * <p>
-     * This method performs the same check as {@link #isValidValue(long)}.
+     * For example, the 'MonthOfYear' rule has values from 1 to 12, which fits in an {@code int}.
+     * By comparison, 'NanoOfDay' runs from 1 to 86,400,000,000,000 which does not fit in an {@code int}.
+     * <p>
+     * This implementation uses {@link #getMinimumValue()} and {@link #getMaximumValue()}.
      *
-     * @param value  the value to check
-     * @return true if the value is valid, false if invalid
+     * @return true if a valid value always fits in an {@code int}
      */
-    public boolean isValidValue(int value) {
-        return (value >= getMinimumValue() && value <= getMaximumValue());
+    public boolean isIntValue() {
+        return getMinimumValue() >= Integer.MIN_VALUE && getMaximumValue() <= Integer.MAX_VALUE;
     }
 
     /**
-     * Checks if the value is valid or invalid for this field.
+     * Checks if the rule defines values that fit in an {@code int}, throwing an exception if not.
      * <p>
-     * This method has no knowledge of other calendrical fields, thus only the
+     * This checks that all valid values are within the bounds of an {@code int}.
+     * <p>
+     * For example, the 'MonthOfYear' rule has values from 1 to 12, which fits in an {@code int}.
+     * By comparison, 'NanoOfDay' runs from 1 to 86,400,000,000,000 which does not fit in an {@code int}.
+     * <p>
+     * This implementation uses {@link #getMinimumValue()} and {@link #getMaximumValue()}.
+     *
+     * @return true if a valid value always fits in an {@code int}
+     * @throws CalendricalException if the value does not fit in an {@code int}
+     */
+    public void checkIntValue() {
+        if (isIntValue() == false) {
+            throw new CalendricalRuleException("Rule does not specify an int value: " + getName(), this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the value is valid for the rule.
+     * <p>
+     * This checks that the value is within the valid range of the rule.
+     * This method considers the rule in isolation, thus only the
      * outer minimum and maximum range for the field is validated.
-     * <p>
-     * This method performs the same check as {@link #isValidValue(int)}.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      *
      * @param value  the value to check
-     * @return true if the value is valid, false if invalid
+     * @return true if the value is valid
      */
     public boolean isValidValue(long value) {
         return (value >= getMinimumValue() && value <= getMaximumValue());
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Checks if the value is invalid and throws an exception if it is.
+     * Checks if the value is valid for the rule, throwing an exception if invalid.
      * <p>
-     * This method has no knowledge of other calendrical fields, thus only the
+     * This checks that the value is within the valid range of the rule.
+     * This method considers the rule in isolation, thus only the
      * outer minimum and maximum range for the field is validated.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      * <p>
-     * This method performs the same check as {@link #checkValue(long)}.
-     * The implementation uses {@link #isValidValue(int)}.
+     * This implementation uses {@link #isValidValue(long)}.
      *
      * @param value  the value to check
-     * @return the value
+     * @return the valid value
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public int checkValue(int value) {
+    public long checkValidValue(long value) {
         if (isValidValue(value) == false) {
             throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
         }
         return value;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if the value is invalid and throws an exception if it is.
+     * Checks if the value is valid for the rule and that the rule defines
+     * values that fit in an {@code int}.
      * <p>
-     * This method has no knowledge of other calendrical fields, thus only the
+     * This checks that the value is within the valid range of the rule and
+     * that all valid values are within the bounds of an {@code int}.
+     * This method considers the rule in isolation, thus only the
      * outer minimum and maximum range for the field is validated.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      * <p>
-     * This method performs the same check as {@link #checkValue(int)}.
-     * The implementation uses {@link #isValidValue(long)}.
+     * This implementation uses {@link #isIntValue()} and {@link #isValidValue(long)}.
      *
      * @param value  the value to check
-     * @return the value cast to an int
+     * @return true if the value is valid and fits in an {@code int}
+     */
+    public boolean isValidIntValue(long value) {
+        return isIntValue() && isValidValue(value);
+    }
+
+    /**
+     * Checks if the value is valid for the rule and that the rule defines
+     * values that fit in an {@code int}, throwing an exception if not.
+     * <p>
+     * This checks that the value is within the valid range of the rule and
+     * that all valid values are within the bounds of an {@code int}.
+     * This method considers the rule in isolation, thus only the
+     * outer minimum and maximum range for the field is validated.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
+     * <p>
+     * This implementation uses {@link #checkIntValue()} and {@link #checkValidValue(long)}.
+     *
+     * @param value  the value to check
+     * @return the valid value as an {@code int}
+     * @throws CalendricalException if the value does not fit in an {@code int}
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public int checkValue(long value) {
-        if (isValidValue(value) == false) {
-            throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
-        }
-        return (int) value;
+    public int checkValidIntValue(long value) {
+        checkIntValue();
+        return (int) checkValidValue(value);
     }
 
     //-----------------------------------------------------------------------
@@ -233,7 +278,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      *
      * @return the minimum value for this field
      */
-    public int getMinimumValue() {
+    public long getMinimumValue() {
         return minimumValue;
     }
 
@@ -245,7 +290,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      *
      * @return the largest possible minimum value for this field
      */
-    public int getLargestMinimumValue() {
+    public long getLargestMinimumValue() {
         return getMinimumValue();
     }
 
@@ -262,7 +307,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      * @param calendrical  context calendrical, not null
      * @return the minimum value of the field given the context
      */
-    public int getMinimumValue(Calendrical calendrical) {
+    public long getMinimumValue(Calendrical calendrical) {
         return getMinimumValue();
     }
 
@@ -272,7 +317,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      *
      * @return the maximum value for this field
      */
-    public int getMaximumValue() {
+    public long getMaximumValue() {
         return maximumValue;
     }
 
@@ -284,7 +329,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      *
      * @return the smallest possible maximum value for this field
      */
-    public int getSmallestMaximumValue() {
+    public long getSmallestMaximumValue() {
         return getMaximumValue();
     }
 
@@ -307,7 +352,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      * @param calendrical  context calendrical, not null
      * @return the minimum value of the field given the context
      */
-    public int getMaximumValue(Calendrical calendrical) {
+    public long getMaximumValue(Calendrical calendrical) {
         return getMaximumValue();
     }
 
@@ -325,7 +370,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      * in printing /parsing, where a more advanced localized conversion from
      * int to String is used.
      *
-     * @param value  the value to convert to text, not null
+     * @param value  the value to convert to text, must be valid for the rule
      * @param locale  the locale to use, not null
      * @param textStyle  the text style, not null
      * @return the text of the field, never null
@@ -393,12 +438,12 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      * For example, the second-of-minute value of 15 would be returned as 0.25,
      * assuming the standard definition of 60 seconds in a minute.
      *
-     * @param value  the value to convert, valid for this field
-     * @return the fractional value of the field
+     * @param value  the value to convert, must be valid for this rule
+     * @return the fractional value of the field, not null
      * @throws UnsupportedRuleException if the value cannot be converted
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public BigDecimal convertIntToFraction(int value) {
+    public BigDecimal convertToFraction(long value) {
         if (isFixedValueSet() == false) {
             throw new UnsupportedRuleException("The fractional value of " + getName() +
                     " cannot be obtained as the range is not fixed", this);
@@ -407,7 +452,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
             throw new UnsupportedRuleException("The fractional value of " + getName() +
                     " cannot be obtained as the minimum field value is not zero", this);
         }
-        checkValue(value);
+        checkValidValue(value);
         long range = getMaximumValue();
         range++;
         BigDecimal decimal = new BigDecimal(value);
@@ -427,11 +472,11 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      * assuming the standard definition of 60 seconds in a minute.
      *
      * @param fraction  the fraction to convert, not null
-     * @return the value of the field, checked for validity
+     * @return the value of the field, valid for this rule
      * @throws UnsupportedRuleException if the value cannot be converted
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public int convertFractionToInt(BigDecimal fraction) {
+    public long convertFromFraction(BigDecimal fraction) {
         if (isFixedValueSet() == false) {
             throw new UnsupportedRuleException("The fractional value of " + getName() +
                     " cannot be converted as the range is not fixed", this);
@@ -444,8 +489,8 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
         range++;
         BigDecimal decimal = fraction.multiply(new BigDecimal(range), VALUE_CONTEXT);
         try {
-            int value = decimal.intValueExact();
-            checkValue(value);
+            long value = decimal.longValueExact();
+            checkValidValue(value);
             return value;
         } catch (ArithmeticException ex) {
             throw new IllegalCalendarFieldValueException("The fractional value " + fraction + " of " + getName() +
@@ -457,10 +502,10 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
     /**
      * Creates a field for this rule.
      * 
-     * @param value  the value to store in the field, may be out of range for the rule
+     * @param value  the value to create the field for, may be outside the valid range for the rule
      * @return the created field, not null
      */
-    public DateTimeField field(int value) {
+    public DateTimeField field(long value) {
        return DateTimeField.of(this, value); 
     }
 

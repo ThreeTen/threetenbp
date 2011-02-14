@@ -125,7 +125,7 @@ public final class MinuteOfHour
      * @throws UnsupportedRuleException if the minute-of-hour cannot be obtained
      */
     public static MinuteOfHour minuteOfHour(Calendrical calendrical) {
-        return minuteOfHour(rule().getValueChecked(calendrical).getValidValue());
+        return minuteOfHour(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

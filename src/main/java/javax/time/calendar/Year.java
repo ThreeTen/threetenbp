@@ -148,7 +148,7 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year of(int isoYear) {
-        rule().checkValue(isoYear);
+        rule().checkValidValue(isoYear);
         return new Year(isoYear);
     }
 
@@ -163,7 +163,7 @@ public final class Year
      * @throws UnsupportedRuleException if the year cannot be obtained
      */
     public static Year of(Calendrical calendrical) {
-        return Year.of(rule().getValueChecked(calendrical).getValidValue());
+        return Year.of(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------
@@ -319,7 +319,7 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        return of(rule().checkValue(year + years));  // overflow safe
+        return of(rule().checkValidIntValue(year + years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
@@ -360,7 +360,7 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        return of(rule().checkValue(year - years));  // overflow safe
+        return of(rule().checkValidIntValue(year - years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
@@ -594,7 +594,7 @@ public final class Year
      * @throws InvalidCalendarFieldException if the day of year is 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
-        DAY_OF_YEAR.checkValue(dayOfYear);
+        DAY_OF_YEAR.checkValidValue(dayOfYear);
         if (dayOfYear == 366 && !isLeap()) {
             throw new InvalidCalendarFieldException("Day of year 366 is invalid for year " + year, DAY_OF_YEAR);
         }

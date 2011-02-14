@@ -137,36 +137,36 @@ public abstract class AbstractTestDateTimeFieldRule {
     // checkValue(int)
     //-----------------------------------------------------------------------
     public void test_checkValue_int_valid() {
-        rule().checkValue(rule().getLargestMinimumValue());
-        rule().checkValue(rule().getSmallestMaximumValue());
+        rule().checkValidValue(rule().getLargestMinimumValue());
+        rule().checkValidValue(rule().getSmallestMaximumValue());
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_int_invalidSmall() {
-        rule().checkValue(rule().getMinimumValue() - 1);
+        rule().checkValidValue(rule().getMinimumValue() - 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_int_invalidBig() {
-        rule().checkValue(rule().getMaximumValue() + 1);
+        rule().checkValidValue(rule().getMaximumValue() + 1);
     }
 
     //-----------------------------------------------------------------------
     // checkValue(long)
     //-----------------------------------------------------------------------
     public void test_checkValue_long_valid() {
-        rule().checkValue((long) rule().getLargestMinimumValue());
-        rule().checkValue((long) rule().getSmallestMaximumValue());
+        rule().checkValidValue((long) rule().getLargestMinimumValue());
+        rule().checkValidValue((long) rule().getSmallestMaximumValue());
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidSmall() {
-        rule().checkValue((long) (rule().getMinimumValue() - 1));
+        rule().checkValidValue((long) (rule().getMinimumValue() - 1));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidBig() {
-        rule().checkValue((long) (rule().getMaximumValue() + 1));
+        rule().checkValidValue((long) (rule().getMaximumValue() + 1));
     }
 
     //-----------------------------------------------------------------------

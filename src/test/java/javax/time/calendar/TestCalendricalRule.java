@@ -67,7 +67,7 @@ public class TestCalendricalRule {
         @Override
         protected BigInteger derive(Calendrical calendrical) {
             DateTimeField year = calendrical.get(YEAR);
-            return year != null ? BigInteger.valueOf(year.getValidValue()) : null;
+            return year != null ? BigInteger.valueOf(year.getValidIntValue()) : null;
         }
     }
 

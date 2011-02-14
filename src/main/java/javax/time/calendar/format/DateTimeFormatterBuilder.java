@@ -238,7 +238,7 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule rule) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
-        NumberPrinterParser pp = new NumberPrinterParser(rule, 1, 10, SignStyle.NORMAL);
+        NumberPrinterParser pp = new NumberPrinterParser(rule, 1, 19, SignStyle.NORMAL);
         active.valueParserIndex = appendInternal(pp, pp);
         return this;
     }
@@ -267,7 +267,7 @@ public final class DateTimeFormatterBuilder {
      * space so that the fixed width values can be parsed.
      * <p>
      * For example, consider {@code builder.appendValue(yearRule).appendValue(monthRule, 2);}
-     * The year is a variable width parse of between 1 and 10 digits.
+     * The year is a variable width parse of between 1 and 19 digits.
      * The month is a fixed width parse of 2 digits.
      * Because these were appended to the same builder immediately after one another,
      * the year parser will reserve two digits for the month to parse.
@@ -286,15 +286,15 @@ public final class DateTimeFormatterBuilder {
      * and maximum widths and a sign style of not-negative then it delegates to this method.
      *
      * @param rule  the rule of the field to append, not null
-     * @param width  the width of the printed field, from 1 to 10
+     * @param width  the width of the printed field, from 1 to 19
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule is null
      * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule rule, int width) {
         checkNotNull(rule, "DateTimeFieldRule must not be null");
-        if (width < 1 || width > 10) {
-            throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
+        if (width < 1 || width > 19) {
+            throw new IllegalArgumentException("The width must be from 1 to 19 inclusive but was " + width);
         }
         NumberPrinterParser pp = new NumberPrinterParser(rule, width, width, SignStyle.NOT_NEGATIVE);
         return appendFixedWidth(width, pp);
@@ -315,8 +315,8 @@ public final class DateTimeFormatterBuilder {
      * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
      *
      * @param rule  the rule of the field to append, not null
-     * @param minWidth  the minimum field width of the printed field, from 1 to 10
-     * @param maxWidth  the maximum field width of the printed field, from 1 to 10
+     * @param minWidth  the minimum field width of the printed field, from 1 to 19
+     * @param maxWidth  the maximum field width of the printed field, from 1 to 19
      * @param signStyle  the positive/negative output style, not null
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule or sign style is null
@@ -329,11 +329,11 @@ public final class DateTimeFormatterBuilder {
         }
         checkNotNull(rule, "DateTimeFieldRule must not be null");
         checkNotNull(signStyle, "SignStyle must not be null");
-        if (minWidth < 1 || minWidth > 10) {
-            throw new IllegalArgumentException("The minimum width must be from 1 to 10 inclusive but was " + minWidth);
+        if (minWidth < 1 || minWidth > 19) {
+            throw new IllegalArgumentException("The minimum width must be from 1 to 19 inclusive but was " + minWidth);
         }
-        if (maxWidth < 1 || maxWidth > 10) {
-            throw new IllegalArgumentException("The maximum width must be from 1 to 10 inclusive but was " + maxWidth);
+        if (maxWidth < 1 || maxWidth > 19) {
+            throw new IllegalArgumentException("The maximum width must be from 1 to 19 inclusive but was " + maxWidth);
         }
         if (maxWidth < minWidth) {
             throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
@@ -372,7 +372,7 @@ public final class DateTimeFormatterBuilder {
      * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
      *
      * @param rule  the rule of the field to append, not null
-     * @param width  the width of the printed and parsed field, from 1 to 8
+     * @param width  the width of the printed and parsed field, from 1 to 18
      * @param baseValue  the base value of the range of valid values
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule is null
@@ -467,6 +467,7 @@ public final class DateTimeFormatterBuilder {
      * text style.
      * <p>
      * The text of the field will be output during a print.
+     * The value must be within the valid range of the rule.
      * If the value cannot be obtained then an exception will be thrown.
      * If the field has no textual representation, then the numeric value will be used.
      * <p>
@@ -485,6 +486,7 @@ public final class DateTimeFormatterBuilder {
      * Appends the text of a date-time field to the formatter.
      * <p>
      * The text of the field will be output during a print.
+     * The value must be within the valid range of the rule.
      * If the value cannot be obtained then an exception will be thrown.
      * If the field has no textual representation, then the numeric value will be used.
      * <p>
@@ -959,9 +961,9 @@ public final class DateTimeFormatterBuilder {
                 if (count == 2) {
                     appendValueReduced(rule, 2, 2000);
                 } else if (count < 4) {
-                    appendValue(rule, count, 10, SignStyle.NORMAL);
+                    appendValue(rule, count, 19, SignStyle.NORMAL);
                 } else {
-                    appendValue(rule, count, 10, SignStyle.EXCEEDS_PAD);
+                    appendValue(rule, count, 19, SignStyle.EXCEEDS_PAD);
                 }
                 break;
             case 'M':

@@ -169,45 +169,45 @@ public final class ISODateTimeRule extends DateTimeFieldRule {
             }
             case CLOCK_HOUR_OF_AMPM_ORDINAL: {
                 DateTimeField hourVal = calendrical.get(HOUR_OF_AMPM);  // TODO derive from just HOUR_OF_DAY?
-                return hourVal != null ? field(((hourVal.getValidValue() + 11) % 12) + 1) : null;
+                return hourVal != null ? field(((hourVal.getValidIntValue() + 11) % 12) + 1) : null;
             }
             case HOUR_OF_AMPM_ORDINAL: {
                 DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
-                return hourVal != null ? field(hourVal.getValidValue() % 12) : null;
+                return hourVal != null ? field(hourVal.getValidIntValue() % 12) : null;
             }
             case CLOCK_HOUR_OF_DAY_ORDINAL: {
                 DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
-                return hourVal != null ? field(((hourVal.getValidValue() + 23) % 24) + 1) : null;
+                return hourVal != null ? field(((hourVal.getValidIntValue() + 23) % 24) + 1) : null;
             }
             case AMPM_OF_DAY_ORDINAL: {
                 DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
-                return hourVal != null ? field(hourVal.getValidValue() / 12) : null;
+                return hourVal != null ? field(hourVal.getValidIntValue() / 12) : null;
             }
             case MONTH_OF_QUARTER_ORDINAL: {
                 DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-                return moy != null ? field(((moy.getValidValue() - 1) % 3 + 1)) : null;
+                return moy != null ? field(((moy.getValidIntValue() - 1) % 3 + 1)) : null;
             }
             case QUARTER_OF_YEAR_ORDINAL: {
                 DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-                return moy != null ? field((moy.getValidValue() - 1) / 3 + 1) : null;
+                return moy != null ? field((moy.getValidIntValue() - 1) / 3 + 1) : null;
             }
             case WEEK_OF_MONTH_ORDINAL: {
                 DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
-                return domVal != null ? field((domVal.getValidValue() + 6) / 7) : null;
+                return domVal != null ? field((domVal.getValidIntValue() + 6) / 7) : null;
             }
             case WEEK_OF_YEAR_ORDINAL: {
                 DateTimeField doyVal = calendrical.get(DAY_OF_YEAR);
-                return doyVal != null ? field((doyVal.getValidValue() + 6) / 7) : null;
+                return doyVal != null ? field((doyVal.getValidIntValue() + 6) / 7) : null;
             }
         }
         return null;
     }
     @Override
-    public int getSmallestMaximumValue() {
+    public long getSmallestMaximumValue() {
         return smallestMaximum;
     }
     @Override
-    public int getMaximumValue(Calendrical calendrical) {
+    public long getMaximumValue(Calendrical calendrical) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
                 DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
@@ -216,19 +216,19 @@ public final class ISODateTimeRule extends DateTimeFieldRule {
                 }
                 DateTimeField year = calendrical.get(YEAR);
                 if (year != null) {
-                    return MonthOfYear.of(moy.getValidValue()).lengthInDays(ISOChronology.isLeapYear(year.getValidValue()));
+                    return MonthOfYear.of(moy.getValidIntValue()).lengthInDays(ISOChronology.isLeapYear(year.getValidIntValue()));
                 }
-                return MonthOfYear.of(moy.getValidValue()).maxLengthInDays();
+                return MonthOfYear.of(moy.getValidIntValue()).maxLengthInDays();
             }
             case DAY_OF_YEAR_ORDINAL: {
                 DateTimeField year = calendrical.get(YEAR);
-                return (year != null && ISOChronology.isLeapYear(year.getValidValue()) == false ? 365 : 366);
+                return (year != null && ISOChronology.isLeapYear(year.getValidIntValue()) == false ? 365 : 366);
             }
             case WEEK_OF_MONTH_ORDINAL: {
                 DateTimeField year = calendrical.get(YEAR);
                 DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
                 if (year != null && moy.getValue() == 2) {
-                    return ISOChronology.isLeapYear(year.getValidValue()) ? 5 : 4;
+                    return ISOChronology.isLeapYear(year.getValidIntValue()) ? 5 : 4;
                 }
                 return getMaximumValue();
             }
@@ -542,8 +542,8 @@ public final class ISODateTimeRule extends DateTimeFieldRule {
      * The week-based-year will either be 52 or 53 weeks long, depending on the
      * result of the algorithm for a particular date.
      */
-    public static final ISODateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear",
-            WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
+    public static final ISODateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(
+            WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
     /**
      * The rule for the year field in the ISO chronology.
      * <p>

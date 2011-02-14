@@ -409,9 +409,9 @@ public final class HijrahDate
      */
     public static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "HijrahEra must not be null");
-        HijrahChronology.yearOfEraRule().checkValue(yearOfEra);
-        HijrahChronology.monthOfYearRule().checkValue(monthOfYear);
-        HijrahChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        HijrahChronology.yearOfEraRule().checkValidValue(yearOfEra);
+        HijrahChronology.monthOfYearRule().checkValidValue(monthOfYear);
+        HijrahChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         long gregorianDays = getGregorianEpochDays(era.getValue(), yearOfEra, monthOfYear, dayOfMonth);
         return new HijrahDate(gregorianDays);
     }
@@ -450,12 +450,12 @@ public final class HijrahDate
     private HijrahDate(long gregorianDay) {
         int[] dateInfo = getHijrahDateInfo(gregorianDay);
         
-        HijrahChronology.eraRule().checkValue(dateInfo[0]);
-        HijrahChronology.yearOfEraRule().checkValue(dateInfo[1]);
-        HijrahChronology.monthOfYearRule().checkValue(dateInfo[2]);
-        HijrahChronology.dayOfMonthRule().checkValue(dateInfo[3]);
-        HijrahChronology.dayOfYearRule().checkValue(dateInfo[4]);
-        HijrahChronology.dayOfWeekRule().checkValue(dateInfo[5]);
+        HijrahChronology.eraRule().checkValidValue(dateInfo[0]);
+        HijrahChronology.yearOfEraRule().checkValidValue(dateInfo[1]);
+        HijrahChronology.monthOfYearRule().checkValidValue(dateInfo[2]);
+        HijrahChronology.dayOfMonthRule().checkValidValue(dateInfo[3]);
+        HijrahChronology.dayOfYearRule().checkValidValue(dateInfo[4]);
+        HijrahChronology.dayOfWeekRule().checkValidValue(dateInfo[5]);
         
         this.era = HijrahEra.of(dateInfo[0]);
         this.yearOfEra = dateInfo[1];
@@ -655,7 +655,7 @@ public final class HijrahDate
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public HijrahDate withDayOfYear(int dayOfYear) {
-        HijrahChronology.dayOfYearRule().checkValue(dayOfYear);
+        HijrahChronology.dayOfYearRule().checkValidValue(dayOfYear);
         return HijrahDate.of(this.era, this.yearOfEra, 1, 1).plusDays(dayOfYear).plusDays(-1);
     }
 

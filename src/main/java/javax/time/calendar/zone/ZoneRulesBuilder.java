@@ -293,8 +293,8 @@ public class ZoneRulesBuilder {
         checkNotNull(time, "Rule end time must not be null");
         checkNotNull(timeDefinition, "Time definition must not be null");
         checkNotNull(savingAmount, "Savings amount must not be null");
-        YEAR.checkValue(startYear);
-        YEAR.checkValue(endYear);
+        YEAR.checkValidValue(startYear);
+        YEAR.checkValidValue(endYear);
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
             throw new IllegalArgumentException("Day of month indicator must be between -28 and 31 inclusive excluding zero");
         }

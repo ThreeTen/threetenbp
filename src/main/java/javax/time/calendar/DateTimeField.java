@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
@@ -67,7 +68,7 @@ public final class DateTimeField
     /**
      * The value of the field.
      */
-    private final int value;
+    private final long value;
 
     /**
      * Obtains a {@code DateTimeField} from a rule and value.
@@ -75,10 +76,10 @@ public final class DateTimeField
      * The parameters represent the two parts of a phrase like 'MonthOfYear 12'.
      *
      * @param rule  the rule defining the field, not null
-     * @param value  the value of the rule
+     * @param value  the value of the rule, may be outside the valid range for the rule
      * @return the date-time field, never null
      */
-    public static DateTimeField of(DateTimeFieldRule rule, int value) {
+    public static DateTimeField of(DateTimeFieldRule rule, long value) {
         ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
         return new DateTimeField(rule, value);
     }
@@ -87,10 +88,10 @@ public final class DateTimeField
     /**
      * Constructor.
      *
-     * @param value  the value of the rule
+     * @param value  the value of the rule, may be outside the valid range for the rule
      * @param rule  the rule defining the field, not null
      */
-    private DateTimeField(DateTimeFieldRule rule, int value) {
+    private DateTimeField(DateTimeFieldRule rule, long value) {
         // input pre-validated
         this.value = value;
         this.rule = rule;
@@ -102,9 +103,9 @@ public final class DateTimeField
      * <p>
      * For example, in the field 'MonthOfYear 12', the value is 12.
      *
-     * @return the value
+     * @return the value, may be outside the valid range for the rule
      */
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 
@@ -125,6 +126,7 @@ public final class DateTimeField
      * <p>
      * Calling this method returns a new field with the same value but different rule.
      * For example, it could be used to change 'MonthOfYear 12' to 'HourOfDay 12'.
+     * This is rarely a useful operation but is included for completeness.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -147,10 +149,10 @@ public final class DateTimeField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param value  the value to set in the returned field, not null
+     * @param value  the value to set in the returned field, may be outside the valid range for the rule
      * @return a {@code DateTimeField} based on this field with the specified value, never null
      */
-    public DateTimeField withValue(int value) {
+    public DateTimeField withValue(long value) {
         if (value == this.value) {
             return this;
         }
@@ -161,30 +163,79 @@ public final class DateTimeField
     /**
      * Checks if the value is valid for the rule.
      * <p>
-     * A valid value is one where the value is appropriate for the rule.
-     * This method considers the rule in isolation, using the outer value-range.
+     * This checks that the value is within the valid range of the rule.
+     * This method considers the rule in isolation, thus only the
+     * outer minimum and maximum range for the field is validated.
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      *
      * @param value  the value to check
-     * @return true if the value is valid, false if invalid
+     * @return true if the value is valid
      */
     public boolean isValidValue() {
         return rule.isValidValue(value);
     }
 
     /**
-     * Gets the value of this field ensuring it is valid.
+     * Gets the value of this field ensuring it is valid for the rule.
      * <p>
-     * A valid value is one where the value is appropriate for the rule.
-     * This method considers the rule in isolation, using the outer value-range.
+     * This checks that the value is within the valid range of the rule.
+     * This method considers the rule in isolation, thus only the
+     * outer minimum and maximum range for the field is validated.
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      *
      * @return the valid value
      * @throws CalendricalException if the value is invalid
      */
-    public int getValidValue() {
-        rule.checkValue(value);
-        return value;
+    public long getValidValue() {
+        return rule.checkValidValue(value);
+    }
+
+    /**
+     * Checks if the value is valid for the rule and that the rule defines
+     * values that fit in an {@code int}.
+     * <p>
+     * This checks that the value is within the valid range of the rule and
+     * that all valid values are within the bounds of an {@code int}.
+     * This method considers the rule in isolation, thus only the
+     * outer minimum and maximum range for the field is validated.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
+     *
+     * @return true if the value is valid and fits in an {@code int}
+     * @throws CalendricalException if the value is invalid
+     */
+    public boolean isValidIntValue() {
+        return rule.isValidIntValue(value);
+    }
+
+    /**
+     * Gets the value of this field as an {@code int} ensuring it is valid for the rule.
+     * <p>
+     * This checks that the value is within the valid range of the rule and
+     * that all valid values are within the bounds of an {@code int}.
+     * This method considers the rule in isolation, thus only the
+     * outer minimum and maximum range for the field is validated.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
+     *
+     * @return the valid value
+     * @throws CalendricalException if the value is invalid
+     */
+    public int getValidIntValue() {
+        return rule.checkValidIntValue(value);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value as a fraction of the range, between 0 and 1.
+     * <p>
+     * The fractional value is between 0 (inclusive) and 1 (exclusive).
+     * The fraction will have the minimum scale necessary to represent the fraction.
+     * <p>
+     * See {@link DateTimeFieldRule#convertToFraction(long)} for details.
+     *
+     * @return the value as a fraction within the range, from 0 to 1, not null
+     */
+    public BigDecimal getFractionalValue() {
+        return rule.convertToFraction(value);
     }
 
     //-----------------------------------------------------------------------
@@ -288,7 +339,7 @@ public final class DateTimeField
      */
     @Override
     public int hashCode() {
-        return rule.hashCode() ^ value;
+        return rule.hashCode() ^ (int) (value ^ (value >>> 32));
     }
 
     //-----------------------------------------------------------------------

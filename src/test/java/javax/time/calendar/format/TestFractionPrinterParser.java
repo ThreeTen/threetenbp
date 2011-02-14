@@ -260,7 +260,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertEquals(context.getParsed(NANO_OF_SECOND), expectedValue);
+            assertEquals(context.getParsed(NANO_OF_SECOND), (long) expectedValue);
         }
     }
 
@@ -274,7 +274,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertEquals(context.getParsed(NANO_OF_SECOND), expectedValue);
+            assertEquals(context.getParsed(NANO_OF_SECOND), (long) expectedValue);
         }
     }
 
@@ -288,7 +288,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertEquals(context.getParsed(NANO_OF_SECOND), expectedValue);
+            assertEquals(context.getParsed(NANO_OF_SECOND), (long) expectedValue);
         }
     }
 
@@ -309,7 +309,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(SECOND_OF_MINUTE), false);
         } else {
-            assertEquals(context.getParsed(SECOND_OF_MINUTE), value);
+            assertEquals(context.getParsed(SECOND_OF_MINUTE), (long) value);
         }
     }
 

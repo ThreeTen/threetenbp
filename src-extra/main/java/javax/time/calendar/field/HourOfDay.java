@@ -125,7 +125,7 @@ public final class HourOfDay
      * @throws IllegalCalendarFieldValueException if the input is invalid
      */
     public static HourOfDay hourOfDay(AmPmOfDay amPm, int hourOfAmPm) {
-        HOUR_OF_AMPM.checkValue(hourOfAmPm);
+        HOUR_OF_AMPM.checkValidValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return hourOfDay(hourOfDay);
     }
@@ -141,7 +141,7 @@ public final class HourOfDay
      * @throws UnsupportedRuleException if the hour-of-day cannot be obtained
      */
     public static HourOfDay hourOfDay(Calendrical calendrical) {
-        return hourOfDay(rule().getValueChecked(calendrical).getValidValue());
+        return hourOfDay(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

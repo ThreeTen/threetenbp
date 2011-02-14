@@ -58,13 +58,13 @@ final class ReducedPrinterParser extends NumberPrinterParser {
      * Constructor.
      *
      * @param rule  the rule of the field to print, validated not null
-     * @param width  the field width, from 1 to 9
+     * @param width  the field width, from 1 to 18
      * @param baseValue  the base value
      */
     ReducedPrinterParser(DateTimeFieldRule rule, int width, int baseValue) {
         super(rule, width, width, SignStyle.NOT_NEGATIVE);
-        if (width < 1 || width > 9) {
-            throw new IllegalArgumentException("The width must be from 1 to 9 inclusive but was " + width);
+        if (width < 1 || width > 18) {
+            throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);
         }
         if (baseValue > rule.getMaximumValue()) {
             throw new IllegalArgumentException("The base value must be within the range of the field");
@@ -79,8 +79,8 @@ final class ReducedPrinterParser extends NumberPrinterParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    int getValue(Calendrical calendrical) {
-        int value = rule.getValueChecked(calendrical).getValue();
+    long getValue(Calendrical calendrical) {
+        long value = rule.getValueChecked(calendrical).getValue();
         return Math.abs(value % range);
     }
 

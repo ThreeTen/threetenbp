@@ -328,11 +328,11 @@ public final class JapaneseChronology extends Chronology implements Serializable
             DateTimeField yoeVal = merger.getValue(JapaneseChronology.yearOfEraRule());
             if (yoeVal != null) {
                 // era, year, month, day-of-month
-                JapaneseEra era = JapaneseEra.of(merger.getValue(this).getValidValue());
+                JapaneseEra era = JapaneseEra.of(merger.getValue(this).getValidIntValue());
                 DateTimeField moyVal = merger.getValue(JapaneseChronology.monthOfYearRule());
                 DateTimeField domVal = merger.getValue(JapaneseChronology.dayOfMonthRule());
                 if (moyVal != null && domVal != null) {
-                    JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidValue(), MonthOfYear.of(moyVal.getValidValue()), domVal.getValidValue());
+                    JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.of(moyVal.getValidIntValue()), domVal.getValidIntValue());
                     merger.storeMerged(JapaneseDate.rule(), date);
                     merger.removeProcessed(this);
                     merger.removeProcessed(JapaneseChronology.yearOfEraRule());
@@ -342,7 +342,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                 // era, year, day-of-year
                 DateTimeField doyVal = merger.getValue(JapaneseChronology.dayOfYearRule());
                 if (doyVal != null) {
-                    JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidValue(), MonthOfYear.JANUARY, 1).plusDays(doyVal.getValidValue() - 1);
+                    JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.JANUARY, 1).plusDays(doyVal.getValidIntValue() - 1);
                     merger.storeMerged(JapaneseDate.rule(), date);
                     merger.removeProcessed(this);
                     merger.removeProcessed(JapaneseChronology.yearOfEraRule());
@@ -443,19 +443,19 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return 28;
         }
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField moyVal = calendrical.get(JapaneseChronology.monthOfYearRule());
             if (moyVal != null) {
-                MonthOfYear moy = MonthOfYear.of(moyVal.getValidValue());
+                MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
                 DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
                 DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
                 if (eraVal != null && yoeVal != null) {
-                    JapaneseEra era = JapaneseEra.of(eraVal.getValidValue());
-                    int isoYear = era.getYearOffset() + yoeVal.getValidValue();
+                    JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
+                    int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
                     return moy.lengthInDays(ISOChronology.isLeapYear(isoYear));
                 } else {
                     return moy.maxLengthInDays();
@@ -487,16 +487,16 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return 365;
         }
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
             DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
             if (eraVal != null && yoeVal != null) {
-                JapaneseEra era = JapaneseEra.of(eraVal.getValidValue());
-                int isoYear = era.getYearOffset() + yoeVal.getValidValue();
+                JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
+                int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
                 Year year = Year.of(isoYear);
                 return year.lengthInDays();
             }

@@ -158,8 +158,8 @@ public final class CalendricalMatchers {
                 DateTimeField yearVal = calendrical.get(YEAR);
                 DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
                 DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
-                return yearVal != null && moy != null && domVal != null &&
-                        domVal.getValue() == MonthOfYear.of(moy.getValue()).getLastDayOfMonth(ISOChronology.isLeapYear(yearVal.getValue()));
+                return yearVal != null && moy != null && domVal != null && moy.isValidValue() &&
+                        domVal.getValue() == MonthOfYear.of(moy.getValidIntValue()).getLastDayOfMonth(ISOChronology.isLeapYear(yearVal.getValue()));
             }
         },
         /** Last day-of-year matcher. */
@@ -252,7 +252,7 @@ public final class CalendricalMatchers {
             if (dowVal == null || domVal == null || dowVal.getValue() != dayOfWeek.getValue()) {
                 return false;
             }
-            return (domVal.getValidValue() - 1) / 7 == ordinal - 1;
+            return (domVal.getValidIntValue() - 1) / 7 == ordinal - 1;
         }
         /** {@inheritDoc} */
         @Override

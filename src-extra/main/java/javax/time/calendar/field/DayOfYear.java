@@ -131,7 +131,7 @@ public final class DayOfYear
      * @throws UnsupportedRuleException if the day-of-year cannot be obtained
      */
     public static DayOfYear dayOfYear(Calendrical calendrical) {
-        return dayOfYear(rule().getValueChecked(calendrical).getValidValue());
+        return dayOfYear(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------
@@ -273,7 +273,7 @@ public final class DayOfYear
      * @throws IllegalCalendarFieldValueException if the year is out of range
      */
     public boolean isValid(int year) {
-        YEAR.checkValue(year);
+        YEAR.checkValidValue(year);
         return (dayOfYear < 366 || ISOChronology.isLeapYear(year));
     }
 

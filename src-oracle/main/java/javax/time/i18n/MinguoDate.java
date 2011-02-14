@@ -85,9 +85,9 @@ public final class MinguoDate
      */
     public static MinguoDate of(MinguoEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "MinguoEra must not be null");
-        MinguoChronology.yearOfEraRule().checkValue(yearOfEra);
+        MinguoChronology.yearOfEraRule().checkValidValue(yearOfEra);
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        MinguoChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        MinguoChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         int year = yearOfEra;
         if (era == MinguoEra.BEFORE_MINGUO) {
             year = 1 - yearOfEra;
@@ -124,7 +124,7 @@ public final class MinguoDate
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
         }
-        MinguoChronology.yearOfEraRule().checkValue(yearOfEra);
+        MinguoChronology.yearOfEraRule().checkValidValue(yearOfEra);
         return new MinguoDate(date);
     }
 
@@ -266,7 +266,7 @@ public final class MinguoDate
      * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     public MinguoDate withYear(MinguoEra era, int yearOfEra) {
-        MinguoChronology.yearOfEraRule().checkValue(yearOfEra);
+        MinguoChronology.yearOfEraRule().checkValidValue(yearOfEra);
         int year = yearOfEra;
         if (era == MinguoEra.BEFORE_MINGUO) {
             year = 1 - yearOfEra;
@@ -323,7 +323,7 @@ public final class MinguoDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public MinguoDate withDayOfMonth(int dayOfMonth) {
-        MinguoChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        MinguoChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         return MinguoDate.of(date.withDayOfMonth(dayOfMonth));
     }
 
@@ -341,7 +341,7 @@ public final class MinguoDate
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public MinguoDate withDayOfYear(int dayOfYear) {
-        MinguoChronology.dayOfYearRule().checkValue(dayOfYear);
+        MinguoChronology.dayOfYearRule().checkValidValue(dayOfYear);
         return MinguoDate.of(date.withDayOfYear(dayOfYear));
     }
 

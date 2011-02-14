@@ -209,7 +209,8 @@ public final class DateTimeParseContext {
      * @param rule  the rule to set in the rule-value map, not null
      * @param value  the value to set in the rule-value map
      */
-    public void setParsed(DateTimeFieldRule rule, int value) {
+    public void setParsed(DateTimeFieldRule rule, long value) {
+        // TODO: overload with differet semantics
         DateTimeFormatter.checkNotNull(rule, "DateTimeFieldRule must not be null");
         currentCalendrical().values.put(rule, value);
     }

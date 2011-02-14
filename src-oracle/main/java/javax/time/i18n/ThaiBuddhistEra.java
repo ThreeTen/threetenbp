@@ -78,8 +78,8 @@ public enum ThaiBuddhistEra implements Calendrical {
      * @return the ThaiBuddhistEra enum instance, never null
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
-    public static ThaiBuddhistEra from(Calendrical calendrical) {
-        return of(rule().getValueChecked(calendrical).getValue());
+    public static ThaiBuddhistEra of(Calendrical calendrical) {
+        return of(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

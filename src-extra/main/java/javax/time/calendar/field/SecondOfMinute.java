@@ -125,7 +125,7 @@ public final class SecondOfMinute
      * @throws UnsupportedRuleException if the second-of-minute cannot be obtained
      */
     public static SecondOfMinute secondOfMinute(Calendrical calendrical) {
-        return secondOfMinute(rule().getValueChecked(calendrical).getValidValue());
+        return secondOfMinute(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

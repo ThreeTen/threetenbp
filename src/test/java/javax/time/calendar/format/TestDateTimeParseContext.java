@@ -98,10 +98,10 @@ public class TestDateTimeParseContext {
         context.setParsed(YEAR, 2008);
         
         assertEquals(context.getParsedRules().size(), 1);
-        assertEquals(context.getParsed(YEAR), 2008);
+        assertEquals(context.getParsed(YEAR), 2008L);
         Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 1);
-        assertEquals(map.get(YEAR), Integer.valueOf(2008));
+        assertEquals(map.get(YEAR), 2008L);
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
@@ -113,18 +113,18 @@ public class TestDateTimeParseContext {
         context.setParsed(MONTH_OF_YEAR, 6);
         
         assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(YEAR), 2008);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 6);
+        assertEquals(context.getParsed(YEAR), 2008L);
+        assertEquals(context.getParsed(MONTH_OF_YEAR), 6L);
         Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 2);
-        assertEquals(map.get(YEAR), Integer.valueOf(2008));
-        assertEquals(map.get(MONTH_OF_YEAR), Integer.valueOf(6));
+        assertEquals(map.get(YEAR), 2008L);
+        assertEquals(map.get(MONTH_OF_YEAR), 6L);
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
         assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(YEAR), 2008);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 6);
+        assertEquals(context.getParsed(YEAR), 2008L);
+        assertEquals(context.getParsed(MONTH_OF_YEAR), 6L);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

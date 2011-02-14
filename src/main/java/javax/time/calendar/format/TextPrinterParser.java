@@ -77,7 +77,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = rule.getValueChecked(calendrical).getValue();
+        int value = rule.getValueChecked(calendrical).getValidIntValue();
         TextStore textStore = rule.getTextStore(symbols.getLocale(), textStyle);
         String text = (textStore != null ? textStore.getValueText(value) : null);
         if (text != null) {

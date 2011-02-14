@@ -292,7 +292,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             DateTimeField moy = merger.getValue(monthOfYearRule());
             DateTimeField dom = merger.getValue(dayOfMonthRule());
             if (moy != null && dom != null) {
-                CopticDate date = CopticDate.of(year.getValidValue(), moy.getValidValue(), dom.getValidValue());
+                CopticDate date = CopticDate.of(year.getValidIntValue(), moy.getValidIntValue(), dom.getValidIntValue());
                 merger.storeMerged(CopticDate.rule(), date);
                 merger.removeProcessed(yearRule());
                 merger.removeProcessed(monthOfYearRule());
@@ -301,7 +301,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             // year-day
             DateTimeField doy = merger.getValue(dayOfYearRule());
             if (doy != null) {
-                CopticDate date = CopticDate.of(year.getValidValue(), 1, 1).withDayOfYear(doy.getValidValue());
+                CopticDate date = CopticDate.of(year.getValidIntValue(), 1, 1).withDayOfYear(doy.getValidIntValue());
                 merger.storeMerged(CopticDate.rule(), date);
                 merger.removeProcessed(yearRule());
                 merger.removeProcessed(dayOfYearRule());
@@ -376,16 +376,16 @@ public final class CopticChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return 5;
         }
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField year = calendrical.get(CopticChronology.yearRule());
             DateTimeField moy = calendrical.get(CopticChronology.monthOfYearRule());
             if (year != null && moy != null) {
-                if (moy.getValidValue() == 13) {
-                    return isLeapYear(year.getValidValue()) ? 6 : 5;
+                if (moy.getValidIntValue() == 13) {
+                    return isLeapYear(year.getValidIntValue()) ? 6 : 5;
                 } else {
                     return 30;
                 }
@@ -416,14 +416,14 @@ public final class CopticChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return 365;
         }
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField year = calendrical.get(CopticChronology.yearRule());
             if (year != null) {
-                return isLeapYear(year.getValidValue()) ? 366 : 365;
+                return isLeapYear(year.getValidIntValue()) ? 366 : 365;
             }
             return getMaximumValue();
         }

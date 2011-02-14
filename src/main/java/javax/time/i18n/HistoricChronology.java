@@ -362,7 +362,7 @@ public final class HistoricChronology extends Chronology implements Serializable
             DateTimeField moy = merger.getValue(monthOfYearRule());
             DateTimeField dom = merger.getValue(dayOfMonthRule());
             if (moy != null && dom != null) {
-                HistoricDate date = HistoricDate.of(year.getValidValue(), MonthOfYear.of(moy.getValidValue()), dom.getValidValue());
+                HistoricDate date = HistoricDate.of(year.getValidIntValue(), MonthOfYear.of(moy.getValidIntValue()), dom.getValidIntValue());
                 merger.storeMerged(HistoricDate.rule(), date);
                 merger.removeProcessed(yearRule());
                 merger.removeProcessed(monthOfYearRule());
@@ -371,7 +371,7 @@ public final class HistoricChronology extends Chronology implements Serializable
             // year-day
             DateTimeField doy = merger.getValue(dayOfYearRule());
             if (doy != null) {
-                HistoricDate date = HistoricDate.of(year.getValidValue(), MonthOfYear.JANUARY, 1).withDayOfYear(doy.getValidValue());
+                HistoricDate date = HistoricDate.of(year.getValidIntValue(), MonthOfYear.JANUARY, 1).withDayOfYear(doy.getValidIntValue());
                 merger.storeMerged(HistoricDate.rule(), date);
                 merger.removeProcessed(yearRule());
                 merger.removeProcessed(dayOfYearRule());
@@ -455,18 +455,18 @@ public final class HistoricChronology extends Chronology implements Serializable
             this.chrono = chrono;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return 28;
         }
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField year = calendrical.get(chrono.yearRule());
             DateTimeField moy = calendrical.get(chrono.monthOfYearRule());
             if (moy != null) {
                 if (year != null) {
-                    return MonthOfYear.of(moy.getValidValue()).lengthInDays(chrono.isLeapYear(year.getValidValue()));
+                    return MonthOfYear.of(moy.getValidIntValue()).lengthInDays(chrono.isLeapYear(year.getValidIntValue()));
                 } else {
-                    return MonthOfYear.of(moy.getValidValue()).maxLengthInDays();
+                    return MonthOfYear.of(moy.getValidIntValue()).maxLengthInDays();
                 }
             }
             return getMaximumValue();
@@ -493,14 +493,14 @@ public final class HistoricChronology extends Chronology implements Serializable
             this.chrono = chrono;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return 365;
         }
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField year = calendrical.get(chrono.yearRule());
             if (year != null) {
-                return chrono.isLeapYear(year.getValidValue()) ? 366 : 365;
+                return chrono.isLeapYear(year.getValidIntValue()) ? 366 : 365;
             }
             return getMaximumValue();
         }

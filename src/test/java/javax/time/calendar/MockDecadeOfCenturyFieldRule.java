@@ -56,14 +56,14 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule implem
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         DateTimeField yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
-        return (yocVal == null ? null : field(yocVal.getValidValue() / 10));
+        return (yocVal == null ? null : field(yocVal.getValidIntValue() / 10));
     }
     @Override
     protected void merge(CalendricalMerger merger) {
         DateTimeField yodVal = merger.getValue(MockYearOfDecadeFieldRule.INSTANCE);
         if (yodVal != null) {
             DateTimeField doc = merger.getValue(this);
-            int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc.getValidValue(), 10), yodVal.getValidValue());
+            int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc.getValidIntValue(), 10), yodVal.getValidIntValue());
             merger.storeMerged(MockYearOfCenturyFieldRule.INSTANCE, yoc);
             merger.removeProcessed(this);
             merger.removeProcessed(MockYearOfDecadeFieldRule.INSTANCE);

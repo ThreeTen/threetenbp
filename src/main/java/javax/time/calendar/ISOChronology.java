@@ -117,10 +117,10 @@ public final class ISOChronology extends Chronology implements Serializable {
      * The calculation is proleptic - applying the same rules into the far future and far past.
      * This is historically inaccurate, but is correct for the ISO8601 standard.
      *
-     * @param year  the year to check, not validated for range
+     * @param year  the year to check, may be outside the valid range for the rule
      * @return true if the year is a leap year
      */
-    public static boolean isLeapYear(int year) {
+    public static boolean isLeapYear(long year) {
         return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
     }
 
@@ -174,7 +174,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the date, never null
      */
     static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {
-        DAY_OF_YEAR.checkValue(dayOfYear);
+        DAY_OF_YEAR.checkValidValue(dayOfYear);
         boolean leap = ISOChronology.isLeapYear(year);
         if (dayOfYear == 366 && leap == false) {
             throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, DAY_OF_YEAR);
@@ -309,7 +309,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         // milli-of-day
         DateTimeField modVal = merger.getValue(MILLI_OF_DAY);
         if (modVal != null) {
-            merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(modVal.getValidValue() * 1000000L));
+            merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(modVal.getValidIntValue() * 1000000L));
             merger.removeProcessed(MILLI_OF_DAY);
         }
         
@@ -318,15 +318,15 @@ public final class ISOChronology extends Chronology implements Serializable {
         if (modVal != null) {
             DateTimeField nosVal = merger.getValue(NANO_OF_SECOND);
             if (nosVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidValue(), nosVal.getValidValue()));
+                merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidIntValue(), nosVal.getValidIntValue()));
                 merger.removeProcessed(NANO_OF_SECOND);
             } else {
                 DateTimeField mosVal = merger.getValue(MILLI_OF_SECOND);
                 if (mosVal != null) {
-                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidValue(), mosVal.getValidValue() * 1000000));
+                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidIntValue(), mosVal.getValidIntValue() * 1000000));
                     merger.removeProcessed(MILLI_OF_SECOND);
                 } else {
-                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidValue()));
+                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidIntValue()));
                 }
             }
             merger.removeProcessed(SECOND_OF_DAY);
@@ -338,7 +338,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             merge(merger, HOUR_OF_DAY, AMPM_OF_DAY, HOUR_OF_AMPM);
             DateTimeField chapVal = merger.getValue(ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
             if (chapVal != null) {
-                int hourOfDay = amPm.getValidValue() * 12 + chapVal.getValidValue();
+                int hourOfDay = amPm.getValidIntValue() * 12 + chapVal.getValidIntValue();
                 if (hourOfDay == 24) {
                     merger.addToOverflow(Period.ofDays(1));
                     hourOfDay = 0;
@@ -357,28 +357,28 @@ public final class ISOChronology extends Chronology implements Serializable {
             DateTimeField mosVal = merger.getValue(MILLI_OF_SECOND);
             DateTimeField nanoVal = merger.getValue(NANO_OF_SECOND);
             if (minuteVal != null && secondVal != null && nanoVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), secondVal.getValidValue(), nanoVal.getValidValue()));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), secondVal.getValidIntValue(), nanoVal.getValidIntValue()));
                 merger.removeProcessed(HOUR_OF_DAY);
                 merger.removeProcessed(MINUTE_OF_HOUR);
                 merger.removeProcessed(SECOND_OF_MINUTE);
                 merger.removeProcessed(NANO_OF_SECOND);
             } else if (minuteVal != null && secondVal != null && mosVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), secondVal.getValidValue(), mosVal.getValidValue() * 1000000));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), secondVal.getValidIntValue(), mosVal.getValidIntValue() * 1000000));
                 merger.removeProcessed(HOUR_OF_DAY);
                 merger.removeProcessed(MINUTE_OF_HOUR);
                 merger.removeProcessed(SECOND_OF_MINUTE);
                 merger.removeProcessed(MILLI_OF_SECOND);
             } else if (minuteVal != null && secondVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), secondVal.getValidValue(), 0));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), secondVal.getValidIntValue(), 0));
                 merger.removeProcessed(HOUR_OF_DAY);
                 merger.removeProcessed(MINUTE_OF_HOUR);
                 merger.removeProcessed(SECOND_OF_MINUTE);
             } else if (minuteVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), minuteVal.getValidValue(), 0, 0));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), 0, 0));
                 merger.removeProcessed(HOUR_OF_DAY);
                 merger.removeProcessed(MINUTE_OF_HOUR);
             } else {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidValue(), 0));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), 0));
                 merger.removeProcessed(HOUR_OF_DAY);
             }
         }
@@ -387,7 +387,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         DateTimeField qoy = merger.getValue(QUARTER_OF_YEAR);
         DateTimeField moqVal = merger.getValue(MONTH_OF_QUARTER);
         if (qoy != null && moqVal != null) {
-            int moy = (qoy.getValidValue() - 1) * 3 + moqVal.getValidValue();
+            int moy = (qoy.getValidIntValue() - 1) * 3 + moqVal.getValidIntValue();
             merger.storeMerged(MONTH_OF_YEAR, moy);
             merger.removeProcessed(QUARTER_OF_YEAR);
             merger.removeProcessed(MONTH_OF_QUARTER);
@@ -400,7 +400,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             DateTimeField moy = merger.getValue(MONTH_OF_YEAR);
             DateTimeField domVal = merger.getValue(DAY_OF_MONTH);
             if (moy != null && domVal != null) {
-                LocalDate date = merger.getContext().resolveDate(yearVal.getValidValue(), moy.getValidValue(), domVal.getValidValue());
+                LocalDate date = merger.getContext().resolveDate(yearVal.getValidIntValue(), moy.getValidIntValue(), domVal.getValidIntValue());
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(YEAR);
                 merger.removeProcessed(MONTH_OF_YEAR);
@@ -409,7 +409,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             // year-day
             DateTimeField doyVal = merger.getValue(DAY_OF_YEAR);
             if (doyVal != null) {
-                merger.storeMerged(LocalDate.rule(), getDateFromDayOfYear(yearVal.getValidValue(), doyVal.getValidValue()));
+                merger.storeMerged(LocalDate.rule(), getDateFromDayOfYear(yearVal.getValidIntValue(), doyVal.getValidIntValue()));
                 merger.removeProcessed(YEAR);
                 merger.removeProcessed(DAY_OF_YEAR);
             }
@@ -417,8 +417,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             DateTimeField woyVal = merger.getValue(WEEK_OF_YEAR);
             DateTimeField dow = merger.getValue(DAY_OF_WEEK);
             if (woyVal != null && dow != null) {
-                LocalDate date = LocalDate.of(yearVal.getValidValue(), 1, 1).plusWeeks(woyVal.getValidValue() - 1);
-                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidValue())));
+                LocalDate date = LocalDate.of(yearVal.getValidIntValue(), 1, 1).plusWeeks(woyVal.getValidIntValue() - 1);
+                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(YEAR);
                 merger.removeProcessed(WEEK_OF_YEAR);
@@ -427,8 +427,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             // year-month-week-day
             DateTimeField womVal = merger.getValue(WEEK_OF_MONTH);
             if (moy != null && womVal != null && dow != null) {
-                LocalDate date = LocalDate.of(yearVal.getValidValue(), moy.getValidValue(), 1).plusWeeks(womVal.getValidValue() - 1);
-                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidValue())));
+                LocalDate date = LocalDate.of(yearVal.getValidIntValue(), moy.getValidIntValue(), 1).plusWeeks(womVal.getValidIntValue() - 1);
+                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(YEAR);
                 merger.removeProcessed(MONTH_OF_YEAR);
@@ -519,7 +519,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (field2 != null) {
                 // TODO: non-zero base
                 PeriodField conversion = rule1.getPeriodUnit().getEquivalentPeriod(rule2.getPeriodUnit());
-                PeriodField result = conversion.multipliedBy(field1.getValidValue()).plus(field2.getValidValue());
+                PeriodField result = conversion.multipliedBy(field1.getValidIntValue()).plus(field2.getValidIntValue());
                 merger.storeMerged(destRule, result.getAmountInt());  // TODO: long
                 merger.removeProcessed(rule1);
                 merger.removeProcessed(rule2);

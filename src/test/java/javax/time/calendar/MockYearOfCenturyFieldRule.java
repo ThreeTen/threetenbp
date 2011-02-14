@@ -57,6 +57,6 @@ public final class MockYearOfCenturyFieldRule extends DateTimeFieldRule implemen
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         DateTimeField yearVal = calendrical.get(YEAR);
-        return (yearVal == null ? null : field(yearVal.getValidValue() % 100));
+        return (yearVal == null ? null : field(yearVal.getValidIntValue() % 100));
     }
 }

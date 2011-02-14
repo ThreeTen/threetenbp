@@ -274,8 +274,8 @@ public class TestCalendricalMerger {
     }
 
     private CalendricalMerger createMerger(
-            CalendricalRule<?> rule1, int value1,
-            CalendricalRule<?> rule2, int value2, CalendricalContext context) {
+            CalendricalRule<?> rule1, long value1,
+            CalendricalRule<?> rule2, long value2, CalendricalContext context) {
         Map<CalendricalRule<?>, Object> map = new HashMap<CalendricalRule<?>, Object>();
         map.put(rule1, value1);
         map.put(rule2, value2);

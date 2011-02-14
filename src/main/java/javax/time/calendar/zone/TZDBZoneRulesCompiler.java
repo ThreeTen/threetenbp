@@ -644,11 +644,11 @@ public final class TZDBZoneRulesCompiler {
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        int hour = (Integer) cal.getParsed(HOUR_OF_DAY);
-        Integer min = (Integer) cal.getParsed(MINUTE_OF_HOUR);
-        Integer sec = (Integer) cal.getParsed(SECOND_OF_MINUTE);
-        int secs = hour * 60 * 60 +
-            (min != null ? min : 0) * 60 + (sec != null ? sec : 0);
+        Long hour = (Long) cal.getParsed(HOUR_OF_DAY);
+        Long min = (Long) cal.getParsed(MINUTE_OF_HOUR);
+        Long sec = (Long) cal.getParsed(SECOND_OF_MINUTE);
+        int secs = (int) (hour * 60 * 60 +
+            (min != null ? min : 0) * 60 + (sec != null ? sec : 0));
         if (pos == 1) {
             secs = -secs;
         }

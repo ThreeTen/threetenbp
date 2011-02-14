@@ -55,7 +55,7 @@ public class IllegalCalendarFieldValueException extends CalendricalRuleException
      * @param minValue  the minimum value allowed
      * @param maxValue  the maximum value allowed
      */
-    public IllegalCalendarFieldValueException(DateTimeFieldRule fieldRule, long actual, int minValue, int maxValue) {
+    public IllegalCalendarFieldValueException(DateTimeFieldRule fieldRule, long actual, long minValue, long maxValue) {
         super("Illegal value for " + fieldRule.getID() + " field, value " + actual +
                 " is not in the range " + minValue + " to " + maxValue, fieldRule);
     }

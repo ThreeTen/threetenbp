@@ -86,9 +86,9 @@ public final class JapaneseDate
      */
     public static JapaneseDate of(JapaneseEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "JapaneseEra must not be null");
-        JapaneseChronology.yearOfEraRule().checkValue(yearOfEra);
+        JapaneseChronology.yearOfEraRule().checkValidValue(yearOfEra);
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        JapaneseChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        JapaneseChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         int year = yearOfEra + era.getYearOffset();
         LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new JapaneseDate(date);
@@ -121,7 +121,7 @@ public final class JapaneseDate
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
         }
-        JapaneseChronology.yearOfEraRule().checkValue(yearOfEra);
+        JapaneseChronology.yearOfEraRule().checkValidValue(yearOfEra);
         return new JapaneseDate(date);
     }
 
@@ -261,7 +261,7 @@ public final class JapaneseDate
      * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     public JapaneseDate withYear(JapaneseEra era, int yearOfEra) {
-        JapaneseChronology.yearOfEraRule().checkValue(yearOfEra);
+        JapaneseChronology.yearOfEraRule().checkValidValue(yearOfEra);
         int year = yearOfEra + era.getYearOffset();
         return with(date.withYear(year));
     }
@@ -314,7 +314,7 @@ public final class JapaneseDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public JapaneseDate withDayOfMonth(int dayOfMonth) {
-        JapaneseChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        JapaneseChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         return with(date.withDayOfMonth(dayOfMonth));
     }
 
@@ -332,7 +332,7 @@ public final class JapaneseDate
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public JapaneseDate withDayOfYear(int dayOfYear) {
-        JapaneseChronology.dayOfYearRule().checkValue(dayOfYear);
+        JapaneseChronology.dayOfYearRule().checkValidValue(dayOfYear);
         return with(date.withDayOfYear(dayOfYear));
     }
 

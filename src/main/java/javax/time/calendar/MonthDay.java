@@ -144,7 +144,7 @@ public final class MonthDay
      */
     public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        DAY_OF_MONTH.checkValue(dayOfMonth);
+        DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
                     " is not valid for month " + monthOfYear.name(), DAY_OF_MONTH);
@@ -186,7 +186,7 @@ public final class MonthDay
     public static MonthDay of(Calendrical calendrical) {
         DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
         DateTimeField dom = DAY_OF_MONTH.getValueChecked(calendrical);
-        return of(month.getValidValue(), dom.getValidValue());
+        return of(month.getValidIntValue(), dom.getValidIntValue());
     }
 
     //-------------------------------------------------------------------------
@@ -367,7 +367,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
-        DAY_OF_MONTH.checkValue(dayOfMonth);
+        DAY_OF_MONTH.checkValidValue(dayOfMonth);
         int maxDays = month.maxLengthInDays();
         if (dayOfMonth > maxDays) {
             throw new InvalidCalendarFieldException("Day of month cannot be changed to " +
@@ -637,7 +637,7 @@ public final class MonthDay
         protected MonthDay derive(Calendrical calendrical) {
             DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
             DateTimeField dom = calendrical.get(DAY_OF_MONTH);
-            return moy != null && dom != null ? MonthDay.of(moy.getValidValue(), dom.getValidValue()) : null;
+            return moy != null && dom != null ? MonthDay.of(moy.getValidIntValue(), dom.getValidIntValue()) : null;
         }
     }
 

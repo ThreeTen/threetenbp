@@ -32,6 +32,7 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
@@ -67,11 +68,11 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      */
     final DateTimeFieldRule rule;
     /**
-     * The minimum width allowed, zero padding is used up to this width, from 1 to 10.
+     * The minimum width allowed, zero padding is used up to this width, from 1 to 19.
      */
     final int minWidth;
     /**
-     * The maximum width allowed, from 1 to 10.
+     * The maximum width allowed, from 1 to 19.
      */
     private final int maxWidth;
     /**
@@ -87,8 +88,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * Constructor.
      *
      * @param rule  the rule of the field to print, not null
-     * @param minWidth  the minimum field width, from 1 to 10
-     * @param maxWidth  the maximum field width, from minWidth to 10
+     * @param minWidth  the minimum field width, from 1 to 19
+     * @param maxWidth  the maximum field width, from minWidth to 19
      * @param signStyle  the positive/negative sign style, not null
      */
     NumberPrinterParser(DateTimeFieldRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
@@ -104,8 +105,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * Constructor.
      *
      * @param rule  the rule of the field to print, not null
-     * @param minWidth  the minimum field width, from 1 to 10
-     * @param maxWidth  the maximum field width, from minWidth to 10
+     * @param minWidth  the minimum field width, from 1 to 19
+     * @param maxWidth  the maximum field width, from minWidth to 19
      * @param signStyle  the positive/negative sign style, not null
      * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
      */
@@ -131,8 +132,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = getValue(calendrical);
-        String str = (value == Integer.MIN_VALUE ? "2147483648" : Integer.toString(Math.abs(value)));
+        long value = getValue(calendrical);
+        String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
             throw new CalendricalPrintFieldException(rule, value, maxWidth);
         }
@@ -141,7 +142,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         if (value >= 0) {
             switch (signStyle) {
                 case EXCEEDS_PAD:
-                    if (minWidth < 10 && value >= EXCEED_POINTS[minWidth]) {
+                    if (minWidth < 19 && value >= EXCEED_POINTS[minWidth]) {
                         appendable.append(symbols.getPositiveSignChar());
                     }
                     break;
@@ -171,7 +172,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param calendrical  the calendrical, not null
      * @return the value
      */
-    int getValue(Calendrical calendrical) {
+    long getValue(Calendrical calendrical) {
         return rule.getValueChecked(calendrical).getValue();
     }
 
@@ -229,7 +230,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             return ~position;
         }
         int effMaxWidth = maxWidth + subsequentWidth;
-        long total = 0;  // long to handle large numbers
+        long total = 0;
+        BigInteger totalBig = null;
         int pos = position;
         for (int pass = 0; pass < 2; pass++) {
             int maxEndPos = Math.min(pos + effMaxWidth, length);
@@ -243,7 +245,14 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     }
                     break;
                 }
-                total = total * 10 + digit;
+                if ((pos - position) > 18) {
+                    if (totalBig == null) {
+                        totalBig = BigInteger.valueOf(total);
+                    }
+                    totalBig = totalBig.multiply(BigInteger.TEN).add(BigInteger.valueOf(digit));
+                } else {
+                    total = total * 10 + digit;
+                }
             }
             if (subsequentWidth > 0 && pass == 0) {
                 // re-parse now we know the correct width
@@ -251,15 +260,23 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 effMaxWidth = Math.max(minWidth, parseLen - subsequentWidth);
                 pos = position;
                 total = 0;
+                totalBig = null;
             } else {
                 break;
             }
         }
         if (negative) {
-            if (total == 0) {
-                return ~(position - 1);  // minus zero not allowed
+            if (totalBig != null) {
+                if (totalBig.equals(BigInteger.ZERO) && context.isStrict()) {
+                    return ~(position - 1);  // minus zero not allowed
+                }
+                totalBig = totalBig.negate();
+            } else {
+                if (total == 0 && context.isStrict()) {
+                    return ~(position - 1);  // minus zero not allowed
+                }
+                total = -total;
             }
-            total = -total;
         } else if (signStyle == SignStyle.EXCEEDS_PAD && context.isStrict()) {
             int parseLen = pos - position;
             if (positive) {
@@ -272,12 +289,16 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 }
             }
         }
-        if (total > Integer.MAX_VALUE || total < Integer.MIN_VALUE) {
-            // overflow, parse 9 digits instead of 10
-            total /= 10;
-            pos--;
+        if (totalBig != null) {
+            if (totalBig.bitLength() > 63) {
+                // overflow, parse 1 less digit
+                totalBig = totalBig.divide(BigInteger.TEN);
+                pos--;
+            }
+            setValue(context, totalBig.longValue());
+        } else {
+            setValue(context, total);
         }
-        setValue(context, total);
         return pos;
     }
 
@@ -287,14 +308,14 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param value  the value
      */
     void setValue(DateTimeParseContext context, long value) {
-        context.setParsed(rule, (int) value);
+        context.setParsed(rule, value);
     }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        if (minWidth == 1 && maxWidth == 10 && signStyle == SignStyle.NORMAL) {
+        if (minWidth == 1 && maxWidth == 19 && signStyle == SignStyle.NORMAL) {
             return "Value(" + rule.getID() + ")";
         }
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {

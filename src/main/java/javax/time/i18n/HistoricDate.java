@@ -139,9 +139,9 @@ public final class HistoricDate
     public static HistoricDate of(LocalDate cutover, int historicYear, MonthOfYear monthOfYear, int dayOfMonth) {
         HistoricChronology.checkNotNull(cutover, "Cutover date must not be null");
         HistoricChronology chrono = HistoricChronology.cutoverAt(cutover);
-        chrono.yearRule().checkValue(historicYear);
+        chrono.yearRule().checkValidValue(historicYear);
         HistoricChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        chrono.dayOfMonthRule().checkValue(dayOfMonth);
+        chrono.dayOfMonthRule().checkValidValue(dayOfMonth);
         return new HistoricDate(chrono, historicYear, monthOfYear, dayOfMonth);
     }
 
@@ -213,9 +213,9 @@ public final class HistoricDate
      * @return the historic date, never null
      */
     private HistoricDate previousValid(int historicYear, MonthOfYear monthOfYear, int dayOfMonth) {
-        chrono.yearRule().checkValue(historicYear);
+        chrono.yearRule().checkValidValue(historicYear);
         HistoricChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        chrono.dayOfMonthRule().checkValue(dayOfMonth);
+        chrono.dayOfMonthRule().checkValidValue(dayOfMonth);
         int lastDay = monthOfYear.getLastDayOfMonth(chrono.isLeapYear(year));
         if (dayOfMonth > lastDay) {
             dayOfMonth = lastDay;
@@ -395,7 +395,7 @@ public final class HistoricDate
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public HistoricDate withDayOfYear(int dayOfYear) {
-        chrono.dayOfYearRule().checkValue(dayOfYear);
+        chrono.dayOfYearRule().checkValidValue(dayOfYear);
         return chrono.getDateFromDayOfYear(year, dayOfYear);
     }
 

@@ -130,7 +130,7 @@ public final class DayOfMonth
      * @throws UnsupportedRuleException if the day-of-month cannot be obtained
      */
     public static DayOfMonth dayOfMonth(Calendrical calendrical) {
-        return dayOfMonth(rule().getValueChecked(calendrical).getValidValue());
+        return dayOfMonth(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

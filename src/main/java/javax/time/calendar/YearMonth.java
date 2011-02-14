@@ -132,7 +132,7 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public static YearMonth of(int year, MonthOfYear monthOfYear) {
-        YEAR.checkValue(year);
+        YEAR.checkValidValue(year);
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return new YearMonth(year, monthOfYear);
     }
@@ -163,7 +163,7 @@ public final class YearMonth
     public static YearMonth of(Calendrical calendrical) {
         DateTimeField year = YEAR.getValueChecked(calendrical);
         DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
-        return of(year.getValidValue(), month.getValidValue());
+        return of(year.getValidIntValue(), month.getValidIntValue());
     }
 
     //-------------------------------------------------------------------------
@@ -333,7 +333,7 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
-        YEAR.checkValue(year);
+        YEAR.checkValidValue(year);
         return with(year, month);
     }
 
@@ -386,7 +386,7 @@ public final class YearMonth
         if (years == 0) {
             return this;
         }
-        int newYear = YEAR.checkValue(year + years);  // safe overflow
+        int newYear = YEAR.checkValidIntValue(year + years);  // safe overflow
         return with(newYear, month);
     }
 
@@ -405,7 +405,7 @@ public final class YearMonth
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount + months;  // safe overflow
-        int newYear = YEAR.checkValue(MathUtils.floorDiv(calcMonths, 12));
+        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
@@ -446,7 +446,7 @@ public final class YearMonth
         if (years == 0) {
             return this;
         }
-        int newYear = YEAR.checkValue(year - years);  // safe overflow
+        int newYear = YEAR.checkValidIntValue(year - years);  // safe overflow
         return with(newYear, month);
     }
 
@@ -465,7 +465,7 @@ public final class YearMonth
         }
         long monthCount = year * 12L + (month.getValue() - 1);
         long calcMonths = monthCount - months;  // safe overflow
-        int newYear = YEAR.checkValue(MathUtils.floorDiv(calcMonths, 12));
+        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         return with(newYear, newMonth);
     }
@@ -730,7 +730,7 @@ public final class YearMonth
         protected YearMonth derive(Calendrical calendrical) {
             DateTimeField year = calendrical.get(YEAR);
             DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-            return year != null && moy != null ? YearMonth.of(year.getValidValue(), moy.getValidValue()) : null;
+            return year != null && moy != null ? YearMonth.of(year.getValidIntValue(), moy.getValidIntValue()) : null;
         }
     }
 

@@ -337,13 +337,13 @@ public final class HijrahChronology extends Chronology implements Serializable {
      */
     static void merge(CalendricalMerger merger) {
         DateTimeField eraVal = merger.getValue(eraRule());
-        HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidValue()) : HijrahEra.HIJRAH);
+        HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidIntValue()) : HijrahEra.HIJRAH);
         DateTimeField yoeVal = merger.getValue(yearOfEraRule());
         // era, year, month, day-of-month
         DateTimeField moyVal = merger.getValue(monthOfYearRule());
         DateTimeField domVal = merger.getValue(dayOfMonthRule());
         if (moyVal != null && domVal != null) {
-            HijrahDate date = HijrahDate.of(era, yoeVal.getValidValue(), moyVal.getValidValue(), domVal.getValidValue());
+            HijrahDate date = HijrahDate.of(era, yoeVal.getValidIntValue(), moyVal.getValidIntValue(), domVal.getValidIntValue());
             merger.storeMerged(HijrahDate.rule(), date);
             merger.removeProcessed(eraRule());
             merger.removeProcessed(yearOfEraRule());
@@ -353,7 +353,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         // era, year, day-of-year
         DateTimeField doyVal = merger.getValue(dayOfYearRule());
         if (doyVal != null) {
-            HijrahDate date = HijrahDate.of(era, yoeVal.getValidValue(), 1, 1).plusDays(doyVal.getValidValue() - 1);
+            HijrahDate date = HijrahDate.of(era, yoeVal.getValidIntValue(), 1, 1).plusDays(doyVal.getValidIntValue() - 1);
             merger.storeMerged(HijrahDate.rule(), date);
             merger.removeProcessed(eraRule());
             merger.removeProcessed(yearOfEraRule());
@@ -512,20 +512,20 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return HijrahDate.getSmallestMaximumDayOfMonth();
         }
 
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(HijrahEra.rule());
             DateTimeField yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
             DateTimeField moyVal = calendrical.get(HijrahChronology.monthOfYearRule());
             if (yoeVal != null && moyVal != null) {
-                HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidValue()) : HijrahEra.HIJRAH);
-                int yoe = yoeVal.getValidValue();
+                HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidIntValue()) : HijrahEra.HIJRAH);
+                int yoe = yoeVal.getValidIntValue();
                 int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoe : yoe);
-                return HijrahDate.getMonthLength(moyVal.getValidValue() - 1, hijrahYear);
+                return HijrahDate.getMonthLength(moyVal.getValidIntValue() - 1, hijrahYear);
             }
             return getMaximumValue();
         }
@@ -553,16 +553,16 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public int getSmallestMaximumValue() {
+        public long getSmallestMaximumValue() {
             return HijrahDate.getSmallestMaximumDayOfYear();
         }
         @Override
-        public int getMaximumValue(Calendrical calendrical) {
+        public long getMaximumValue(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(HijrahEra.rule());
             DateTimeField yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
             if (yoeVal != null) {
-                HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidValue()) : HijrahEra.HIJRAH);
-                int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoeVal.getValidValue() : yoeVal.getValidValue());
+                HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidIntValue()) : HijrahEra.HIJRAH);
+                int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoeVal.getValidIntValue() : yoeVal.getValidIntValue());
                 return HijrahDate.getYearLength(hijrahYear);
             }
             return getMaximumValue();

@@ -123,7 +123,7 @@ public final class WeekBasedYear
      * @throws IllegalCalendarFieldValueException if the week-based-year is invalid
      */
     public static WeekBasedYear weekBasedYear(int weekyear) {
-        rule().checkValue(weekyear);
+        rule().checkValidValue(weekyear);
         return new WeekBasedYear(weekyear);
     }
 
@@ -138,7 +138,7 @@ public final class WeekBasedYear
      * @throws UnsupportedRuleException if the week-based-year cannot be obtained
      */
     public static WeekBasedYear weekBasedYear(Calendrical calendrical) {
-        return weekBasedYear(rule().getValueChecked(calendrical).getValidValue());
+        return weekBasedYear(rule().getValueChecked(calendrical).getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

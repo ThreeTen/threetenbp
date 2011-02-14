@@ -58,14 +58,14 @@ public final class MockCenturyFieldRule extends DateTimeFieldRule implements Ser
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         DateTimeField yearVal = calendrical.get(YEAR);
-        return (yearVal == null ? null : field(yearVal.getValidValue() / 100));
+        return (yearVal == null ? null : field(yearVal.getValidIntValue() / 100));
     }
     @Override
     protected void merge(CalendricalMerger merger) {
         DateTimeField yocVal = merger.getValue(MockYearOfCenturyFieldRule.INSTANCE);
         if (yocVal != null) {
             DateTimeField cen = merger.getValue(this);
-            int year = MathUtils.safeAdd(MathUtils.safeMultiply(cen.getValidValue(), 100), yocVal.getValidValue());
+            int year = MathUtils.safeAdd(MathUtils.safeMultiply(cen.getValidIntValue(), 100), yocVal.getValidIntValue());
             merger.storeMerged(YEAR, year);
             merger.removeProcessed(this);
             merger.removeProcessed(MockYearOfCenturyFieldRule.INSTANCE);

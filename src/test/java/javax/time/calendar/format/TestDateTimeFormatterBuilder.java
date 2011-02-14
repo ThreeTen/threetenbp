@@ -118,7 +118,7 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_2arg_widthTooBig() throws Exception {
-        builder.appendValue(DAY_OF_MONTH, 11);
+        builder.appendValue(DAY_OF_MONTH, 20);
     }
 
     //-----------------------------------------------------------------------
@@ -140,7 +140,7 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_3arg_minWidthTooBig() throws Exception {
-        builder.appendValue(DAY_OF_MONTH, 11, 2, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 20, 2, SignStyle.NORMAL);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
@@ -150,7 +150,7 @@ public class TestDateTimeFormatterBuilder {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendValue_3arg_maxWidthTooBig() throws Exception {
-        builder.appendValue(DAY_OF_MONTH, 2, 11, SignStyle.NORMAL);
+        builder.appendValue(DAY_OF_MONTH, 2, 20, SignStyle.NORMAL);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
@@ -169,8 +169,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23L);
     }
 
     public void test_appendValue_subsequent2_parse4() throws Exception {
@@ -178,8 +178,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("0123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23L);
     }
 
     public void test_appendValue_subsequent2_parse5() throws Exception {
@@ -187,8 +187,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)'4'");
         CalendricalMerger cal = f.parse("01234");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23L);
     }
 
     public void test_appendValue_subsequent3_parse6() throws Exception {
@@ -199,9 +199,9 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.Year,4,10,EXCEEDS_PAD)Value(ISO.MonthOfYear,2)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("20090630");
-        assertEquals(cal.getInputMap().get(YEAR), 2009);
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 6);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 30);
+        assertEquals(cal.getInputMap().get(YEAR), 2009L);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 6L);
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 30L);
     }
 
     //-----------------------------------------------------------------------
@@ -215,7 +215,7 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(ISO.Year,2,2000)");
         CalendricalMerger cal = f.parse("12");
-        assertEquals(cal.getInputMap().get(YEAR), 2012);
+        assertEquals(cal.getInputMap().get(YEAR), 2012L);
     }
 
     public void test_appendValueReduced_subsequent_parse() throws Exception {
@@ -223,8 +223,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)ReducedValue(ISO.Year,2,2000)");
         CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1);
-        assertEquals(cal.getInputMap().get(YEAR), 2023);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
+        assertEquals(cal.getInputMap().get(YEAR), 2023L);
     }
 
     //-----------------------------------------------------------------------
@@ -457,15 +457,15 @@ public class TestDateTimeFormatterBuilder {
             
             {"y", "Value(ISO.Year)"},
             {"yy", "ReducedValue(ISO.Year,2,2000)"},
-            {"yyy", "Value(ISO.Year,3,10,NORMAL)"},
-            {"yyyy", "Value(ISO.Year,4,10,EXCEEDS_PAD)"},
-            {"yyyyy", "Value(ISO.Year,5,10,EXCEEDS_PAD)"},
+            {"yyy", "Value(ISO.Year,3,19,NORMAL)"},
+            {"yyyy", "Value(ISO.Year,4,19,EXCEEDS_PAD)"},
+            {"yyyyy", "Value(ISO.Year,5,19,EXCEEDS_PAD)"},
             
             {"x", "Value(ISO.WeekBasedYear)"},
             {"xx", "ReducedValue(ISO.WeekBasedYear,2,2000)"},
-            {"xxx", "Value(ISO.WeekBasedYear,3,10,NORMAL)"},
-            {"xxxx", "Value(ISO.WeekBasedYear,4,10,EXCEEDS_PAD)"},
-            {"xxxxx", "Value(ISO.WeekBasedYear,5,10,EXCEEDS_PAD)"},
+            {"xxx", "Value(ISO.WeekBasedYear,3,19,NORMAL)"},
+            {"xxxx", "Value(ISO.WeekBasedYear,4,19,EXCEEDS_PAD)"},
+            {"xxxxx", "Value(ISO.WeekBasedYear,5,19,EXCEEDS_PAD)"},
             
             {"Q", "Value(ISO.QuarterOfYear)"},
             {"QQ", "Value(ISO.QuarterOfYear,2)"},
@@ -591,11 +591,11 @@ public class TestDateTimeFormatterBuilder {
             {"fS", "Fraction(ISO.MilliOfSecond,1,1)"},
             {"fn", "Fraction(ISO.NanoOfSecond,1,1)"},
             
-            {"yyyy[-MM[-dd", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
-            {"yyyy[-MM[-dd]]", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
-            {"yyyy[-MM[]-dd]", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)]"},
+            {"yyyy[-MM[-dd", "Value(ISO.Year,4,19,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
+            {"yyyy[-MM[-dd]]", "Value(ISO.Year,4,19,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
+            {"yyyy[-MM[]-dd]", "Value(ISO.Year,4,19,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)]"},
             
-            {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(ISO.Year,4,10,EXCEEDS_PAD)'-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)" +
+            {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(ISO.Year,4,19,EXCEEDS_PAD)'-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)" +
                 "'T'Value(ISO.HourOfDay,2)':'Value(ISO.MinuteOfHour,2)':'Value(ISO.SecondOfMinute,2)'.'Value(ISO.MilliOfSecond,3)"},
         };
     }

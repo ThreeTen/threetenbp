@@ -121,9 +121,9 @@ public final class CopticDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static CopticDate of(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
-        CopticChronology.yearRule().checkValue(copticYear);
-        CopticChronology.monthOfYearRule().checkValue(copticMonthOfYear);
-        CopticChronology.dayOfMonthRule().checkValue(copticDayOfMonth);
+        CopticChronology.yearRule().checkValidValue(copticYear);
+        CopticChronology.monthOfYearRule().checkValidValue(copticMonthOfYear);
+        CopticChronology.dayOfMonthRule().checkValidValue(copticDayOfMonth);
         if (copticMonthOfYear == 13 && copticDayOfMonth > 5) {
             if (copticDayOfMonth > 6 || CopticChronology.isLeapYear(copticYear) == false) {
                 throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.dayOfMonthRule());
@@ -142,9 +142,9 @@ public final class CopticDate
      * @return the Coptic date, never null
      */
     private static CopticDate copticDatePreviousValid(int year, int monthOfYear, int dayOfMonth) {
-        CopticChronology.yearRule().checkValue(year);
-        CopticChronology.monthOfYearRule().checkValue(monthOfYear);
-        CopticChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        CopticChronology.yearRule().checkValidValue(year);
+        CopticChronology.monthOfYearRule().checkValidValue(monthOfYear);
+        CopticChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         if (monthOfYear == 13 && dayOfMonth > 5) {
             dayOfMonth = CopticChronology.isLeapYear(year) ? 6 : 5;
         }

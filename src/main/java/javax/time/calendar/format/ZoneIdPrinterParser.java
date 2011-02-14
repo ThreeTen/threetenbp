@@ -197,7 +197,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
      * For example, to parse America/Denver we can look at the first two
      * character "Am". We then notice that the shortest time-zone that starts
      * with Am is America/Nome which is 12 characters long. Checking the first
-     * 12 characters of America/Denver giver America/Denv which is a substring
+     * 12 characters of America/Denver gives America/Denv which is a substring
      * of only 1 time-zone: America/Denver. Thus, with just 3 comparisons that
      * match can be found.
      * <p>

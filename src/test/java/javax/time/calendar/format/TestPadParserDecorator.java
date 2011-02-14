@@ -92,7 +92,7 @@ public class TestPadParserDecorator {
         int result = pp.parse(context, "--2", 0);
         assertEquals(result, 3);
         assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 2);
+        assertEquals(context.getParsed(MONTH_OF_YEAR), 2L);
     }
 
     public void test_parse_noReadBeyond() throws Exception {
@@ -101,7 +101,7 @@ public class TestPadParserDecorator {
         int result = pp.parse(context, "--22", 0);
         assertEquals(result, 3);
         assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 2);
+        assertEquals(context.getParsed(MONTH_OF_YEAR), 2L);
     }
 
     public void test_parse_textLessThanPadWidth() throws Exception {

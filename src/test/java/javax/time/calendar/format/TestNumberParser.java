@@ -89,251 +89,115 @@ public class TestNumberParser {
         pp.parse(context, "12", 3);
     }
 
-    public void test_parse_negativeZero() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NORMAL);
-        int newPos = pp.parse(context, "-0", 0);
-        assertEquals(newPos, ~0);
+    //-----------------------------------------------------------------------
+    @DataProvider(name="parseData")
+    Object[][] provider_parseData() {
+        return new Object[][] {
+            // normal
+            {1, 2, SignStyle.NEVER, 0, "12", 0, 2, 12L},       // normal
+            {1, 2, SignStyle.NEVER, 0, "Xxx12Xxx", 3, 5, 12L}, // parse in middle
+            {1, 2, SignStyle.NEVER, 0, "99912999", 3, 5, 12L}, // parse in middle
+            {2, 4, SignStyle.NEVER, 0, "12345", 0, 4, 1234L},  // stops at max width
+            {2, 4, SignStyle.NEVER, 0, "12-45", 0, 2, 12L},    // stops at dash
+            {2, 4, SignStyle.NEVER, 0, "123-5", 0, 3, 123L},   // stops at dash
+            {1, 10, SignStyle.NORMAL, 0, "2147483647", 0, 10, Integer.MAX_VALUE},
+            {1, 10, SignStyle.NORMAL, 0, "-2147483648", 0, 11, Integer.MIN_VALUE},
+            {1, 10, SignStyle.NORMAL, 0, "2147483648", 0, 10, 2147483648L},
+            {1, 10, SignStyle.NORMAL, 0, "-2147483649", 0, 11, -2147483649L},
+            {1, 10, SignStyle.NORMAL, 0, "987659876598765", 0, 10, 9876598765L},
+            {1, 19, SignStyle.NORMAL, 0, "999999999999999999", 0, 18, 999999999999999999L},
+            {1, 19, SignStyle.NORMAL, 0, "-999999999999999999", 0, 19, -999999999999999999L},
+            {1, 19, SignStyle.NORMAL, 0, "1000000000000000000", 0, 19, 1000000000000000000L},
+            {1, 19, SignStyle.NORMAL, 0, "-1000000000000000000", 0, 20, -1000000000000000000L},
+            {1, 19, SignStyle.NORMAL, 0, "000000000000000000", 0, 18, 0L},
+            {1, 19, SignStyle.NORMAL, 0, "0000000000000000000", 0, 19, 0L},
+            {1, 19, SignStyle.NORMAL, 0, "9223372036854775807", 0, 19, Long.MAX_VALUE},
+            {1, 19, SignStyle.NORMAL, 0, "-9223372036854775808", 0, 20, Long.MIN_VALUE},
+            {1, 19, SignStyle.NORMAL, 0, "9223372036854775808", 0, 18, 922337203685477580L},  // last digit not parsed
+            {1, 19, SignStyle.NORMAL, 0, "-9223372036854775809", 0, 19, -922337203685477580L}, // last digit not parsed
+            // no match
+            {1, 2, SignStyle.NEVER, 1, "A1", 0, ~0, 0},
+            {1, 2, SignStyle.NEVER, 1, " 1", 0, ~0, 0},
+            {1, 2, SignStyle.NEVER, 1, "  1", 1, ~1, 0},
+            {2, 2, SignStyle.NEVER, 1, "1", 0, ~0, 0},
+            {2, 2, SignStyle.NEVER, 1, "Xxx1", 0, ~0, 0},
+            {2, 2, SignStyle.NEVER, 1, "1", 1, ~1, 0},
+            {2, 2, SignStyle.NEVER, 1, "Xxx1", 4, ~4, 0},
+            {2, 2, SignStyle.NEVER, 1, "1-2", 0, ~0, 0},
+            {1, 19, SignStyle.NORMAL, 0, "-000000000000000000", 0, ~0, 0},
+            {1, 19, SignStyle.NORMAL, 0, "-0000000000000000000", 0, ~0, 0},
+            // parse reserving space 1 (adjacent-parsing)
+            {1, 1, SignStyle.NEVER, 1, "12", 0, 1, 1L},
+            {1, 19, SignStyle.NEVER, 1, "12", 0, 1, 1L},
+            {1, 19, SignStyle.NEVER, 1, "12345", 0, 4, 1234L},
+            {1, 19, SignStyle.NEVER, 1, "12345678901", 0, 10, 1234567890L},
+            {1, 19, SignStyle.NEVER, 1, "123456789012345678901234567890", 0, 19, 1234567890123456789L},
+            {1, 19, SignStyle.NEVER, 1, "1", 0, 1, 1L},  // error from next field
+            {2, 2, SignStyle.NEVER, 1, "12", 0, 2, 12L},  // error from next field
+            {2, 19, SignStyle.NEVER, 1, "1", 0, ~0, 0},
+            // parse reserving space 2 (adjacent-parsing)
+            {1, 1, SignStyle.NEVER, 2, "123", 0, 1, 1L},
+            {1, 19, SignStyle.NEVER, 2, "123", 0, 1, 1L},
+            {1, 19, SignStyle.NEVER, 2, "12345", 0, 3, 123L},
+            {1, 19, SignStyle.NEVER, 2, "12345678901", 0, 9, 123456789L},
+            {1, 19, SignStyle.NEVER, 2, "123456789012345678901234567890", 0, 19, 1234567890123456789L},
+            {1, 19, SignStyle.NEVER, 2, "1", 0, 1, 1L},  // error from next field
+            {1, 19, SignStyle.NEVER, 2, "12", 0, 1, 1L},  // error from next field
+            {2, 2, SignStyle.NEVER, 2, "12", 0, 2, 12L},  // error from next field
+            {2, 19, SignStyle.NEVER, 2, "1", 0, ~0, 0},
+            {2, 19, SignStyle.NEVER, 2, "1AAAAABBBBBCCCCC", 0, ~0, 0},
+        };
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_replaceContextValue() throws Exception {
+    @Test(dataProvider="parseData")
+    public void test_parse_fresh(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_MONTH, 9);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "12", 0);
-        assertEquals(newPos, 2);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 12);
+        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minWidth, maxWidth, signStyle);
+        if (subsequentWidth > 0) {
+            pp = pp.withSubsequentWidth(subsequentWidth);
+        }
+        int newPos = pp.parse(context, text, pos);
+        assertEquals(newPos, expectedPos);
+        if (expectedPos > 0) {
+            assertEquals(context.getParsed(DAY_OF_MONTH), expectedValue);
+        } else {
+            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
+        }
     }
 
-    public void test_parse_midStr1() throws Exception {
+    @Test(dataProvider="parseData")
+    public void test_parse_replace(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "Xxx12Xxx", 3);
-        assertEquals(newPos, 5);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 12);
+        context.setParsed(DAY_OF_MONTH, 0);
+        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minWidth, maxWidth, signStyle);
+        if (subsequentWidth > 0) {
+            pp = pp.withSubsequentWidth(subsequentWidth);
+        }
+        int newPos = pp.parse(context, text, pos);
+        assertEquals(newPos, expectedPos);
+        if (expectedPos > 0) {
+            assertEquals(context.getParsed(DAY_OF_MONTH), expectedValue);
+        }
     }
 
-    public void test_parse_midStr2() throws Exception {
+    @Test(dataProvider="parseData")
+    public void test_parse_textField(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "99912999", 3);
-        assertEquals(newPos, 5);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 12);
-    }
-
-    public void test_parse_remainderIgnored_maxWidth() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 4, SignStyle.NEVER);
-        int newPos = pp.parse(context, "12345", 0);
-        assertEquals(newPos, 4);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1234);
-    }
-
-    public void test_parse_remainderIgnored_nonDigit1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 4, SignStyle.NEVER);
-        int newPos = pp.parse(context, "12-45", 0);
-        assertEquals(newPos, 2);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 12);
-    }
-
-    public void test_parse_remainderIgnored_nonDigit2() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 4, SignStyle.NEVER);
-        int newPos = pp.parse(context, "123-5", 0);
-        assertEquals(newPos, 3);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 123);
-    }
-
-    public void test_parse_fieldRangeIgnored() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "32", 0);
-        assertEquals(newPos, 2);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 32);  // parsed dayOfMonth=32
-    }
-
-    public void test_parse_textField() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_WEEK, 1, 1, SignStyle.NEVER);
-        int newPos = pp.parse(context, "5999", 0);
-        assertEquals(newPos, 1);
-        assertEquals(context.getParsed(DAY_OF_WEEK), 5);
-    }
-
-    public void test_parse_maxInteger() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER);
-        int newPos = pp.parse(context, "2147483647", 0);
-        assertEquals(newPos, 10);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 2147483647);
-    }
-
-    public void test_parse_minInteger() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NORMAL);
-        int newPos = pp.parse(context, "-2147483648", 0);
-        assertEquals(newPos, 11);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) (-2147483648));
-    }
-
-    public void test_parse_overflowLargeRollback() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER);
-        int newPos = pp.parse(context, "2147483648", 0);
-        assertEquals(newPos, 9);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 214748364);  // last digit not parsed
-    }
-
-    public void test_parse_overflowSmallRollback() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NORMAL);
-        int newPos = pp.parse(context, "-2147483649", 0);
-        assertEquals(newPos, 10);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) (-214748364));  // last digit not parsed
-    }
-
-    public void test_parse_overflowVeryLargeRollback() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER);
-        int newPos = pp.parse(context, "987659876598765", 0);
-        assertEquals(newPos, 9);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 987659876);  // parse 9 digits
+        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_WEEK, minWidth, maxWidth, signStyle);
+        if (subsequentWidth > 0) {
+            pp = pp.withSubsequentWidth(subsequentWidth);
+        }
+        int newPos = pp.parse(context, text, pos);
+        assertEquals(newPos, expectedPos);
+        if (expectedPos > 0) {
+            assertEquals(context.getParsed(DAY_OF_WEEK), expectedValue);
+        }
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_subsequent1_small() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
-        int newPos = pp.parse(context, "12", 0);
-        assertEquals(newPos, 1);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1);  // parse 1 digit
-    }
-
-    public void test_parse_subsequent1_medium() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
-        int newPos = pp.parse(context, "12345", 0);
-        assertEquals(newPos, 4);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1234);  // parse 4 digits
-    }
-
-    public void test_parse_subsequent1_largeEndOfNumbers() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
-        int newPos = pp.parse(context, "12345678901", 0);
-        assertEquals(newPos, 10);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1234567890);  // parse 4 digits
-    }
-
-    public void test_parse_subsequent1_largeNotEndOfNumbers() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
-        int newPos = pp.parse(context, "123456789012345678901234567890", 0);
-        assertEquals(newPos, 10);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1234567890);  // parse 10 digits
-    }
-
-    public void test_parse_subsequent1_tooShort() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
-        int newPos = pp.parse(context, "1", 0);
-        assertEquals(newPos, 1);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1);  // parse 3 digits
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_parse_subsequent2_small() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
-        int newPos = pp.parse(context, "123", 0);
-        assertEquals(newPos, 1);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1);  // parse 1 digit
-    }
-
-    public void test_parse_subsequent2_medium() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
-        int newPos = pp.parse(context, "12345", 0);
-        assertEquals(newPos, 3);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 123);  // parse 3 digits
-    }
-
-    public void test_parse_subsequent2_tooShort1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
-        int newPos = pp.parse(context, "1", 0);
-        assertEquals(newPos, 1);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1);  // parse 1 digits
-    }
-
-    public void test_parse_subsequent2_tooShort2() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
-        int newPos = pp.parse(context, "12", 0);
-        assertEquals(newPos, 1);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (Integer) 1);  // parse 1 digit (min possible)
-    }
-
-    public void test_parse_subsequent2_tooShort1_require2_atEnd() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 10, SignStyle.NEVER).withSubsequentWidth(2);
-        int newPos = pp.parse(context, "1", 0);
-        assertEquals(newPos, ~0);
-    }
-
-    public void test_parse_subsequent2_tooShort1_require2_mid() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 10, SignStyle.NEVER).withSubsequentWidth(2);
-        int newPos = pp.parse(context, "1AAAAABBBBBCCCCC", 0);
-        assertEquals(newPos, ~0);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_parse_noMatch1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "A1", 0);
-        assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
-    }
-
-    public void test_parse_noMatch2() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "  1", 1);
-        assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
-    }
-
-    public void test_parse_noMatch_notMinWidthLeft1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "1", 0);
-        assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
-    }
-
-    public void test_parse_noMatch_notMinWidthLeft2_atEnd() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 2, SignStyle.NEVER);
-        int newPos = pp.parse(context, "1", 1);
-        assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
-    }
-
-    public void test_parse_noMatch_notMinWidthLeft_beforeNonDigit() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 2, 4, SignStyle.NEVER);
-        int newPos = pp.parse(context, "1-2", 0);
-        assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
-    }
-
-    //-----------------------------------------------------------------------
-    @DataProvider(name="parse")
-    Object[][] provider_dow() {
+    @DataProvider(name="parseSignsStrict")
+    Object[][] provider_parseSignsStrict() {
         return new Object[][] {
             // basics
             {"0", 1, 2, SignStyle.NEVER, 1, 0},
@@ -355,10 +219,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.NEVER, 1, 5},
             {"50", 1, 2, SignStyle.NEVER, 2, 50},
             {"500", 1, 2, SignStyle.NEVER, 2, 50},
+            {"-0", 1, 2, SignStyle.NEVER, ~0, null},
             {"-5", 1, 2, SignStyle.NEVER, ~0, null},
             {"-50", 1, 2, SignStyle.NEVER, ~0, null},
             {"-500", 1, 2, SignStyle.NEVER, ~0, null},
             {"-AAA", 1, 2, SignStyle.NEVER, ~0, null},
+            {"+0", 1, 2, SignStyle.NEVER, ~0, null},
             {"+5", 1, 2, SignStyle.NEVER, ~0, null},
             {"+50", 1, 2, SignStyle.NEVER, ~0, null},
             {"+500", 1, 2, SignStyle.NEVER, ~0, null},
@@ -369,10 +235,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.NOT_NEGATIVE, 1, 5},
             {"50", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
             {"500", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
+            {"-0", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"-5", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"-50", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"-500", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"-AAA", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
+            {"+0", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"+5", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"+50", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
             {"+500", 1, 2, SignStyle.NOT_NEGATIVE, ~0, null},
@@ -383,10 +251,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.NORMAL, 1, 5},
             {"50", 1, 2, SignStyle.NORMAL, 2, 50},
             {"500", 1, 2, SignStyle.NORMAL, 2, 50},
+            {"-0", 1, 2, SignStyle.NORMAL, ~0, null},
             {"-5", 1, 2, SignStyle.NORMAL, 2, -5},
             {"-50", 1, 2, SignStyle.NORMAL, 3, -50},
             {"-500", 1, 2, SignStyle.NORMAL, 3, -50},
             {"-AAA", 1, 2, SignStyle.NORMAL, ~1, null},
+            {"+0", 1, 2, SignStyle.NORMAL, ~0, null},
             {"+5", 1, 2, SignStyle.NORMAL, ~0, null},
             {"+50", 1, 2, SignStyle.NORMAL, ~0, null},
             {"+500", 1, 2, SignStyle.NORMAL, ~0, null},
@@ -397,10 +267,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.ALWAYS, ~0, null},
             {"50", 1, 2, SignStyle.ALWAYS, ~0, null},
             {"500", 1, 2, SignStyle.ALWAYS, ~0, null},
+            {"-0", 1, 2, SignStyle.ALWAYS, ~0, null},
             {"-5", 1, 2, SignStyle.ALWAYS, 2, -5},
             {"-50", 1, 2, SignStyle.ALWAYS, 3, -50},
             {"-500", 1, 2, SignStyle.ALWAYS, 3, -50},
             {"-AAA", 1, 2, SignStyle.ALWAYS, ~1, null},
+            {"+0", 1, 2, SignStyle.ALWAYS, 2, 0},
             {"+5", 1, 2, SignStyle.ALWAYS, 2, 5},
             {"+50", 1, 2, SignStyle.ALWAYS, 3, 50},
             {"+500", 1, 2, SignStyle.ALWAYS, 3, 50},
@@ -411,10 +283,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.EXCEEDS_PAD, 1, 5},
             {"50", 1, 2, SignStyle.EXCEEDS_PAD, ~0, null},
             {"500", 1, 2, SignStyle.EXCEEDS_PAD, ~0, null},
+            {"-0", 1, 2, SignStyle.EXCEEDS_PAD, ~0, null},
             {"-5", 1, 2, SignStyle.EXCEEDS_PAD, 2, -5},
             {"-50", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
             {"-500", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
             {"-AAA", 1, 2, SignStyle.EXCEEDS_PAD, ~1, null},
+            {"+0", 1, 2, SignStyle.EXCEEDS_PAD, ~0, null},
             {"+5", 1, 2, SignStyle.EXCEEDS_PAD, ~0, null},
             {"+50", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
             {"+500", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
@@ -422,29 +296,31 @@ public class TestNumberParser {
        };
     }
 
-    @Test(dataProvider="parse") 
-    public void test_parse(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
+    @Test(dataProvider="parseSignsStrict") 
+    public void test_parseSignsStrict(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(DAY_OF_MONTH), parseVal);
+        assertEquals(context.getParsed(DAY_OF_MONTH), (parseVal != null ? (long) parseVal : null));
         assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="parseLenient")
-    Object[][] provider_dowLenient() {
+    @DataProvider(name="parseSignsLenient")
+    Object[][] provider_parseSignsLenient() {
         return new Object[][] {
             // never
             {"0", 1, 2, SignStyle.NEVER, 1, 0},
             {"5", 1, 2, SignStyle.NEVER, 1, 5},
             {"50", 1, 2, SignStyle.NEVER, 2, 50},
             {"500", 1, 2, SignStyle.NEVER, 2, 50},
+            {"-0", 1, 2, SignStyle.NEVER, 2, 0},
             {"-5", 1, 2, SignStyle.NEVER, 2, -5},
             {"-50", 1, 2, SignStyle.NEVER, 3, -50},
             {"-500", 1, 2, SignStyle.NEVER, 3, -50},
             {"-AAA", 1, 2, SignStyle.NEVER, ~1, null},
+            {"+0", 1, 2, SignStyle.NEVER, 2, 0},
             {"+5", 1, 2, SignStyle.NEVER, 2, 5},
             {"+50", 1, 2, SignStyle.NEVER, 3, 50},
             {"+500", 1, 2, SignStyle.NEVER, 3, 50},
@@ -458,10 +334,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.NOT_NEGATIVE, 1, 5},
             {"50", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
             {"500", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
+            {"-0", 1, 2, SignStyle.NOT_NEGATIVE, 2, 0},
             {"-5", 1, 2, SignStyle.NOT_NEGATIVE, 2, -5},
             {"-50", 1, 2, SignStyle.NOT_NEGATIVE, 3, -50},
             {"-500", 1, 2, SignStyle.NOT_NEGATIVE, 3, -50},
             {"-AAA", 1, 2, SignStyle.NOT_NEGATIVE, ~1, null},
+            {"+0", 1, 2, SignStyle.NOT_NEGATIVE, 2, 0},
             {"+5", 1, 2, SignStyle.NOT_NEGATIVE, 2, 5},
             {"+50", 1, 2, SignStyle.NOT_NEGATIVE, 3, 50},
             {"+500", 1, 2, SignStyle.NOT_NEGATIVE, 3, 50},
@@ -475,10 +353,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.NORMAL, 1, 5},
             {"50", 1, 2, SignStyle.NORMAL, 2, 50},
             {"500", 1, 2, SignStyle.NORMAL, 2, 50},
+            {"-0", 1, 2, SignStyle.NORMAL, 2, 0},
             {"-5", 1, 2, SignStyle.NORMAL, 2, -5},
             {"-50", 1, 2, SignStyle.NORMAL, 3, -50},
             {"-500", 1, 2, SignStyle.NORMAL, 3, -50},
             {"-AAA", 1, 2, SignStyle.NORMAL, ~1, null},
+            {"+0", 1, 2, SignStyle.NORMAL, 2, 0},
             {"+5", 1, 2, SignStyle.NORMAL, 2, 5},
             {"+50", 1, 2, SignStyle.NORMAL, 3, 50},
             {"+500", 1, 2, SignStyle.NORMAL, 3, 50},
@@ -492,10 +372,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.ALWAYS, 1, 5},
             {"50", 1, 2, SignStyle.ALWAYS, 2, 50},
             {"500", 1, 2, SignStyle.ALWAYS, 2, 50},
+            {"-0", 1, 2, SignStyle.ALWAYS, 2, 0},
             {"-5", 1, 2, SignStyle.ALWAYS, 2, -5},
             {"-50", 1, 2, SignStyle.ALWAYS, 3, -50},
             {"-500", 1, 2, SignStyle.ALWAYS, 3, -50},
             {"-AAA", 1, 2, SignStyle.ALWAYS, ~1, null},
+            {"+0", 1, 2, SignStyle.ALWAYS, 2, 0},
             {"+5", 1, 2, SignStyle.ALWAYS, 2, 5},
             {"+50", 1, 2, SignStyle.ALWAYS, 3, 50},
             {"+500", 1, 2, SignStyle.ALWAYS, 3, 50},
@@ -506,10 +388,12 @@ public class TestNumberParser {
             {"5", 1, 2, SignStyle.EXCEEDS_PAD, 1, 5},
             {"50", 1, 2, SignStyle.EXCEEDS_PAD, 2, 50},
             {"500", 1, 2, SignStyle.EXCEEDS_PAD, 2, 50},
+            {"-0", 1, 2, SignStyle.EXCEEDS_PAD, 2, 0},
             {"-5", 1, 2, SignStyle.EXCEEDS_PAD, 2, -5},
             {"-50", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
             {"-500", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
             {"-AAA", 1, 2, SignStyle.EXCEEDS_PAD, ~1, null},
+            {"+0", 1, 2, SignStyle.EXCEEDS_PAD, 2, 0},
             {"+5", 1, 2, SignStyle.EXCEEDS_PAD, 2, 5},
             {"+50", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
             {"+500", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
@@ -517,14 +401,14 @@ public class TestNumberParser {
        };
     }
 
-    @Test(dataProvider="parseLenient") 
-    public void test_parseLenient(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
+    @Test(dataProvider="parseSignsLenient") 
+    public void test_parseSignsLenient(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setStrict(false);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(DAY_OF_MONTH), parseVal);
+        assertEquals(context.getParsed(DAY_OF_MONTH), (parseVal != null ? (long) parseVal : null));
         assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
     }
 

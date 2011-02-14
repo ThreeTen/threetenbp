@@ -85,9 +85,9 @@ public final class ThaiBuddhistDate
      */
     public static ThaiBuddhistDate of(ThaiBuddhistEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "ThaiBuddhistEra must not be null");
-        ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
+        ThaiBuddhistChronology.yearOfEraRule().checkValidValue(yearOfEra);
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        ThaiBuddhistChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         int year = yearOfEra;
         if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
             year = 1 - yearOfEra;
@@ -124,7 +124,7 @@ public final class ThaiBuddhistDate
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
         }
-        ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
+        ThaiBuddhistChronology.yearOfEraRule().checkValidValue(yearOfEra);
         return new ThaiBuddhistDate(date);
     }
 
@@ -266,7 +266,7 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the year-of-era value is invalid
      */
     public ThaiBuddhistDate withYear(ThaiBuddhistEra era, int yearOfEra) {
-        ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
+        ThaiBuddhistChronology.yearOfEraRule().checkValidValue(yearOfEra);
         int year = yearOfEra;
         if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
             year = 1 - yearOfEra;
@@ -323,7 +323,7 @@ public final class ThaiBuddhistDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public ThaiBuddhistDate withDayOfMonth(int dayOfMonth) {
-        ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        ThaiBuddhistChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
         return with(date.withDayOfMonth(dayOfMonth));
     }
 
@@ -341,7 +341,7 @@ public final class ThaiBuddhistDate
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public ThaiBuddhistDate withDayOfYear(int dayOfYear) {
-        ThaiBuddhistChronology.dayOfYearRule().checkValue(dayOfYear);
+        ThaiBuddhistChronology.dayOfYearRule().checkValidValue(dayOfYear);
         return with(date.withDayOfYear(dayOfYear));
     }
 

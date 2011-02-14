@@ -183,11 +183,11 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour) {
-        HOUR_OF_DAY.checkValue(hourOfDay);
+        HOUR_OF_DAY.checkValidValue(hourOfDay);
         if (minuteOfHour == 0) {
             return HOURS[hourOfDay];  // for performance
         }
-        MINUTE_OF_HOUR.checkValue(minuteOfHour);
+        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
         return new LocalTime(hourOfDay, minuteOfHour, 0, 0);
     }
 
@@ -205,12 +205,12 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        HOUR_OF_DAY.checkValue(hourOfDay);
+        HOUR_OF_DAY.checkValidValue(hourOfDay);
         if ((minuteOfHour | secondOfMinute) == 0) {
             return HOURS[hourOfDay];  // for performance
         }
-        MINUTE_OF_HOUR.checkValue(minuteOfHour);
-        SECOND_OF_MINUTE.checkValue(secondOfMinute);
+        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
+        SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
         return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
     }
 
@@ -248,10 +248,10 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        HOUR_OF_DAY.checkValue(hourOfDay);
-        MINUTE_OF_HOUR.checkValue(minuteOfHour);
-        SECOND_OF_MINUTE.checkValue(secondOfMinute);
-        NANO_OF_SECOND.checkValue(nanoOfSecond);
+        HOUR_OF_DAY.checkValidValue(hourOfDay);
+        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
+        SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
+        NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         return create(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
     }
 
@@ -286,7 +286,7 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay) {
-        SECOND_OF_DAY.checkValue(secondOfDay);
+        SECOND_OF_DAY.checkValidValue(secondOfDay);
         int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
         secondOfDay -= hours * SECONDS_PER_HOUR;
         int minutes = (int) (secondOfDay / SECONDS_PER_MINUTE);
@@ -306,8 +306,8 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the either input value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
-        SECOND_OF_DAY.checkValue(secondOfDay);
-        NANO_OF_SECOND.checkValue(nanoOfSecond);
+        SECOND_OF_DAY.checkValidValue(secondOfDay);
+        NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
         secondOfDay -= hours * SECONDS_PER_HOUR;
         int minutes = (int) (secondOfDay / SECONDS_PER_MINUTE);
@@ -544,7 +544,7 @@ public final class LocalTime
         if (hourOfDay == hour) {
             return this;
         }
-        HOUR_OF_DAY.checkValue(hourOfDay);
+        HOUR_OF_DAY.checkValidValue(hourOfDay);
         return create(hourOfDay, minute, second, nano);
     }
 
@@ -561,7 +561,7 @@ public final class LocalTime
         if (minuteOfHour == minute) {
             return this;
         }
-        MINUTE_OF_HOUR.checkValue(minuteOfHour);
+        MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
         return create(hour, minuteOfHour, second, nano);
     }
 
@@ -578,7 +578,7 @@ public final class LocalTime
         if (secondOfMinute == second) {
             return this;
         }
-        SECOND_OF_MINUTE.checkValue(secondOfMinute);
+        SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
         return create(hour, minute, secondOfMinute, nano);
     }
 
@@ -595,7 +595,7 @@ public final class LocalTime
         if (nanoOfSecond == nano) {
             return this;
         }
-        NANO_OF_SECOND.checkValue(nanoOfSecond);
+        NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         return create(hour, minute, second, nanoOfSecond);
     }
 

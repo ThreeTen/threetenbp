@@ -209,7 +209,7 @@ public class TestNumberPrinter {
     }
 
     @Test(dataProvider="Pad") 
-    public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, int value, String result) throws Exception {
+    public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, long value, String result) throws Exception {
         Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NOT_NEGATIVE);
         try {
@@ -221,7 +221,7 @@ public class TestNumberPrinter {
         } catch (CalendricalPrintFieldException ex) {
             if (result == null || value < 0) {
                 assertEquals(ex.getRule(), DAY_OF_MONTH);
-                assertEquals(ex.getValue(), (Integer) value);
+                assertEquals(ex.getValue(), (Long) value);
             } else {
                 throw ex;
             }
@@ -229,7 +229,7 @@ public class TestNumberPrinter {
     }
 
     @Test(dataProvider="Pad") 
-    public void test_pad_NEVER(int minPad, int maxPad, int value, String result) throws Exception {
+    public void test_pad_NEVER(int minPad, int maxPad, long value, String result) throws Exception {
         Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NEVER);
         try {
@@ -243,12 +243,12 @@ public class TestNumberPrinter {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Integer) value);
+            assertEquals(ex.getValue(), (Long) value);
         }
     }
 
     @Test(dataProvider="Pad") 
-    public void test_pad_NORMAL(int minPad, int maxPad, int value, String result) throws Exception {
+    public void test_pad_NORMAL(int minPad, int maxPad, long value, String result) throws Exception {
         Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NORMAL);
         try {
@@ -262,12 +262,12 @@ public class TestNumberPrinter {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Integer) value);
+            assertEquals(ex.getValue(), (Long) value);
         }
     }
 
     @Test(dataProvider="Pad") 
-    public void test_pad_ALWAYS(int minPad, int maxPad, int value, String result) throws Exception {
+    public void test_pad_ALWAYS(int minPad, int maxPad, long value, String result) throws Exception {
         Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.ALWAYS);
         try {
@@ -281,12 +281,12 @@ public class TestNumberPrinter {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Integer) value);
+            assertEquals(ex.getValue(), (Long) value);
         }
     }
 
     @Test(dataProvider="Pad") 
-    public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, int value, String result) throws Exception {
+    public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, long value, String result) throws Exception {
         Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.EXCEEDS_PAD);
         try {
@@ -303,7 +303,7 @@ public class TestNumberPrinter {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Integer) value);
+            assertEquals(ex.getValue(), (Long) value);
         }
     }
 
@@ -333,7 +333,7 @@ public class TestNumberPrinter {
 
     //-----------------------------------------------------------------------
     public void test_toString1() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_DAY, 1, 10, SignStyle.NORMAL);
+        NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_DAY, 1, 19, SignStyle.NORMAL);
         assertEquals(pp.toString(), "Value(ISO.HourOfDay)");
     }
 
