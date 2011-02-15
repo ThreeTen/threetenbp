@@ -220,7 +220,7 @@ public final class DateTimeFields
      * @return an iterator over the fields, never null
      */
     public Iterator<DateTimeField> iterator() {
-        return fields.iterator();
+        return Collections.unmodifiableCollection(fields).iterator();
     }
 
     //-----------------------------------------------------------------------

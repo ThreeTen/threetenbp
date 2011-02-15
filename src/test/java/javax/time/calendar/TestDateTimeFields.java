@@ -301,6 +301,14 @@ public class TestDateTimeFields {
         assertEquals(iterator.hasNext(), false);
     }
 
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void test_iterator_immutable() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        Iterator<DateTimeField> iterator = test.iterator();
+        iterator.next();
+        iterator.remove();
+    }
+
     //-----------------------------------------------------------------------
     // contains()
     //-----------------------------------------------------------------------

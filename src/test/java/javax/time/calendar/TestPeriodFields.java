@@ -404,6 +404,15 @@ public class TestPeriodFields {
         assertEquals(iterator.hasNext(), false);
     }
 
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void test_iterator_immutable() {
+        // don't use fixture in case test fails and damages it
+        PeriodFields test = PeriodFields.of(PeriodField.of(2, YEARS), PeriodField.of(6, DAYS));
+        Iterator<PeriodField> iterator = test.iterator();
+        iterator.next();
+        iterator.remove();
+    }
+
     //-----------------------------------------------------------------------
     // contains()
     //-----------------------------------------------------------------------

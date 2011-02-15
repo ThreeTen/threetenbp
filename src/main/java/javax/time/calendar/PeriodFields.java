@@ -356,7 +356,7 @@ public final class PeriodFields
      * @return an iterator over the single-unit periods in this period, never null
      */
     public Iterator<PeriodField> iterator() {
-        return unitFieldMap.values().iterator();
+        return Collections.unmodifiableCollection(unitFieldMap.values()).iterator();
     }
 
     /**
