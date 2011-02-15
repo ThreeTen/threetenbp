@@ -250,8 +250,7 @@ public final class DateTimeFields
      * @param rule  the rule to query, not null
      * @return the field with the specified rule, null if not found
      */
-    public DateTimeField get(DateTimeFieldRule rule) {
-        // TODO: unsafe overload
+    public DateTimeField getField(DateTimeFieldRule rule) {
         ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
         for (DateTimeField field : fields) {
             if (field.getRule().equals(rule)) {
@@ -276,7 +275,7 @@ public final class DateTimeFields
      * @throws CalendricalException if the field is not present
      */
     public long getValue(DateTimeFieldRule rule) {
-        DateTimeField field = get(rule);
+        DateTimeField field = getField(rule);
         if (field == null) {
             throw new CalendricalRuleException("Rule not found: " + rule, rule);
         }
@@ -417,7 +416,10 @@ public final class DateTimeFields
     public <T> T get(CalendricalRule<T> rule) {
         ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
         if (rule instanceof DateTimeFieldRule) {
-            return rule.reify(get((DateTimeFieldRule) rule));
+            DateTimeField field = getField((DateTimeFieldRule) rule);
+            if (field != null) {
+                return rule.reify(field);
+            }
         }
         return rule.deriveValueFrom(this);
     }

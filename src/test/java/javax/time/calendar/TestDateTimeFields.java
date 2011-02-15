@@ -37,6 +37,7 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
@@ -320,23 +321,28 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
-    // get()
+    // getField()
     //-----------------------------------------------------------------------
-    public void test_get() {
+    public void test_getField() {
         DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
-        assertEquals(test.get(YEAR), YEAR.field(2008));
-        assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
+        assertEquals(test.getField(YEAR), YEAR.field(2008));
+        assertEquals(test.getField(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_null() {
+    public void test_getField_null() {
         DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
-        test.get((CalendricalRule<?>) null);
+        test.getField((DateTimeFieldRule) null);
     }
 
-    public void test_get_fieldNotPresent() {
+    public void test_getField_fieldNotDerived() {
         DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
-        assertEquals(test.get(DAY_OF_MONTH), null);
+        assertEquals(test.getField(QUARTER_OF_YEAR), null);
+    }
+
+    public void test_getField_fieldNotPresent() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        assertEquals(test.getField(DAY_OF_MONTH), null);
     }
 
     //-----------------------------------------------------------------------
@@ -592,6 +598,31 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        assertEquals(test.get(YEAR), YEAR.field(2008));
+        assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
+    }
+
+    public void test_get_derived() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        assertEquals(test.get(QUARTER_OF_YEAR), QUARTER_OF_YEAR.field(2));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_null() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        test.get((CalendricalRule<?>) null);
+    }
+
+    public void test_get_fieldNotPresent() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        assertEquals(test.get(DAY_OF_MONTH), null);
+    }
+
+    //-----------------------------------------------------------------------
     // matchesCalendrical()
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_ymd_date() {
@@ -822,7 +853,7 @@ public class TestDateTimeFields {
             DateTimeFieldRule rule1, Integer value1) {
         List<DateTimeField> list = Arrays.asList(DateTimeField.of(rule1, value1));
         assertEquals(fields.size(), 1);
-        assertEquals(fields.get(rule1), list.get(0));
+        assertEquals(fields.getField(rule1), list.get(0));
         assertEquals(fields.toString(), list.toString());
     }
     private void assertFields(
@@ -831,8 +862,8 @@ public class TestDateTimeFields {
             DateTimeFieldRule rule2, Integer value2) {
         List<DateTimeField> list = Arrays.asList(DateTimeField.of(rule1, value1), DateTimeField.of(rule2, value2));
         assertEquals(fields.size(), 2);
-        assertEquals(fields.get(rule1), list.get(0));
-        assertEquals(fields.get(rule2), list.get(1));
+        assertEquals(fields.getField(rule1), list.get(0));
+        assertEquals(fields.getField(rule2), list.get(1));
         assertEquals(fields.toString(), list.toString());
     }
     private void assertFields(
@@ -842,9 +873,9 @@ public class TestDateTimeFields {
             DateTimeFieldRule rule3, Integer value3) {
         List<DateTimeField> list = Arrays.asList(DateTimeField.of(rule1, value1), DateTimeField.of(rule2, value2), DateTimeField.of(rule3, value3));
         assertEquals(fields.size(), 3);
-        assertEquals(fields.get(rule1), list.get(0));
-        assertEquals(fields.get(rule2), list.get(1));
-        assertEquals(fields.get(rule3), list.get(2));
+        assertEquals(fields.getField(rule1), list.get(0));
+        assertEquals(fields.getField(rule2), list.get(1));
+        assertEquals(fields.getField(rule3), list.get(2));
         assertEquals(fields.toString(), list.toString());
     }
 
