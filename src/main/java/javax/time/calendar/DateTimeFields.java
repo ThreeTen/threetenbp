@@ -45,18 +45,26 @@ import java.util.Set;
 import javax.time.CalendricalException;
 
 /**
- * A set of date-time fields.
+ * A set of fields of date-time, such as '[MonthOfYear 12, DayOfMonth 3]'.
  * <p>
- * Instances of this class store a map of field-value pairs.
- * Together these specify constraints on the dates and times that match.
- * For example, if an instance stores 'DayOfMonth=13' and 'DayOfWeek=Friday'
+ * {@code DateTimeFields} is an immutable class storing  a set of {@link DateTimeField} objects.
+ * The representation is effectively a rule-value map.
+ * A {@code long} value is used to allow larger fields to be stored, such as 'NanoOfDay'.
+ * <p>
+ * The set of fields express constraints on dates and times.
+ * For example, if an instance stores 'DayOfMonth 13' and 'DayOfWeek 5'
  * then it represents and matches only dates of Friday the Thirteenth.
  * <p>
- * All the values will be within the valid range for the field.
- * However, there is no cross validation between fields.
- * Thus, it is possible for the date-time represented to never exist.
- * For example, if an instance stores 'DayOfMonth=31' and 'MonthOfYear=February'
- * then there will never be a matching date.
+ * This class permits the value of each field to be invalid.
+ * For example, it is possible to store '[MonthOfYear 13]' or '[DayOfMonth -121]'.
+ * There is also no cross validation between fields.
+ * For example, it is possible to store '[DayOfMonth 31', 'MonthOfYear 2]'
+ * Care must therefore be taken when interpreting the values.
+ * <p>
+ * {@code DateTimeFields} can store rules of any kind which makes it usable with
+ * any calendar system.
+ * <p>
+ * This class is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -192,11 +200,11 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the size of the map of fields to values.
+     * Gets the number of fields.
      * <p>
-     * This method returns the number of field-value pairs stored.
+     * This method returns the number of rule-value pairs stored.
      *
-     * @return number of field-value pairs, zero or greater
+     * @return number of rule-value pairs, zero or greater
      */
     public int size() {
         return fields.size();
@@ -207,6 +215,7 @@ public final class DateTimeFields
      * <p>
      * This method fulfills the {@link Iterable} interface and allows looping
      * around the fields using the for-each loop.
+     * The fields are returned {@link DateTimeField#compareTo(DateTimeField) sorted} in reverse order.
      *
      * @return an iterator over the fields, never null
      */
@@ -216,7 +225,7 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this set of fields contains a mapping for the specified rule.
+     * Checks if one of the stored fields is for the specified rule.
      * <p>
      * This method returns true if a value can be obtained for the specified rule.
      *
@@ -232,38 +241,17 @@ public final class DateTimeFields
         return false;
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
+     * Gets one of the stored fields given a rule.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * an attempt is made to derive the value.
-     * If that fails, {@code null} will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule instanceof DateTimeFieldRule) {
-            return rule.reify(get((DateTimeFieldRule) rule));
-        }
-        return rule.deriveValueFrom(this);
-    }
-
-    /**
-     * Gets the value for the specified rule throwing an exception if the
-     * rule is not present.
-     * <p>
-     * No attempt is made to derive values. The result is simply based on
-     * the contents of the set of fields. If you want to derive a
-     * value then use {@link #derive} or a {@link CalendricalMerger}.
+     * No attempt is made to derive values.
+     * The result will be one of the stored fields or null if the rule is not present.
      *
      * @param rule  the rule to query, not null
      * @return the field with the specified rule, null if not found
      */
     public DateTimeField get(DateTimeFieldRule rule) {
+        // TODO: unsafe overload
         ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
         for (DateTimeField field : fields) {
             if (field.getRule().equals(rule)) {
@@ -276,11 +264,13 @@ public final class DateTimeFields
     /**
      * Gets the value for the specified rule.
      * <p>
-     * The returned value may not be valid according to the minimum and maximum
-     * values of the rule.
+     * This class permits the value of each field to be invalid.
+     * For example, it is possible to store '[MonthOfYear 13]' or '[DayOfMonth -121]'.
+     * Care must therefore be taken when interpreting the values.
      * <p>
      * No attempt is made to derive values.
      * The result is simply based on the content of the stored field.
+     * If there is no field for the rule then an exception is thrown.
      *
      * @return the value of the rule, may be outside the valid range for the rule
      * @throws CalendricalException if the field is not present
@@ -296,10 +286,13 @@ public final class DateTimeFields
     /**
      * Gets the value for the specified rule ensuring it is valid.
      * <p>
-     * A valid value is one where the value is appropriate for the rule.
+     * This class permits the value of each field to be invalid.
+     * For example, it is possible to store '[MonthOfYear 13]' or '[DayOfMonth -121]'.
+     * This method checks that the value is valid before returning it.
      * <p>
      * No attempt is made to derive values.
      * The result is simply based on the content of the stored field.
+     * If there is no field for the rule then an exception is thrown.
      *
      * @return the value of the rule, checked to ensure it is valid
      * @throws CalendricalException if the field is not present or is invalid
@@ -313,8 +306,8 @@ public final class DateTimeFields
     /**
      * Returns a copy of this {@code DateTimeFields} with the specified field.
      * <p>
-     * This replaces the value of the rule if the rule is present, or adds the field
-     * if the rule is not present.
+     * This replaces the value of the rule if the rule is present,
+     * or adds the field if the rule is not present.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -329,8 +322,8 @@ public final class DateTimeFields
     /**
      * Returns a copy of this {@code DateTimeFields} with the specified field.
      * <p>
-     * This replaces the value of the rule if the rule is present, or adds the field
-     * if the rule is not present.
+     * This replaces the value of the rule if the rule is present,
+     * or adds the field if the rule is not present.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -408,6 +401,26 @@ public final class DateTimeFields
 //        long rolled = rule.roll(value, amountToRollBy, this);
 //        return with(rule, rolled);
 //    }  // TODO
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * an attempt is made to derive the value.
+     * If that fails, {@code null} will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
+        if (rule instanceof DateTimeFieldRule) {
+            return rule.reify(get((DateTimeFieldRule) rule));
+        }
+        return rule.deriveValueFrom(this);
+    }
 
     //-----------------------------------------------------------------------
     /**
