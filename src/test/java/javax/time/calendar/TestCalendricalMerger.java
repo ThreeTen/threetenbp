@@ -49,7 +49,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestCalendricalMerger {
 
-    private static final DateTimeFieldRule NULL_RULE = null;
+    private static final DateTimeRule NULL_RULE = null;
 
     private static final CalendricalContext STRICT_CONTEXT = new CalendricalContext(true, true);
 //    private static final CalendricalContext STRICT_DISCARD_UNUSED_CONTEXT = new CalendricalContext(true, false);
@@ -64,7 +64,7 @@ public class TestCalendricalMerger {
     // getValue()
     //-----------------------------------------------------------------------
     public void test_getValue() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -78,7 +78,7 @@ public class TestCalendricalMerger {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getValue_null() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -90,7 +90,7 @@ public class TestCalendricalMerger {
     }
 
     public void test_getValue_fieldNotPresent() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -197,7 +197,7 @@ public class TestCalendricalMerger {
     // storeMergedField()
     //-----------------------------------------------------------------------
     public void test_storeMergedField() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -210,7 +210,7 @@ public class TestCalendricalMerger {
     }
 
     public void test_storeMergedField_invalidValueOK() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -223,7 +223,7 @@ public class TestCalendricalMerger {
     }
 
     public void test_storeMergedField_sameField_sameValue() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -237,7 +237,7 @@ public class TestCalendricalMerger {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_storeMergedField_sameField_differentValue() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
@@ -257,7 +257,7 @@ public class TestCalendricalMerger {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_storeMergedField_null() {
-        DateTimeFieldRule rule = new MockFieldRule() {
+        DateTimeRule rule = new MockFieldRule() {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {

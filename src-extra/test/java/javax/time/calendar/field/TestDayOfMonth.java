@@ -49,7 +49,7 @@ import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -71,7 +71,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfMonth {
 
-    private static final DateTimeFieldRule RULE = ISODateTimeRule.DAY_OF_MONTH;
+    private static final DateTimeRule RULE = ISODateTimeRule.DAY_OF_MONTH;
     private static final int STANDARD_YEAR_LENGTH = 365;
     private static final int LEAP_YEAR_LENGTH = 366;
     private static final int MAX_LENGTH = 31;

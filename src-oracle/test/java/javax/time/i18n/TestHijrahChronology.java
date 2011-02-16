@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 
 import org.testng.annotations.Test;
 
@@ -60,7 +60,7 @@ public class TestHijrahChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.eraRule();
+        DateTimeRule rule = HijrahChronology.eraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.Era");
         assertEquals(rule.getName(), "Era");
@@ -76,7 +76,7 @@ public class TestHijrahChronology {
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.yearOfEraRule();
+        DateTimeRule rule = HijrahChronology.yearOfEraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
@@ -92,7 +92,7 @@ public class TestHijrahChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.monthOfYearRule();
+        DateTimeRule rule = HijrahChronology.monthOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
@@ -107,7 +107,7 @@ public class TestHijrahChronology {
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.dayOfMonthRule();
+        DateTimeRule rule = HijrahChronology.dayOfMonthRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
@@ -123,7 +123,7 @@ public class TestHijrahChronology {
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.dayOfYearRule();
+        DateTimeRule rule = HijrahChronology.dayOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
@@ -140,7 +140,7 @@ public class TestHijrahChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.dayOfWeekRule();
+        DateTimeRule rule = HijrahChronology.dayOfWeekRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
@@ -158,7 +158,7 @@ public class TestHijrahChronology {
         assertEquals(HijrahChronology.INSTANCE.toString(), "Hijrah");
     }
 
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

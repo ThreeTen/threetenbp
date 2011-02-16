@@ -34,8 +34,8 @@ package javax.time.calendar.format;
 import java.io.IOException;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DateTimeFieldRule.TextStore;
+import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRule.TextStore;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -51,7 +51,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The rule to output, not null.
      */
-    private final DateTimeFieldRule rule;
+    private final DateTimeRule rule;
     /**
      * The text style, not null.
      */
@@ -68,7 +68,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param rule  the rule to output, not null
      * @param textStyle  the text style, not null
      */
-    TextPrinterParser(DateTimeFieldRule rule, TextStyle textStyle) {
+    TextPrinterParser(DateTimeRule rule, TextStyle textStyle) {
         // validated by caller
         this.rule = rule;
         this.textStyle = textStyle;

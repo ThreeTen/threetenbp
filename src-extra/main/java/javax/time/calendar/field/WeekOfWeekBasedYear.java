@@ -40,7 +40,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.UnsupportedRuleException;
@@ -89,7 +89,7 @@ public final class WeekOfWeekBasedYear
      *
      * @return the week of week-based-year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeRule rule() {
         return WEEK_OF_WEEK_BASED_YEAR;
     }
 

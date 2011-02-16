@@ -48,7 +48,7 @@ public class TestISOHourOfDayRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.HOUR_OF_DAY;
     }
 
@@ -56,7 +56,7 @@ public class TestISOHourOfDayRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.HOUR_OF_DAY;
+        DateTimeRule rule = ISODateTimeRule.HOUR_OF_DAY;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.HourOfDay");
         assertEquals(rule.getName(), "HourOfDay");

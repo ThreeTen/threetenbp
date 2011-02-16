@@ -55,7 +55,7 @@ import java.util.Locale;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -1122,8 +1122,8 @@ public class TestDateTimeFormatters {
 
     private void assertParseMatch(CalendricalMerger merger, MockSimpleCalendrical expected) {
         for (CalendricalRule<?> rule : expected.rules()) {
-            if (rule instanceof DateTimeFieldRule) {
-                assertEquals(((DateTimeFieldRule) rule).getValue(expected).getValue(), merger.getInputMap().get(rule), "Failed on rule: " + rule.getName());
+            if (rule instanceof DateTimeRule) {
+                assertEquals(((DateTimeRule) rule).getValue(expected).getValue(), merger.getInputMap().get(rule), "Failed on rule: " + rule.getName());
             } else {
                 assertEquals(merger.getInputMap().get(rule), expected.get(rule), "Failed on rule: " + rule.getName());
             }

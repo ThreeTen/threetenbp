@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 
 import org.testng.annotations.Test;
 
@@ -60,7 +60,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.eraRule();
+        DateTimeRule rule = MinguoChronology.eraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.Era");
         assertEquals(rule.getName(), "Era");
@@ -76,7 +76,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.yearOfEraRule();
+        DateTimeRule rule = MinguoChronology.yearOfEraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
@@ -92,7 +92,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.monthOfYearRule();
+        DateTimeRule rule = MinguoChronology.monthOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
@@ -107,7 +107,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.dayOfMonthRule();
+        DateTimeRule rule = MinguoChronology.dayOfMonthRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
@@ -123,7 +123,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.dayOfYearRule();
+        DateTimeRule rule = MinguoChronology.dayOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
@@ -140,7 +140,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.dayOfWeekRule();
+        DateTimeRule rule = MinguoChronology.dayOfWeekRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Minguo.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
@@ -158,7 +158,7 @@ public class TestMinguoChronology {
         assertEquals(MinguoChronology.INSTANCE.toString(), "Minguo");
     }
 
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

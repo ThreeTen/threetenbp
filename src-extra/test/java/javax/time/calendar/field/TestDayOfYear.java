@@ -47,7 +47,7 @@ import java.lang.reflect.Modifier;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -69,7 +69,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfYear {
 
-    private static final DateTimeFieldRule RULE = ISODateTimeRule.DAY_OF_YEAR;
+    private static final DateTimeRule RULE = ISODateTimeRule.DAY_OF_YEAR;
     private static final Year YEAR_STANDARD = Year.of(2007);
     private static final Year YEAR_LEAP = Year.of(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;

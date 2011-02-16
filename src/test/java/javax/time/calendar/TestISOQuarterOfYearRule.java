@@ -49,7 +49,7 @@ public class TestISOQuarterOfYearRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.QUARTER_OF_YEAR;
     }
 
@@ -57,7 +57,7 @@ public class TestISOQuarterOfYearRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.QUARTER_OF_YEAR;
+        DateTimeRule rule = ISODateTimeRule.QUARTER_OF_YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.QuarterOfYear");
         assertEquals(rule.getName(), "QuarterOfYear");

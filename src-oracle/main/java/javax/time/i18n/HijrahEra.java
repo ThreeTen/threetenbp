@@ -5,7 +5,7 @@ package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.UnsupportedRuleException;
 
@@ -41,7 +41,7 @@ public enum HijrahEra implements Calendrical {
      *
      * @return the era rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeRule rule() {
         return HijrahChronology.eraRule();
     }
 

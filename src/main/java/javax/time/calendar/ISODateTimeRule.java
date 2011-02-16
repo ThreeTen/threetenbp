@@ -72,7 +72,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  *
  * @author Stephen Colebourne
  */
-public final class ISODateTimeRule extends DateTimeFieldRule {
+public final class ISODateTimeRule extends DateTimeRule {
 
     /**
      * The serialization version.

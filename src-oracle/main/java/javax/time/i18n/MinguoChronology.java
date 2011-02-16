@@ -11,7 +11,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
@@ -131,7 +131,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the year field, never null
      */
-    public static DateTimeFieldRule eraRule() {
+    public static DateTimeRule eraRule() {
         return EraRule.INSTANCE;
     }
 
@@ -140,7 +140,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the year of era field, never null
      */
-    public static DateTimeFieldRule yearOfEraRule() {
+    public static DateTimeRule yearOfEraRule() {
         return YearOfEraRule.INSTANCE;
     }
 
@@ -149,7 +149,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month-of-year field, never null
      */
-    public static DateTimeFieldRule monthOfYearRule() {
+    public static DateTimeRule monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -158,7 +158,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-month field, never null
      */
-    public static DateTimeFieldRule dayOfMonthRule() {
+    public static DateTimeRule dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
@@ -167,7 +167,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-year field, never null
      */
-    public static DateTimeFieldRule dayOfYearRule() {
+    public static DateTimeRule dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
@@ -176,7 +176,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-week field, never null
      */
-    public static DateTimeFieldRule dayOfWeekRule() {
+    public static DateTimeRule dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
@@ -297,9 +297,9 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class EraRule extends DateTimeFieldRule implements Serializable {
+    private static final class EraRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new EraRule();
+        private static final DateTimeRule INSTANCE = new EraRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -345,9 +345,9 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class YearOfEraRule extends DateTimeFieldRule implements Serializable {
+    private static final class YearOfEraRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new YearOfEraRule();
+        private static final DateTimeRule INSTANCE = new YearOfEraRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -397,9 +397,9 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
+        private static final DateTimeRule INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -420,9 +420,9 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfMonthRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
+        private static final DateTimeRule INSTANCE = new DayOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -464,9 +464,9 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfYearRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
+        private static final DateTimeRule INSTANCE = new DayOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -503,9 +503,9 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
+        private static final DateTimeRule INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */

@@ -36,7 +36,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.
@@ -50,7 +50,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The rule to output, not null.
      */
-    private final DateTimeFieldRule rule;
+    private final DateTimeRule rule;
     /**
      * The minimum width, from 0 to 9.
      */
@@ -67,7 +67,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param minWidth  the minimum width to output, from 0 to 9
      * @param maxWidth  the maximum width to output, from 0 to 9
      */
-    FractionPrinterParser(DateTimeFieldRule rule, int minWidth, int maxWidth) {
+    FractionPrinterParser(DateTimeRule rule, int minWidth, int maxWidth) {
         // validated by caller
         this.rule = rule;
         this.minWidth = minWidth;

@@ -56,7 +56,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * Rule implementations define how a field like day-of-month operates.
  * This includes the field name and minimum/maximum values.
  * <p>
- * DateTimeFieldRule is an abstract class and must be implemented with care to
+ * This class is abstract and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe and must
  * ensure serialization works correctly.
@@ -64,7 +64,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
+public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
     // TODO: broken serialization
 
     /** A serialization identifier for this class. */
@@ -91,7 +91,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      * @param minimumValue  the minimum value
      * @param maximumValue  the minimum value
      */
-    protected DateTimeFieldRule(
+    protected DateTimeRule(
             Chronology chronology,
             String name,
             PeriodUnit periodUnit,
@@ -112,7 +112,7 @@ public abstract class DateTimeFieldRule extends CalendricalRule<DateTimeField> {
      * @param maximumValue  the minimum value
      * @param hasText  true if this field has a text representation
      */
-    protected DateTimeFieldRule(
+    protected DateTimeRule(
             Chronology chronology,
             String name,
             PeriodUnit periodUnit,

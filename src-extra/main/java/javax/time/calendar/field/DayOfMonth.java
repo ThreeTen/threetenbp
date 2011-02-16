@@ -44,7 +44,7 @@ import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -90,7 +90,7 @@ public final class DayOfMonth
      *
      * @return the day-of-month rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeRule rule() {
         return DAY_OF_MONTH;
     }
 

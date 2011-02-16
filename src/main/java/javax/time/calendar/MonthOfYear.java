@@ -55,7 +55,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
  * concept with a twelve month year where the names and month lengths are equivalent to
- * those defined. Note that the implementation of {@link DateTimeFieldRule} for month-of-year
+ * those defined. Note that the implementation of {@link DateTimeRule} for month-of-year
  * may vary by calendar system.
  * <p>
  * MonthOfYear is an immutable and thread-safe enum.

@@ -33,7 +33,7 @@ package javax.time.calendar.format;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
@@ -61,7 +61,7 @@ final class ReducedPrinterParser extends NumberPrinterParser {
      * @param width  the field width, from 1 to 18
      * @param baseValue  the base value
      */
-    ReducedPrinterParser(DateTimeFieldRule rule, int width, int baseValue) {
+    ReducedPrinterParser(DateTimeRule rule, int width, int baseValue) {
         super(rule, width, width, SignStyle.NOT_NEGATIVE);
         if (width < 1 || width > 18) {
             throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);

@@ -41,7 +41,7 @@ import java.util.TreeMap;
 import javax.time.calendar.CalendricalContext;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 
 /**
  * Context object used during date and time parsing.
@@ -209,9 +209,9 @@ public final class DateTimeParseContext {
      * @param rule  the rule to set in the rule-value map, not null
      * @param value  the value to set in the rule-value map
      */
-    public void setParsed(DateTimeFieldRule rule, long value) {
+    public void setParsed(DateTimeRule rule, long value) {
         // TODO: overload with differet semantics
-        DateTimeFormatter.checkNotNull(rule, "DateTimeFieldRule must not be null");
+        DateTimeFormatter.checkNotNull(rule, "DateTimeRule must not be null");
         currentCalendrical().values.put(rule, value);
     }
 

@@ -267,7 +267,7 @@ public final class ISOChronology extends Chronology implements Serializable {
 //     * @param rule  the rule to convert, not null
 //     * @return the rule in ISO chronology, never null
 //     */
-//    public DateTimeFieldRule<?> convertRule(DateTimeFieldRule<?> rule) {
+//    public DateTimeRule<?> convertRule(DateTimeRule<?> rule) {
 //        if (rule.getChronology().equals(this)) {
 //            return rule;
 //        }
@@ -512,7 +512,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
     }
 
-    private void merge(CalendricalMerger merger, DateTimeFieldRule destRule, DateTimeFieldRule rule1, DateTimeFieldRule rule2) {
+    private void merge(CalendricalMerger merger, DateTimeRule destRule, DateTimeRule rule1, DateTimeRule rule2) {
         DateTimeField field1 = merger.getValue(rule1);
         if (field1 != null) {
             DateTimeField field2 = merger.getValue(rule2);

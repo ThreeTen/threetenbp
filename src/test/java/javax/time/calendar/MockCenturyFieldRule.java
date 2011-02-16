@@ -43,9 +43,9 @@ import javax.time.MathUtils;
  *
  * @author Stephen Colebourne
  */
-public final class MockCenturyFieldRule extends DateTimeFieldRule implements Serializable {
+public final class MockCenturyFieldRule extends DateTimeRule implements Serializable {
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockCenturyFieldRule();
+    public static final DateTimeRule INSTANCE = new MockCenturyFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */

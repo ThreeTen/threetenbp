@@ -54,7 +54,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the day-of-week
  * concept with a seven day week where the names are equivalent to those defined.
- * Note that the implementation of {@link DateTimeFieldRule} for day-of-week may
+ * Note that the implementation of {@link DateTimeRule} for day-of-week may
  * vary by calendar system.
  * <p>
  * DayOfWeek is an immutable and thread-safe enum.

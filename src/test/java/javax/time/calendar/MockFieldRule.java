@@ -39,7 +39,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public class MockFieldRule extends DateTimeFieldRule implements Serializable {
+public class MockFieldRule extends DateTimeRule implements Serializable {
 
     /**
      * A serialization identifier for this class.

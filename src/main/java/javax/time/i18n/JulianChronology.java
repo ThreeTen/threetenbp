@@ -125,7 +125,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //     *
 //     * @return the rule for the year field, never null
 //     */
-//    public static DateTimeFieldRule<Integer> yearRule() {
+//    public static DateTimeRule<Integer> yearRule() {
 //        return YearRule.INSTANCE;
 //    }
 //
@@ -142,7 +142,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //     *
 //     * @return the rule for the month-of-year field, never null
 //     */
-//    public static DateTimeFieldRule<MonthOfYear> monthOfYearRule() {
+//    public static DateTimeRule<MonthOfYear> monthOfYearRule() {
 //        return MonthOfYearRule.INSTANCE;
 //    }
 //
@@ -151,7 +151,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //     *
 //     * @return the rule for the day-of-month field, never null
 //     */
-//    public static DateTimeFieldRule<Integer> dayOfMonthRule() {
+//    public static DateTimeRule<Integer> dayOfMonthRule() {
 //        return DayOfMonthRule.INSTANCE;
 //    }
 //
@@ -160,7 +160,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //     *
 //     * @return the rule for the day-of-year field, never null
 //     */
-//    public static DateTimeFieldRule<Integer> dayOfYearRule() {
+//    public static DateTimeRule<Integer> dayOfYearRule() {
 //        return DayOfYearRule.INSTANCE;
 //    }
 //
@@ -169,7 +169,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //     *
 //     * @return the rule for the day-of-week field, never null
 //     */
-//    public static DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
+//    public static DateTimeRule<DayOfWeek> dayOfWeekRule() {
 //        return DayOfWeekRule.INSTANCE;
 //    }
 
@@ -232,9 +232,9 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Rule implementation.
 //     */
-//    private static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
+//    private static final class YearRule extends DateTimeRule<Integer> implements Serializable {
 //        /** Singleton instance. */
-//        private static final DateTimeFieldRule<Integer> INSTANCE = new YearRule();
+//        private static final DateTimeRule<Integer> INSTANCE = new YearRule();
 //        /** A serialization identifier for this class. */
 //        private static final long serialVersionUID = 1L;
 //        /** Constructor. */
@@ -274,9 +274,9 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Rule implementation.
 //     */
-//    private static final class MonthOfYearRule extends DateTimeFieldRule<MonthOfYear> implements Serializable {
+//    private static final class MonthOfYearRule extends DateTimeRule<MonthOfYear> implements Serializable {
 //        /** Singleton instance. */
-//        private static final DateTimeFieldRule<MonthOfYear> INSTANCE = new MonthOfYearRule();
+//        private static final DateTimeRule<MonthOfYear> INSTANCE = new MonthOfYearRule();
 //        /** A serialization identifier for this class. */
 //        private static final long serialVersionUID = 1L;
 //        /** Constructor. */
@@ -297,9 +297,9 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Rule implementation.
 //     */
-//    private static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
+//    private static final class DayOfMonthRule extends DateTimeRule<Integer> implements Serializable {
 //        /** Singleton instance. */
-//        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfMonthRule();
+//        private static final DateTimeRule<Integer> INSTANCE = new DayOfMonthRule();
 //        /** A serialization identifier for this class. */
 //        private static final long serialVersionUID = 1L;
 //        /** Constructor. */
@@ -337,9 +337,9 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Rule implementation.
 //     */
-//    private static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+//    private static final class DayOfYearRule extends DateTimeRule<Integer> implements Serializable {
 //        /** Singleton instance. */
-//        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfYearRule();
+//        private static final DateTimeRule<Integer> INSTANCE = new DayOfYearRule();
 //        /** A serialization identifier for this class. */
 //        private static final long serialVersionUID = 1L;
 //        /** Constructor. */
@@ -388,9 +388,9 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Rule implementation.
 //     */
-//    private static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
+//    private static final class DayOfWeekRule extends DateTimeRule<DayOfWeek> implements Serializable {
 //        /** Singleton instance. */
-//        private static final DateTimeFieldRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
+//        private static final DateTimeRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
 //        /** A serialization identifier for this class. */
 //        private static final long serialVersionUID = 1L;
 //        /** Constructor. */

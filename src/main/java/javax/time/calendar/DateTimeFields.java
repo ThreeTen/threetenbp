@@ -97,7 +97,7 @@ public final class DateTimeFields
      * @param value  the value of the rule, may be outside the valid range for the rule
      * @return the date-time fields, never null
      */
-    public static DateTimeFields of(DateTimeFieldRule rule, long value) {
+    public static DateTimeFields of(DateTimeRule rule, long value) {
         return of(DateTimeField.of(rule, value));
     }
 
@@ -113,7 +113,7 @@ public final class DateTimeFields
      * @return the date-time fields, never null
      * @throws IllegalArgumentException if any rule is duplicated
      */
-    public static DateTimeFields of(DateTimeFieldRule rule1, long value1, DateTimeFieldRule rule2, long value2) {
+    public static DateTimeFields of(DateTimeRule rule1, long value1, DateTimeRule rule2, long value2) {
         DateTimeField field1 = DateTimeField.of(rule1, value1);
         DateTimeField field2 = DateTimeField.of(rule2, value2);
         return of(Arrays.asList(field1, field2));
@@ -162,7 +162,7 @@ public final class DateTimeFields
      */
     public static DateTimeFields of(Iterable<DateTimeField> fieldsIterable) {
         ISOChronology.checkNotNull(fieldsIterable, "Iterable must not be null");
-        Set<DateTimeFieldRule> rules = new HashSet<DateTimeFieldRule>();
+        Set<DateTimeRule> rules = new HashSet<DateTimeRule>();
         List<DateTimeField> created = new ArrayList<DateTimeField>();
         for (DateTimeField field : fieldsIterable) {
             ISOChronology.checkNotNull(field, "DateTimeField must not be null");
@@ -232,7 +232,7 @@ public final class DateTimeFields
      * @param rule  the rule to query, null returns false
      * @return true if these fields contain the rule
      */
-    public boolean contains(DateTimeFieldRule rule) {
+    public boolean contains(DateTimeRule rule) {
         for (DateTimeField field : fields) {
             if (field.getRule().equals(rule)) {
                 return true;
@@ -250,8 +250,8 @@ public final class DateTimeFields
      * @param rule  the rule to query, not null
      * @return the field with the specified rule, null if not found
      */
-    public DateTimeField getField(DateTimeFieldRule rule) {
-        ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
+    public DateTimeField getField(DateTimeRule rule) {
+        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
         for (DateTimeField field : fields) {
             if (field.getRule().equals(rule)) {
                 return field;
@@ -274,7 +274,7 @@ public final class DateTimeFields
      * @return the value of the rule, may be outside the valid range for the rule
      * @throws CalendricalException if the field is not present
      */
-    public long getValue(DateTimeFieldRule rule) {
+    public long getValue(DateTimeRule rule) {
         DateTimeField field = getField(rule);
         if (field == null) {
             throw new CalendricalRuleException("Rule not found: " + rule, rule);
@@ -296,7 +296,7 @@ public final class DateTimeFields
      * @return the value of the rule, checked to ensure it is valid
      * @throws CalendricalException if the field is not present or is invalid
      */
-    public int getValidValue(DateTimeFieldRule rule) {
+    public int getValidValue(DateTimeRule rule) {
         long value = getValue(rule);
         return rule.checkValidIntValue(value);
     }
@@ -314,7 +314,7 @@ public final class DateTimeFields
      * @param value  the value to use, may be outside the valid range for the rule
      * @return a {@code DateTimeFields} based on this fields with the specified field updated, never null
      */
-    public DateTimeFields with(DateTimeFieldRule rule, long value) {
+    public DateTimeFields with(DateTimeRule rule, long value) {
         return with(DateTimeField.of(rule, value));
     }
 
@@ -359,8 +359,8 @@ public final class DateTimeFields
      * @param rule  the field to remove from the returned fields, not null
      * @return a {@code DateTimeFields} based on this fields with the specified rule removed, never null
      */
-    public DateTimeFields without(DateTimeFieldRule rule) {
-        ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
+    public DateTimeFields without(DateTimeRule rule) {
+        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
         List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
         for (Iterator<DateTimeField> it = newFields.iterator(); it.hasNext(); ) {
             if (it.next().getRule().equals(rule)) {
@@ -395,7 +395,7 @@ public final class DateTimeFields
 //     * @return a {@code DateTimeFields} based on this fields with the specified amount rolled, never null
 //     * @throws CalendricalException if the field is not present or is invalid
 //     */
-//    public DateTimeFields roll(DateTimeFieldRule rule, long amountToRollBy) {
+//    public DateTimeFields roll(DateTimeRule rule, long amountToRollBy) {
 //        long value = getValidValue(rule);
 //        long rolled = rule.roll(value, amountToRollBy, this);
 //        return with(rule, rolled);
@@ -415,8 +415,8 @@ public final class DateTimeFields
      */
     public <T> T get(CalendricalRule<T> rule) {
         ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule instanceof DateTimeFieldRule) {
-            DateTimeField field = getField((DateTimeFieldRule) rule);
+        if (rule instanceof DateTimeRule) {
+            DateTimeField field = getField((DateTimeRule) rule);
             if (field != null) {
                 return rule.reify(field);
             }

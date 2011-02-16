@@ -32,7 +32,7 @@
 package javax.time.calendar.format;
 
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
@@ -76,7 +76,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
      * @param fieldRule  the rule of the field that caused the exception, may be null
      * @param value  the value of the field that caused the exception
      */
-    public CalendricalPrintFieldException(DateTimeFieldRule fieldRule, long value) {
+    public CalendricalPrintFieldException(DateTimeRule fieldRule, long value) {
         super("Rule " + (fieldRule == null ? "null" : fieldRule.getName()) +
                 " cannot be printed as the value " + value +
                 " cannot be negative according to the SignStyle");
@@ -92,7 +92,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
      * @param value  the value of the field that caused the exception
      * @param maxWidth  the maximum print width
      */
-    public CalendricalPrintFieldException(DateTimeFieldRule fieldRule, long value, int maxWidth) {
+    public CalendricalPrintFieldException(DateTimeRule fieldRule, long value, int maxWidth) {
         super("Rule " + (fieldRule == null ? "null" : fieldRule.getName()) +
                 " cannot be printed as the value " + value +
                 " exceeds the maximum print width of " + maxWidth);
@@ -106,7 +106,7 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
      * @param fieldRule  the rule of the field that caused the exception, may be null
      * @param value  the value of the field that caused the exception
      */
-    public CalendricalPrintFieldException(String msg, DateTimeFieldRule fieldRule, long value) {
+    public CalendricalPrintFieldException(String msg, DateTimeRule fieldRule, long value) {
         super(msg);
         this.rule = fieldRule;
         this.value = value;

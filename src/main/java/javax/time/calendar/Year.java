@@ -97,7 +97,7 @@ public final class Year
      *
      * @return the year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeRule rule() {
         return YEAR;
     }
 

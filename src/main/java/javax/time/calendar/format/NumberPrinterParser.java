@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
@@ -66,7 +66,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The rule to output, not null.
      */
-    final DateTimeFieldRule rule;
+    final DateTimeRule rule;
     /**
      * The minimum width allowed, zero padding is used up to this width, from 1 to 19.
      */
@@ -92,7 +92,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param maxWidth  the maximum field width, from minWidth to 19
      * @param signStyle  the positive/negative sign style, not null
      */
-    NumberPrinterParser(DateTimeFieldRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
+    NumberPrinterParser(DateTimeRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
         // validated by caller
         this.rule = rule;
         this.minWidth = minWidth;
@@ -110,7 +110,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param signStyle  the positive/negative sign style, not null
      * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
      */
-    private NumberPrinterParser(DateTimeFieldRule rule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
+    private NumberPrinterParser(DateTimeRule rule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
         // validated by caller
         this.rule = rule;
         this.minWidth = minWidth;

@@ -51,7 +51,7 @@ import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the quarter-of-year
  * concept with a 4 quarter year where the names are equivalent to those defined.
- * Note that the implementation of {@link DateTimeFieldRule} for quarter-of-year may
+ * Note that the implementation of {@link DateTimeRule} for quarter-of-year may
  * vary by calendar system.
  * <p>
  * QuarterOfYear is an immutable and thread-safe enum.

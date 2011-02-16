@@ -39,7 +39,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.time.calendar.Chronology;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.ZoneId;
@@ -230,14 +230,14 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The parser for a variable width value such as this normally behaves greedily, accepting as many
      * digits as possible. This behavior can be affected by 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
+     * See {@link #appendValue(DateTimeRule, int)} for full details.
      *
      * @param rule  the rule of the field to append, not null
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule is null
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule rule) {
-        checkNotNull(rule, "DateTimeFieldRule must not be null");
+    public DateTimeFormatterBuilder appendValue(DateTimeRule rule) {
+        checkNotNull(rule, "DateTimeRule must not be null");
         NumberPrinterParser pp = new NumberPrinterParser(rule, 1, 19, SignStyle.NORMAL);
         active.valueParserIndex = appendInternal(pp, pp);
         return this;
@@ -291,8 +291,8 @@ public final class DateTimeFormatterBuilder {
      * @throws NullPointerException if the field rule is null
      * @throws IllegalArgumentException if the width is invalid
      */
-    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule rule, int width) {
-        checkNotNull(rule, "DateTimeFieldRule must not be null");
+    public DateTimeFormatterBuilder appendValue(DateTimeRule rule, int width) {
+        checkNotNull(rule, "DateTimeRule must not be null");
         if (width < 1 || width > 19) {
             throw new IllegalArgumentException("The width must be from 1 to 19 inclusive but was " + width);
         }
@@ -312,7 +312,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The parser for a variable width value normally behaves greedily, accepting as many
      * digits as possible. This behavior can be affected by 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
+     * See {@link #appendValue(DateTimeRule, int)} for full details.
      *
      * @param rule  the rule of the field to append, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 19
@@ -323,11 +323,11 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
-            DateTimeFieldRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
+            DateTimeRule rule, int minWidth, int maxWidth, SignStyle signStyle) {
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
             return appendValue(rule, maxWidth);
         }
-        checkNotNull(rule, "DateTimeFieldRule must not be null");
+        checkNotNull(rule, "DateTimeRule must not be null");
         checkNotNull(signStyle, "SignStyle must not be null");
         if (minWidth < 1 || minWidth > 19) {
             throw new IllegalArgumentException("The minimum width must be from 1 to 19 inclusive but was " + minWidth);
@@ -369,7 +369,7 @@ public final class DateTimeFormatterBuilder {
      * is the value within the range where the last two digits are "12".
      * <p>
      * This is a fixed width parser operating using 'adjacent value parsing'.
-     * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
+     * See {@link #appendValue(DateTimeRule, int)} for full details.
      *
      * @param rule  the rule of the field to append, not null
      * @param width  the width of the printed and parsed field, from 1 to 18
@@ -379,8 +379,8 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the width or base value is invalid
      */
     public DateTimeFormatterBuilder appendValueReduced(
-            DateTimeFieldRule rule, int width, int baseValue) {
-        checkNotNull(rule, "DateTimeFieldRule must not be null");
+            DateTimeRule rule, int width, int baseValue) {
+        checkNotNull(rule, "DateTimeRule must not be null");
         ReducedPrinterParser pp = new ReducedPrinterParser(rule, width, baseValue);
         appendFixedWidth(width, pp);
         return this;
@@ -413,7 +413,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The fractional value of the field will be output including the
      * preceeding decimal point. The preceeding value is not output.
-     * The fraction is obtained using {@link DateTimeFieldRule#convertIntToFraction}.
+     * The fraction is obtained using {@link DateTimeRule#convertIntToFraction}.
      * <p>
      * The width of the output fraction can be controlled. Setting the
      * minimum width to zero will cause no output to be generated.
@@ -438,8 +438,8 @@ public final class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendFraction(
-            DateTimeFieldRule rule, int minWidth, int maxWidth) {
-        checkNotNull(rule, "DateTimeFieldRule must not be null");
+            DateTimeRule rule, int minWidth, int maxWidth) {
+        checkNotNull(rule, "DateTimeRule must not be null");
         if (rule.isFixedValueSet() == false) {
             throw new IllegalArgumentException("The field does not have a fixed set of values");
         }
@@ -478,7 +478,7 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule is null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeFieldRule rule) {
+    public DateTimeFormatterBuilder appendText(DateTimeRule rule) {
         return appendText(rule, TextStyle.FULL);
     }
 
@@ -498,8 +498,8 @@ public final class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule or text style is null
      */
-    public DateTimeFormatterBuilder appendText(DateTimeFieldRule rule, TextStyle textStyle) {
-        checkNotNull(rule, "DateTimeFieldRule must not be null");
+    public DateTimeFormatterBuilder appendText(DateTimeRule rule, TextStyle textStyle) {
+        checkNotNull(rule, "DateTimeRule must not be null");
         checkNotNull(textStyle, "TextStyle must not be null");
         TextPrinterParser pp = new TextPrinterParser(rule, textStyle);
         appendInternal(pp, pp);
@@ -790,8 +790,8 @@ public final class DateTimeFormatterBuilder {
      * as per {@link TextStyle#FULL}. Otherwise a short form is used, as per {@link TextStyle#SHORT}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link #appendValue(DateTimeFieldRule)}. Otherwise, the
-     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeFieldRule, int)}.
+     * of digits and without padding as per {@link #appendValue(DateTimeRule)}. Otherwise, the
+     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeRule, int)}.
      * <p>
      * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
      * All fractional values must use the 'f' prefix to ensure correct parsing.
@@ -896,7 +896,7 @@ public final class DateTimeFormatterBuilder {
                                 "Fraction letter 'f' must be followed by valid fraction pattern: " + pattern);
                     }
                 }
-                DateTimeFieldRule rule = RULE_MAP.get(cur);
+                DateTimeRule rule = RULE_MAP.get(cur);
                 if (rule == null) {
                     if (cur == 'z') {
                         if (count < 4) {
@@ -954,7 +954,7 @@ public final class DateTimeFormatterBuilder {
         }
     }
 
-    private void parseRule(char cur, int count, DateTimeFieldRule rule, int fraction) {
+    private void parseRule(char cur, int count, DateTimeRule rule, int fraction) {
         switch (cur) {
             case 'x':
             case 'y':
@@ -1005,7 +1005,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     /** Map of letters to rules. */
-    private static final Map<Character, DateTimeFieldRule> RULE_MAP = new HashMap<Character, DateTimeFieldRule>();
+    private static final Map<Character, DateTimeRule> RULE_MAP = new HashMap<Character, DateTimeRule>();
     static {
         // TODO: cross check with CLDR for letters
 //        RULE_MAP.put('G', ISOChronology.eraRule());

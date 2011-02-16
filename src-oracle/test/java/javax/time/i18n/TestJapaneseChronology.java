@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 
 import org.testng.annotations.Test;
 
@@ -60,7 +60,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule rule = JapaneseChronology.eraRule();
+        DateTimeRule rule = JapaneseChronology.eraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Japanese.Era");
         assertEquals(rule.getName(), "Era");
@@ -76,7 +76,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule rule = JapaneseChronology.yearOfEraRule();
+        DateTimeRule rule = JapaneseChronology.yearOfEraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Japanese.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
@@ -92,7 +92,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule rule = JapaneseChronology.monthOfYearRule();
+        DateTimeRule rule = JapaneseChronology.monthOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Japanese.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
@@ -107,7 +107,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule rule = JapaneseChronology.dayOfMonthRule();
+        DateTimeRule rule = JapaneseChronology.dayOfMonthRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Japanese.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
@@ -123,7 +123,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule rule = JapaneseChronology.dayOfYearRule();
+        DateTimeRule rule = JapaneseChronology.dayOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Japanese.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
@@ -140,7 +140,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule rule = JapaneseChronology.dayOfWeekRule();
+        DateTimeRule rule = JapaneseChronology.dayOfWeekRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Japanese.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
@@ -158,7 +158,7 @@ public class TestJapaneseChronology {
         assertEquals(JapaneseChronology.INSTANCE.toString(), "Japanese");
     }
 
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

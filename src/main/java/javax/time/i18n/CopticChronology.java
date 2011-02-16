@@ -38,7 +38,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodUnit;
 
@@ -121,7 +121,7 @@ public final class CopticChronology extends Chronology implements Serializable {
 //     * @return the rule in Coptic chronology, never null
 //     */
 ////    @Override
-//    public DateTimeFieldRule<?> convertRule(DateTimeFieldRule<?> rule) {
+//    public DateTimeRule<?> convertRule(DateTimeRule<?> rule) {
 //        if (rule.getChronology().equals(this)) {
 //            return rule;
 //        }
@@ -154,7 +154,7 @@ public final class CopticChronology extends Chronology implements Serializable {
 //     * @return the rule in ISO chronology, never null
 //     */
 ////    @Override
-//    protected DateTimeFieldRule<?> convertToISO(DateTimeFieldRule<?> rule) {
+//    protected DateTimeRule<?> convertToISO(DateTimeRule<?> rule) {
 //        if (rule.getChronology().equals(ISOChronology.INSTANCE)) {
 //            return rule;
 //        }
@@ -182,7 +182,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the year field, never null
      */
-    public static DateTimeFieldRule yearRule() {
+    public static DateTimeRule yearRule() {
         return YearRule.INSTANCE;
     }
 
@@ -191,7 +191,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month-of-year field, never null
      */
-    public static DateTimeFieldRule monthOfYearRule() {
+    public static DateTimeRule monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -200,7 +200,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-month field, never null
      */
-    public static DateTimeFieldRule dayOfMonthRule() {
+    public static DateTimeRule dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
@@ -209,7 +209,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-year field, never null
      */
-    public static DateTimeFieldRule dayOfYearRule() {
+    public static DateTimeRule dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
@@ -218,7 +218,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day-of-week field, never null
      */
-    public static DateTimeFieldRule dayOfWeekRule() {
+    public static DateTimeRule dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
@@ -313,9 +313,9 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class YearRule extends DateTimeFieldRule implements Serializable {
+    private static final class YearRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new YearRule();
+        private static final DateTimeRule INSTANCE = new YearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -340,9 +340,9 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
+        private static final DateTimeRule INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -363,9 +363,9 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfMonthRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
+        private static final DateTimeRule INSTANCE = new DayOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -403,9 +403,9 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfYearRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
+        private static final DateTimeRule INSTANCE = new DayOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -438,9 +438,9 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
+        private static final DateTimeRule INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */

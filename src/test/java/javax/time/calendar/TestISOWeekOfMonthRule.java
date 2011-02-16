@@ -48,7 +48,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.WEEK_OF_MONTH;
     }
 
@@ -56,7 +56,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.WEEK_OF_MONTH;
+        DateTimeRule rule = ISODateTimeRule.WEEK_OF_MONTH;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekOfMonth");
         assertEquals(rule.getName(), "WeekOfMonth");

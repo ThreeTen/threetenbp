@@ -40,7 +40,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
@@ -86,7 +86,7 @@ public final class NanoOfSecond
      *
      * @return the nano-of-second rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeRule rule() {
         return NANO_OF_SECOND;
     }
 

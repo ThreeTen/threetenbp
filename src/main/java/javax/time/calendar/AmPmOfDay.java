@@ -54,7 +54,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the AM/PM concept.
- * Note that the implementation of {@link DateTimeFieldRule} may vary by calendar system.
+ * Note that the implementation of {@link DateTimeRule} may vary by calendar system.
  * <p>
  * AmPmOfDay is an immutable and thread-safe enum.
  *

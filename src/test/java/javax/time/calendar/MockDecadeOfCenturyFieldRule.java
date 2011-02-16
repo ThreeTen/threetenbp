@@ -40,10 +40,10 @@ import javax.time.MathUtils;
  *
  * @author Stephen Colebourne
  */
-public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule implements Serializable {
+public final class MockDecadeOfCenturyFieldRule extends DateTimeRule implements Serializable {
 
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockDecadeOfCenturyFieldRule();
+    public static final DateTimeRule INSTANCE = new MockDecadeOfCenturyFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */

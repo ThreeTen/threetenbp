@@ -50,7 +50,7 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.DAY_OF_WEEK;
     }
 
@@ -58,7 +58,7 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.DAY_OF_WEEK;
+        DateTimeRule rule = ISODateTimeRule.DAY_OF_WEEK;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");

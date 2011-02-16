@@ -64,7 +64,7 @@ public final class DateTimeField
     /**
      * The rule defining the field.
      */
-    private final DateTimeFieldRule rule;
+    private final DateTimeRule rule;
     /**
      * The value of the field.
      */
@@ -79,8 +79,8 @@ public final class DateTimeField
      * @param value  the value of the rule, may be outside the valid range for the rule
      * @return the date-time field, never null
      */
-    public static DateTimeField of(DateTimeFieldRule rule, long value) {
-        ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
+    public static DateTimeField of(DateTimeRule rule, long value) {
+        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
         return new DateTimeField(rule, value);
     }
 
@@ -91,7 +91,7 @@ public final class DateTimeField
      * @param value  the value of the rule, may be outside the valid range for the rule
      * @param rule  the rule defining the field, not null
      */
-    private DateTimeField(DateTimeFieldRule rule, long value) {
+    private DateTimeField(DateTimeRule rule, long value) {
         // input pre-validated
         this.value = value;
         this.rule = rule;
@@ -116,7 +116,7 @@ public final class DateTimeField
      *
      * @return the field unit, never null
      */
-    public DateTimeFieldRule getRule() {
+    public DateTimeRule getRule() {
         return rule;
     }
 
@@ -133,8 +133,8 @@ public final class DateTimeField
      * @param rule  the rule to set in the returned field, not null
      * @return a {@code DateTimeField} based on this field with the specified rule, never null
      */
-    public DateTimeField withRule(DateTimeFieldRule rule) {
-        ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
+    public DateTimeField withRule(DateTimeRule rule) {
+        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
         if (rule.equals(this.rule)) {
             return this;
         }
@@ -230,7 +230,7 @@ public final class DateTimeField
      * The fractional value is between 0 (inclusive) and 1 (exclusive).
      * The fraction will have the minimum scale necessary to represent the fraction.
      * <p>
-     * See {@link DateTimeFieldRule#convertToFraction(long)} for details.
+     * See {@link DateTimeRule#convertToFraction(long)} for details.
      *
      * @return the value as a fraction within the range, from 0 to 1, not null
      */

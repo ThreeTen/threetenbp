@@ -38,7 +38,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -217,7 +217,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the year field, never null
      */
-    public DateTimeFieldRule eraRule() {
+    public DateTimeRule eraRule() {
         return new EraRule(this);
     }
 
@@ -226,7 +226,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the year field, never null
      */
-    public DateTimeFieldRule yearOfEraRule() {
+    public DateTimeRule yearOfEraRule() {
         return new YearRule(this);
     }
 
@@ -235,7 +235,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the year field, never null
      */
-    public DateTimeFieldRule yearRule() {
+    public DateTimeRule yearRule() {
         return new YearRule(this);
     }
 
@@ -244,7 +244,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the month-of-year field, never null
      */
-    public DateTimeFieldRule monthOfYearRule() {
+    public DateTimeRule monthOfYearRule() {
         return new MonthOfYearRule(this);
     }
 
@@ -253,7 +253,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-month field, never null
      */
-    public DateTimeFieldRule dayOfMonthRule() {
+    public DateTimeRule dayOfMonthRule() {
         return new DayOfMonthRule(this);
     }
 
@@ -262,7 +262,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-year field, never null
      */
-    public DateTimeFieldRule dayOfYearRule() {
+    public DateTimeRule dayOfYearRule() {
         return new DayOfYearRule(this);
     }
 
@@ -271,7 +271,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @return the rule for the day-of-week field, never null
      */
-    public DateTimeFieldRule dayOfWeekRule() {
+    public DateTimeRule dayOfWeekRule() {
         return new DayOfWeekRule(this);
     }
 
@@ -383,7 +383,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class EraRule extends DateTimeFieldRule implements Serializable {
+    private static final class EraRule extends DateTimeRule implements Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -401,7 +401,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class YearRule extends DateTimeFieldRule implements Serializable {
+    private static final class YearRule extends DateTimeRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
         /** A serialization identifier for this class. */
@@ -426,7 +426,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeRule implements Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
@@ -444,7 +444,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfMonthRule extends DateTimeRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
         /** A serialization identifier for this class. */
@@ -482,7 +482,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfYearRule extends DateTimeRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
         /** A serialization identifier for this class. */
@@ -515,7 +515,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeRule implements Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */

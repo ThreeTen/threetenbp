@@ -48,7 +48,7 @@ public class TestISOAmPmOfDayRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.AMPM_OF_DAY;
     }
 
@@ -56,7 +56,7 @@ public class TestISOAmPmOfDayRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.AMPM_OF_DAY;
+        DateTimeRule rule = ISODateTimeRule.AMPM_OF_DAY;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.AmPmOfDay");
         assertEquals(rule.getName(), "AmPmOfDay");

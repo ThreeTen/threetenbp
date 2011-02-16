@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 
 import org.testng.annotations.Test;
 
@@ -60,7 +60,7 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule rule = ThaiBuddhistChronology.eraRule();
+        DateTimeRule rule = ThaiBuddhistChronology.eraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.Era");
         assertEquals(rule.getName(), "Era");
@@ -76,7 +76,7 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule rule = ThaiBuddhistChronology.yearOfEraRule();
+        DateTimeRule rule = ThaiBuddhistChronology.yearOfEraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
@@ -92,7 +92,7 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule rule = ThaiBuddhistChronology.monthOfYearRule();
+        DateTimeRule rule = ThaiBuddhistChronology.monthOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
@@ -107,7 +107,7 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule rule = ThaiBuddhistChronology.dayOfMonthRule();
+        DateTimeRule rule = ThaiBuddhistChronology.dayOfMonthRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
@@ -123,7 +123,7 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule rule = ThaiBuddhistChronology.dayOfYearRule();
+        DateTimeRule rule = ThaiBuddhistChronology.dayOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
@@ -140,7 +140,7 @@ public class TestThaiBuddhistChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule rule = ThaiBuddhistChronology.dayOfWeekRule();
+        DateTimeRule rule = ThaiBuddhistChronology.dayOfWeekRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ThaiBuddhist.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
@@ -158,7 +158,7 @@ public class TestThaiBuddhistChronology {
         assertEquals(ThaiBuddhistChronology.INSTANCE.toString(), "ThaiBuddhist");
     }
 
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

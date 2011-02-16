@@ -50,7 +50,7 @@ public class TestISOYearRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.YEAR;
     }
 
@@ -58,7 +58,7 @@ public class TestISOYearRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.YEAR;
+        DateTimeRule rule = ISODateTimeRule.YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.Year");
         assertEquals(rule.getName(), "Year");

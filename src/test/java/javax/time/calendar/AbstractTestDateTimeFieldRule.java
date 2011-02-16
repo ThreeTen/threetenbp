@@ -69,13 +69,13 @@ public abstract class AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     // Rule
     //-----------------------------------------------------------------------
-    protected abstract DateTimeFieldRule rule();
+    protected abstract DateTimeRule rule();
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(DateTimeFieldRule.class.isAssignableFrom(rule().getClass()));
+        assertTrue(DateTimeRule.class.isAssignableFrom(rule().getClass()));
         assertTrue(Serializable.class.isAssignableFrom(rule().getClass()));
     }
 

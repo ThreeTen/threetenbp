@@ -45,7 +45,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -66,7 +66,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestSecondOfMinute {
 
-    private static final DateTimeFieldRule RULE = ISODateTimeRule.SECOND_OF_MINUTE;
+    private static final DateTimeRule RULE = ISODateTimeRule.SECOND_OF_MINUTE;
     private static final int MAX_LENGTH = 59;
 
     @BeforeMethod

@@ -46,7 +46,7 @@ import static javax.time.calendar.ISODateTimeRule.YEAR;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -126,8 +126,8 @@ public final class DateTimeFormatters {
      * as per {@link TextStyle#FULL}. Otherwise a short form is used, as per {@link TextStyle#SHORT}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeFieldRule)}. Otherwise, the
-     * count of digits is used as the width of the output field as per {@link DateTimeFormatterBuilder#appendValue(DateTimeFieldRule, int)}.
+     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeRule)}. Otherwise, the
+     * count of digits is used as the width of the output field as per {@link DateTimeFormatterBuilder#appendValue(DateTimeRule, int)}.
      * <p>
      * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
      * All fractional values must use the 'f' prefix to ensure correct parsing.

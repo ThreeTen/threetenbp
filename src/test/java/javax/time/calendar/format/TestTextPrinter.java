@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -158,7 +158,7 @@ public class TestTextPrinter {
     }
 
     @Test(dataProvider="print") 
-    public void test_print(DateTimeFieldRule rule, TextStyle style, int dow, String expected) throws Exception {
+    public void test_print(DateTimeRule rule, TextStyle style, int dow, String expected) throws Exception {
         Calendrical calendrical = DateTimeFields.of(rule, dow);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(calendrical, buf, symbols);

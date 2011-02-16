@@ -48,7 +48,7 @@ public class TestISOClockHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
     }
 
@@ -56,7 +56,7 @@ public class TestISOClockHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
+        DateTimeRule rule = ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.ClockHourOfAmPm");
         assertEquals(rule.getName(), "ClockHourOfAmPm");

@@ -47,7 +47,7 @@ import java.util.Iterator;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -68,7 +68,7 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestWeekBasedYear {
-    private static final DateTimeFieldRule RULE = ISODateTimeRule.WEEK_BASED_YEAR;
+    private static final DateTimeRule RULE = ISODateTimeRule.WEEK_BASED_YEAR;
 
     @BeforeMethod
     public void setUp() {

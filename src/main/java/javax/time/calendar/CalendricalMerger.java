@@ -227,7 +227,7 @@ public final class CalendricalMerger implements Calendrical {
      * @param value  the value to store, not null
      * @throws CalendricalException if the input field does not match a previously stored field
      */
-    public void storeMerged(DateTimeFieldRule rule, int value) {
+    public void storeMerged(DateTimeRule rule, int value) {
         storeMerged(rule, DateTimeField.of(rule, value));
     }
 

@@ -38,9 +38,9 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class MockYearOfDecadeFieldRule extends DateTimeFieldRule implements Serializable {
+public final class MockYearOfDecadeFieldRule extends DateTimeRule implements Serializable {
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockYearOfDecadeFieldRule();
+    public static final DateTimeRule INSTANCE = new MockYearOfDecadeFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */

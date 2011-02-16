@@ -38,10 +38,10 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class MockOtherChronologyRule extends DateTimeFieldRule implements Serializable {
+public final class MockOtherChronologyRule extends DateTimeRule implements Serializable {
 
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockOtherChronologyRule();
+    public static final DateTimeRule INSTANCE = new MockOtherChronologyRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */

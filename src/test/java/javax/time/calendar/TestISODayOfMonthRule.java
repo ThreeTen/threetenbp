@@ -48,7 +48,7 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     @Override
-    protected DateTimeFieldRule rule() {
+    protected DateTimeRule rule() {
         return ISODateTimeRule.DAY_OF_MONTH;
     }
 
@@ -56,7 +56,7 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule rule = ISODateTimeRule.DAY_OF_MONTH;
+        DateTimeRule rule = ISODateTimeRule.DAY_OF_MONTH;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");

@@ -44,7 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeRule;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -101,7 +101,7 @@ public class TestCopticChronology {
 
     //-----------------------------------------------------------------------
     public void test_yearRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.yearRule();
+        DateTimeRule rule = CopticChronology.yearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.Year");
         assertEquals(rule.getName(), "Year");
@@ -116,7 +116,7 @@ public class TestCopticChronology {
     }
 
     public void test_monthOfYearRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.monthOfYearRule();
+        DateTimeRule rule = CopticChronology.monthOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
@@ -131,7 +131,7 @@ public class TestCopticChronology {
     }
 
     public void test_dayOfMonthRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.dayOfMonthRule();
+        DateTimeRule rule = CopticChronology.dayOfMonthRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
@@ -146,7 +146,7 @@ public class TestCopticChronology {
     }
 
     public void test_dayOfYearRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.dayOfYearRule();
+        DateTimeRule rule = CopticChronology.dayOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
@@ -161,7 +161,7 @@ public class TestCopticChronology {
     }
 
     public void test_dayOfWeekRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.dayOfWeekRule();
+        DateTimeRule rule = CopticChronology.dayOfWeekRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
@@ -181,7 +181,7 @@ public class TestCopticChronology {
     }
 
     //-----------------------------------------------------------------------
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeRule rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);
