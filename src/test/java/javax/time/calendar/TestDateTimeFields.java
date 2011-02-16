@@ -418,6 +418,44 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
+    // getValidIntValue()
+    //-----------------------------------------------------------------------
+    public void test_getValidIntValue() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        assertEquals(test.getValidIntValue(YEAR), 2008);
+        assertEquals(test.getValidIntValue(MONTH_OF_YEAR), 6);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getValidIntValue_null() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        test.getValidIntValue(NULL_RULE);
+    }
+
+    @Test(expectedExceptions=CalendricalRuleException.class)
+    public void test_getValidIntValue_fieldNotPresent() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
+        try {
+            test.getValidIntValue(DAY_OF_MONTH);
+        } catch (CalendricalRuleException ex) {
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_getValidIntValue_invalid() {
+        DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 13);  // out of range
+        try {
+            test.getValidIntValue(MONTH_OF_YEAR);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getRule(), MONTH_OF_YEAR);
+            assertEquals(ex.getRule(), MONTH_OF_YEAR);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // with()
     //-----------------------------------------------------------------------
     public void test_with() {

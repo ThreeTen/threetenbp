@@ -285,9 +285,10 @@ public final class DateTimeFields
     /**
      * Gets the value for the specified rule ensuring it is valid.
      * <p>
-     * This class permits the value of each field to be invalid.
-     * For example, it is possible to store '[MonthOfYear 13]' or '[DayOfMonth -121]'.
-     * This method checks that the value is valid before returning it.
+     * This checks that the value is within the valid range of the rule.
+     * This method considers the rule in isolation, thus only the
+     * outer minimum and maximum range for the field is validated.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      * <p>
      * No attempt is made to derive values.
      * The result is simply based on the content of the stored field.
@@ -296,7 +297,30 @@ public final class DateTimeFields
      * @return the value of the rule, checked to ensure it is valid
      * @throws CalendricalException if the field is not present or is invalid
      */
-    public int getValidValue(DateTimeRule rule) {
+    public long getValidValue(DateTimeRule rule) {
+        // TODO: use fields to refine valid range
+        long value = getValue(rule);
+        return rule.checkValidValue(value);
+    }
+
+    /**
+     * Gets the value for the specified rule as an {@code int} ensuring it is valid for the rule.
+     * <p>
+     * This checks that the value is within the valid range of the rule and
+     * that all valid values are within the bounds of an {@code int}.
+     * This method considers the rule in isolation, thus only the
+     * outer minimum and maximum range for the field is validated.
+     * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
+     * <p>
+     * No attempt is made to derive values.
+     * The result is simply based on the content of the stored field.
+     * If there is no field for the rule then an exception is thrown.
+     *
+     * @return the value of the rule, checked to ensure it is valid and fits in an {@code int}
+     * @throws CalendricalException if the field is not present, invalid or does not fit in an {@code int}
+     */
+    public int getValidIntValue(DateTimeRule rule) {
+        // TODO: use fields to refine valid range
         long value = getValue(rule);
         return rule.checkValidIntValue(value);
     }
@@ -437,12 +461,13 @@ public final class DateTimeFields
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         for (DateTimeField field : fields) {
             DateTimeField calField = field.getRule().getValue(calendrical);
-            if (calField != null && calField.equals(field) == false) {  // TODO check logic
+            if (calField != null && calField.equals(field) == false) {
                 return false;
             }
         }
         return true;
     }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this {@code DateTimeFields} is equal to the specified set of fields.
