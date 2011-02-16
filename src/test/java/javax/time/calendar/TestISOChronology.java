@@ -499,12 +499,14 @@ public class TestISOChronology {
     public void test_compareTo_fields() {
         List<CalendricalRule<?>> list = new ArrayList<CalendricalRule<?>>();
         list.add(ISODateTimeRule.NANO_OF_SECOND);
-        list.add(ISOChronology.nanoOfDayRule());
+        list.add(ISODateTimeRule.NANO_OF_DAY);
         list.add(ISODateTimeRule.MILLI_OF_SECOND);
         list.add(ISODateTimeRule.MILLI_OF_DAY);
         list.add(ISODateTimeRule.SECOND_OF_MINUTE);
         list.add(ISODateTimeRule.SECOND_OF_DAY);
+        list.add(ISODateTimeRule.EPOCH_SECOND);
         list.add(ISODateTimeRule.MINUTE_OF_HOUR);
+        list.add(ISODateTimeRule.MINUTE_OF_DAY);
         list.add(ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
         list.add(ISODateTimeRule.HOUR_OF_AMPM);
         list.add(ISODateTimeRule.CLOCK_HOUR_OF_DAY);
@@ -513,14 +515,17 @@ public class TestISOChronology {
         list.add(ISODateTimeRule.DAY_OF_WEEK);
         list.add(ISODateTimeRule.DAY_OF_MONTH);
         list.add(ISODateTimeRule.DAY_OF_YEAR);
+        list.add(ISODateTimeRule.EPOCH_DAY);
         list.add(ISODateTimeRule.WEEK_OF_MONTH);
         list.add(ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
         list.add(ISODateTimeRule.WEEK_OF_YEAR);
         list.add(ISODateTimeRule.MONTH_OF_QUARTER);
         list.add(ISODateTimeRule.MONTH_OF_YEAR);
+        list.add(ISODateTimeRule.EPOCH_MONTH);
         list.add(ISODateTimeRule.QUARTER_OF_YEAR);
         list.add(ISODateTimeRule.WEEK_BASED_YEAR);
         list.add(ISODateTimeRule.YEAR);
+        list.add(ISODateTimeRule.EPOCH_YEAR);
         
         List<CalendricalRule<?>> test = new ArrayList<CalendricalRule<?>>(list);
         Collections.shuffle(test);

@@ -54,14 +54,14 @@ import org.testng.annotations.Test;
 public abstract class AbstractTestDateTimeFieldRule {
 
     private Calendrical testingCalendrical;
-    private int testingValue;
+    private long testingValue;
 
     /**
      * Specify a valid set of fields for testing.
      * @param cal
      * @param testingValue
      */
-    protected AbstractTestDateTimeFieldRule(Calendrical cal, int testingValue) {
+    protected AbstractTestDateTimeFieldRule(Calendrical cal, long testingValue) {
         this.testingCalendrical = cal;
         this.testingValue = testingValue;
     }
@@ -114,59 +114,31 @@ public abstract class AbstractTestDateTimeFieldRule {
     }
 
     //-----------------------------------------------------------------------
-    // isValidValue(int)
-    //-----------------------------------------------------------------------
-    public void test_isValidValue_int() {
-        assertEquals(rule().isValidValue(rule().getLargestMinimumValue()), true);
-        assertEquals(rule().isValidValue(rule().getSmallestMaximumValue()), true);
-        assertEquals(rule().isValidValue(rule().getMinimumValue() - 1), false);
-        assertEquals(rule().isValidValue(rule().getMaximumValue() + 1), false);
-    }
-
-    //-----------------------------------------------------------------------
     // isValidValue(long)
     //-----------------------------------------------------------------------
     public void test_isValidValue_long() {
-        assertEquals(rule().isValidValue((long) rule().getLargestMinimumValue()), true);
-        assertEquals(rule().isValidValue((long) rule().getSmallestMaximumValue()), true);
-        assertEquals(rule().isValidValue((long) (rule().getMinimumValue() - 1)), false);
-        assertEquals(rule().isValidValue((long) (rule().getMaximumValue() + 1)), false);
+        assertEquals(rule().isValidValue(rule().getLargestMinimumValue()), true);
+        assertEquals(rule().isValidValue(rule().getSmallestMaximumValue()), true);
+        assertEquals(rule().isValidValue((rule().getMinimumValue() - 1)), false);
+        assertEquals(rule().isValidValue((rule().getMaximumValue() + 1)), false);
     }
 
     //-----------------------------------------------------------------------
-    // checkValue(int)
+    // checkValidValue(long)
     //-----------------------------------------------------------------------
-    public void test_checkValue_int_valid() {
+    public void test_checkValue_long_valid() {
         rule().checkValidValue(rule().getLargestMinimumValue());
         rule().checkValidValue(rule().getSmallestMaximumValue());
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_checkValue_int_invalidSmall() {
-        rule().checkValidValue(rule().getMinimumValue() - 1);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_checkValue_int_invalidBig() {
-        rule().checkValidValue(rule().getMaximumValue() + 1);
-    }
-
-    //-----------------------------------------------------------------------
-    // checkValue(long)
-    //-----------------------------------------------------------------------
-    public void test_checkValue_long_valid() {
-        rule().checkValidValue((long) rule().getLargestMinimumValue());
-        rule().checkValidValue((long) rule().getSmallestMaximumValue());
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidSmall() {
-        rule().checkValidValue((long) (rule().getMinimumValue() - 1));
+        rule().checkValidValue((rule().getMinimumValue() - 1));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidBig() {
-        rule().checkValidValue((long) (rule().getMaximumValue() + 1));
+        rule().checkValidValue((rule().getMaximumValue() + 1));
     }
 
     //-----------------------------------------------------------------------
@@ -213,7 +185,7 @@ public abstract class AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     // field(int)
     //-----------------------------------------------------------------------
-    public void test_field_int() {
+    public void test_field_long() {
         assertEquals(rule().field(testingValue), DateTimeField.of(rule(), testingValue));
     }
 

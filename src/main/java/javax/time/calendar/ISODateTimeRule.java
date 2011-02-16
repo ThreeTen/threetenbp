@@ -94,7 +94,7 @@ public final class ISODateTimeRule extends DateTimeRule {
     /**
      * The smallest maximum value of the rule.
      */
-    private final transient int smallestMaximum;
+    private final transient long smallestMaximum;
 
     /**
      * Restricted constructor.
@@ -103,9 +103,9 @@ public final class ISODateTimeRule extends DateTimeRule {
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
-            int minimumValue,
-            int maximumValue,
-            int smallestMaximum) {
+            long minimumValue,
+            long maximumValue,
+            long smallestMaximum) {
         super(ISOChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue,
                 ordinal == AMPM_OF_DAY_ORDINAL || ordinal == DAY_OF_WEEK_ORDINAL || ordinal == MONTH_OF_YEAR_ORDINAL);
         this.ordinal = ordinal;  // 16 multiplier allow space for new rules
@@ -126,21 +126,25 @@ public final class ISODateTimeRule extends DateTimeRule {
     protected DateTimeField derive(Calendrical calendrical) {
         switch (ordinal) {
             case NANO_OF_SECOND_ORDINAL:
+            case NANO_OF_DAY_ORDINAL:
             case MILLI_OF_SECOND_ORDINAL:
             case MILLI_OF_DAY_ORDINAL:
             case SECOND_OF_MINUTE_ORDINAL:
             case SECOND_OF_DAY_ORDINAL:
             case MINUTE_OF_HOUR_ORDINAL:
+            case MINUTE_OF_DAY_ORDINAL:
             case HOUR_OF_DAY_ORDINAL: {
                 LocalTime time = calendrical.get(LocalTime.rule());
                 if (time != null) {
                     switch (ordinal) {
                         case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
+                        case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
                         case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
                         case MILLI_OF_DAY_ORDINAL: return field((int) (time.toNanoOfDay() / 1000000L));
                         case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
                         case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
                         case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
+                        case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
                         case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
                     }
                 }
@@ -149,23 +153,33 @@ public final class ISODateTimeRule extends DateTimeRule {
             case DAY_OF_WEEK_ORDINAL:
             case DAY_OF_MONTH_ORDINAL:
             case DAY_OF_YEAR_ORDINAL:
+            case EPOCH_DAY_ORDINAL:
             case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
             case WEEK_BASED_YEAR_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL:
-            case YEAR_ORDINAL: {
+            case EPOCH_MONTH_ORDINAL:
+            case YEAR_ORDINAL:
+            case EPOCH_YEAR_ORDINAL: {
                 LocalDate date = calendrical.get(LocalDate.rule());
                 if (date != null) {
                     switch (ordinal) {
                         case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
                         case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
                         case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
+                        case EPOCH_DAY_ORDINAL: return field(date.toEpochDays());
                         case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
                         case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
                         case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
+                        case EPOCH_MONTH_ORDINAL: return field(date.getYear() - 1970 + date.getMonthOfYear().ordinal());
                         case YEAR_ORDINAL: return field(date.getYear());
+                        case EPOCH_YEAR_ORDINAL: return field(date.getYear() - 1970);
                     }
                 }
                 break;
+            }
+            case EPOCH_SECOND_ORDINAL: {
+                LocalDateTime dateTime = calendrical.get(LocalDateTime.rule());
+                return dateTime != null ? field(dateTime.atOffset(ZoneOffset.UTC).toEpochSeconds()) : null;
             }
             case CLOCK_HOUR_OF_AMPM_ORDINAL: {
                 DateTimeField hourVal = calendrical.get(HOUR_OF_AMPM);  // TODO derive from just HOUR_OF_DAY?
@@ -344,28 +358,34 @@ public final class ISODateTimeRule extends DateTimeRule {
     }
 
     //-----------------------------------------------------------------------
-    private static final int NANO_OF_SECOND_ORDINAL = 0 * 16;
-    private static final int MILLI_OF_SECOND_ORDINAL = 1 * 16;
-    private static final int MILLI_OF_DAY_ORDINAL = 2 * 16;
-    private static final int SECOND_OF_MINUTE_ORDINAL = 3 * 16;
-    private static final int SECOND_OF_DAY_ORDINAL = 4 * 16;
-    private static final int MINUTE_OF_HOUR_ORDINAL = 5 * 16;
-    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL = 6 * 16;
-    private static final int HOUR_OF_AMPM_ORDINAL = 7 * 16;
-    private static final int CLOCK_HOUR_OF_DAY_ORDINAL = 8 * 16;
-    private static final int HOUR_OF_DAY_ORDINAL = 9 * 16;
-    private static final int AMPM_OF_DAY_ORDINAL = 10 * 16;
-    private static final int DAY_OF_WEEK_ORDINAL = 11 * 16;
-    private static final int DAY_OF_MONTH_ORDINAL = 12 * 16;
-    private static final int DAY_OF_YEAR_ORDINAL = 13 * 16;
-    private static final int WEEK_OF_MONTH_ORDINAL = 14 * 16;
-    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 15 * 16;
-    private static final int WEEK_OF_YEAR_ORDINAL = 16 * 16;
-    private static final int MONTH_OF_QUARTER_ORDINAL = 17 * 16;
-    private static final int MONTH_OF_YEAR_ORDINAL = 18 * 16;
-    private static final int QUARTER_OF_YEAR_ORDINAL = 19 * 16;
-    private static final int WEEK_BASED_YEAR_ORDINAL = 20 * 16;
-    private static final int YEAR_ORDINAL = 21 * 16;
+    private static final int NANO_OF_SECOND_ORDINAL =       0 * 16;
+    private static final int NANO_OF_DAY_ORDINAL =          1 * 16;
+    private static final int MILLI_OF_SECOND_ORDINAL =      2 * 16;
+    private static final int MILLI_OF_DAY_ORDINAL =         3 * 16;
+    private static final int SECOND_OF_MINUTE_ORDINAL =     4 * 16;
+    private static final int SECOND_OF_DAY_ORDINAL =        5 * 16;
+    private static final int EPOCH_SECOND_ORDINAL =         6 * 16;
+    private static final int MINUTE_OF_HOUR_ORDINAL =       7 * 16;
+    private static final int MINUTE_OF_DAY_ORDINAL =        8 * 16;
+    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL =   9 * 16;
+    private static final int HOUR_OF_AMPM_ORDINAL =         10 * 16;
+    private static final int CLOCK_HOUR_OF_DAY_ORDINAL =    11 * 16;
+    private static final int HOUR_OF_DAY_ORDINAL =          12 * 16;
+    private static final int AMPM_OF_DAY_ORDINAL =          13 * 16;
+    private static final int DAY_OF_WEEK_ORDINAL =          14 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL =         15 * 16;
+    private static final int DAY_OF_YEAR_ORDINAL =          16 * 16;
+    private static final int EPOCH_DAY_ORDINAL =            17 * 16;
+    private static final int WEEK_OF_MONTH_ORDINAL =        18 * 16;
+    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 19 * 16;
+    private static final int WEEK_OF_YEAR_ORDINAL =         20 * 16;
+    private static final int MONTH_OF_QUARTER_ORDINAL =     21 * 16;
+    private static final int MONTH_OF_YEAR_ORDINAL =        22 * 16;
+    private static final int EPOCH_MONTH_ORDINAL =          23 * 16;
+    private static final int QUARTER_OF_YEAR_ORDINAL =      24 * 16;
+    private static final int WEEK_BASED_YEAR_ORDINAL =      25 * 16;
+    private static final int YEAR_ORDINAL =                 26 * 16;
+    private static final int EPOCH_YEAR_ORDINAL =           27 * 16;
     
     //-----------------------------------------------------------------------
     /**
@@ -375,6 +395,13 @@ public final class ISODateTimeRule extends DateTimeRule {
      * The values run from 0 to 999,999,999.
      */
     public static final ISODateTimeRule NANO_OF_SECOND = new ISODateTimeRule(NANO_OF_SECOND_ORDINAL, "NanoOfSecond", NANOS, SECONDS, 0, 999999999, 999999999);
+    /**
+     * The rule for the nano-of-day field.
+     * <p>
+     * This field counts nanoseconds sequentially from the start of the day.
+     * The values run from 0 to 86,399,999,999,999.
+     */
+    public static final ISODateTimeRule NANO_OF_DAY = new ISODateTimeRule(NANO_OF_DAY_ORDINAL, "NanoOfDay", NANOS, DAYS, 0, 86399999999999L, 86399999999999L);
     /**
      * The rule for the milli-of-second field.
      * <p>
@@ -404,12 +431,26 @@ public final class ISODateTimeRule extends DateTimeRule {
      */
     public static final ISODateTimeRule SECOND_OF_DAY = new ISODateTimeRule(SECOND_OF_DAY_ORDINAL, "SecondOfDay", SECONDS, DAYS, 0, 86399, 86399);
     /**
+     * The rule for the epoch-second field.
+     * <p>
+     * This field counts seconds sequentially from 1970-01-01.
+     * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
+     */
+    public static final ISODateTimeRule EPOCH_SECOND = new ISODateTimeRule(EPOCH_SECOND_ORDINAL, "EpochSecond", SECONDS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
+    /**
      * The rule for the minute-of-hour field.
      * <p>
      * This field counts minutes sequentially from the start of the hour.
      * The values run from 0 to 59.
      */
     public static final ISODateTimeRule MINUTE_OF_HOUR = new ISODateTimeRule(MINUTE_OF_HOUR_ORDINAL, "MinuteOfHour", MINUTES, HOURS, 0, 59, 59);
+    /**
+     * The rule for the minute-of-day field.
+     * <p>
+     * This field counts minutes sequentially from the start of the day.
+     * The values run from 0 to 1439.
+     */
+    public static final ISODateTimeRule MINUTE_OF_DAY = new ISODateTimeRule(MINUTE_OF_DAY_ORDINAL, "MinuteOfDay", MINUTES, DAYS, 0, 1439, 1439);
     /**
      * The rule for the clock hour of AM/PM field from 1 to 12.
      * <p>
@@ -477,6 +518,13 @@ public final class ISODateTimeRule extends DateTimeRule {
      */
     public static final ISODateTimeRule DAY_OF_YEAR = new ISODateTimeRule(DAY_OF_YEAR_ORDINAL, "DayOfYear", DAYS, YEARS, 1, 366, 365);
     /**
+     * The rule for the epoch-day field.
+     * <p>
+     * This field counts days sequentially from 1970-01-01.
+     * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
+     */
+    public static final ISODateTimeRule EPOCH_DAY = new ISODateTimeRule(EPOCH_DAY_ORDINAL, "EpochDay", DAYS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
+    /**
      * The rule for the week-of-month field in the ISO chronology.
      * <p>
      * This field counts weeks in groups of seven days starting from the first
@@ -526,6 +574,13 @@ public final class ISODateTimeRule extends DateTimeRule {
      */
     public static final ISODateTimeRule MONTH_OF_YEAR = new ISODateTimeRule(MONTH_OF_YEAR_ORDINAL, "MonthOfYear", MONTHS, YEARS, 1, 12, 12);
     /**
+     * The rule for the epoch-month field.
+     * <p>
+     * This field counts months sequentially from 1970-01-01.
+     * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
+     */
+    public static final ISODateTimeRule EPOCH_MONTH = new ISODateTimeRule(EPOCH_MONTH_ORDINAL, "EpochMonth", MONTHS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
+    /**
      * The rule for the quarter-of-year field in the ISO chronology.
      * <p>
      * This field counts quarters sequentially from the start of the year.
@@ -560,19 +615,30 @@ public final class ISODateTimeRule extends DateTimeRule {
      * not exact as explained above.
      */
     public static final ISODateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR);
+    /**
+     * The rule for the epoch-year field.
+     * <p>
+     * This field counts years sequentially from 1970-01-01.
+     * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
+     */
+    public static final ISODateTimeRule EPOCH_YEAR = new ISODateTimeRule(EPOCH_YEAR_ORDINAL, "EpochYear", YEARS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
 
     /**
      * Cache of rules for deserialization.
      * Indices must match ordinal passed to rule constructor.
      */
     private static final ISODateTimeRule[] RULE_CACHE = new ISODateTimeRule[] {
-        NANO_OF_SECOND, MILLI_OF_SECOND, MILLI_OF_DAY,
-        SECOND_OF_MINUTE, SECOND_OF_DAY, MINUTE_OF_HOUR,
+        NANO_OF_SECOND, NANO_OF_DAY,
+        MILLI_OF_SECOND, MILLI_OF_DAY,
+        SECOND_OF_MINUTE, SECOND_OF_DAY, EPOCH_SECOND,
+        MINUTE_OF_HOUR, MINUTE_OF_DAY,
         CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY, AMPM_OF_DAY,
-        DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR,
+        DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY,
         WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_YEAR,
-        MONTH_OF_QUARTER, MONTH_OF_YEAR, QUARTER_OF_YEAR,
-        WEEK_BASED_YEAR, YEAR,
+        MONTH_OF_QUARTER, MONTH_OF_YEAR, EPOCH_MONTH,
+        QUARTER_OF_YEAR,
+        WEEK_BASED_YEAR,
+        YEAR, EPOCH_YEAR,
     };
 
 }

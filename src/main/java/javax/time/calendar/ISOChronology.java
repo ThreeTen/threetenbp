@@ -43,6 +43,7 @@ import static javax.time.calendar.ISODateTimeRule.MILLI_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
@@ -53,7 +54,6 @@ import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.WEEK_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
 
 import java.io.Serializable;
 
@@ -287,18 +287,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         return EpochDaysRule.INSTANCE;
     }
 
-    /**
-     * Gets the rule for the nano-of-day field.
-     * <p>
-     * This field counts seconds sequentially from the start of the day.
-     * The values run from 0 to 86,399,999,999,999.
-     *
-     * @return the rule for the nano-of-day field, never null
-     */
-    public static CalendricalRule<Long> nanoOfDayRule() {
-        return NanoOfDayRule.INSTANCE;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Merges the set of fields known by this chronology.
@@ -306,6 +294,13 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @param merger  the merger to use, not null
      */
     void merge(CalendricalMerger merger) {
+        // nano-of-day
+        DateTimeField nodVal = merger.getValue(NANO_OF_DAY);
+        if (nodVal != null) {
+            merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(nodVal.getValidValue()));
+            merger.removeProcessed(NANO_OF_DAY);
+        }
+        
         // milli-of-day
         DateTimeField modVal = merger.getValue(MILLI_OF_DAY);
         if (modVal != null) {
@@ -552,35 +547,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         protected void merge(CalendricalMerger merger) {
             long epochDays = merger.getValue(this);
             merger.storeMerged(LocalDate.rule(), LocalDate.ofEpochDays(epochDays));
-            merger.removeProcessed(this);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class NanoOfDayRule extends CalendricalRule<Long> implements Serializable {
-        /** Singleton instance. */
-        static final CalendricalRule<Long> INSTANCE = new NanoOfDayRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private NanoOfDayRule() {
-            super(Long.class, ISOChronology.INSTANCE, "NanoOfDay", NANOS, DAYS);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Long derive(Calendrical calendrical) {
-            LocalTime time = calendrical.get(LocalTime.rule());
-            return time != null ? time.toNanoOfDay() : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            long nod = merger.getValue(this);
-            merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(nod));
             merger.removeProcessed(this);
         }
     }
