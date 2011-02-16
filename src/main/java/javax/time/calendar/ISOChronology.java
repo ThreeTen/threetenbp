@@ -343,7 +343,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                     merger.addToOverflow(Period.ofDays(1));
                     hourOfDay = 0;
                 }
-                merger.storeMerged(HOUR_OF_DAY, hourOfDay);
+                merger.storeMergedField(HOUR_OF_DAY, hourOfDay);
                 merger.removeProcessed(AMPM_OF_DAY);
                 merger.removeProcessed(CLOCK_HOUR_OF_AMPM);
             }
@@ -388,7 +388,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         DateTimeField moqVal = merger.getValue(MONTH_OF_QUARTER);
         if (qoy != null && moqVal != null) {
             int moy = (qoy.getValidIntValue() - 1) * 3 + moqVal.getValidIntValue();
-            merger.storeMerged(MONTH_OF_YEAR, moy);
+            merger.storeMergedField(MONTH_OF_YEAR, moy);
             merger.removeProcessed(QUARTER_OF_YEAR);
             merger.removeProcessed(MONTH_OF_QUARTER);
         }
@@ -520,7 +520,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 // TODO: non-zero base
                 PeriodField conversion = rule1.getPeriodUnit().getEquivalentPeriod(rule2.getPeriodUnit());
                 PeriodField result = conversion.multipliedBy(field1.getValidIntValue()).plus(field2.getValidIntValue());
-                merger.storeMerged(destRule, result.getAmountInt());  // TODO: long
+                merger.storeMergedField(destRule, result.getAmount());
                 merger.removeProcessed(rule1);
                 merger.removeProcessed(rule2);
             }

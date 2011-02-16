@@ -49,8 +49,10 @@
 - Fix clock hour of day and of am-pm
 - Fix/Weaken contract of CalendricalRule comparator
 - Change period units to be standalone class for ISO
-- Remove generics from DateTimeField
-- Move units and rules from ISOChronology to their own class as field constants
+- Remove generics from DateTimeFieldRule
+- Rework DateTimeFields, adding DateTimeField
+- Move units and rules from ISOChronology to their own classes as field constants
+- Rename DateTimeFieldRule to DateTimeRule
 
 0.6.3
 ===============================================================================

@@ -64,7 +64,7 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeRule implements 
         if (yodVal != null) {
             DateTimeField doc = merger.getValue(this);
             int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc.getValidIntValue(), 10), yodVal.getValidIntValue());
-            merger.storeMerged(MockYearOfCenturyFieldRule.INSTANCE, yoc);
+            merger.storeMergedField(MockYearOfCenturyFieldRule.INSTANCE, yoc);
             merger.removeProcessed(this);
             merger.removeProcessed(MockYearOfDecadeFieldRule.INSTANCE);
         }

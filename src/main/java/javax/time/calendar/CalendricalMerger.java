@@ -213,8 +213,8 @@ public final class CalendricalMerger implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Stores a rule-value pair into this map ensuring that it does not clash
-     * with any previous value defined for that rule.
+     * Stores a date-time field rule-value pair into this map ensuring that it does
+     * not clash with any previous value defined for that rule.
      * <p>
      * This method adds the specified rule-value pair to the map.
      * If this instance already has a value for the rule then the value is checked
@@ -227,7 +227,7 @@ public final class CalendricalMerger implements Calendrical {
      * @param value  the value to store, not null
      * @throws CalendricalException if the input field does not match a previously stored field
      */
-    public void storeMerged(DateTimeRule rule, int value) {
+    public void storeMergedField(DateTimeRule rule, long value) {
         storeMerged(rule, DateTimeField.of(rule, value));
     }
 

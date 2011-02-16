@@ -201,7 +201,7 @@ public class TestCalendricalMerger {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
-                merger.storeMerged(DAY_OF_MONTH, 30);
+                merger.storeMergedField(DAY_OF_MONTH, 30);
             }
         };
         CalendricalMerger m = createMerger(YEAR, 2008, rule, 20, STRICT_CONTEXT);
@@ -214,7 +214,7 @@ public class TestCalendricalMerger {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
-                merger.storeMerged(DAY_OF_MONTH, -1);
+                merger.storeMergedField(DAY_OF_MONTH, -1);
             }
         };
         CalendricalMerger m = createMerger(YEAR, 2008, rule, 20, STRICT_CONTEXT);
@@ -227,7 +227,7 @@ public class TestCalendricalMerger {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
-                merger.storeMerged(YEAR, 2008);
+                merger.storeMergedField(YEAR, 2008);
             }
         };
         CalendricalMerger m = createMerger(YEAR, 2008, rule, 20, STRICT_CONTEXT);
@@ -241,7 +241,7 @@ public class TestCalendricalMerger {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
-                merger.storeMerged(YEAR, 2007);
+                merger.storeMergedField(YEAR, 2007);
             }
         };
         CalendricalMerger m = createMerger(YEAR, 2008, rule, 20, STRICT_CONTEXT);
@@ -261,7 +261,7 @@ public class TestCalendricalMerger {
             private static final long serialVersionUID = 1L;
             @Override
             protected void merge(CalendricalMerger merger) {
-                merger.storeMerged(null, 30);
+                merger.storeMergedField(null, 30);
             }
         };
         CalendricalMerger m = createMerger(YEAR, 2008, rule, 20, STRICT_CONTEXT);

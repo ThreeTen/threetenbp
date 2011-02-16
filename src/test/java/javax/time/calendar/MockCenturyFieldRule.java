@@ -66,7 +66,7 @@ public final class MockCenturyFieldRule extends DateTimeRule implements Serializ
         if (yocVal != null) {
             DateTimeField cen = merger.getValue(this);
             int year = MathUtils.safeAdd(MathUtils.safeMultiply(cen.getValidIntValue(), 100), yocVal.getValidIntValue());
-            merger.storeMerged(YEAR, year);
+            merger.storeMergedField(YEAR, year);
             merger.removeProcessed(this);
             merger.removeProcessed(MockYearOfCenturyFieldRule.INSTANCE);
         }
