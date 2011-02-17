@@ -105,4 +105,9 @@ public class TestISOQuarterOfYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule().getValue(LocalDateTime.of(2007, 12, 20, 12, 30)), rule().field(4));
     }
 
+    public void test_getValue_Calendrical_yearMonth() {
+        Calendrical cal = YearMonth.of(1966, 6);
+        assertEquals(rule().getValue(cal), rule().field(2));
+    }
+
 }

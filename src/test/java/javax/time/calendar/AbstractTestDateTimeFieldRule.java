@@ -119,8 +119,12 @@ public abstract class AbstractTestDateTimeFieldRule {
     public void test_isValidValue_long() {
         assertEquals(rule().isValidValue(rule().getLargestMinimumValue()), true);
         assertEquals(rule().isValidValue(rule().getSmallestMaximumValue()), true);
-        assertEquals(rule().isValidValue((rule().getMinimumValue() - 1)), false);
-        assertEquals(rule().isValidValue((rule().getMaximumValue() + 1)), false);
+        if (rule().getMinimumValue() > Long.MIN_VALUE) {
+            assertEquals(rule().isValidValue((rule().getMinimumValue() - 1)), false);
+        }
+        if (rule().getMaximumValue() < Long.MAX_VALUE) {
+            assertEquals(rule().isValidValue((rule().getMaximumValue() + 1)), false);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -133,12 +137,20 @@ public abstract class AbstractTestDateTimeFieldRule {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidSmall() {
-        rule().checkValidValue((rule().getMinimumValue() - 1));
+        if (rule().getMinimumValue() > Long.MIN_VALUE) {
+            rule().checkValidValue((rule().getMinimumValue() - 1));
+        } else {
+            throw new IllegalCalendarFieldValueException("", rule());
+        }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidBig() {
-        rule().checkValidValue((rule().getMaximumValue() + 1));
+        if (rule().getMaximumValue() < Long.MAX_VALUE) {
+            rule().checkValidValue((rule().getMaximumValue() + 1));
+        } else {
+            throw new IllegalCalendarFieldValueException("", rule());
+        }
     }
 
     //-----------------------------------------------------------------------

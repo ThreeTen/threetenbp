@@ -50,6 +50,7 @@ import javax.time.calendar.TestISOClockHourOfDayRule;
 import javax.time.calendar.TestISODayOfMonthRule;
 import javax.time.calendar.TestISODayOfWeekRule;
 import javax.time.calendar.TestISODayOfYearRule;
+import javax.time.calendar.TestISOEpochYearRule;
 import javax.time.calendar.TestISOHourOfAmPmRule;
 import javax.time.calendar.TestISOHourOfDayRule;
 import javax.time.calendar.TestISOMinuteOfDayRule;
@@ -160,6 +161,7 @@ public class AllTest {
             TestISODayOfMonthRule.class,
             TestISODayOfWeekRule.class,
             TestISODayOfYearRule.class,
+            TestISOEpochYearRule.class,
             TestISOHourOfAmPmRule.class,
             TestISOHourOfDayRule.class,
             TestISOMinuteOfDayRule.class,

@@ -158,8 +158,7 @@ public final class ISODateTimeRule extends DateTimeRule {
             case WEEK_BASED_YEAR_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL:
             case EPOCH_MONTH_ORDINAL:
-            case YEAR_ORDINAL:
-            case EPOCH_YEAR_ORDINAL: {
+            case YEAR_ORDINAL: {
                 LocalDate date = calendrical.get(LocalDate.rule());
                 if (date != null) {
                     switch (ordinal) {
@@ -172,7 +171,6 @@ public final class ISODateTimeRule extends DateTimeRule {
                         case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
                         case EPOCH_MONTH_ORDINAL: return field(date.getYear() - 1970 + date.getMonthOfYear().ordinal());
                         case YEAR_ORDINAL: return field(date.getYear());
-                        case EPOCH_YEAR_ORDINAL: return field(date.getYear() - 1970);
                     }
                 }
                 break;
@@ -212,6 +210,10 @@ public final class ISODateTimeRule extends DateTimeRule {
             case WEEK_OF_YEAR_ORDINAL: {
                 DateTimeField doyVal = calendrical.get(DAY_OF_YEAR);
                 return doyVal != null ? field((doyVal.getValidIntValue() + 6) / 7) : null;
+            }
+            case EPOCH_YEAR_ORDINAL: {
+                DateTimeField yearVal = calendrical.get(YEAR);
+                return yearVal != null ? field(yearVal.getValue()  - 1970) : null;
             }
         }
         return null;
