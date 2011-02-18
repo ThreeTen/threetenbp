@@ -36,6 +36,7 @@ import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
@@ -53,7 +54,6 @@ import static javax.time.calendar.ISODateTimeRule.WEEK_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.WEEK_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
 
 import java.io.Serializable;
 
@@ -277,18 +277,6 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for the epoch-days field.
-     * <p>
-     * This field counts seconds sequentially from the Java epoch of 1970-01-01.
-     *
-     * @return the rule for the epoch-days field, never null
-     */
-    public static CalendricalRule<Long> epochDays() {
-        return EpochDaysRule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Merges the set of fields known by this chronology.
      *
      * @param merger  the merger to use, not null
@@ -445,6 +433,13 @@ public final class ISOChronology extends Chronology implements Serializable {
             }
         }
         
+        // epoch-day
+        DateTimeField edVal = merger.getValue(EPOCH_DAY);
+        if (edVal != null) {
+            merger.storeMerged(LocalDate.rule(), LocalDate.ofEpochDays(edVal.getValidValue()));
+            merger.removeProcessed(EPOCH_DAY);
+        }
+        
         // LocalDateTime
         LocalDate date = merger.getValue(LocalDate.rule());
         LocalTime time = merger.getValue(LocalTime.rule());
@@ -519,35 +514,6 @@ public final class ISOChronology extends Chronology implements Serializable {
                 merger.removeProcessed(rule1);
                 merger.removeProcessed(rule2);
             }
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class EpochDaysRule extends CalendricalRule<Long> implements Serializable {
-        /** Singleton instance. */
-        static final CalendricalRule<Long> INSTANCE = new EpochDaysRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private EpochDaysRule() {
-            super(Long.class, ISOChronology.INSTANCE, "EpochDays", DAYS, null);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected Long derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? date.toEpochDays() : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            long epochDays = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), LocalDate.ofEpochDays(epochDays));
-            merger.removeProcessed(this);
         }
     }
 
