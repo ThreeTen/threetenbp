@@ -754,10 +754,9 @@ public final class DateTimeFormatterBuilder {
      *   Q       quarter-of-year             number/text       3; 03; Q3
      *   q       month-of-quarter            number            2
      *
-     *   x       week-based-year             year              1996
+     *   Y       week-based-year             year              1996; 96
      *   w       week-of-week-based-year     number            27
-     *   e       day-of-week                 number            2
-     *   E       day-of-week                 text              Tue; Tuesday; T
+     *   E       day-of-week                 number/text       2; Tue; Tuesday; T
      *   F       week-of-month               number            3
      *
      *   a       am-pm-of-day                text              PM
@@ -843,9 +842,10 @@ public final class DateTimeFormatterBuilder {
      * output directly to ensure that future changes do not break your application.
      * <p>
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
-     * SimpleDateFormat pattern letters 'G' and 'W' are not available.
-     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
-     * Letters 'y', 'z' and 'Z' have some differences.
+     * Pattern letters 'E' and 'u' are merged.
+     * Pattern letters 'G' and 'W' are not available.
+     * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
+     * Letters 'y', 'z', 'Z' and number types have some differences.
      * The pattern is also similar, but not identical, to that defined by the
      * Unicode Common Locale Data Repository.
      *
@@ -961,8 +961,8 @@ public final class DateTimeFormatterBuilder {
 
     private void parseRule(char cur, int count, DateTimeRule rule, int fraction) {
         switch (cur) {
-            case 'x':
             case 'y':
+            case 'Y':
                 if (count == 2) {
                     appendValueReduced(rule, 2, 2000);
                 } else if (count < 4) {
@@ -973,6 +973,7 @@ public final class DateTimeFormatterBuilder {
                 break;
             case 'M':
             case 'Q':
+            case 'E':
                 switch (count) {
                     case 1:
                         appendValue(rule);
@@ -994,7 +995,6 @@ public final class DateTimeFormatterBuilder {
                 }
                 break;
             case 'a':
-            case 'E':
                 switch (count) {
                     case 1:
                     case 2:
@@ -1032,39 +1032,35 @@ public final class DateTimeFormatterBuilder {
         // TODO: y -> year-of-era
         // TODO: u -> year
         // TODO: g -> mjDay
-        // TODO: Y -> week-based-year
-        // TODO: E -> 1/2 chars print number
-        // TODO: e -> day-of-week localized number (config somehwre)
+        // TODO: e -> day-of-week localized number (config somewhere)
         // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
-        RULE_MAP.put('y', ISODateTimeRule.YEAR);
-        RULE_MAP.put('x', ISODateTimeRule.WEEK_BASED_YEAR);  // new
-        RULE_MAP.put('Q', ISODateTimeRule.QUARTER_OF_YEAR);  // new (CLDR)
-        RULE_MAP.put('M', ISODateTimeRule.MONTH_OF_YEAR);
-        RULE_MAP.put('q', ISODateTimeRule.MONTH_OF_QUARTER);  // new
-        RULE_MAP.put('w', ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
-        RULE_MAP.put('D', ISODateTimeRule.DAY_OF_YEAR);
-        RULE_MAP.put('d', ISODateTimeRule.DAY_OF_MONTH);
-        RULE_MAP.put('F', ISODateTimeRule.WEEK_OF_MONTH);
-        RULE_MAP.put('E', ISODateTimeRule.DAY_OF_WEEK);
-        RULE_MAP.put('e', ISODateTimeRule.DAY_OF_WEEK);  // new (CLDR)
-        RULE_MAP.put('a', ISODateTimeRule.AMPM_OF_DAY);
-        RULE_MAP.put('H', ISODateTimeRule.HOUR_OF_DAY);
-        RULE_MAP.put('k', ISODateTimeRule.CLOCK_HOUR_OF_DAY);
-        RULE_MAP.put('K', ISODateTimeRule.HOUR_OF_AMPM);
-        RULE_MAP.put('h', ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
-        RULE_MAP.put('m', ISODateTimeRule.MINUTE_OF_HOUR);
-        RULE_MAP.put('s', ISODateTimeRule.SECOND_OF_MINUTE);
-        RULE_MAP.put('S', ISODateTimeRule.MILLI_OF_SECOND);
-        RULE_MAP.put('A', ISODateTimeRule.MILLI_OF_DAY);  // new (CLDR)
-        RULE_MAP.put('n', ISODateTimeRule.NANO_OF_SECOND);  // new
-        RULE_MAP.put('N', ISODateTimeRule.NANO_OF_DAY);  // new
+        RULE_MAP.put('y', ISODateTimeRule.YEAR);                    // 310, CLDR
+        RULE_MAP.put('Y', ISODateTimeRule.WEEK_BASED_YEAR);         // Java7, CLDR
+        RULE_MAP.put('Q', ISODateTimeRule.QUARTER_OF_YEAR);         // 310, CLDR
+        RULE_MAP.put('M', ISODateTimeRule.MONTH_OF_YEAR);           // Java, CLDR
+        RULE_MAP.put('q', ISODateTimeRule.MONTH_OF_QUARTER);        // 310, other meaning in CLDR
+        RULE_MAP.put('w', ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR); // Java, CLDR
+        RULE_MAP.put('D', ISODateTimeRule.DAY_OF_YEAR);             // Java, CLDR
+        RULE_MAP.put('d', ISODateTimeRule.DAY_OF_MONTH);            // Java, CLDR
+        RULE_MAP.put('F', ISODateTimeRule.WEEK_OF_MONTH);           // Java, CLDR
+        RULE_MAP.put('E', ISODateTimeRule.DAY_OF_WEEK);             // Java, CLDR (different to both for 1/2 chars)
+        RULE_MAP.put('a', ISODateTimeRule.AMPM_OF_DAY);             // Java, CLDR
+        RULE_MAP.put('H', ISODateTimeRule.HOUR_OF_DAY);             // Java, CLDR
+        RULE_MAP.put('k', ISODateTimeRule.CLOCK_HOUR_OF_DAY);       // Java, CLDR
+        RULE_MAP.put('K', ISODateTimeRule.HOUR_OF_AMPM);            // Java, CLDR
+        RULE_MAP.put('h', ISODateTimeRule.CLOCK_HOUR_OF_AMPM);      // Java, CLDR
+        RULE_MAP.put('m', ISODateTimeRule.MINUTE_OF_HOUR);          // Java, CLDR
+        RULE_MAP.put('s', ISODateTimeRule.SECOND_OF_MINUTE);        // Java, CLDR
+        RULE_MAP.put('S', ISODateTimeRule.MILLI_OF_SECOND);         // Java, CLDR (CLDR fraction-of-second)
+        RULE_MAP.put('A', ISODateTimeRule.MILLI_OF_DAY);            // 310, CLDR
+        RULE_MAP.put('n', ISODateTimeRule.NANO_OF_SECOND);          // 310
+        RULE_MAP.put('N', ISODateTimeRule.NANO_OF_DAY);             // 310
         // reserved - z,Z,I,f,p
         // reserved - v,V - future extended CLDR compatible zone names
         // reserved - l - future extended CLDR compatible leap month symbol
         // reserved - W - future extended CLDR compatible week of week-based-month
         // CLDR - L, q, c are altered to be L prefix
         // CLDR - j - not relevant
-        // CLDR - S - general fraction of second, use milli-of-second here
         // CLDR - Z - different approach here
     }
 

@@ -84,16 +84,15 @@ public final class DateTimeFormatters {
      *  ------  -------                     ------------      -------
      *   y       year                        year              2004; 04
      *   D       day-of-year                 number            189
-     *   M       month-of-year               month             July; Jul; 07
+     *   M       month-of-year               number/text       7; 07; Jul; July; J
      *   d       day-of-month                number            10
      *
-     *   Q       quarter-of-year             number            3
+     *   Q       quarter-of-year             number/text       3; 03; Q3
      *   q       month-of-quarter            number            2
      *
-     *   x       week-based-year             year              1996
+     *   Y       week-based-year             year              1996; 96
      *   w       week-of-week-based-year     number            27
-     *   e       day-of-week                 number            2
-     *   E       day-of-week                 text              Tuesday; Tue
+     *   E       day-of-week                 number/text       2; Tue; Tuesday; T
      *   F       week-of-month               number            3
      *
      *   a       am-pm-of-day                text              PM
@@ -124,12 +123,17 @@ public final class DateTimeFormatters {
      * <p>
      * The count of pattern letters determine the format.
      * <p>
-     * <b>Text</b>: If the number of pattern letters is 4 or more, the full textual form is used
-     * as per {@link TextStyle#FULL}. Otherwise a short form is used, as per {@link TextStyle#SHORT}.
+     * <b>Text</b>: The text style is determined based on the number of pattern letters used.
+     * Less than 4 pattern letters will use the {@link TextStyle#SHORT short form}.
+     * Exactly 4 pattern letters will use the {@link TextStyle#FULL full form}.
+     * Exactly 5 pattern letters will use the {@link TextStyle#NARROW narrow form}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeRule)}. Otherwise, the
-     * count of digits is used as the width of the output field as per {@link DateTimeFormatterBuilder#appendValue(DateTimeRule, int)}.
+     * of digits and without padding as per {@link #appendValue(DateTimeRule)}. Otherwise, the
+     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeRule, int)}.
+     * <p>
+     * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
+     * Otherwise use the Number rules above.
      * <p>
      * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
      * All fractional values must use the 'f' prefix to ensure correct parsing.
@@ -143,15 +147,12 @@ public final class DateTimeFormatters {
      * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
      * <p>
      * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
-     * If the count of letters is two, then a {@link DateTimeFormatterBuilder#appendValueReduced reduced} two digit form is used.
+     * If the count of letters is two, then a {@link #appendValueReduced reduced} two digit form is used.
      * For printing, this outputs the rightmost two digits. For parsing, this will parse using the
      * base value of 2000, resulting in a year within the range 2000 to 2099 inclusive.
      * If the count of letters is less than four (but not two), then the sign is only output for negative
      * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
-     * <p>
-     * <b>Month</b>: If the count of letters is 3 or greater, use the Text rules above.
-     * Otherwise use the Number rules above.
      * <p>
      * <b>ZoneID</b>: 'I' outputs the zone id, such as 'Europe/Paris'.
      * <p>
@@ -162,12 +163,12 @@ public final class DateTimeFormatters {
      * <p>
      * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
      * <p>
-     * <b>Optional section</b>: The optional section markers work exactly like calling {@link DateTimeFormatterBuilder#optionalStart()}
-     * and {@link DateTimeFormatterBuilder#optionalEnd()}.
+     * <b>Optional section</b>: The optional section markers work exactly like calling {@link #optionalStart()}
+     * and {@link #optionalEnd()}.
      * <p>
      * <b>Pad modifier</b>: Modifies the pattern that immediately follows to be padded with spaces.
      * The pad width is determined by the number of pattern letters.
-     * This is the same as calling {@link DateTimeFormatterBuilder#padNext(int)}.
+     * This is the same as calling {@link #padNext(int)}.
      * <p>
      * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
      * <p>
@@ -177,9 +178,10 @@ public final class DateTimeFormatters {
      * output directly to ensure that future changes do not break your application.
      * <p>
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
-     * SimpleDateFormat pattern letters 'G' and 'W' are not available.
-     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
-     * Letters 'y', 'z' and 'Z' have some differences.
+     * Pattern letters 'E' and 'u' are merged.
+     * Pattern letters 'G' and 'W' are not available.
+     * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
+     * Letters 'y', 'z', 'Z' and number types have some differences.
      * The pattern is also similar, but not identical, to that defined by the
      * Unicode Common Locale Data Repository.
      *

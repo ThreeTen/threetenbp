@@ -461,11 +461,11 @@ public class TestDateTimeFormatterBuilder {
             {"yyyy", "Value(ISO.Year,4,19,EXCEEDS_PAD)"},
             {"yyyyy", "Value(ISO.Year,5,19,EXCEEDS_PAD)"},
             
-            {"x", "Value(ISO.WeekBasedYear)"},
-            {"xx", "ReducedValue(ISO.WeekBasedYear,2,2000)"},
-            {"xxx", "Value(ISO.WeekBasedYear,3,19,NORMAL)"},
-            {"xxxx", "Value(ISO.WeekBasedYear,4,19,EXCEEDS_PAD)"},
-            {"xxxxx", "Value(ISO.WeekBasedYear,5,19,EXCEEDS_PAD)"},
+            {"Y", "Value(ISO.WeekBasedYear)"},
+            {"YY", "ReducedValue(ISO.WeekBasedYear,2,2000)"},
+            {"YYY", "Value(ISO.WeekBasedYear,3,19,NORMAL)"},
+            {"YYYY", "Value(ISO.WeekBasedYear,4,19,EXCEEDS_PAD)"},
+            {"YYYYY", "Value(ISO.WeekBasedYear,5,19,EXCEEDS_PAD)"},
             
             {"Q", "Value(ISO.QuarterOfYear)"},
             {"QQ", "Value(ISO.QuarterOfYear,2)"},
@@ -499,15 +499,11 @@ public class TestDateTimeFormatterBuilder {
             {"FF", "Value(ISO.WeekOfMonth,2)"},
             {"FFF", "Value(ISO.WeekOfMonth,3)"},
             
-            {"E", "Text(ISO.DayOfWeek,SHORT)"},
-            {"EE", "Text(ISO.DayOfWeek,SHORT)"},
+            {"E", "Value(ISO.DayOfWeek)"},
+            {"EE", "Value(ISO.DayOfWeek,2)"},
             {"EEE", "Text(ISO.DayOfWeek,SHORT)"},
             {"EEEE", "Text(ISO.DayOfWeek)"},
             {"EEEEE", "Text(ISO.DayOfWeek,NARROW)"},
-            
-            {"e", "Value(ISO.DayOfWeek)"},
-            {"ee", "Value(ISO.DayOfWeek,2)"},
-            {"eee", "Value(ISO.DayOfWeek,3)"},
             
             {"a", "Text(ISO.AmPmOfDay,SHORT)"},
             {"aa", "Text(ISO.AmPmOfDay,SHORT)"},

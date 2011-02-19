@@ -54,6 +54,9 @@
 - Move units and rules from ISOChronology to their own classes as field constants
 - Rename DateTimeFieldRule to DateTimeRule
 - Add A and N formatting letter
+- Change formatting letter x to Y
+- Change formatting letters E and Q to work like M
+- Add narrow style to formatting
 
 0.6.3
 ===============================================================================
