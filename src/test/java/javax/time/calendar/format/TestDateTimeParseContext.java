@@ -95,7 +95,7 @@ public class TestDateTimeParseContext {
 
     //-----------------------------------------------------------------------
     public void test_fields_oneField() throws Exception {
-        context.setParsed(YEAR, 2008);
+        context.setParsedField(YEAR, 2008);
         
         assertEquals(context.getParsedRules().size(), 1);
         assertEquals(context.getParsed(YEAR), 2008L);
@@ -109,8 +109,8 @@ public class TestDateTimeParseContext {
     }
 
     public void test_fields_twoFields() throws Exception {
-        context.setParsed(YEAR, 2008);
-        context.setParsed(MONTH_OF_YEAR, 6);
+        context.setParsedField(YEAR, 2008);
+        context.setParsedField(MONTH_OF_YEAR, 6);
         
         assertEquals(context.getParsedRules().size(), 2);
         assertEquals(context.getParsed(YEAR), 2008L);
@@ -138,12 +138,12 @@ public class TestDateTimeParseContext {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_fields_setNull() throws Exception {
-        context.setParsed(null, 2008);
+        context.setParsedField(null, 2008);
     }
 
     //-----------------------------------------------------------------------
     public void test_getParsedRules_set() throws Exception {
-        context.setParsed(DAY_OF_MONTH, 2);
+        context.setParsedField(DAY_OF_MONTH, 2);
         
         assertEquals(context.getParsedRules().size(), 1);
         assertEquals(context.getParsedRules().iterator().next(), DAY_OF_MONTH);
@@ -155,7 +155,7 @@ public class TestDateTimeParseContext {
     }
 
     public void test_getParsedRules_remove() throws Exception {
-        context.setParsed(DAY_OF_MONTH, 2);
+        context.setParsedField(DAY_OF_MONTH, 2);
         context.getParsedRules().remove(DAY_OF_MONTH);
     }
 
@@ -179,8 +179,8 @@ public class TestDateTimeParseContext {
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
-        context.setParsed(YEAR, 2008);
-        context.setParsed(MONTH_OF_YEAR, 6);
+        context.setParsedField(YEAR, 2008);
+        context.setParsedField(MONTH_OF_YEAR, 6);
         context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(16));
         context.setParsed(ZoneId.rule(),ZoneId.of(ZoneOffset.ofHours(18)));
         

@@ -106,7 +106,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
                     return ~position;
                 } else if (match > 0) {
                     position += (match >>> 32);
-                    context.setParsed(rule, (int) match);
+                    context.setParsedField(rule, (int) match);
                     return position;
                 }
             }
@@ -118,7 +118,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
                     long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
                     if (match > 0) {
                         position += (match >>> 32);
-                        context.setParsed(rule, (int) match);
+                        context.setParsedField(rule, (int) match);
                         return position;
                     }
                 }

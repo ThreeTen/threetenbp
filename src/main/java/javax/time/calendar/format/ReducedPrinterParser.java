@@ -96,7 +96,7 @@ final class ReducedPrinterParser extends NumberPrinterParser {
         if (value < baseValue) {
             value += range;
         }
-        context.setParsed(rule, (int) value);
+        context.setParsedField(rule, (int) value);
     }
 
     //-----------------------------------------------------------------------

@@ -68,7 +68,7 @@ public class TestNumberParser {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullNumber() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_MONTH, 2);
+        context.setParsedField(DAY_OF_MONTH, 2);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
         pp.parse(context, (String) null, 0);
     }
@@ -76,7 +76,7 @@ public class TestNumberParser {
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooSmall() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_MONTH, 2);
+        context.setParsedField(DAY_OF_MONTH, 2);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
         pp.parse(context, "12", -1);
     }
@@ -84,7 +84,7 @@ public class TestNumberParser {
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooBig() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_MONTH, 2);
+        context.setParsedField(DAY_OF_MONTH, 2);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
         pp.parse(context, "12", 3);
     }
@@ -169,7 +169,7 @@ public class TestNumberParser {
     @Test(dataProvider="parseData")
     public void test_parse_replace(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_MONTH, 0);
+        context.setParsedField(DAY_OF_MONTH, 0);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minWidth, maxWidth, signStyle);
         if (subsequentWidth > 0) {
             pp = pp.withSubsequentWidth(subsequentWidth);

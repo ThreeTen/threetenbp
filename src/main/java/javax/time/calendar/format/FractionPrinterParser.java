@@ -140,7 +140,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         BigDecimal fraction = new BigDecimal(total).movePointLeft(pos - position);
         long value = rule.convertFromFraction(fraction);
-        context.setParsed(rule, value);
+        context.setParsedField(rule, value);
         return pos;
     }
 

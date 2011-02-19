@@ -70,7 +70,7 @@ public class TestTextParser {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullText() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_WEEK, 2);
+        context.setParsedField(DAY_OF_WEEK, 2);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.parse(context, (String) null, 0);
     }
@@ -78,7 +78,7 @@ public class TestTextParser {
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooSmall() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_WEEK, 2);
+        context.setParsedField(DAY_OF_WEEK, 2);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.parse(context, "Monday", -1);
     }
@@ -86,7 +86,7 @@ public class TestTextParser {
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooBig() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_WEEK, 2);
+        context.setParsedField(DAY_OF_WEEK, 2);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.parse(context, "Monday", 7);
     }
@@ -94,7 +94,7 @@ public class TestTextParser {
     //-----------------------------------------------------------------------
     public void test_parse_replaceContextValue() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsed(DAY_OF_WEEK, 2);
+        context.setParsedField(DAY_OF_WEEK, 2);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         int newPos = pp.parse(context, "Monday", 0);
         assertEquals(newPos, 6);

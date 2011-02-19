@@ -308,7 +308,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param value  the value
      */
     void setValue(DateTimeParseContext context, long value) {
-        context.setParsed(rule, value);
+        context.setParsedField(rule, value);
     }
 
     //-----------------------------------------------------------------------

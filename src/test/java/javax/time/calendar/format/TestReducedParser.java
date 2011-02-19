@@ -91,7 +91,7 @@ public class TestReducedParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_replaceContextValue() throws Exception {
-        context.setParsed(YEAR, 2001);
+        context.setParsedField(YEAR, 2001);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "12", 0);
         assertEquals(newPos, 2);

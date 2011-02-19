@@ -187,7 +187,7 @@ public final class DateTimeParseContext {
     }
 
     /**
-     * Sets the parsed value associated with the specified rule.
+     * Stores the value associated with the specified rule.
      * <p>
      * The value stored may be out of range for the rule and of any type -
      * no checks are performed.
@@ -202,15 +202,14 @@ public final class DateTimeParseContext {
     }
 
     /**
-     * Sets the parsed value associated with the specified rule.
+     * Stores the parsed field.
      * <p>
      * The value stored may be out of range for the rule - no checks are performed.
      *
      * @param rule  the rule to set in the rule-value map, not null
      * @param value  the value to set in the rule-value map
      */
-    public void setParsed(DateTimeRule rule, long value) {
-        // TODO: overload with differet semantics
+    public void setParsedField(DateTimeRule rule, long value) {
         DateTimeFormatter.checkNotNull(rule, "DateTimeRule must not be null");
         currentCalendrical().values.put(rule, value);
     }
