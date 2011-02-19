@@ -748,16 +748,16 @@ public final class DateTimeFormatterBuilder {
      *  ------  -------                     ------------      -------
      *   y       year                        year              2004; 04
      *   D       day-of-year                 number            189
-     *   M       month-of-year               month             July; Jul; 07
+     *   M       month-of-year               number/text       7; 07; Jul; July; J
      *   d       day-of-month                number            10
      *
-     *   Q       quarter-of-year             number            3
+     *   Q       quarter-of-year             number/text       3; 03; Q3
      *   q       month-of-quarter            number            2
      *
      *   x       week-based-year             year              1996
      *   w       week-of-week-based-year     number            27
      *   e       day-of-week                 number            2
-     *   E       day-of-week                 text              Tuesday; Tue
+     *   E       day-of-week                 text              Tue; Tuesday; T
      *   F       week-of-month               number            3
      *
      *   a       am-pm-of-day                text              PM
@@ -788,12 +788,17 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The count of pattern letters determine the format.
      * <p>
-     * <b>Text</b>: If the number of pattern letters is 4 or more, the full textual form is used
-     * as per {@link TextStyle#FULL}. Otherwise a short form is used, as per {@link TextStyle#SHORT}.
+     * <b>Text</b>: The text style is determined based on the number of pattern letters used.
+     * Less than 4 pattern letters will use the {@link TextStyle#SHORT short form}.
+     * Exactly 4 pattern letters will use the {@link TextStyle#FULL full form}.
+     * Exactly 5 pattern letters will use the {@link TextStyle#NARROW narrow form}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
      * of digits and without padding as per {@link #appendValue(DateTimeRule)}. Otherwise, the
      * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeRule, int)}.
+     * <p>
+     * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
+     * Otherwise use the Number rules above.
      * <p>
      * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
      * All fractional values must use the 'f' prefix to ensure correct parsing.
@@ -813,9 +818,6 @@ public final class DateTimeFormatterBuilder {
      * If the count of letters is less than four (but not two), then the sign is only output for negative
      * years as per {@link SignStyle#NORMAL}.
      * Otherwise, the sign is output if the pad width is exceeded, as per {@link SignStyle#EXCEEDS_PAD}
-     * <p>
-     * <b>Month</b>: If the count of letters is 3 or greater, use the Text rules above.
-     * Otherwise use the Number rules above.
      * <p>
      * <b>ZoneID</b>: 'I' outputs the zone id, such as 'Europe/Paris'.
      * <p>
@@ -970,6 +972,7 @@ public final class DateTimeFormatterBuilder {
                 }
                 break;
             case 'M':
+            case 'Q':
                 switch (count) {
                     case 1:
                         appendValue(rule);
@@ -980,17 +983,32 @@ public final class DateTimeFormatterBuilder {
                     case 3:
                         appendText(rule, TextStyle.SHORT);
                         break;
-                    default:
+                    case 4:
                         appendText(rule, TextStyle.FULL);
                         break;
+                    case 5:
+                        appendText(rule, TextStyle.NARROW);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
                 }
                 break;
             case 'a':
             case 'E':
-                if (count < 4) {
-                    appendText(rule, TextStyle.SHORT);
-                } else {
-                    appendText(rule, TextStyle.FULL);
+                switch (count) {
+                    case 1:
+                    case 2:
+                    case 3:
+                        appendText(rule, TextStyle.SHORT);
+                        break;
+                    case 4:
+                        appendText(rule, TextStyle.FULL);
+                        break;
+                    case 5:
+                        appendText(rule, TextStyle.NARROW);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
                 }
                 break;
             default:
@@ -1010,14 +1028,13 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to rules. */
     private static final Map<Character, DateTimeRule> RULE_MAP = new HashMap<Character, DateTimeRule>();
     static {
-        // TODO: 5 chars for narrow style
         // TODO: G -> era
         // TODO: y -> year-of-era
         // TODO: u -> year
         // TODO: g -> mjDay
         // TODO: Y -> week-based-year
         // TODO: E -> 1/2 chars print number
-        // TODO: e -> day-of-week localized number
+        // TODO: e -> day-of-week localized number (config somehwre)
         // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
         RULE_MAP.put('y', ISODateTimeRule.YEAR);
         RULE_MAP.put('x', ISODateTimeRule.WEEK_BASED_YEAR);  // new
@@ -1029,7 +1046,7 @@ public final class DateTimeFormatterBuilder {
         RULE_MAP.put('d', ISODateTimeRule.DAY_OF_MONTH);
         RULE_MAP.put('F', ISODateTimeRule.WEEK_OF_MONTH);
         RULE_MAP.put('E', ISODateTimeRule.DAY_OF_WEEK);
-        RULE_MAP.put('e', ISODateTimeRule.DAY_OF_WEEK);
+        RULE_MAP.put('e', ISODateTimeRule.DAY_OF_WEEK);  // new (CLDR)
         RULE_MAP.put('a', ISODateTimeRule.AMPM_OF_DAY);
         RULE_MAP.put('H', ISODateTimeRule.HOUR_OF_DAY);
         RULE_MAP.put('k', ISODateTimeRule.CLOCK_HOUR_OF_DAY);

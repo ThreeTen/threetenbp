@@ -469,13 +469,15 @@ public class TestDateTimeFormatterBuilder {
             
             {"Q", "Value(ISO.QuarterOfYear)"},
             {"QQ", "Value(ISO.QuarterOfYear,2)"},
-            {"QQQ", "Value(ISO.QuarterOfYear,3)"},
+            {"QQQ", "Text(ISO.QuarterOfYear,SHORT)"},
+            {"QQQQ", "Text(ISO.QuarterOfYear)"},
+            {"QQQQQ", "Text(ISO.QuarterOfYear,NARROW)"},
             
             {"M", "Value(ISO.MonthOfYear)"},
             {"MM", "Value(ISO.MonthOfYear,2)"},
             {"MMM", "Text(ISO.MonthOfYear,SHORT)"},
             {"MMMM", "Text(ISO.MonthOfYear)"},
-            {"MMMMM", "Text(ISO.MonthOfYear)"},
+            {"MMMMM", "Text(ISO.MonthOfYear,NARROW)"},
             
             {"q", "Value(ISO.MonthOfQuarter)"},
             {"qq", "Value(ISO.MonthOfQuarter,2)"},
@@ -501,7 +503,7 @@ public class TestDateTimeFormatterBuilder {
             {"EE", "Text(ISO.DayOfWeek,SHORT)"},
             {"EEE", "Text(ISO.DayOfWeek,SHORT)"},
             {"EEEE", "Text(ISO.DayOfWeek)"},
-            {"EEEEE", "Text(ISO.DayOfWeek)"},
+            {"EEEEE", "Text(ISO.DayOfWeek,NARROW)"},
             
             {"e", "Value(ISO.DayOfWeek)"},
             {"ee", "Value(ISO.DayOfWeek,2)"},
@@ -511,7 +513,7 @@ public class TestDateTimeFormatterBuilder {
             {"aa", "Text(ISO.AmPmOfDay,SHORT)"},
             {"aaa", "Text(ISO.AmPmOfDay,SHORT)"},
             {"aaaa", "Text(ISO.AmPmOfDay)"},
-            {"aaaaa", "Text(ISO.AmPmOfDay)"},
+            {"aaaaa", "Text(ISO.AmPmOfDay,NARROW)"},
             
             {"H", "Value(ISO.HourOfDay)"},
             {"HH", "Value(ISO.HourOfDay,2)"},
@@ -627,6 +629,11 @@ public class TestDateTimeFormatterBuilder {
             {"yyyy]"},
             {"yyyy]MM"},
             {"yyyy[MM]]"},
+            
+            {"MMMMMM"},
+            {"QQQQQQ"},
+            {"EEEEEE"},
+            {"aaaaaa"},
             
             {"RO"},
             
