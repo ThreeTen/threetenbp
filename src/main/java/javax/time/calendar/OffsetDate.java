@@ -1221,7 +1221,7 @@ public final class OffsetDate
     /**
      * Outputs this date as a {@code String}, such as {@code 2007-12-03+01:00}.
      * <p>
-     * The output will be in the format {@code yyyy-MM-ddZZZZ}.
+     * The output will be in the format {@code yyyy-MM-ddXXXXX}.
      *
      * @return the formatted date, never null
      */

@@ -592,13 +592,13 @@ public class TestZonedDateTime {
     // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
     public void factory_parse_formatter() {
-        ZonedDateTime t = ZonedDateTime.parse("201012031130+00:00 Europe/London", DateTimeFormatters.pattern("yyyyMMddHHmmZZ z"));
+        ZonedDateTime t = ZonedDateTime.parse("201012031130+00:00 Europe/London", DateTimeFormatters.pattern("yyyyMMddHHmmXXX z"));
         assertEquals(t, ZonedDateTime.of(LocalDateTime.of(2010, 12, 3, 11, 30), ZoneId.of("Europe/London")));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        ZonedDateTime.parse((String) null, DateTimeFormatters.pattern("yyyyMMddHHmmz"));
+        ZonedDateTime.parse((String) null, DateTimeFormatters.pattern("yyyyMMddHHmmXXX"));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

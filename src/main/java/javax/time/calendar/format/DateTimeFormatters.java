@@ -110,7 +110,8 @@ public final class DateTimeFormatters {
      *
      *   I       time-zone ID                zoneID            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
-     *   Z       zone-offset                 offset            -0800; -08:00;
+     *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
+     *   X       zone-offset 'Z' for zero    offset-X          Z; -0800; -08:00;
      *
      *   f       make next a fraction        fraction modifier .123
      *   p       pad next                    pad modifier      1
@@ -156,10 +157,16 @@ public final class DateTimeFormatters {
      * <p>
      * <b>ZoneID</b>: 'I' outputs the zone id, such as 'Europe/Paris'.
      * <p>
-     * <b>Offset</b>: 'Z' outputs offset without a colon, without seconds and '+0000' as the text for UTC.
-     * 'ZZ' outputs the offset with a colon, without seconds and '+00:00' as the text for UTC.
-     * 'ZZZ' outputs offset without a colon, with seconds and 'Z' as the text for UTC (ISO-8601 style).
-     * 'ZZZZ' outputs the offset with a colon, with seconds and 'Z' as the text for UTC (ISO-8601 style).
+     * <b>Offset X</b>: This formats the offset using 'Z' when the offset is zero.
+     * One letter outputs just the hour', such as '+01'
+     * Two letters outputs the hour and minute, without a colon, such as '+0130'.
+     * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
+     * Four letters outputs the hour and minute and optional second, without a colon, such as '+013015'.
+     * Five letters outputs the hour and minute and optional second, with a colon, such as '+01:30:15'.
+     * <p>
+     * <b>Offset Z</b>: This formats the offset using '+0000' or '+00:00' when the offset is zero.
+     * One or two letters outputs the hour and minute, without a colon, such as '+0130'.
+     * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
      * <p>
      * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
      * <p>
@@ -180,8 +187,10 @@ public final class DateTimeFormatters {
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
      * Pattern letters 'E' and 'u' are merged.
      * Pattern letters 'G' and 'W' are not available.
+     * Pattern letters 'Z' and 'X' are extended.
+     * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
      * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
-     * Letters 'y', 'z', 'Z' and number types have some differences.
+     * Number types will reject large numbers.
      * The pattern is also similar, but not identical, to that defined by the
      * Unicode Common Locale Data Repository.
      *
@@ -651,7 +660,7 @@ public final class DateTimeFormatters {
             .appendValue(MONTH_OF_YEAR, 2)
             .appendValue(DAY_OF_MONTH, 2)
             .optionalStart()
-            .appendOffset("Z", false, false)
+            .appendOffset("Z", "+HHMM")
             .optionalStart()
             .appendLiteral('[')
             .appendZoneId()
@@ -692,7 +701,7 @@ public final class DateTimeFormatters {
             .appendLiteral(':')
             .appendValue(SECOND_OF_MINUTE, 2)
             .appendLiteral(' ')
-            .appendOffset("Z", false, false)
+            .appendOffset("Z", "+HHMM")
             .toFormatter()
             .withLocale(Locale.ENGLISH);
     }

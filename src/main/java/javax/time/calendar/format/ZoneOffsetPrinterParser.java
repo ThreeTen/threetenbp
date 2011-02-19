@@ -46,30 +46,41 @@ import javax.time.calendar.ZoneOffset;
 final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
+     * The patterns to use.
+     */
+    static final String[] PATTERNS = new String[] {
+        "+HH", "+HHMM", "+HH:MM", "+HHMMss", "+HH:MM:ss", "+HHMMSS", "+HH:MM:SS",
+    };  // order used in pattern builder
+
+    /**
      * The text to use for UTC.
      */
-    private final String utcText;
+    private final String noOffsetText;
     /**
-     * Whether to include a colon.
+     * The pattern type.
      */
-    private final boolean includeColon;
-    /**
-     * Whether to allow seconds.
-     */
-    private final boolean allowSeconds;
+    private final int type;
 
     /**
      * Constructor.
      *
-     * @param utcText  the text to use for UTC, not null
-     * @param includeColon  whether to include a colon
-     * @param allowSeconds  whether to allow seconds
+     * @param noOffsetText  the text to use for UTC, not null
+     * @param pattern  the pattern
      */
-    ZoneOffsetPrinterParser(String utcText, boolean includeColon, boolean allowSeconds) {
-        // validated by caller
-        this.utcText = utcText;
-        this.includeColon = includeColon;
-        this.allowSeconds = allowSeconds;
+    ZoneOffsetPrinterParser(String noOffsetText, String pattern) {
+        DateTimeFormatterBuilder.checkNotNull(noOffsetText, "No offset text must not be null");
+        DateTimeFormatterBuilder.checkNotNull(pattern, "Pattern must not be null");
+        this.noOffsetText = noOffsetText;
+        this.type = checkPattern(pattern);
+    }
+
+    private int checkPattern(String pattern) {
+        for (int i = 0; i < PATTERNS.length; i++) {
+            if (PATTERNS[i].equals(pattern)) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Invalid zone offset pattern");
     }
 
     //-----------------------------------------------------------------------
@@ -81,22 +92,22 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         int totalSecs = offset.getAmountSeconds();
         if (totalSecs == 0) {
-            appendable.append(utcText);
-        } else if (includeColon && (allowSeconds || offset.getSecondsField() == 0)) {
+            appendable.append(noOffsetText);
+        } else if (type == 4 || (type == 2 && offset.getSecondsField() == 0)) {
             appendable.append(offset.getID());
         } else {
             int absHours = Math.abs(offset.getHoursField());
             int absMinutes = Math.abs(offset.getMinutesField());
             int absSeconds = Math.abs(offset.getSecondsField());
-            appendable
-                .append(totalSecs < 0 ? "-" : "+")
-                .append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'))
-                .append(includeColon ? ":" : "")
-                .append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
-            if (allowSeconds && absSeconds > 0) {
-                appendable
-                    .append(includeColon ? ":" : "")
-                    .append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
+            appendable.append(totalSecs < 0 ? "-" : "+")
+                .append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'));
+            if (type >= 1) {
+                appendable.append((type % 2) == 0 ? ":" : "")
+                    .append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
+                if (type >= 5 || (type >= 3 && absSeconds > 0)) {
+                    appendable.append((type % 2) == 0 ? ":" : "")
+                        .append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
+                }
             }
         }
     }
@@ -111,7 +122,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     public int parse(DateTimeParseContext context, String parseText, int position) {
         ZoneOffset offset = null;
         int length = parseText.length();
-        int utcLen = utcText.length();
+        int utcLen = noOffsetText.length();
         if (utcLen == 0) {
             if (position == length) {
                 context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
@@ -121,7 +132,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             if (position == length) {
                 return ~position;
             }
-            if (parseText.regionMatches(!context.isCaseSensitive(), position, utcText, 0, utcLen)) {
+            if (parseText.regionMatches(!context.isCaseSensitive(), position, noOffsetText, 0, utcLen)) {
                 context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
                 return position + utcLen;
             }
@@ -163,11 +174,11 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
      * @return true if an error occurred
      */
     private boolean parseNumber(int[] array, int arrayIndex, String parseText, boolean required) {
-        if (allowSeconds == false && arrayIndex == 3) {
-            return false;  // ignore seconds
+        if ((type + 3) / 2 < arrayIndex) {
+            return false;  // ignore seconds/minutes
         }
         int pos = array[0];
-        if (includeColon && arrayIndex > 1) {
+        if ((type % 2) == 0 && arrayIndex > 1) {
             if (pos + 1 > parseText.length() || parseText.charAt(pos) != ':') {
                 return required;
             }
@@ -190,38 +201,12 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         return false;
     }
 
-//            try {
-//                if (includeColon) {
-//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 6));
-//                    endPos += 6;
-//                } else {
-//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 5));
-//                    endPos += 5;
-//                }
-//            } catch (Exception ex) {
-//                return ~position;
-//            }
-//            try {
-//                if (includeColon) {
-//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 9));
-//                    endPos += 3;
-//                } else {
-//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 7));
-//                    endPos += 2;
-//                }
-//            } catch (Exception ex) {
-//                // ignore
-//            }
-
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        if (utcText.equals("Z") && includeColon && allowSeconds) {
-            return "OffsetId()";
-        }
-        String converted = utcText.replace("'", "''");
-        return "Offset('" + converted + "'," + includeColon + "," + allowSeconds + ")";
+        String converted = noOffsetText.replace("'", "''");
+        return "Offset('" + converted + "'," + PATTERNS[type] + ")";
     }
 
 }

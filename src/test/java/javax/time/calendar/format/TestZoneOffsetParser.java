@@ -56,7 +56,7 @@ public class TestZoneOffsetParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_nullContext() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         try {
             int result = pp.parse((DateTimeParseContext) null, "+01:00", 0);
             assertEquals(result, 6);
@@ -69,46 +69,46 @@ public class TestZoneOffsetParser {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_parse_nullText() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.parse(context, (String) null, 0);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_negativePosition() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.parse(context, "hello", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_offEndPosition() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.parse(context, "hello", 6);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_exactMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "Z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_startStringMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "ZOTHER", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_midStringMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "OTHERZOTHER", 5);
         assertEquals(result, 6);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_endStringMatch_UTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "OTHERZ", 5);
         assertEquals(result, 6);
         assertParsed(ZoneOffset.UTC);
@@ -116,28 +116,28 @@ public class TestZoneOffsetParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_exactMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(context, "", 0);
         assertEquals(result, 0);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_startStringMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(context, "OTHER", 0);
         assertEquals(result, 0);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_midStringMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(context, "OTHEROTHER", 5);
         assertEquals(result, 5);
         assertParsed(ZoneOffset.UTC);
     }
 
     public void test_parse_endStringMatch_UTC_EmptyUTC() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", "+HH:MM:ss");
         int result = pp.parse(context, "OTHER", 5);
         assertEquals(result, 5);
         assertParsed(ZoneOffset.UTC);
@@ -147,184 +147,221 @@ public class TestZoneOffsetParser {
     @DataProvider(name="offsets")
     Object[][] provider_offsets() {
         return new Object[][] {
-            {true, true, "+00:00", ZoneOffset.UTC},
-            {true, true, "-00:00", ZoneOffset.UTC},
-            {true, true, "+01:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+01:02", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
-            {true, true, "+01:59", ZoneOffset.ofHoursMinutesSeconds(1, 59, 0)},
-            {true, true, "+02:00", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+18:00", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-01:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-02:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-18:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            {"+HH", "+00", ZoneOffset.UTC},
+            {"+HH", "-00", ZoneOffset.UTC},
+            {"+HH", "+01", ZoneOffset.ofHours(1)},
+            {"+HH", "-01", ZoneOffset.ofHours(-1)},
             
-            {true, true, "+00:00:00", ZoneOffset.UTC},
-            {true, true, "-00:00:00", ZoneOffset.UTC},
-            {true, true, "+01:00:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+01:02:03", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
-            {true, true, "+01:59:59", ZoneOffset.ofHoursMinutesSeconds(1, 59, 59)},
-            {true, true, "+02:00:00", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+18:00:00", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-01:00:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-02:00:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-18:00:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            {"+HHMM", "+0000", ZoneOffset.UTC},
+            {"+HHMM", "-0000", ZoneOffset.UTC},
+            {"+HHMM", "+0102", ZoneOffset.ofHoursMinutes(1, 2)},
+            {"+HHMM", "-0102", ZoneOffset.ofHoursMinutes(-1, -2)},
+            
+            {"+HH:MM", "+00:00", ZoneOffset.UTC},
+            {"+HH:MM", "-00:00", ZoneOffset.UTC},
+            {"+HH:MM", "+01:02", ZoneOffset.ofHoursMinutes(1, 2)},
+            {"+HH:MM", "-01:02", ZoneOffset.ofHoursMinutes(-1, -2)},
+            
+            {"+HHMMss", "+0000", ZoneOffset.UTC},
+            {"+HHMMss", "-0000", ZoneOffset.UTC},
+            {"+HHMMss", "+0100", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {"+HHMMss", "+0159", ZoneOffset.ofHoursMinutesSeconds(1, 59, 0)},
+            {"+HHMMss", "+0200", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {"+HHMMss", "+1800", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {"+HHMMss", "+010215", ZoneOffset.ofHoursMinutesSeconds(1, 2, 15)},
+            {"+HHMMss", "-0100", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {"+HHMMss", "-0200", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {"+HHMMss", "-1800", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            
+            {"+HHMMss", "+000000", ZoneOffset.UTC},
+            {"+HHMMss", "-000000", ZoneOffset.UTC},
+            {"+HHMMss", "+010000", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {"+HHMMss", "+010203", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
+            {"+HHMMss", "+015959", ZoneOffset.ofHoursMinutesSeconds(1, 59, 59)},
+            {"+HHMMss", "+020000", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {"+HHMMss", "+180000", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {"+HHMMss", "-010000", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {"+HHMMss", "-020000", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {"+HHMMss", "-180000", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            
+            {"+HH:MM:ss", "+00:00", ZoneOffset.UTC},
+            {"+HH:MM:ss", "-00:00", ZoneOffset.UTC},
+            {"+HH:MM:ss", "+01:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {"+HH:MM:ss", "+01:02", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
+            {"+HH:MM:ss", "+01:59", ZoneOffset.ofHoursMinutesSeconds(1, 59, 0)},
+            {"+HH:MM:ss", "+02:00", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {"+HH:MM:ss", "+18:00", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {"+HH:MM:ss", "+01:02:15", ZoneOffset.ofHoursMinutesSeconds(1, 2, 15)},
+            {"+HH:MM:ss", "-01:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {"+HH:MM:ss", "-02:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {"+HH:MM:ss", "-18:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            
+            {"+HH:MM:ss", "+00:00:00", ZoneOffset.UTC},
+            {"+HH:MM:ss", "-00:00:00", ZoneOffset.UTC},
+            {"+HH:MM:ss", "+01:00:00", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
+            {"+HH:MM:ss", "+01:02:03", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
+            {"+HH:MM:ss", "+01:59:59", ZoneOffset.ofHoursMinutesSeconds(1, 59, 59)},
+            {"+HH:MM:ss", "+02:00:00", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
+            {"+HH:MM:ss", "+18:00:00", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
+            {"+HH:MM:ss", "-01:00:00", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
+            {"+HH:MM:ss", "-02:00:00", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
+            {"+HH:MM:ss", "-18:00:00", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            
+            {"+HHMMSS", "+000000", ZoneOffset.UTC},
+            {"+HHMMSS", "-000000", ZoneOffset.UTC},
+            {"+HHMMSS", "+010203", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
+            {"+HHMMSS", "-010203", ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3)},
+            
+            {"+HH:MM:SS", "+00:00:00", ZoneOffset.UTC},
+            {"+HH:MM:SS", "-00:00:00", ZoneOffset.UTC},
+            {"+HH:MM:SS", "+01:02:03", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
+            {"+HH:MM:SS", "-01:02:03", ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3)},
         };
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_exactMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+    public void test_parse_exactMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
         int result = pp.parse(context, parse, 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_startStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+    public void test_parse_startStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
         int result = pp.parse(context, parse + ":OTHER", 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_midStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+    public void test_parse_midStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
         int result = pp.parse(context, "OTHER" + parse + ":OTHER", 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_endStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+    public void test_parse_endStringMatch(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
         int result = pp.parse(context, "OTHER" + parse, 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_exactMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+    public void test_parse_exactMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
         int result = pp.parse(context, parse, 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_startStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+    public void test_parse_startStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
         int result = pp.parse(context, parse + ":OTHER", 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_midStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+    public void test_parse_midStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
         int result = pp.parse(context, "OTHER" + parse + ":OTHER", 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
     }
 
     @Test(dataProvider="offsets")
-    public void test_parse_endStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+    public void test_parse_endStringMatch_EmptyUTC(String pattern, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", pattern);
         int result = pp.parse(context, "OTHER" + parse, 5);
         assertEquals(result, parse.length() + 5);
         assertParsed(expected);
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider(name="offsetsNoColon")
-    Object[][] provider_offsetsNoColon() {
+    @DataProvider(name="badOffsets")
+    Object[][] provider_badOffsets() {
         return new Object[][] {
-            {true, true, "+0000", ZoneOffset.UTC},
-            {true, true, "-0000", ZoneOffset.UTC},
-            {true, true, "+0100", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+0102", ZoneOffset.ofHoursMinutesSeconds(1, 2, 0)},
-            {true, true, "+0159", ZoneOffset.ofHoursMinutesSeconds(1, 59, 0)},
-            {true, true, "+0200", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+1800", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-0100", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-0200", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-1800", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            {"+HH", "+1", ~0},
+            {"+HH", "-1", ~0},
+            {"+HH", "01", ~0},
+            {"+HH", "01", ~0},
+            {"+HH", "+AA", ~0},
+            {"+HH", "+19", ~0},
             
-            {true, true, "+000000", ZoneOffset.UTC},
-            {true, true, "-000000", ZoneOffset.UTC},
-            {true, true, "+010000", ZoneOffset.ofHoursMinutesSeconds(1, 0, 0)},
-            {true, true, "+010203", ZoneOffset.ofHoursMinutesSeconds(1, 2, 3)},
-            {true, true, "+015959", ZoneOffset.ofHoursMinutesSeconds(1, 59, 59)},
-            {true, true, "+020000", ZoneOffset.ofHoursMinutesSeconds(2, 0, 0)},
-            {true, true, "+180000", ZoneOffset.ofHoursMinutesSeconds(18, 0, 0)},
-            {true, true, "-010000", ZoneOffset.ofHoursMinutesSeconds(-1, 0, 0)},
-            {true, true, "-020000", ZoneOffset.ofHoursMinutesSeconds(-2, 0, 0)},
-            {true, true, "-180000", ZoneOffset.ofHoursMinutesSeconds(-18, 0, 0)},
+            {"+HHMM", "+1", ~0},
+            {"+HHMM", "+01", ~0},
+            {"+HHMM", "+001", ~0},
+            {"+HHMM", "0102", ~0},
+            {"+HHMM", "+01:02", ~0},
+            {"+HHMM", "+AAAA", ~0},
+            {"+HHMM", "+1801", ~0},
+            
+            {"+HH:MM", "+1", ~0},
+            {"+HH:MM", "+01", ~0},
+            {"+HH:MM", "+0:01", ~0},
+            {"+HH:MM", "+00:1", ~0},
+            {"+HH:MM", "+0:1", ~0},
+            {"+HH:MM", "+:", ~0},
+            {"+HH:MM", "01:02", ~0},
+            {"+HH:MM", "+0102", ~0},
+            {"+HH:MM", "+AA:AA", ~0},
+            {"+HH:MM", "+18:01", ~0},
+            
+            {"+HHMMss", "+1", ~0},
+            {"+HHMMss", "+01", ~0},
+            {"+HHMMss", "+001", ~0},
+            {"+HHMMss", "0102", ~0},
+            {"+HHMMss", "+01:02", ~0},
+            {"+HHMMss", "+AAAA", ~0},
+            {"+HHMMss", "+1801", ~0},
+            {"+HHMMss", "+180103", ~0},
+            
+            {"+HH:MM:ss", "+1", ~0},
+            {"+HH:MM:ss", "+01", ~0},
+            {"+HH:MM:ss", "+0:01", ~0},
+            {"+HH:MM:ss", "+00:1", ~0},
+            {"+HH:MM:ss", "+0:1", ~0},
+            {"+HH:MM:ss", "+:", ~0},
+            {"+HH:MM:ss", "01:02", ~0},
+            {"+HH:MM:ss", "+0102", ~0},
+            {"+HH:MM:ss", "+AA:AA", ~0},
+            {"+HH:MM:ss", "+18:01", ~0},
+            {"+HH:MM:ss", "+18:01:03", ~0},
+            
+            {"+HHMMSS", "+1", ~0},
+            {"+HHMMSS", "+01", ~0},
+            {"+HHMMSS", "+001", ~0},
+            {"+HHMMSS", "0102", ~0},
+            {"+HHMMSS", "+01:02", ~0},
+            {"+HHMMSS", "+AAAA", ~0},
+            {"+HHMMSS", "+1801", ~0},
+            {"+HHMMSS", "+180103", ~0},
+            
+            {"+HH:MM:SS", "+1", ~0},
+            {"+HH:MM:SS", "+01", ~0},
+            {"+HH:MM:SS", "+0:01", ~0},
+            {"+HH:MM:SS", "+00:1", ~0},
+            {"+HH:MM:SS", "+0:1", ~0},
+            {"+HH:MM:SS", "+:", ~0},
+            {"+HH:MM:SS", "01:02", ~0},
+            {"+HH:MM:SS", "+0102", ~0},
+            {"+HH:MM:SS", "+AA:AA", ~0},
+            {"+HH:MM:SS", "+18:01", ~0},
+            {"+HH:MM:SS", "+18:01:03", ~0},
         };
     }
 
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_exactMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
+    @Test(dataProvider="badOffsets")
+    public void test_parse_invalid(String pattern, String parse, int expectedPosition) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", pattern);
         int result = pp.parse(context, parse, 0);
-        assertEquals(result, parse.length());
-        assertParsed(expected);
-    }
-
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_startStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
-        int result = pp.parse(context, parse + ":OTHER", 0);
-        assertEquals(result, parse.length());
-        assertParsed(expected);
-    }
-
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_midStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
-        int result = pp.parse(context, "OTHER" + parse + ":OTHER", 5);
-        assertEquals(result, parse.length() + 5);
-        assertParsed(expected);
-    }
-
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_endStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
-        int result = pp.parse(context, "OTHER" + parse, 5);
-        assertEquals(result, parse.length() + 5);
-        assertParsed(expected);
-    }
-
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_exactMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
-        int result = pp.parse(context, parse, 0);
-        assertEquals(result, parse.length());
-        assertParsed(expected);
-    }
-
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_startStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
-        int result = pp.parse(context, parse + ":OTHER", 0);
-        assertEquals(result, parse.length());
-        assertParsed(expected);
-    }
-
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_midStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
-        int result = pp.parse(context, "OTHER" + parse + ":OTHER", 5);
-        assertEquals(result, parse.length() + 5);
-        assertParsed(expected);
-    }
-
-    @Test(dataProvider="offsetsNoColon")
-    public void test_parse_noColon_endStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
-        int result = pp.parse(context, "OTHER" + parse, 5);
-        assertEquals(result, parse.length() + 5);
-        assertParsed(expected);
+        assertEquals(result, expectedPosition);
     }
 
     //-----------------------------------------------------------------------
@@ -332,7 +369,7 @@ public class TestZoneOffsetParser {
     //-----------------------------------------------------------------------
     public void test_parse_caseSensitiveUTC_matchedCase() throws Exception {
         context.setCaseSensitive(true);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "Z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
@@ -340,7 +377,7 @@ public class TestZoneOffsetParser {
 
     public void test_parse_caseSensitiveUTC_unmatchedCase() throws Exception {
         context.setCaseSensitive(true);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "z", 0);
         assertEquals(result, ~0);
         assertParsed(null);
@@ -348,7 +385,7 @@ public class TestZoneOffsetParser {
 
     public void test_parse_caseInsensitiveUTC_matchedCase() throws Exception {
         context.setCaseSensitive(false);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "Z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);
@@ -356,7 +393,7 @@ public class TestZoneOffsetParser {
 
     public void test_parse_caseInsensitiveUTC_unmatchedCase() throws Exception {
         context.setCaseSensitive(false);
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         int result = pp.parse(context, "z", 0);
         assertEquals(result, 1);
         assertParsed(ZoneOffset.UTC);

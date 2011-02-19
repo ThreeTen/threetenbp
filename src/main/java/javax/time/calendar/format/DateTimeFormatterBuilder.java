@@ -234,7 +234,6 @@ public final class DateTimeFormatterBuilder {
      *
      * @param rule  the rule of the field to append, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the field rule is null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeRule rule) {
         checkNotNull(rule, "DateTimeRule must not be null");
@@ -288,7 +287,6 @@ public final class DateTimeFormatterBuilder {
      * @param rule  the rule of the field to append, not null
      * @param width  the width of the printed field, from 1 to 19
      * @return this, for chaining, never null
-     * @throws NullPointerException if the field rule is null
      * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeRule rule, int width) {
@@ -319,7 +317,6 @@ public final class DateTimeFormatterBuilder {
      * @param maxWidth  the maximum field width of the printed field, from 1 to 19
      * @param signStyle  the positive/negative output style, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the field rule or sign style is null
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
@@ -375,7 +372,6 @@ public final class DateTimeFormatterBuilder {
      * @param width  the width of the printed and parsed field, from 1 to 18
      * @param baseValue  the base value of the range of valid values
      * @return this, for chaining, never null
-     * @throws NullPointerException if the field rule is null
      * @throws IllegalArgumentException if the width or base value is invalid
      */
     public DateTimeFormatterBuilder appendValueReduced(
@@ -388,6 +384,7 @@ public final class DateTimeFormatterBuilder {
 
     /**
      * Appends a fixed width printer-parser.
+     * 
      * @param width  the width
      * @param pp  the printer-parser, not null
      * @return this, for chaining, never null
@@ -432,7 +429,6 @@ public final class DateTimeFormatterBuilder {
      * @param minWidth  the minimum width of the field excluding the decimal point, from 0 to 9
      * @param maxWidth  the maximum width of the field excluding the decimal point, from 1 to 9
      * @return this, for chaining, never null
-     * @throws NullPointerException if the field rule or sign style is null
      * @throws IllegalArgumentException if the field has a variable set of valid values
      * @throws IllegalArgumentException if the field has a non-zero minimum
      * @throws IllegalArgumentException if the widths are invalid
@@ -476,7 +472,6 @@ public final class DateTimeFormatterBuilder {
      *
      * @param rule  the rule of the field to append, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the field rule is null
      */
     public DateTimeFormatterBuilder appendText(DateTimeRule rule) {
         return appendText(rule, TextStyle.FULL);
@@ -496,7 +491,6 @@ public final class DateTimeFormatterBuilder {
      * @param rule  the rule of the field to append, not null
      * @param textStyle  the text style to use, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the field rule or text style is null
      */
     public DateTimeFormatterBuilder appendText(DateTimeRule rule, TextStyle textStyle) {
         checkNotNull(rule, "DateTimeRule must not be null");
@@ -512,19 +506,12 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The zone offset id will be output during a print.
      * If the offset cannot be obtained then an exception will be thrown.
-     * <p>
-     * The output id is minor variation to the standard ISO-8601 format.
-     * There are three formats:
-     * <ul>
-     * <li>'Z' - for UTC (ISO-8601)
-     * <li>'&plusmn;hh:mm' - if the seconds are zero (ISO-8601)
-     * <li>'&plusmn;hh:mm:ss' - if the seconds are non-zero (not ISO-8601)
-     * </ul>
+     * The format is defined by {@link ZoneOffset#getID()}.
      *
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendOffsetId() {
-        return appendOffset("Z", true, true);
+        return appendOffset("Z", "+HH:MM:ss");
     }
 
     /**
@@ -532,9 +519,19 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The zone offset will be output during a print.
      * If the offset cannot be obtained then an exception will be thrown.
-     * The output format is controlled by the specified parameters.
      * <p>
-     * The UTC text controls what text is printed when the offset is zero.
+     * The output format is controlled by a pattern which must be one of the following:
+     * <ul>
+     * <li>{@code +HH} - hour only, truncating any minute
+     * <li>{@code +HHMM} - hour and minute, no colon
+     * <li>{@code +HH:MM} - hour and minute, with colon
+     * <li>{@code +HHMMss} - hour and minute, with second if non-zero and no colon
+     * <li>{@code +HH:MM:ss} - hour and minute, with second if non-zero and colon
+     * <li>{@code +HHMMSS} - hour, minute and second, no colon
+     * <li>{@code +HH:MM:SS} - hour, minute and second, with colon
+     * </ul>
+     * <p>
+     * The "no offset" text controls what text is printed when the offset is zero.
      * Example values would be 'Z', '+00:00', 'UTC' or 'GMT'.
      * <p>
      * The include colon parameter controls whether a colon should separate the
@@ -544,15 +541,12 @@ public final class DateTimeFormatterBuilder {
      * If false then seconds are never output.
      * If true then seconds are only output if non-zero.
      *
-     * @param utcText  the text to use for UTC, not null
-     * @param includeColon  whether to include a colon
-     * @param allowSeconds  whether to allow seconds
+     * @param noOffsetText  the text to use when the offset is zero, not null
+     * @param pattern  the pattern to use
      * @return this, for chaining, never null
-     * @throws NullPointerException if the UTC text is null
      */
-    public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean allowSeconds) {
-        checkNotNull(utcText, "UTC text must not be null");
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(utcText, includeColon, allowSeconds);
+    public DateTimeFormatterBuilder appendOffset(String noOffsetText, String pattern) {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(noOffsetText, pattern);
         appendInternal(pp, pp);
         return this;
     }
@@ -587,7 +581,6 @@ public final class DateTimeFormatterBuilder {
      *
      * @param textStyle  the text style to use, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the text style is null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
         checkNotNull(textStyle, "TextStyle must not be null");
@@ -609,7 +602,6 @@ public final class DateTimeFormatterBuilder {
      * @param dateStyle  the date style to use, null means no date required
      * @param timeStyle  the time style to use, null means no time required
      * @return this, for chaining, never null
-     * @throws NullPointerException if the text style is null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
         return appendLocalized(dateStyle, timeStyle, ISOChronology.INSTANCE);
@@ -628,7 +620,6 @@ public final class DateTimeFormatterBuilder {
      * @param timeStyle  the time style to use, null means no time required
      * @param chronology  the chronology to use, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the text style is null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
         checkNotNull(chronology, "Chronology must not be null");
@@ -663,7 +654,6 @@ public final class DateTimeFormatterBuilder {
      *
      * @param literal  the literal to append, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the literal is null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
         checkNotNull(literal, "Literal text must not be null");
@@ -707,7 +697,6 @@ public final class DateTimeFormatterBuilder {
      *
      * @param formatter  the formatter to add, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the formatter is null
      */
     public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
         checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -728,7 +717,6 @@ public final class DateTimeFormatterBuilder {
      *
      * @param formatter  the formatter to add, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the formatter is null
      */
     public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
         checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -774,7 +762,8 @@ public final class DateTimeFormatterBuilder {
      *
      *   I       time-zone ID                zoneID            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
-     *   Z       zone-offset                 offset            -0800; -08:00;
+     *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
+     *   X       zone-offset 'Z' for zero    offset-X          Z; -0800; -08:00;
      *
      *   f       make next a fraction        fraction modifier .123
      *   p       pad next                    pad modifier      1
@@ -820,10 +809,16 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * <b>ZoneID</b>: 'I' outputs the zone id, such as 'Europe/Paris'.
      * <p>
-     * <b>Offset</b>: 'Z' outputs offset without a colon, without seconds and '+0000' as the text for UTC.
-     * 'ZZ' outputs the offset with a colon, without seconds and '+00:00' as the text for UTC.
-     * 'ZZZ' outputs offset without a colon, with seconds and 'Z' as the text for UTC (ISO-8601 style).
-     * 'ZZZZ' outputs the offset with a colon, with seconds and 'Z' as the text for UTC (ISO-8601 style).
+     * <b>Offset X</b>: This formats the offset using 'Z' when the offset is zero.
+     * One letter outputs just the hour', such as '+01'
+     * Two letters outputs the hour and minute, without a colon, such as '+0130'.
+     * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
+     * Four letters outputs the hour and minute and optional second, without a colon, such as '+013015'.
+     * Five letters outputs the hour and minute and optional second, with a colon, such as '+01:30:15'.
+     * <p>
+     * <b>Offset Z</b>: This formats the offset using '+0000' or '+00:00' when the offset is zero.
+     * One or two letters outputs the hour and minute, without a colon, such as '+0130'.
+     * Three letters outputs the hour and minute, with a colon, such as '+01:30'.
      * <p>
      * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
      * <p>
@@ -844,14 +839,15 @@ public final class DateTimeFormatterBuilder {
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
      * Pattern letters 'E' and 'u' are merged.
      * Pattern letters 'G' and 'W' are not available.
+     * Pattern letters 'Z' and 'X' are extended.
+     * Pattern letter 'y' and 'Y' parse years of two digits and more than 4 digits differently.
      * Pattern letters 'Q', 'q', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
-     * Letters 'y', 'z', 'Z' and number types have some differences.
+     * Number types will reject large numbers.
      * The pattern is also similar, but not identical, to that defined by the
      * Unicode Common Locale Data Repository.
      *
      * @param pattern  the pattern to add, not null
      * @return this, for chaining, never null
-     * @throws NullPointerException if the pattern is null
      * @throws IllegalArgumentException if the pattern is invalid
      */
     public DateTimeFormatterBuilder appendPattern(String pattern) {
@@ -915,7 +911,19 @@ public final class DateTimeFormatterBuilder {
                 } else if (cur == 'I') {
                     appendZoneId();
                 } else if (cur == 'Z') {
-                    appendOffset(count == 1 ? "+0000" : (count == 2 ? "+00:00" : "Z"), count == 2 || count >= 4, count >= 3);
+                    if (count > 3) {
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                    }
+                    if (count < 3) {
+                        appendOffset("+0000", "+HHMM");
+                    } else {
+                        appendOffset("+00:00", "+HH:MM");
+                    }
+                } else if (cur == 'X') {
+                    if (count > 5) {
+                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                    }
+                    appendOffset("Z", ZoneOffsetPrinterParser.PATTERNS[count - 1]);
                 } else {
                     throw new IllegalArgumentException("Unknown pattern letter: " + cur);
                 }
@@ -1055,7 +1063,7 @@ public final class DateTimeFormatterBuilder {
         RULE_MAP.put('A', ISODateTimeRule.MILLI_OF_DAY);            // 310, CLDR
         RULE_MAP.put('n', ISODateTimeRule.NANO_OF_SECOND);          // 310
         RULE_MAP.put('N', ISODateTimeRule.NANO_OF_DAY);             // 310
-        // reserved - z,Z,I,f,p
+        // reserved - z,Z,X,I,f,p
         // reserved - v,V - future extended CLDR compatible zone names
         // reserved - l - future extended CLDR compatible leap month symbol
         // reserved - W - future extended CLDR compatible week of week-based-month

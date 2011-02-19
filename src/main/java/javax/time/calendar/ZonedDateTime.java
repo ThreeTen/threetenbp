@@ -2085,11 +2085,11 @@ public final class ZonedDateTime
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>{@code yyyy-MM-dd'T'HH:mmZZZZ'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssZZZZ'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnZZZZ'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnZZZZ'['I']'}</li>
-     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnZZZZ'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnXXXXX'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnXXXXX'['I']'}</li>
+     * <li>{@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX'['I']'}</li>
      * </ul>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

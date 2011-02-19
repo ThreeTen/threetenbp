@@ -57,6 +57,8 @@
 - Change formatting letter x to Y
 - Change formatting letters E and Q to work like M
 - Add narrow style to formatting
+- Add X formatting letter to match current Java, with more power
+- Change formatting letter Z to match current Java, with more power
 
 0.6.3
 ===============================================================================

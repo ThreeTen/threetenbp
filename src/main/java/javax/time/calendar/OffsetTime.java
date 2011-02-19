@@ -865,11 +865,11 @@ public final class OffsetTime
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>{@code HH:mmZZZZ}</li>
-     * <li>{@code HH:mm:ssZZZZ}</li>
-     * <li>{@code HH:mm:ssfnnnZZZZ}</li>
-     * <li>{@code HH:mm:ssfnnnnnnZZZZ}</li>
-     * <li>{@code HH:mm:ssfnnnnnnnnnZZZZ}</li>
+     * <li>{@code HH:mmXXXXX}</li>
+     * <li>{@code HH:mm:ssXXXXX}</li>
+     * <li>{@code HH:mm:ssfnnnXXXXX}</li>
+     * <li>{@code HH:mm:ssfnnnnnnXXXXX}</li>
+     * <li>{@code HH:mm:ssfnnnnnnnnnXXXXX}</li>
      * </ul>
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.

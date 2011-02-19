@@ -353,13 +353,13 @@ public class TestOffsetTime {
     // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
     public void factory_parse_formatter() {
-        OffsetTime t = OffsetTime.parse("11 30+0100", DateTimeFormatters.pattern("HH mmZ"));
+        OffsetTime t = OffsetTime.parse("11 30+0100", DateTimeFormatters.pattern("HH mmXX"));
         assertEquals(t, OffsetTime.of(11, 30, ZoneOffset.ofHours(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        OffsetTime.parse((String) null, DateTimeFormatters.pattern("HM mmZ"));
+        OffsetTime.parse((String) null, DateTimeFormatters.pattern("HM mmXX"));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

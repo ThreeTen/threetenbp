@@ -313,18 +313,59 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendOffsetId() throws Exception {
         builder.appendOffsetId();
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "OffsetId()");
+        assertEquals(f.toString(), "Offset('Z',+HH:MM:ss)");
     }
 
-    public void test_appendOffset_3arg() throws Exception {
-        builder.appendOffset("Z", true, false);
+    @DataProvider(name="offsetPatterns")
+    public Object[][] data_offsetPatterns() {
+        return new Object[][] {
+            {"+HH"},
+            {"+HHMM"},
+            {"+HH:MM"},
+            {"+HHMMss"},
+            {"+HH:MM:ss"},
+            {"+HHMMSS"},
+            {"+HH:MM:SS"},
+        };
+    }
+
+    @Test(dataProvider="offsetPatterns")
+    public void test_appendOffset(String pattern) throws Exception {
+        builder.appendOffset("Z", pattern);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "Offset('Z',true,false)");
+        assertEquals(f.toString(), "Offset('Z'," + pattern + ")");
+    }
+
+    @DataProvider(name="badOffsetPatterns")
+    public Object[][] data_badOffsetPatterns() {
+        return new Object[][] {
+            {"HH"},
+            {"HHMM"},
+            {"HH:MM"},
+            {"HHMMss"},
+            {"HH:MM:ss"},
+            {"HHMMSS"},
+            {"HH:MM:SS"},
+            {"+H"},
+            {"+HMM"},
+            {"+HHM"},
+            {"+A"},
+        };
+    }
+
+    @Test(dataProvider="badOffsetPatterns", expectedExceptions = IllegalArgumentException.class)
+    public void test_appendOffset_badPattern(String pattern) throws Exception {
+        builder.appendOffset("Z", pattern);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_appendOffset_3arg_nullText() throws Exception {
-        builder.appendOffset(null, true, false);
+        builder.appendOffset(null, "+HH:MM");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendOffset_3arg_nullPattern() throws Exception {
+        builder.appendOffset("Z", null);
     }
 
     //-----------------------------------------------------------------------
@@ -563,10 +604,15 @@ public class TestDateTimeFormatterBuilder {
             {"IIII", "ZoneId()"},
             {"IIIII", "ZoneId()"},
             
-            {"Z", "Offset('+0000',false,false)"},
-            {"ZZ", "Offset('+00:00',true,false)"},
-            {"ZZZ", "Offset('Z',false,true)"},
-            {"ZZZZ", "OffsetId()"},
+            {"Z", "Offset('+0000',+HHMM)"},  // SimpleDateFormat compatible
+            {"ZZ", "Offset('+0000',+HHMM)"},
+            {"ZZZ", "Offset('+00:00',+HH:MM)"},
+            
+            {"X", "Offset('Z',+HH)"},
+            {"XX", "Offset('Z',+HHMM)"},
+            {"XXX", "Offset('Z',+HH:MM)"},
+            {"XXXX", "Offset('Z',+HHMMss)"},
+            {"XXXXX", "Offset('Z',+HH:MM:ss)"},
             
             {"ppH", "Pad(Value(ISO.HourOfDay),2)"},
             {"pppDD", "Pad(Value(ISO.DayOfYear,2),3)"},
@@ -630,6 +676,8 @@ public class TestDateTimeFormatterBuilder {
             {"QQQQQQ"},
             {"EEEEEE"},
             {"aaaaaa"},
+            {"ZZZZ"},
+            {"XXXXXX"},
             
             {"RO"},
             

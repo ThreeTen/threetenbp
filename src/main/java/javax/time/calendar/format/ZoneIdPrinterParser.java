@@ -144,7 +144,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
         if (parseText.substring(position).startsWith("UTC")) {
             DateTimeParseContext newContext = new DateTimeParseContext(context.getSymbols());
             int startPos = position + 3;
-            int endPos = new ZoneOffsetPrinterParser("", true, true).parse(newContext, parseText, startPos);
+            int endPos = new ZoneOffsetPrinterParser("", "+HH:MM:ss").parse(newContext, parseText, startPos);
             if (endPos < 0) {
                 context.setParsed(ZoneId.rule(), ZoneId.UTC);
                 return startPos;

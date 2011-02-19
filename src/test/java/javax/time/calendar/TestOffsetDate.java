@@ -449,13 +449,13 @@ public class TestOffsetDate {
     // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
     public void factory_parse_formatter() {
-        OffsetDate t = OffsetDate.parse("20101203+0100", DateTimeFormatters.pattern("yyyyMMddZ"));
+        OffsetDate t = OffsetDate.parse("20101203+0100", DateTimeFormatters.pattern("yyyyMMddXX"));
         assertEquals(t, OffsetDate.of(2010, 12, 3, ZoneOffset.ofHours(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullText() {
-        OffsetDate.parse((String) null, DateTimeFormatters.pattern("yyyyMMddZ"));
+        OffsetDate.parse((String) null, DateTimeFormatters.pattern("yyyyMMddXX"));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
