@@ -541,9 +541,17 @@ public class TestDateTimeFormatterBuilder {
             {"SS", "Value(ISO.MilliOfSecond,2)"},
             {"SSS", "Value(ISO.MilliOfSecond,3)"},
             
+            {"A", "Value(ISO.MilliOfDay)"},
+            {"AA", "Value(ISO.MilliOfDay,2)"},
+            {"AAA", "Value(ISO.MilliOfDay,3)"},
+            
             {"n", "Value(ISO.NanoOfSecond)"},
             {"nn", "Value(ISO.NanoOfSecond,2)"},
             {"nnn", "Value(ISO.NanoOfSecond,3)"},
+            
+            {"N", "Value(ISO.NanoOfDay)"},
+            {"NN", "Value(ISO.NanoOfDay,2)"},
+            {"NNN", "Value(ISO.NanoOfDay,3)"},
             
             {"z", "ZoneText(SHORT)"},
             {"zz", "ZoneText(SHORT)"},
@@ -561,8 +569,6 @@ public class TestDateTimeFormatterBuilder {
             {"ZZ", "Offset('+00:00',true,false)"},
             {"ZZZ", "Offset('Z',false,true)"},
             {"ZZZZ", "OffsetId()"},
-            
-            {"RO", "'R''O'"},
             
             {"ppH", "Pad(Value(ISO.HourOfDay),2)"},
             {"pppDD", "Pad(Value(ISO.DayOfYear,2),3)"},
@@ -589,7 +595,9 @@ public class TestDateTimeFormatterBuilder {
             {"fm", "Fraction(ISO.MinuteOfHour,1,1)"},
             {"fs", "Fraction(ISO.SecondOfMinute,1,1)"},
             {"fS", "Fraction(ISO.MilliOfSecond,1,1)"},
+            {"fA", "Fraction(ISO.MilliOfDay,1,1)"},
             {"fn", "Fraction(ISO.NanoOfSecond,1,1)"},
+            {"fN", "Fraction(ISO.NanoOfDay,1,1)"},
             
             {"yyyy[-MM[-dd", "Value(ISO.Year,4,19,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
             {"yyyy[-MM[-dd]]", "Value(ISO.Year,4,19,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
@@ -620,6 +628,8 @@ public class TestDateTimeFormatterBuilder {
             {"yyyy]MM"},
             {"yyyy[MM]]"},
             
+            {"RO"},
+            
             {"p"},
             {"pp"},
             {"p:"},
@@ -638,15 +648,8 @@ public class TestDateTimeFormatterBuilder {
         try {
             builder.appendPattern(input);
         } catch (IllegalArgumentException ex) {
-//            System.out.println(ex.getMessage());
             throw ex;
         }
     }
-
-//    public void test_sdf() throws Exception {
-//        SimpleDateFormat dsf = new SimpleDateFormat("ss.SSS");
-//        Date date = dsf.parse("1.1");
-//        System.out.println(Instant.millisInstant(date.getTime()));
-//    }
 
 }

@@ -53,6 +53,7 @@
 - Rework DateTimeFields, adding DateTimeField
 - Move units and rules from ISOChronology to their own classes as field constants
 - Rename DateTimeFieldRule to DateTimeRule
+- Add A and N formatting letter
 
 0.6.3
 ===============================================================================

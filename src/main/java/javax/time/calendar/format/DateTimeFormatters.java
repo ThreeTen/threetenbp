@@ -105,7 +105,9 @@ public final class DateTimeFormatters {
      *   m       minute-of-hour              number/fraction   30
      *   s       second-of-minute            number/fraction   55
      *   S       milli-of-second             number/fraction   978
+     *   A       milli-of-day                number/fraction   1234
      *   n       nano-of-second              number/fraction   987654321
+     *   N       nano-of-day                 number/fraction   1234000000
      *
      *   I       time-zone ID                zoneID            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
@@ -169,16 +171,17 @@ public final class DateTimeFormatters {
      * <p>
      * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
      * <p>
-     * Any unrecognized letter will be output directly.
-     * However, since these are reserved, that may change in future versions.
+     * Any unrecognized letter is an error.
      * Any non-letter character, other than '[', ']' and the single quote will be output directly.
      * Despite this, it is recommended to use single quotes around all characters that you want to
      * output directly to ensure that future changes do not break your application.
      * <p>
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
      * SimpleDateFormat pattern letters 'G' and 'W' are not available.
-     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'I', 'f' and 'p' are added.
+     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
      * Letters 'y', 'z' and 'Z' have some differences.
+     * The pattern is also similar, but not identical, to that defined by the
+     * Unicode Common Locale Data Repository.
      *
      * @param pattern  the pattern to use, not null
      * @return the formatter based on the pattern, never null

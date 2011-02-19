@@ -769,7 +769,9 @@ public final class DateTimeFormatterBuilder {
      *   m       minute-of-hour              number/fraction   30
      *   s       second-of-minute            number/fraction   55
      *   S       milli-of-second             number/fraction   978
+     *   A       milli-of-day                number/fraction   1234
      *   n       nano-of-second              number/fraction   987654321
+     *   N       nano-of-day                 number/fraction   1234000000
      *
      *   I       time-zone ID                zoneID            America/Los_Angeles
      *   z       time-zone name              text              Pacific Standard Time; PST
@@ -833,16 +835,17 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
      * <p>
-     * Any unrecognized letter will be output directly.
-     * However, since these are reserved, that may change in future versions.
+     * Any unrecognized letter is an error.
      * Any non-letter character, other than '[', ']' and the single quote will be output directly.
      * Despite this, it is recommended to use single quotes around all characters that you want to
      * output directly to ensure that future changes do not break your application.
      * <p>
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
      * SimpleDateFormat pattern letters 'G' and 'W' are not available.
-     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'I', 'f' and 'p' are added.
+     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'A', 'N', 'I', 'f' and 'p' are added.
      * Letters 'y', 'z' and 'Z' have some differences.
+     * The pattern is also similar, but not identical, to that defined by the
+     * Unicode Common Locale Data Repository.
      *
      * @param pattern  the pattern to add, not null
      * @return this, for chaining, never null
@@ -859,10 +862,10 @@ public final class DateTimeFormatterBuilder {
         for (int pos = 0; pos < pattern.length(); pos++) {
             char cur = pattern.charAt(pos);
             if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
-                // parse patterns
                 int start = pos++;
                 for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
                 int count = pos - start;
+                // padding
                 if (cur == 'p') {
                     int pad = 0;
                     if (pos < pattern.length()) {
@@ -878,13 +881,14 @@ public final class DateTimeFormatterBuilder {
                         throw new IllegalArgumentException(
                                 "Pad letter 'p' must be followed by valid pad pattern: " + pattern);
                     }
-                    padNext(pad);
+                    padNext(pad); // pad and continue parsing
                 }
+                // fractions
                 int fraction = 0;
                 if (cur == 'f') {
                     if (pos < pattern.length()) {
                         cur = pattern.charAt(pos);
-                        if (cur == 'H' || cur == 'K' || cur == 'm' || cur == 's' || cur == 'S' || cur == 'n') {
+                        if (cur == 'H' || cur == 'K' || cur == 'm' || cur == 's' || cur == 'S' || cur == 'A' || cur == 'n' || cur == 'N') {
                             fraction = count;
                             start = pos++;
                             for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
@@ -896,23 +900,22 @@ public final class DateTimeFormatterBuilder {
                                 "Fraction letter 'f' must be followed by valid fraction pattern: " + pattern);
                     }
                 }
+                // main rules
                 DateTimeRule rule = RULE_MAP.get(cur);
-                if (rule == null) {
-                    if (cur == 'z') {
-                        if (count < 4) {
-                            appendZoneText(TextStyle.SHORT);
-                        } else {
-                            appendZoneText(TextStyle.FULL);
-                        }
-                    } else if (cur == 'I') {
-                        appendZoneId();
-                    } else if (cur == 'Z') {
-                        appendOffset(count == 1 ? "+0000" : (count == 2 ? "+00:00" : "Z"), count == 2 || count >= 4, count >= 3);
-                    } else {
-                        appendLiteral(pattern.substring(start, pos));
-                    }
-                } else {
+                if (rule != null) {
                     parseRule(cur, count, rule, fraction);
+                } else if (cur == 'z') {
+                    if (count < 4) {
+                        appendZoneText(TextStyle.SHORT);
+                    } else {
+                        appendZoneText(TextStyle.FULL);
+                    }
+                } else if (cur == 'I') {
+                    appendZoneId();
+                } else if (cur == 'Z') {
+                    appendOffset(count == 1 ? "+0000" : (count == 2 ? "+00:00" : "Z"), count == 2 || count >= 4, count >= 3);
+                } else {
+                    throw new IllegalArgumentException("Unknown pattern letter: " + cur);
                 }
                 fraction = 0;
                 pos--;
@@ -1007,15 +1010,21 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to rules. */
     private static final Map<Character, DateTimeRule> RULE_MAP = new HashMap<Character, DateTimeRule>();
     static {
-        // TODO: cross check with CLDR for letters
-//        RULE_MAP.put('G', ISOChronology.eraRule());
+        // TODO: 5 chars for narrow style
+        // TODO: G -> era
+        // TODO: y -> year-of-era
+        // TODO: u -> year
+        // TODO: g -> mjDay
+        // TODO: Y -> week-based-year
+        // TODO: E -> 1/2 chars print number
+        // TODO: e -> day-of-week localized number
+        // TODO: standalone (L months, q quarters, c dayofweek, but use L as prefix instead -> LM,LQ,LE
         RULE_MAP.put('y', ISODateTimeRule.YEAR);
         RULE_MAP.put('x', ISODateTimeRule.WEEK_BASED_YEAR);  // new
-        RULE_MAP.put('Q', ISODateTimeRule.QUARTER_OF_YEAR);  // new
+        RULE_MAP.put('Q', ISODateTimeRule.QUARTER_OF_YEAR);  // new (CLDR)
         RULE_MAP.put('M', ISODateTimeRule.MONTH_OF_YEAR);
         RULE_MAP.put('q', ISODateTimeRule.MONTH_OF_QUARTER);  // new
         RULE_MAP.put('w', ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
-//        RULE_MAP.put('W', ISOChronology.weekOfWeekBasedMonthRule());
         RULE_MAP.put('D', ISODateTimeRule.DAY_OF_YEAR);
         RULE_MAP.put('d', ISODateTimeRule.DAY_OF_MONTH);
         RULE_MAP.put('F', ISODateTimeRule.WEEK_OF_MONTH);
@@ -1029,8 +1038,17 @@ public final class DateTimeFormatterBuilder {
         RULE_MAP.put('m', ISODateTimeRule.MINUTE_OF_HOUR);
         RULE_MAP.put('s', ISODateTimeRule.SECOND_OF_MINUTE);
         RULE_MAP.put('S', ISODateTimeRule.MILLI_OF_SECOND);
+        RULE_MAP.put('A', ISODateTimeRule.MILLI_OF_DAY);  // new (CLDR)
         RULE_MAP.put('n', ISODateTimeRule.NANO_OF_SECOND);  // new
-        // reserved - z,Z,I,f
+        RULE_MAP.put('N', ISODateTimeRule.NANO_OF_DAY);  // new
+        // reserved - z,Z,I,f,p
+        // reserved - v,V - future extended CLDR compatible zone names
+        // reserved - l - future extended CLDR compatible leap month symbol
+        // reserved - W - future extended CLDR compatible week of week-based-month
+        // CLDR - L, q, c are altered to be L prefix
+        // CLDR - j - not relevant
+        // CLDR - S - general fraction of second, use milli-of-second here
+        // CLDR - Z - different approach here
     }
 
     //-----------------------------------------------------------------------
