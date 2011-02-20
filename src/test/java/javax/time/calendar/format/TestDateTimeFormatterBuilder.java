@@ -247,11 +247,6 @@ public class TestDateTimeFormatterBuilder {
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_appendFraction_3arg_invalidRuleNotMinZero() throws Exception {
-        builder.appendFraction(MONTH_OF_YEAR, 1, 9);
-    }
-
-    @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_appendFraction_3arg_minTooSmall() throws Exception {
         builder.appendFraction(MINUTE_OF_HOUR, -1, 9);
     }

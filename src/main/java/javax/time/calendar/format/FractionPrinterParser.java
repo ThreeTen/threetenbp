@@ -68,7 +68,20 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param maxWidth  the maximum width to output, from 0 to 9
      */
     FractionPrinterParser(DateTimeRule rule, int minWidth, int maxWidth) {
-        // validated by caller
+        DateTimeFormatterBuilder.checkNotNull(rule, "DateTimeRule must not be null");
+        if (rule.isFixedValueSet() == false) {
+            throw new IllegalArgumentException("The rule must have a fixed set of values");
+        }
+        if (minWidth < 0 || minWidth > 9) {
+            throw new IllegalArgumentException("The minimum width must be from 0 to 9 inclusive but was " + minWidth);
+        }
+        if (maxWidth < 1 || maxWidth > 9) {
+            throw new IllegalArgumentException("The maximum width must be from 1 to 9 inclusive but was " + maxWidth);
+        }
+        if (maxWidth < minWidth) {
+            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
+                    maxWidth + " < " + minWidth);
+        }
         this.rule = rule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;

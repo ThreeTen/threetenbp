@@ -430,28 +430,10 @@ public final class DateTimeFormatterBuilder {
      * @param maxWidth  the maximum width of the field excluding the decimal point, from 1 to 9
      * @return this, for chaining, never null
      * @throws IllegalArgumentException if the field has a variable set of valid values
-     * @throws IllegalArgumentException if the field has a non-zero minimum
-     * @throws IllegalArgumentException if the widths are invalid
+     * @throws IllegalArgumentException if either width is invalid
      */
     public DateTimeFormatterBuilder appendFraction(
             DateTimeRule rule, int minWidth, int maxWidth) {
-        checkNotNull(rule, "DateTimeRule must not be null");
-        if (rule.isFixedValueSet() == false) {
-            throw new IllegalArgumentException("The field does not have a fixed set of values");
-        }
-        if (rule.getMinimumValue() != 0) {
-            throw new IllegalArgumentException("The field does not have a minimum value of zero");
-        }
-        if (minWidth < 0 || minWidth > 9) {
-            throw new IllegalArgumentException("The minimum width must be from 0 to 9 inclusive but was " + minWidth);
-        }
-        if (maxWidth < 1 || maxWidth > 9) {
-            throw new IllegalArgumentException("The maximum width must be from 1 to 9 inclusive but was " + maxWidth);
-        }
-        if (maxWidth < minWidth) {
-            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
-                    maxWidth + " < " + minWidth);
-        }
         FractionPrinterParser pp = new FractionPrinterParser(rule, minWidth, maxWidth);
         appendInternal(pp, pp);
         return this;
