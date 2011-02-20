@@ -420,17 +420,16 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      * assuming the standard definition of 60 seconds in a minute.
      *
      * @param value  the value to convert, must be valid for this rule
-     * @return the fractional value of the field, not null
-     * @throws UnsupportedRuleException if the value cannot be converted
-     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @return the value as a fraction within the range, from 0 to 1, not null
+     * @throws CalendricalRuleException if the value cannot be converted to a fraction
      */
     public BigDecimal convertToFraction(long value) {
         if (isFixedValueSet() == false) {
-            throw new UnsupportedRuleException("The fractional value of " + getName() +
+            throw new CalendricalRuleException("The fractional value of " + getName() +
                     " cannot be obtained as the range is not fixed", this);
         }
         if (getMinimumValue() != 0) {
-            throw new UnsupportedRuleException("The fractional value of " + getName() +
+            throw new CalendricalRuleException("The fractional value of " + getName() +
                     " cannot be obtained as the minimum field value is not zero", this);
         }
         checkValidValue(value);

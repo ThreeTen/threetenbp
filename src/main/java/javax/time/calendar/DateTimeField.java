@@ -54,7 +54,7 @@ import javax.time.MathUtils;
  * @author Stephen Colebourne
  */
 public final class DateTimeField
-        implements Calendrical, Comparable<DateTimeField>, Serializable {
+        implements Calendrical, CalendricalMatcher, Comparable<DateTimeField>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -233,6 +233,7 @@ public final class DateTimeField
      * See {@link DateTimeRule#convertToFraction(long)} for details.
      *
      * @return the value as a fraction within the range, from 0 to 1, not null
+     * @throws CalendricalRuleException if the value cannot be converted to a fraction
      */
     public BigDecimal getFractionalValue() {
         return rule.convertToFraction(value);
@@ -256,6 +257,16 @@ public final class DateTimeField
             return rule.reify(this);
         }
         return rule.deriveValueFrom(this);
+    }
+
+    /**
+     * Checks if this field matches the equivalent field in the specified calendrical.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical fields match, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule));
     }
 
 //    //-----------------------------------------------------------------------
@@ -296,7 +307,7 @@ public final class DateTimeField
     /**
      * Compares this field to the specified field.
      * <p>
-     * The comparison orders first by the unit, then by the amount.
+     * The comparison orders first by the rule, then by the value.
      *
      * @param otherPeriod  the other  to compare to, not null
      * @return the comparator value, negative if less, positive if greater
