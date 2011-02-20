@@ -41,7 +41,9 @@ import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
 import javax.time.calendar.TestDateAdjusters;
 import javax.time.calendar.TestDateResolvers;
+import javax.time.calendar.TestDateTimeField;
 import javax.time.calendar.TestDateTimeFields;
+import javax.time.calendar.TestDateTimeRule;
 import javax.time.calendar.TestDayOfWeek;
 import javax.time.calendar.TestISOAmPmOfDayRule;
 import javax.time.calendar.TestISOChronology;
@@ -152,7 +154,9 @@ public class AllTest {
             TestClock_TimeSourceClock.class,
             TestDateAdjusters.class,
             TestDateResolvers.class,
+            TestDateTimeField.class,
             TestDateTimeFields.class,
+            TestDateTimeRule.class,
             TestDayOfWeek.class,
             TestISOAmPmOfDayRule.class,
             TestISOChronology.class,

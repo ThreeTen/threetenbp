@@ -411,10 +411,10 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      * Converts a value for this field to a fraction between 0 and 1.
      * <p>
      * The fractional value is between 0 (inclusive) and 1 (exclusive).
-     * It can only be returned if {@link #isFixedValueSet()} returns true and the
-     * {@link #getMinimumValue()} returns zero.
+     * It can only be returned if {@link #isFixedValueSet()} returns true.
      * The fraction is obtained by calculation from the field range using 9 decimal
      * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
+     * The calculation is inaccurate if the values do not run continuously from smallest to largest.
      * <p>
      * For example, the second-of-minute value of 15 would be returned as 0.25,
      * assuming the standard definition of 60 seconds in a minute.
@@ -428,25 +428,21 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
             throw new CalendricalRuleException("The fractional value of " + getName() +
                     " cannot be obtained as the range is not fixed", this);
         }
-        if (getMinimumValue() != 0) {
-            throw new CalendricalRuleException("The fractional value of " + getName() +
-                    " cannot be obtained as the minimum field value is not zero", this);
-        }
         checkValidValue(value);
-        long range = getMaximumValue();
-        range++;
-        BigDecimal decimal = new BigDecimal(value);
-        return decimal.divide(new BigDecimal(range), FRACTION_CONTEXT);
+        BigDecimal min = BigDecimal.valueOf(getMinimumValue());
+        BigDecimal range = BigDecimal.valueOf(getMaximumValue()).subtract(min).add(BigDecimal.ONE);
+        BigDecimal valueBD = BigDecimal.valueOf(value).subtract(min);
+        return valueBD.divide(range, FRACTION_CONTEXT);
     }
 
     /**
      * Converts a fraction from 0 to 1 for this field to a value.
      * <p>
      * The fractional value must be between 0 (inclusive) and 1 (exclusive).
-     * It can only be returned if {@link #isFixedValueSet()} returns true and the
-     * {@link #getMinimumValue()} returns zero.
+     * It can only be returned if {@link #isFixedValueSet()} returns true.
      * The value is obtained by calculation from the field range and a rounding
      * mode of {@link RoundingMode#FLOOR FLOOR}.
+     * The calculation is inaccurate if the values do not run continuously from smallest to largest.
      * <p>
      * For example, the fractional second-of-minute of 0.25 would be converted to 15,
      * assuming the standard definition of 60 seconds in a minute.
@@ -461,15 +457,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
             throw new UnsupportedRuleException("The fractional value of " + getName() +
                     " cannot be converted as the range is not fixed", this);
         }
-        if (getMinimumValue() != 0) {
-            throw new UnsupportedRuleException("The fractional value of " + getName() +
-                    " cannot be converted as the minimum field value is not zero", this);
-        }
-        long range = getMaximumValue();
-        range++;
-        BigDecimal decimal = fraction.multiply(new BigDecimal(range), VALUE_CONTEXT);
+        BigDecimal min = BigDecimal.valueOf(getMinimumValue());
+        BigDecimal range = BigDecimal.valueOf(getMaximumValue()).subtract(min).add(BigDecimal.ONE);
+        BigDecimal valueBD = fraction.multiply(range, VALUE_CONTEXT).add(min);
         try {
-            long value = decimal.longValueExact();
+            long value = valueBD.longValueExact();
             checkValidValue(value);
             return value;
         } catch (ArithmeticException ex) {
