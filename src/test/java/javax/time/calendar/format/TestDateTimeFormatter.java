@@ -222,7 +222,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         CalendricalMerger result = test.parse("ONE30");
         assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getInputMap().get(DAY_OF_MONTH), 30L);
+        assertEquals(result.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
@@ -286,7 +286,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.toCalendricalMerger().getInputMap().size(), 1);
-        assertEquals(result.getParsed(DAY_OF_MONTH), 30L);
+        assertEquals(result.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
     }
 
     public void test_parse_StringParsePosition_parseError() throws Exception {
@@ -363,7 +363,7 @@ public class TestDateTimeFormatter {
         Format format = test.toFormat();
         CalendricalMerger result = (CalendricalMerger) format.parseObject("ONE30");
         assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getInputMap().get(DAY_OF_MONTH), 30L);
+        assertEquals(result.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
     }
 
     @Test(expectedExceptions=ParseException.class)

@@ -59,6 +59,8 @@
 - Add narrow style to formatting
 - Add X formatting letter to match current Java, with more power
 - Change formatting letter Z to match current Java, with more power
+- Rename DateTimeParseContext.setParsed to avoid invalid overload
+- Always hold parsed date-time data as DateTimeField
 
 0.6.3
 ===============================================================================

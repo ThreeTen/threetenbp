@@ -169,8 +169,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23L);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
     }
 
     public void test_appendValue_subsequent2_parse4() throws Exception {
@@ -178,8 +178,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("0123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23L);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
     }
 
     public void test_appendValue_subsequent2_parse5() throws Exception {
@@ -187,8 +187,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)'4'");
         CalendricalMerger cal = f.parse("01234");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 23L);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
     }
 
     public void test_appendValue_subsequent3_parse6() throws Exception {
@@ -199,9 +199,9 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.Year,4,10,EXCEEDS_PAD)Value(ISO.MonthOfYear,2)Value(ISO.DayOfMonth,2)");
         CalendricalMerger cal = f.parse("20090630");
-        assertEquals(cal.getInputMap().get(YEAR), 2009L);
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 6L);
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), 30L);
+        assertEquals(cal.getInputMap().get(YEAR), YEAR.field(2009L));
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
+        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
     }
 
     //-----------------------------------------------------------------------
@@ -215,7 +215,7 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(ISO.Year,2,2000)");
         CalendricalMerger cal = f.parse("12");
-        assertEquals(cal.getInputMap().get(YEAR), 2012L);
+        assertEquals(cal.getInputMap().get(YEAR), YEAR.field(2012L));
     }
 
     public void test_appendValueReduced_subsequent_parse() throws Exception {
@@ -223,8 +223,8 @@ public class TestDateTimeFormatterBuilder {
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)ReducedValue(ISO.Year,2,2000)");
         CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), 1L);
-        assertEquals(cal.getInputMap().get(YEAR), 2023L);
+        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getInputMap().get(YEAR), YEAR.field(2023L));
     }
 
     //-----------------------------------------------------------------------

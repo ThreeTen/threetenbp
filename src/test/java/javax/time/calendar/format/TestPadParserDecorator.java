@@ -34,6 +34,8 @@ package javax.time.calendar.format;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
+import javax.time.calendar.DateTimeField;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -92,7 +94,7 @@ public class TestPadParserDecorator {
         int result = pp.parse(context, "--2", 0);
         assertEquals(result, 3);
         assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 2L);
+        assertParsed(MONTH_OF_YEAR, 2L);
     }
 
     public void test_parse_noReadBeyond() throws Exception {
@@ -101,7 +103,7 @@ public class TestPadParserDecorator {
         int result = pp.parse(context, "--22", 0);
         assertEquals(result, 3);
         assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 2L);
+        assertParsed(MONTH_OF_YEAR, 2L);
     }
 
     public void test_parse_textLessThanPadWidth() throws Exception {
@@ -135,6 +137,14 @@ public class TestPadParserDecorator {
         int result = pp.parse(context, "--HELLO-", 0);
         assertEquals(result, 8);
         assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+    }
+
+    private void assertParsed(DateTimeRule rule, Number value) {
+        if (value == null) {
+            assertEquals(context.getParsed(rule), null);
+        } else {
+            assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+        }
     }
 
 }

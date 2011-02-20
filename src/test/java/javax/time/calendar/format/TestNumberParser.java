@@ -37,6 +37,8 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
+import javax.time.calendar.DateTimeField;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -160,7 +162,7 @@ public class TestNumberParser {
         int newPos = pp.parse(context, text, pos);
         assertEquals(newPos, expectedPos);
         if (expectedPos > 0) {
-            assertEquals(context.getParsed(DAY_OF_MONTH), expectedValue);
+            assertParsed(context, DAY_OF_MONTH, expectedValue);
         } else {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
         }
@@ -177,7 +179,7 @@ public class TestNumberParser {
         int newPos = pp.parse(context, text, pos);
         assertEquals(newPos, expectedPos);
         if (expectedPos > 0) {
-            assertEquals(context.getParsed(DAY_OF_MONTH), expectedValue);
+            assertParsed(context, DAY_OF_MONTH, expectedValue);
         }
     }
 
@@ -191,7 +193,7 @@ public class TestNumberParser {
         int newPos = pp.parse(context, text, pos);
         assertEquals(newPos, expectedPos);
         if (expectedPos > 0) {
-            assertEquals(context.getParsed(DAY_OF_WEEK), expectedValue);
+            assertParsed(context, DAY_OF_WEEK, expectedValue);
         }
     }
 
@@ -302,7 +304,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (parseVal != null ? (long) parseVal : null));
+        assertParsed(context, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
         assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
     }
 
@@ -408,8 +410,16 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(DAY_OF_MONTH), (parseVal != null ? (long) parseVal : null));
+        assertParsed(context, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
         assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
+    }
+
+    private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {
+        if (value == null) {
+            assertEquals(context.getParsed(rule), null);
+        } else {
+            assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+        }
     }
 
 }

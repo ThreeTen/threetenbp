@@ -40,7 +40,9 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
@@ -260,7 +262,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertEquals(context.getParsed(NANO_OF_SECOND), (long) expectedValue);
+            assertParsed(context, NANO_OF_SECOND, expectedValue);
         }
     }
 
@@ -274,7 +276,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertEquals(context.getParsed(NANO_OF_SECOND), (long) expectedValue);
+            assertParsed(context, NANO_OF_SECOND, expectedValue);
         }
     }
 
@@ -288,7 +290,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertEquals(context.getParsed(NANO_OF_SECOND), (long) expectedValue);
+            assertParsed(context, NANO_OF_SECOND, expectedValue);
         }
     }
 
@@ -309,7 +311,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendricalMerger().getInputMap().containsKey(SECOND_OF_MINUTE), false);
         } else {
-            assertEquals(context.getParsed(SECOND_OF_MINUTE), (long) value);
+            assertParsed(context, SECOND_OF_MINUTE, value);
         }
     }
 
@@ -374,6 +376,14 @@ public class TestFractionPrinterParser {
     public void test_toString() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
         assertEquals(pp.toString(), "Fraction(ISO.NanoOfSecond,3,6)");
+    }
+
+    private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {
+        if (value == null) {
+            assertEquals(context.getParsed(rule), null);
+        } else {
+            assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+        }
     }
 
 }

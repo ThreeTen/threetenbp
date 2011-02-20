@@ -57,6 +57,7 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 import javax.time.calendar.DateAdjusters;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
@@ -644,11 +645,11 @@ public final class TZDBZoneRulesCompiler {
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        Long hour = (Long) cal.getParsed(HOUR_OF_DAY);
-        Long min = (Long) cal.getParsed(MINUTE_OF_HOUR);
-        Long sec = (Long) cal.getParsed(SECOND_OF_MINUTE);
-        int secs = (int) (hour * 60 * 60 +
-            (min != null ? min : 0) * 60 + (sec != null ? sec : 0));
+        DateTimeField hour = (DateTimeField) cal.getParsed(HOUR_OF_DAY);
+        DateTimeField min = (DateTimeField) cal.getParsed(MINUTE_OF_HOUR);
+        DateTimeField sec = (DateTimeField) cal.getParsed(SECOND_OF_MINUTE);
+        int secs = (int) (hour.getValue() * 60 * 60 +
+            (min != null ? min.getValue() : 0) * 60 + (sec != null ? sec.getValue() : 0));
         if (pos == 1) {
             secs = -secs;
         }

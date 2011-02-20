@@ -41,6 +41,7 @@ import java.util.TreeMap;
 import javax.time.calendar.CalendricalContext;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 
 /**
@@ -192,10 +193,11 @@ public final class DateTimeParseContext {
      * The value stored may be out of range for the rule and of any type -
      * no checks are performed.
      *
+     * @param <T>  the rule type
      * @param rule  the rule to set in the rule-value map, not null
      * @param value  the value to set in the rule-value map, not null
      */
-    public void setParsed(CalendricalRule<?> rule, Object value) {
+    public <T> void setParsed(CalendricalRule<T> rule, T value) {
         DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
         DateTimeFormatter.checkNotNull(value, "Value must not be null");
         currentCalendrical().values.put(rule, value);
@@ -210,8 +212,8 @@ public final class DateTimeParseContext {
      * @param value  the value to set in the rule-value map
      */
     public void setParsedField(DateTimeRule rule, long value) {
-        DateTimeFormatter.checkNotNull(rule, "DateTimeRule must not be null");
-        currentCalendrical().values.put(rule, value);
+        DateTimeField field = DateTimeField.of(rule, value);
+        currentCalendrical().values.put(rule, field);
     }
 
     //-----------------------------------------------------------------------
@@ -263,6 +265,7 @@ public final class DateTimeParseContext {
         return currentCalendrical().toString();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Temporary store of parsed data.
      */

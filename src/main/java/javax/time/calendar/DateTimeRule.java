@@ -128,25 +128,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
 
     //-----------------------------------------------------------------------
     /**
-     * Interprets the specified value.
-     * <p>
-     * Before this method is called, the value will be checked to ensure it is not of
-     * the type of this rule.
-     *
-     * @param merger  the merger instance controlling the merge process, not null
-     * @param value  the value to interpret, null if unable to interpret the value
-     * @return the interpreted value
-     */
-    @Override
-    protected DateTimeField interpret(CalendricalMerger merger, Object value) {
-        if (value instanceof Long) {
-            return field((Long) value);
-        }
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the rule defines values that fit in an {@code int}.
      * <p>
      * This checks that all valid values are within the bounds of an {@code int}.

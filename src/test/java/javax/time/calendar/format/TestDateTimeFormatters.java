@@ -1123,7 +1123,7 @@ public class TestDateTimeFormatters {
     private void assertParseMatch(CalendricalMerger merger, MockSimpleCalendrical expected) {
         for (CalendricalRule<?> rule : expected.rules()) {
             if (rule instanceof DateTimeRule) {
-                assertEquals(((DateTimeRule) rule).getValue(expected).getValue(), merger.getInputMap().get(rule), "Failed on rule: " + rule.getName());
+                assertEquals(((DateTimeRule) rule).getValue(expected), merger.getInputMap().get(rule), "Failed on rule: " + rule.getName());
             } else {
                 assertEquals(merger.getInputMap().get(rule), expected.get(rule), "Failed on rule: " + rule.getName());
             }

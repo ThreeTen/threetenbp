@@ -37,6 +37,9 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
+import javax.time.calendar.DateTimeField;
+import javax.time.calendar.DateTimeRule;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -95,35 +98,35 @@ public class TestReducedParser {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "12", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getParsed(YEAR), 2012);
+        assertParsed(YEAR, 2012);
     }
 
     public void test_parse_midStr() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "Xxx12Xxx", 3);
         assertEquals(newPos, 5);
-        assertEquals(context.getParsed(YEAR), 2012);
+        assertParsed(YEAR, 2012);
     }
 
     public void test_parse_remainderIgnored_maxWidth() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "12345", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getParsed(YEAR), 2012);
+        assertParsed(YEAR, 2012);
     }
 
     public void test_parse_remainderIgnored_nonDigit1() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "12-45", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getParsed(YEAR), 2012);
+        assertParsed(YEAR, 2012);
     }
 
     public void test_parse_fieldRangeIgnored() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(DAY_OF_YEAR, 3, 10);
         int newPos = pp.parse(context, "456", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getParsed(DAY_OF_YEAR), 456);  // parsed dayOfYear=456
+        assertParsed(DAY_OF_YEAR, 456);  // parsed dayOfYear=456
     }
 
     //-----------------------------------------------------------------------
@@ -215,7 +218,7 @@ public class TestReducedParser {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(YEAR), parseVal);
+        assertParsed(YEAR, parseVal);
         assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), parseVal != null);
     }
 
@@ -226,8 +229,16 @@ public class TestReducedParser {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
-        assertEquals(context.getParsed(YEAR), parseVal);
+        assertParsed(YEAR, parseVal);
         assertEquals(context.toCalendricalMerger().getInputMap().containsKey(YEAR), parseVal != null);
+    }
+
+    private void assertParsed(DateTimeRule rule, Number value) {
+        if (value == null) {
+            assertEquals(context.getParsed(rule), null);
+        } else {
+            assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+        }
     }
 
 }

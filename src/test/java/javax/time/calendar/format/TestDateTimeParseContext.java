@@ -98,10 +98,10 @@ public class TestDateTimeParseContext {
         context.setParsedField(YEAR, 2008);
         
         assertEquals(context.getParsedRules().size(), 1);
-        assertEquals(context.getParsed(YEAR), 2008L);
+        assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
         Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 1);
-        assertEquals(map.get(YEAR), 2008L);
+        assertEquals(map.get(YEAR), YEAR.field(2008L));
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
@@ -113,18 +113,18 @@ public class TestDateTimeParseContext {
         context.setParsedField(MONTH_OF_YEAR, 6);
         
         assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(YEAR), 2008L);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 6L);
+        assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
+        assertEquals(context.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
         Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 2);
-        assertEquals(map.get(YEAR), 2008L);
-        assertEquals(map.get(MONTH_OF_YEAR), 6L);
+        assertEquals(map.get(YEAR), YEAR.field(2008L));
+        assertEquals(map.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
         assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(YEAR), 2008L);
-        assertEquals(context.getParsed(MONTH_OF_YEAR), 6L);
+        assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
+        assertEquals(context.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -184,7 +184,7 @@ public class TestDateTimeParseContext {
         context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(16));
         context.setParsed(ZoneId.rule(),ZoneId.of(ZoneOffset.ofHours(18)));
         
-        assertEquals(context.toString(), "{ISO.MonthOfYear=6, ISO.Year=2008, ISO.TimeZone=UTC+18:00, ISO.ZoneOffset=+16:00}");
+        assertEquals(context.toString(), "{ISO.MonthOfYear=MonthOfYear 6, ISO.Year=Year 2008, ISO.TimeZone=UTC+18:00, ISO.ZoneOffset=+16:00}");
     }
 
     public void test_toString_empty() throws Exception {
