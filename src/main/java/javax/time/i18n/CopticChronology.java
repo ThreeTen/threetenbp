@@ -36,9 +36,11 @@ import java.io.Serializable;
 import javax.time.Duration;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodUnit;
 
@@ -95,7 +97,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      * @param year  the year to check, not validated for range
      * @return true if the year is a leap year
      */
-    public static boolean isLeapYear(int year) {
+    public static boolean isLeapYear(long year) {
         return ((year % 4) == 3);
     }
 
@@ -178,295 +180,78 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for the year field in the Coptic chronology.
-     *
-     * @return the rule for the year field, never null
-     */
-    public static DateTimeRule yearRule() {
-        return YearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the month-of-year field in the Coptic chronology.
-     *
-     * @return the rule for the month-of-year field, never null
-     */
-    public static DateTimeRule monthOfYearRule() {
-        return MonthOfYearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the day-of-month field in the Coptic chronology.
-     *
-     * @return the rule for the day-of-month field, never null
-     */
-    public static DateTimeRule dayOfMonthRule() {
-        return DayOfMonthRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the day-of-year field in the Coptic chronology.
-     *
-     * @return the rule for the day-of-year field, never null
-     */
-    public static DateTimeRule dayOfYearRule() {
-        return DayOfYearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the day-of-week field in the Coptic chronology.
-     *
-     * @return the rule for the day-of-week field, never null
-     */
-    public static DateTimeRule dayOfWeekRule() {
-        return DayOfWeekRule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the period unit for years.
-     * <p>
-     * The period unit defines the concept of a period of a year.
-     * This has an estimated duration equal to 365.25 days.
-     * <p>
-     * See {@link #yearRule()} for the main date-time field.
-     *
-     * @return the period unit for years, never null
-     */
-    public static PeriodUnit periodYears() {
-        // TODO: should be JulianYears? Depends on add method
-        return YEARS;
-    }
-
-    /**
-     * Gets the period unit for months.
-     * <p>
-     * The period unit defines the concept of a period of a month.
-     * Coptic months are typically 30 days long, except for the 13th month which is
-     * 5 or 6 days long. The rule uses an estimated duration of 29.5 days.
-     * <p>
-     * See {@link #monthOfYearRule()} for the main date-time field.
-     *
-     * @return the period unit for months, never null
-     */
-    public static PeriodUnit periodMonths() {
-        return MONTHS;
-    }
-
-    /**
-     * Gets the period unit for weeks.
-     * <p>
-     * The period unit defines the concept of a period of a week.
-     * This is equivalent to the ISO weeks period unit.
-     *
-     * @return the period unit for weeks, never null
-     */
-    public static PeriodUnit periodWeeks() {
-        return ISOPeriodUnit.WEEKS;
-    }
-
-    /**
-     * Gets the period unit for days.
-     * <p>
-     * The period unit defines the concept of a period of a day.
-     * This is equivalent to the ISO days period unit.
-     * <p>
-     * See {@link #dayOfMonthRule()} for the main date-time field.
-     *
-     * @return the period unit for days, never null
-     */
-    public static PeriodUnit periodDays() {
-        return ISOPeriodUnit.DAYS;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Merges the fields.
      * 
      * @param merger  the merge context
      */
     static void merge(CalendricalMerger merger) {
-        DateTimeField year = merger.getValue(yearRule());
+        DateTimeField year = merger.getValue(CopticChronology.YEAR);
         if (year != null) {
             // year-month-day
-            DateTimeField moy = merger.getValue(monthOfYearRule());
-            DateTimeField dom = merger.getValue(dayOfMonthRule());
+            DateTimeField moy = merger.getValue(CopticChronology.MONTH_OF_YEAR);
+            DateTimeField dom = merger.getValue(CopticChronology.DAY_OF_MONTH);
             if (moy != null && dom != null) {
                 CopticDate date = CopticDate.of(year.getValidIntValue(), moy.getValidIntValue(), dom.getValidIntValue());
                 merger.storeMerged(CopticDate.rule(), date);
-                merger.removeProcessed(yearRule());
-                merger.removeProcessed(monthOfYearRule());
-                merger.removeProcessed(dayOfMonthRule());
+                merger.removeProcessed(CopticChronology.YEAR);
+                merger.removeProcessed(CopticChronology.MONTH_OF_YEAR);
+                merger.removeProcessed(CopticChronology.DAY_OF_MONTH);
             }
             // year-day
-            DateTimeField doy = merger.getValue(dayOfYearRule());
+            DateTimeField doy = merger.getValue(CopticChronology.DAY_OF_YEAR);
             if (doy != null) {
                 CopticDate date = CopticDate.of(year.getValidIntValue(), 1, 1).withDayOfYear(doy.getValidIntValue());
                 merger.storeMerged(CopticDate.rule(), date);
-                merger.removeProcessed(yearRule());
-                merger.removeProcessed(dayOfYearRule());
+                merger.removeProcessed(CopticChronology.YEAR);
+                merger.removeProcessed(CopticChronology.DAY_OF_YEAR);
             }
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Rule implementation.
+     * The period unit for days in the Coptic calendar system.
+     * <p>
+     * This is equivalent to the ISO days period unit.
      */
-    private static final class YearRule extends DateTimeRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeRule INSTANCE = new YearRule();
-        /** A serialization identifier for this class. */
+    public static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
+
+    /**
+     * The period unit for weeks in the Coptic calendar system.
+     * <p>
+     * This is equivalent to the ISO weeks period unit.
+     */
+    public static final PeriodUnit WEEKS = ISOPeriodUnit.WEEKS;
+
+    /**
+     * The period unit for months in the Coptic calendar system.
+     * <p>
+     * This is a basic unit and has no equivalent period.
+     * The estimated duration is equal to 30 days.
+     * This unit does not depend on any other unit.
+     */
+    public static final PeriodUnit MONTHS = new Months();
+    /** Unit class for months. */
+    private static final class Months extends PeriodUnit implements Serializable {
         private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private YearRule() {
-            super(CopticChronology.INSTANCE, "Year", YEARS, null, CopticDate.MIN_YEAR, CopticDate.MAX_YEAR);
+        private Months() {
+            super("CopticMonths", Duration.ofSeconds(30L * 86400));
         }
         private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? field(cd.getYear()) : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            CopticChronology.merge(merger);
+            return MONTHS;
         }
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Rule implementation.
+     * The period unit for years in the Coptic calendar system.
+     * <p>
+     * This is a basic unit and has no equivalent period.
+     * The estimated duration is equal to 365.25 days.
+     * This unit does not depend on any other unit.
      */
-    private static final class MonthOfYearRule extends DateTimeRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeRule INSTANCE = new MonthOfYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private MonthOfYearRule() {
-            super(CopticChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 13);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? field(cd.getMonthOfYear()) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    private static final class DayOfMonthRule extends DateTimeRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeRule INSTANCE = new DayOfMonthRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DayOfMonthRule() {
-            super(CopticChronology.INSTANCE, "DayOfMonth", periodDays(), MONTHS, 1, 30);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        public long getSmallestMaximumValue() {
-            return 5;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(CopticChronology.yearRule());
-            DateTimeField moy = calendrical.get(CopticChronology.monthOfYearRule());
-            if (year != null && moy != null) {
-                if (moy.getValidIntValue() == 13) {
-                    return isLeapYear(year.getValidIntValue()) ? 6 : 5;
-                } else {
-                    return 30;
-                }
-            }
-            return getMaximumValue();
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? field(cd.getDayOfMonth()) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    private static final class DayOfYearRule extends DateTimeRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeRule INSTANCE = new DayOfYearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DayOfYearRule() {
-            super(CopticChronology.INSTANCE, "DayOfYear", periodDays(), YEARS, 1, 366);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        public long getSmallestMaximumValue() {
-            return 365;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(CopticChronology.yearRule());
-            if (year != null) {
-                return isLeapYear(year.getValidIntValue()) ? 366 : 365;
-            }
-            return getMaximumValue();
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? field(cd.getDayOfYear()) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    private static final class DayOfWeekRule extends DateTimeRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeRule INSTANCE = new DayOfWeekRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DayOfWeekRule() {
-            super(CopticChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            CopticDate cd = calendrical.get(CopticDate.rule());
-            return cd != null ? field(cd.getDayOfWeek().getValue()) : null;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Period unit for years.
-     */
-    // TODO: Is a year = 13 months for this definition?
-    private static final PeriodUnit YEARS = new Years();
-    /**
-     * Unit class for years.
-     */
-    private static final class Years extends PeriodUnit {
+    public static final PeriodUnit YEARS = new Years();
+    /** Unit class for years. */
+    private static final class Years extends PeriodUnit implements Serializable {
         private static final long serialVersionUID = 1L;
         private Years() {
             super("CopticYears", Duration.ofSeconds(31557600L));  // 365.25 days
@@ -475,21 +260,168 @@ public final class CopticChronology extends Chronology implements Serializable {
             return YEARS;
         }
     }
-    /**
-     * Period unit for months.
-     */
-    private static final PeriodUnit MONTHS = new Months();
-    /**
-     * Unit class for months.
-     */
-    private static final class Months extends PeriodUnit {
+
+    //-----------------------------------------------------------------------
+    /** Rule class. */
+    private static final class Rule extends DateTimeRule implements Serializable {
         private static final long serialVersionUID = 1L;
-        private Months() {
-            super("CopticMonths", Duration.ofStandardHours(24L * 30L - 12L));  // 29.5 days
+
+        /**
+         * Ordinal for performance and serialization.
+         */
+        private final int ordinal;
+
+        /**
+         * Restricted constructor.
+         */
+        private Rule(int ordinal, 
+                String name,
+                PeriodUnit periodUnit,
+                PeriodUnit periodRange,
+                long minimumValue,
+                long maximumValue) {
+            super(CopticChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue);
+            this.ordinal = ordinal;  // 16 multiplier allow space for new rules
         }
+
+        /**
+         * Deserialize singletons.
+         * 
+         * @return the resolved value, not null
+         */
         private Object readResolve() {
-            return MONTHS;
+            return RULE_CACHE[ordinal / 16];
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        protected DateTimeField derive(Calendrical calendrical) {
+            CopticDate date = calendrical.get(CopticDate.rule());
+            if (date != null) {
+                switch (ordinal) {
+                    case DAY_OF_WEEK_ORDINAL: return field(date.getDayOfWeek().getValue());
+                    case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
+                    case DAY_OF_YEAR_ORDINAL: return field(date.getDayOfYear());
+                    case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear());
+                    case YEAR_ORDINAL: return field(date.getYear());
+                }
+            }
+            return null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            CopticChronology.merge(merger);
+        }
+        @Override
+        public long getSmallestMaximumValue() {
+            switch (ordinal) {
+                case DAY_OF_MONTH_ORDINAL: return 5;
+                case DAY_OF_YEAR_ORDINAL: return 365;
+            }
+            return super.getMaximumValue();
+        }
+        @Override
+        public long getMaximumValue(Calendrical calendrical) {
+            switch (ordinal) {
+                case DAY_OF_MONTH_ORDINAL: {
+                    DateTimeField year = calendrical.get(CopticChronology.YEAR);
+                    DateTimeField moy = calendrical.get(CopticChronology.MONTH_OF_YEAR);
+                    if (year != null && moy != null) {
+                        if (moy.getValue() == 13) {
+                            return isLeapYear(year.getValue()) ? 6 : 5;
+                        } else {
+                            return 30;
+                        }
+                    }
+                    break;
+                }
+                case DAY_OF_YEAR_ORDINAL: {
+                    DateTimeField year = calendrical.get(CopticChronology.YEAR);
+                    if (year != null) {
+                        return isLeapYear(year.getValidIntValue()) ? 366 : 365;
+                    }
+                    break;
+                }
+            }
+            return super.getMaximumValue();
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public int compareTo(CalendricalRule<?> other) {
+            if (other instanceof Rule) {
+                return ordinal - ((Rule) other).ordinal;
+            }
+            return super.compareTo(other);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Rule) {
+                return ordinal == ((Rule) obj).ordinal;
+            }
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            return Rule.class.hashCode() + ordinal;
         }
     }
+
+    //-----------------------------------------------------------------------
+    private static final int DAY_OF_WEEK_ORDINAL =          0 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL =         1 * 16;
+    private static final int DAY_OF_YEAR_ORDINAL =          2 * 16;
+    private static final int MONTH_OF_YEAR_ORDINAL =        3 * 16;
+    private static final int YEAR_ORDINAL =                 4 * 16;
+
+    //-----------------------------------------------------------------------
+    /**
+     * The rule for the Coptic day-of-week field.
+     * <p>
+     * This field uses the ISO-8601 values for the day-of-week.
+     * These define Monday as value 1 to Sunday as value 7.
+     * <p>
+     * The enum {@link DayOfWeek} should be used wherever possible in
+     * applications when referring to the day of the week value to avoid
+     * needing to remember the values from 1 to 7.
+     */
+    public static final DateTimeRule DAY_OF_WEEK = new Rule(DAY_OF_WEEK_ORDINAL, "DayOfWeek", DAYS, WEEKS, 1, 7);
+    /**
+     * The rule for the Coptic day-of-month field in the ISO chronology.
+     * <p>
+     * This field counts days sequentially from the start of the month.
+     * The values are from 1 to 30 in most months, and 1 to 5 or 6 in month 13.
+     */
+    public static final DateTimeRule DAY_OF_MONTH = new Rule(DAY_OF_MONTH_ORDINAL, "DayOfMonth", DAYS, MONTHS, 1, 30);
+    /**
+     * The rule for the Coptic day-of-year field in the ISO chronology.
+     * <p>
+     * This field counts days sequentially from the start of the year.
+     * The first day of the year is 1 and the last is 365, or 366 in a leap year.
+     */
+    public static final DateTimeRule DAY_OF_YEAR = new Rule(DAY_OF_YEAR_ORDINAL, "DayOfYear", DAYS, YEARS, 1, 366);
+    /**
+     * The rule for the Coptic month-of-year field in the ISO chronology.
+     * <p>
+     * This field counts months sequentially from the start of the year.
+     * The values are from 1 to 13.
+     */
+    public static final DateTimeRule MONTH_OF_YEAR = new Rule(MONTH_OF_YEAR_ORDINAL, "MonthOfYear", MONTHS, YEARS, 1, 13);
+    /**
+     * The rule for the Coptic year field in the ISO chronology.
+     * <p>
+     * This field counts years from the Coptic calendar epoch.
+     */
+    public static final DateTimeRule YEAR = new Rule(YEAR_ORDINAL, "Year", YEARS, null, CopticDate.MIN_YEAR, CopticDate.MAX_YEAR);
+
+    /**
+     * Cache of rules for deserialization.
+     * Indices must match ordinal passed to rule constructor.
+     */
+    private static final DateTimeRule[] RULE_CACHE = new DateTimeRule[] {
+        DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, MONTH_OF_YEAR, YEAR,
+    };
 
 }

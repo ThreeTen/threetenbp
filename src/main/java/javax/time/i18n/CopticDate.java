@@ -121,12 +121,12 @@ public final class CopticDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static CopticDate of(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
-        CopticChronology.yearRule().checkValidValue(copticYear);
-        CopticChronology.monthOfYearRule().checkValidValue(copticMonthOfYear);
-        CopticChronology.dayOfMonthRule().checkValidValue(copticDayOfMonth);
+        CopticChronology.YEAR.checkValidValue(copticYear);
+        CopticChronology.MONTH_OF_YEAR.checkValidValue(copticMonthOfYear);
+        CopticChronology.DAY_OF_MONTH.checkValidValue(copticDayOfMonth);
         if (copticMonthOfYear == 13 && copticDayOfMonth > 5) {
             if (copticDayOfMonth > 6 || CopticChronology.isLeapYear(copticYear) == false) {
-                throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.dayOfMonthRule());
+                throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.DAY_OF_MONTH);
             }
         }
         int epochDays = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
@@ -136,20 +136,20 @@ public final class CopticDate
     /**
      * Obtains an instance of {@code CopticDate} using the previous valid algorithm.
      *
-     * @param year  the year to represent
-     * @param monthOfYear  the month-of-year to represent
-     * @param dayOfMonth  the day-of-month to represent
+     * @param copticYear  the year to represent, from 1 to 9999
+     * @param copticMonthOfYear  the month-of-year to represent, from 1 to 13
+     * @param copticDayOfMonth  the day-of-month to represent, from 1 to 30
      * @return the Coptic date, never null
      */
-    private static CopticDate copticDatePreviousValid(int year, int monthOfYear, int dayOfMonth) {
-        CopticChronology.yearRule().checkValidValue(year);
-        CopticChronology.monthOfYearRule().checkValidValue(monthOfYear);
-        CopticChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
-        if (monthOfYear == 13 && dayOfMonth > 5) {
-            dayOfMonth = CopticChronology.isLeapYear(year) ? 6 : 5;
+    private static CopticDate copticDatePreviousValid(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
+        CopticChronology.YEAR.checkValidValue(copticYear);
+        CopticChronology.MONTH_OF_YEAR.checkValidValue(copticMonthOfYear);
+        CopticChronology.DAY_OF_MONTH.checkValidValue(copticDayOfMonth);
+        if (copticMonthOfYear == 13 && copticDayOfMonth > 5) {
+            copticDayOfMonth = CopticChronology.isLeapYear(copticYear) ? 6 : 5;
         }
-        int epochDays = (year - 1) * 365 + (year / 4) + 30 * (monthOfYear - 1) + dayOfMonth - 1;
-        return new CopticDate(epochDays, year, monthOfYear, dayOfMonth);
+        int epochDays = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
+        return new CopticDate(epochDays, copticYear, copticMonthOfYear, copticDayOfMonth);
     }
 
     /**
@@ -175,8 +175,7 @@ public final class CopticDate
      */
     private static CopticDate copticDateFromEpochDays(int epochDays) {
         if (epochDays < MIN_EPOCH_DAY || epochDays > MAX_EPOCH_DAY) {
-            throw new IllegalCalendarFieldValueException(
-                    "Date exceeds supported range for CopticDate", CopticChronology.yearRule());
+            throw new IllegalCalendarFieldValueException("Date exceeds supported range for CopticDate", CopticChronology.YEAR);
         }
         int year = ((epochDays * 4) + 1463) / 1461;
         int startYearEpochDays = (year - 1) * 365 + (year / 4);
@@ -578,7 +577,7 @@ public final class CopticDate
         private static final CalendricalRule<CopticDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(CopticDate.class, CopticChronology.INSTANCE, "CopticDate", CopticChronology.periodDays(), null);
+            super(CopticDate.class, CopticChronology.INSTANCE, "CopticDate", CopticChronology.DAYS, null);
         }
         private Object readResolve() {
             return INSTANCE;

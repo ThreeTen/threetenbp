@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -179,7 +181,7 @@ public class TestPeriod {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void factory_of_PeriodProvider_time() {
-        PeriodProvider provider = PeriodFields.of(1, CopticChronology.periodMonths());
+        PeriodProvider provider = PeriodFields.of(1, CopticChronology.MONTHS);
         Period.ofDateFields(provider);
     }
 
@@ -234,7 +236,7 @@ public class TestPeriod {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void factory_ofDateFields_PeriodProvider_time() {
-        PeriodProvider provider = PeriodFields.of(3, CopticChronology.periodMonths());
+        PeriodProvider provider = PeriodFields.of(3, CopticChronology.MONTHS);
         Period.ofDateFields(provider);
     }
 
@@ -297,7 +299,7 @@ public class TestPeriod {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void factory_ofTimeFields_PeriodProvider_time() {
-        PeriodProvider provider = PeriodFields.of(3, CopticChronology.periodMonths());
+        PeriodProvider provider = PeriodFields.of(3, CopticChronology.MONTHS);
         Period.ofTimeFields(provider);
     }
 

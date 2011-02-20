@@ -1583,7 +1583,7 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_notISOPeriod() {
-        TEST_2007_07_15_12_30_40_987654321.plus(PeriodFields.of(2, CopticChronology.periodMonths()));
+        TEST_2007_07_15_12_30_40_987654321.plus(PeriodFields.of(2, CopticChronology.MONTHS));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -2531,7 +2531,7 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_notISOPeriod() {
-        TEST_2007_07_15_12_30_40_987654321.minus(PeriodFields.of(2, CopticChronology.periodMonths()));
+        TEST_2007_07_15_12_30_40_987654321.minus(PeriodFields.of(2, CopticChronology.MONTHS));
     }
 
     public void test_minus_PeriodProvider_zero() {

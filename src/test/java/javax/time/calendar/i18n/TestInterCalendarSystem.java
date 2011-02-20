@@ -57,7 +57,7 @@ public class TestInterCalendarSystem {
     public void test_get_Coptic_year_with_Other() {
         LocalDate baseDate = LocalDate.of(2009, 6, 30);
         MockOtherDate otherDate = new MockOtherDate(baseDate);
-        DateTimeField test = otherDate.get(CopticChronology.yearRule());
+        DateTimeField test = otherDate.get(CopticChronology.YEAR);
         assertEquals(test.getValidIntValue(), CopticDate.of(baseDate).getYear());
     }
 
