@@ -32,7 +32,6 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
