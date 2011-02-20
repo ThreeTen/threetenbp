@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
@@ -49,7 +50,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -209,33 +209,16 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // getFractionalValue()
     //-----------------------------------------------------------------------
-    public void test_getFractionalValue() {
-        assertEquals(BigDecimal.valueOf(0.25d), DateTimeField.of(HOUR_OF_DAY, 6).getFractionalValue());
+    public void test_get() {
+        assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_DAY), HOUR_OF_DAY.field(18));
+        assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_AMPM), HOUR_OF_AMPM.field(6));
+        assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(MONTH_OF_YEAR), null);
     }
 
-    @Test(expectedExceptions=CalendricalRuleException.class)
-    public void test_getFractionalValue_invalidRule() {
-        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 6);  // out of range
-        try {
-            test.getFractionalValue();
-        } catch (CalendricalRuleException ex) {
-            assertEquals(ex.getRule(), MONTH_OF_YEAR);
-            throw ex;
-        }
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_null() {
+        DateTimeField.of(MONTH_OF_YEAR, 6).get(null);
     }
-
-    @Test(expectedExceptions=CalendricalRuleException.class)
-    public void test_getFractionalValue_invalidValue() {
-        DateTimeField test = DateTimeField.of(HOUR_OF_DAY, -1);  // out of range
-        try {
-            test.getFractionalValue();
-        } catch (CalendricalRuleException ex) {
-            assertEquals(ex.getRule(), HOUR_OF_DAY);
-            throw ex;
-        }
-    }
-
-    // TODO: Test get(CalRule)
 
     //-----------------------------------------------------------------------
     // matchesCalendrical()

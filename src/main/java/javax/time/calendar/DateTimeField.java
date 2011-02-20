@@ -225,22 +225,6 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value as a fraction of the range, between 0 and 1.
-     * <p>
-     * The fractional value is between 0 (inclusive) and 1 (exclusive).
-     * The fraction will have the minimum scale necessary to represent the fraction.
-     * <p>
-     * See {@link DateTimeRule#convertToFraction(long)} for details.
-     *
-     * @return the value as a fraction within the range, from 0 to 1, not null
-     * @throws CalendricalRuleException if the value cannot be converted to a fraction
-     */
-    public BigDecimal getFractionalValue() {
-        return rule.convertToFraction(value);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
