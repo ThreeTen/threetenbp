@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import java.io.Serializable;
+
 import javax.time.Duration;
 
 /**
@@ -54,7 +56,7 @@ import javax.time.Duration;
  *
  * @author Stephen Colebourne
  */
-public final class ISOPeriodUnit extends PeriodUnit {
+public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
 
     /**
      * The serialization version.

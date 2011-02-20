@@ -44,6 +44,7 @@ import static javax.time.calendar.ISOPeriodUnit.WEEK_BASED_YEARS;
 import static javax.time.calendar.ISOPeriodUnit.YEARS;
 import static javax.time.calendar.ISOPeriodUnit._12_HOURS;
 
+import java.io.Serializable;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.EnumMap;
@@ -72,7 +73,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  *
  * @author Stephen Colebourne
  */
-public final class ISODateTimeRule extends DateTimeRule {
+public final class ISODateTimeRule extends DateTimeRule implements Serializable {
 
     /**
      * The serialization version.
