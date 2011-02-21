@@ -154,6 +154,12 @@ Possible items
 - InvalidDateException - better exception name?
 - simplify Clock to Calendrical, merging
 
+Use cases
+- Day of Olympiad (roughly four year period)
+
+===============================================================================
+Done
+
 Document
 - requirement: non JDK extensible
 - null approach - nulls rejected except in isXxx() and in framework-level code
@@ -173,10 +179,6 @@ Document
 -- Exposed long millis
 - Parsing with wrong pattern letter case (month vs minute, doy vs dom) is caught
 
-Use cases
-- Day of Olympiad (roughly four year period)
-
-===============================================================================
 Not doing
 - Use nanoOfDay rule in LocalTime factory - NO, as doesn't work
 - toString(pattern)/parse(str, pattern) - NO, due to ease of formatter usage
