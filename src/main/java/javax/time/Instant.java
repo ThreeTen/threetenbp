@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -65,33 +65,38 @@ import javax.time.calendar.format.CalendricalParseException;
  * <h4>Time-scale</h4>
  * <p>
  * {@code Instant} uses the <a href="http://www.cl.cam.ac.uk/~mgk25/time/utc-sls/">UTC-SLS</a>
- * time-scale which always has 86400 seconds in a day.
+ * time-scale which always has 86400 subdivisions (seconds) in a day.
  * Essentially, UTC-SLS is a consistent mechanism of converting an accurate UTC time
- * (potentially with leap seconds) to a 86400 second day.
- * Its main benefit is that in an accurate implementation, the UTC-SLS time never experiences
- * any gaps or overlaps.
+ * (measured in SI seconds with leap seconds) to a day formed of exactly 86400 subdivisions.
+ * For the benefit of most users, each subdivision is referred to as a "second", however
+ * in reality not all of these are equal to an SI second.
+ * <p>
+ * The main benefit of UTC-SLS is that it provides a clear definition of how to relate the
+ * 86400 subdivision day that application writers want to the accurate time-scales with leap seconds.
+ * A second benefit is that in an accurate implementation, the UTC-SLS time never experiences
+ * any gaps or overlaps, with the value always increasing.
  * <p>
  * UTC-SLS is defined as spreading any leap second evenly over the last 1000 seconds of the day.
  * This corresponds to times after 23:43:21 on a day with an added leap second, or
  * times after 23:43:19 on a day with a removed leap second.
+ * The conversion is implemented in the {@link UTCRules} subclass.
  * <p>
  * The UTC-SLS conversion only matters to users of this class with high precision requirements.
  * To keep full track of an instant using an accurate time-scale use the {@link UTCInstant} or
  * {@link TAIInstant} class.
- * For most applications, the behavior where each day has exactly 86400 seconds is the desired one.
+ * For most applications, the behavior where each day has exactly 86400 subdivisions is the desired one.
  * The UTC-SLS time-scale is also used for all human-scale date-time classes,
- * such as {@code OffsetDateTime} and {@code ZonedDateTime}.
+ * such as {@code LocalTime}, {@code OffsetDateTime} and {@code ZonedDateTime}.
  * <p>
- * The standard Java epoch of 1970 is prior to the introduction of whole leap seconds into UTC in 1972.
- * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
- * The chosen definition is that there are no leap seconds or rate changes in the Java version
- * of UTC prior to 1972, thus it remains 10 seconds offset from TAI.
- * This differs from an accurate UTC implementation, but is relatively easy to handle if accuracy is required.
+ * This definition of UTC-SLS is based on the definition of UTC in {@code UTCInstant}.
+ * That includes a discussion on instants before 1972, including the epoch of {@code 1970-01-01}.
  * <p>
- * Operations to add or subtract durations will ignore leap seconds.
+ * As a result of these definitions, operations to add or subtract durations will ignore leap seconds.
  * Use {@code UTCInstant} or {@code TAIInstant} if accurate duration calculations are required.
+ * 
+ * <h4>Implementation notes</h4>
  * <p>
- * Instant is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

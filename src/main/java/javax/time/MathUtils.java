@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,6 +32,8 @@
 package javax.time;
 
 /**
+ * A set of utility methods to perform mathematical calculations.
+ * <p>
  * These methods are proposed for {@code java.lang.Math}.
  *
  * @author Michael Nascimento Santos

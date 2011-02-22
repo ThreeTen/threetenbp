@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,8 +34,10 @@ package javax.time;
 /**
  * The base class for all exceptions in the Time Framework for Java.
  * <p>
- * All exceptions in the Time Framework for Java extend this class. This allows
- * catch blocks to catch just this exception, or more specific ones.
+ * All exceptions in the Time Framework for Java extend this class.
+ * This allows catch blocks to catch just this exception, or more specific ones.
+ * <p>
+ * This class contains no state and is thread-safe.
  *
  * @author Stephen Colebourne
  */

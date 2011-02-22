@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -55,7 +55,7 @@ package javax.time;
  * {@link javax.time.calendar.ZonedDateTime ZonedDateTime}, implements this
  * interface and also provides full date, time and time-zone information.
  * <p>
- * InstantProvider makes no overall guarantees about the thread-safety or immutability
+ * This interface makes no overall guarantees about the thread-safety or immutability
  * of implementations. However, the method itself has a specific thread-safe guarantee.
  *
  * @author Michael Nascimento Santos
@@ -78,7 +78,7 @@ public interface InstantProvider {
      * It is recommended that this interface should only be implemented by classes
      * that provide time information to at least minute precision.
      * <p>
-     * InstantProvider makes no overall guarantees about the thread-safety.
+     * {@code InstantProvider} makes no overall guarantees about the thread-safety.
      * However, this method must return a fully consistent result.
      * For example, if the implementation is mutable and contains two fields,
      * then the result of this method must refer to a valid snapshot of both fields,

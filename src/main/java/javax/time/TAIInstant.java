@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -42,15 +42,16 @@ import javax.time.calendar.format.CalendricalParseException;
  * <p>
  * Most of the Time Framework for Java works on the assumption that the time-line is
  * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
- * Sadly, the real-life time-line is not this simple.
+ * However, the Earth's rotation is not straightforward, and a solar day does not match
+ * this definition.
  * <p>
  * This class is an alternative representation based on the TAI time-scale.
- * This scale is defined using atomic clocks and has proceeded in a continuous uninterrupted
- * manner since its epoch of {@code 1958-01-01T00:00:00(TAI)}.
+ * TAI is a single incrementing count of SI seconds.
+ * There are no leap seconds or other discontinuities.
  * <p>
- * As there are no leap seconds, or other discontinuities, in TAI, this time-scale
- * would make an excellent timestamp. While there are, at the time of writing, few
- * easy ways to obtain an accurate TAI instant, it is relatively easy to obtain a GPS instant.
+ * As a result of the simple definition, this time-scale would make an excellent timestamp.
+ * However, there are, at the time of writing, few easy ways to obtain an accurate TAI instant,
+ * but it is relatively easy to obtain a GPS instant.
  * GPS and TAI differ by the fixed amount of 19 seconds.
  * <p>
  * The duration between two points on the TAI time-scale is calculated solely using this class.
@@ -60,8 +61,22 @@ import javax.time.calendar.format.CalendricalParseException;
  * It is intended that most applications will use the {@code Instant} class
  * which uses the UTC-SLS mapping from UTC to guarantee 86400 seconds per day.
  * Specialist applications with access to an accurate time-source may find this class useful.
+ * 
+ * <h4>Time-scale</h4>
  * <p>
- * TAIInstant is immutable and thread-safe.
+ * The TAI time-scale is a very simple well-regarded representation of time.
+ * The scale is defined using atomic clocks counting SI seconds.
+ * It has proceeded in a continuous uninterrupted manner since the defined
+ * epoch of {@code 1958-01-01T00:00:00(TAI)}.
+ * There are no leap seconds or other discontinuities.
+ * <p>
+ * This class may be used for instants in the far past and far future.
+ * Since some instants will be prior to 1958, it is not strictly an implementation of TAI.
+ * Instead, it is a proleptic time-scale based on TAI and equivalent to it since 1958.
+ * 
+ * <h4>Implementation notes</h4>
+ * <p>
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

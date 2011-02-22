@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,8 +36,8 @@ import java.io.Serializable;
 import javax.time.calendar.LocalDate;
 
 /**
- * An instantaneous point on the time-line measured in the UTC time-scale,
- * handling leap seconds.
+ * An instantaneous point on the time-line measured in the UTC time-scale
+ * with leap seconds.
  * <p>
  * Most of the Time Framework for Java works on the assumption that the time-line is
  * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
@@ -68,7 +68,7 @@ import javax.time.calendar.LocalDate;
  * <p>
  * The length of the solar day is the standard way that humans measure time.
  * As the Earth's rotation changes, the length of the day varies.
- * In general, a solar day is slightly longer than 86400 seconds.
+ * In general, a solar day is slightly longer than 86400 SI seconds.
  * The actual length is not predictable and can only be determined by measurement.
  * The UT1 time-scale captures these measurements.
  * <p>
@@ -80,16 +80,22 @@ import javax.time.calendar.LocalDate;
  * <p>
  * The modern UTC time-scale was introduced in 1972, introducing the concept of whole leap-seconds.
  * Between 1958 and 1972, the definition of UTC was complex, with minor sub-second leaps and
- * alterations to the length of seconds. The default rules only implement UTC from 1972.
- * Prior to that date, the default rules fix the UTC-TAI offset at 10 seconds.
+ * alterations to the length of the notional second.
+ * <p>
+ * This class may be used for instants in the far past and far future.
+ * Since some instants will be prior to 1972, it is not strictly an implementation of UTC.
+ * Instead, it is a proleptic time-scale based on UTC and equivalent to it since 1972.
+ * Prior to 1972, the default rules fix the UTC-TAI offset at 10 seconds.
  * While not historically accurate, it is a simple, easy definition, suitable for this library.
  * <p>
  * The standard Java epoch of {@code 1970-01-01} is prior to the introduction of whole leap-seconds into UTC in 1972.
  * As such, the Time Framework for Java needs to define what the 1970 epoch actually means.
  * The chosen definition follows the UTC definition given above, such that {@code 1970-01-01} is 10 seconds
  * offset from TAI.
+ * 
+ * <h4>Implementation notes</h4>
  * <p>
- * UTCInstant is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

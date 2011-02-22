@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -62,12 +62,11 @@ import javax.time.calendar.format.CalendricalParseException;
  * <p>
  * In this API, the unit of "seconds" only has a precise meaning when applied to an instant.
  * This is because it is the instant that defines the time scale used, not the duration.
- * For example, the simplified UTC time scale used by {@code Instant} ignores leap seconds,
- * which alters the effective length of a second. By comparison, the TAI time scale follows
- * the international scientific definition of a second exactly.
- * For most applications, this subtlety will be irrelevant.
+ * For example, the time-scale used by {@code Instant} uses a variable length second to
+ * avoid exposing leap seconds. By comparison, the TAI time scale follows the international
+ * scientific definition of a second exactly. For most applications, this subtlety will be irrelevant.
  * <p>
- * Duration is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

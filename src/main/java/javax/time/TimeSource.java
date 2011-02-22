@@ -88,11 +88,10 @@ import java.io.Serializable;
  * 
  * <h4>Implementation notes</h4>
  * <p>
- * {@code TimeSource} is an abstract class and must be implemented with care
+ * This is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
- * <p>
- * Subclass implementations should implement {@code Serializable} wherever possible.
+ * All implementations must be final, immutable and thread-safe.
+ * Subclasses should be {@code Serializable} wherever possible.
  * They should also implement {@code equals()}, {@code hashCode()} and
  * {@code toString()} based on their state.
  *

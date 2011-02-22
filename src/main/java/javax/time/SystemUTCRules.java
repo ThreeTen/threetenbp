@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,7 +47,7 @@ import javax.time.calendar.LocalDate;
 /**
  * System default UTC rules.
  * <p>
- * SystemUTCRules is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -79,11 +79,11 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             this.taiSeconds = taiSeconds;
         }
         /** The table of leap second date when the leap second occurs. */
-        private long[] dates;
+        final long[] dates;
         /** The table of TAI offset after the leap second. */
-        private int[] offsets;
+        final int[] offsets;
         /** The table of TAI second when the new offset starts. */
-        private long[] taiSeconds;
+        final long[] taiSeconds;
     }
 
     //-----------------------------------------------------------------------
@@ -189,6 +189,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     //-------------------------------------------------------------------------
     /**
      * Loads the leap seconds from file.
+     * 
      * @return an array of two arrays - leap seconds dates and amounts
      */
     private static Data loadLeapSeconds() {
@@ -245,6 +246,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
 
     /**
      * Gets the TAI seconds for the start of the day following the day passed in.
+     * 
      * @param changeMjd  the MJD that the leap second is added to
      * @param offset  the new offset after the leap
      * @return the TAI seconds

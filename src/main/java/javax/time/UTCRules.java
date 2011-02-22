@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -42,10 +42,10 @@ import java.util.ConcurrentModificationException;
  * The static methods on this class provide access to the system leap second rules.
  * These are used by default.
  * <p>
- * UTCRules is an abstract class and must be implemented with care
+ * This is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All implementations must be final, immutable and thread-safe.
- * Subclasses should be Serializable wherever possible.
+ * Subclasses should be {@code Serializable} wherever possible.
  *
  * @author Stephen Colebourne
  */
