@@ -137,7 +137,7 @@ public final class ZoneRulesGroup {
      * provider has been registered for the requested group then an exception is thrown.
      *
      * @param groupID  the group ID, not null
-     * @return the zone rules group, never null
+     * @return the zone rules group, not null
      * @throws CalendricalException if the group ID is not found
      */
     public static ZoneRulesGroup getGroup(String groupID) {
@@ -161,7 +161,7 @@ public final class ZoneRulesGroup {
      * there is no way to deregister time-zone information. More groups may be added during
      * the lifetime of the application, however the returned list will not be altered.
      *
-     * @return an unsorted, independent, modifiable list of available groups, never null
+     * @return an unsorted, independent, modifiable list of available groups, not null
      */
     public static List<ZoneRulesGroup> getAvailableGroups() {
         return new ArrayList<ZoneRulesGroup>(GROUPS.values());
@@ -189,7 +189,7 @@ public final class ZoneRulesGroup {
      * This means that it the caller can cache the set and its current size to use
      * as an indication as to whether the contents have changed.
      *
-     * @return an unmodifiable set of parsable group:region IDs, never null
+     * @return an unmodifiable set of parsable group:region IDs, not null
      */
     public static Set<String> getParsableIDs() {
         return Collections.unmodifiableSet(IDS.keySet());
@@ -207,7 +207,7 @@ public final class ZoneRulesGroup {
      * to deregister providers.
      *
      * @param provider  the provider to register, not null
-     * @return the rules group, never null
+     * @return the rules group, not null
      * @throws CalendricalException if the group ID is invalid
      * @throws CalendricalException if the provider is already registered
      */
@@ -272,7 +272,7 @@ public final class ZoneRulesGroup {
     /**
      * Gets the ID of the group, such as 'TZDB'.
      *
-     * @return the ID of the group, never null
+     * @return the ID of the group, not null
      */
     public String getID() {
         return groupID;
@@ -299,7 +299,7 @@ public final class ZoneRulesGroup {
      *
      * @param regionID  the time-zone region ID, not null
      * @param versionID  the time-zone version ID, not null
-     * @return the matched zone rules, never null
+     * @return the matched zone rules, not null
      * @throws CalendricalException if the rules cannot be found
      */
     public ZoneRules getRules(String regionID, String versionID) {
@@ -332,7 +332,7 @@ public final class ZoneRulesGroup {
      * @param regionID  the time-zone region ID, not null
      * @param versionID  the time-zone version ID, empty means floating version, not null
      * @param dateTime  the date-time that must be valid, not null
-     * @return the matched zone rules, never null
+     * @return the matched zone rules, not null
      * @throws CalendricalException if the rules cannot be found
      */
     public ZoneRules getRulesValidFor(String regionID, String versionID, OffsetDateTime dateTime) {
@@ -359,7 +359,7 @@ public final class ZoneRulesGroup {
      *
      * @param regionID  the time-zone region ID, not null
      * @param dateTime  the date-time that must be valid, not null
-     * @return the matched zone rules, never null
+     * @return the matched zone rules, not null
      * @throws CalendricalException if the region is unknown
      * @throws CalendricalException if the rules cannot be found
      */
@@ -394,7 +394,7 @@ public final class ZoneRulesGroup {
      * there is no way to deregister time-zone information. More regions may be added during
      * the lifetime of the application, however the returned list will not be dynamically updated.
      *
-     * @return the version IDs sorted from newest to oldest, unmodifiable, never null
+     * @return the version IDs sorted from newest to oldest, unmodifiable, not null
      * @throws CalendricalException if the region ID is not found
      */
     public Set<String> getAvailableVersionIDs() {
@@ -411,7 +411,7 @@ public final class ZoneRulesGroup {
      * there is no way to deregister time-zone information. More information may be added during
      * the lifetime of the application, causing a later version to be available.
      *
-     * @return the latest version ID for the group, never null
+     * @return the latest version ID for the group, not null
      * @throws CalendricalException if the region ID is not found
      */
     public String getLatestVersionID() {
@@ -429,7 +429,7 @@ public final class ZoneRulesGroup {
      * the lifetime of the application, causing a later version to be available.
      *
      * @param regionID  the time-zone region ID, not null
-     * @return the latest version ID for the region, never null
+     * @return the latest version ID for the region, not null
      * @throws CalendricalException if the region ID is not found
      */
     public String getLatestVersionID(String regionID) {
@@ -477,7 +477,7 @@ public final class ZoneRulesGroup {
      * the lifetime of the application, however the returned list will not be altered.
      *
      * @param versionID  the time-zone version ID, empty means any version, not null
-     * @return the region IDs, unmodifiable, never null
+     * @return the region IDs, unmodifiable, not null
      */
     public Set<String> getRegionIDs(String versionID) {
         ZoneRules.checkNotNull(versionID, "Version ID must not be null");
@@ -520,7 +520,7 @@ public final class ZoneRulesGroup {
     /**
      * Returns a string representation of the group using the group ID.
      *
-     * @return the string representation, never null
+     * @return the string representation, not null
      */
     @Override
     public String toString() {

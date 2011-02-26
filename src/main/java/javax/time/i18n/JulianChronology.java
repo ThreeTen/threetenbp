@@ -112,7 +112,7 @@ public final class JulianChronology extends Chronology implements Serializable {
     /**
      * Gets the name of the chronology.
      *
-     * @return the name of the chronology, never null
+     * @return the name of the chronology, not null
      */
     @Override
     public String getName() {
@@ -123,7 +123,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Gets the rule for the year field in the Julian chronology.
 //     *
-//     * @return the rule for the year field, never null
+//     * @return the rule for the year field, not null
 //     */
 //    public static DateTimeRule<Integer> yearRule() {
 //        return YearRule.INSTANCE;
@@ -140,7 +140,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    * applications when referring to the day of the week to avoid
 //    * hard-coding the values.
 //     *
-//     * @return the rule for the month-of-year field, never null
+//     * @return the rule for the month-of-year field, not null
 //     */
 //    public static DateTimeRule<MonthOfYear> monthOfYearRule() {
 //        return MonthOfYearRule.INSTANCE;
@@ -149,7 +149,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Gets the rule for the day-of-month field in the Julian chronology.
 //     *
-//     * @return the rule for the day-of-month field, never null
+//     * @return the rule for the day-of-month field, not null
 //     */
 //    public static DateTimeRule<Integer> dayOfMonthRule() {
 //        return DayOfMonthRule.INSTANCE;
@@ -158,7 +158,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Gets the rule for the day-of-year field in the Julian chronology.
 //     *
-//     * @return the rule for the day-of-year field, never null
+//     * @return the rule for the day-of-year field, not null
 //     */
 //    public static DateTimeRule<Integer> dayOfYearRule() {
 //        return DayOfYearRule.INSTANCE;
@@ -167,7 +167,7 @@ public final class JulianChronology extends Chronology implements Serializable {
 //    /**
 //     * Gets the rule for the day-of-week field in the Julian chronology.
 //     *
-//     * @return the rule for the day-of-week field, never null
+//     * @return the rule for the day-of-week field, not null
 //     */
 //    public static DateTimeRule<DayOfWeek> dayOfWeekRule() {
 //        return DayOfWeekRule.INSTANCE;
@@ -182,7 +182,7 @@ public final class JulianChronology extends Chronology implements Serializable {
      * <p>
      * See {@link #yearRule()} for the main date-time field.
      *
-     * @return the period unit for years, never null
+     * @return the period unit for years, not null
      */
     public static PeriodUnit periodYears() {
         return YEARS;
@@ -196,7 +196,7 @@ public final class JulianChronology extends Chronology implements Serializable {
      * <p>
      * See {@link #monthOfYearRule()} for the main date-time field.
      *
-     * @return the period unit for months, never null
+     * @return the period unit for months, not null
      */
     public static PeriodUnit periodMonths() {
         return MONTHS;
@@ -208,7 +208,7 @@ public final class JulianChronology extends Chronology implements Serializable {
      * The period unit defines the concept of a period of a week.
      * This is equivalent to the ISO weeks period unit.
      *
-     * @return the period unit for weeks, never null
+     * @return the period unit for weeks, not null
      */
     public static PeriodUnit periodWeeks() {
         return ISOPeriodUnit.WEEKS;
@@ -222,7 +222,7 @@ public final class JulianChronology extends Chronology implements Serializable {
      * <p>
      * See {@link #dayOfMonthRule()} for the main date-time field.
      *
-     * @return the period unit for days, never null
+     * @return the period unit for days, not null
      */
     public static PeriodUnit periodDays() {
         return ISOPeriodUnit.DAYS;

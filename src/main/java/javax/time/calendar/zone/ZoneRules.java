@@ -73,7 +73,7 @@ public abstract class ZoneRules {
      * specified offset for all points on the time-line.
      *
      * @param offset  the offset to get the fixed rules for, not null
-     * @return the rules, never null
+     * @return the rules, not null
      */
     public static ZoneRules ofFixed(ZoneOffset offset) {
         return new FixedZoneRules(offset);
@@ -127,7 +127,7 @@ public abstract class ZoneRules {
      *
      * @param instant  the instant to find the offset for,
      *   ignored for fixed offset rules, otherwise not null
-     * @return the offset, never null
+     * @return the offset, not null
      */
     public abstract ZoneOffset getOffset(InstantProvider instant);
 
@@ -148,7 +148,7 @@ public abstract class ZoneRules {
      * is vital to check {@link ZoneOffsetInfo#isTransition()} to handle the overlap.
      *
      * @param instant  the instant to find the offset information for, not null
-     * @return the offset information, never null
+     * @return the offset information, not null
      */
     public ZoneOffsetInfo getOffsetInfo(Instant instant) {
         ZoneOffset offset = getOffset(instant);
@@ -173,7 +173,7 @@ public abstract class ZoneRules {
      * {@link ZoneOffsetInfo#isTransition()} to handle the gap or overlap.
      *
      * @param dateTime  the date-time to find the offset information for, not null
-     * @return the offset information, never null
+     * @return the offset information, not null
      */
     public abstract ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime);
 
@@ -187,7 +187,7 @@ public abstract class ZoneRules {
      * This is typically the offset applicable during winter.
      *
      * @param instantProvider  the instant to find the offset information for, not null
-     * @return the standard offset, never null
+     * @return the standard offset, not null
      */
     public abstract ZoneOffset getStandardOffset(InstantProvider instantProvider);
 
@@ -201,7 +201,7 @@ public abstract class ZoneRules {
      * Typically the amount is zero during winter and one hour during summer.
      *
      * @param instantProvider  the instant to find the offset information for, not null
-     * @return the difference between the standard and actual offset, never null
+     * @return the difference between the standard and actual offset, not null
      */
     public Period getDaylightSavings(InstantProvider instantProvider) {
         Instant instant = Instant.of(instantProvider);
@@ -219,7 +219,7 @@ public abstract class ZoneRules {
      * This is typically the offset applicable during winter.
      *
      * @param instant  the instant to find the offset information for, not null
-     * @return the standard offset, never null
+     * @return the standard offset, not null
      */
     public boolean isDaylightSavings(InstantProvider instant) {
         return (getStandardOffset(instant).equals(getOffset(instant)) == false);
@@ -270,7 +270,7 @@ public abstract class ZoneRules {
      * to throw UnsupportedOperationException. The supplied 'TZDB' implementation can supply
      * this information thus does not throw the exception.
      *
-     * @return independent, modifiable copy of the list of fully defined transitions, never null
+     * @return independent, modifiable copy of the list of fully defined transitions, not null
      * @throws UnsupportedOperationException if the implementation cannot return this information -
      *  the default 'TZDB' can return this information
      */
@@ -297,7 +297,7 @@ public abstract class ZoneRules {
      * to throw UnsupportedOperationException. The supplied 'TZDB' implementation can supply
      * this information thus does not throw the exception.
      *
-     * @return independent, modifiable copy of the list of transition rules, never null
+     * @return independent, modifiable copy of the list of transition rules, not null
      * @throws UnsupportedOperationException if the implementation cannot return this information -
      *  the default 'TZDB' can return this information
      */

@@ -77,7 +77,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     /**
      * Uses a serialization delegate.
      *
-     * @return the replacing object, never null
+     * @return the replacing object, not null
      */
     private Object writeReplace() {
         return new Ser(Ser.FZR, this);
@@ -97,7 +97,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
      * Reads the state from the stream.
      *
      * @param in  the input stream, not null
-     * @return the created object, never null
+     * @return the created object, not null
      * @throws IOException if an error occurs
      */
     static FixedZoneRules readExternal(DataInput in) throws IOException {
@@ -189,7 +189,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     /**
      * Returns a string describing this object.
      *
-     * @return a string for debugging, never null
+     * @return a string for debugging, not null
      */
     @Override
     public String toString() {

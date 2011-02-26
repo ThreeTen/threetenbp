@@ -161,7 +161,7 @@ public final class ZoneOffsetInfo {
      * During a gap the offset after the gap will be returned.
      * During an overlap the offset after the transition will be returned.
      *
-     * @return a suitable estimated offset, never null
+     * @return a suitable estimated offset, not null
      */
     public ZoneOffset getEstimatedOffset() {
         return isTransition() ? getTransition().getOffsetAfter() : offset;
@@ -218,7 +218,7 @@ public final class ZoneOffsetInfo {
     /**
      * Returns a string describing this object.
      *
-     * @return a string for debugging, never null
+     * @return a string for debugging, not null
      */
     @Override
     public String toString() {

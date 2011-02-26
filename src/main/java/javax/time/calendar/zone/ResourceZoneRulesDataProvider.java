@@ -88,7 +88,7 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
     /**
      * Loads the rules from files in the class loader, often jar files.
      *
-     * @return the list of loaded rules, never null
+     * @return the list of loaded rules, not null
      * @throws Exception if an error occurs
      */
     private static List<ResourceZoneRulesDataProvider> loadResources() {

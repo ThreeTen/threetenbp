@@ -84,7 +84,7 @@ public enum HistoricEra implements Calendrical {
      * {@link ISOChronology} BCE/CE rule to indicate the failed rule.
      *
      * @param era  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
-     * @return the HistoricEra singleton, never null
+     * @return the HistoricEra singleton, not null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public static HistoricEra of(int era) {
@@ -134,7 +134,7 @@ public enum HistoricEra implements Calendrical {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the short text value of the BCE/CE, never null
+     * @return the short text value of the BCE/CE, not null
      */
     public String getShortText(Locale locale) {
         return HistoricChronology.standardCutover().eraRule().getText(getValue(), locale, TextStyle.SHORT);
@@ -147,7 +147,7 @@ public enum HistoricEra implements Calendrical {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the BCE/CE, never null
+     * @return the long text value of the BCE/CE, not null
      */
     public String getText(Locale locale) {
         return HistoricChronology.standardCutover().eraRule().getText(getValue(), locale, TextStyle.FULL);

@@ -181,7 +181,7 @@ final class Ser implements Externalizable {
      * Reads the state from the stream.
      *
      * @param in  the input stream, not null
-     * @return the created object, never null
+     * @return the created object, not null
      * @throws IOException if an error occurs
      */
     static ZoneOffset readOffset(DataInput in) throws IOException {
@@ -213,7 +213,7 @@ final class Ser implements Externalizable {
      * Reads the state from the stream.
      *
      * @param in  the input stream, not null
-     * @return the epoch seconds, never null
+     * @return the epoch seconds, not null
      * @throws IOException if an error occurs
      */
     static long readEpochSecs(DataInput in) throws IOException {

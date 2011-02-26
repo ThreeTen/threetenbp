@@ -201,7 +201,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Uses a serialization delegate.
      *
-     * @return the replacing object, never null
+     * @return the replacing object, not null
      */
     private Object writeReplace() {
         return new Ser(Ser.ZOTRULE, this);
@@ -250,7 +250,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * Reads the state from the stream.
      *
      * @param in  the input stream, not null
-     * @return the created object, never null
+     * @return the created object, not null
      * @throws IOException if an error occurs
      */
     static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
@@ -280,7 +280,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * If the rule defines a week where the transition might occur, then the month
      * if the month of either the earliest or latest possible date of the cutover.
      *
-     * @return the month of the transition, never null
+     * @return the month of the transition, not null
      */
     public MonthOfYear getMonthOfYear() {
         return month;
@@ -330,7 +330,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * <p>
      * The time is converted into an instant using the time definition.
      *
-     * @return the local time of day of the transition, never null
+     * @return the local time of day of the transition, not null
      */
     public LocalTime getLocalTime() {
         return time;
@@ -353,7 +353,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * The local time can be converted to an instant using the standard offset,
      * the wall offset or UTC.
      *
-     * @return the time definition, never null
+     * @return the time definition, not null
      */
     public TimeDefinition getTimeDefinition() {
         return timeDefinition;
@@ -362,7 +362,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Gets the standard offset in force at the transition.
      *
-     * @return the standard offset, never null
+     * @return the standard offset, not null
      */
     public ZoneOffset getStandardOffset() {
         return standardOffset;
@@ -371,7 +371,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Gets the offset before the transition.
      *
-     * @return the offset before, never null
+     * @return the offset before, not null
      */
     public ZoneOffset getOffsetBefore() {
         return offsetBefore;
@@ -380,7 +380,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Gets the offset after the transition.
      *
-     * @return the offset after, never null
+     * @return the offset after, not null
      */
     public ZoneOffset getOffsetAfter() {
         return offsetAfter;
@@ -393,7 +393,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * Calculations are performed using the ISO-8601 chronology.
      *
      * @param year  the year to create a transition for, not null
-     * @return the transition instance, never null
+     * @return the transition instance, not null
      */
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
@@ -461,7 +461,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Returns a string describing this object.
      *
-     * @return a string for debugging, never null
+     * @return a string for debugging, not null
      */
     @Override
     public String toString() {

@@ -87,7 +87,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * cutover date when the Gregorian/ISO calendar system was first used.
      *
      * @param cutover  the cutover date, not null
-     * @return a {@code HistoricChronology}, never null
+     * @return a {@code HistoricChronology}, not null
      */
     public static HistoricChronology cutoverAt(final LocalDate cutover) {
         checkNotNull(cutover, "Cutover date must not be null");
@@ -98,7 +98,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * Obtains an instance of <code>HistoricChronology</code> using the standard
      * cutover date of 1582-10-15.
      *
-     * @return a {@code HistoricChronology}, never null
+     * @return a {@code HistoricChronology}, not null
      */
     public static HistoricChronology standardCutover() {
         return new HistoricChronology(HistoricDate.STANDARD_CUTOVER);
@@ -147,7 +147,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      *
      * @param year  the year, valid
      * @param dayOfYear  the day-of-year, valid
-     * @return the date, never null
+     * @return the date, not null
      */
     HistoricDate getDateFromDayOfYear(int year, int dayOfYear) {
         boolean leap = isLeapYear(year);
@@ -195,7 +195,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the cutover date of the chronology.
      *
-     * @return the cutover date of the chronology, never null
+     * @return the cutover date of the chronology, not null
      */
     public LocalDate getCutover() {
         return cutover;
@@ -204,7 +204,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the name of the chronology.
      *
-     * @return the name of the chronology, never null
+     * @return the name of the chronology, not null
      */
     @Override
     public String getName() {
@@ -215,7 +215,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the rule for the year field in the Historic chronology.
      *
-     * @return the rule for the year field, never null
+     * @return the rule for the year field, not null
      */
     public DateTimeRule eraRule() {
         return new EraRule(this);
@@ -224,7 +224,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the rule for the year field in the Historic chronology.
      *
-     * @return the rule for the year field, never null
+     * @return the rule for the year field, not null
      */
     public DateTimeRule yearOfEraRule() {
         return new YearRule(this);
@@ -233,7 +233,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the rule for the year field in the Historic chronology.
      *
-     * @return the rule for the year field, never null
+     * @return the rule for the year field, not null
      */
     public DateTimeRule yearRule() {
         return new YearRule(this);
@@ -242,7 +242,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the rule for the month-of-year field in the Historic chronology.
      *
-     * @return the rule for the month-of-year field, never null
+     * @return the rule for the month-of-year field, not null
      */
     public DateTimeRule monthOfYearRule() {
         return new MonthOfYearRule(this);
@@ -251,7 +251,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the rule for the day-of-month field in the Historic chronology.
      *
-     * @return the rule for the day-of-month field, never null
+     * @return the rule for the day-of-month field, not null
      */
     public DateTimeRule dayOfMonthRule() {
         return new DayOfMonthRule(this);
@@ -260,7 +260,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the rule for the day-of-year field in the Historic chronology.
      *
-     * @return the rule for the day-of-year field, never null
+     * @return the rule for the day-of-year field, not null
      */
     public DateTimeRule dayOfYearRule() {
         return new DayOfYearRule(this);
@@ -269,7 +269,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Gets the rule for the day-of-week field in the Historic chronology.
      *
-     * @return the rule for the day-of-week field, never null
+     * @return the rule for the day-of-week field, not null
      */
     public DateTimeRule dayOfWeekRule() {
         return new DayOfWeekRule(this);
@@ -287,7 +287,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * <p>
      * See {@link #eraRule()} for the main date-time field.
      *
-     * @return the period unit for years, never null
+     * @return the period unit for years, not null
      */
     public static PeriodUnit periodEras() {
         return ISOPeriodUnit.ERAS;
@@ -301,7 +301,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * <p>
      * See {@link #yearRule()} for the main date-time field.
      *
-     * @return the period unit for years, never null
+     * @return the period unit for years, not null
      */
     public static PeriodUnit periodYears() {
         return YEARS;
@@ -316,7 +316,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * <p>
      * See {@link #monthOfYearRule()} for the main date-time field.
      *
-     * @return the period unit for months, never null
+     * @return the period unit for months, not null
      */
     public static PeriodUnit periodMonths() {
         return MONTHS;
@@ -328,7 +328,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * The period unit defines the concept of a period of a week.
      * This is equivalent to the ISO weeks period unit.
      *
-     * @return the period unit for weeks, never null
+     * @return the period unit for weeks, not null
      */
     public static PeriodUnit periodWeeks() {
         return ISOPeriodUnit.WEEKS;
@@ -342,7 +342,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * <p>
      * See {@link #dayOfMonthRule()} for the main date-time field.
      *
-     * @return the period unit for days, never null
+     * @return the period unit for days, not null
      */
     public static PeriodUnit periodDays() {
         return ISOPeriodUnit.DAYS;

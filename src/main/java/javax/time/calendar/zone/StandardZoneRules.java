@@ -200,7 +200,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * Uses a serialization delegate.
      *
-     * @return the replacing object, never null
+     * @return the replacing object, not null
      */
     private Object writeReplace() {
         return new Ser(Ser.SZR, this);
@@ -237,7 +237,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * Reads the state from the stream.
      *
      * @param in  the input stream, not null
-     * @return the created object, never null
+     * @return the created object, not null
      * @throws IOException if an error occurs
      */
     static StandardZoneRules readExternal(DataInput in) throws IOException, ClassNotFoundException {
@@ -355,7 +355,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      *
      * @param dt  the date-time, not null
      * @param trans  the transition, not null
-     * @return the offset info, never null
+     * @return the offset info, not null
      */
     private ZoneOffsetInfo findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
         if (trans.isGap()) {
@@ -384,7 +384,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * Finds the appropriate transition array for the given year.
      *
      * @param year  the year, not null
-     * @return the transition array, never null
+     * @return the transition array, not null
      */
     private ZoneOffsetTransition[] findTransitionArray(int year) {
         Year yearObj = Year.of(year);
@@ -510,7 +510,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * that have occurred. Some transitions may be in the future, although
      * generally the transition rules handle future years.
      *
-     * @return independent, modifiable copy of the list of transitions, never null
+     * @return independent, modifiable copy of the list of transitions, not null
      */
     @Override
     public List<ZoneOffsetTransition> getTransitions() {
@@ -531,7 +531,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * per year - into and out of daylight savings time. If daylight savings
      * time does not occur then the list will be empty.
      *
-     * @return independent, modifiable copy of the list of transition rules, never null
+     * @return independent, modifiable copy of the list of transition rules, not null
      */
     @Override
     public List<ZoneOffsetTransitionRule> getTransitionRules() {
@@ -581,7 +581,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * Returns a string describing this object.
      *
-     * @return a string for debugging, never null
+     * @return a string for debugging, not null
      */
     @Override
     public String toString() {

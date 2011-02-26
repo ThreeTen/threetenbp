@@ -105,7 +105,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Gets the name of the chronology.
      *
-     * @return the name of the chronology, never null
+     * @return the name of the chronology, not null
      */
     @Override
     public String getName() {
@@ -120,7 +120,7 @@ public final class CopticChronology extends Chronology implements Serializable {
 //     * that is based......
 //     *
 //     * @param rule  the rule to convert, not null
-//     * @return the rule in Coptic chronology, never null
+//     * @return the rule in Coptic chronology, not null
 //     */
 ////    @Override
 //    public DateTimeRule<?> convertRule(DateTimeRule<?> rule) {
@@ -153,7 +153,7 @@ public final class CopticChronology extends Chronology implements Serializable {
 //     * that is based......
 //     *
 //     * @param rule  the rule to convert, not null
-//     * @return the rule in ISO chronology, never null
+//     * @return the rule in ISO chronology, not null
 //     */
 ////    @Override
 //    protected DateTimeRule<?> convertToISO(DateTimeRule<?> rule) {

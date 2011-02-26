@@ -115,7 +115,7 @@ public final class HistoricDate
      * @param historicYear  the year to represent, from -(MAX_YEAR-1) to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the local date, never null
+     * @return the local date, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -132,7 +132,7 @@ public final class HistoricDate
      * @param historicYear  the year to represent, from -(MAX_YEAR-1) to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the local date, never null
+     * @return the local date, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -152,7 +152,7 @@ public final class HistoricDate
      * of {@code Calendrical}, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
-     * @return the Historic date, never null
+     * @return the Historic date, not null
      * @throws UnsupportedRuleException if the day-of-week cannot be obtained
      */
     public static HistoricDate of(Calendrical calendrical) {
@@ -163,7 +163,7 @@ public final class HistoricDate
 //     * Obtains an instance of {@code HistoricDate} from a number of epoch days.
 //     *
 //     * @param epochDays  the epoch days to use, not null
-//     * @return a HistoricDate object, never null
+//     * @return a HistoricDate object, not null
 //     * @throws IllegalCalendarFieldValueException if the year range is exceeded
 //     */
 //    private static HistoricDate historicDateFromEpochDays(int epochDays) {
@@ -198,7 +198,7 @@ public final class HistoricDate
 //    /**
 //     * Replaces the date instance from the stream with a valid one.
 //     *
-//     * @return the resolved date, never null
+//     * @return the resolved date, not null
 //     */
 //    private Object readResolve() {
 //        return historicDateFromEpochDays(epochDays);
@@ -210,7 +210,7 @@ public final class HistoricDate
      * @param historicYear  the year to represent
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the historic date, never null
+     * @return the historic date, not null
      */
     private HistoricDate previousValid(int historicYear, MonthOfYear monthOfYear, int dayOfMonth) {
         chrono.yearRule().checkValidValue(historicYear);
@@ -228,7 +228,7 @@ public final class HistoricDate
     /**
      * Gets the chronology that this date uses, which is the historic calendar system.
      *
-     * @return the historic chronology, never null
+     * @return the historic chronology, not null
      */
     public HistoricChronology getChronology() {
         return chrono;
@@ -259,7 +259,7 @@ public final class HistoricDate
      * The era provides a context for the year-of-era.
      * This calendar system defines two eras, BCE and CE.
      *
-     * @return the era, never null
+     * @return the era, not null
      */
     public HistoricEra getEra() {
         return (year < 1 ? HistoricEra.BCE : HistoricEra.CE);
@@ -292,7 +292,7 @@ public final class HistoricDate
     /**
      * Gets the historic month-of-year value.
      *
-     * @return the month-of-year, never null
+     * @return the month-of-year, not null
      */
     public MonthOfYear getMonthOfYear() {
         return month;
@@ -319,7 +319,7 @@ public final class HistoricDate
     /**
      * Gets the historic day-of-week.
      *
-     * @return the day-of-week, never null
+     * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
         return toLocalDate().getDayOfWeek();
@@ -346,7 +346,7 @@ public final class HistoricDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param historicYear  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a {@code HistoricDate} based on this date with the specified year, never null
+     * @return a {@code HistoricDate} based on this date with the specified year, not null
      * @throws IllegalCalendarFieldValueException if the year is out of range
      */
     public HistoricDate withYear(int historicYear) {
@@ -362,7 +362,7 @@ public final class HistoricDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to represent, from 1 to 12
-     * @return a {@code HistoricDate} based on this date with the specified month, never null
+     * @return a {@code HistoricDate} based on this date with the specified month, not null
      */
     public HistoricDate withMonthOfYear(MonthOfYear monthOfYear) {
         return previousValid(getYear(), monthOfYear, getDayOfMonth());
@@ -376,7 +376,7 @@ public final class HistoricDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a {@code HistoricDate} based on this date with the specified day, never null
+     * @return a {@code HistoricDate} based on this date with the specified day, not null
      * @throws IllegalCalendarFieldValueException if the day is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
      */
@@ -390,7 +390,7 @@ public final class HistoricDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to represent, from 1 to 366
-     * @return a {@code HistoricDate} based on this date with the specified day, never null
+     * @return a {@code HistoricDate} based on this date with the specified day, not null
      * @throws IllegalCalendarFieldValueException if the day-of-year is out of range
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
@@ -409,7 +409,7 @@ public final class HistoricDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, positive or negative
-     * @return a {@code HistoricDate} based on this date with the specified years added, never null
+     * @return a {@code HistoricDate} based on this date with the specified years added, not null
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public HistoricDate plusYears(int years) {
@@ -426,7 +426,7 @@ public final class HistoricDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, positive or negative
-     * @return a {@code HistoricDate} based on this date with the specified months added, never null
+     * @return a {@code HistoricDate} based on this date with the specified months added, not null
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public HistoricDate plusMonths(int months) {
@@ -443,7 +443,7 @@ public final class HistoricDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, positive or negative
-     * @return a {@code HistoricDate} based on this date with the specified days added, never null
+     * @return a {@code HistoricDate} based on this date with the specified days added, not null
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public HistoricDate plusDays(int days) {
@@ -454,7 +454,7 @@ public final class HistoricDate
     /**
      * Converts this date to an ISO-8601 calendar system {@code LocalDate}.
      *
-     * @return the equivalent date in the ISO-8601 calendar system, never null
+     * @return the equivalent date in the ISO-8601 calendar system, not null
      */
     public LocalDate toLocalDate() {
         LocalDate possible = LocalDate.of(year, month, day);
@@ -552,7 +552,7 @@ public final class HistoricDate
      * The output will be in the format 'yyyy-MM-dd (Historic 2010-10-15)' where
      * 2010-10-15 is the cutover date.
      *
-     * @return the formatted date string, never null
+     * @return the formatted date string, not null
      */
     @Override
     public String toString() {
@@ -578,7 +578,7 @@ public final class HistoricDate
     /**
      * Gets the field rule for {@code HistoricDate}.
      *
-     * @return the field rule for the date, never null
+     * @return the field rule for the date, not null
      */
     public static CalendricalRule<HistoricDate> rule() {
         return Rule.INSTANCE;

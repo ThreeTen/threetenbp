@@ -54,7 +54,7 @@ public interface ZoneRulesVersion {
      * <p>
      * Version IDs must match regex {@code [A-Za-z0-9._-]+}.
      *
-     * @return the ID of the group, never null
+     * @return the ID of the group, not null
      */
     String getVersionID();
 
@@ -71,7 +71,7 @@ public interface ZoneRulesVersion {
      * <p>
      * Region IDs must match regex {@code [A-Za-z0-9%@~/+._-]+}.
      *
-     * @return the provided region IDs, unmodifiable, never null
+     * @return the provided region IDs, unmodifiable, not null
      */
     Set<String> getRegionIDs();
 

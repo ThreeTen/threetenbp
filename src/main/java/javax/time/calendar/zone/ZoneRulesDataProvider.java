@@ -63,21 +63,21 @@ public interface ZoneRulesDataProvider {
      * Group IDs should use reverse domain name notation, like packages.
      * Group IDs without a dot are reserved.
      *
-     * @return the ID of the group, never null
+     * @return the ID of the group, not null
      */
     String getGroupID();
 
     /**
      * Gets the provided rules, version by version.
      *
-     * @return the provided rules, not to be modified, never null
+     * @return the provided rules, not to be modified, not null
      */
     Set<ZoneRulesVersion> getVersions();
 
     /**
      * Gets the provided region IDs.
      *
-     * @return the provided region IDs, not to be modified, never null
+     * @return the provided region IDs, not to be modified, not null
      */
     Set<String> getRegionIDs();
 

@@ -317,7 +317,7 @@ public class ZoneRulesBuilder {
      * Further rules should not be added to this builder once this method is called.
      *
      * @param id  the time-zone id, not null
-     * @return the zone rules, never null
+     * @return the zone rules, not null
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
@@ -333,7 +333,7 @@ public class ZoneRulesBuilder {
      *
      * @param id  the time-zone id, not null
      * @param deduplicateMap  a map for deduplicating the values, not null
-     * @return the zone rules, never null
+     * @return the zone rules, not null
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
@@ -474,7 +474,7 @@ public class ZoneRulesBuilder {
          * @param dateTime  the local date-time, not null
          * @param standardOffset  the standard offset, not null
          * @param wallOffset  the wall offset, not null
-         * @return the created offset date-time in the wall offset, never null
+         * @return the created offset date-time in the wall offset, not null
          */
         public OffsetDateTime createDateTime(LocalDateTime dateTime, ZoneOffset standardOffset, ZoneOffset wallOffset) {
             switch (this) {
@@ -666,7 +666,7 @@ public class ZoneRulesBuilder {
          * Creates the offset date-time for the local date-time at the end of the window.
          *
          * @param savings  the amount of savings in use, not null
-         * @return the created offset date-time in the wall offset, never null
+         * @return the created offset date-time in the wall offset, not null
          */
         OffsetDateTime createDateTime(Period savings) {
             ZoneOffset wallOffset = standardOffset.plus(savings);
@@ -728,7 +728,7 @@ public class ZoneRulesBuilder {
          *
          * @param standardOffset  the active standard offset, not null
          * @param savingsBefore  the active savings, not null
-         * @return the transition, never null
+         * @return the transition, not null
          */
         ZoneOffsetTransition toTransition(ZoneOffset standardOffset, Period savingsBefore) {
             // copy of code in ZoneOffsetTransitionRule to avoid infinite loop
@@ -760,7 +760,7 @@ public class ZoneRulesBuilder {
          *
          * @param standardOffset  the active standard offset, not null
          * @param savingsBefore  the active savings before the transition, not null
-         * @return the transition, never null
+         * @return the transition, not null
          */
         ZoneOffsetTransitionRule toTransitionRule(ZoneOffset standardOffset, Period savingsBefore) {
             // optimize stored format

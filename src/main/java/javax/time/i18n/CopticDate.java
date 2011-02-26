@@ -116,7 +116,7 @@ public final class CopticDate
      * @param copticYear  the year to represent, from 1 to 9999
      * @param copticMonthOfYear  the month-of-year to represent, from 1 to 13
      * @param copticDayOfMonth  the day-of-month to represent, from 1 to 30
-     * @return the Coptic date, never null
+     * @return the Coptic date, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -139,7 +139,7 @@ public final class CopticDate
      * @param copticYear  the year to represent, from 1 to 9999
      * @param copticMonthOfYear  the month-of-year to represent, from 1 to 13
      * @param copticDayOfMonth  the day-of-month to represent, from 1 to 30
-     * @return the Coptic date, never null
+     * @return the Coptic date, not null
      */
     private static CopticDate copticDatePreviousValid(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
         CopticChronology.YEAR.checkValidValue(copticYear);
@@ -159,7 +159,7 @@ public final class CopticDate
      * of {@code Calendrical}, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
-     * @return the Coptic date, never null
+     * @return the Coptic date, not null
      * @throws CalendricalException if the date cannot be obtained
      */
     public static CopticDate of(Calendrical calendrical) {
@@ -170,7 +170,7 @@ public final class CopticDate
      * Obtains an instance of {@code CopticDate} from a number of epoch days.
      *
      * @param epochDays  the epoch days to use, not null
-     * @return a CopticDate object, never null
+     * @return a CopticDate object, not null
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     private static CopticDate copticDateFromEpochDays(int epochDays) {
@@ -204,7 +204,7 @@ public final class CopticDate
     /**
      * Replaces the date instance from the stream with a valid one.
      *
-     * @return the resolved date, never null
+     * @return the resolved date, not null
      */
     private Object readResolve() {
         return copticDateFromEpochDays(epochDays);
@@ -214,7 +214,7 @@ public final class CopticDate
     /**
      * Gets the chronology that this date uses, which is the Coptic calendar system.
      *
-     * @return the Coptic chronology, never null
+     * @return the Coptic chronology, not null
      */
     public CopticChronology getChronology() {
         return CopticChronology.INSTANCE;
@@ -287,7 +287,7 @@ public final class CopticDate
      * Additional information can be obtained from the {@code DayOfWeek}.
      * This includes textual names of the values.
      *
-     * @return the day-of-week, never null
+     * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
         return DayOfWeek.of((epochDays + 4) % 7 + 1);
@@ -315,7 +315,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from 1 to 9999
-     * @return a {@code CopticDate} based on this date with the requested year, never null
+     * @return a {@code CopticDate} based on this date with the requested year, not null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public CopticDate withYear(int year) {
@@ -333,7 +333,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 to 13
-     * @return a {@code CopticDate} based on this date with the requested month, never null
+     * @return a {@code CopticDate} based on this date with the requested month, not null
      * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public CopticDate withMonthOfYear(int monthOfYear) {
@@ -349,7 +349,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 30
-     * @return a {@code CopticDate} based on this date with the requested day, never null
+     * @return a {@code CopticDate} based on this date with the requested day, not null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -366,7 +366,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
-     * @return a {@code CopticDate} based on this date with the requested day, never null
+     * @return a {@code CopticDate} based on this date with the requested day, not null
      * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
@@ -386,7 +386,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a {@code CopticDate} based on this date with the years added, never null
+     * @return a {@code CopticDate} based on this date with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public CopticDate plusYears(int years) {
@@ -404,7 +404,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a {@code CopticDate} based on this date with the months added, never null
+     * @return a {@code CopticDate} based on this date with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public CopticDate plusMonths(int months) {
@@ -428,7 +428,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a {@code CopticDate} based on this date with the weeks added, never null
+     * @return a {@code CopticDate} based on this date with the weeks added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public CopticDate plusWeeks(int weeks) {
@@ -444,7 +444,7 @@ public final class CopticDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a {@code CopticDate} based on this date with the days added, never null
+     * @return a {@code CopticDate} based on this date with the days added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public CopticDate plusDays(int days) {
@@ -457,7 +457,7 @@ public final class CopticDate
      * Converts this date to a {@code LocalDate}, which is the default representation
      * of a date, and provides values in the ISO-8601 calendar system.
      *
-     * @return the equivalent date in the ISO-8601 calendar system, never null
+     * @return the equivalent date in the ISO-8601 calendar system, not null
      */
     public LocalDate toLocalDate() {
         return LocalDate.ofModifiedJulianDays(epochDays - MJD_TO_COPTIC);
@@ -537,7 +537,7 @@ public final class CopticDate
      * <p>
      * The output will be in the format {@code yyyy-MM-dd (Coptic)}.
      *
-     * @return the formatted date, never null
+     * @return the formatted date, not null
      */
     @Override
     public String toString() {
@@ -563,7 +563,7 @@ public final class CopticDate
     /**
      * Gets the rule for {@code CopticDate}.
      *
-     * @return the rule for the date, never null
+     * @return the rule for the date, not null
      */
     public static CalendricalRule<CopticDate> rule() {
         return Rule.INSTANCE;
