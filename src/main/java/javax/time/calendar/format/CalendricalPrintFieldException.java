@@ -58,18 +58,6 @@ public class CalendricalPrintFieldException extends CalendricalPrintException {
     private final Long value;
 
     /**
-     * Constructs a new exception wrapping the unsupported field exception.
-     *
-     * @param cause  the exception cause, may be null
-     */
-    public CalendricalPrintFieldException(UnsupportedRuleException cause) {
-        super("Rule " + (cause.getRule() == null ? "null" : cause.getRule().getName()) +
-                " cannot be printed as the value cannot be obtained");
-        this.rule = cause.getRule();
-        this.value = null;
-    }
-
-    /**
      * Constructs a new exception creating a standard error message for
      * unable to print a negative value.
      *

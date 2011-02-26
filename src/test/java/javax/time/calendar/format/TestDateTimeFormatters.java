@@ -55,12 +55,13 @@ import java.util.Locale;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.Year;
 import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZoneId;
@@ -148,13 +149,13 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoLocalDate")
     Object[][] provider_sample_isoLocalDate() {
         return new Object[][]{
-                {2008, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
-                {2008, 6, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, 30, null, null, null, CalendricalPrintFieldException.class},
+                {2008, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {2008, 6, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, 30, null, null, null, UnsupportedRuleException.class},
                 
                 {2008, 6, 30, null, null,                   "2008-06-30", null},
                 {2008, 6, 30, "+01:00", null,               "2008-06-30", null},
@@ -236,18 +237,18 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoOffsetDate")
     Object[][] provider_sample_isoOffsetDate() {
         return new Object[][]{
-                {2008, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
-                {2008, 6, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, 30, null, null, null, CalendricalPrintFieldException.class},
+                {2008, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {2008, 6, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, 30, null, null, null, UnsupportedRuleException.class},
                 
-                {2008, 6, 30, null, null,                   null, CalendricalPrintException.class},
+                {2008, 6, 30, null, null,                   null, UnsupportedRuleException.class},
                 {2008, 6, 30, "+01:00", null,               "2008-06-30+01:00", null},
                 {2008, 6, 30, "+01:00", "Europe/Paris",     "2008-06-30+01:00", null},
-                {2008, 6, 30, null, "Europe/Paris",         null, CalendricalPrintException.class},
+                {2008, 6, 30, null, "Europe/Paris",         null, UnsupportedRuleException.class},
                 
                 {123456, 6, 30, "+01:00", null,             "+123456-06-30+01:00", null},
         };
@@ -288,13 +289,13 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoDate")
     Object[][] provider_sample_isoDate() {
         return new Object[][]{
-                {2008, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
-                {2008, 6, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, 30, null, null, null, CalendricalPrintFieldException.class},
+                {2008, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {2008, 6, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, 30, null, null, null, UnsupportedRuleException.class},
                 
                 {2008, 6, 30, null, null,                   "2008-06-30", null},
                 {2008, 6, 30, "+01:00", null,               "2008-06-30+01:00", null},
@@ -345,12 +346,12 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoLocalTime")
     Object[][] provider_sample_isoLocalTime() {
         return new Object[][]{
-                {11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, 1, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
+                {11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, 1, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
                 
                 {11, 5, null, null, null, null,     "11:05", null},
                 {11, 5, 30, null, null, null,       "11:05:30", null},
@@ -409,17 +410,17 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoOffsetTime")
     Object[][] provider_sample_isoOffsetTime() {
         return new Object[][]{
-                {11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, 1, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
+                {11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, 1, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
                 
-                {11, 5, null, null, null, null,     null, CalendricalPrintException.class},
-                {11, 5, 30, null, null, null,       null, CalendricalPrintException.class},
-                {11, 5, 30, 500000000, null, null,  null, CalendricalPrintException.class},
-                {11, 5, 30, 1, null, null,          null, CalendricalPrintException.class},
+                {11, 5, null, null, null, null,     null, UnsupportedRuleException.class},
+                {11, 5, 30, null, null, null,       null, UnsupportedRuleException.class},
+                {11, 5, 30, 500000000, null, null,  null, UnsupportedRuleException.class},
+                {11, 5, 30, 1, null, null,          null, UnsupportedRuleException.class},
                 
                 {11, 5, null, null, "+01:00", null,     "11:05+01:00", null},
                 {11, 5, 30, null, "+01:00", null,       "11:05:30+01:00", null},
@@ -431,10 +432,10 @@ public class TestDateTimeFormatters {
                 {11, 5, 30, 500000000, "+01:00", "Europe/Paris",    "11:05:30.5+01:00", null},
                 {11, 5, 30, 1, "+01:00", "Europe/Paris",            "11:05:30.000000001+01:00", null},
                 
-                {11, 5, null, null, null, "Europe/Paris",       null, CalendricalPrintException.class},
-                {11, 5, 30, null, null, "Europe/Paris",         null, CalendricalPrintException.class},
-                {11, 5, 30, 500000000, null, "Europe/Paris",    null, CalendricalPrintException.class},
-                {11, 5, 30, 1, null, "Europe/Paris",            null, CalendricalPrintException.class},
+                {11, 5, null, null, null, "Europe/Paris",       null, UnsupportedRuleException.class},
+                {11, 5, 30, null, null, "Europe/Paris",         null, UnsupportedRuleException.class},
+                {11, 5, 30, 500000000, null, "Europe/Paris",    null, UnsupportedRuleException.class},
+                {11, 5, 30, 1, null, "Europe/Paris",            null, UnsupportedRuleException.class},
         };
     }
 
@@ -473,12 +474,12 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoTime")
     Object[][] provider_sample_isoTime() {
         return new Object[][]{
-                {11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, 1, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
+                {11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, 1, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
                 
                 {11, 5, null, null, null, null,     "11:05", null},
                 {11, 5, 30, null, null, null,       "11:05:30", null},
@@ -542,18 +543,18 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoLocalDateTime")
     Object[][] provider_sample_isoLocalDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
+                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
                 {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
@@ -615,23 +616,23 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoOffsetDateTime")
     Object[][] provider_sample_isoOffsetDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
+                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
                 
-                {2008, 6, 30, 11, 5, null, null, null, null,                    null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, CalendricalPrintException.class},
+                {2008, 6, 30, 11, 5, null, null, null, null,                    null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, UnsupportedRuleException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, "+01:00", null,                "2008-06-30T11:05+01:00", null},
                 {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  "2008-06-30T11:05:30+01:00", null},
@@ -643,10 +644,10 @@ public class TestDateTimeFormatters {
                 {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00", null},
                 {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00", null},
                 
-                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, CalendricalPrintException.class},
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, UnsupportedRuleException.class},
                 
                 {123456, 6, 30, 11, 5, null, null, "+01:00", null,              "+123456-06-30T11:05+01:00", null},
         };
@@ -689,38 +690,38 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoZonedDateTime")
     Object[][] provider_sample_isoZonedDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
+                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
                 
-                {2008, 6, 30, 11, 5, null, null, null, null,                    null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, CalendricalPrintException.class},
+                {2008, 6, 30, 11, 5, null, null, null, null,                    null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, UnsupportedRuleException.class},
                 
-                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     null, CalendricalPrintException.class},
+                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     null, UnsupportedRuleException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",      "2008-06-30T11:05+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, null, "+01:00", "Europe/Paris",        "2008-06-30T11:05:30+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00[Europe/Paris]", null},
                 
-                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, CalendricalPrintException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, CalendricalPrintException.class},
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, UnsupportedRuleException.class},
                 
                 {123456, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",    "+123456-06-30T11:05+01:00[Europe/Paris]", null},
         };
@@ -763,18 +764,18 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoDateTime")
     Object[][] provider_sample_isoDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, null, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, 30, null, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalPrintFieldException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalPrintFieldException.class},
+                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
                 {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
@@ -869,9 +870,8 @@ public class TestDateTimeFormatters {
             Calendrical test = Year.of(2008);
             DateTimeFormatters.isoOrdinalDate().print(test);
             fail();
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (UnsupportedRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_YEAR);
-            assertEquals(ex.getValue(), null);
         }
     }
 
@@ -925,9 +925,8 @@ public class TestDateTimeFormatters {
             Calendrical test = YearMonth.of(2008, 6);
             DateTimeFormatters.basicIsoDate().print(test);
             fail();
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (UnsupportedRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), null);
         }
     }
 
@@ -1007,9 +1006,8 @@ public class TestDateTimeFormatters {
             Calendrical test = DateTimeFields.of(WEEK_BASED_YEAR, 2004, WEEK_OF_WEEK_BASED_YEAR, 1);
             DateTimeFormatters.isoWeekDate().print(test);
             fail();
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (UnsupportedRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_WEEK);
-            assertEquals(ex.getValue(), null);
         }
     }
 
@@ -1043,9 +1041,8 @@ public class TestDateTimeFormatters {
             Calendrical test = YearMonth.of(2008, 6);
             DateTimeFormatters.rfc1123().print(test);
             fail();
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (UnsupportedRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_WEEK);
-            assertEquals(ex.getValue(), null);
         }
     }
 

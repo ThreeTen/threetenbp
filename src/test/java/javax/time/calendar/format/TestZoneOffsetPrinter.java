@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.ZoneOffset;
 
 import org.testng.annotations.BeforeMethod;
@@ -170,7 +171,7 @@ public class TestZoneOffsetPrinter {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalPrintException.class)
+    @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.print(emptyCalendrical, buf, symbols);

@@ -38,10 +38,10 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Formatter for printing and parsing calendricals.
@@ -168,7 +168,7 @@ public final class DateTimeFormatter {
      * @return the printed string, never null
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws NullPointerException if the calendrical is null
-     * @throws CalendricalPrintException if an error occurs during printing
+     * @throws CalendricalException if an error occurs during printing
      */
     public String print(Calendrical calendrical) {
         StringBuilder buf = new StringBuilder(32);
@@ -194,7 +194,7 @@ public final class DateTimeFormatter {
      * @param appendable  the appendable to print to, not null
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws NullPointerException if the calendrical or appendable is null
-     * @throws CalendricalPrintException if an error occurs during printing
+     * @throws CalendricalException if an error occurs during printing
      */
     public void print(Calendrical calendrical, Appendable appendable) {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
@@ -208,8 +208,6 @@ public final class DateTimeFormatter {
                 printerParser.print(calendrical, buf, symbols);
                 appendable.append(buf);
             }
-        } catch (UnsupportedRuleException ex) {
-            throw new CalendricalPrintFieldException(ex);
         } catch (IOException ex) {
             throw new CalendricalPrintException(ex.getMessage(), ex);
         }

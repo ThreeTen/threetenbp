@@ -1228,7 +1228,7 @@ public final class LocalTime
      * @param formatter  the formatter to use, not null
      * @return the formatted time string, never null
      * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalPrintException if an error occurs during printing
+     * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
