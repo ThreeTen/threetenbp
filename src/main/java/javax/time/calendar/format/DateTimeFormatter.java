@@ -121,7 +121,7 @@ public final class DateTimeFormatter {
     /**
      * Gets the locale to be used during formatting.
      *
-     * @return the locale of this DateTimeFormatter, never null
+     * @return the locale of this DateTimeFormatter, not null
      */
     public Locale getLocale() {
         return symbols.getLocale();
@@ -133,7 +133,7 @@ public final class DateTimeFormatter {
      * This instance is immutable and unaffected by this method call.
      *
      * @param locale  the new locale, not null
-     * @return a new DateTimeFormatter with the same format and the new locale, never null
+     * @return a new DateTimeFormatter with the same format and the new locale, not null
      */
     public DateTimeFormatter withLocale(Locale locale) {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
@@ -165,9 +165,8 @@ public final class DateTimeFormatter {
      * This method prints the calendrical to a String.
      *
      * @param calendrical  the calendrical to print, not null
-     * @return the printed string, never null
+     * @return the printed string, not null
      * @throws UnsupportedOperationException if this formatter cannot print
-     * @throws NullPointerException if the calendrical is null
      * @throws CalendricalException if an error occurs during printing
      */
     public String print(Calendrical calendrical) {
@@ -193,7 +192,6 @@ public final class DateTimeFormatter {
      * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws UnsupportedOperationException if this formatter cannot print
-     * @throws NullPointerException if the calendrical or appendable is null
      * @throws CalendricalException if an error occurs during printing
      */
     public void print(Calendrical calendrical, Appendable appendable) {
@@ -240,9 +238,8 @@ public final class DateTimeFormatter {
      * or a problem occurs during parsing or merging, then an exception is thrown.
      *
      * @param text  the text to parse, not null
-     * @return the parsed date, never null
+     * @return the parsed date, not null
      * @throws UnsupportedOperationException if this formatter cannot parse
-     * @throws NullPointerException if the text is null
      * @throws CalendricalParseException if the parse fails
      */
     public <T> T parse(CharSequence text, CalendricalRule<T> rule) {
@@ -278,9 +275,8 @@ public final class DateTimeFormatter {
      * </pre>
      *
      * @param text  the text to parse, not null
-     * @return the parsed text, never null
+     * @return the parsed text, not null
      * @throws UnsupportedOperationException if this formatter cannot parse
-     * @throws NullPointerException if the text is null
      * @throws CalendricalParseException if the parse fails
      */
     public CalendricalMerger parse(CharSequence text) {
@@ -319,7 +315,6 @@ public final class DateTimeFormatter {
      *  and the index of any error, not null
      * @return the parsed text, null only if the parse results in an error
      * @throws UnsupportedOperationException if this formatter cannot parse
-     * @throws NullPointerException if the text or position is null
      * @throws IndexOutOfBoundsException if the position is invalid
      */
     public DateTimeParseContext parse(CharSequence text, ParsePosition position) {
@@ -343,7 +338,7 @@ public final class DateTimeFormatter {
      * Returns the formatter as a composite printer parser.
      *
      * @param optional  whether the printer/parser should be optional
-     * @return the printer/parser, never null
+     * @return the printer/parser, not null
      */
     CompositePrinterParser toPrinterParser(boolean optional) {
         return printerParser.withOptional(optional);
@@ -362,7 +357,7 @@ public final class DateTimeFormatter {
      * <p>
      * The format does not support attributing of the returned format string.
      *
-     * @return this formatter as a classic format instance, never null
+     * @return this formatter as a classic format instance, not null
      */
     public Format toFormat() {
         return new ClassicFormat();
@@ -371,7 +366,7 @@ public final class DateTimeFormatter {
     /**
      * Returns a description of the underlying formatters.
      *
-     * @return the pattern that will be used, never null
+     * @return the pattern that will be used, not null
      */
     @Override
     public String toString() {

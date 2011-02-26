@@ -77,7 +77,7 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
      * Returns a copy of this printer-parser with the optional flag changed.
      *
      * @param optional  the optional flag to set in the copy
-     * @return the new printer-parser, never null
+     * @return the new printer-parser, not null
      */
     public CompositePrinterParser withOptional(boolean optional) {
         if (optional == this.optional) {

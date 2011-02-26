@@ -240,7 +240,7 @@ public final class DateTimeFormatSymbols {
      * zero character.
      *
      * @param numericText  the text, consisting of digits 0 to 9, to convert, not null
-     * @return the internationalized text, never null
+     * @return the internationalized text, not null
      */
     String convertNumberToI18N(String numericText) {
         if (getZeroChar() == '0') {
