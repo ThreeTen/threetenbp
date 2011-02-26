@@ -31,8 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
-
 import javax.time.calendar.Calendrical;
 
 /**
@@ -61,8 +59,8 @@ final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParse
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        appendable.append(literal);
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
+        buf.append(literal);
     }
 
     //-----------------------------------------------------------------------

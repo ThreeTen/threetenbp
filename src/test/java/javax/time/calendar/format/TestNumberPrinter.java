@@ -37,7 +37,6 @@ import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -59,24 +58,22 @@ import org.testng.annotations.Test;
 public class TestNumberPrinter {
 
     private StringBuilder buf;
-    private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;
     private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder();
-        exceptionAppenable = new MockIOExceptionAppendable();
         emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullAppendable() throws Exception {
+    public void test_print_nullStringBuilder() throws Exception {
         Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, 3);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.print(calendrical, (Appendable) null, symbols);
+        pp.print(calendrical, (StringBuilder) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -106,13 +103,6 @@ public class TestNumberPrinter {
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTING3");
-    }
-
-    @Test(expectedExceptions=IOException.class)
-    public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, 3);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.print(calendrical, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------

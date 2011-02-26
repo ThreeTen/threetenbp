@@ -37,7 +37,6 @@ import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -58,7 +57,6 @@ import org.testng.annotations.Test;
 public class TestReducedPrinter {
 
     private StringBuilder buf;
-    private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;
     private Calendrical calendrical2012;
     private DateTimeFormatSymbols symbols;
@@ -66,7 +64,6 @@ public class TestReducedPrinter {
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder();
-        exceptionAppenable = new MockIOExceptionAppendable();
         emptyCalendrical = DateTimeFields.EMPTY;
         calendrical2012 = DateTimeField.of(YEAR, 2012);
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
@@ -74,9 +71,9 @@ public class TestReducedPrinter {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullAppendable() throws Exception {
+    public void test_print_nullStringBuilder() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
-        pp.print(calendrical2012, (Appendable) null, symbols);
+        pp.print(calendrical2012, (StringBuilder) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -98,12 +95,6 @@ public class TestReducedPrinter {
         buf.append("EXISTING");
         pp.print(calendrical2012, buf, symbols);
         assertEquals(buf.toString(), "EXISTING12");
-    }
-
-    @Test(expectedExceptions=IOException.class)
-    public void test_print_appendIO() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
-        pp.print(calendrical2012, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------

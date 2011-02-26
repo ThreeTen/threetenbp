@@ -31,8 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
-
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRule.TextStore;
@@ -76,14 +74,14 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
         int value = rule.getValueChecked(calendrical).getValidIntValue();
         TextStore textStore = rule.getTextStore(symbols.getLocale(), textStyle);
         String text = (textStore != null ? textStore.getValueText(value) : null);
         if (text != null) {
-            appendable.append(text);
+            buf.append(text);
         } else {
-            numberPrinterParser().print(calendrical, appendable, symbols);
+            numberPrinterParser().print(calendrical, buf, symbols);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,8 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
-
 import javax.time.calendar.Calendrical;
 
 /**
@@ -60,8 +58,8 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        appendable.append(literal);
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
+        buf.append(literal);
     }
 
     /** {@inheritDoc} */

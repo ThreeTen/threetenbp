@@ -33,7 +33,6 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -54,24 +53,22 @@ public class TestZoneOffsetPrinter {
 
     private static final ZoneOffset OFFSET_0130 = ZoneOffset.of("+01:30");
     private StringBuilder buf;
-    private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;
     private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder("EXISTING");
-        exceptionAppenable = new MockIOExceptionAppendable();
         emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullAppendable() throws Exception {
+    public void test_print_nullStringBuilder() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         Calendrical cal = OFFSET_0130;
-        pp.print(cal, (Appendable) null, symbols);
+        pp.print(cal, (StringBuilder) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -185,13 +182,6 @@ public class TestZoneOffsetPrinter {
         buf.setLength(0);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "+01:30");
-    }
-
-    @Test(expectedExceptions=IOException.class)
-    public void test_print_appendIO() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        Calendrical cal = OFFSET_0130;
-        pp.print(cal, exceptionAppenable, symbols);
     }
 
 }

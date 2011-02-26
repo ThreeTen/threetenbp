@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -76,8 +75,8 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        formatter(symbols.getLocale()).toPrinterParser(false).print(calendrical, appendable, symbols);
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
+        formatter(symbols.getLocale()).toPrinterParser(false).print(calendrical, buf, symbols);
     }
 
     //-----------------------------------------------------------------------

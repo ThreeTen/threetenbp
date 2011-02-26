@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,8 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
-
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 
 /**
@@ -51,14 +50,15 @@ import javax.time.calendar.Calendrical;
 public interface DateTimePrinter {
 
     /**
-     * Prints the calendrical object to the appendable.
+     * Prints the calendrical object to the buffer.
+     * <p>
+     * The buffer must not be mutated other than with an appending method.
      *
      * @param calendrical  the calendrical to print, not null
-     * @param appendable  the appendable to add to, not null
+     * @param buf  the buffer to append to, not null
      * @param symbols  the formatting symbols to use, not null
-     * @throws CalendricalPrintException if the date time cannot be printed successfully
-     * @throws IOException if the append throws an exception
+     * @throws CalendricalException if the calendrical cannot be printed successfully
      */
-    void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException;
+    void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols);
 
 }

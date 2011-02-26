@@ -31,7 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -80,17 +79,17 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
         ZoneId zone = calendrical.get(ZoneId.rule());
         if (zone == null) {
             throw new CalendricalPrintException("Unable to print TimeZone");
         }
         if (textStyle == null) {
-            appendable.append(zone.getID());
+            buf.append(zone.getID());
         } else if (textStyle == TextStyle.FULL) {
-            appendable.append(zone.getName());  // TODO: Use symbols
+            buf.append(zone.getName());  // TODO: Use symbols
         } else {
-            appendable.append(zone.getShortName());  // TODO: Use symbols
+            buf.append(zone.getShortName());  // TODO: Use symbols
         }
     }
 

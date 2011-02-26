@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -30,8 +30,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package javax.time.calendar.format;
-
-import java.io.IOException;
 
 import javax.time.calendar.Calendrical;
 
@@ -79,17 +77,16 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        StringBuilder buf = new StringBuilder(32);
-        printer.print(calendrical, buf, symbols);
-        int len = buf.length();
+    public void print(Calendrical calendrical, StringBuilder appendable, DateTimeFormatSymbols symbols) {
+        int preLen = appendable.length();
+        printer.print(calendrical, appendable, symbols);
+        int len = appendable.length() - preLen;
         if (len > padWidth) {
             throw new CalendricalPrintException("Output of " + len + " characters exceeds pad width of " + padWidth);
         }
         for (int i = 0; i < padWidth - len; i++) {
-            appendable.append(padChar);
+            appendable.insert(preLen, padChar);
         }
-        appendable.append(buf);
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -200,7 +200,10 @@ public final class DateTimeFormatter {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimeFormatter.checkNotNull(appendable, "Appendable must not be null");
         try {
-            printerParser.print(calendrical, appendable, symbols);
+            // buffer output to avoid writing to appendable in case of error
+            StringBuilder buf = new StringBuilder(32);
+            printerParser.print(calendrical, buf, symbols);
+            appendable.append(buf);
         } catch (UnsupportedRuleException ex) {
             throw new CalendricalPrintFieldException(ex);
         } catch (IOException ex) {
@@ -320,6 +323,7 @@ public final class DateTimeFormatter {
     public DateTimeParseContext parse(CharSequence text, ParsePosition position) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(position, "ParsePosition must not be null");
+        // parse a String as its a better API for parser writers
         String str = text.toString();
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         int pos = position.getIndex();

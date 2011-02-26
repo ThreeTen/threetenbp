@@ -31,7 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
 import javax.time.calendar.Calendrical;
@@ -131,7 +130,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
         long value = getValue(calendrical);
         String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
@@ -143,11 +142,11 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             switch (signStyle) {
                 case EXCEEDS_PAD:
                     if (minWidth < 19 && value >= EXCEED_POINTS[minWidth]) {
-                        appendable.append(symbols.getPositiveSignChar());
+                        buf.append(symbols.getPositiveSignChar());
                     }
                     break;
                 case ALWAYS:
-                    appendable.append(symbols.getPositiveSignChar());
+                    buf.append(symbols.getPositiveSignChar());
                     break;
             }
         } else {
@@ -155,16 +154,16 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 case NORMAL:
                 case EXCEEDS_PAD:
                 case ALWAYS:
-                    appendable.append(symbols.getNegativeSignChar());
+                    buf.append(symbols.getNegativeSignChar());
                     break;
                 case NOT_NEGATIVE:
                     throw new CalendricalPrintFieldException(rule, value);
             }
         }
         for (int i = 0; i < minWidth - str.length(); i++) {
-            appendable.append(symbols.getZeroChar());
+            buf.append(symbols.getZeroChar());
         }
-        appendable.append(str);
+        buf.append(str);
     }
 
     /**

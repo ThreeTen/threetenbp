@@ -33,7 +33,6 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -52,7 +51,6 @@ import org.testng.annotations.Test;
 public class TestCharLiteralPrinter {
 
     private StringBuilder buf;
-    private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;
     private Calendrical calendrical;
     private DateTimeFormatSymbols symbols;
@@ -60,7 +58,6 @@ public class TestCharLiteralPrinter {
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder("EXISTING");
-        exceptionAppenable = new MockIOExceptionAppendable();
         emptyCalendrical = DateTimeFields.EMPTY;
         calendrical = LocalDateTime.of(2008, 12, 3, 10, 15);
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
@@ -68,9 +65,9 @@ public class TestCharLiteralPrinter {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullAppendable() throws Exception {
+    public void test_print_nullStringBuilder() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.print(emptyCalendrical, (Appendable) null, symbols);
+        pp.print(emptyCalendrical, (StringBuilder) null, symbols);
     }
 
 // NPE is not required
@@ -107,12 +104,6 @@ public class TestCharLiteralPrinter {
         buf.setLength(0);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "a");
-    }
-
-    @Test(expectedExceptions=IOException.class)
-    public void test_print_appendIO() throws Exception {
-        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.print(calendrical, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------

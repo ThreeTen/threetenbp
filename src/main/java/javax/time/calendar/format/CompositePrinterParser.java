@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -94,23 +93,23 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
         if (printers == null) {
             throw new UnsupportedOperationException("Formatter does not support printing");
         }
         if (optional) {
-            StringBuilder buf = new StringBuilder();
+            int length = buf.length();
             try {
                 for (DateTimePrinter printer : printers) {
                     printer.print(calendrical, buf, symbols);
                 }
             } catch (CalendricalException ex) {
-                return;  // data not available to print
+                buf.setLength(length);  // reset buffer
+                return;
             }
-            appendable.append(buf);
         } else {
             for (DateTimePrinter printer : printers) {
-                printer.print(calendrical, appendable, symbols);
+                printer.print(calendrical, buf, symbols);
             }
         }
     }

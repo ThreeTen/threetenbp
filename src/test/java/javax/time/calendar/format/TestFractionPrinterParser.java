@@ -36,7 +36,6 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -58,14 +57,12 @@ import org.testng.annotations.Test;
 public class TestFractionPrinterParser {
 
     private StringBuilder buf;
-    private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;
     private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder();
-        exceptionAppenable = new MockIOExceptionAppendable();
         emptyCalendrical = DateTimeFields.EMPTY;
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
@@ -74,10 +71,10 @@ public class TestFractionPrinterParser {
     // print
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullAppendable() throws Exception {
+    public void test_print_nullStringBuilder() throws Exception {
         Calendrical calendrical = DateTimeFields.of(NANO_OF_SECOND, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
-        pp.print(calendrical, (Appendable) null, symbols);
+        pp.print(calendrical, (StringBuilder) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -106,13 +103,6 @@ public class TestFractionPrinterParser {
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTING.000000003");
-    }
-
-    @Test(expectedExceptions=IOException.class)
-    public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(NANO_OF_SECOND, 3);
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
-        pp.print(calendrical, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------
