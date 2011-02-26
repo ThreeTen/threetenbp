@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -82,7 +82,7 @@ public class CalendricalPrintException extends CalendricalException {
      * }
      * </pre>
      * Note that calling this method will re-throw the original IOException,
-     * causing this CalendricalFormatException to be lost.
+     * causing this CalendricalPrintException to be lost.
      *
      * @throws IOException if the cause of this exception is an IOException
      */
