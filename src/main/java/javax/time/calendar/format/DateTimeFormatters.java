@@ -195,7 +195,7 @@ public final class DateTimeFormatters {
      * Unicode Common Locale Data Repository.
      *
      * @param pattern  the pattern to use, not null
-     * @return the formatter based on the pattern, never null
+     * @return the formatter based on the pattern, not null
      * @throws IllegalArgumentException if the pattern is invalid
      * @see DateTimeFormatterBuilder#appendPattern(String)
      */
@@ -216,7 +216,7 @@ public final class DateTimeFormatters {
      * 
      * @param pattern  the pattern to use, not null
      * @param locale  the locale to use, not null
-     * @return the formatter based on the pattern, never null
+     * @return the formatter based on the pattern, not null
      * @throws IllegalArgumentException if the pattern is invalid
      * @see DateTimeFormatterBuilder#appendPattern(String)
      */
@@ -235,7 +235,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoLocalDate() {
         return ISO_LOCAL_DATE;
@@ -267,7 +267,7 @@ public final class DateTimeFormatters {
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoOffsetDate() {
         return ISO_OFFSET_DATE;
@@ -298,7 +298,7 @@ public final class DateTimeFormatters {
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoDate() {
         return ISO_DATE;
@@ -332,7 +332,7 @@ public final class DateTimeFormatters {
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
      *
-     * @return the ISO time formatter, never null
+     * @return the ISO time formatter, not null
      */
     public static DateTimeFormatter isoLocalTime() {
         return ISO_LOCAL_TIME;
@@ -369,7 +369,7 @@ public final class DateTimeFormatters {
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
-     * @return the ISO time formatter, never null
+     * @return the ISO time formatter, not null
      */
     public static DateTimeFormatter isoOffsetTime() {
         return ISO_OFFSET_TIME;
@@ -402,7 +402,7 @@ public final class DateTimeFormatters {
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoTime() {
         return ISO_TIME;
@@ -439,7 +439,7 @@ public final class DateTimeFormatters {
      * The nanoseconds will be printed if non-zero.
      * If non-zero, the minimum number of fractional second digits will printed.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoLocalDateTime() {
         return ISO_LOCAL_DATE_TIME;
@@ -475,7 +475,7 @@ public final class DateTimeFormatters {
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoOffsetDateTime() {
         return ISO_OFFSET_DATE_TIME;
@@ -509,7 +509,7 @@ public final class DateTimeFormatters {
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoZonedDateTime() {
         return ISO_ZONED_DATE_TIME;
@@ -547,7 +547,7 @@ public final class DateTimeFormatters {
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter isoDateTime() {
         return ISO_DATE_TIME;
@@ -577,7 +577,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      *
-     * @return the ISO ordinal date formatter, never null
+     * @return the ISO ordinal date formatter, not null
      */
     public static DateTimeFormatter isoOrdinalDate() {
         return ISO_ORDINAL_DATE;
@@ -610,7 +610,7 @@ public final class DateTimeFormatters {
      * The year will print 4 digits, unless this is insufficient, in which
      * case the full year will be printed together with a positive/negative sign.
      *
-     * @return the ISO week date formatter, never null
+     * @return the ISO week date formatter, not null
      */
     public static DateTimeFormatter isoWeekDate() {
         return ISO_WEEK_DATE;
@@ -645,7 +645,7 @@ public final class DateTimeFormatters {
      * The year is limited to printing and parsing 4 digits, as the lack of
      * separators makes it impossible to parse more than 4 digits.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter basicIsoDate() {
         return BASIC_ISO_DATE;
@@ -677,7 +677,7 @@ public final class DateTimeFormatters {
      * <p>
      * The year will print 4 digits, and only the range 0000 to 9999 is supported.
      *
-     * @return the ISO date formatter, never null
+     * @return the ISO date formatter, not null
      */
     public static DateTimeFormatter rfc1123() {
         return RFC_1123_DATE_TIME;
@@ -718,7 +718,7 @@ public final class DateTimeFormatters {
      * length date format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the full date formatter, never null
+     * @return the full date formatter, not null
      */
     public static DateTimeFormatter fullDate(Locale locale) {
         return date(FormatStyle.FULL, locale);
@@ -735,7 +735,7 @@ public final class DateTimeFormatters {
      * length date format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the long date formatter, never null
+     * @return the long date formatter, not null
      */
     public static DateTimeFormatter longDate(Locale locale) {
         return date(FormatStyle.LONG, locale);
@@ -752,7 +752,7 @@ public final class DateTimeFormatters {
      * length date format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the medium date formatter, never null
+     * @return the medium date formatter, not null
      */
     public static DateTimeFormatter mediumDate(Locale locale) {
         return date(FormatStyle.MEDIUM, locale);
@@ -769,7 +769,7 @@ public final class DateTimeFormatters {
      * length date format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the short date formatter, never null
+     * @return the short date formatter, not null
      */
     public static DateTimeFormatter shortDate(Locale locale) {
         return date(FormatStyle.SHORT, locale);
@@ -787,7 +787,7 @@ public final class DateTimeFormatters {
      *
      * @param dateStyle  the formatter style to obtain, not null
      * @param locale  the locale to use, not null
-     * @return the date formatter, never null
+     * @return the date formatter, not null
      */
     public static DateTimeFormatter date(FormatStyle dateStyle, Locale locale) {
         DateTimeFormatter.checkNotNull(dateStyle, "Date style must not be null");
@@ -806,7 +806,7 @@ public final class DateTimeFormatters {
      * length time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the full time formatter, never null
+     * @return the full time formatter, not null
      */
     public static DateTimeFormatter fullTime(Locale locale) {
         return time(FormatStyle.FULL, locale);
@@ -823,7 +823,7 @@ public final class DateTimeFormatters {
      * length time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the long time formatter, never null
+     * @return the long time formatter, not null
      */
     public static DateTimeFormatter longTime(Locale locale) {
         return time(FormatStyle.LONG, locale);
@@ -840,7 +840,7 @@ public final class DateTimeFormatters {
      * length time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the medium time formatter, never null
+     * @return the medium time formatter, not null
      */
     public static DateTimeFormatter mediumTime(Locale locale) {
         return time(FormatStyle.MEDIUM, locale);
@@ -857,7 +857,7 @@ public final class DateTimeFormatters {
      * length time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the short time formatter, never null
+     * @return the short time formatter, not null
      */
     public static DateTimeFormatter shortTime(Locale locale) {
         return time(FormatStyle.SHORT, locale);
@@ -875,7 +875,7 @@ public final class DateTimeFormatters {
      *
      * @param timeStyle  the formatter style to obtain, not null
      * @param locale  the locale to use, not null
-     * @return the time formatter, never null
+     * @return the time formatter, not null
      */
     public static DateTimeFormatter time(FormatStyle timeStyle, Locale locale) {
         DateTimeFormatter.checkNotNull(timeStyle, "Time style must not be null");
@@ -894,7 +894,7 @@ public final class DateTimeFormatters {
      * length date-time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the full date-time formatter, never null
+     * @return the full date-time formatter, not null
      */
     public static DateTimeFormatter fullDateTime(Locale locale) {
         return dateTime(FormatStyle.FULL, locale);
@@ -911,7 +911,7 @@ public final class DateTimeFormatters {
      * length date-time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the long date-time formatter, never null
+     * @return the long date-time formatter, not null
      */
     public static DateTimeFormatter longDateTime(Locale locale) {
         return dateTime(FormatStyle.LONG, locale);
@@ -928,7 +928,7 @@ public final class DateTimeFormatters {
      * length date-time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the medium date-time formatter, never null
+     * @return the medium date-time formatter, not null
      */
     public static DateTimeFormatter mediumDateTime(Locale locale) {
         return dateTime(FormatStyle.MEDIUM, locale);
@@ -945,7 +945,7 @@ public final class DateTimeFormatters {
      * length date-time format for that new locale.
      *
      * @param locale  the locale to use, not null
-     * @return the short date-time formatter, never null
+     * @return the short date-time formatter, not null
      */
     public static DateTimeFormatter shortDateTime(Locale locale) {
         return dateTime(FormatStyle.SHORT, locale);
@@ -963,7 +963,7 @@ public final class DateTimeFormatters {
      *
      * @param dateTimeStyle  the formatter style to obtain, not null
      * @param locale  the locale to use, not null
-     * @return the date-time formatter, never null
+     * @return the date-time formatter, not null
      */
     public static DateTimeFormatter dateTime(FormatStyle dateTimeStyle, Locale locale) {
         DateTimeFormatter.checkNotNull(dateTimeStyle, "Date-time style must not be null");
@@ -983,7 +983,7 @@ public final class DateTimeFormatters {
      * @param dateStyle  the date formatter style to obtain, not null
      * @param timeStyle  the time formatter style to obtain, not null
      * @param locale  the locale to use, not null
-     * @return the date, time or date-time formatter, never null
+     * @return the date, time or date-time formatter, not null
      */
     public static DateTimeFormatter dateTime(FormatStyle dateStyle, FormatStyle timeStyle, Locale locale) {
         DateTimeFormatter.checkNotNull(dateStyle, "Date style must not be null");

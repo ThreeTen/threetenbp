@@ -96,7 +96,7 @@ public final class DateTimeParseContext {
     /**
      * Gets the locale to use for printing and parsing text.
      *
-     * @return the locale, never null
+     * @return the locale, not null
      */
     public Locale getLocale() {
         return symbols.getLocale();
@@ -105,7 +105,7 @@ public final class DateTimeParseContext {
     /**
      * Gets the formatting symbols.
      *
-     * @return the formatting symbols, never null
+     * @return the formatting symbols, not null
      */
     public DateTimeFormatSymbols getSymbols() {
         return symbols;
@@ -155,7 +155,7 @@ public final class DateTimeParseContext {
     /**
      * Gets the currently active calendrical.
      *
-     * @return the current calendrical, never null
+     * @return the current calendrical, not null
      */
     private Parsed currentCalendrical() {
         return calendricals.get(calendricals.size() - 1);
@@ -181,7 +181,7 @@ public final class DateTimeParseContext {
      * <p>
      * The set can be read and have elements removed, but nothing can be added.
      *
-     * @return the set of rules previously parsed, never null
+     * @return the set of rules previously parsed, not null
      */
     public Set<CalendricalRule<?>> getParsedRules() {
         return currentCalendrical().values.keySet();
@@ -248,7 +248,7 @@ public final class DateTimeParseContext {
      * objects such as {@code LocalDate}, potentially applying complex processing
      * to handle invalid parsed data.
      *
-     * @return a new independent merger with the parsed rule-value map, never null
+     * @return a new independent merger with the parsed rule-value map, not null
      */
     public CalendricalMerger toCalendricalMerger() {
         return new CalendricalMerger(new CalendricalContext(true, true), currentCalendrical().values);
@@ -258,7 +258,7 @@ public final class DateTimeParseContext {
     /**
      * Returns a string version of the context for debugging.
      *
-     * @return a string representation of the context date, never null
+     * @return a string representation of the context date, not null
      */
     @Override
     public String toString() {

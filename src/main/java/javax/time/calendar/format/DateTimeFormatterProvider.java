@@ -56,7 +56,7 @@ public abstract class DateTimeFormatterProvider extends LocaleServiceProvider {
      * @param timeStyle  the time formatter style to obtain, null to obtain a date formatter
      * @param locale  the locale to use, not null
      * @param chronology  the chronology to use, not null
-     * @return the date-time formatter, never null
+     * @return the date-time formatter, not null
      * @throws IllegalArgumentException if both format styles are null
      * @throws IllegalArgumentException if the locale is not a recognized locale
      */

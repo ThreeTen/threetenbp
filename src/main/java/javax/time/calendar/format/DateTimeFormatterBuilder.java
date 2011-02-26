@@ -156,7 +156,7 @@ public final class DateTimeFormatterBuilder {
      * The change will remain in force until the end of the formatter that is eventually
      * constructed or until {@code parseCaseInsensitive} is called.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseCaseSensitive() {
         appendInternal(CaseSensitivePrinterParser.SENSITIVE, CaseSensitivePrinterParser.SENSITIVE);
@@ -173,7 +173,7 @@ public final class DateTimeFormatterBuilder {
      * The change will remain in force until the end of the formatter that is eventually
      * constructed or until {@code parseCaseSensitive} is called.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseCaseInsensitive() {
         appendInternal(CaseSensitivePrinterParser.INSENSITIVE, CaseSensitivePrinterParser.INSENSITIVE);
@@ -192,7 +192,7 @@ public final class DateTimeFormatterBuilder {
      * The change will remain in force until the end of the formatter that is eventually
      * constructed or until {@code parseLenient} is called.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseStrict() {
         appendInternal(StrictLenientPrinterParser.STRICT, StrictLenientPrinterParser.STRICT);
@@ -210,7 +210,7 @@ public final class DateTimeFormatterBuilder {
      * The change will remain in force until the end of the formatter that is eventually
      * constructed or until {@code parseStrict} is called.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseLenient() {
         appendInternal(StrictLenientPrinterParser.LENIENT, StrictLenientPrinterParser.LENIENT);
@@ -233,7 +233,7 @@ public final class DateTimeFormatterBuilder {
      * See {@link #appendValue(DateTimeRule, int)} for full details.
      *
      * @param rule  the rule of the field to append, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeRule rule) {
         checkNotNull(rule, "DateTimeRule must not be null");
@@ -286,7 +286,7 @@ public final class DateTimeFormatterBuilder {
      *
      * @param rule  the rule of the field to append, not null
      * @param width  the width of the printed field, from 1 to 19
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeRule rule, int width) {
@@ -316,7 +316,7 @@ public final class DateTimeFormatterBuilder {
      * @param minWidth  the minimum field width of the printed field, from 1 to 19
      * @param maxWidth  the maximum field width of the printed field, from 1 to 19
      * @param signStyle  the positive/negative output style, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
@@ -371,7 +371,7 @@ public final class DateTimeFormatterBuilder {
      * @param rule  the rule of the field to append, not null
      * @param width  the width of the printed and parsed field, from 1 to 18
      * @param baseValue  the base value of the range of valid values
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalArgumentException if the width or base value is invalid
      */
     public DateTimeFormatterBuilder appendValueReduced(
@@ -387,7 +387,7 @@ public final class DateTimeFormatterBuilder {
      * 
      * @param width  the width
      * @param pp  the printer-parser, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     private DateTimeFormatterBuilder appendFixedWidth(int width, NumberPrinterParser pp) {
         if (active.valueParserIndex >= 0) {
@@ -428,7 +428,7 @@ public final class DateTimeFormatterBuilder {
      * @param rule  the rule of the field to append, not null
      * @param minWidth  the minimum width of the field excluding the decimal point, from 0 to 9
      * @param maxWidth  the maximum width of the field excluding the decimal point, from 1 to 9
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalArgumentException if the field has a variable set of valid values
      * @throws IllegalArgumentException if either width is invalid
      */
@@ -453,7 +453,7 @@ public final class DateTimeFormatterBuilder {
      * Only negative numbers will be signed. No padding will be added.
      *
      * @param rule  the rule of the field to append, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(DateTimeRule rule) {
         return appendText(rule, TextStyle.FULL);
@@ -472,7 +472,7 @@ public final class DateTimeFormatterBuilder {
      *
      * @param rule  the rule of the field to append, not null
      * @param textStyle  the text style to use, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(DateTimeRule rule, TextStyle textStyle) {
         checkNotNull(rule, "DateTimeRule must not be null");
@@ -490,7 +490,7 @@ public final class DateTimeFormatterBuilder {
      * If the offset cannot be obtained then an exception will be thrown.
      * The format is defined by {@link ZoneOffset#getID()}.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOffsetId() {
         return appendOffset("Z", "+HH:MM:ss");
@@ -525,7 +525,7 @@ public final class DateTimeFormatterBuilder {
      *
      * @param noOffsetText  the text to use when the offset is zero, not null
      * @param pattern  the pattern to use
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOffset(String noOffsetText, String pattern) {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(noOffsetText, pattern);
@@ -540,7 +540,7 @@ public final class DateTimeFormatterBuilder {
      * The time-zone id will be output during a print.
      * If the zone cannot be obtained then an exception will be thrown.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendZoneId() {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
@@ -562,7 +562,7 @@ public final class DateTimeFormatterBuilder {
      * without daylight savings (winter time) will be used.
      *
      * @param textStyle  the text style to use, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
         checkNotNull(textStyle, "TextStyle must not be null");
@@ -583,7 +583,7 @@ public final class DateTimeFormatterBuilder {
      *
      * @param dateStyle  the date style to use, null means no date required
      * @param timeStyle  the time style to use, null means no time required
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
         return appendLocalized(dateStyle, timeStyle, ISOChronology.INSTANCE);
@@ -601,7 +601,7 @@ public final class DateTimeFormatterBuilder {
      * @param dateStyle  the date style to use, null means no date required
      * @param timeStyle  the time style to use, null means no time required
      * @param chronology  the chronology to use, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
         checkNotNull(chronology, "Chronology must not be null");
@@ -619,7 +619,7 @@ public final class DateTimeFormatterBuilder {
      * This character will be output during a print.
      *
      * @param literal  the literal to append, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLiteral(char literal) {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser(literal);
@@ -635,7 +635,7 @@ public final class DateTimeFormatterBuilder {
      * If the literal is empty, nothing is added to the formatter.
      *
      * @param literal  the literal to append, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
         checkNotNull(literal, "Literal text must not be null");
@@ -660,7 +660,7 @@ public final class DateTimeFormatterBuilder {
      *
      * @param printer  the printer to add, null prevents the formatter from printing
      * @param parser  the parser to add, null prevents the formatter from parsing
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws NullPointerException if both printer and parser are null
      */
     public DateTimeFormatterBuilder append(DateTimePrinter printer, DateTimeParser parser) {
@@ -678,7 +678,7 @@ public final class DateTimeFormatterBuilder {
      * parts of the formatter directly to this builder.
      *
      * @param formatter  the formatter to add, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
         checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -698,7 +698,7 @@ public final class DateTimeFormatterBuilder {
      * The formatter will parse if the string matches, otherwise no error is returned.
      *
      * @param formatter  the formatter to add, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
         checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -829,7 +829,7 @@ public final class DateTimeFormatterBuilder {
      * Unicode Common Locale Data Repository.
      *
      * @param pattern  the pattern to add, not null
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalArgumentException if the pattern is invalid
      */
     public DateTimeFormatterBuilder appendPattern(String pattern) {
@@ -1064,7 +1064,7 @@ public final class DateTimeFormatterBuilder {
      * is exceeded.
      *
      * @param padWidth  the pad width, 1 or greater
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalArgumentException if pad width is too small
      */
     public DateTimeFormatterBuilder padNext(int padWidth) {
@@ -1082,7 +1082,7 @@ public final class DateTimeFormatterBuilder {
      *
      * @param padWidth  the pad width, 1 or greater
      * @param padChar  the pad character
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalArgumentException if pad width is too small
      */
     public DateTimeFormatterBuilder padNext(int padWidth, char padChar) {
@@ -1114,7 +1114,7 @@ public final class DateTimeFormatterBuilder {
      * During printing, the minute will only be output if its value can be obtained from the calendrical.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder optionalStart() {
         active.valueParserIndex = -1;
@@ -1144,7 +1144,7 @@ public final class DateTimeFormatterBuilder {
      * During printing, the minute will only be output if its value can be obtained from the calendrical.
      * During parsing, the input will be successfully parsed whether the minute is present or not.
      *
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      * @throws IllegalStateException if there was no previous call to {@code optionalStart}
      */
     public DateTimeFormatterBuilder optionalEnd() {
@@ -1167,7 +1167,7 @@ public final class DateTimeFormatterBuilder {
      *
      * @param printer  the printer to add, null prevents the formatter from printing
      * @param parser  the parser to add, null prevents the formatter from parsing
-     * @return this, for chaining, never null
+     * @return this, for chaining, not null
      */
     private int appendInternal(DateTimePrinter printer, DateTimeParser parser) {
         if (active.padNextWidth > 0) {
@@ -1193,7 +1193,7 @@ public final class DateTimeFormatterBuilder {
      * This builder can still be used after creating the formatter if desired,
      * although the state may have been changed by calls to {@code optionalEnd}.
      *
-     * @return the created formatter, never null
+     * @return the created formatter, not null
      */
     public DateTimeFormatter toFormatter() {
         return toFormatter(Locale.getDefault());
@@ -1209,7 +1209,7 @@ public final class DateTimeFormatterBuilder {
      * although the state may have been changed by calls to {@code optionalEnd}.
      *
      * @param locale  the locale to use for formatting, not null
-     * @return the created formatter, never null
+     * @return the created formatter, not null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
         DateTimeFormatterBuilder.checkNotNull(locale, "Locale must not be null");
