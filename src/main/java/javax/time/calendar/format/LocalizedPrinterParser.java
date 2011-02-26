@@ -90,7 +90,7 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
      * Gets the formatter to use.
      *
      * @param locale  the locale to use, not null
-     * @return the formatter, never null
+     * @return the formatter, not null
      * @throws IllegalArgumentException if the formatter cannot be found
      */
     private DateTimeFormatter formatter(Locale locale) {

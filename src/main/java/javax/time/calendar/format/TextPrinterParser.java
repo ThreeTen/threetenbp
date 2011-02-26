@@ -122,7 +122,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * Create and cache a number printer parser.
-     * @return the number printer parser for this field, never null
+     * @return the number printer parser for this field, not null
      */
     private NumberPrinterParser numberPrinterParser() {
         if (numberPrinterParser == null) {

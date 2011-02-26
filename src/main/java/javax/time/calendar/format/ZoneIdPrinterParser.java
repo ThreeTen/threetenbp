@@ -255,7 +255,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
      * Builds an optimized parsing tree.
      *
      * @param availableIDs  the available IDs, not null, not empty
-     * @return the tree, never null
+     * @return the tree, not null
      */
     private static SubstringTree prepareParser(Set<String> availableIDs) {
         // sort by length
