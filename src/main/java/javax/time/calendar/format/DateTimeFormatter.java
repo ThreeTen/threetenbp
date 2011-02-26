@@ -240,18 +240,19 @@ public final class DateTimeFormatter {
      * @throws NullPointerException if the text is null
      * @throws CalendricalParseException if the parse fails
      */
-    public <T> T parse(String text, CalendricalRule<T> rule) {
+    public <T> T parse(CharSequence text, CalendricalRule<T> rule) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
-        CalendricalMerger merger = parse(text);
+        String str = text.toString();
+        CalendricalMerger merger = parse(str);
         T result = merger.merge().get(rule);
         if (result == null) {
-            String str = text;
-            if (str.length() > 64) {
-                str = str.substring(0, 64) + "...";
+            String abbr = str;
+            if (abbr.length() > 64) {
+                abbr = abbr.substring(0, 64) + "...";
             }
-            throw new CalendricalParseException("Text '" + str + "' could not be parsed into " + rule.getName() +
-                    " but was parsed to " + merger, text, 0);
+            throw new CalendricalParseException("Text '" + abbr + "' could not be parsed into " + rule.getName() +
+                    " but was parsed to " + merger, str, 0);
         }
         return result;
     }
@@ -277,20 +278,22 @@ public final class DateTimeFormatter {
      * @throws NullPointerException if the text is null
      * @throws CalendricalParseException if the parse fails
      */
-    public CalendricalMerger parse(String text) {
+    public CalendricalMerger parse(CharSequence text) {
+        DateTimeFormatter.checkNotNull(text, "Text must not be null");
+        String str = text.toString();
         ParsePosition pos = new ParsePosition(0);
-        DateTimeParseContext result = parse(text, pos);
-        if (pos.getErrorIndex() >= 0 || pos.getIndex() < text.length()) {
-            String str = text;
-            if (str.length() > 64) {
-                str = str.substring(0, 64) + "...";
+        DateTimeParseContext result = parse(str, pos);
+        if (pos.getErrorIndex() >= 0 || pos.getIndex() < str.length()) {
+            String abbr = str;
+            if (abbr.length() > 64) {
+                abbr = abbr.substring(0, 64) + "...";
             }
             if (pos.getErrorIndex() >= 0) {
-                throw new CalendricalParseException("Text '" + str + "' could not be parsed at index " +
-                        pos.getErrorIndex(), text, pos.getErrorIndex());
+                throw new CalendricalParseException("Text '" + abbr + "' could not be parsed at index " +
+                        pos.getErrorIndex(), str, pos.getErrorIndex());
             } else {
-                throw new CalendricalParseException("Text '" + str + "' could not be parsed, unparsed text found at index " +
-                        pos.getIndex(), text, pos.getIndex());
+                throw new CalendricalParseException("Text '" + abbr + "' could not be parsed, unparsed text found at index " +
+                        pos.getIndex(), str, pos.getIndex());
             }
         }
         return result.toCalendricalMerger();
@@ -314,12 +317,13 @@ public final class DateTimeFormatter {
      * @throws NullPointerException if the text or position is null
      * @throws IndexOutOfBoundsException if the position is invalid
      */
-    public DateTimeParseContext parse(String text, ParsePosition position) {
+    public DateTimeParseContext parse(CharSequence text, ParsePosition position) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(position, "ParsePosition must not be null");
+        String str = text.toString();
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         int pos = position.getIndex();
-        pos = printerParser.parse(context, text, pos);
+        pos = printerParser.parse(context, str, pos);
         if (pos < 0) {
             position.setErrorIndex(~pos);
             return null;

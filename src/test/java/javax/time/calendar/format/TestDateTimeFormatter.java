@@ -225,6 +225,13 @@ public class TestDateTimeFormatter {
         assertEquals(result.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
     }
 
+    public void test_parse_CharSequence() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
+        CalendricalMerger result = test.parse(new StringBuilder("ONE30"));
+        assertEquals(result.getInputMap().size(), 1);
+        assertEquals(result.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
+    }
+
     @Test(expectedExceptions=CalendricalParseException.class)
     public void test_parse_String_parseError() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
