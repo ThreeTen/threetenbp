@@ -84,7 +84,7 @@ public final class PeriodField
      *
      * @param amount  the amount of the period, measured in terms of the unit, positive or negative
      * @param unit  the unit that the period is measured in, not null
-     * @return the {@code PeriodField} instance, never null
+     * @return the {@code PeriodField} instance, not null
      */
     public static PeriodField of(long amount, PeriodUnit unit) {
         PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
@@ -146,7 +146,7 @@ public final class PeriodField
      * <p>
      * For example, in the period '5 Days', the unit is 'Days'.
      *
-     * @return the period unit, never null
+     * @return the period unit, not null
      */
     public PeriodUnit getUnit() {
         return unit;
@@ -160,7 +160,7 @@ public final class PeriodField
      * For example, it could be used to change '3 Days' to '5 Days'.
      *
      * @param amount  the amount of time to set in the returned period, positive or negative
-     * @return a {@code PeriodField} based on this period with the specified amount, never null
+     * @return a {@code PeriodField} based on this period with the specified amount, not null
      */
     public PeriodField withAmount(long amount) {
         if (amount == this.amount) {
@@ -176,7 +176,7 @@ public final class PeriodField
      * For example, it could be used to change '3 Days' to '3 Months'.
      *
      * @param unit  the unit to set in the returned period, positive or negative
-     * @return a {@code PeriodField} based on this period with the specified unit, never null
+     * @return a {@code PeriodField} based on this period with the specified unit, not null
      */
     public PeriodField withUnit(PeriodUnit unit) {
         PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
@@ -193,7 +193,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, positive or negative
-     * @return a {@code PeriodField} based on this period with the specified period added, never null
+     * @return a {@code PeriodField} based on this period with the specified period added, not null
      * @throws IllegalArgumetException if the specified period has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
@@ -211,7 +211,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @param amount  the period to add, measured in the unit of the period, positive or negative
-     * @return a {@code PeriodField} based on this period with the specified amount added, never null
+     * @return a {@code PeriodField} based on this period with the specified amount added, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField plus(long amount) {
@@ -225,7 +225,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to subtract, positive or negative
-     * @return a {@code PeriodField} based on this period with the specified period subtracted, never null
+     * @return a {@code PeriodField} based on this period with the specified period subtracted, not null
      * @throws IllegalArgumetException if the specified has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
@@ -243,7 +243,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @param amount  the period to subtract, measured in the unit of the period, positive or negative
-     * @return a {@code PeriodField} based on this period with the specified amount subtracted, never null
+     * @return a {@code PeriodField} based on this period with the specified amount subtracted, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField minus(long amount) {
@@ -257,7 +257,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @param scalar  the value to multiply by, positive or negative
-     * @return a {@code PeriodField} based on this period multiplied by the specified scalar, never null
+     * @return a {@code PeriodField} based on this period multiplied by the specified scalar, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField multipliedBy(long scalar) {
@@ -273,7 +273,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @param divisor  the value to divide by, positive or negative
-     * @return a {@code PeriodField} based on this period divided by the specified divisor, never null
+     * @return a {@code PeriodField} based on this period divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      */
     public PeriodField dividedBy(long divisor) {
@@ -290,7 +290,7 @@ public final class PeriodField
      * This instance is immutable and unaffected by this method call.
      *
      * @param divisor  the value to divide by, positive or negative
-     * @return a {@code PeriodField} based on this period divided by the specified divisor, never null
+     * @return a {@code PeriodField} based on this period divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      */
     public PeriodField remainder(long divisor) {
@@ -303,7 +303,7 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code PeriodField} based on this period with the amount negated, never null
+     * @return a {@code PeriodField} based on this period with the amount negated, not null
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField negated() {
@@ -315,7 +315,7 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code PeriodField} based on this period with an absolute amount, never null
+     * @return a {@code PeriodField} based on this period with an absolute amount, not null
      * @throws ArithmeticException if the amount is {@code Long.MIN_VALUE}
      */
     public PeriodField abs() {
@@ -335,7 +335,7 @@ public final class PeriodField
      * This method is equivalent to {@link #toEquivalent(PeriodUnit...)} with a single parameter.
      *
      * @param requiredUnit  the unit to convert to, not null
-     * @return a period equivalent to this period, never null
+     * @return a period equivalent to this period, not null
      * @throws CalendricalException if this period cannot be converted to the specified unit
      * @throws ArithmeticException if the calculation overflows
      */
@@ -359,7 +359,7 @@ public final class PeriodField
      * be measured in whichever is first in the array, either '180 Minutes' or '10800 Seconds'.
      *
      * @param requiredUnits  the required unit array, not altered, not null, no nulls
-     * @return a period equivalent to this period, never null
+     * @return a period equivalent to this period, not null
      * @throws CalendricalException if this period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
      */
@@ -397,7 +397,7 @@ public final class PeriodField
      * or nanoseconds then the conversion will succeed, subject to calculation overflow.
      * If the unit cannot be converted then an exception is thrown.
      *
-     * @return the duration of this period based on {@code ISOChronology} fields, never null
+     * @return the duration of this period based on {@code ISOChronology} fields, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
@@ -419,7 +419,7 @@ public final class PeriodField
      * The returned {@code PeriodFields} will always contain the unit even
      * if the amount is zero.
      *
-     * @return the equivalent period, never null
+     * @return the equivalent period, not null
      */
     public PeriodFields toPeriodFields() {
         return PeriodFields.of(this);

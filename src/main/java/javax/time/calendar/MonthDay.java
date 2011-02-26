@@ -104,7 +104,7 @@ public final class MonthDay
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current month-day using the system clock, never null
+     * @return the current month-day using the system clock, not null
      */
     public static MonthDay now() {
         return now(Clock.systemDefaultZone());
@@ -118,7 +118,7 @@ public final class MonthDay
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current month-day, never null
+     * @return the current month-day, not null
      */
     public static MonthDay now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
@@ -138,7 +138,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the month-day, never null
+     * @return the month-day, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
@@ -164,7 +164,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the month-day, never null
+     * @return the month-day, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
@@ -179,7 +179,7 @@ public final class MonthDay
      * month-of-year and day-of-month fields.
      *
      * @param calendrical  the calendrical to use, not null
-     * @return the month-day, never null
+     * @return the month-day, not null
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
@@ -202,7 +202,7 @@ public final class MonthDay
      * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
      *
      * @param text  the text to parse such as '--12-03', not null
-     * @return the parsed month-day, never null
+     * @return the parsed month-day, not null
      * @throws CalendricalException if the text cannot be parsed
      */
     public static MonthDay parse(String text) {
@@ -216,7 +216,7 @@ public final class MonthDay
      *
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
-     * @return the parsed month-day, never null
+     * @return the parsed month-day, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalException if the text cannot be parsed
      */
@@ -243,7 +243,7 @@ public final class MonthDay
      *
      * @param newMonth  the month-of-year to represent, validated not null
      * @param newDay  the day-of-month to represent, validated from 1 to 31
-     * @return the month-day, never null
+     * @return the month-day, not null
      */
     private MonthDay with(MonthOfYear newMonth, int newDay) {
         if (month == newMonth && day == newDay) {
@@ -256,7 +256,7 @@ public final class MonthDay
     /**
      * Gets the chronology that this month-day uses, which is the ISO calendar system.
      *
-     * @return the ISO chronology, never null
+     * @return the ISO chronology, not null
      */
     public ISOChronology getChronology() {
         return ISOChronology.INSTANCE;
@@ -298,7 +298,7 @@ public final class MonthDay
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
-     * @return the month-of-year, never null
+     * @return the month-of-year, not null
      */
     public MonthOfYear getMonthOfYear() {
         return month;
@@ -325,7 +325,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned month-day, not null
-     * @return a {@code MonthDay} based on this month-day with the requested month, never null
+     * @return a {@code MonthDay} based on this month-day with the requested month, not null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -346,7 +346,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
-     * @return a {@code MonthDay} based on this month-day with the requested month, never null
+     * @return a {@code MonthDay} based on this month-day with the requested month, not null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
@@ -362,7 +362,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the return month-day, from 1 to 31
-     * @return a {@code MonthDay} based on this month-day with the requested day, never null
+     * @return a {@code MonthDay} based on this month-day with the requested day, not null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
@@ -390,7 +390,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return a {@code MonthDay} based on this month-day with the month rolled, never null
+     * @return a {@code MonthDay} based on this month-day with the month rolled, not null
      */
     public MonthDay rollMonthOfYear(int months) {
         return with(month.roll(months));
@@ -406,7 +406,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to roll by, positive or negative
-     * @return a {@code MonthDay} based on this month-day with the day rolled, never null
+     * @return a {@code MonthDay} based on this month-day with the day rolled, not null
      */
     public MonthDay rollDayOfMonth(int days) {
         if (days == 0) {
@@ -448,7 +448,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to be adjusted, not null
-     * @return the adjusted date, never null
+     * @return the adjusted date, not null
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date) {
@@ -463,7 +463,7 @@ public final class MonthDay
      *
      * @param date  the date to be adjusted, not null
      * @param resolver  the date resolver to use if the day-of-month is invalid, not null
-     * @return the adjusted date, never null
+     * @return the adjusted date, not null
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
@@ -505,7 +505,7 @@ public final class MonthDay
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to use, from MIN_YEAR to MAX_YEAR
-     * @return the local date formed from this month-day and the specified year, never null
+     * @return the local date formed from this month-day and the specified year, not null
      * @see Year#atMonthDay(MonthDay)
      */
     public LocalDate atYear(int year) {
@@ -585,7 +585,7 @@ public final class MonthDay
      * <p>
      * The output will be in the format {@code --MM-dd}:
      *
-     * @return the formatted month-day, never null
+     * @return the formatted month-day, not null
      */
     @Override
     public String toString() {
@@ -601,7 +601,7 @@ public final class MonthDay
      * Outputs this month-day as a {@code String} using the formatter.
      *
      * @param formatter  the formatter to use, not null
-     * @return the formatted month-day string, never null
+     * @return the formatted month-day string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
@@ -614,7 +614,7 @@ public final class MonthDay
     /**
      * Gets the rule for the month-day.
      *
-     * @return the rule for the month-day, never null
+     * @return the rule for the month-day, not null
      */
     public static CalendricalRule<MonthDay> rule() {
         return Rule.INSTANCE;

@@ -94,7 +94,7 @@ public enum QuarterOfYear {
      * {@link ISOChronology} quarter-of-year rule to indicate the failed rule.
      *
      * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
-     * @return the QuarterOfYear singleton, never null
+     * @return the QuarterOfYear singleton, not null
      * @throws IllegalCalendarFieldValueException if the quarter-of-year is invalid
      */
     public static QuarterOfYear of(int quarterOfYear) {
@@ -185,7 +185,7 @@ public enum QuarterOfYear {
      * This calculates based on the time-line, thus it rolls around the end of
      * the week. The next quarter after Q4 is Q1.
      *
-     * @return the next quarter-of-year, never null
+     * @return the next quarter-of-year, not null
      */
     public QuarterOfYear next() {
         return roll(1);
@@ -197,7 +197,7 @@ public enum QuarterOfYear {
      * This calculates based on the time-line, thus it rolls around the end of
      * the year. The previous quarter before Q1 is Q4.
      *
-     * @return the previous quarter-of-year, never null
+     * @return the previous quarter-of-year, not null
      */
     public QuarterOfYear previous() {
         return roll(-1);
@@ -212,7 +212,7 @@ public enum QuarterOfYear {
      * This instance is immutable and unaffected by this method call.
      *
      * @param quarters  the quarters to roll by, positive or negative
-     * @return the resulting quarter-of-year, never null
+     * @return the resulting quarter-of-year, not null
      */
     public QuarterOfYear roll(int quarters) {
         return values()[(ordinal() + (quarters % 4 + 4)) % 4];
@@ -230,7 +230,7 @@ public enum QuarterOfYear {
      * To obtain the other two months of the quarter, simply use {@link MonthOfYear#next()}
      * on the returned month.
      *
-     * @return the first month in the quarter, never null
+     * @return the first month in the quarter, not null
      */
     public MonthOfYear getFirstMonthOfQuarter() {
         switch (this) {

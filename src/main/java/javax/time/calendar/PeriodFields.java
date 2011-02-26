@@ -97,7 +97,7 @@ public final class PeriodFields
      *
      * @param amount  the amount of create with, positive or negative
      * @param unit  the period unit, not null
-     * @return the {@code PeriodFields} instance, never null
+     * @return the {@code PeriodFields} instance, not null
      */
     public static PeriodFields of(long amount, PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
@@ -110,7 +110,7 @@ public final class PeriodFields
      * Obtains a {@code PeriodFields} from a single-unit period.
      *
      * @param period  the single-unit period, not null
-     * @return the {@code PeriodFields} instance, never null
+     * @return the {@code PeriodFields} instance, not null
      */
     public static PeriodFields of(PeriodField period) {
         checkNotNull(period, "PeriodField must not be null");
@@ -125,7 +125,7 @@ public final class PeriodFields
      * The period fields must all have different units.
      *
      * @param periods  the array of single-unit periods, not null
-     * @return the {@code PeriodFields} instance, never null
+     * @return the {@code PeriodFields} instance, not null
      * @throws IllegalArgumentException if the same period unit occurs twice
      */
     public static PeriodFields of(PeriodField... periods) {
@@ -144,7 +144,7 @@ public final class PeriodFields
 //     * Obtains a {@code PeriodFields} from an array of single-unit periods.
 //     *
 //     * @param periods  the array of single-unit periods, not null
-//     * @return the {@code PeriodFields} instance, never null
+//     * @return the {@code PeriodFields} instance, not null
 //     * @throws IllegalArgumentException if the same period unit occurs twice
 //     */
 //    public static PeriodFields of(Iterable<PeriodField> periods) {
@@ -166,7 +166,7 @@ public final class PeriodFields
      * This method provides null-checking around {@link PeriodProvider#toPeriodFields()}.
      *
      * @param periodProvider  the provider to create from, not null
-     * @return the {@code PeriodFields} instance, never null
+     * @return the {@code PeriodFields} instance, not null
      * @throws NullPointerException if the period provider is null or returns null
      */
     public static PeriodFields of(PeriodProvider periodProvider) {
@@ -185,7 +185,7 @@ public final class PeriodFields
      * '7 Days and 21 Hours' will yield a result of '2 Months, 12 Days and 21 Hours'.
      *
      * @param periodProviders  the providers to total, not null
-     * @return the {@code PeriodFields} instance, never null
+     * @return the {@code PeriodFields} instance, not null
      * @throws NullPointerException if any period provider is null or returns null
      */
     public static PeriodFields ofTotal(PeriodProvider... periodProviders) {
@@ -214,7 +214,7 @@ public final class PeriodFields
      * seconds and nanoseconds units. This matches the {@link #toDuration()} method.
      *
      * @param duration  the duration to create from, not null
-     * @return the {@code PeriodFields} instance, never null
+     * @return the {@code PeriodFields} instance, not null
      */
     public static PeriodFields of(Duration duration) {
         checkNotNull(duration, "Duration must not be null");
@@ -239,7 +239,7 @@ public final class PeriodFields
      * The map must not be used by the calling code after calling the constructor.
      *
      * @param periodMap  the unit-amount map, not null, assigned not cloned
-     * @return the created period, never null
+     * @return the created period, not null
      */
     static PeriodFields create(TreeMap<PeriodUnit, PeriodField> periodMap) {
         if (periodMap.isEmpty()) {
@@ -353,7 +353,7 @@ public final class PeriodFields
      * This method fulfills the {@link Iterable} interface and allows looping
      * around the contained single-unit periods using the for-each loop.
      *
-     * @return an iterator over the single-unit periods in this period, never null
+     * @return an iterator over the single-unit periods in this period, not null
      */
     public Iterator<PeriodField> iterator() {
         return Collections.unmodifiableCollection(unitFieldMap.values()).iterator();
@@ -426,7 +426,7 @@ public final class PeriodFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code PeriodFields} based on this period with zero amounts removed, never null
+     * @return a {@code PeriodFields} based on this period with zero amounts removed, not null
      */
     public PeriodFields withZeroesRemoved() {
         if (isZero()) {
@@ -452,7 +452,7 @@ public final class PeriodFields
      *
      * @param amount  the amount to store in terms of the unit, positive or negative
      * @param unit  the unit to store not null
-     * @return a {@code PeriodFields} based on this period with the specified period overlaid, never null
+     * @return a {@code PeriodFields} based on this period with the specified period overlaid, not null
      */
     public PeriodFields with(long amount, PeriodUnit unit) {
         PeriodField existing = get(unit);
@@ -477,7 +477,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to merge over this period, not null
-     * @return a {@code PeriodFields} based on this period with the specified period overlaid, never null
+     * @return a {@code PeriodFields} based on this period with the specified period overlaid, not null
      */
     public PeriodFields with(PeriodProvider periodProvider) {
         PeriodFields periods = of(periodProvider);
@@ -501,7 +501,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param unit  the unit to remove, not null
-     * @return a {@code PeriodFields} based on this period with the specified unit removed, never null
+     * @return a {@code PeriodFields} based on this period with the specified unit removed, not null
      */
     public PeriodFields without(PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
@@ -526,7 +526,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code PeriodFields} based on this period with the specified period added, never null
+     * @return a {@code PeriodFields} based on this period with the specified period added, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(PeriodProvider periodProvider) {
@@ -554,7 +554,7 @@ public final class PeriodFields
      *
      * @param amount  the amount to add, measured in the specified unit, positive or negative
      * @param unit  the unit defining the amount, not null
-     * @return a {@code PeriodFields} based on this period with the specified period added, never null
+     * @return a {@code PeriodFields} based on this period with the specified period added, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(long amount, PeriodUnit unit) {
@@ -582,7 +582,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code PeriodFields} based on this period with the specified period subtracted, never null
+     * @return a {@code PeriodFields} based on this period with the specified period subtracted, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(PeriodProvider periodProvider) {
@@ -610,7 +610,7 @@ public final class PeriodFields
      *
      * @param amount  the amount to subtract, measured in the specified unit, positive or negative
      * @param unit  the unit defining the amount, not null
-     * @return a {@code PeriodFields} based on this period with the specified period subtracted, never null
+     * @return a {@code PeriodFields} based on this period with the specified period subtracted, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(long amount, PeriodUnit unit) {
@@ -630,7 +630,7 @@ public final class PeriodFields
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return a {@code PeriodFields} based on this period with the amounts multiplied by the scalar, never null
+     * @return a {@code PeriodFields} based on this period with the amounts multiplied by the scalar, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields multipliedBy(long scalar) {
@@ -649,7 +649,7 @@ public final class PeriodFields
      * by the specified value.
      *
      * @param divisor  the value to divide by, not null, not zero
-     * @return a {@code PeriodFields} based on this period with the amounts divided by the divisor, never null
+     * @return a {@code PeriodFields} based on this period with the amounts divided by the divisor, not null
      * @throws ArithmeticException if dividing by zero
      */
     public PeriodFields dividedBy(long divisor) {
@@ -669,7 +669,7 @@ public final class PeriodFields
     /**
      * Returns a copy of this period with each amount in this period negated.
      *
-     * @return a {@code PeriodFields} based on this period with the amounts negated, never null
+     * @return a {@code PeriodFields} based on this period with the amounts negated, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields negated() {
@@ -687,7 +687,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param units  the units to retain, not altered, not null, no nulls
-     * @return a {@code PeriodFields} based on this period with the specified units retained, never null
+     * @return a {@code PeriodFields} based on this period with the specified units retained, not null
      */
     public PeriodFields retain(PeriodUnit... units) {
         checkNotNull(units, "PeriodUnit array must not be null");
@@ -715,7 +715,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param units  the units to retain, not altered, not null, no nulls
-     * @return a {@code PeriodFields} based on this period with the specified units retained, never null
+     * @return a {@code PeriodFields} based on this period with the specified units retained, not null
      */
     public PeriodFields retainConvertible(PeriodUnit... units) {
         checkNotNull(units, "PeriodUnit array must not be null");
@@ -752,7 +752,7 @@ public final class PeriodFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to calculate the remainder against, not null
-     * @return a {@code PeriodFields} based on this period with the remainder, never null
+     * @return a {@code PeriodFields} based on this period with the remainder, not null
      * @throws CalendricalException if any field cannot be converted to the unit of the period
      */
     public PeriodFields remainder(PeriodField period) {
@@ -789,7 +789,7 @@ public final class PeriodFields
      * The result will always contain all the units present in this period, even if they are zero.
      * The result will be equivalent to this period.
      *
-     * @return a period equivalent to this period with the amounts normalized, never null
+     * @return a period equivalent to this period with the amounts normalized, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields normalized() {
@@ -815,7 +815,7 @@ public final class PeriodFields
      * The result will be equivalent to this period.
      *
      * @param units  the unit array to normalize to, not altered, not null, no nulls
-     * @return a period equivalent to this period with the amounts normalized, never null
+     * @return a period equivalent to this period with the amounts normalized, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields normalizedTo(PeriodUnit... units) {
@@ -872,7 +872,7 @@ public final class PeriodFields
     /**
      * Clone the internal data storage map.
      *
-     * @return the cloned map, never null
+     * @return the cloned map, not null
      */
     @SuppressWarnings({"unchecked", "rawtypes" })
     private TreeMap<PeriodUnit, PeriodField> clonedMap() {
@@ -891,7 +891,7 @@ public final class PeriodFields
      * in '214 Minutes'.
      *
      * @param unit  the unit to total in, not null
-     * @return a period equivalent to the total of this period in a single unit, never null
+     * @return a period equivalent to the total of this period in a single unit, not null
      * @throws CalendricalException if this period cannot be converted to the unit
      * @throws ArithmeticException if the calculation overflows
      */
@@ -925,7 +925,7 @@ public final class PeriodFields
      * be measured in whichever is first in the array.
      *
      * @param units  the required unit array, not altered, not null, no nulls
-     * @return a period equivalent to this period, never null
+     * @return a period equivalent to this period, not null
      * @throws CalendricalException if this period cannot be converted to any of the units
      * @throws ArithmeticException if the calculation overflows
      */
@@ -950,7 +950,7 @@ public final class PeriodFields
      * including fields of variable duration. The estimate will equal the
      * {@link #toDuration accurate} calculation if all the fields are based on seconds.
      *
-     * @return the estimated duration of this period, never null
+     * @return the estimated duration of this period, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toEstimatedDuration() {
@@ -969,7 +969,7 @@ public final class PeriodFields
      * or nanoseconds then the conversion will succeed, subject to calculation overflow.
      * If any field cannot be converted to these fields above then an exception is thrown.
      *
-     * @return the duration of this period based on {@code ISOChronology} fields, never null
+     * @return the duration of this period based on {@code ISOChronology} fields, not null
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
@@ -984,7 +984,7 @@ public final class PeriodFields
      * The map will connect the unit to the single field period.
      * The sort order is from largest unit to smallest unit.
      *
-     * @return the map equivalent to this period, unmodifiable, never null
+     * @return the map equivalent to this period, unmodifiable, not null
      */
     public SortedMap<PeriodUnit, PeriodField> toMap() {
         return Collections.unmodifiableSortedMap(unitFieldMap);
@@ -994,7 +994,7 @@ public final class PeriodFields
      * Converts this period to a {@code PeriodFields}, trivially
      * returning {@code this}.
      *
-     * @return {@code this}, never null
+     * @return {@code this}, not null
      */
     public PeriodFields toPeriodFields() {
         return this;

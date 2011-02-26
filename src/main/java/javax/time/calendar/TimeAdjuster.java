@@ -53,7 +53,7 @@ public interface TimeAdjuster {
      * to a time.
      *
      * @param time  the time to adjust, not null
-     * @return the adjusted time, never null
+     * @return the adjusted time, not null
      */
     LocalTime adjustTime(LocalTime time);
 

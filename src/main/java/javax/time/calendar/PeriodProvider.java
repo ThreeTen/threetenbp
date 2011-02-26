@@ -68,7 +68,7 @@ public interface PeriodProvider {
      * Implementations must ensure that this method provides a thread-safe consistent
      * result. An immutable implementation will naturally provide this guarantee.
      *
-     * @return the period equivalent to this one, never null
+     * @return the period equivalent to this one, not null
      */
     PeriodFields toPeriodFields();
 

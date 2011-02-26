@@ -157,7 +157,7 @@ public abstract class PeriodUnit
      * Helper method for constructors to built the equivalent periods.
      * 
      * @param equivalentPeriod  the period this is derived from, null if no equivalent
-     * @return the list of equivalent periods, never null
+     * @return the list of equivalent periods, not null
      */
     private static List<PeriodField> buildEquivalentPeriods(PeriodField equivalentPeriod) {
         if (equivalentPeriod == null) {
@@ -181,7 +181,7 @@ public abstract class PeriodUnit
      * Most units will have a plural name, such as 'Years' or 'Minutes'.
      * The name is not localized.
      *
-     * @return the name of the unit, never null
+     * @return the name of the unit, not null
      */
     public String getName() {
         return name;
@@ -202,7 +202,7 @@ public abstract class PeriodUnit
      * <p>
      * The list will be unmodifiable and sorted, from largest unit to smallest.
      *
-     * @return the equivalent periods, may be empty, never null
+     * @return the equivalent periods, may be empty, not null
      */
     public List<PeriodField> getEquivalentPeriods() {
         return equivalentPeriods;
@@ -269,7 +269,7 @@ public abstract class PeriodUnit
      * For example, most time units are ultimately convertible to nanoseconds,
      * thus nanoseconds is the base unit.
      *
-     * @return the base unit, never null
+     * @return the base unit, not null
      */
     public PeriodUnit getBaseUnit() {
         if (equivalentPeriods.isEmpty()) {
@@ -288,7 +288,7 @@ public abstract class PeriodUnit
      * <p>
      * One key use for the estimated duration is to implement {@link Comparable}.
      *
-     * @return the estimate of the duration in seconds, never null
+     * @return the estimate of the duration in seconds, not null
      */
     public Duration getEstimatedDuration() {
         return estimatedDuration;
@@ -359,7 +359,7 @@ public abstract class PeriodUnit
      * <p>
      * The string representation is the same as the name.
      *
-     * @return the unit name, never null
+     * @return the unit name, not null
      */
     @Override
     public String toString() {

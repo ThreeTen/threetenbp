@@ -101,7 +101,7 @@ public final class YearMonth
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current year-month using the system clock, never null
+     * @return the current year-month using the system clock, not null
      */
     public static YearMonth now() {
         return now(Clock.systemDefaultZone());
@@ -115,7 +115,7 @@ public final class YearMonth
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current year-month, never null
+     * @return the current year-month, not null
      */
     public static YearMonth now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
@@ -128,7 +128,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
-     * @return the year-month, never null
+     * @return the year-month, not null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public static YearMonth of(int year, MonthOfYear monthOfYear) {
@@ -142,7 +142,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @return the year-month, never null
+     * @return the year-month, not null
      * @throws IllegalCalendarFieldValueException if either field value is invalid
      */
     public static YearMonth of(int year, int monthOfYear) {
@@ -156,7 +156,7 @@ public final class YearMonth
      * the year and month-of-year fields.
      *
      * @param calendrical  the calendrical to use, not null
-     * @return the year-month, never null
+     * @return the year-month, not null
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
@@ -181,7 +181,7 @@ public final class YearMonth
      * The month-of-year has 2 digits and has values from 1 to 12.
      *
      * @param text  the text to parse such as '2007-12', not null
-     * @return the parsed year-month, never null
+     * @return the parsed year-month, not null
      * @throws CalendricalException if the text cannot be parsed
      */
     public static YearMonth parse(String text) {
@@ -195,7 +195,7 @@ public final class YearMonth
      *
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
-     * @return the parsed year-month, never null
+     * @return the parsed year-month, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalException if the text cannot be parsed
      */
@@ -222,7 +222,7 @@ public final class YearMonth
      *
      * @param newYear  the year to represent, validated from MIN_YEAR to MAX_YEAR
      * @param newMonth  the month-of-year to represent, validated not null
-     * @return the year-month, never null
+     * @return the year-month, not null
      */
     private YearMonth with(int newYear, MonthOfYear newMonth) {
         if (year == newYear && month == newMonth) {
@@ -235,7 +235,7 @@ public final class YearMonth
     /**
      * Gets the chronology that this year-month uses, which is the ISO calendar system.
      *
-     * @return the ISO chronology, never null
+     * @return the ISO chronology, not null
      */
     public ISOChronology getChronology() {
         return ISOChronology.INSTANCE;
@@ -289,7 +289,7 @@ public final class YearMonth
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
-     * @return the month-of-year, never null
+     * @return the month-of-year, not null
      */
     public MonthOfYear getMonthOfYear() {
         return month;
@@ -302,7 +302,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned year-month, not null
-     * @return a {@code YearMonth} based on this year-month with the requested year, never null
+     * @return a {@code YearMonth} based on this year-month with the requested year, not null
      */
     public YearMonth with(Year year) {
         ISOChronology.checkNotNull(year, "Year must not be null");
@@ -315,7 +315,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned year-month, not null
-     * @return a {@code YearMonth} based on this year-month with the requested month, never null
+     * @return a {@code YearMonth} based on this year-month with the requested month, not null
      */
     public YearMonth with(MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -329,7 +329,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned year-month, from MIN_YEAR to MAX_YEAR
-     * @return a {@code YearMonth} based on this year-month with the requested year, never null
+     * @return a {@code YearMonth} based on this year-month with the requested year, not null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
@@ -343,7 +343,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned year-month, from 1 (January) to 12 (December)
-     * @return a {@code YearMonth} based on this year-month with the requested month, never null
+     * @return a {@code YearMonth} based on this year-month with the requested month, not null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
@@ -363,7 +363,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code YearMonth} based on this year-month with the period added, never null
+     * @return a {@code YearMonth} based on this year-month with the period added, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the result exceeds the supported range
      */
@@ -379,7 +379,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the years added, never null
+     * @return a {@code YearMonth} based on this year-month with the years added, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth plusYears(long years) {
@@ -396,7 +396,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the months added, never null
+     * @return a {@code YearMonth} based on this year-month with the months added, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth plusMonths(long months) {
@@ -423,7 +423,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code YearMonth} based on this year-month with the period subtracted, never null
+     * @return a {@code YearMonth} based on this year-month with the period subtracted, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the result exceeds the supported range
      */
@@ -439,7 +439,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the years subtracted, never null
+     * @return a {@code YearMonth} based on this year-month with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth minusYears(long years) {
@@ -456,7 +456,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the months subtracted, never null
+     * @return a {@code YearMonth} based on this year-month with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public YearMonth minusMonths(long months) {
@@ -482,7 +482,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the month rolled, never null
+     * @return a {@code YearMonth} based on this year-month with the month rolled, not null
      */
     public YearMonth rollMonthOfYear(int months) {
         return with(month.roll(months));
@@ -518,7 +518,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to be adjusted, not null
-     * @return the adjusted date, never null
+     * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
         return adjustDate(date, DateResolvers.previousValid());
@@ -532,7 +532,7 @@ public final class YearMonth
      *
      * @param date  the date to be adjusted, not null
      * @param resolver  the date resolver to use if the day-of-month becomes invalid, not null
-     * @return the adjusted date, never null
+     * @return the adjusted date, not null
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
@@ -587,7 +587,7 @@ public final class YearMonth
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to use, from 1 to 31
-     * @return the date formed from this year-month and the specified day, never null
+     * @return the date formed from this year-month and the specified day, not null
      * @throws InvalidCalendarFieldException when the day is invalid for the year-month
      * @see #isValidDay(int)
      */
@@ -668,7 +668,7 @@ public final class YearMonth
      * <p>
      * The output will be in the format {@code yyyy-MM}:
      *
-     * @return the formatted year-month, never null
+     * @return the formatted year-month, not null
      */
     @Override
     public String toString() {
@@ -694,7 +694,7 @@ public final class YearMonth
      * Outputs this year-month as a {@code String} using the formatter.
      *
      * @param formatter  the formatter to use, not null
-     * @return the formatted year-month string, never null
+     * @return the formatted year-month string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
@@ -707,7 +707,7 @@ public final class YearMonth
     /**
      * Gets the rule for the year-month.
      *
-     * @return the rule for the year-month, never null
+     * @return the rule for the year-month, not null
      */
     public static CalendricalRule<YearMonth> rule() {
         return Rule.INSTANCE;

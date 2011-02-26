@@ -138,7 +138,7 @@ public enum MonthOfYear {
      * {@link ISOChronology} month-of-year rule to indicate the failed rule.
      *
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @return the MonthOfYear singleton, never null
+     * @return the MonthOfYear singleton, not null
      * @throws IllegalCalendarFieldValueException if the month-of-year is invalid
      */
     public static MonthOfYear of(int monthOfYear) {
@@ -214,7 +214,7 @@ public enum MonthOfYear {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the short text value of the month-of-year, never null
+     * @return the short text value of the month-of-year, not null
      */
     public String getShortText(Locale locale) {
         return MONTH_OF_YEAR.getText(getValue(), locale, TextStyle.SHORT);
@@ -232,7 +232,7 @@ public enum MonthOfYear {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the full text value of the month-of-year, never null
+     * @return the full text value of the month-of-year, not null
      */
     public String getText(Locale locale) {
         return MONTH_OF_YEAR.getText(getValue(), locale, TextStyle.FULL);
@@ -354,7 +354,7 @@ public enum MonthOfYear {
      * This calculates based on the time-line, thus it rolls around the end of
      * the year. The next month after December is January.
      *
-     * @return the next month-of-year, never null
+     * @return the next month-of-year, not null
      */
     public MonthOfYear next() {
         return roll(1);
@@ -366,7 +366,7 @@ public enum MonthOfYear {
      * This calculates based on the time-line, thus it rolls around the end of
      * the year. The previous month before January is December.
      *
-     * @return the previous month-of-year, never null
+     * @return the previous month-of-year, not null
      */
     public MonthOfYear previous() {
         return roll(-1);
@@ -381,7 +381,7 @@ public enum MonthOfYear {
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return the resulting month-of-year, never null
+     * @return the resulting month-of-year, not null
      */
     public MonthOfYear roll(int months) {
         return values()[(ordinal() + (months % 12 + 12)) % 12];
@@ -534,7 +534,7 @@ public enum MonthOfYear {
      * January to March are Q1, April to June are Q2, July to September are Q3
      * and October to December are Q4.
      *
-     * @return the quarter-of-year, never null
+     * @return the quarter-of-year, not null
      */
     public QuarterOfYear getQuarterOfYear() {
         if (ordinal() < 3) {

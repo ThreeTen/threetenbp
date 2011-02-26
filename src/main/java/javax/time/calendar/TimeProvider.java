@@ -86,7 +86,7 @@ public interface TimeProvider {
      * a time in the ISO calendar system. Implementors may perform conversion
      * when implementing this method to convert from alternate calendar systems.
      *
-     * @return the {@code LocalTime} equivalent to this object, never null
+     * @return the {@code LocalTime} equivalent to this object, not null
      * @throws CalendricalException if the time cannot be converted
      */
     LocalTime toLocalTime();

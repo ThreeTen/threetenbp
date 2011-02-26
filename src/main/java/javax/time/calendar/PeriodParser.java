@@ -88,7 +88,7 @@ final class PeriodParser {
      * The decimal point may be either a dot or a comma.
      *
      * @param text  the input string in the format PnYnMnDTnHnMn.nS, validated not null
-     * @return the created Period, never null
+     * @return the created Period, not null
      * @throws CalendricalParseException if the text cannot be parsed to a Period
      */
     Period parse(final String text) {

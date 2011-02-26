@@ -61,7 +61,7 @@ public final class ZoneResolvers {
      * Returns the strict zone resolver which rejects all gaps and overlaps
      * as invalid, resulting in an exception.
      *
-     * @return the strict resolver, never null
+     * @return the strict resolver, not null
      */
     public static ZoneResolver strict() {
         return Strict.INSTANCE;
@@ -99,7 +99,7 @@ public final class ZoneResolvers {
      * one nanosecond before the transition for gaps, and the earlier offset
      * for overlaps.
      *
-     * @return the pre-transition resolver, never null
+     * @return the pre-transition resolver, not null
      */
     public static ZoneResolver preTransition() {
         return PreTransition.INSTANCE;
@@ -134,7 +134,7 @@ public final class ZoneResolvers {
      * Returns the post-transition zone resolver, which returns the instant
      * after the transition for gaps, and the later offset for overlaps.
      *
-     * @return the post-transition resolver, never null
+     * @return the post-transition resolver, not null
      */
     public static ZoneResolver postTransition() {
         return PostTransition.INSTANCE;
@@ -168,7 +168,7 @@ public final class ZoneResolvers {
      * Returns the post-gap-pre-overlap zone resolver, which returns the instant
      * after the transition for gaps, and the earlier offset for overlaps.
      *
-     * @return the post-transition resolver, never null
+     * @return the post-transition resolver, not null
      */
     public static ZoneResolver postGapPreOverlap() {
         return PostGapPreOverlap.INSTANCE;
@@ -210,7 +210,7 @@ public final class ZoneResolvers {
      * This resolver is most commonly useful when adding or subtracting time
      * from a {@code ZonedDateTime}.
      *
-     * @return the retain offset resolver, never null
+     * @return the retain offset resolver, not null
      */
     public static ZoneResolver retainOffset() {
         return RetainOffset.INSTANCE;
@@ -255,7 +255,7 @@ public final class ZoneResolvers {
      * If the discontinuity is an overlap, then the resolver will choose the
      * later of the two offsets.
      *
-     * @return the push forward resolver, never null
+     * @return the push forward resolver, not null
      */
     public static ZoneResolver pushForward() {
         return PushForward.INSTANCE;
@@ -293,7 +293,7 @@ public final class ZoneResolvers {
      *
      * @param gapResolver  the resolver to use for a gap, null means strict
      * @param overlapResolver  the resolver to use for an overlap, null means strict
-     * @return the combination resolver, never null
+     * @return the combination resolver, not null
      */
     public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
         gapResolver = (gapResolver == null ? strict() : gapResolver);

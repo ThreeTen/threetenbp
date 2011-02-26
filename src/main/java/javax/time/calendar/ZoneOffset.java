@@ -138,7 +138,7 @@ public final class ZoneOffset
      * The maximum supported range is from +18:00 to -18:00 inclusive.
      *
      * @param offsetID  the offset id, not null
-     * @return the ZoneOffset, never null
+     * @return the ZoneOffset, not null
      * @throws IllegalArgumentException if the offset id is invalid
      */
     public static ZoneOffset of(String offsetID) {
@@ -226,7 +226,7 @@ public final class ZoneOffset
      * Obtains an instance of {@code ZoneOffset} using an offset in hours.
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
-     * @return the ZoneOffset, never null
+     * @return the ZoneOffset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHours(int hours) {
@@ -243,7 +243,7 @@ public final class ZoneOffset
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours
-     * @return the ZoneOffset, never null
+     * @return the ZoneOffset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutes(int hours, int minutes) {
@@ -260,7 +260,7 @@ public final class ZoneOffset
      * @param hours  the time-zone offset in hours, from -18 to +18
      * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
      * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
-     * @return the ZoneOffset, never null
+     * @return the ZoneOffset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofHoursMinutesSeconds(int hours, int minutes, int seconds) {
@@ -279,7 +279,7 @@ public final class ZoneOffset
      * Thus, if the hours is negative, the minutes and seconds must be negative or zero.
      *
      * @param periodProvider  the period to use, not null
-     * @return the ZoneOffset, never null
+     * @return the ZoneOffset, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws IllegalArgumentException if the offset is not in the required range
      */
@@ -345,7 +345,7 @@ public final class ZoneOffset
      * The offset must be in the range {@code -18:00} to {@code +18:00}, which corresponds to -64800 to +64800.
      *
      * @param totalSeconds  the total time-zone offset in seconds, from -64800 to +64800
-     * @return the ZoneOffset, never null
+     * @return the ZoneOffset, not null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofTotalSeconds(int totalSeconds) {
@@ -441,7 +441,7 @@ public final class ZoneOffset
      * <li>{@code +hh:mm:ss} or {@code -hh:mm:ss} - if the seconds are non-zero (not ISO-8601)
      * </ul>
      *
-     * @return the zone offset ID, never null
+     * @return the zone offset ID, not null
      */
     public String getID() {
         return id;
@@ -515,7 +515,7 @@ public final class ZoneOffset
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code ZoneOffset} based on this offset with the period added, never null
+     * @return a {@code ZoneOffset} based on this offset with the period added, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws IllegalArgumentException if the offset is not in the required range
      */
@@ -536,7 +536,7 @@ public final class ZoneOffset
      * For example, {@code +02:45} will be converted to {@code P2H45M},
      * while {@code -01:15} will be converted to {@code P-1H-15M}.
      *
-     * @return the period equivalent to the zone offset amount, never null
+     * @return the period equivalent to the zone offset amount, not null
      */
     public Period toPeriod() {
         return Period.ofTimeFields(getHoursField(), getMinutesField(), getSecondsField());
@@ -547,7 +547,7 @@ public final class ZoneOffset
      * <p>
      * The returned time-zone will use this offset for all instants.
      *
-     * @return the time-zone, never null
+     * @return the time-zone, not null
      */
     public ZoneId toTimeZone() {
         return ZoneId.of(this);
@@ -629,7 +629,7 @@ public final class ZoneOffset
     /**
      * Gets the rule for the zone-offset.
      *
-     * @return the rule for the zone-offset, never null
+     * @return the rule for the zone-offset, not null
      */
     public static CalendricalRule<ZoneOffset> rule() {
         return Rule.INSTANCE;

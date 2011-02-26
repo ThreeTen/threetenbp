@@ -75,7 +75,7 @@ public abstract class ZoneResolver {
      * @param zone  the time-zone, not null
      * @param newDateTime  the new date-time, not null
      * @param oldDateTime  the old date-time before the adjustment, may be null
-     * @return the resolved values, returned as a (year,month,day) tuple, never null
+     * @return the resolved values, returned as a (year,month,day) tuple, not null
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public final OffsetDateTime resolve(
@@ -136,7 +136,7 @@ public abstract class ZoneResolver {
      * @param gapInfo  the information about the gap for the newDateTime, not null
      * @param newDateTime  the new local date-time, not null
      * @param oldDateTime  the old offset date-time before the adjustment, may be null
-     * @return the resolved offset date-time, never null
+     * @return the resolved offset date-time, not null
      * @throws IllegalCalendarFieldValueException if the offset cannot be calculated
      */
     protected abstract OffsetDateTime handleGap(
@@ -182,7 +182,7 @@ public abstract class ZoneResolver {
      * @param overlapInfo  the information about the overlap for the newDateTime, not null
      * @param newDateTime  the new local date-time, not null
      * @param oldDateTime  the old offset date-time before the adjustment, may be null
-     * @return the resolved offset date-time, never null
+     * @return the resolved offset date-time, not null
      * @throws IllegalCalendarFieldValueException if the offset cannot be calculated
      */
     protected abstract OffsetDateTime handleOverlap(

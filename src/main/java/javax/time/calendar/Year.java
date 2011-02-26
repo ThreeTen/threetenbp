@@ -95,7 +95,7 @@ public final class Year
      * The rule provides access to the minimum and maximum values, and a
      * generic way to access values within a calendrical.
      *
-     * @return the year rule, never null
+     * @return the year rule, not null
      */
     public static DateTimeRule rule() {
         return YEAR;
@@ -111,7 +111,7 @@ public final class Year
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current year using the system clock, never null
+     * @return the current year using the system clock, not null
      */
     public static Year now() {
         return now(Clock.systemDefaultZone());
@@ -125,7 +125,7 @@ public final class Year
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current year, never null
+     * @return the current year, not null
      */
     public static Year now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
@@ -144,7 +144,7 @@ public final class Year
      * The year 2BC/BCE is represented by -1.<br />
      *
      * @param isoYear  the ISO proleptic year to represent, from MIN_YEAR to MAX_YEAR
-     * @return the created Year, never null
+     * @return the created Year, not null
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year of(int isoYear) {
@@ -159,7 +159,7 @@ public final class Year
      * of {@code Calendrical}, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
-     * @return the Year instance, never null
+     * @return the Year instance, not null
      * @throws UnsupportedRuleException if the year cannot be obtained
      */
     public static Year of(Calendrical calendrical) {
@@ -228,7 +228,7 @@ public final class Year
     /**
      * Returns the next year.
      *
-     * @return the next year, never null
+     * @return the next year, not null
      * @throws CalendricalException if the maximum year is reached
      */
     public Year next() {
@@ -242,7 +242,7 @@ public final class Year
      * Returns the next leap year after the current year.
      * The definition of a leap year is specified in {@link #isLeap()}.
      *
-     * @return the next leap year after this year, never null
+     * @return the next leap year after this year, not null
      * @throws CalendricalException if the maximum year is reached
      */
     public Year nextLeap() {
@@ -256,7 +256,7 @@ public final class Year
     /**
      * Returns the previous year.
      *
-     * @return the previous year, never null
+     * @return the previous year, not null
      * @throws CalendricalException if the maximum year is reached
      */
     public Year previous() {
@@ -270,7 +270,7 @@ public final class Year
      * Returns the previous leap year before the current year.
      * The definition of a leap year is specified in {@link #isLeap()}.
      *
-     * @return the previous leap year after this year, never null
+     * @return the previous leap year after this year, not null
      * @throws CalendricalException if the minimum year is reached
      */
     public Year previousLeap() {
@@ -297,7 +297,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code Year} based on this year with the period added, never null
+     * @return a {@code Year} based on this year with the period added, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the result exceeds the supported year range
      */
@@ -312,7 +312,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add
-     * @return a {@code Year} based on this year with the period added, never null
+     * @return a {@code Year} based on this year with the period added, not null
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year plusYears(long years) {
@@ -338,7 +338,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code Year} based on this year with the period subtracted, never null
+     * @return a {@code Year} based on this year with the period subtracted, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the result exceeds the supported year range
      */
@@ -353,7 +353,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract
-     * @return a {@code Year} based on this year with the period subtracted, never null
+     * @return a {@code Year} based on this year with the period subtracted, not null
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year minusYears(long years) {
@@ -394,7 +394,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to be adjusted, not null
-     * @return the adjusted date, never null
+     * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
         return adjustDate(date, DateResolvers.previousValid());
@@ -408,7 +408,7 @@ public final class Year
      *
      * @param date  the date to be adjusted, not null
      * @param resolver  the date resolver to use if the day-of-month becomes invalid, not null
-     * @return the adjusted date, never null
+     * @return the adjusted date, not null
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
@@ -465,7 +465,7 @@ public final class Year
 //     * This instance is immutable and unaffected by this method call.
 //     *
 //     * @param isoYear  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @return a new updated Year, never null
+//     * @return a new updated Year, not null
 //     */
 //    public Year withISOYear(int isoYear) {
 //        rule().checkValue(isoYear);
@@ -534,7 +534,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to use, not null
-     * @return the year-month formed from this year and the specified month, never null
+     * @return the year-month formed from this year and the specified month, not null
      */
     public YearMonth atMonth(MonthOfYear monthOfYear) {
         return YearMonth.of(year, monthOfYear);
@@ -553,7 +553,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to use, from 1 (January) to 12 (December)
-     * @return the year-month formed from this year and the specified month, never null
+     * @return the year-month formed from this year and the specified month, not null
      */
     public YearMonth atMonth(int monthOfYear) {
         return YearMonth.of(year, monthOfYear);
@@ -571,7 +571,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthDay  the month-day to use, not null
-     * @return the local date formed from this year and the specified month-day, never null
+     * @return the local date formed from this year and the specified month-day, not null
      * @throws InvalidCalendarFieldException if the month-day is February 29th and this is not a leap year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
@@ -590,7 +590,7 @@ public final class Year
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to use, not null
-     * @return the local date formed from this year and the specified date of year, never null
+     * @return the local date formed from this year and the specified date of year, not null
      * @throws InvalidCalendarFieldException if the day of year is 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {

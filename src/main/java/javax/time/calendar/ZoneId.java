@@ -253,7 +253,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      *
      * @param timeZoneIdentifier  the time-zone id, not null
      * @param aliasMap  a map of time-zone IDs (typically abbreviations) to real time-zone IDs, not null
-     * @return the time-zone, never null
+     * @return the time-zone, not null
      * @throws IllegalArgumentException if the time-zone cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
@@ -304,7 +304,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * {@link ZoneOffset} and {@link OffsetDateTime} in preference.
      *
      * @param zoneID  the time-zone identifier, not null
-     * @return the time-zone, never null
+     * @return the time-zone, not null
      * @throws CalendricalException if the time-zone cannot be found
      */
     public static ZoneId of(String zoneID) {
@@ -326,7 +326,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * to be created without loading the rules from the remote server.
      *
      * @param zoneID  the time-zone identifier, not null
-     * @return the time-zone, never null
+     * @return the time-zone, not null
      * @throws CalendricalException if the time-zone cannot be found
      */
     public static ZoneId ofUnchecked(String zoneID) {
@@ -338,7 +338,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      *
      * @param zoneID  the time-zone identifier, not null
      * @param checkAvailable  whether to check if the time-zone ID is available
-     * @return the time-zone, never null
+     * @return the time-zone, not null
      * @throws CalendricalException if the time-zone cannot be found
      */
     private static ZoneId ofID(String zoneID, boolean checkAvailable) {
@@ -391,7 +391,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * Fixed time-zones are {@link #isValid() always valid}.
      *
      * @param offset  the zone offset to create a fixed zone for, not null
-     * @return the time-zone for the offset, never null
+     * @return the time-zone for the offset, not null
      */
     public static ZoneId of(ZoneOffset offset) {
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
@@ -418,7 +418,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * If the version is floating, then the #{versionID} is omitted.
      * Fixed time-zones will only output the region ID.
      *
-     * @return the time-zone unique ID, never null
+     * @return the time-zone unique ID, not null
      */
     public abstract String getID();
 
@@ -431,7 +431,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * <p>
      * For fixed time-zones, the group ID will be an empty string.
      *
-     * @return the time-zone rules group ID, never null
+     * @return the time-zone rules group ID, not null
      */
     public abstract String getGroupID();
 
@@ -443,7 +443,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * The ID uses a format specific to the group.
      * The default 'TZDB' group generally uses the format {area}/{city}, such as 'Europe/Paris'.
      *
-     * @return the time-zone rules region ID, never null
+     * @return the time-zone rules region ID, not null
      */
     public abstract String getRegionID();
 
@@ -462,7 +462,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * <p>
      * For fixed time-zones, the version ID will be an empty string.
      *
-     * @return the time-zone rules version ID, empty if the version is floating, never null
+     * @return the time-zone rules version ID, empty if the version is floating, not null
      */
     public abstract String getVersionID();
 
@@ -504,7 +504,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * <p>
      * For fixed time-zones, {@code this} is returned.
      *
-     * @return the new updated time-zone, never null
+     * @return the new updated time-zone, not null
      * @throws CalendricalException if the time-zone is fixed
      */
     public abstract ZoneId withFloatingVersion();
@@ -535,7 +535,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * <p>
      * For fixed time-zones, {@code this} is returned.
      *
-     * @return the new updated time-zone, never null
+     * @return the new updated time-zone, not null
      * @throws CalendricalException if the version is non-floating and the group or region ID is not found
      */
     public abstract ZoneId withLatestVersion();
@@ -552,7 +552,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * exception is thrown.
      *
      * @param versionID  the version ID to use, empty means floating version, not null
-     * @return the new updated time-zone, never null
+     * @return the new updated time-zone, not null
      * @throws CalendricalException if the time-zone is fixed and the version is not empty
      * @throws CalendricalException if the group, region or version ID is not found
      */
@@ -569,7 +569,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * This method validates the group and region IDs.
      *
      * @param dateTime  the date-time to get the latest version for
-     * @return the new updated time-zone, never null
+     * @return the new updated time-zone, not null
      * @throws CalendricalException if the group or region ID is not found
      * @throws CalendricalException if there are no valid rules for the date-time
      */
@@ -593,7 +593,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * perform any calculations that require the rules however, and this method
      * will throw an exception.
      *
-     * @return the time-zone rules group ID, never null
+     * @return the time-zone rules group ID, not null
      * @throws CalendricalException if the time-zone is fixed
      * @throws CalendricalException if the group ID cannot be found
      */
@@ -641,7 +641,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * this method may vary over time.
      * Each individual call will be still remain thread-safe.
      *
-     * @return the rules, never null
+     * @return the rules, not null
      * @throws CalendricalException if the group, region or version ID cannot be found
      */
     public abstract ZoneRules getRules();
@@ -694,7 +694,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * Each individual call will be still remain thread-safe.
      *
      * @param dateTime  a date-time for which the rules must be valid, not null
-     * @return the latest rules for this zone where the date-time is valid, never null
+     * @return the latest rules for this zone where the date-time is valid, not null
      * @throws CalendricalException if the zone ID cannot be found
      * @throws CalendricalException if no rules match the zone ID and date-time
      */
@@ -704,7 +704,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
     /**
      * Gets the textual name of this zone.
      *
-     * @return the time-zone name, never null
+     * @return the time-zone name, not null
      */
     public String getName() {
         return getRegionID();  // TODO
@@ -713,7 +713,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
     /**
      * Gets the short textual name of this zone.
      *
-     * @return the time-zone short name, never null
+     * @return the time-zone short name, not null
      */
     public String getShortName() {
         return getRegionID();  // TODO
@@ -758,7 +758,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * <p>
      * This returns {@link #getID()}.
      *
-     * @return the time-zone ID, never null
+     * @return the time-zone ID, not null
      */
     @Override
     public String toString() {
@@ -787,7 +787,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
     /**
      * Gets the rule for {@code ZoneId}.
      *
-     * @return the rule for the time-zone, never null
+     * @return the rule for the time-zone, not null
      */
     public static CalendricalRule<ZoneId> rule() {
         return Rule.INSTANCE;
@@ -997,7 +997,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
         /**
          * Handle deserialization.
          *
-         * @return the resolved instance, never null
+         * @return the resolved instance, not null
          */
         private Object readResolve() throws ObjectStreamException {
             if (id == null || id.startsWith("UTC") == false) {
