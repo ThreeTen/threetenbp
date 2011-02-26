@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,9 @@ import javax.time.CalendricalException;
 
 /**
  * An exception used when an exception is connected to a specified rule.
+ * <p>
+ * Many aspects of calendrical processing are rule based.
+ * When a rule is the trigger for an exception, the rule field should be populated.
  *
  * @author Stephen Colebourne
  */
@@ -54,18 +57,30 @@ public class CalendricalRuleException extends CalendricalException {
      * Constructs a new exception with a message and optional rule.
      *
      * @param message  the message describing the problem, should not be null
-     * @param fieldRule  the rule of the field that is not supported, may be null
+     * @param rule  the rule that caused the exception, null if not caused by a specific rule
      */
-    public CalendricalRuleException(String message, CalendricalRule<?> fieldRule) {
+    public CalendricalRuleException(String message, CalendricalRule<?> rule) {
         super(message);
-        this.rule = fieldRule;
+        this.rule = rule;
+    }
+
+    /**
+     * Constructs a new exception with a message and optional rule.
+     *
+     * @param message  the message describing the problem, should not be null
+     * @param rule  the rule that caused the exception, null if not caused by a specific rule
+     * @param cause  the cause of the exception, may be null
+     */
+    public CalendricalRuleException(String message, CalendricalRule<?> rule, Throwable cause) {
+        super(message, cause);
+        this.rule = rule;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the rule that is connected to the exception.
      *
-     * @return the field rule, null if unknown
+     * @return the rule, null if unknown
      */
     public CalendricalRule<?> getRule() {
         return rule;

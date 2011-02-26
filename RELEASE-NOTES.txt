@@ -63,6 +63,7 @@
 - Always hold parsed date-time data as DateTimeField
 - Remove DateTimePrinter.isPrintDataAvailable()
 - Change DateTimePrinter to take StringBuilder not Appendable
+- Remove CalendricalPrintFieldException
 
 0.6.3
 ===============================================================================

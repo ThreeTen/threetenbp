@@ -122,7 +122,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * Returns a new instance with an updated subsequent width.
      *
      * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
-     * @return a new updated printer-parser, never null
+     * @return a new updated printer-parser, not null
      */
     NumberPrinterParser withSubsequentWidth(int subsequentWidth) {
         return new NumberPrinterParser(rule, minWidth, maxWidth, signStyle, this.subsequentWidth + subsequentWidth);
@@ -134,7 +134,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         long value = getValue(calendrical);
         String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
-            throw new CalendricalPrintFieldException(rule, value, maxWidth);
+            throw new CalendricalPrintException("Rule " + rule.getName() +
+                " cannot be printed as the value " + value +
+                " exceeds the maximum print width of " + maxWidth, rule);
         }
         str = symbols.convertNumberToI18N(str);
         
@@ -157,7 +159,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     buf.append(symbols.getNegativeSignChar());
                     break;
                 case NOT_NEGATIVE:
-                    throw new CalendricalPrintFieldException(rule, value);
+                    throw new CalendricalPrintException("Rule " + rule.getName() +
+                        " cannot be printed as the value " + value +
+                        " cannot be negative according to the SignStyle", rule);
             }
         }
         for (int i = 0; i < minWidth - str.length(); i++) {

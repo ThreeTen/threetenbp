@@ -904,12 +904,12 @@ public class TestDateTimeFormatters {
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[UTC]");
     }
 
-    @Test(expectedExceptions=CalendricalPrintFieldException.class)
+    @Test(expectedExceptions=CalendricalPrintException.class)
     public void test_print_basicIsoDate_largeYear() {
         try {
             Calendrical test = ZonedDateTime.of(LocalDateTime.of(123456, 6, 3, 11, 5, 30), ZoneId.UTC);
             DateTimeFormatters.basicIsoDate().print(test);
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (CalendricalPrintException ex) {
             assertEquals(ex.getRule(), YEAR);
             throw ex;
         }

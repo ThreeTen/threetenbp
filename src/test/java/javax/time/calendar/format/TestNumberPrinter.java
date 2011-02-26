@@ -206,10 +206,9 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (CalendricalPrintException ex) {
             if (result == null || value < 0) {
                 assertEquals(ex.getRule(), DAY_OF_MONTH);
-                assertEquals(ex.getValue(), (Long) value);
             } else {
                 throw ex;
             }
@@ -226,12 +225,11 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (CalendricalPrintException ex) {
             if (result != null) {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Long) value);
         }
     }
 
@@ -245,12 +243,11 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : result));
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (CalendricalPrintException ex) {
             if (result != null) {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Long) value);
         }
     }
 
@@ -264,12 +261,11 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : "+" + result));
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (CalendricalPrintException ex) {
             if (result != null) {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Long) value);
         }
     }
 
@@ -286,12 +282,11 @@ public class TestNumberPrinter {
                 result = (value < 0 ? "-" + result : "+" + result);
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (CalendricalPrintException ex) {
             if (result != null) {
                 throw ex;
             }
             assertEquals(ex.getRule(), DAY_OF_MONTH);
-            assertEquals(ex.getValue(), (Long) value);
         }
     }
 

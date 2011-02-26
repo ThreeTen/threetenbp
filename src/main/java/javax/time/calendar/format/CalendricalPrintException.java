@@ -33,14 +33,17 @@ package javax.time.calendar.format;
 
 import java.io.IOException;
 
-import javax.time.CalendricalException;
+import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.CalendricalRuleException;
 
 /**
  * An exception thrown when an error occurs during printing.
+ * <p>
+ * This will be triggered by violations specific to printing or an IO exception.
  *
  * @author Stephen Colebourne
  */
-public class CalendricalPrintException extends CalendricalException {
+public class CalendricalPrintException extends CalendricalRuleException {
 
     /**
      * A serialization identifier for this class.
@@ -53,17 +56,27 @@ public class CalendricalPrintException extends CalendricalException {
      * @param message  the message to use for this exception, may be null
      */
     public CalendricalPrintException(String message) {
-        super(message);
+        super(message, null);
+    }
+
+    /**
+     * Constructs a new exception with the specified message and cause rule.
+     *
+     * @param message  the message to use for this exception, may be null
+     * @param rule  the rule that caused the exception, null if not caused by a specific rule
+     */
+    public CalendricalPrintException(String message, CalendricalRule<?> rule) {
+        super(message, rule);
     }
 
     /**
      * Constructs a new exception with the specified message and cause.
      *
      * @param message  the message to use for this exception, may be null
-     * @param throwable  the throwable to store as the cause, may be null
+     * @param cause  the cause of the exception, may be null
      */
-    public CalendricalPrintException(String message, Throwable throwable) {
-        super(message, throwable);
+    public CalendricalPrintException(String message, Throwable cause) {
+        super(message, null, cause);
     }
 
     //-----------------------------------------------------------------------

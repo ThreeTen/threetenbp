@@ -167,10 +167,9 @@ public class TestReducedPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalPrintFieldException ex) {
+        } catch (CalendricalPrintException ex) {
             if (result == null || value < 0) {
                 assertEquals(ex.getRule(), YEAR);
-                assertEquals(ex.getValue(), (Integer) value);
             } else {
                 throw ex;
             }

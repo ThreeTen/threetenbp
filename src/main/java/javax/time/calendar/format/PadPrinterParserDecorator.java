@@ -82,7 +82,8 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
         printer.print(calendrical, buf, symbols);
         int len = buf.length() - preLen;
         if (len > padWidth) {
-            throw new CalendricalPrintException("Output of " + len + " characters exceeds pad width of " + padWidth);
+            throw new CalendricalPrintException(
+                "Cannot print as output of " + len + " characters exceeds pad width of " + padWidth);
         }
         for (int i = 0; i < padWidth - len; i++) {
             buf.insert(preLen, padChar);
