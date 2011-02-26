@@ -69,7 +69,7 @@ public abstract class Chronology implements Calendrical {
      * The name should not have the suffix 'Chronology'.
      * For example, the name of {@link ISOChronology} is 'ISO'.
      *
-     * @return the name of the chronology, never null
+     * @return the name of the chronology, not null
      */
     public abstract String getName();
 
@@ -77,7 +77,7 @@ public abstract class Chronology implements Calendrical {
     /**
      * Returns a textual description of the chronology.
      *
-     * @return a string form for debugging, never null
+     * @return a string form for debugging, not null
      */
     @Override
     public String toString() {
@@ -103,7 +103,7 @@ public abstract class Chronology implements Calendrical {
     /**
      * Gets the rule for {@code Chronology}.
      *
-     * @return the rule for the chronology, never null
+     * @return the rule for the chronology, not null
      */
     public static CalendricalRule<Chronology> rule() {
         return Rule.INSTANCE;

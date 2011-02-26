@@ -76,7 +76,7 @@ public final class DateTimeField
      *
      * @param rule  the rule defining the field, not null
      * @param value  the value of the rule, may be outside the valid range for the rule
-     * @return the date-time field, never null
+     * @return the date-time field, not null
      */
     public static DateTimeField of(DateTimeRule rule, long value) {
         ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
@@ -113,7 +113,7 @@ public final class DateTimeField
      * <p>
      * For example, in the field 'MonthOfYear 12', the unit is 'MonthOfYear'.
      *
-     * @return the field unit, never null
+     * @return the field unit, not null
      */
     public DateTimeRule getRule() {
         return rule;
@@ -130,7 +130,7 @@ public final class DateTimeField
      * This instance is immutable and unaffected by this method call.
      *
      * @param rule  the rule to set in the returned field, not null
-     * @return a {@code DateTimeField} based on this field with the specified rule, never null
+     * @return a {@code DateTimeField} based on this field with the specified rule, not null
      */
     public DateTimeField withRule(DateTimeRule rule) {
         ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
@@ -149,7 +149,7 @@ public final class DateTimeField
      * This instance is immutable and unaffected by this method call.
      *
      * @param value  the value to set in the returned field, may be outside the valid range for the rule
-     * @return a {@code DateTimeField} based on this field with the specified value, never null
+     * @return a {@code DateTimeField} based on this field with the specified value, not null
      */
     public DateTimeField withValue(long value) {
         if (value == this.value) {
@@ -267,7 +267,7 @@ public final class DateTimeField
 //     * This instance is immutable and unaffected by this method call.
 //     *
 //     * @param amountToRollBy  the amount to roll by, positive or negative
-//     * @return a {@code DateTimeField} based on this field with the specified amount rolled, never null
+//     * @return a {@code DateTimeField} based on this field with the specified amount rolled, not null
 //     * @throws CalendricalException if the value is invalid
 //     */
 //    public DateTimeField roll(long amountToRollBy) {
@@ -280,7 +280,7 @@ public final class DateTimeField
      * <p>
      * The returned fields instance will have {@code this} as a single field.
      *
-     * @return the equivalent date-time fields, never null
+     * @return the equivalent date-time fields, not null
      */
     public DateTimeFields toDateTimeFields() {
         return DateTimeFields.of(this);

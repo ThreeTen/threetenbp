@@ -77,7 +77,7 @@ public interface DateProvider {
      * a date in the ISO calendar system. Implementors may perform conversion
      * when implementing this method to convert from alternate calendar systems.
      *
-     * @return the {@code LocalDate} equivalent to this object, never null
+     * @return the {@code LocalDate} equivalent to this object, not null
      * @throws CalendricalException if the date cannot be converted
      */
     LocalDate toLocalDate();

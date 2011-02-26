@@ -89,7 +89,7 @@ public final class LocalDateTime
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current date-time using the system clock, never null
+     * @return the current date-time using the system clock, not null
      */
     public static LocalDateTime now() {
         return now(Clock.systemDefaultZone());
@@ -103,7 +103,7 @@ public final class LocalDateTime
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current date-time, never null
+     * @return the current date-time, not null
      */
     public static LocalDateTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
@@ -122,7 +122,7 @@ public final class LocalDateTime
      *
      * @param localSeconds  the number of seconds from the local epoch of 1970-01-01T00:00:00
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
@@ -145,7 +145,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -165,7 +165,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -183,7 +183,7 @@ public final class LocalDateTime
      * The time fields will be set to zero by this factory method.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      */
     public static LocalDateTime ofMidnight(DateProvider dateProvider) {
         LocalDate date = LocalDate.of(dateProvider);
@@ -204,7 +204,7 @@ public final class LocalDateTime
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -230,7 +230,7 @@ public final class LocalDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -255,7 +255,7 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -281,7 +281,7 @@ public final class LocalDateTime
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -307,7 +307,7 @@ public final class LocalDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -332,7 +332,7 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -350,7 +350,7 @@ public final class LocalDateTime
      *
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      */
     public static LocalDateTime of(DateProvider dateProvider, TimeProvider timeProvider) {
         LocalDate date = LocalDate.of(dateProvider);
@@ -367,7 +367,7 @@ public final class LocalDateTime
      * whether the result of the provider is null.
      *
      * @param dateTimeProvider  the date-time provider to use, not null
-     * @return the local date-time, never null
+     * @return the local date-time, not null
      */
     public static LocalDateTime of(DateTimeProvider dateTimeProvider) {
         ISOChronology.checkNotNull(dateTimeProvider, "DateTimeProvider must not be null");
@@ -386,7 +386,7 @@ public final class LocalDateTime
 //     *
 //     * @param instantProvider  the instant to convert, not null
 //     * @param offset  the zone offset, not null
-//     * @return the offset date-time, never null
+//     * @return the offset date-time, not null
 //     * @throws CalendarConversionException if the instant exceeds the supported date range
 //     */
 //    public static LocalDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
@@ -421,7 +421,7 @@ public final class LocalDateTime
      * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30', not null
-     * @return the parsed local date-time, never null
+     * @return the parsed local date-time, not null
      * @throws CalendricalException if the text cannot be parsed
      */
     public static LocalDateTime parse(String text) {
@@ -435,7 +435,7 @@ public final class LocalDateTime
      *
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
-     * @return the parsed local date-time, never null
+     * @return the parsed local date-time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalException if the text cannot be parsed
      */
@@ -462,7 +462,7 @@ public final class LocalDateTime
      *
      * @param newDate  the date of the new date-time, not null
      * @param newTime  the time of the new date-time, not null
-     * @return the date-time, never null
+     * @return the date-time, not null
      */
     private LocalDateTime with(LocalDate newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
@@ -475,7 +475,7 @@ public final class LocalDateTime
     /**
      * Gets the chronology that this date-time uses, which is the ISO calendar system.
      *
-     * @return the ISO chronology, never null
+     * @return the ISO chronology, not null
      */
     public ISOChronology getChronology() {
         return ISOChronology.INSTANCE;
@@ -521,7 +521,7 @@ public final class LocalDateTime
      * This includes month lengths, textual names and access to the quarter-of-year
      * and month-of-quarter values.
      *
-     * @return the month-of-year, never null
+     * @return the month-of-year, not null
      */
     public MonthOfYear getMonthOfYear() {
         return date.getMonthOfYear();
@@ -560,7 +560,7 @@ public final class LocalDateTime
      * Additional information can be obtained from the {@code DayOfWeek}.
      * This includes textual names of the values.
      *
-     * @return the day-of-week, never null
+     * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
         return date.getDayOfWeek();
@@ -639,7 +639,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time with the date adjusted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the date adjusted, not null
      * @throws NullPointerException if the adjuster returned null
      */
     public LocalDateTime with(DateAdjuster adjuster) {
@@ -658,7 +658,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalDateTime} based on this date-time with the time adjusted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the time adjusted, not null
      * @throws IllegalArgumentException if the adjuster returned null
      */
     public LocalDateTime with(TimeAdjuster adjuster) {
@@ -676,7 +676,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
-     * @return a {@code LocalDateTime} based on this date-time with the requested year, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested year, not null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDateTime withYear(int year) {
@@ -692,7 +692,7 @@ public final class LocalDateTime
      *
      * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested year, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested year, not null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDateTime withYear(int year, DateResolver dateResolver) {
@@ -709,7 +709,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
-     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public LocalDateTime withMonthOfYear(int monthOfYear) {
@@ -725,7 +725,7 @@ public final class LocalDateTime
      *
      * @param monthOfYear  the month-of-year to set in the returned date, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public LocalDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
@@ -742,7 +742,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month-of-year to set in the returned date, not null
-     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      */
     public LocalDateTime with(MonthOfYear monthOfYear) {
         return with(date.with(monthOfYear), time);
@@ -757,7 +757,7 @@ public final class LocalDateTime
      *
      * @param monthOfYear  the month-of-year to set in the returned date, not null
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested month, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested month, not null
      */
     public LocalDateTime with(MonthOfYear monthOfYear, DateResolver dateResolver) {
         return with(date.with(monthOfYear, dateResolver), time);
@@ -771,7 +771,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 28-31
-     * @return a {@code LocalDateTime} based on this date-time with the requested day, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested day, not null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -788,7 +788,7 @@ public final class LocalDateTime
      *
      * @param dayOfMonth  the day-of-month to set in the returned date, from 1 to 31
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the requested day, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested day, not null
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      */
     public LocalDateTime withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
@@ -802,7 +802,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
-     * @return a {@code LocalDateTime} based on this date with the requested day, never null
+     * @return a {@code LocalDateTime} based on this date with the requested day, not null
      * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
      * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
@@ -822,7 +822,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a {@code LocalDateTime} based on this date-time with the requested date, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -847,7 +847,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @return a {@code LocalDateTime} based on this date-time with the requested date, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested date, not null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
@@ -868,7 +868,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @return a {@code LocalDateTime} based on this date-time with the requested hour, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested hour, not null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public LocalDateTime withHourOfDay(int hourOfDay) {
@@ -882,7 +882,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the requested minute, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested minute, not null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public LocalDateTime withMinuteOfHour(int minuteOfHour) {
@@ -896,7 +896,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the requested second, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested second, not null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public LocalDateTime withSecondOfMinute(int secondOfMinute) {
@@ -910,7 +910,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a {@code LocalDateTime} based on this date-time with the requested nanosecond, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested nanosecond, not null
      * @throws IllegalCalendarFieldValueException if the nano value is invalid
      */
     public LocalDateTime withNanoOfSecond(int nanoOfSecond) {
@@ -930,7 +930,7 @@ public final class LocalDateTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the requested time, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour) {
@@ -950,7 +950,7 @@ public final class LocalDateTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a {@code LocalDateTime} based on this date-time with the requested time, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
@@ -969,7 +969,7 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a {@code LocalDateTime} based on this date-time with the requested time, never null
+     * @return a {@code LocalDateTime} based on this date-time with the requested time, not null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
@@ -1038,7 +1038,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code LocalDateTime} based on this date-time with the period added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the period added, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -1062,7 +1062,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a {@code LocalDateTime} based on this date-time with the duration added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the duration added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plus(Duration duration) {
@@ -1089,7 +1089,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the years added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(long, javax.time.calendar.DateResolver)
      */
@@ -1112,7 +1112,7 @@ public final class LocalDateTime
      *
      * @param years  the years to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the years added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusYears(long years, DateResolver dateResolver) {
@@ -1139,7 +1139,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the months added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusMonths(long, javax.time.calendar.DateResolver)
      */
@@ -1162,7 +1162,7 @@ public final class LocalDateTime
      *
      * @param months  the months to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the months added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusMonths(long months, DateResolver dateResolver) {
@@ -1182,7 +1182,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the weeks added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the weeks added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusWeeks(long weeks) {
@@ -1202,7 +1202,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the days added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the days added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusDays(long days) {
@@ -1216,7 +1216,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the hours added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the hours added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusHours(long hours) {
@@ -1231,7 +1231,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the minutes added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the minutes added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusMinutes(long minutes) {
@@ -1246,7 +1246,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the seconds added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the seconds added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusSeconds(long seconds) {
@@ -1261,7 +1261,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the nanoseconds added, never null
+     * @return a {@code LocalDateTime} based on this date-time with the nanoseconds added, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusNanos(long nanos) {
@@ -1327,7 +1327,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalDateTime} based on this date-time with the period subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the period subtracted, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -1351,7 +1351,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a {@code LocalDateTime} based on this date-time with the duration subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the duration subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minus(Duration duration) {
@@ -1378,7 +1378,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusYears(long, javax.time.calendar.DateResolver)
      */
@@ -1401,7 +1401,7 @@ public final class LocalDateTime
      *
      * @param years  the years to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusYears(long years, DateResolver dateResolver) {
@@ -1428,7 +1428,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusMonths(long, javax.time.calendar.DateResolver)
      */
@@ -1451,7 +1451,7 @@ public final class LocalDateTime
      *
      * @param months  the months to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusMonths(long months, DateResolver dateResolver) {
@@ -1471,7 +1471,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the weeks subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the weeks subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusWeeks(long weeks) {
@@ -1491,7 +1491,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the days subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the days subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusDays(long days) {
@@ -1505,7 +1505,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the hours subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the hours subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusHours(long hours) {
@@ -1520,7 +1520,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the minutes subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the minutes subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusMinutes(long minutes) {
@@ -1535,7 +1535,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the seconds subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the seconds subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusSeconds(long seconds) {
@@ -1550,7 +1550,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the nanoseconds subtracted, never null
+     * @return a {@code LocalDateTime} based on this date-time with the nanoseconds subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusNanos(long nanos) {
@@ -1595,7 +1595,7 @@ public final class LocalDateTime
      * It is intended that applications use {@link #with(DateAdjuster)} rather than this method.
      *
      * @param date  the date to be adjusted, not null
-     * @return the adjusted date, never null
+     * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
         return this.date.adjustDate(date);
@@ -1608,7 +1608,7 @@ public final class LocalDateTime
      * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
      *
      * @param time  the time to be adjusted, not null
-     * @return the adjusted time, never null
+     * @return the adjusted time, not null
      */
     public LocalTime adjustTime(LocalTime time) {
         return this.time.adjustTime(time);
@@ -1624,7 +1624,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the offset to use, not null
-     * @return the offset date-time formed from this date-time and the specified offset, never null
+     * @return the offset date-time formed from this date-time and the specified offset, not null
      */
     public OffsetDateTime atOffset(ZoneOffset offset) {
         return OffsetDateTime.of(this, offset);
@@ -1646,7 +1646,7 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param zone  the time-zone to use, not null
-     * @return the zoned date-time formed from this date-time, never null
+     * @return the zoned date-time formed from this date-time, not null
      */
     public ZonedDateTime atZone(ZoneId zone) {
         return ZonedDateTime.of(this, zone, ZoneResolvers.postTransition());
@@ -1664,7 +1664,7 @@ public final class LocalDateTime
      *
      * @param zone  the time-zone to use, not null
      * @param resolver  the zone resolver to use for gaps and overlaps, not null
-     * @return the zoned date-time formed from this date-time, never null
+     * @return the zoned date-time formed from this date-time, not null
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime atZone(ZoneId zone, ZoneResolver resolver) {
@@ -1675,7 +1675,7 @@ public final class LocalDateTime
     /**
      * Converts this date-time to a {@code LocalDate}.
      *
-     * @return a LocalDate representing the date fields of this date-time, never null
+     * @return a LocalDate representing the date fields of this date-time, not null
      */
     public LocalDate toLocalDate() {
         return date;
@@ -1684,7 +1684,7 @@ public final class LocalDateTime
     /**
      * Converts this date-time to a {@code LocalTime}.
      *
-     * @return a LocalTime representing the time fields of this date-time, never null
+     * @return a LocalTime representing the time fields of this date-time, not null
      */
     public LocalTime toLocalTime() {
         return time;
@@ -1694,7 +1694,7 @@ public final class LocalDateTime
      * Converts this date-time to a {@code LocalDateTime},
      * trivially returning {@code this}.
      *
-     * @return {@code this}, never null
+     * @return {@code this}, not null
      */
     public LocalDateTime toLocalDateTime() {
         return this;
@@ -1787,7 +1787,7 @@ public final class LocalDateTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted date-time, never null
+     * @return the formatted date-time, not null
      */
     @Override
     public String toString() {
@@ -1798,7 +1798,7 @@ public final class LocalDateTime
      * Outputs this date-time as a {@code String} using the formatter.
      *
      * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, never null
+     * @return the formatted date-time string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
@@ -1811,7 +1811,7 @@ public final class LocalDateTime
     /**
      * Gets the rule for {@code LocalDateTime}.
      *
-     * @return the rule for the date-time, never null
+     * @return the rule for the date-time, not null
      */
     public static CalendricalRule<LocalDateTime> rule() {
         return Rule.INSTANCE;

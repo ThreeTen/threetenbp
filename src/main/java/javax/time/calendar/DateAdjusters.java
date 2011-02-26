@@ -58,7 +58,7 @@ public final class DateAdjusters {
      * The input 2007-01-15 will return 2007-01-01.<br />
      * The input 2008-02-15 will return 2008-02-01.
      *
-     * @return the first day-of-month adjuster, never null
+     * @return the first day-of-month adjuster, not null
      */
     public static DateAdjuster firstDayOfMonth() {
         return Impl.FIRST_DAY_OF_MONTH;
@@ -74,7 +74,7 @@ public final class DateAdjusters {
      * The input 2007-04-15 will return 2007-04-30.<br />
      * The input 2008-02-15 will return 2008-02-29.
      *
-     * @return the last day-of-month adjuster, never null
+     * @return the last day-of-month adjuster, not null
      */
     public static DateAdjuster lastDayOfMonth() {
         return Impl.LAST_DAY_OF_MONTH;
@@ -87,7 +87,7 @@ public final class DateAdjusters {
      * The input 2007-01-15 will return 2007-01-01.<br />
      * The input 2008-02-15 will return 2008-01-01.<br />
      *
-     * @return the first day-of-year adjuster, never null
+     * @return the first day-of-year adjuster, not null
      */
     public static DateAdjuster firstDayOfYear() {
         return Impl.FIRST_DAY_OF_YEAR;
@@ -100,7 +100,7 @@ public final class DateAdjusters {
      * The input 2007-01-15 will return 2007-12-31.<br />
      * The input 2008-02-15 will return 2008-12-31.<br />
      *
-     * @return the last day-of-year adjuster, never null
+     * @return the last day-of-year adjuster, not null
      */
     public static DateAdjuster lastDayOfYear() {
         return Impl.LAST_DAY_OF_YEAR;
@@ -111,7 +111,7 @@ public final class DateAdjusters {
      * Returns the next non weekend day adjuster, which adjusts the date one day
      * forward skipping Saturday and Sunday.
      *
-     * @return the next working day adjuster, never null
+     * @return the next working day adjuster, not null
      */
     public static DateAdjuster nextNonWeekendDay() {
         // TODO: This is not localized
@@ -179,7 +179,7 @@ public final class DateAdjusters {
      * The input 2007-12-15 for (TUESDAY) will return 2007-12-04.<br />
      *
      * @param dayOfWeek  the day-of-week, not null
-     * @return the first in month adjuster, never null
+     * @return the first in month adjuster, not null
      */
     public static DateAdjuster firstInMonth(DayOfWeek dayOfWeek) {
         if (dayOfWeek == null) {
@@ -204,7 +204,7 @@ public final class DateAdjusters {
      *
      * @param ordinal  ordinal, from 1 to 5
      * @param dayOfWeek  the day-of-week, not null
-     * @return the day-of-week in month adjuster, never null
+     * @return the day-of-week in month adjuster, not null
      * @throws IllegalArgumentException if the ordinal is invalid
      */
     public static DateAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
@@ -277,7 +277,7 @@ public final class DateAdjusters {
 //     * Returns the next Monday adjuster, which adjusts the date to be the
 //     * next Monday after the specified date.
 //     *
-//     * @return the next Monday adjuster, never null
+//     * @return the next Monday adjuster, not null
 //     */
 //    public static DateAdjuster nextMonday() {
 //        return new RelativeDayOfWeek(0, DayOfWeek.MONDAY);
@@ -288,7 +288,7 @@ public final class DateAdjusters {
      * the next of the specified day-of-week after the specified date.
      *
      * @param dow  the day-of-week to move the date to, not null
-     * @return the next day-of-week adjuster, never null
+     * @return the next day-of-week adjuster, not null
      */
     public static DateAdjuster next(DayOfWeek dow) {
         if (dow == null) {
@@ -303,7 +303,7 @@ public final class DateAdjusters {
      * input date if the day-of-week matched.
      *
      * @param dow  the day-of-week to move the date to, not null
-     * @return the next day-of-week adjuster, never null
+     * @return the next day-of-week adjuster, not null
      */
     public static DateAdjuster nextOrCurrent(DayOfWeek dow) {
         if (dow == null) {
@@ -317,7 +317,7 @@ public final class DateAdjusters {
      * the previous of the specified day-of-week after the specified date.
      *
      * @param dow  the day-of-week to move the date to, not null
-     * @return the next day-of-week adjuster, never null
+     * @return the next day-of-week adjuster, not null
      */
     public static DateAdjuster previous(DayOfWeek dow) {
         if (dow == null) {
@@ -332,7 +332,7 @@ public final class DateAdjusters {
      * input date if the day-of-week matched.
      *
      * @param dow  the day-of-week to move the date to, not null
-     * @return the next day-of-week adjuster, never null
+     * @return the next day-of-week adjuster, not null
      */
     public static DateAdjuster previousOrCurrent(DayOfWeek dow) {
         if (dow == null) {

@@ -86,7 +86,7 @@ public interface DateTimeProvider extends DateProvider, TimeProvider {
      * a date in the ISO calendar system. Implementors may perform conversion
      * when implementing this method to convert from alternate calendar systems.
      *
-     * @return the {@code LocalDateTime} equivalent to this object, never null
+     * @return the {@code LocalDateTime} equivalent to this object, not null
      * @throws CalendricalException if the date-time cannot be converted
      */
     LocalDateTime toLocalDateTime();

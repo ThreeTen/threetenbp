@@ -86,7 +86,7 @@ public enum AmPmOfDay {
      * {@link ISOChronology} AM/PM rule to indicate the failed rule.
      *
      * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
-     * @return the AmPmOfDay singleton, never null
+     * @return the AmPmOfDay singleton, not null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public static AmPmOfDay of(int amPmOfDay) {
@@ -141,7 +141,7 @@ public enum AmPmOfDay {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the short text value of the AM/PM, never null
+     * @return the short text value of the AM/PM, not null
      */
     public String getShortText(Locale locale) {
         return AMPM_OF_DAY.getText(getValue(), locale, TextStyle.SHORT);
@@ -159,7 +159,7 @@ public enum AmPmOfDay {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the AM/PM, never null
+     * @return the long text value of the AM/PM, not null
      */
     public String getText(Locale locale) {
         return AMPM_OF_DAY.getText(getValue(), locale, TextStyle.FULL);

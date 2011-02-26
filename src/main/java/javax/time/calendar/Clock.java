@@ -107,7 +107,7 @@ public abstract class Clock {
      * Using this method hard codes a dependency to the default time-zone into your application.
      * It is recommended to avoid this and use a specific time-zone whenever possible.
      *
-     * @return a clock that uses the system millisecond clock in the specified zone, never null
+     * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock systemDefaultZone() {
         ZoneId zone = ZoneId.of(TimeZone.getDefault().getID());
@@ -122,7 +122,7 @@ public abstract class Clock {
      * at best millisecond resolution.
      *
      * @param zone  the time-zone to use to convert to date-times, not null
-     * @return a clock that uses the system millisecond clock in the specified zone, never null
+     * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
         ISOChronology.checkNotNull(zone, "ZoneId must not be null");
@@ -138,7 +138,7 @@ public abstract class Clock {
      * It is recommended to avoid this and use a specific time-zone whenever possible.
      *
      * @param timeSource  the time-source to use to obtain the current time, not null
-     * @return a clock that uses the system millisecond clock in the specified zone, never null
+     * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock clockDefaultZone(TimeSource timeSource) {
         ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
@@ -152,7 +152,7 @@ public abstract class Clock {
      *
      * @param timeSource  the time-source to use to obtain the current time, not null
      * @param timeZone  the time-zone to use to convert to date-times, not null
-     * @return a clock that uses the system millisecond clock in the specified zone, never null
+     * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock clock(TimeSource timeSource, ZoneId timeZone) {
         ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
@@ -178,7 +178,7 @@ public abstract class Clock {
      * instants, dates and times, thus this method is allowed to throw
      * {@code UnsupportedOperationException}.
      *
-     * @return the time-source being used to obtain instants, never null
+     * @return the time-source being used to obtain instants, not null
      * @throws UnsupportedOperationException if the implementation does not support accessing the time-source
      */
     public TimeSource getSource() {
@@ -196,7 +196,7 @@ public abstract class Clock {
      * {@code UnsupportedOperationException}.
      *
      * @param timeSource  the time-source to change to, not null
-     * @return the new clock with the altered time-source, never null
+     * @return the new clock with the altered time-source, not null
      * @throws UnsupportedOperationException if the implementation does not support changing the time-source
      */
     public Clock withSource(TimeSource timeSource) {
@@ -214,7 +214,7 @@ public abstract class Clock {
      * instants, dates and times, thus this method is allowed to throw
      * {@code UnsupportedOperationException}.
      *
-     * @return the time-zone being used to interpret instants, never null
+     * @return the time-zone being used to interpret instants, not null
      * @throws UnsupportedOperationException if the implementation does not support accessing the time-zone
      */
     public ZoneId getZone() {
@@ -232,7 +232,7 @@ public abstract class Clock {
      * {@code UnsupportedOperationException}.
      *
      * @param zone  the time-zone to change to, not null
-     * @return the new clock with the altered time-zone, never null
+     * @return the new clock with the altered time-zone, not null
      * @throws UnsupportedOperationException if the implementation does not support changing the time-zone
      */
     public Clock withZone(ZoneId zone) {
@@ -252,7 +252,7 @@ public abstract class Clock {
      * central time server across the network. Obviously, in this case the lookup
      * could fail, and so the method is permitted to throw an exception.
      *
-     * @return the current instant from the time-source, never null
+     * @return the current instant from the time-source, not null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public Instant instant() {
@@ -268,7 +268,7 @@ public abstract class Clock {
      * The local date can only be calculated from an instant if the time-zone is known.
      * As such, the local date is derived by default from {@code offsetDate()}.
      *
-     * @return the current date, never null
+     * @return the current date, not null
      * @throws CalendricalException if the date cannot be created
      */
     public LocalDate today() {
@@ -281,7 +281,7 @@ public abstract class Clock {
      * This returns yesterday's date from the clock.
      * This is calculated relative to {@code today()}.
      *
-     * @return the date yesterday, never null
+     * @return the date yesterday, not null
      * @throws CalendricalException if the date cannot be created
      */
     public LocalDate yesterday() {
@@ -294,7 +294,7 @@ public abstract class Clock {
      * This returns tomorrow's date from the clock.
      * This is calculated relative to {@code today()}.
      *
-     * @return the date tomorrow, never null
+     * @return the date tomorrow, not null
      * @throws CalendricalException if the date cannot be created
      */
     public LocalDate tomorrow() {
@@ -307,7 +307,7 @@ public abstract class Clock {
      * This returns the current year-month from the clock.
      * This is derived from {@code today()}.
      *
-     * @return the current year-month, never null
+     * @return the current year-month, not null
      * @throws CalendricalException if the year cannot be created
      */
     public YearMonth yearMonth() {
@@ -321,7 +321,7 @@ public abstract class Clock {
      * This returns the current year from the clock.
      * This is derived from {@code today()}.
      *
-     * @return the current year, never null
+     * @return the current year, not null
      * @throws CalendricalException if the year cannot be created
      */
     public Year year() {
@@ -339,7 +339,7 @@ public abstract class Clock {
      * The local time can only be calculated from an instant if the time-zone is known.
      * As such, the local time is derived by default from {@code offsetTime()}.
      *
-     * @return the current time, never null
+     * @return the current time, not null
      * @throws CalendricalException if the time cannot be created
      */
     public LocalTime time() {
@@ -352,7 +352,7 @@ public abstract class Clock {
      * This returns the current time from the clock rounded to the second.
      * This is achieved by setting the nanosecond part to be zero.
      *
-     * @return the current time to the nearest second, never null
+     * @return the current time to the nearest second, not null
      * @throws CalendricalException if the time cannot be created
      */
     public LocalTime timeToSecond() {
@@ -365,7 +365,7 @@ public abstract class Clock {
      * This returns the current time from the clock rounded to the minute.
      * This is achieved by setting the second and nanosecond parts to be zero.
      *
-     * @return the current time to the nearest minute, never null
+     * @return the current time to the nearest minute, not null
      * @throws CalendricalException if the time cannot be created
      */
     public LocalTime timeToMinute() {
@@ -383,7 +383,7 @@ public abstract class Clock {
      * The local date-time can only be calculated from an instant if the time-zone is known.
      * As such, the local date-time is derived by default from {@code offsetDateTime()}.
      *
-     * @return the current date-time, never null
+     * @return the current date-time, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public LocalDateTime dateTime() {
@@ -396,7 +396,7 @@ public abstract class Clock {
      * This returns the current date-time from the clock rounded to the second.
      * This is achieved by setting the nanosecond part to be zero.
      *
-     * @return the current date-time to the nearest second, never null
+     * @return the current date-time to the nearest second, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public LocalDateTime dateTimeToSecond() {
@@ -409,7 +409,7 @@ public abstract class Clock {
      * This returns the current date-time from the clock rounded to the minute.
      * This is achieved by setting the second and nanosecond parts to be zero.
      *
-     * @return the current date-time to the nearest minute, never null
+     * @return the current date-time to the nearest minute, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public LocalDateTime dateTimeToMinute() {
@@ -424,7 +424,7 @@ public abstract class Clock {
      * <p>
      * The offset date is derived by default from {@code instant()} and {@code getZone()}.
      *
-     * @return the current offset date, never null
+     * @return the current offset date, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public OffsetDate offsetDate() {
@@ -441,7 +441,7 @@ public abstract class Clock {
      * <p>
      * The offset time is derived by default from {@code instant()} and {@code getZone()}.
      *
-     * @return the current offset time, never null
+     * @return the current offset time, not null
      * @throws CalendricalException if the time cannot be created
      */
     public OffsetTime offsetTime() {
@@ -454,7 +454,7 @@ public abstract class Clock {
      * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
      * The time is rounded to the second by setting the nanosecond part to be zero.
      *
-     * @return the current offset time to the nearest second, never null
+     * @return the current offset time to the nearest second, not null
      * @throws CalendricalException if the time cannot be created
      */
     public OffsetTime offsetTimeToSecond() {
@@ -467,7 +467,7 @@ public abstract class Clock {
      * This returns the current offset time from the clock with the correct offset from {@link #getZone()}.
      * The time is rounded to the second by setting the second and nanosecond parts to be zero.
      *
-     * @return the current offset time to the nearest minute, never null
+     * @return the current offset time to the nearest minute, not null
      * @throws CalendricalException if the time cannot be created
      */
     public OffsetTime offsetTimeToMinute() {
@@ -484,7 +484,7 @@ public abstract class Clock {
      * <p>
      * The offset date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
-     * @return the current offset date-time, never null
+     * @return the current offset date-time, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public OffsetDateTime offsetDateTime() {
@@ -497,7 +497,7 @@ public abstract class Clock {
      * This returns the current offset date-time from the clock with the correct offset from {@link #getZone()}.
      * The time is rounded to the second by setting the nanosecond part to be zero.
      *
-     * @return the current offset date-time to the nearest second, never null
+     * @return the current offset date-time to the nearest second, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public OffsetDateTime offsetDateTimeToSecond() {
@@ -510,7 +510,7 @@ public abstract class Clock {
      * This returns the current offset date-time from the clock with the correct offset from {@link #getZone()}.
      * The time is rounded to the second by setting the second and nanosecond parts to be zero.
      *
-     * @return the current offset date-time to the nearest minute, never null
+     * @return the current offset date-time to the nearest minute, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public OffsetDateTime offsetDateTimeToMinute() {
@@ -527,7 +527,7 @@ public abstract class Clock {
      * <p>
      * The zoned date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
-     * @return the current zoned date-time, never null
+     * @return the current zoned date-time, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public ZonedDateTime zonedDateTime() {
@@ -540,7 +540,7 @@ public abstract class Clock {
      * This returns the current zoned date-time from the clock with the zone from {@link #getZone()}.
      * The time is rounded to the second by setting the nanosecond part to be zero.
      *
-     * @return the current zoned date-time to the nearest second, never null
+     * @return the current zoned date-time to the nearest second, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public ZonedDateTime zonedDateTimeToSecond() {
@@ -553,7 +553,7 @@ public abstract class Clock {
      * This returns the current zoned date-time from the clock with the zone from {@link #getZone()}.
      * The time is rounded to the second by setting the second and nanosecond parts to be zero.
      *
-     * @return the current zoned date-time to the nearest minute, never null
+     * @return the current zoned date-time to the nearest minute, not null
      * @throws CalendricalException if the date-time cannot be created
      */
     public ZonedDateTime zonedDateTimeToMinute() {

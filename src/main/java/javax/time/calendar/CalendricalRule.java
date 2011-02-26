@@ -117,7 +117,7 @@ public abstract class CalendricalRule<T>
     /**
      * Gets the chronology of the rule.
      *
-     * @return the chronology of the rule, never null
+     * @return the chronology of the rule, not null
      */
     public final Chronology getChronology() {
         return chronology;
@@ -129,7 +129,7 @@ public abstract class CalendricalRule<T>
      * The ID is of the form 'ChronologyName.RuleName'.
      * No two fields should have the same ID.
      *
-     * @return the ID of the rule, never null
+     * @return the ID of the rule, not null
      */
     public final String getID() {
         return id;
@@ -142,7 +142,7 @@ public abstract class CalendricalRule<T>
      * If the rule represents a field, then the form 'UnitOfRange' should be used.
      * Otherwise, use the simple class name of the generic type, such as 'ZoneOffset'.
      *
-     * @return the name of the rule, never null
+     * @return the name of the rule, not null
      */
     public final String getName() {
         return name;
@@ -197,7 +197,7 @@ public abstract class CalendricalRule<T>
      * underlying type has been reified and made available through this method.
      * It is expected, but not enforced, that the underlying type is {@link Comparable}.
      *
-     * @return the reified type of values of the rule, never null
+     * @return the reified type of values of the rule, not null
      */
     public final Class<T> getReifiedType() {
         return reified;
@@ -251,7 +251,7 @@ public abstract class CalendricalRule<T>
      * and then ensures it isn't {@code null}.
      *
      * @param calendrical  the calendrical to get the field value from, not null
-     * @return the value of the field, never null
+     * @return the value of the field, not null
      * @throws UnsupportedRuleException if the rule cannot be extracted
      */
     public final T getValueChecked(Calendrical calendrical) {
@@ -542,7 +542,7 @@ public abstract class CalendricalRule<T>
     /**
      * Returns a string representation of the rule.
      *
-     * @return a description of the rule, never null
+     * @return a description of the rule, not null
      */
     @Override
     public String toString() {

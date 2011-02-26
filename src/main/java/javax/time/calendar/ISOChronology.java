@@ -171,7 +171,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @param year  the year, valid
      * @param dayOfYear  the day-of-year, valid
-     * @return the date, never null
+     * @return the date, not null
      */
     static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {
         DAY_OF_YEAR.checkValidValue(dayOfYear);
@@ -250,7 +250,7 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Gets the name of the chronology.
      *
-     * @return the name of the chronology, never null
+     * @return the name of the chronology, not null
      */
     @Override
     public String getName() {
@@ -265,7 +265,7 @@ public final class ISOChronology extends Chronology implements Serializable {
 //     * that is based......
 //     *
 //     * @param rule  the rule to convert, not null
-//     * @return the rule in ISO chronology, never null
+//     * @return the rule in ISO chronology, not null
 //     */
 //    public DateTimeRule<?> convertRule(DateTimeRule<?> rule) {
 //        if (rule.getChronology().equals(this)) {

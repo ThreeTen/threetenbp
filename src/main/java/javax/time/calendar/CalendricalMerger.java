@@ -55,12 +55,12 @@ import javax.time.CalendricalException;
 public final class CalendricalMerger implements Calendrical {
 
     /**
-     * The map of potentially invalid data to being merged, never null.
+     * The map of potentially invalid data to being merged, not null.
      * This is a concurrent hash map mainly to gain the no-nulls implementation.
      */
     private final Map<CalendricalRule<?>, Object> inputMap = new ConcurrentHashMap<CalendricalRule<?>, Object>();
     /**
-     * The map of in range data to be merged, never null.
+     * The map of in range data to be merged, not null.
      * This is a concurrent hash map mainly to gain the no-nulls implementation.
      */
     private final Map<CalendricalRule<?>, Object> processingMap = new ConcurrentHashMap<CalendricalRule<?>, Object>();
@@ -115,7 +115,7 @@ public final class CalendricalMerger implements Calendrical {
      * The map must only be updated before merging starts.
      * If the map is updated after merging starts, the result is undefined.
      *
-     * @return the rule-value map being merged, doesn't accept nulls, never null
+     * @return the rule-value map being merged, doesn't accept nulls, not null
      */
     public Map<CalendricalRule<?>, Object> getInputMap() {
         return inputMap;
@@ -125,7 +125,7 @@ public final class CalendricalMerger implements Calendrical {
     /**
      * Gets the calendrical context in use for the merge.
      *
-     * @return the calendrical context, never null
+     * @return the calendrical context, not null
      */
     public CalendricalContext getContext() {
         return context;
@@ -151,7 +151,7 @@ public final class CalendricalMerger implements Calendrical {
      * When some sets of fields are merged, the result may include an overflow.
      * This is a period that should be added to a date-time to make the result whole.
      *
-     * @return the overflow resulting from the merge, never null
+     * @return the overflow resulting from the merge, not null
      */
     public Period getOverflow() {
         return overflow;
@@ -369,7 +369,7 @@ public final class CalendricalMerger implements Calendrical {
 //     * No cross-validation between fields is performed, thus the field map could
 //     * contain an invalid date such as February 31st.
 //     *
-//     * @return this, for method chaining, never null
+//     * @return this, for method chaining, not null
 //     * @throws IllegalCalendarFieldValueException if any field is invalid
 //     */
 //    public void validate() {

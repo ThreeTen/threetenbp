@@ -140,7 +140,7 @@ public final class LocalTime
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @return the current time using the system clock, never null
+     * @return the current time using the system clock, not null
      */
     public static LocalTime now() {
         return now(Clock.systemDefaultZone());
@@ -154,7 +154,7 @@ public final class LocalTime
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param clock  the clock to use, not null
-     * @return the current time, never null
+     * @return the current time, not null
      */
     public static LocalTime now(Clock clock) {
         ISOChronology.checkNotNull(clock, "Clock must not be null");
@@ -179,7 +179,7 @@ public final class LocalTime
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return the local time, never null
+     * @return the local time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour) {
@@ -201,7 +201,7 @@ public final class LocalTime
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return the local time, never null
+     * @return the local time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute) {
@@ -220,7 +220,7 @@ public final class LocalTime
 //     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
 //     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
 //     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59.999,999,999
-//     * @return a LocalTime object, never null
+//     * @return a LocalTime object, not null
 //     * @throws IllegalCalendarFieldValueException if any field is invalid
 //     */
 //    public static LocalTime time(int hourOfDay, int minuteOfHour, double secondOfMinute) {
@@ -244,7 +244,7 @@ public final class LocalTime
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return the local time, never null
+     * @return the local time, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
@@ -266,7 +266,7 @@ public final class LocalTime
      * This factory may return a cached value, but applications must not rely on this.
      *
      * @param timeProvider  the time provider to use, not null
-     * @return the local time, never null
+     * @return the local time, not null
      */
     public static LocalTime of(TimeProvider timeProvider) {
         ISOChronology.checkNotNull(timeProvider, "TimeProvider must not be null");
@@ -282,7 +282,7 @@ public final class LocalTime
      * This factory may return a cached value, but applications must not rely on this.
      *
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
-     * @return the local time, never null
+     * @return the local time, not null
      * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay) {
@@ -302,7 +302,7 @@ public final class LocalTime
      *
      * @param secondOfDay  the second-of-day, from {@code 0} to {@code 24 * 60 * 60 - 1}
      * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
-     * @return the local time, never null
+     * @return the local time, not null
      * @throws IllegalCalendarFieldValueException if the either input value is invalid
      */
     public static LocalTime ofSecondOfDay(long secondOfDay, int nanoOfSecond) {
@@ -321,7 +321,7 @@ public final class LocalTime
      * This factory may return a cached value, but applications must not rely on this.
      *
      * @param nanoOfDay  the nano of day, from {@code 0} to {@code 24 * 60 * 60 * 1,000,000,000 - 1}
-     * @return the local time, never null
+     * @return the local time, not null
      * @throws CalendricalException if the nanos of day value is invalid
      */
     public static LocalTime ofNanoOfDay(long nanoOfDay) {
@@ -359,7 +359,7 @@ public final class LocalTime
      * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
      *
      * @param text  the text to parse such as '10:15:30', not null
-     * @return the parsed local time, never null
+     * @return the parsed local time, not null
      * @throws CalendricalException if the text cannot be parsed
      */
     public static LocalTime parse(String text) {
@@ -373,7 +373,7 @@ public final class LocalTime
      *
      * @param text  the text to parse, not null
      * @param formatter  the formatter to use, not null
-     * @return the parsed local time, never null
+     * @return the parsed local time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalException if the text cannot be parsed
      */
@@ -392,7 +392,7 @@ public final class LocalTime
      * @param minuteOfHour  the minute-of-hour to represent, validated from 0 to 59
      * @param secondOfMinute  the second-of-minute to represent, validated from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, validated from 0 to 999,999,999
-     * @return the local time, never null
+     * @return the local time, not null
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     private static LocalTime create(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
@@ -431,7 +431,7 @@ public final class LocalTime
     /**
      * Gets the chronology that this time uses, which is the ISO calendar system.
      *
-     * @return the ISO chronology, never null
+     * @return the ISO chronology, not null
      */
     public ISOChronology getChronology() {
         return ISOChronology.INSTANCE;
@@ -520,7 +520,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a {@code LocalTime} based on this time adjusted as necessary, never null
+     * @return a {@code LocalTime} based on this time adjusted as necessary, not null
      */
     public LocalTime with(TimeAdjuster adjuster) {
         LocalTime time = adjuster.adjustTime(this);
@@ -537,7 +537,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-     * @return a {@code LocalTime} based on this time with the requested hour, never null
+     * @return a {@code LocalTime} based on this time with the requested hour, not null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public LocalTime withHourOfDay(int hourOfDay) {
@@ -554,7 +554,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-     * @return a {@code LocalTime} based on this time with the requested minute, never null
+     * @return a {@code LocalTime} based on this time with the requested minute, not null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public LocalTime withMinuteOfHour(int minuteOfHour) {
@@ -571,7 +571,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
-     * @return a {@code LocalTime} based on this time with the requested second, never null
+     * @return a {@code LocalTime} based on this time with the requested second, not null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public LocalTime withSecondOfMinute(int secondOfMinute) {
@@ -588,7 +588,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @return a {@code LocalTime} based on this time with the requested nanosecond, never null
+     * @return a {@code LocalTime} based on this time with the requested nanosecond, not null
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public LocalTime withNanoOfSecond(int nanoOfSecond) {
@@ -613,7 +613,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to add, not null
-     * @return a {@code LocalTime} based on this time with the period added, never null
+     * @return a {@code LocalTime} based on this time with the period added, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
@@ -642,7 +642,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a {@code LocalTime} based on this time with the duration added, never null
+     * @return a {@code LocalTime} based on this time with the duration added, not null
      */
     public LocalTime plus(Duration duration) {
         return plusSeconds(duration.getSeconds()).plusNanos(duration.getNanoOfSecond());
@@ -658,7 +658,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a {@code LocalTime} based on this time with the hours added, never null
+     * @return a {@code LocalTime} based on this time with the hours added, not null
      */
     public LocalTime plusHours(long hours) {
         if (hours == 0) {
@@ -677,7 +677,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a {@code LocalTime} based on this time with the minutes added, never null
+     * @return a {@code LocalTime} based on this time with the minutes added, not null
      */
     public LocalTime plusMinutes(long minutes) {
         if (minutes == 0) {
@@ -702,7 +702,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a {@code LocalTime} based on this time with the seconds added, never null
+     * @return a {@code LocalTime} based on this time with the seconds added, not null
      */
     public LocalTime plusSeconds(long seconds) {
         if (seconds == 0) {
@@ -729,7 +729,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a {@code LocalTime} based on this time with the nanoseconds added, never null
+     * @return a {@code LocalTime} based on this time with the nanoseconds added, not null
      */
     public LocalTime plusNanos(long nanos) {
         if (nanos == 0) {
@@ -761,7 +761,7 @@ public final class LocalTime
      * @param minutes the minutes to add, may be negative
      * @param seconds the seconds to add, may be negative
      * @param nanos the nanos to add, may be negative
-     * @return an {@code Overflow} instance with the resulting time and overflow, never null
+     * @return an {@code Overflow} instance with the resulting time and overflow, not null
      */
     public Overflow plusWithOverflow(long hours, long minutes, long seconds, long nanos) {
         return plusWithOverflow(hours, minutes, seconds, nanos, 1);
@@ -781,7 +781,7 @@ public final class LocalTime
      * @param seconds the seconds to add, may be negative
      * @param nanos the nanos to add, may be negative
      * @param sign  the sign to determine add or subtract
-     * @return an {@code Overflow} instance with the resulting time and overflow, never null
+     * @return an {@code Overflow} instance with the resulting time and overflow, not null
      */
     private Overflow plusWithOverflow(long hours, long minutes, long seconds, long nanos, int sign) {
         // 9223372036854775808 long, 2147483648 int
@@ -819,7 +819,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param periodProvider  the period to subtract, not null
-     * @return a {@code LocalTime} based on this time with the period subtracted, never null
+     * @return a {@code LocalTime} based on this time with the period subtracted, not null
      * @throws CalendricalException if the specified period cannot be converted to a {@code Period}
      * @throws ArithmeticException if the period overflows during conversion to hours/minutes/seconds/nanos
      */
@@ -848,7 +848,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a {@code LocalTime} based on this time with the duration subtracted, never null
+     * @return a {@code LocalTime} based on this time with the duration subtracted, not null
      */
     public LocalTime minus(Duration duration) {
         return minusSeconds(duration.getSeconds()).minusNanos(duration.getNanoOfSecond());
@@ -864,7 +864,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
-     * @return a {@code LocalTime} based on this time with the hours subtracted, never null
+     * @return a {@code LocalTime} based on this time with the hours subtracted, not null
      */
     public LocalTime minusHours(long hours) {
         if (hours == 0) {
@@ -883,7 +883,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, may be negative
-     * @return a {@code LocalTime} based on this time with the minutes subtracted, never null
+     * @return a {@code LocalTime} based on this time with the minutes subtracted, not null
      */
     public LocalTime minusMinutes(long minutes) {
         if (minutes == 0) {
@@ -908,7 +908,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
-     * @return a {@code LocalTime} based on this time with the seconds subtracted, never null
+     * @return a {@code LocalTime} based on this time with the seconds subtracted, not null
      */
     public LocalTime minusSeconds(long seconds) {
         if (seconds == 0) {
@@ -935,7 +935,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to subtract, may be negative
-     * @return a {@code LocalTime} based on this time with the nanoseconds subtracted, never null
+     * @return a {@code LocalTime} based on this time with the nanoseconds subtracted, not null
      */
     public LocalTime minusNanos(long nanos) {
         if (nanos == 0) {
@@ -967,7 +967,7 @@ public final class LocalTime
      * @param minutes the minutes to subtract, may be negative
      * @param seconds the seconds to subtract, may be negative
      * @param nanos the nanos to subtract, may be negative
-     * @return an {@code Overflow} instance with the resulting time and overflow, never null
+     * @return an {@code Overflow} instance with the resulting time and overflow, not null
      */
     public Overflow minusWithOverflow(long hours, long minutes, long seconds, long nanos) {
         return plusWithOverflow(hours, minutes, seconds, nanos, -1);
@@ -1009,7 +1009,7 @@ public final class LocalTime
      * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
      *
      * @param time  the time to be adjusted, not null
-     * @return the adjusted time, never null
+     * @return the adjusted time, not null
      */
     public LocalTime adjustTime(LocalTime time) {
         ISOChronology.checkNotNull(time, "LocalTime must not be null");
@@ -1026,7 +1026,7 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the offset to use, not null
-     * @return the offset time formed from this time and the specified offset, never null
+     * @return the offset time formed from this time and the specified offset, not null
      */
     public OffsetTime atOffset(ZoneOffset offset) {
         return OffsetTime.of(this, offset);
@@ -1037,7 +1037,7 @@ public final class LocalTime
      * Converts this time to a {@code LocalTime}, trivially
      * returning {@code this}.
      *
-     * @return {@code this}, never null
+     * @return {@code this}, not null
      */
     public LocalTime toLocalTime() {
         return this;
@@ -1052,7 +1052,7 @@ public final class LocalTime
      * The number of days later (or earlier) of the result is recorded in the overflow.
      *
      * @param daysOverflow  the number of days to store
-     * @return the days-overflow, never null
+     * @return the days-overflow, not null
      */
     public Overflow toOverflow(long daysOverflow) {
         return new Overflow(this, daysOverflow);
@@ -1195,7 +1195,7 @@ public final class LocalTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted time, never null
+     * @return the formatted time, not null
      */
     @Override
     public String toString() {
@@ -1226,7 +1226,7 @@ public final class LocalTime
      * Outputs this time as a {@code String} using the formatter.
      *
      * @param formatter  the formatter to use, not null
-     * @return the formatted time string, never null
+     * @return the formatted time string, not null
      * @throws UnsupportedOperationException if the formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
@@ -1300,7 +1300,7 @@ public final class LocalTime
 //        /**
 //         * Returns a string description of this instance.
 //         *
-//         * @return the string, never null
+//         * @return the string, not null
 //         */
 //        @Override
 //        public String toString() {
@@ -1333,7 +1333,7 @@ public final class LocalTime
         /**
          * Gets the time that was the result of the calculation.
          *
-         * @return the time, never null
+         * @return the time, not null
          */
         public LocalTime getResultTime() {
             return time;
@@ -1352,7 +1352,7 @@ public final class LocalTime
          * Creates a {@code LocalDateTime} from the specified date and this instance.
          *
          * @param date  the date to use, not null
-         * @return the combination of the date, time and overflow in days, never null
+         * @return the combination of the date, time and overflow in days, not null
          */
         public LocalDateTime toLocalDateTime(LocalDate date) {
             return LocalDateTime.of(date.plusDays(getOverflowDays()), time);
@@ -1389,7 +1389,7 @@ public final class LocalTime
         /**
          * Returns a string description of this instance.
          *
-         * @return the string, never null
+         * @return the string, not null
          */
         @Override
         public String toString() {
@@ -1401,7 +1401,7 @@ public final class LocalTime
     /**
      * Gets the rule for {@code LocalTime}.
      *
-     * @return the rule for the time, never null
+     * @return the rule for the time, not null
      */
     public static CalendricalRule<LocalTime> rule() {
         return Rule.INSTANCE;

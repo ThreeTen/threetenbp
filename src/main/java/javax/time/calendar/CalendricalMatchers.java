@@ -65,7 +65,7 @@ public final class CalendricalMatchers {
      * Returns the leap year matcher, which returns true if the date
      * is in a leap year.
      *
-     * @return the leap year matcher, never null
+     * @return the leap year matcher, not null
      */
     public static CalendricalMatcher leapYear() {
         return Impl.LEAP_YEAR;
@@ -75,7 +75,7 @@ public final class CalendricalMatchers {
      * Returns the leap day matcher, which returns true if the date
      * is February 29th in a leap year.
      *
-     * @return the leap day matcher, never null
+     * @return the leap day matcher, not null
      */
     public static CalendricalMatcher leapDay() {
         return Impl.LEAP_DAY;
@@ -85,7 +85,7 @@ public final class CalendricalMatchers {
      * Returns the last day-of-month matcher, which returns true if the date
      * is the last valid day of the month.
      *
-     * @return the last day-of-month matcher, never null
+     * @return the last day-of-month matcher, not null
      */
     public static CalendricalMatcher lastDayOfMonth() {
         return Impl.LAST_DAY_OF_MONTH;
@@ -95,7 +95,7 @@ public final class CalendricalMatchers {
      * Returns the last day-of-year matcher, which returns true if the date is
      * the last valid day of the year.
      *
-     * @return the last day-of-year matcher, never null
+     * @return the last day-of-year matcher, not null
      */
     public static CalendricalMatcher lastDayOfYear() {
         return Impl.LAST_DAY_OF_YEAR;
@@ -109,7 +109,7 @@ public final class CalendricalMatchers {
      * No implementation is supplied to support this, however a DateMatcher
      * can be easily written to do so.
      *
-     * @return the non weekend day matcher, never null
+     * @return the non weekend day matcher, not null
      */
     public static CalendricalMatcher weekendDay() {
         return Impl.WEEKEND_DAY;
@@ -123,7 +123,7 @@ public final class CalendricalMatchers {
      * No implementation is supplied to support this, however a DateMatcher
      * can be easily written to do so.
      *
-     * @return the non weekend day matcher, never null
+     * @return the non weekend day matcher, not null
      */
     public static CalendricalMatcher nonWeekendDay() {
         return Impl.NON_WEEKEND_DAY;
@@ -195,7 +195,7 @@ public final class CalendricalMatchers {
      * is the first occurrence of day-of-week in the month.
      *
      * @param dayOfWeek  the day-of-week, not null
-     * @return the first in month matcher, never null
+     * @return the first in month matcher, not null
      */
     public static CalendricalMatcher firstInMonth(DayOfWeek dayOfWeek) {
         if (dayOfWeek == null) {
@@ -210,7 +210,7 @@ public final class CalendricalMatchers {
      *
      * @param ordinal  ordinal, from 1 to 5
      * @param dayOfWeek  the day-of-week, not null
-     * @return the day-of-week in month matcher, never null
+     * @return the day-of-week in month matcher, not null
      * @throws IllegalArgumentException if the ordinal is invalid
      */
     public static CalendricalMatcher dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {

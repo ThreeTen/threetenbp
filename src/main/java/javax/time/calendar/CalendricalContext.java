@@ -127,7 +127,7 @@ public final class CalendricalContext
      * @param year  the year to resolve
      * @param month  the month to resolve
      * @param dayOfMonth  the day-of-month to resolve
-     * @return the resolved date, never null
+     * @return the resolved date, not null
      * @throws IllegalCalendarFieldValueException if one of the fields has an invalid value
      * @throws CalendricalException if the input date does not match the stored date
      */
@@ -185,7 +185,7 @@ public final class CalendricalContext
 //    /**
 //     * Outputs the context as a {@code String}.
 //     *
-//     * @return the string representation, never null
+//     * @return the string representation, not null
 //     */
 //    @Override
 //    public String toString() {

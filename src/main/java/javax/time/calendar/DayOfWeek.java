@@ -112,7 +112,7 @@ public enum DayOfWeek {
      * {@link ISOChronology} day-of-week rule to indicate the failed rule.
      *
      * @param dayOfWeek  the day-of-week to represent, from 1 (Monday) to 7 (Sunday)
-     * @return the DayOfWeek singleton, never null
+     * @return the DayOfWeek singleton, not null
      * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
      */
     public static DayOfWeek of(int dayOfWeek) {
@@ -144,7 +144,7 @@ public enum DayOfWeek {
      * If there is no information for a locale, {@code MONDAY} is returned.
      *
      * @param locale the locale to use, not null
-     * @return the DayOfWeek singleton, never null
+     * @return the DayOfWeek singleton, not null
      */
     public static DayOfWeek firstDayOfWeekFor(Locale locale) {
         // TODO: Move/reinvent method
@@ -201,7 +201,7 @@ public enum DayOfWeek {
      * {@link #getValue() value} is returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the short text value of the day-of-week, never null
+     * @return the short text value of the day-of-week, not null
      */
     public String getShortText(Locale locale) {
         return DAY_OF_WEEK.getText(getValue(), locale, TextStyle.SHORT);
@@ -219,7 +219,7 @@ public enum DayOfWeek {
      * {@link #getValue() value} is returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the full text value of the day-of-week, never null
+     * @return the full text value of the day-of-week, not null
      */
     public String getText(Locale locale) {
         return DAY_OF_WEEK.getText(getValue(), locale, TextStyle.FULL);
@@ -296,7 +296,7 @@ public enum DayOfWeek {
      * This calculates based on the time-line, thus it rolls around the end of
      * the week. The next day after Sunday is Monday.
      *
-     * @return the next day-of-week, never null
+     * @return the next day-of-week, not null
      */
     public DayOfWeek next() {
         return roll(1);
@@ -308,7 +308,7 @@ public enum DayOfWeek {
      * This calculates based on the time-line, thus it rolls around the end of
      * the week. The previous day before Monday is Sunday.
      *
-     * @return the previous day-of-week, never null
+     * @return the previous day-of-week, not null
      */
     public DayOfWeek previous() {
         return roll(-1);
@@ -323,7 +323,7 @@ public enum DayOfWeek {
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to roll by, positive or negative
-     * @return the resulting day-of-week, never null
+     * @return the resulting day-of-week, not null
      */
     public DayOfWeek roll(int days) {
         return values()[(ordinal() + (days % 7 + 7)) % 7];

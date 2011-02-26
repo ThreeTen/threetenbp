@@ -53,7 +53,7 @@ public interface DateResolver {
      * @param year  the year that was input, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year, not null
      * @param dayOfMonth  the proposed day-of-month, from 1 to 31
-     * @return the resolved date, never null
+     * @return the resolved date, not null
      * @throws InvalidCalendarFieldException if the date cannot be resolved
      */
     LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth);

@@ -84,7 +84,7 @@ public final class DateTimeFields
     private static final long serialVersionUID = 1L;
 
     /**
-     * The list of fields which never contains the same rule twice (as in a map), never null, may be empty.
+     * The list of fields which never contains the same rule twice (as in a map), not null, may be empty.
      */
     private final List<DateTimeField> fields;
 
@@ -95,7 +95,7 @@ public final class DateTimeFields
      *
      * @param rule  the rule defining the field, not null
      * @param value  the value of the rule, may be outside the valid range for the rule
-     * @return the date-time fields, never null
+     * @return the date-time fields, not null
      */
     public static DateTimeFields of(DateTimeRule rule, long value) {
         return of(DateTimeField.of(rule, value));
@@ -110,7 +110,7 @@ public final class DateTimeFields
      * @param value1  the first value of the rule, may be outside the valid range for the rule
      * @param rule2  the second rule defining the field, not null
      * @param value2  the second value of the rule, may be outside the valid range for the rule
-     * @return the date-time fields, never null
+     * @return the date-time fields, not null
      * @throws IllegalArgumentException if any rule is duplicated
      */
     public static DateTimeFields of(DateTimeRule rule1, long value1, DateTimeRule rule2, long value2) {
@@ -126,7 +126,7 @@ public final class DateTimeFields
      *
      * @param rule  the rule defining the field, not null
      * @param value  the value of the rule, not necessarily valid for the rule
-     * @return the date-time fields, never null
+     * @return the date-time fields, not null
      */
     public static DateTimeFields of(DateTimeField field) {
         ISOChronology.checkNotNull(field, "DateTimeField must not be null");
@@ -141,7 +141,7 @@ public final class DateTimeFields
      * The array must provide fields with no duplicate rules.
      *
      * @param fieldsIterable  the iterable providing fields
-     * @return the date-time fields, never null
+     * @return the date-time fields, not null
      * @throws IllegalArgumentException if any rule is duplicated
      */
     public static DateTimeFields of(DateTimeField... fields) {
@@ -157,7 +157,7 @@ public final class DateTimeFields
      * The iterable must provide fields with no duplicate rules.
      *
      * @param fieldsIterable  the iterable providing fields
-     * @return the date-time fields, never null
+     * @return the date-time fields, not null
      * @throws IllegalArgumentException if any rule is duplicated
      */
     public static DateTimeFields of(Iterable<DateTimeField> fieldsIterable) {
@@ -217,7 +217,7 @@ public final class DateTimeFields
      * around the fields using the for-each loop.
      * The fields are returned {@link DateTimeField#compareTo(DateTimeField) sorted} in reverse order.
      *
-     * @return an iterator over the fields, never null
+     * @return an iterator over the fields, not null
      */
     public Iterator<DateTimeField> iterator() {
         return Collections.unmodifiableCollection(fields).iterator();
@@ -336,7 +336,7 @@ public final class DateTimeFields
      *
      * @param rule  the rule to alter, not null
      * @param value  the value to use, may be outside the valid range for the rule
-     * @return a {@code DateTimeFields} based on this fields with the specified field updated, never null
+     * @return a {@code DateTimeFields} based on this fields with the specified field updated, not null
      */
     public DateTimeFields with(DateTimeRule rule, long value) {
         return with(DateTimeField.of(rule, value));
@@ -351,7 +351,7 @@ public final class DateTimeFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param fields  the fields to add to the returned object, not null
-     * @return a {@code DateTimeFields} based on this fields with the specified field updated, never null
+     * @return a {@code DateTimeFields} based on this fields with the specified field updated, not null
      */
     public DateTimeFields with(DateTimeField field) {
         ISOChronology.checkNotNull(fields, "DateTimeField must not be null");
@@ -381,7 +381,7 @@ public final class DateTimeFields
      * This instance is immutable and unaffected by this method call.
      *
      * @param rule  the field to remove from the returned fields, not null
-     * @return a {@code DateTimeFields} based on this fields with the specified rule removed, never null
+     * @return a {@code DateTimeFields} based on this fields with the specified rule removed, not null
      */
     public DateTimeFields without(DateTimeRule rule) {
         ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
@@ -416,7 +416,7 @@ public final class DateTimeFields
 //     *
 //     * @param rule  the field to roll which must be present, not null
 //     * @param amountToRollBy  the amount to roll by, positive or negative
-//     * @return a {@code DateTimeFields} based on this fields with the specified amount rolled, never null
+//     * @return a {@code DateTimeFields} based on this fields with the specified amount rolled, not null
 //     * @throws CalendricalException if the field is not present or is invalid
 //     */
 //    public DateTimeFields roll(DateTimeRule rule, long amountToRollBy) {

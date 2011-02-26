@@ -55,7 +55,7 @@ public final class DateResolvers {
      * Returns the strict resolver which does not manipulate the state
      * in any way, resulting in an exception for all invalid values.
      *
-     * @return the strict resolver, never null
+     * @return the strict resolver, not null
      */
     public static DateResolver strict() {
         return Strict.INSTANCE;
@@ -88,7 +88,7 @@ public final class DateResolvers {
      * Returns the previous valid day resolver, which adjusts the date to be
      * valid by moving to the last valid day of the month.
      *
-     * @return the previous valid day resolver, never null
+     * @return the previous valid day resolver, not null
      */
     public static DateResolver previousValid() {
         return PreviousValid.INSTANCE;
@@ -125,7 +125,7 @@ public final class DateResolvers {
      * Returns the next valid day resolver, which adjusts the date to be
      * valid by moving to the first of the next month.
      *
-     * @return the next valid day resolver, never null
+     * @return the next valid day resolver, not null
      */
     public static DateResolver nextValid() {
         return NextValid.INSTANCE;
@@ -163,7 +163,7 @@ public final class DateResolvers {
      * valid by moving it to the next month by the number of days that
      * are invalid up to the 31st of the month.
      *
-     * @return the part lenient resolver, never null
+     * @return the part lenient resolver, not null
      */
     public static DateResolver partLenient() {
         return PartLenient.INSTANCE;

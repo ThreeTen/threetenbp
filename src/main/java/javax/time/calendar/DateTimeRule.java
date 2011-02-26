@@ -354,7 +354,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      * @param value  the value to convert to text, must be valid for the rule
      * @param locale  the locale to use, not null
      * @param textStyle  the text style, not null
-     * @return the text of the field, never null
+     * @return the text of the field, not null
      */
     public String getText(int value, Locale locale, TextStyle textStyle) {
         TextStore textStore = getTextStore(locale, textStyle);
@@ -567,7 +567,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
         /**
          * Gets the locale that the text relates to.
          *
-         * @return the locale for the text, never null
+         * @return the locale for the text, not null
          */
         public Locale getLocale() {
             return locale;
@@ -577,7 +577,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
         /**
          * Gets the map of text for each integer value.
          *
-         * @return the unmodifiable map of value to text, never null
+         * @return the unmodifiable map of value to text, not null
          */
         public Map<Integer, String> getValueTextMap() {
             return valueTextMap;
@@ -602,7 +602,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
          * If the value-text map contains duplicate text elements then this map
          * will be empty.
          *
-         * @return the unmodifiable map of text to value for the field rule and style, never null
+         * @return the unmodifiable map of text to value for the field rule and style, not null
          */
         public Map<String, Integer> getTextValueMap() {
             return textValueMap;
