@@ -77,15 +77,15 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder appendable, DateTimeFormatSymbols symbols) {
-        int preLen = appendable.length();
-        printer.print(calendrical, appendable, symbols);
-        int len = appendable.length() - preLen;
+    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
+        int preLen = buf.length();
+        printer.print(calendrical, buf, symbols);
+        int len = buf.length() - preLen;
         if (len > padWidth) {
             throw new CalendricalPrintException("Output of " + len + " characters exceeds pad width of " + padWidth);
         }
         for (int i = 0; i < padWidth - len; i++) {
-            appendable.insert(preLen, padChar);
+            buf.insert(preLen, padChar);
         }
     }
 
