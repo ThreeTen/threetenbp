@@ -233,7 +233,7 @@ public final class Year
      */
     public Year next() {
         if (year == MAX_YEAR) {
-            throw new CalendricalException("Year is already at the maximum value");
+            throw new CalendricalRuleException("Year is already at the maximum value", YEAR);
         }
         return of(year + 1);
     }
@@ -261,7 +261,7 @@ public final class Year
      */
     public Year previous() {
         if (year == MIN_YEAR) {
-            throw new CalendricalException("Year is already at the minimum value");
+            throw new CalendricalRuleException("Year is already at the minimum value", YEAR);
         }
         return of(year - 1);
     }

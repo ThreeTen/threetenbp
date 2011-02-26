@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
@@ -45,7 +46,6 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.MathUtils;
-import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -325,14 +325,7 @@ public final class LocalTime
      * @throws CalendricalException if the nanos of day value is invalid
      */
     public static LocalTime ofNanoOfDay(long nanoOfDay) {
-        if (nanoOfDay < 0) {
-            throw new CalendricalException("Cannot create LocalTime from nanos of day as value " +
-                    nanoOfDay + " must not be negative");
-        }
-        if (nanoOfDay >= NANOS_PER_DAY) {
-            throw new CalendricalException("Cannot create LocalTime from nanos of day as value " +
-                    nanoOfDay + " must be less than " + NANOS_PER_DAY);
-        }
+        NANO_OF_DAY.checkValidValue(nanoOfDay);
         int hours = (int) (nanoOfDay / NANOS_PER_HOUR);
         nanoOfDay -= hours * NANOS_PER_HOUR;
         int minutes = (int) (nanoOfDay / NANOS_PER_MINUTE);
