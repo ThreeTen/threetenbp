@@ -133,7 +133,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
      */
     private NumberPrinterParser numberPrinterParser() {
         if (numberPrinterParser == null) {
-            numberPrinterParser = new NumberPrinterParser(rule, 1, 10, SignStyle.NORMAL);
+            numberPrinterParser = new NumberPrinterParser(rule, 1, 19, SignStyle.NORMAL);
         }
         return numberPrinterParser;
     }
