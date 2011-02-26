@@ -154,7 +154,7 @@ public final class Instant
      * Using this method will prevent the ability to use an alternate time-source for testing
      * because the time-source is hard-coded.
      *
-     * @return the current instant using the system clock, never null
+     * @return the current instant using the system clock, not null
      */
     public static Instant now() {
         return now(TimeSource.system());
@@ -169,7 +169,7 @@ public final class Instant
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
      * @param timeSource  the time-source to use, not null
-     * @return the current instant, never null
+     * @return the current instant, not null
      */
     public static Instant now(TimeSource timeSource) {
         checkNotNull(timeSource, "TimeSource must not be null");
@@ -184,7 +184,7 @@ public final class Instant
      * The nanosecond field is set to zero.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @return an instant, never null
+     * @return an instant, not null
      */
     public static Instant ofEpochSeconds(long epochSeconds) {
         return create(epochSeconds, 0);
@@ -206,7 +206,7 @@ public final class Instant
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
-     * @return an instant, never null
+     * @return an instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSeconds(long epochSeconds, long nanoAdjustment) {
@@ -224,7 +224,7 @@ public final class Instant
      * places then an exception is thrown.
      *
      * @param epochSeconds  the number of seconds, up to scale 9
-     * @return an instant, never null
+     * @return an instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSeconds(BigDecimal epochSeconds) {
@@ -240,7 +240,7 @@ public final class Instant
      * The seconds and nanoseconds are extracted from the specified milliseconds.
      *
      * @param epochMillis  the number of milliseconds
-     * @return an instant, never null
+     * @return an instant, not null
      */
     public static Instant ofEpochMillis(long epochMillis) {
         long secs = MathUtils.floorDiv(epochMillis, 1000);
@@ -256,7 +256,7 @@ public final class Instant
      * The seconds and nanoseconds are extracted from the specified nanoseconds.
      *
      * @param epochNanos  the number of nanoseconds
-     * @return an instant, never null
+     * @return an instant, not null
      */
     public static Instant ofEpochNanos(long epochNanos) {
         long secs = MathUtils.floorDiv(epochNanos, NANOS_PER_SECOND);
@@ -273,7 +273,7 @@ public final class Instant
      * exception is thrown.
      *
      * @param epochNanos  the number of nanoseconds, not null
-     * @return an instant, never null
+     * @return an instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochNanos(BigInteger epochNanos) {
@@ -293,7 +293,7 @@ public final class Instant
      * also checks the validity of the result of the provider.
      *
      * @param instantProvider  a provider of instant information, not null
-     * @return an instant, never null
+     * @return an instant, not null
      */
     public static Instant of(InstantProvider instantProvider) {
         checkNotNull(instantProvider, "InstantProvider must not be null");
@@ -315,7 +315,7 @@ public final class Instant
      * The decimal point may be either a dot or a comma.
      *
      * @param text  the text to parse, not null
-     * @return an instant, never null
+     * @return an instant, not null
      * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
      */
     public static Instant parse(final String text) {
@@ -354,7 +354,7 @@ public final class Instant
     /**
      * Resolves singletons.
      *
-     * @return the resolved instance, never null
+     * @return the resolved instance, not null
      */
     private Object readResolve() {
         return (seconds | nanos) == 0 ? EPOCH : this;
@@ -394,7 +394,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, positive or negative, not null
-     * @return an {@code Instant} based on this instant with the specified duration added, never null
+     * @return an {@code Instant} based on this instant with the specified duration added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plus(Duration duration) {
@@ -415,7 +415,7 @@ public final class Instant
      *
      * @param amount  the duration to add, positive or negative
      * @param unit  the unit that the duration is measured in, not null
-     * @return an {@code Instant} based on this duration with the specified duration added, never null
+     * @return an {@code Instant} based on this duration with the specified duration added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plus(long amount, TimeUnit unit) {
@@ -436,7 +436,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToAdd  the seconds to add, positive or negative
-     * @return an {@code Instant} based on this instant with the specified seconds added, never null
+     * @return an {@code Instant} based on this instant with the specified seconds added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusSeconds(long secondsToAdd) {
@@ -452,7 +452,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToAdd  the milliseconds to add, positive or negative
-     * @return an {@code Instant} based on this instant with the specified milliseconds added, never null
+     * @return an {@code Instant} based on this instant with the specified milliseconds added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusMillis(long millisToAdd) {
@@ -465,7 +465,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToAdd  the nanoseconds to add, positive or negative
-     * @return an {@code Instant} based on this instant with the specified nanoseconds added, never null
+     * @return an {@code Instant} based on this instant with the specified nanoseconds added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant plusNanos(long nanosToAdd) {
@@ -479,7 +479,7 @@ public final class Instant
      *
      * @param secondsToAdd  the seconds to add, positive or negative
      * @param nanosToAdd  the nanos to add, positive or negative
-     * @return an {@code Instant} based on this instant with the specified seconds added, never null
+     * @return an {@code Instant} based on this instant with the specified seconds added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     private Instant plus(long secondsToAdd, long nanosToAdd) {
@@ -500,7 +500,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, positive or negative, not null
-     * @return an {@code Instant} based on this instant with the specified duration subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minus(Duration duration) {
@@ -523,7 +523,7 @@ public final class Instant
      *
      * @param amount  the duration to subtract, positive or negative
      * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration} based on this duration with the specified duration subtracted, never null
+     * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minus(long amount, TimeUnit unit) {
@@ -544,7 +544,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToSubtract  the seconds to subtract, positive or negative
-     * @return an {@code Instant} based on this instant with the specified seconds subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified seconds subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minusSeconds(long secondsToSubtract) {
@@ -560,7 +560,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToSubtract  the milliseconds to subtract, positive or negative
-     * @return an {@code Instant} based on this instant with the specified milliseconds subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified milliseconds subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minusMillis(long millisToSubtract) {
@@ -576,7 +576,7 @@ public final class Instant
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
-     * @return an {@code Instant} based on this instant with the specified nanoseconds subtracted, never null
+     * @return an {@code Instant} based on this instant with the specified nanoseconds subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant minusNanos(long nanosToSubtract) {
@@ -591,7 +591,7 @@ public final class Instant
      * Converts this instant to the number of seconds from the epoch
      * of 1970-01-01T00:00:00Z expressed as a {@code BigDecimal}.
      *
-     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, scale 9, never null
+     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, scale 9, not null
      */
     public BigDecimal toEpochSeconds() {
         return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
@@ -601,7 +601,7 @@ public final class Instant
      * Converts this instant to the number of nanoseconds from the epoch
      * of 1970-01-01T00:00:00Z expressed as a {@code BigInteger}.
      *
-     * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z, never null
+     * @return the number of nanoseconds since the epoch of 1970-01-01T00:00:00Z, not null
      */
     public BigInteger toEpochNanos() {
         return BigInteger.valueOf(seconds).multiply(BILLION).add(BigInteger.valueOf(nanos));
@@ -631,7 +631,7 @@ public final class Instant
     /**
      * Converts this instant to an {@code Instant}, trivially returning {@code this}.
      *
-     * @return {@code this}, never null
+     * @return {@code this}, not null
      */
     public Instant toInstant() {
         return this;
@@ -719,7 +719,7 @@ public final class Instant
      * <p>
      * The format of the returned string will be {@code yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ}.
      *
-     * @return an ISO-8601 representation of this instant, never null
+     * @return an ISO-8601 representation of this instant, not null
      */
     @Override
     public String toString() {

@@ -96,7 +96,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
     /**
      * Resolves singleton.
      *
-     * @return the resolved instance, never null
+     * @return the resolved instance, not null
      */
     private Object readResolve() {
         return INSTANCE;

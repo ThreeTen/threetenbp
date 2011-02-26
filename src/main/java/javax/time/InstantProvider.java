@@ -84,7 +84,7 @@ public interface InstantProvider {
      * then the result of this method must refer to a valid snapshot of both fields,
      * and not a snapshot where one field has been updated and not the other.
      *
-     * @return the {@code Instant} equivalent to this object, never null
+     * @return the {@code Instant} equivalent to this object, not null
      * @throws CalendricalException if the time cannot be converted
      */
     Instant toInstant();

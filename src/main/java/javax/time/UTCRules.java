@@ -74,7 +74,7 @@ public abstract class UTCRules {
      * The system default rules are serializable, immutable and thread-safe.
      * They will remain up to date as new leap seconds are added.
      *
-     * @return the system rules, never null
+     * @return the system rules, not null
      */
     public static UTCRules system() {
         return SystemUTCRules.INSTANCE;
@@ -116,7 +116,7 @@ public abstract class UTCRules {
     /**
      * The name of these rules.
      *
-     * @return the name, never null
+     * @return the name, not null
      */
     public abstract String getName();
 
@@ -265,7 +265,7 @@ public abstract class UTCRules {
     /**
      * A string representation of these rules.
      *
-     * @return the string representation, never null
+     * @return the string representation, not null
      */
     @Override
     public String toString() {

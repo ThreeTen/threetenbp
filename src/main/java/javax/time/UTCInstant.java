@@ -147,7 +147,7 @@ public final class UTCInstant
      *
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
-     * @return the UTC instant, never null
+     * @return the UTC instant, not null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
     public static UTCInstant ofModifiedJulianDays(long mjDay, long nanoOfDay) {
@@ -169,7 +169,7 @@ public final class UTCInstant
      *
      * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
-     * @return the UTC instant, never null
+     * @return the UTC instant, not null
      * @throws IllegalArgumentException if nanoOfDay is out of range
      */
     public static UTCInstant ofModifiedJulianDays(long mjDay, long nanoOfDay, UTCRules rules) {
@@ -192,7 +192,7 @@ public final class UTCInstant
      * Converting back to an {@code Instant} may result in a slightly different instant.
      *
      * @param instant  the instant to convert, not null
-     * @return the UTC instant, never null
+     * @return the UTC instant, not null
      */
     public static UTCInstant of(Instant instant) {
         return of(instant, UTCRules.system());
@@ -209,7 +209,7 @@ public final class UTCInstant
      *
      * @param instant  the instant to convert, not null
      * @param rules  the leap second rules, not null
-     * @return the UTC instant, never null
+     * @return the UTC instant, not null
      */
     public static UTCInstant of(Instant instant, UTCRules rules) {
         return rules.convertToUTC(instant);
@@ -224,7 +224,7 @@ public final class UTCInstant
      * and the UTC instant may safely be converted back to a {@code TAIInstant}.
      *
      * @param taiInstant  the TAI instant to convert, not null
-     * @return the UTC instant, never null
+     * @return the UTC instant, not null
      */
     public static UTCInstant of(TAIInstant taiInstant) {
         return of(taiInstant, UTCRules.system());
@@ -240,7 +240,7 @@ public final class UTCInstant
      *
      * @param taiInstant  the TAI instant to convert, not null
      * @param rules  the leap second rules, not null
-     * @return the UTC instant, never null
+     * @return the UTC instant, not null
      */
     public static UTCInstant of(TAIInstant taiInstant, UTCRules rules) {
         return rules.convertToUTC(taiInstant);
@@ -325,7 +325,7 @@ public final class UTCInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a {@code UTCInstant} with the duration added, never null
+     * @return a {@code UTCInstant} with the duration added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public UTCInstant plus(Duration duration) {
@@ -344,7 +344,7 @@ public final class UTCInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a {@code UTCInstant} with the duration subtracted, never null
+     * @return a {@code UTCInstant} with the duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public UTCInstant minus(Duration duration) {
@@ -361,7 +361,7 @@ public final class UTCInstant
      * in an instant equal to the specified instant.
      *
      * @param utcInstant  the instant to calculate the duration until, not null
-     * @return the duration until the specified instant, may be negative, never null
+     * @return the duration until the specified instant, may be negative, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration durationUntil(UTCInstant utcInstant) {
@@ -380,7 +380,7 @@ public final class UTCInstant
      * but loses the stored rules. If the TAI instant is converted back to a UTC instant
      * with different or updated rules then the calculated UTC instant may be different.
      *
-     * @return a {@code TAIInstant} representing the same instant, never null
+     * @return a {@code TAIInstant} representing the same instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public TAIInstant toTAIInstant() {
@@ -396,7 +396,7 @@ public final class UTCInstant
      * This conversion will lose information around a leap second in accordance with UTC-SLS.
      * Converting back to a {@code UTCInstant} may result in a slightly different instant.
      *
-     * @return an {@code Instant} representing the best approximation of this instant, never null
+     * @return an {@code Instant} representing the best approximation of this instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Instant toInstant() {
@@ -468,7 +468,7 @@ public final class UTCInstant
      * <p>
      * The string is formatted using ISO-8601.
      *
-     * @return a representation of this instant, never null
+     * @return a representation of this instant, not null
      */
     @Override
     public String toString() {

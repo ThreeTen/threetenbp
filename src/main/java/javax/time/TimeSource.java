@@ -109,7 +109,7 @@ public abstract class TimeSource {
      * <p>
      * The returned implementation is {@code Serializable}
      *
-     * @return a {@code TimeSource} that uses the system millisecond clock, never null
+     * @return a {@code TimeSource} that uses the system millisecond clock, not null
      */
     public static TimeSource system() {
         return SystemTimeSource.INSTANCE;
@@ -124,7 +124,7 @@ public abstract class TimeSource {
      * The returned implementation is {@code Serializable}
      *
      * @param fixedInstantProvider  the instant to return from each call to the time-source
-     * @return a {@code TimeSource} that always returns the same instant, never null
+     * @return a {@code TimeSource} that always returns the same instant, not null
      */
     public static TimeSource fixed(InstantProvider fixedInstantProvider) {
         Instant.checkNotNull(fixedInstantProvider, "InstantProvider must not be null");
@@ -146,7 +146,7 @@ public abstract class TimeSource {
      * The returned implementation is {@code Serializable}
      *
      * @param offset  the duration by which this time-source is offset from the system millisecond clock
-     * @return a {@code TimeSource} that is offset from the system millisecond clock, never null
+     * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
      */
     public static TimeSource offsetSystem(Duration offset) {
         Instant.checkNotNull(offset, "Duration must not be null");
@@ -176,7 +176,7 @@ public abstract class TimeSource {
      * central time server across the network. Obviously, in this case the lookup
      * could fail, and so the method is permitted to throw an exception.
      *
-     * @return the current {@code Instant} from this time-source, never null
+     * @return the current {@code Instant} from this time-source, not null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public abstract Instant instant();
@@ -196,7 +196,7 @@ public abstract class TimeSource {
      * central time server across the network. Obviously, in this case the lookup
      * could fail, and so the method is permitted to throw an exception.
      *
-     * @return the current {@code UTCInstant} from this time-source, never null
+     * @return the current {@code UTCInstant} from this time-source, not null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public UTCInstant utcInstant() {
@@ -240,7 +240,7 @@ public abstract class TimeSource {
      * could fail, and so the method is permitted to throw an exception.
      *
      * @return the current millisecond instant from this time-source, measured from
-     *  the Java epoch of 1970-01-01T00:00 UTC, never null
+     *  the Java epoch of 1970-01-01T00:00 UTC, not null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public long millis() {

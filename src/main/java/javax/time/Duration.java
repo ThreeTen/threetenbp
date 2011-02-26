@@ -135,7 +135,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The nanosecond in second field is set to zero.
      *
      * @param seconds  the number of seconds, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      */
     public static Duration ofSeconds(long seconds) {
         return create(seconds, 0);
@@ -157,7 +157,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param seconds  the number of seconds, positive or negative
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of {@code Duration}
      */
     public static Duration ofSeconds(long seconds, long nanoAdjustment) {
@@ -178,7 +178,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * places then an exception is thrown.
      *
      * @param seconds  the number of seconds, up to scale 9, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Duration}
      */
     public static Duration ofSeconds(BigDecimal seconds) {
@@ -193,7 +193,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The seconds and nanoseconds are extracted from the specified milliseconds.
      *
      * @param millis  the number of milliseconds, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      */
     public static Duration ofMillis(long millis) {
         long secs = millis / 1000;
@@ -212,7 +212,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The seconds and nanoseconds are extracted from the specified nanoseconds.
      *
      * @param nanos  the number of nanoseconds, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      */
     public static Duration ofNanos(long nanos) {
         long secs = nanos / NANOS_PER_SECOND;
@@ -232,7 +232,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * exception is thrown.
      *
      * @param nanos  the number of nanoseconds, positive or negative, not null
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Duration}
      */
     public static Duration ofNanos(BigInteger nanos) {
@@ -253,7 +253,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The nanosecond in second field is set to zero.
      *
      * @param minutes  the number of minutes, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input minutes exceeds the capacity of {@code Duration}
      */
     public static Duration ofStandardMinutes(long minutes) {
@@ -268,7 +268,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The nanosecond in second field is set to zero.
      *
      * @param hours  the number of hours, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input hours exceeds the capacity of {@code Duration}
      */
     public static Duration ofStandardHours(long hours) {
@@ -283,7 +283,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The nanosecond in second field is set to zero.
      *
      * @param days  the number of days, positive or negative
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input days exceeds the capacity of {@code Duration}
      */
     public static Duration ofStandardDays(long days) {
@@ -302,7 +302,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param amount  the amount of the duration, positive or negative
      * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input amount exceeds the capacity of {@code Duration}
      *  which can only occur for units MINUTES, HOURS and DAYS
      */
@@ -342,7 +342,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param startInclusive  the start instant, inclusive, not null
      * @param endExclusive  the end instant, exclusive, not null
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public static Duration between(InstantProvider startInclusive, InstantProvider endExclusive) {
@@ -373,7 +373,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The decimal point may be either a dot or a comma.
      *
      * @param text  the text to parse, not null
-     * @return a {@code Duration}, never null
+     * @return a {@code Duration}, not null
      * @throws CalendricalParseException if the text cannot be parsed to a {@code Duration}
      */
     public static Duration parse(final String text) {
@@ -472,7 +472,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Resolves singletons.
      *
-     * @return the resolved instance, never null
+     * @return the resolved instance, not null
      */
     private Object readResolve() {
         return (seconds | nanos) == 0 ? ZERO : this;
@@ -630,7 +630,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, positive or negative, not null
-     * @return a {@code Duration} based on this duration with the specified duration added, never null
+     * @return a {@code Duration} based on this duration with the specified duration added, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plus(Duration duration) {
@@ -657,7 +657,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param amount  the duration to add, positive or negative
      * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration} based on this duration with the specified duration added, never null
+     * @return a {@code Duration} based on this duration with the specified duration added, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plus(long amount, TimeUnit unit) {
@@ -678,7 +678,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToAdd  the seconds to add, positive or negative
-     * @return a {@code Duration} based on this duration with the specified seconds added, never null
+     * @return a {@code Duration} based on this duration with the specified seconds added, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plusSeconds(long secondsToAdd) {
@@ -695,7 +695,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToAdd  the milliseconds to add, positive or negative
-     * @return a {@code Duration} based on this duration with the specified milliseconds added, never null
+     * @return a {@code Duration} based on this duration with the specified milliseconds added, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plusMillis(long millisToAdd) {
@@ -723,7 +723,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToAdd  the nanoseconds to add, positive or negative
-     * @return a {@code Duration} based on this duration with the specified nanoseconds added, never null
+     * @return a {@code Duration} based on this duration with the specified nanoseconds added, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration plusNanos(long nanosToAdd) {
@@ -752,7 +752,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, positive or negative, not null
-     * @return a {@code Duration} based on this duration with the specified duration subtracted, never null
+     * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minus(Duration duration) {
@@ -779,7 +779,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param amount  the duration to subtract, positive or negative
      * @param unit  the unit that the duration is measured in, not null
-     * @return a {@code Duration} based on this duration with the specified duration subtracted, never null
+     * @return a {@code Duration} based on this duration with the specified duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minus(long amount, TimeUnit unit) {
@@ -800,7 +800,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToSubtract the seconds to subtract, positive or negative
-     * @return a {@code Duration} based on this duration with the specified seconds subtracted, never null
+     * @return a {@code Duration} based on this duration with the specified seconds subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusSeconds(long secondsToSubtract) {
@@ -817,7 +817,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToSubtract  the milliseconds to subtract, positive or negative
-     * @return a {@code Duration} based on this duration with the specified milliseconds subtracted, never null
+     * @return a {@code Duration} based on this duration with the specified milliseconds subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusMillis(long millisToSubtract) {
@@ -843,7 +843,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToSubtract  the nanoseconds to subtract, positive or negative
-     * @return a {@code Duration} based on this duration with the specified nanoseconds subtracted, never null
+     * @return a {@code Duration} based on this duration with the specified nanoseconds subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration minusNanos(long nanosToSubtract) {
@@ -870,7 +870,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param multiplicand  the value to multiply the duration by, positive or negative
-     * @return a {@code Duration} based on this duration multiplied by the specified scalar, never null
+     * @return a {@code Duration} based on this duration multiplied by the specified scalar, not null
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
     public Duration multipliedBy(long multiplicand) {
@@ -896,7 +896,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param divisor  the value to divide the duration by, positive or negative, not zero
-     * @return a {@code Duration} based on this duration divided by the specified divisor, never null
+     * @return a {@code Duration} based on this duration divided by the specified divisor, not null
      * @throws ArithmeticException if the divisor is zero
      * @throws ArithmeticException if the calculation exceeds the capacity of {@code Duration}
      */
@@ -922,7 +922,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Duration} based on this period with the amount negated, never null
+     * @return a {@code Duration} based on this period with the amount negated, not null
      * @throws ArithmeticException if the seconds part of the length is {@code Long.MIN_VALUE}
      */
     public Duration negated() {
@@ -937,7 +937,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a {@code Duration} based on this period with an absolute length, never null
+     * @return a {@code Duration} based on this period with an absolute length, not null
      * @throws ArithmeticException if the seconds part of the length is {@code Long.MIN_VALUE}
      */
     public Duration abs() {
@@ -949,7 +949,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Converts this duration to the total length in seconds and
      * fractional nanoseconds expressed as a {@code BigDecimal}.
      *
-     * @return the total length of the duration in seconds, with a scale of 9, never null
+     * @return the total length of the duration in seconds, with a scale of 9, not null
      */
     public BigDecimal toSeconds() {
         return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
@@ -958,7 +958,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     /**
      * Converts this duration to the total length in nanoseconds expressed as a {@code BigInteger}.
      *
-     * @return the total length of the duration in nanoseconds, never null
+     * @return the total length of the duration in nanoseconds, not null
      */
     public BigInteger toNanos() {
         return BigInteger.valueOf(seconds).multiply(BI_NANOS_PER_SECOND).add(BigInteger.valueOf(nanos));
@@ -1080,7 +1080,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The format of the returned string will be {@code PTnS} where n is
      * the seconds and fractional seconds of the duration.
      *
-     * @return an ISO-8601 representation of this duration, never null
+     * @return an ISO-8601 representation of this duration, not null
      */
     @Override
     public String toString() {

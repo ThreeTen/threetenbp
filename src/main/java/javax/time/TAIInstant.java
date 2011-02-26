@@ -125,7 +125,7 @@ public final class TAIInstant
      *
      * @param taiSeconds  the number of seconds from the epoch of 1958-01-01T00:00:00(TAI)
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
-     * @return the TAI instant, never null
+     * @return the TAI instant, not null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public static TAIInstant ofTAISeconds(long taiSeconds, long nanoAdjustment) {
@@ -146,7 +146,7 @@ public final class TAIInstant
      * a leap second in accordance with UTC-SLS.
      *
      * @param instant  the instant to convert, not null
-     * @return the TAI instant, never null
+     * @return the TAI instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static TAIInstant of(Instant instant) {
@@ -164,7 +164,7 @@ public final class TAIInstant
      * converting back to a UTC instant may result in a different UTC instant.
      *
      * @param instant  the instant to convert, not null
-     * @return the TAI instant, never null
+     * @return the TAI instant, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static TAIInstant of(UTCInstant instant) {
@@ -185,7 +185,7 @@ public final class TAIInstant
      * This format parses the {@code toString} format.
      *
      * @param text  the text to parse such as '12345.123456789s(TAI)', not null
-     * @return the parsed instant, never null
+     * @return the parsed instant, not null
      * @throws CalendricalException if the text cannot be parsed
      */
     public static TAIInstant parse(String text) {
@@ -255,7 +255,7 @@ public final class TAIInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a {@code TAIInstant} based on this instant with the duration added, never null
+     * @return a {@code TAIInstant} based on this instant with the duration added, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public TAIInstant plus(Duration duration) {
@@ -281,7 +281,7 @@ public final class TAIInstant
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to subtract, not null
-     * @return a {@code TAIInstant} based on this instant with the duration subtracted, never null
+     * @return a {@code TAIInstant} based on this instant with the duration subtracted, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public TAIInstant minus(Duration duration) {
@@ -304,7 +304,7 @@ public final class TAIInstant
      * will always result in an instant equal to the specified instant.
      *
      * @param taiInstant  the instant to calculate the duration until, not null
-     * @return the duration until the specified instant, may be negative, never null
+     * @return the duration until the specified instant, may be negative, not null
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public Duration durationUntil(TAIInstant taiInstant) {
@@ -322,7 +322,7 @@ public final class TAIInstant
      * system default leap-second rules. This conversion does not lose information
      * and the UTC instant may safely be converted back to a {@code TAIInstant}.
      *
-     * @return a {@code UTCInstant} representing the same instant using the system leap second rules, never null
+     * @return a {@code UTCInstant} representing the same instant using the system leap second rules, not null
      */
     public UTCInstant toUTCInstant() {
         return UTCInstant.of(this, UTCRules.system());
@@ -337,7 +337,7 @@ public final class TAIInstant
      * This conversion will lose information around a leap second in accordance with UTC-SLS.
      * Converting back to a {@code TAIInstant} may result in a slightly different instant.
      *
-     * @return an {@code Instant} representing the best approximation of this instant, never null
+     * @return an {@code Instant} representing the best approximation of this instant, not null
      */
     public Instant toInstant() {
         return toUTCInstant().toInstant();
@@ -397,7 +397,7 @@ public final class TAIInstant
      * At least one second digit will be present.
      * The nanoseconds will always be nine digits.
      *
-     * @return a representation of this instant, never null
+     * @return a representation of this instant, not null
      */
     @Override
     public String toString() {
