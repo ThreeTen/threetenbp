@@ -116,12 +116,6 @@ public class TestCharLiteralPrinter {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable() throws Exception {
-        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        assertEquals(pp.isPrintDataAvailable(calendrical), true);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         assertEquals(pp.toString(), "'a'");

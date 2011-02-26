@@ -147,12 +147,6 @@ public class TestPadPrinterDecorator {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 5, '-');
-        assertEquals(pp.isPrintDataAvailable(emptyCalendrical), true);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_toString1() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 5, '-');
         assertEquals(pp.toString(), "Pad('Z',,5,'-')");

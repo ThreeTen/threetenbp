@@ -34,8 +34,6 @@ package javax.time.calendar.format;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -313,22 +311,6 @@ public class TestNumberPrinter {
         NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_AMPM, 2, 2, SignStyle.NOT_NEGATIVE);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "01");   // 1PM
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable_true() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_AMPM, 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(HOUR_OF_AMPM, 4)), true);
-    }
-
-    public void test_isPrintDataAvailable_trueDerived() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(QUARTER_OF_YEAR, 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(MONTH_OF_YEAR, 4)), true);
-    }
-
-    public void test_isPrintDataAvailable_false() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_AMPM, 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical()), false);
     }
 
     //-----------------------------------------------------------------------

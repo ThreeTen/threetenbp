@@ -53,12 +53,6 @@ enum StrictLenientPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        // do nothing
-        return true;
-    }
-
-    /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         // do nothing
     }

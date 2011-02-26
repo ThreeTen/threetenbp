@@ -116,12 +116,6 @@ public class TestStringLiteralPrinter {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        assertEquals(pp.isPrintDataAvailable(calendrical), true);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         assertEquals(pp.toString(), "'hello'");

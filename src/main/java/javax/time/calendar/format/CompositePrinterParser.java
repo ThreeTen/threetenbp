@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 
 /**
@@ -98,28 +99,20 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
             throw new UnsupportedOperationException("Formatter does not support printing");
         }
         if (optional) {
-            for (DateTimePrinter printer : printers) {
-                if (printer.isPrintDataAvailable(calendrical) == false) {
-                    return;  // data not available to print
+            StringBuilder buf = new StringBuilder();
+            try {
+                for (DateTimePrinter printer : printers) {
+                    printer.print(calendrical, buf, symbols);
                 }
+            } catch (CalendricalException ex) {
+                return;  // data not available to print
+            }
+            appendable.append(buf);
+        } else {
+            for (DateTimePrinter printer : printers) {
+                printer.print(calendrical, appendable, symbols);
             }
         }
-        for (DateTimePrinter printer : printers) {
-            printer.print(calendrical, appendable, symbols);
-        }
-    }
-
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        if (optional) {
-            return true;  // always printable, although sometimes it might print nothing
-        }
-        for (DateTimePrinter printer : printers) {
-            if (printer.isPrintDataAvailable(calendrical) == false) {
-                return false;
-            }
-        }
-        return true;
     }
 
     //-----------------------------------------------------------------------

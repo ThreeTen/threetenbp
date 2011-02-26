@@ -33,8 +33,6 @@ package javax.time.calendar.format;
 
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
@@ -194,22 +192,6 @@ public class TestReducedPrinter {
         ReducedPrinterParser pp = new ReducedPrinterParser(HOUR_OF_AMPM, 2, 0);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "01");   // 1PM
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable_true() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
-        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(YEAR, 2015)), true);
-    }
-
-    public void test_isPrintDataAvailable_trueDerived() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(QUARTER_OF_YEAR, 2, 3);
-        assertEquals(pp.isPrintDataAvailable(DateTimeField.of(MONTH_OF_YEAR, 4)), true);
-    }
-
-    public void test_isPrintDataAvailable_false() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(HOUR_OF_AMPM, 2, 11);
-        assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical()), false);
     }
 
     //-----------------------------------------------------------------------

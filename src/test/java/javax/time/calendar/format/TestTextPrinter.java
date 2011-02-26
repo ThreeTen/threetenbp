@@ -40,8 +40,8 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -163,17 +163,6 @@ public class TestTextPrinter {
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), expected);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable_true() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.of(MONTH_OF_YEAR, 4)), true);
-    }
-
-    public void test_isPrintDataAvailable_false() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), false);
     }
 
     //-----------------------------------------------------------------------

@@ -80,13 +80,6 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
         formatter(symbols.getLocale()).toPrinterParser(false).print(calendrical, appendable, symbols);
     }
 
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        // TODO
-//        return formatter(symbols.getLocale()).toPrinterParser(false).isPrintDataAvailable(calendrical);
-        return true;
-    }
-
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {

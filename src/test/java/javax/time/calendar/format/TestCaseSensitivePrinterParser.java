@@ -77,17 +77,6 @@ public class TestCaseSensitivePrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable() throws Exception {
-        CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), true);
-    }
-
-    public void test_isPrintDataAvailable_nulls() throws Exception {
-        CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
-        pp.isPrintDataAvailable(null);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_parse_changeStyle_sensitive() throws Exception {
         CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
         int result = pp.parse(context, "a", 0);

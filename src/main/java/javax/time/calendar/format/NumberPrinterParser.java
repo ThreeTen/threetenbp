@@ -176,11 +176,6 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         return rule.getValueChecked(calendrical).getValue();
     }
 
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return calendrical.get(rule) != null;  // TODO: Better, or remove method
-    }
-
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {

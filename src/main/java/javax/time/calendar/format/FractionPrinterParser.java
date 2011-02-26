@@ -109,11 +109,6 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
         }
     }
 
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return calendrical.get(rule) != null;  // TODO: Better, or remove method
-    }
-
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {

@@ -77,17 +77,6 @@ public class TestStrictLenientPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable() throws Exception {
-        StrictLenientPrinterParser pp = StrictLenientPrinterParser.STRICT;
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), true);
-    }
-
-    public void test_isPrintDataAvailable_nulls() throws Exception {
-        StrictLenientPrinterParser pp = StrictLenientPrinterParser.STRICT;
-        pp.isPrintDataAvailable(null);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_parse_changeStyle_strict() throws Exception {
         StrictLenientPrinterParser pp = StrictLenientPrinterParser.STRICT;
         int result = pp.parse(context, "a", 0);

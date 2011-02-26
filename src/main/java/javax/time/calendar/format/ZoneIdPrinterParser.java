@@ -94,11 +94,6 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
         }
     }
 
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return (calendrical.get(ZoneId.rule()) != null);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * The cached tree to speed up parsing.

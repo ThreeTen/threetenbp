@@ -131,7 +131,6 @@ public class TestReducedParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_noMatch1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "A1", 0);
         assertEquals(newPos, ~0);
@@ -139,7 +138,6 @@ public class TestReducedParser {
     }
 
     public void test_parse_noMatch2() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "  1", 1);
         assertEquals(newPos, ~1);
@@ -147,7 +145,6 @@ public class TestReducedParser {
     }
 
     public void test_parse_noMatch_notMinWidthLeft1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "1", 0);
         assertEquals(newPos, ~0);
@@ -155,7 +152,6 @@ public class TestReducedParser {
     }
 
     public void test_parse_noMatch_notMinWidthLeft2_atEnd() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "1", 1);
         assertEquals(newPos, ~1);
@@ -163,7 +159,6 @@ public class TestReducedParser {
     }
 
     public void test_parse_noMatch_notMinWidthLeft_beforeNonDigit() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         int newPos = pp.parse(context, "1-2", 0);
         assertEquals(newPos, ~0);
@@ -214,7 +209,6 @@ public class TestReducedParser {
 
     @Test(dataProvider="Parse") 
     public void test_parse(String input, int width, int baseValue, int parseLen, Integer parseVal) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
@@ -224,7 +218,6 @@ public class TestReducedParser {
 
     @Test(dataProvider="Parse") 
     public void test_parseLenient(String input, int width, int baseValue, int parseLen, Integer parseVal) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setStrict(false);
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         int newPos = pp.parse(context, input, 0);

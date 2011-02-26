@@ -239,17 +239,6 @@ public class TestFractionPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable_true() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.of(NANO_OF_SECOND, 4)), true);
-    }
-
-    public void test_isPrintDataAvailable_false() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), false);
-    }
-
-    //-----------------------------------------------------------------------
     // parse
     //-----------------------------------------------------------------------
     @Test(dataProvider="Nanos")

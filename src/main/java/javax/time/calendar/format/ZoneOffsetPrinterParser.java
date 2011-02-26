@@ -112,11 +112,6 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         }
     }
 
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return (calendrical.get(ZoneOffset.rule()) != null);
-    }
-
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {

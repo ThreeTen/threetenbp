@@ -65,11 +65,6 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
     }
 
     /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return true;
-    }
-
-    /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
         if (position == length) {

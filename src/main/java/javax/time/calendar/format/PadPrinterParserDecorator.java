@@ -92,11 +92,6 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
         appendable.append(buf);
     }
 
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return printer.isPrintDataAvailable(calendrical);
-    }
-
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {

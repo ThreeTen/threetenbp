@@ -194,15 +194,4 @@ public class TestZoneOffsetPrinter {
         pp.print(cal, exceptionAppenable, symbols);
     }
 
-    //-----------------------------------------------------------------------
-    public void test_isPrintDataAvailable_true() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        assertEquals(pp.isPrintDataAvailable(ZoneOffset.UTC), true);
-    }
-
-    public void test_isPrintDataAvailable_false() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HHMM");
-        assertEquals(pp.isPrintDataAvailable(DateTimeFields.EMPTY), false);
-    }
-
 }

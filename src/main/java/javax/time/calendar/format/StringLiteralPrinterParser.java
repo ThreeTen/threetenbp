@@ -65,11 +65,6 @@ final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParse
         appendable.append(literal);
     }
 
-    /** {@inheritDoc} */
-    public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return true;
-    }
-
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
