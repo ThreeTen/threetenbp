@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import java.lang.ref.SoftReference;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,10 +68,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
-    /** A Math context for calculating fractions from values. */
-    private static final MathContext FRACTION_CONTEXT = new MathContext(9, RoundingMode.FLOOR);
-    /** A Math context for calculating values from fractions. */
-    private static final MathContext VALUE_CONTEXT = new MathContext(0, RoundingMode.FLOOR);
 
     /** The minimum value for the field. */
     private final long minimumValue;
@@ -432,7 +427,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
         BigDecimal min = BigDecimal.valueOf(getMinimumValue());
         BigDecimal range = BigDecimal.valueOf(getMaximumValue()).subtract(min).add(BigDecimal.ONE);
         BigDecimal valueBD = BigDecimal.valueOf(value).subtract(min);
-        return valueBD.divide(range, FRACTION_CONTEXT);
+        BigDecimal fraction = valueBD.divide(range, 9, RoundingMode.FLOOR);
+        // stripTrailingZeros bug
+        return fraction.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : fraction.stripTrailingZeros();
     }
 
     /**
@@ -459,15 +456,10 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
         }
         BigDecimal min = BigDecimal.valueOf(getMinimumValue());
         BigDecimal range = BigDecimal.valueOf(getMaximumValue()).subtract(min).add(BigDecimal.ONE);
-        BigDecimal valueBD = fraction.multiply(range, VALUE_CONTEXT).add(min);
-        try {
-            long value = valueBD.longValueExact();
-            checkValidValue(value);
-            return value;
-        } catch (ArithmeticException ex) {
-            throw new IllegalCalendarFieldValueException("The fractional value " + fraction + " of " + getName() +
-                    " cannot be converted as it is not in the range 0 (inclusive) to 1 (exclusive)", this);
-        }
+        BigDecimal valueBD = fraction.multiply(range).setScale(0, RoundingMode.FLOOR).add(min);
+        long value = valueBD.longValueExact();
+        checkValidValue(value);
+        return value;
     }
 
     //-----------------------------------------------------------------------

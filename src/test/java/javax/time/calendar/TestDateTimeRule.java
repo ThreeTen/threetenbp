@@ -215,6 +215,7 @@ public class TestDateTimeRule {
     public void test_convertFromFraction_oneBased() {
         Mock rule = new Mock(HOURS, DAYS, 1, 10);
         assertEquals(rule.convertFromFraction(new BigDecimal("0")), 1);
+        assertEquals(rule.convertFromFraction(new BigDecimal("0.15")), 2);
         assertEquals(rule.convertFromFraction(new BigDecimal("0.4")), 5);
         assertEquals(rule.convertFromFraction(new BigDecimal("0.7")), 8);
         assertEquals(rule.convertFromFraction(new BigDecimal("0.9")), 10);
@@ -236,6 +237,17 @@ public class TestDateTimeRule {
         Mock rule = new Mock(HOURS, DAYS, 0, 23);
         try {
             rule.convertFromFraction(BigDecimal.ONE);
+        } catch (CalendricalRuleException ex) {
+            assertEquals(ex.getRule(), rule);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalRuleException.class)
+    public void test_convertFromFraction_zeroBased_invalidValueNegative() {
+        Mock rule = new Mock(HOURS, DAYS, 0, 23);
+        try {
+            rule.convertFromFraction(BigDecimal.valueOf(-0.1d));
         } catch (CalendricalRuleException ex) {
             assertEquals(ex.getRule(), rule);
             throw ex;
