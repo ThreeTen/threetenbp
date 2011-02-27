@@ -33,14 +33,9 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import java.util.Locale;
-
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.ZoneOffset;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -50,40 +45,9 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestZoneOffsetPrinter {
+public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
 
     private static final ZoneOffset OFFSET_0130 = ZoneOffset.of("+01:30");
-    private StringBuilder buf;
-    private Calendrical emptyCalendrical;
-    private DateTimeFormatSymbols symbols;
-
-    @BeforeMethod
-    public void setUp() {
-        buf = new StringBuilder("EXISTING");
-        emptyCalendrical = DateTimeFields.EMPTY;
-        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullStringBuilder() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        Calendrical cal = OFFSET_0130;
-        pp.print(cal, (StringBuilder) null, symbols);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullDateTime() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        pp.print((Calendrical) null, buf, symbols);
-    }
-
-// NPE is not required
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_print_nullLocale() throws Exception {
-//        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
-//        pp.print(buf, emptyCalendrical, (DateTimeFormatSymbols) null);
-//    }
 
     //-----------------------------------------------------------------------
     @DataProvider(name="offsets")
@@ -159,8 +123,10 @@ public class TestZoneOffsetPrinter {
 
     @Test(dataProvider="offsets")
     public void test_print(String pattern, String expected, ZoneOffset offset) throws Exception {
+        buf.append("EXISTING");
+        printContext.setCalendrical(offset);
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("NO-OFFSET", pattern);
-        pp.print(offset, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING" + expected);
     }
 
@@ -174,14 +140,13 @@ public class TestZoneOffsetPrinter {
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        pp.print(emptyCalendrical, buf, symbols);
+        pp.print(printEmptyContext, buf);
     }
 
     public void test_print_emptyAppendable() throws Exception {
+        printContext.setCalendrical(OFFSET_0130);
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        Calendrical cal = OFFSET_0130;
-        buf.setLength(0);
-        pp.print(cal, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "+01:30");
     }
 

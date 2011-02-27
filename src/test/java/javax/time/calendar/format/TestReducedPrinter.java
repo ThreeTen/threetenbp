@@ -37,14 +37,9 @@ import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.util.Locale;
-
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.UnsupportedRuleException;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -54,46 +49,21 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestReducedPrinter {
-
-    private StringBuilder buf;
-    private Calendrical emptyCalendrical;
-    private Calendrical calendrical2012;
-    private DateTimeFormatSymbols symbols;
-
-    @BeforeMethod
-    public void setUp() {
-        buf = new StringBuilder();
-        emptyCalendrical = DateTimeFields.EMPTY;
-        calendrical2012 = DateTimeField.of(YEAR, 2012);
-        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullStringBuilder() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
-        pp.print(calendrical2012, (StringBuilder) null, symbols);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullDateTime() throws Exception {
-        ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
-        pp.print((Calendrical) null, buf, symbols);
-    }
+public class TestReducedPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
-        pp.print(emptyCalendrical, buf, symbols);
+        pp.print(printEmptyContext, buf);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_append() throws Exception {
+        printContext.setCalendrical(DateTimeField.of(YEAR, 2012));
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         buf.append("EXISTING");
-        pp.print(calendrical2012, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING12");
     }
 
@@ -159,10 +129,10 @@ public class TestReducedPrinter {
 
     @Test(dataProvider="Pivot") 
     public void test_pivot(int width, int baseValue, int value, String result) throws Exception {
-        Calendrical calendrical = DateTimeField.of(YEAR, value);
+        printContext.setCalendrical(DateTimeField.of(YEAR, value));
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, width, baseValue);
         try {
-            pp.print(calendrical, buf, symbols);
+            pp.print(printContext, buf);
             if (result == null) {
                 fail("Expected exception");
             }
@@ -178,9 +148,9 @@ public class TestReducedPrinter {
 
     //-----------------------------------------------------------------------
     public void test_derivedValue() throws Exception {
-        Calendrical calendrical = DateTimeField.of(HOUR_OF_DAY, 13);
+        printContext.setCalendrical(DateTimeField.of(HOUR_OF_DAY, 13));
         ReducedPrinterParser pp = new ReducedPrinterParser(HOUR_OF_AMPM, 2, 0);
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "01");   // 1PM
     }
 

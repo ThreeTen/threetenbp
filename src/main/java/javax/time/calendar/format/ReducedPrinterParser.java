@@ -32,7 +32,6 @@
 package javax.time.calendar.format;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
@@ -79,8 +78,8 @@ final class ReducedPrinterParser extends NumberPrinterParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    long getValue(Calendrical calendrical) {
-        long value = rule.getValueChecked(calendrical).getValue();
+    long getValue(DateTimePrintContext context) {
+        long value = super.getValue(context);
         return Math.abs(value % range);
     }
 

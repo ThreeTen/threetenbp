@@ -65,6 +65,7 @@
 - Change DateTimePrinter to take StringBuilder not Appendable
 - Remove CalendricalPrintFieldException
 - Use ArithmeticException in date classes
+- Add DateTimePrintContext
 
 0.6.3
 ===============================================================================

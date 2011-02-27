@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,11 +33,6 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import java.util.Locale;
-
-import javax.time.calendar.DateTimeFields;
-
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -46,49 +41,34 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestCaseSensitivePrinterParser {
-
-    private DateTimeParseContext context;
-
-    @BeforeMethod
-    public void setUp() {
-        context = new DateTimeParseContext(DateTimeFormatSymbols.getInstance());
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_parse_nullContext() throws Exception {
-        CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
-        pp.parse((DateTimeParseContext) null, "a", 0);
-    }
+public class TestCaseSensitivePrinterParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_print() throws Exception {
         CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
         StringBuilder buf = new StringBuilder();
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-        pp.print(DateTimeFields.EMPTY, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "");
     }
 
     public void test_print_nulls() throws Exception {
         CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
-        pp.print(null, null, null);
+        pp.print(null, null);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_changeStyle_sensitive() throws Exception {
         CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.SENSITIVE;
-        int result = pp.parse(context, "a", 0);
+        int result = pp.parse(parseContext, "a", 0);
         assertEquals(result, 0);
-        assertEquals(context.isCaseSensitive(), true);
+        assertEquals(parseContext.isCaseSensitive(), true);
     }
 
     public void test_parse_changeStyle_insensitive() throws Exception {
         CaseSensitivePrinterParser pp = CaseSensitivePrinterParser.INSENSITIVE;
-        int result = pp.parse(context, "a", 0);
+        int result = pp.parse(parseContext, "a", 0);
         assertEquals(result, 0);
-        assertEquals(context.isCaseSensitive(), false);
+        assertEquals(parseContext.isCaseSensitive(), false);
     }
 
     //-----------------------------------------------------------------------

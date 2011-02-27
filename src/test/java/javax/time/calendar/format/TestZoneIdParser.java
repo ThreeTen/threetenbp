@@ -36,11 +36,9 @@ import static org.testng.Assert.assertEquals;
 import java.util.Set;
 
 import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.zone.ZoneRulesGroup;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -48,81 +46,56 @@ import org.testng.annotations.Test;
  * Test ZonePrinterParser.
  */
 @Test
-public class TestZoneIdParser {
+public class TestZoneIdParser extends AbstractTestPrinterParser {
 
     private static final String AMERICA_DENVER = "America/Denver";
     private static final ZoneId TIME_ZONE_DENVER = ZoneId.of(AMERICA_DENVER);
-    private DateTimeParseContext context;
-
-    @BeforeMethod
-    public void setUp() {
-        context = new DateTimeParseContext(DateTimeFormatSymbols.getInstance());
-    }
 
     //-----------------------------------------------------------------------
-    public void test_parse_nullContext() throws Exception {
-        ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        try {
-            int result = pp.parse((DateTimeParseContext) null, AMERICA_DENVER, 0);
-            assertEquals(result, AMERICA_DENVER.length());
-            assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
-            assertEquals(context.toCalendricalMerger().getInputMap().get(ZoneId.rule()), ZoneOffset.ofHours(1));
-            // NPE is optional, but parse must still succeed
-        } catch (NullPointerException ex) {
-            // NPE is optional
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_parse_nullText() throws Exception {
-        ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        pp.parse(context, (String) null, 0);
-    }
-
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_negativePosition() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        pp.parse(context, "hello", -1);
+        pp.parse(parseContext, "hello", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_offEndPosition() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        pp.parse(context, "hello", 6);
+        pp.parse(parseContext, "hello", 6);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_exactMatch_Denver() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, AMERICA_DENVER, 0);
+        int result = pp.parse(parseContext, AMERICA_DENVER, 0);
         assertEquals(result, AMERICA_DENVER.length());
         assertParsed(TIME_ZONE_DENVER);
     }
 
     public void test_parse_startStringMatch_Denver() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, AMERICA_DENVER + "OTHER", 0);
+        int result = pp.parse(parseContext, AMERICA_DENVER + "OTHER", 0);
         assertEquals(result, AMERICA_DENVER.length());
         assertParsed(TIME_ZONE_DENVER);
     }
 
     public void test_parse_midStringMatch_Denver() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, "OTHER" + AMERICA_DENVER + "OTHER", 5);
+        int result = pp.parse(parseContext, "OTHER" + AMERICA_DENVER + "OTHER", 5);
         assertEquals(result, 5 + AMERICA_DENVER.length());
         assertParsed(TIME_ZONE_DENVER);
     }
 
     public void test_parse_endStringMatch_Denver() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, "OTHER" + AMERICA_DENVER, 5);
+        int result = pp.parse(parseContext, "OTHER" + AMERICA_DENVER, 5);
         assertEquals(result, 5+ AMERICA_DENVER.length());
         assertParsed(TIME_ZONE_DENVER);
     }
 
     public void test_parse_partialMatch() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, "OTHERAmerica/Bogusville", 5);
+        int result = pp.parse(parseContext, "OTHERAmerica/Bogusville", 5);
         assertEquals(result, -6);
         assertParsed(null);
     }
@@ -142,7 +115,7 @@ public class TestZoneIdParser {
     @Test(dataProvider="zones")
     public void test_parse_exactMatch(String parse, ZoneId expected) throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, parse, 0);
+        int result = pp.parse(parseContext, parse, 0);
         assertEquals(result, parse.length());
         assertParsed(expected);
     }
@@ -150,14 +123,14 @@ public class TestZoneIdParser {
     //-----------------------------------------------------------------------
     public void test_parse_endStringMatch_utc() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, "OTHERUTC", 5);
+        int result = pp.parse(parseContext, "OTHERUTC", 5);
         assertEquals(result, 8);
         assertParsed(ZoneId.UTC);
     }
 
     public void test_parse_endStringMatch_utc_plus1() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, "OTHERUTC+01:00", 5);
+        int result = pp.parse(parseContext, "OTHERUTC+01:00", 5);
         assertEquals(result, 14);
         assertParsed(ZoneId.of("UTC+01:00"));
     }
@@ -165,14 +138,14 @@ public class TestZoneIdParser {
     //-----------------------------------------------------------------------
     public void test_parse_midStringMatch_utc() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, "OTHERUTCOTHER", 5);
+        int result = pp.parse(parseContext, "OTHERUTCOTHER", 5);
         assertEquals(result, 8);
         assertParsed(ZoneId.UTC);
     }
 
     public void test_parse_midStringMatch_utc_plus1() throws Exception {
         ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        int result = pp.parse(context, "OTHERUTC+01:00OTHER", 5);
+        int result = pp.parse(parseContext, "OTHERUTC+01:00OTHER", 5);
         assertEquals(result, 14);
         assertParsed(ZoneId.of("UTC+01:00"));
     }
@@ -189,8 +162,8 @@ public class TestZoneIdParser {
     }
 
     private void assertParsed(ZoneId expectedZone) {
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), expectedZone == null ? 0 : 1);
-        assertEquals(context.toCalendricalMerger().getInputMap().get(ZoneId.rule()), expectedZone);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), expectedZone == null ? 0 : 1);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().get(ZoneId.rule()), expectedZone);
     }
 
 }

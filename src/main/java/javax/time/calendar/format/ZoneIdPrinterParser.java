@@ -40,8 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -80,11 +78,8 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
-        ZoneId zone = calendrical.get(ZoneId.rule());
-        if (zone == null) {
-            throw new UnsupportedRuleException("Unable to obtain ZoneId", ZoneId.rule());
-        }
+    public void print(DateTimePrintContext context, StringBuilder buf) {
+        ZoneId zone = context.getValueChecked(ZoneId.rule());
         if (textStyle == null) {
             buf.append(zone.getID());
         } else if (textStyle == TextStyle.FULL) {

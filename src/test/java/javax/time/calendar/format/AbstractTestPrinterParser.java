@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,35 +31,35 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.CalendricalException;
+import java.util.Locale;
+
+import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.ZoneId;
+import javax.time.calendar.ZonedDateTime;
+
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
- * Strategy for printing a calendrical to an appendable.
- * <p>
- * The printer may print any part, or the whole, of the input Calendrical.
- * Typically, a complete print is constructed from a number of smaller
- * units, each outputting a single field.
- * <p>
- * DateTimePrinter is an interface and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
+ * Abstract PrinterParser test.
  *
  * @author Stephen Colebourne
  */
-public interface DateTimePrinter {
+@Test
+public class AbstractTestPrinterParser {
 
-    /**
-     * Prints the calendrical object to the buffer.
-     * <p>
-     * The context holds information to use during the print.
-     * It also contains the calendrical information to be printed.
-     * <p>
-     * The buffer must not be mutated beyond the content controlled by the implementation.
-     *
-     * @param context  the context to print using, not null
-     * @param buf  the buffer to append to, not null
-     * @throws CalendricalException if the calendrical cannot be printed successfully
-     */
-    void print(DateTimePrintContext context, StringBuilder buf);
+    protected DateTimePrintContext printEmptyContext;
+    protected DateTimePrintContext printContext;
+    protected DateTimeParseContext parseContext;
+    protected StringBuilder buf;
+
+    @BeforeMethod
+    public void setUp() {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
+        printEmptyContext = new DateTimePrintContext(DateTimeFields.EMPTY, symbols);
+        printContext = new DateTimePrintContext(ZonedDateTime.of(2011, 6, 30, 12, 30, 40, 0, ZoneId.of("Europe/Paris")), symbols);
+        parseContext = new DateTimeParseContext(symbols);
+        buf = new StringBuilder();
+    }
 
 }

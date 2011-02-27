@@ -33,7 +33,6 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -42,133 +41,108 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestStringLiteralParser {
-
-    private DateTimeParseContext context;
-
-    @BeforeMethod
-    public void setUp() {
-        context = new DateTimeParseContext(DateTimeFormatSymbols.getInstance());
-    }
+public class TestStringLiteralParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    public void test_parse_nullContext() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        try {
-            int result = pp.parse((DateTimeParseContext) null, "hello", 0);
-            assertEquals(result, 5);
-            assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
-            // NPE is optional, but parse must still succeed
-        } catch (NullPointerException ex) {
-            // NPE is optional
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_parse_nullText() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.parse(context, (String) null, 0);
-    }
-
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_negativePosition() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.parse(context, "hello", -1);
+        pp.parse(parseContext, "hello", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_offEndPosition() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.parse(context, "hello", 6);
+        pp.parse(parseContext, "hello", 6);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_exactMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "hello", 0);
+        int result = pp.parse(parseContext, "hello", 0);
         assertEquals(result, 5);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "helloOTHER", 0);
+        int result = pp.parse(parseContext, "helloOTHER", 0);
         assertEquals(result, 5);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "OTHERhelloOTHER", 5);
+        int result = pp.parse(parseContext, "OTHERhelloOTHER", 5);
         assertEquals(result, 10);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_endStringMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "OTHERhello", 5);
+        int result = pp.parse(parseContext, "OTHERhello", 5);
         assertEquals(result, 10);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_emptyStringNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "", 0);
+        int result = pp.parse(parseContext, "", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "hlloo", 0);
+        int result = pp.parse(parseContext, "hlloo", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "OTHERhlloOTHER", 5);
+        int result = pp.parse(parseContext, "OTHERhlloOTHER", 5);
         assertEquals(result, ~5);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_endStringNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "hello", 5);
+        int result = pp.parse(parseContext, "hello", 5);
         assertEquals(result, ~5);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringTooShortNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "h", 0);
+        int result = pp.parse(parseContext, "h", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringTooShortNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "OTHERhel", 5);
+        int result = pp.parse(parseContext, "OTHERhel", 5);
         assertEquals(result, ~5);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_caseSensitive() throws Exception {
-        context.setCaseSensitive(true);
+        parseContext.setCaseSensitive(true);
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "HELLO", 0);
+        int result = pp.parse(parseContext, "HELLO", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_caseInsensitive() throws Exception {
-        context.setCaseSensitive(false);
+        parseContext.setCaseSensitive(false);
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(context, "HELLO", 0);
+        int result = pp.parse(parseContext, "HELLO", 0);
         assertEquals(result, 5);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
 }

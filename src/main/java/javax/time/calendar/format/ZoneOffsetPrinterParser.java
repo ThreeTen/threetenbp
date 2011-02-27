@@ -31,8 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.ZoneOffset;
 
 /**
@@ -84,11 +82,8 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
-        ZoneOffset offset = calendrical.get(ZoneOffset.rule());
-        if (offset == null) {
-            throw new UnsupportedRuleException("Unable to obtain ZoneOffset", ZoneOffset.rule());
-        }
+    public void print(DateTimePrintContext context, StringBuilder buf) {
+        ZoneOffset offset = context.getValueChecked(ZoneOffset.rule());
         int totalSecs = offset.getAmountSeconds();
         if (totalSecs == 0) {
             buf.append(noOffsetText);

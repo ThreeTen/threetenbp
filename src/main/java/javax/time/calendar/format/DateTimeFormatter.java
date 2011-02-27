@@ -198,12 +198,13 @@ public final class DateTimeFormatter {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimeFormatter.checkNotNull(appendable, "Appendable must not be null");
         try {
+            DateTimePrintContext context = new DateTimePrintContext(calendrical, symbols);
             if (appendable instanceof StringBuilder) {
-                printerParser.print(calendrical, (StringBuilder) appendable, symbols);
+                printerParser.print(context, (StringBuilder) appendable);
             } else {
                 // buffer output to avoid writing to appendable in case of error
                 StringBuilder buf = new StringBuilder(32);
-                printerParser.print(calendrical, buf, symbols);
+                printerParser.print(context, buf);
                 appendable.append(buf);
             }
         } catch (IOException ex) {

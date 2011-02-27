@@ -33,7 +33,6 @@ package javax.time.calendar.format;
 
 import java.math.BigInteger;
 
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
@@ -130,8 +129,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
-        long value = getValue(calendrical);
+    public void print(DateTimePrintContext context, StringBuilder buf) {
+        long value = getValue(context);
+        DateTimeFormatSymbols symbols = context.getSymbols();
         String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
             throw new CalendricalPrintException("Rule " + rule.getName() +
@@ -172,11 +172,12 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * Gets the value to output.
-     * @param calendrical  the calendrical, not null
+     * 
+     * @param context  the context, not null
      * @return the value
      */
-    long getValue(Calendrical calendrical) {
-        return rule.getValueChecked(calendrical).getValue();
+    long getValue(DateTimePrintContext context) {
+        return context.getValueChecked(rule).getValue();
     }
 
     //-----------------------------------------------------------------------
@@ -302,6 +303,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * Stores the value.
+     * 
      * @param context  the context to store into, not null
      * @param value  the value
      */

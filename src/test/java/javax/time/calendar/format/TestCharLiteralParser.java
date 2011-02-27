@@ -33,7 +33,6 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -42,119 +41,94 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestCharLiteralParser {
-
-    private DateTimeParseContext context;
-
-    @BeforeMethod
-    public void setUp() {
-        context = new DateTimeParseContext(DateTimeFormatSymbols.getInstance());
-    }
+public class TestCharLiteralParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    public void test_parse_nullContext() throws Exception {
-        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        try {
-            int result = pp.parse((DateTimeParseContext) null, "a", 0);
-            assertEquals(result, 1);
-            assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
-            // NPE is optional, but parse must still succeed
-        } catch (NullPointerException ex) {
-            // NPE is optional
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_parse_nullText() throws Exception {
-        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.parse(context, (String) null, 0);
-    }
-
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_negativePosition() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.parse(context, "a", -1);
+        pp.parse(parseContext, "a", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_offEndPosition() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.parse(context, "a", 2);
+        pp.parse(parseContext, "a", 2);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_exactMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "a", 0);
+        int result = pp.parse(parseContext, "a", 0);
         assertEquals(result, 1);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "aOTHER", 0);
+        int result = pp.parse(parseContext, "aOTHER", 0);
         assertEquals(result, 1);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "OTHERaOTHER", 5);
+        int result = pp.parse(parseContext, "OTHERaOTHER", 5);
         assertEquals(result, 6);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_endStringMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "OTHERa", 5);
+        int result = pp.parse(parseContext, "OTHERa", 5);
         assertEquals(result, 6);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_emptyStringNoMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "", 0);
+        int result = pp.parse(parseContext, "", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringNoMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "b", 0);
+        int result = pp.parse(parseContext, "b", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringNoMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "OTHERbOTHER", 5);
+        int result = pp.parse(parseContext, "OTHERbOTHER", 5);
         assertEquals(result, ~5);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_endStringNoMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "a", 1);
+        int result = pp.parse(parseContext, "a", 1);
         assertEquals(result, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_caseSensitive() throws Exception {
-        context.setCaseSensitive(true);
+        parseContext.setCaseSensitive(true);
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "A", 0);
+        int result = pp.parse(parseContext, "A", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_caseInsensitive() throws Exception {
-        context.setCaseSensitive(false);
+        parseContext.setCaseSensitive(false);
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        int result = pp.parse(context, "A", 0);
+        int result = pp.parse(parseContext, "A", 0);
         assertEquals(result, 1);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
 }

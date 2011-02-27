@@ -37,15 +37,10 @@ import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.util.Locale;
-
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -55,53 +50,20 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestNumberPrinter {
-
-    private StringBuilder buf;
-    private Calendrical emptyCalendrical;
-    private DateTimeFormatSymbols symbols;
-
-    @BeforeMethod
-    public void setUp() {
-        buf = new StringBuilder();
-        emptyCalendrical = DateTimeFields.EMPTY;
-        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullStringBuilder() throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, 3);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.print(calendrical, (StringBuilder) null, symbols);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullDateTime() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.print((Calendrical) null, buf, symbols);
-    }
-
-// NPE is not required
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_print_nullSymbols() throws Exception {
-//        SimpleNumberPrinterParser pp = new SimpleNumberPrinterParser("hello");
-//        pp.print(buf, emptyCalendrical, (Locale) null);
-//        assertEquals(buf, "EXISTINGhello");
-//    }
+public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.print(emptyCalendrical, buf, symbols);
+        pp.print(printEmptyContext, buf);
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, 3);
+        printContext.setCalendrical(DateTimeField.of(DAY_OF_MONTH, 3));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
         buf.append("EXISTING");
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING3");
     }
 
@@ -198,10 +160,10 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, long value, String result) throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
+        printContext.setCalendrical(DateTimeField.of(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NOT_NEGATIVE);
         try {
-            pp.print(calendrical, buf, symbols);
+            pp.print(printContext, buf);
             if (result == null || value < 0) {
                 fail("Expected exception");
             }
@@ -217,10 +179,10 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NEVER(int minPad, int maxPad, long value, String result) throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
+        printContext.setCalendrical(DateTimeField.of(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NEVER);
         try {
-            pp.print(calendrical, buf, symbols);
+            pp.print(printContext, buf);
             if (result == null) {
                 fail("Expected exception");
             }
@@ -235,10 +197,10 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NORMAL(int minPad, int maxPad, long value, String result) throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
+        printContext.setCalendrical(DateTimeField.of(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.NORMAL);
         try {
-            pp.print(calendrical, buf, symbols);
+            pp.print(printContext, buf);
             if (result == null) {
                 fail("Expected exception");
             }
@@ -253,10 +215,10 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_ALWAYS(int minPad, int maxPad, long value, String result) throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
+        printContext.setCalendrical(DateTimeField.of(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.ALWAYS);
         try {
-            pp.print(calendrical, buf, symbols);
+            pp.print(printContext, buf);
             if (result == null) {
                 fail("Expected exception");
             }
@@ -271,12 +233,13 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, long value, String result) throws Exception {
-        Calendrical calendrical = DateTimeField.of(DAY_OF_MONTH, value);
+        printContext.setCalendrical(DateTimeField.of(DAY_OF_MONTH, value));
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minPad, maxPad, SignStyle.EXCEEDS_PAD);
         try {
-            pp.print(calendrical, buf, symbols);
+            pp.print(printContext, buf);
             if (result == null) {
                 fail("Expected exception");
+                return;  // unreachable
             }
             if (result.length() > minPad || value < 0) {
                 result = (value < 0 ? "-" + result : "+" + result);
@@ -292,9 +255,9 @@ public class TestNumberPrinter {
 
     //-----------------------------------------------------------------------
     public void test_derivedValue() throws Exception {
-        Calendrical calendrical = DateTimeField.of(HOUR_OF_DAY, 13);
+        printContext.setCalendrical(DateTimeField.of(HOUR_OF_DAY, 13));
         NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_AMPM, 2, 2, SignStyle.NOT_NEGATIVE);
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "01");   // 1PM
     }
 

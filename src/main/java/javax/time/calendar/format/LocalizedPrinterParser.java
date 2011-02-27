@@ -33,7 +33,6 @@ package javax.time.calendar.format;
 
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 
@@ -75,8 +74,8 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
-        formatter(symbols.getLocale()).toPrinterParser(false).print(calendrical, buf, symbols);
+    public void print(DateTimePrintContext context, StringBuilder buf) {
+        formatter(context.getLocale()).toPrinterParser(false).print(context, buf);
     }
 
     //-----------------------------------------------------------------------

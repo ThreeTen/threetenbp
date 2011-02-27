@@ -34,7 +34,6 @@ package javax.time.calendar.format;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeRule;
 
 /**
@@ -88,8 +87,9 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
-        long value = rule.getValueChecked(calendrical).getValue();
+    public void print(DateTimePrintContext context, StringBuilder buf) {
+        long value = context.getValueChecked(rule).getValue();
+        DateTimeFormatSymbols symbols = context.getSymbols();
         BigDecimal fraction = rule.convertToFraction(value);
         if (fraction.scale() == 0) {  // scale is zero if value is zero
             if (minWidth > 0) {

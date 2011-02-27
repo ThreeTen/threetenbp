@@ -66,7 +66,7 @@ public final class DateTimeParseContext {
     /**
      * The date time format symbols, not null.
      */
-    private final DateTimeFormatSymbols symbols;
+    private DateTimeFormatSymbols symbols;
     /**
      * Whether to parse using case sensitively.
      */
@@ -87,21 +87,11 @@ public final class DateTimeParseContext {
      */
     public DateTimeParseContext(DateTimeFormatSymbols symbols) {
         super();
-        DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
-        this.symbols = symbols;
+        setSymbols(symbols);
         calendricals.add(new Parsed());
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the locale to use for printing and parsing text.
-     *
-     * @return the locale, not null
-     */
-    public Locale getLocale() {
-        return symbols.getLocale();
-    }
-
     /**
      * Gets the formatting symbols.
      *
@@ -109,6 +99,16 @@ public final class DateTimeParseContext {
      */
     public DateTimeFormatSymbols getSymbols() {
         return symbols;
+    }
+
+    /**
+     * Sets the formatting symbols.
+     *
+     * @param symbols  the formatting symbols, not null
+     */
+    public void setSymbols(DateTimeFormatSymbols symbols) {
+        DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
+        this.symbols = symbols;
     }
 
     //-----------------------------------------------------------------------
@@ -152,6 +152,15 @@ public final class DateTimeParseContext {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the locale to use for printing and parsing text.
+     *
+     * @return the locale, not null
+     */
+    public Locale getLocale() {
+        return symbols.getLocale();
+    }
+
     /**
      * Gets the currently active calendrical.
      *

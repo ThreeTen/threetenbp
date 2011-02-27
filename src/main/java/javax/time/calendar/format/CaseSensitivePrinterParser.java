@@ -31,8 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.Calendrical;
-
 /**
  * Enumeration to set the case sensitivity parse style.
  *
@@ -51,7 +49,7 @@ enum CaseSensitivePrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
+    public void print(DateTimePrintContext context, StringBuilder buf) {
         // do nothing
     }
 

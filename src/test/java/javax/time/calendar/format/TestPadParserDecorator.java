@@ -38,7 +38,6 @@ import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -47,103 +46,78 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestPadParserDecorator {
-
-    private DateTimeParseContext context;
-
-    @BeforeMethod
-    public void setUp() {
-        context = new DateTimeParseContext(DateTimeFormatSymbols.getInstance());
-    }
+public class TestPadParserDecorator extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    public void test_parse_nullContext() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 3, '-');
-        try {
-            int result = pp.parse((DateTimeParseContext) null, "--Z", 0);
-            assertEquals(result, 3);
-            assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
-            // NPE is optional, but parse must still succeed
-        } catch (NullPointerException ex) {
-            // NPE is optional
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_parse_nullText() throws Exception {
-        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.parse(context, (String) null, 0);
-    }
-
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_negativePosition() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.parse(context, "--Z", -1);
+        pp.parse(parseContext, "--Z", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_offEndPosition() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.parse(context, "--Z", 4);
+        pp.parse(parseContext, "--Z", 4);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
-        int result = pp.parse(context, "--2", 0);
+        int result = pp.parse(parseContext, "--2", 0);
         assertEquals(result, 3);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 1);
         assertParsed(MONTH_OF_YEAR, 2L);
     }
 
     public void test_parse_noReadBeyond() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
-        int result = pp.parse(context, "--22", 0);
+        int result = pp.parse(parseContext, "--22", 0);
         assertEquals(result, 3);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 1);
         assertParsed(MONTH_OF_YEAR, 2L);
     }
 
     public void test_parse_textLessThanPadWidth() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
-        int result = pp.parse(context, "-1", 0);
+        int result = pp.parse(parseContext, "-1", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_decoratedErrorPassedBack() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
-        int result = pp.parse(context, "--A", 0);
+        int result = pp.parse(parseContext, "--A", 0);
         assertEquals(result, ~2);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_decoratedDidNotParseToPadWidth() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
-        int result = pp.parse(context, "-1X", 0);
+        int result = pp.parse(parseContext, "-1X", 0);
         assertEquals(result, ~0);
-//        assertEquals(context.getFieldValueMap().size(), 0);
+//        assertEquals(parseContext.getFieldValueMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_decoratedStartsWithPad() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(
                 null, new StringLiteralPrinterParser("-HELLO-"), 8, '-');
-        int result = pp.parse(context, "--HELLO-", 0);
+        int result = pp.parse(parseContext, "--HELLO-", 0);
         assertEquals(result, 8);
-        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     private void assertParsed(DateTimeRule rule, Number value) {
         if (value == null) {
-            assertEquals(context.getParsed(rule), null);
+            assertEquals(parseContext.getParsed(rule), null);
         } else {
-            assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
+            assertEquals(parseContext.getParsed(rule), DateTimeField.of(rule, value.longValue()));
         }
     }
 

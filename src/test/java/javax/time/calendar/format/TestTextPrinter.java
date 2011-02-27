@@ -36,15 +36,11 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
-import java.util.Locale;
-
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -54,52 +50,20 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestTextPrinter {
-
-    private StringBuilder buf;
-    private Calendrical emptyCalendrical;
-    private DateTimeFormatSymbols symbols;
-
-    @BeforeMethod
-    public void setUp() {
-        buf = new StringBuilder();
-        emptyCalendrical = DateTimeFields.EMPTY;
-        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullStringBuilder() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(DAY_OF_WEEK, 3);
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.print(calendrical, (StringBuilder) null, symbols);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullDateTime() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.print((Calendrical) null, buf, symbols);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(DAY_OF_WEEK, 3);
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.print(calendrical, buf, null);
-    }
+public class TestTextPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.print(emptyCalendrical, buf, symbols);
+        pp.print(printEmptyContext, buf);
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(DAY_OF_WEEK, 3);
+        printContext.setCalendrical(DateTimeField.of(DAY_OF_WEEK, 3));
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         buf.append("EXISTING");
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTINGWednesday");
     }
 
@@ -148,10 +112,10 @@ public class TestTextPrinter {
     }
 
     @Test(dataProvider="print") 
-    public void test_print(DateTimeRule rule, TextStyle style, int dow, String expected) throws Exception {
-        Calendrical calendrical = DateTimeFields.of(rule, dow);
+    public void test_print(DateTimeRule rule, TextStyle style, int value, String expected) throws Exception {
+        printContext.setCalendrical(DateTimeField.of(rule, value));
         TextPrinterParser pp = new TextPrinterParser(rule, style);
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), expected);
     }
 

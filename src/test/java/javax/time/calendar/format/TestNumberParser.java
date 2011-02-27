@@ -35,13 +35,10 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static org.testng.Assert.assertEquals;
 
-import java.util.Locale;
-
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -51,44 +48,19 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestNumberParser {
-
-    private DateTimeFormatSymbols symbols;
-
-    @BeforeMethod
-    public void setUp() {
-        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-    }
+public class TestNumberParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullContext() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.parse((DateTimeParseContext) null, "12", 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullNumber() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_MONTH, 2);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.parse(context, (String) null, 0);
-    }
-
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooSmall() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_MONTH, 2);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.parse(context, "12", -1);
+        pp.parse(parseContext, "12", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooBig() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_MONTH, 2);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
-        pp.parse(context, "12", 3);
+        pp.parse(parseContext, "12", 3);
     }
 
     //-----------------------------------------------------------------------
@@ -154,46 +126,43 @@ public class TestNumberParser {
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseData")
     public void test_parse_fresh(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minWidth, maxWidth, signStyle);
         if (subsequentWidth > 0) {
             pp = pp.withSubsequentWidth(subsequentWidth);
         }
-        int newPos = pp.parse(context, text, pos);
+        int newPos = pp.parse(parseContext, text, pos);
         assertEquals(newPos, expectedPos);
         if (expectedPos > 0) {
-            assertParsed(context, DAY_OF_MONTH, expectedValue);
+            assertParsed(parseContext, DAY_OF_MONTH, expectedValue);
         } else {
-            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
+            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
         }
     }
 
     @Test(dataProvider="parseData")
     public void test_parse_replace(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_MONTH, 0);
+        parseContext.setParsedField(DAY_OF_MONTH, 0);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minWidth, maxWidth, signStyle);
         if (subsequentWidth > 0) {
             pp = pp.withSubsequentWidth(subsequentWidth);
         }
-        int newPos = pp.parse(context, text, pos);
+        int newPos = pp.parse(parseContext, text, pos);
         assertEquals(newPos, expectedPos);
         if (expectedPos > 0) {
-            assertParsed(context, DAY_OF_MONTH, expectedValue);
+            assertParsed(parseContext, DAY_OF_MONTH, expectedValue);
         }
     }
 
     @Test(dataProvider="parseData")
     public void test_parse_textField(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_WEEK, minWidth, maxWidth, signStyle);
         if (subsequentWidth > 0) {
             pp = pp.withSubsequentWidth(subsequentWidth);
         }
-        int newPos = pp.parse(context, text, pos);
+        int newPos = pp.parse(parseContext, text, pos);
         assertEquals(newPos, expectedPos);
         if (expectedPos > 0) {
-            assertParsed(context, DAY_OF_WEEK, expectedValue);
+            assertParsed(parseContext, DAY_OF_WEEK, expectedValue);
         }
     }
 
@@ -300,12 +269,11 @@ public class TestNumberParser {
 
     @Test(dataProvider="parseSignsStrict") 
     public void test_parseSignsStrict(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);
-        int newPos = pp.parse(context, input, 0);
+        int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, parseLen);
-        assertParsed(context, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
+        assertParsed(parseContext, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
     }
 
     //-----------------------------------------------------------------------
@@ -405,13 +373,12 @@ public class TestNumberParser {
 
     @Test(dataProvider="parseSignsLenient") 
     public void test_parseSignsLenient(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(false);
+        parseContext.setStrict(false);
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, min, max, style);
-        int newPos = pp.parse(context, input, 0);
+        int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, parseLen);
-        assertParsed(context, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
+        assertParsed(parseContext, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
     }
 
     private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {

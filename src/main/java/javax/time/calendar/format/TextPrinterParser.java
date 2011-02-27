@@ -31,7 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRule.TextStore;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -74,15 +73,17 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
-        int value = rule.getValueChecked(calendrical).getValidIntValue();
-        TextStore textStore = rule.getTextStore(symbols.getLocale(), textStyle);
-        String text = (textStore != null ? textStore.getValueText(value) : null);
-        if (text != null) {
-            buf.append(text);
-        } else {
-            numberPrinterParser().print(calendrical, buf, symbols);
+    public void print(DateTimePrintContext context, StringBuilder buf) {
+        long value = context.getValueChecked(rule).getValue();
+        TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
+        if (textStore != null && rule.isValidIntValue(value)) {
+            String text = textStore.getValueText((int) value);
+            if (text != null) {
+                buf.append(text);
+                return;
+            }
         }
+        numberPrinterParser().print(context, buf);
     }
 
     /** {@inheritDoc} */
@@ -103,7 +104,6 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
                     return position;
                 }
             }
-            return numberPrinterParser().parse(context, parseText, position);
         } else {
             for (TextStyle textStyle : TextStyle.values()) {
                 TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
@@ -116,8 +116,8 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
                     }
                 }
             }
-            return numberPrinterParser().parse(context, parseText, position);
         }
+        return numberPrinterParser().parse(context, parseText, position);
     }
 
     /**

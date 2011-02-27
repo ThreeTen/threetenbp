@@ -36,15 +36,11 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.util.Locale;
-
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.UnsupportedRuleException;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -54,54 +50,22 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestFractionPrinterParser {
-
-    private StringBuilder buf;
-    private Calendrical emptyCalendrical;
-    private DateTimeFormatSymbols symbols;
-
-    @BeforeMethod
-    public void setUp() {
-        buf = new StringBuilder();
-        emptyCalendrical = DateTimeFields.EMPTY;
-        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-    }
+public class TestFractionPrinterParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     // print
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullStringBuilder() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(NANO_OF_SECOND, 3);
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
-        pp.print(calendrical, (StringBuilder) null, symbols);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullDateTime() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
-        pp.print((Calendrical) null, buf, symbols);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(NANO_OF_SECOND, 3);
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
-        pp.print(calendrical, buf, (DateTimeFormatSymbols) null);
-    }
-
-    //-----------------------------------------------------------------------
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
-        pp.print(emptyCalendrical, buf, symbols);
+        pp.print(printEmptyContext, buf);
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = DateTimeFields.of(NANO_OF_SECOND, 3);
+        printContext.setCalendrical(DateTimeFields.of(NANO_OF_SECOND, 3));
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 0, 9);
         buf.append("EXISTING");
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         assertEquals(buf.toString(), "EXISTING.000000003");
     }
 
@@ -184,9 +148,9 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Nanos")
     public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = DateTimeFields.of(NANO_OF_SECOND, value);
+        printContext.setCalendrical(DateTimeFields.of(NANO_OF_SECOND, value));
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         if (result == null) {
             fail("Expected exception");
         }
@@ -219,9 +183,9 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Seconds")
     public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = DateTimeFields.of(SECOND_OF_MINUTE, value);
+        printContext.setCalendrical(DateTimeFields.of(SECOND_OF_MINUTE, value));
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
-        pp.print(calendrical, buf, symbols);
+        pp.print(printContext, buf);
         if (result == null) {
             fail("Expected exception");
         }
@@ -233,43 +197,40 @@ public class TestFractionPrinterParser {
     //-----------------------------------------------------------------------
     @Test(dataProvider="Nanos")
     public void test_reverseParse(int minWidth, int maxWidth, int value, String result) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
-        int newPos = pp.parse(context, result, 0);
+        int newPos = pp.parse(parseContext, result, 0);
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertParsed(context, NANO_OF_SECOND, expectedValue);
+            assertParsed(parseContext, NANO_OF_SECOND, expectedValue);
         }
     }
 
     @Test(dataProvider="Nanos")
     public void test_reverseParse_followedByNonDigit(int minWidth, int maxWidth, int value, String result) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
-        int newPos = pp.parse(context, result + " ", 0);
+        int newPos = pp.parse(parseContext, result + " ", 0);
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertParsed(context, NANO_OF_SECOND, expectedValue);
+            assertParsed(parseContext, NANO_OF_SECOND, expectedValue);
         }
     }
 
     @Test(dataProvider="Nanos")
     public void test_reverseParse_preceededByNonDigit(int minWidth, int maxWidth, int value, String result) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, minWidth, maxWidth);
-        int newPos = pp.parse(context, " " + result, 1);
+        int newPos = pp.parse(parseContext, " " + result, 1);
         assertEquals(newPos, result.length() + 1);
         int expectedValue = fixParsedValue(maxWidth, value);
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
         } else {
-            assertParsed(context, NANO_OF_SECOND, expectedValue);
+            assertParsed(parseContext, NANO_OF_SECOND, expectedValue);
         }
     }
 
@@ -283,72 +244,64 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Seconds")
     public void test_reverseParse_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
-        int newPos = pp.parse(context, result, 0);
+        int newPos = pp.parse(parseContext, result, 0);
         assertEquals(newPos, result.length());
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(SECOND_OF_MINUTE), false);
+            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(SECOND_OF_MINUTE), false);
         } else {
-            assertParsed(context, SECOND_OF_MINUTE, value);
+            assertParsed(parseContext, SECOND_OF_MINUTE, value);
         }
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_nothing_minWidth() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(context, "", 0);
+        int newPos = pp.parse(parseContext, "", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
     }
 
     public void test_parse_noPoint() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(context, "A", 0);
+        int newPos = pp.parse(parseContext, "A", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
     }
 
     public void test_parse_point_noDigits() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(context, ".", 0);
+        int newPos = pp.parse(parseContext, ".", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
     }
 
     public void test_parse_point_notMinWidthDigits1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(context, ".5", 0);
+        int newPos = pp.parse(parseContext, ".5", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
     }
 
     public void test_parse_point_notMinWidthDigits2() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(context, ".51", 0);
+        int newPos = pp.parse(parseContext, ".51", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
     }
 
     public void test_parse_point_nonDigit1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(context, ".A23456", 0);
+        int newPos = pp.parse(parseContext, ".A23456", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
     }
 
     public void test_parse_point_nonDigit2() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(context, ".1A3456", 0);
+        int newPos = pp.parse(parseContext, ".1A3456", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
     }
 
     //-----------------------------------------------------------------------

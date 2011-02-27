@@ -42,7 +42,6 @@ import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -52,95 +51,64 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestTextParser {
-
-    private DateTimeFormatSymbols symbols;
-
-    @BeforeMethod
-    public void setUp() {
-        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-    }
+public class TestTextParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullContext() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.parse((DateTimeParseContext) null, "Monday", 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_print_nullText() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_WEEK, 2);
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.parse(context, (String) null, 0);
-    }
-
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooSmall() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_WEEK, 2);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.parse(context, "Monday", -1);
+        pp.parse(parseContext, "Monday", -1);
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooBig() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_WEEK, 2);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.parse(context, "Monday", 7);
+        pp.parse(parseContext, "Monday", 7);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_replaceContextValue() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setParsedField(DAY_OF_WEEK, 2);
+        parseContext.setParsedField(DAY_OF_WEEK, 2);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        int newPos = pp.parse(context, "Monday", 0);
+        int newPos = pp.parse(parseContext, "Monday", 0);
         assertEquals(newPos, 6);
-        assertParsed(context, DAY_OF_WEEK, 1);
+        assertParsed(parseContext, DAY_OF_WEEK, 1);
     }
 
     public void test_parse_midStr() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        int newPos = pp.parse(context, "XxxMondayXxx", 3);
+        int newPos = pp.parse(parseContext, "XxxMondayXxx", 3);
         assertEquals(newPos, 9);
-        assertParsed(context, DAY_OF_WEEK, 1);
+        assertParsed(parseContext, DAY_OF_WEEK, 1);
     }
 
     public void test_parse_remainderIgnored() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.SHORT);
-        int newPos = pp.parse(context, "Wednesday", 0);
+        int newPos = pp.parse(parseContext, "Wednesday", 0);
         assertEquals(newPos, 3);
-        assertParsed(context, DAY_OF_WEEK, 3);
+        assertParsed(parseContext, DAY_OF_WEEK, 3);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_noMatch1() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        int newPos = pp.parse(context, "Munday", 0);
+        int newPos = pp.parse(parseContext, "Munday", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
     }
 
     public void test_parse_noMatch2() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        int newPos = pp.parse(context, "Monday", 3);
+        int newPos = pp.parse(parseContext, "Monday", 3);
         assertEquals(newPos, ~3);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
     }
 
     public void test_parse_noMatch_atEnd() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        int newPos = pp.parse(context, "Monday", 6);
+        int newPos = pp.parse(parseContext, "Monday", 6);
         assertEquals(newPos, ~6);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
     }
 
     //-----------------------------------------------------------------------
@@ -188,197 +156,177 @@ public class TestTextParser {
 
     @Test(dataProvider="parseText")
     public void test_parseText(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
-        int newPos = pp.parse(context, input, 0);
+        int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, input.length());
-        assertParsed(context, rule, value);
+        assertParsed(parseContext, rule, value);
     }
 
     @Test(dataProvider="parseNumber")
     public void test_parseNumber(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
-        int newPos = pp.parse(context, input, 0);
+        int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, input.length());
-        assertParsed(context, rule, value);
+        assertParsed(parseContext, rule, value);
     }
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
     public void test_parse_strict_caseSensitive_parseUpper(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setCaseSensitive(true);
+        parseContext.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
-        int newPos = pp.parse(context, input.toUpperCase(), 0);
+        int newPos = pp.parse(parseContext, input.toUpperCase(), 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
     }
 
     @Test(dataProvider="parseText")
     public void test_parse_strict_caseInsensitive_parseUpper(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setCaseSensitive(false);
+        parseContext.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
-        int newPos = pp.parse(context, input.toUpperCase(), 0);
+        int newPos = pp.parse(parseContext, input.toUpperCase(), 0);
         assertEquals(newPos, input.length());
-        assertParsed(context, rule, value);
+        assertParsed(parseContext, rule, value);
     }
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
     public void test_parse_strict_caseSensitive_parseLower(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setCaseSensitive(true);
+        parseContext.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
-        int newPos = pp.parse(context, input.toLowerCase(), 0);
+        int newPos = pp.parse(parseContext, input.toLowerCase(), 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
     }
 
     @Test(dataProvider="parseText")
     public void test_parse_strict_caseInsensitive_parseLower(DateTimeRule rule, TextStyle style, int value, String input) throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setCaseSensitive(false);
+        parseContext.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
-        int newPos = pp.parse(context, input.toLowerCase(), 0);
+        int newPos = pp.parse(parseContext, input.toLowerCase(), 0);
         assertEquals(newPos, input.length());
-        assertParsed(context, rule, value);
+        assertParsed(parseContext, rule, value);
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_parse_full_strict_full_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(true);
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        int newPos = pp.parse(context, "January", 0);
+        int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 7);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     public void test_parse_full_strict_short_noMatch() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(true);
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        int newPos = pp.parse(context, "Janua", 0);
+        int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
     }
 
     public void test_parse_full_strict_number_noMatch() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(true);
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        int newPos = pp.parse(context, "1", 0);
+        int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_short_strict_full_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(true);
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "January", 0);
+        int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 3);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     public void test_parse_short_strict_short_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(true);
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "Janua", 0);
+        int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, 3);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     public void test_parse_short_strict_number_noMatch() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(true);
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "1", 0);
+        int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_french_short_strict_full_noMatch() throws Exception {
-        DateTimeFormatSymbols french = DateTimeFormatSymbols.getInstance(Locale.FRENCH);
-        DateTimeParseContext context = new DateTimeParseContext(french);
-        context.setStrict(true);
+        parseContext.setSymbols(DateTimeFormatSymbols.getInstance(Locale.FRENCH));
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "janvier", 0);  // correct short form is 'janv.'
+        int newPos = pp.parse(parseContext, "janvier", 0);  // correct short form is 'janv.'
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
     }
 
     public void test_parse_french_short_strict_short_match() throws Exception {
-        DateTimeFormatSymbols french = DateTimeFormatSymbols.getInstance(Locale.FRENCH);
-        DateTimeParseContext context = new DateTimeParseContext(french);
-        context.setStrict(true);
+        parseContext.setSymbols(DateTimeFormatSymbols.getInstance(Locale.FRENCH));
+        parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "janv.", 0);
+        int newPos = pp.parse(parseContext, "janv.", 0);
         assertEquals(newPos, 5);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_full_lenient_full_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(false);
+        parseContext.setStrict(false);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        int newPos = pp.parse(context, "January", 0);
+        int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 7);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     public void test_parse_full_lenient_short_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(false);
+        parseContext.setStrict(false);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        int newPos = pp.parse(context, "Janua", 0);
+        int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, 3);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     public void test_parse_full_lenient_number_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(false);
+        parseContext.setStrict(false);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        int newPos = pp.parse(context, "1", 0);
+        int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, 1);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_short_lenient_full_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(false);
+        parseContext.setStrict(false);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "January", 0);
+        int newPos = pp.parse(parseContext, "January", 0);
         assertEquals(newPos, 7);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     public void test_parse_short_lenient_short_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(false);
+        parseContext.setStrict(false);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "Janua", 0);
+        int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, 3);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     public void test_parse_short_lenient_number_match() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setStrict(false);
+        parseContext.setStrict(false);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        int newPos = pp.parse(context, "1", 0);
+        int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, 1);
-        assertParsed(context, MONTH_OF_YEAR, 1);
+        assertParsed(parseContext, MONTH_OF_YEAR, 1);
     }
 
     private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {

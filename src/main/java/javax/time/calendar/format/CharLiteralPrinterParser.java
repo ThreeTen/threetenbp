@@ -31,8 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.Calendrical;
-
 /**
  * Prints or parses a character literal.
  * <p>
@@ -58,7 +56,7 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, StringBuilder buf, DateTimeFormatSymbols symbols) {
+    public void print(DateTimePrintContext context, StringBuilder buf) {
         buf.append(literal);
     }
 

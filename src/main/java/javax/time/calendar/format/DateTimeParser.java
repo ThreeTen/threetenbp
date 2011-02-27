@@ -61,7 +61,10 @@ import javax.time.calendar.CalendricalMerger;
 public interface DateTimeParser {
 
     /**
-     * Parses from the supplied text and position into the calendrical.
+     * Parses text into calendrical information.
+     * <p>
+     * The context holds information to use during the parse.
+     * It is also used to store the parsed calendrical information.
      *
      * @param context  the context to use and parse into, not null
      * @param parseText  the input text to parse, not null
