@@ -52,7 +52,7 @@ public interface DateTimePrinter {
     /**
      * Prints the calendrical object to the buffer.
      * <p>
-     * The buffer must not be mutated other than with an appending method.
+     * The buffer must not be mutated beyond the content controlled by the implementation.
      *
      * @param calendrical  the calendrical to print, not null
      * @param buf  the buffer to append to, not null
