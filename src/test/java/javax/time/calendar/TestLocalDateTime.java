@@ -2142,12 +2142,12 @@ public class TestLocalDateTime {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
     }
@@ -3051,12 +3051,12 @@ public class TestLocalDateTime {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusDays(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooLarge() {
         LocalDateTime.ofMidnight(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooSmall() {
         LocalDateTime.ofMidnight(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
     }

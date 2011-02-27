@@ -64,6 +64,7 @@
 - Remove DateTimePrinter.isPrintDataAvailable()
 - Change DateTimePrinter to take StringBuilder not Appendable
 - Remove CalendricalPrintFieldException
+- Use ArithmeticException in date classes
 
 0.6.3
 ===============================================================================

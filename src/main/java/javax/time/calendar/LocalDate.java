@@ -835,11 +835,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusWeeks(long weeks) {
-        try {
-            return plusDays(MathUtils.safeMultiply(weeks, 7));
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException(this + " + " + weeks + " weeks exceeds capacity");
-        }
+        return plusDays(MathUtils.safeMultiply(weeks, 7));
     }
 
     /**
@@ -861,12 +857,7 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-        long mjDays = toModifiedJulianDays();
-        try {
-            mjDays = MathUtils.safeAdd(mjDays, days);
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException(this + " + " + days + " days exceeds capacity");
-        }
+        long mjDays = MathUtils.safeAdd(toModifiedJulianDays(), days);
         return LocalDate.ofModifiedJulianDays(mjDays);
     }
 
@@ -1060,11 +1051,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusWeeks(long weeks) {
-        try {
-            return minusDays(MathUtils.safeMultiply(weeks, 7));
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException(this + " - " + weeks + " weeks exceeds capacity");
-        }
+        return minusDays(MathUtils.safeMultiply(weeks, 7));
     }
 
     /**
@@ -1086,12 +1073,7 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-        long mjDays = toModifiedJulianDays();
-        try {
-            mjDays = MathUtils.safeSubtract(mjDays, days);
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException(this + " - " + days + " days exceeds capacity");
-        }
+        long mjDays = MathUtils.safeSubtract(toModifiedJulianDays(), days);
         return LocalDate.ofModifiedJulianDays(mjDays);
     }
 

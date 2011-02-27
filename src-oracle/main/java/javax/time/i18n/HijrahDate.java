@@ -677,18 +677,8 @@ public final class HijrahDate
             return this;
         }
         int newYear = 0;
-        try {
-            newYear = MathUtils.safeAdd(this.yearOfEra, years);
-            return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException("Year "
-                    + (((long) this.yearOfEra) + years)
-                    + " exceeds the supported year range");
-        } catch (IllegalCalendarFieldValueException ae) {
-            throw new CalendricalException("Year "
-                    + (((long) this.yearOfEra) + years)
-                    + " exceeds the supported year range");
-        }
+        newYear = MathUtils.safeAdd(this.yearOfEra, years);
+        return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
     }
 
     /**
@@ -767,18 +757,8 @@ public final class HijrahDate
             return this;
         }
         int newYear = 0;
-        try {
-            newYear = MathUtils.safeSubtract(this.yearOfEra, years);
-            return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException("Year "
-                    + (((long) this.yearOfEra) + years)
-                    + " exceeds the supported year range");
-        } catch (IllegalCalendarFieldValueException ae) {
-            throw new CalendricalException("Year "
-                    + (((long) this.yearOfEra) + years)
-                    + " exceeds the supported year range");
-        }
+        newYear = MathUtils.safeSubtract(this.yearOfEra, years);
+        return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
     }
 
     /**

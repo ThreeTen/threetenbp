@@ -125,6 +125,7 @@ Calendars
 - plus/minus long vs int
 
 General
+- remove ArithmeticException from javadoc -> spec/overview
 - rework Clock - remove instant()
 - TimeSource get to nearest second etc. with caching?
 - cache todays date
@@ -136,7 +137,6 @@ General
 - serialization formats
 - evaluate hash codes
 - check overflows
-- Use ArithmeticException everywhere
 - factories/methods taking double
 
 Possible items

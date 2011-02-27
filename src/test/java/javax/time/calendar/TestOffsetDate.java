@@ -1228,12 +1228,12 @@ public class TestOffsetDate {
         OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).plusWeeks(-1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_plusWeeks_invalidMaxMinusMax() {
         OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_plusWeeks_invalidMaxMinusMin() {
         OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).plusWeeks(Long.MIN_VALUE);
     }
@@ -1346,12 +1346,12 @@ public class TestOffsetDate {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusDays(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).plusDays(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusDays(Long.MIN_VALUE);
     }
@@ -1722,12 +1722,12 @@ public class TestOffsetDate {
         OffsetDate.of(Year.MIN_YEAR, 1, 7, OFFSET_PONE).minusWeeks(1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_minusWeeks_invalidMaxMinusMax() {
         OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_minusWeeks_invalidMaxMinusMin() {
         OffsetDate.of(Year.MAX_YEAR, 12, 25, OFFSET_PONE).minusWeeks(Long.MIN_VALUE);
     }
@@ -1840,12 +1840,12 @@ public class TestOffsetDate {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusDays(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooLarge() {
         OffsetDate.of(Year.MAX_YEAR, 12, 31, OFFSET_PONE).minusDays(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooSmall() {
         OffsetDate.of(Year.MIN_YEAR, 1, 1, OFFSET_PONE).minusDays(Long.MAX_VALUE);
     }

@@ -1305,12 +1305,12 @@ public class TestLocalDate {
         LocalDate.of(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_plusWeeks_invalidMaxMinusMax() {
         LocalDate.of(Year.MAX_YEAR, 12, 25).plusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_plusWeeks_invalidMaxMinusMin() {
         LocalDate.of(Year.MAX_YEAR, 12, 25).plusWeeks(Long.MIN_VALUE);
     }
@@ -1423,12 +1423,12 @@ public class TestLocalDate {
         LocalDate.of(Year.MIN_YEAR, 1, 1).plusDays(-1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooLarge() {
         LocalDate.of(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_plusDays_overflowTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
     }
@@ -1943,12 +1943,12 @@ public class TestLocalDate {
         LocalDate.of(Year.MIN_YEAR, 1, 7).minusWeeks(1);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_minusWeeks_invalidMaxMinusMax() {
         LocalDate.of(Year.MAX_YEAR, 12, 25).minusWeeks(Long.MAX_VALUE);
     }
 
-    @Test(expectedExceptions={CalendricalException.class})
+    @Test(expectedExceptions={ArithmeticException.class})
     public void test_minusWeeks_invalidMaxMinusMin() {
         LocalDate.of(Year.MAX_YEAR, 12, 25).minusWeeks(Long.MIN_VALUE);
     }
@@ -2061,12 +2061,12 @@ public class TestLocalDate {
         LocalDate.of(Year.MIN_YEAR, 1, 1).minusDays(1);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooLarge() {
         LocalDate.of(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=ArithmeticException.class)
     public void test_minusDays_overflowTooSmall() {
         LocalDate.of(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
     }
