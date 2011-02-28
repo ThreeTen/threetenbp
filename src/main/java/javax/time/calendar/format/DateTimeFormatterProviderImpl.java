@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,13 +41,13 @@ import javax.time.calendar.Chronology;
 import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 
 /**
- * The Service Provider Implementation to obtain date-time formatters.
+ * The Service Provider Implementation to obtain date-time formatters for a style.
  * <p>
- * DateTimeFormatterProviderImpl is thread-safe.
+ * This class is thread-safe.
  *
  * @author Stephen Colebourne
  */
-class DateTimeFormatterProviderImpl extends DateTimeFormatterProvider {
+final class DateTimeFormatterProviderImpl extends DateTimeFormatterProvider {
 
     /** Cache of formatters. */
     private static final ConcurrentMap<String, Object> FORMATTER_CACHE =
@@ -62,7 +62,7 @@ class DateTimeFormatterProviderImpl extends DateTimeFormatterProvider {
     /** {@inheritDoc} */
     @Override
     public DateTimeFormatter getFormatter(
-            FormatStyle dateStyle, FormatStyle timeStyle, Locale locale, Chronology chronology) {
+            FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology, Locale locale) {
         if (dateStyle == null && timeStyle == null) {
             throw new IllegalArgumentException("Date and Time style must not both be null");
         }
