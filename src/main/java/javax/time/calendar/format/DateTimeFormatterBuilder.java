@@ -205,6 +205,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * Parsing can be strict or lenient - by default its strict.
      * This controls the degree of flexibility in matching the text and sign styles.
+     * Applications calling this method should typically also call {@link #parseCaseInsensitive()}.
      * <p>
      * When used, this method changes the parsing to be strict from this point onwards.
      * The change will remain in force until the end of the formatter that is eventually
