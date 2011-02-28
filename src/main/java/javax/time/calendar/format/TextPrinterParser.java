@@ -31,8 +31,11 @@
  */
 package javax.time.calendar.format;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.DateTimeRule.TextStore;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -74,49 +77,62 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(DateTimePrintContext context, StringBuilder buf) {
-        long value = context.getValueChecked(rule).getValue();
-        TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
-        if (textStore != null && rule.isValidIntValue(value)) {
-            String text = textStore.getValueText((int) value);
-            if (text != null) {
-                buf.append(text);
-                return;
-            }
+        DateTimeField field = context.getValueChecked(rule);
+        String text = new SimpleDateTimeTextProvider().getText(field, textStyle, context.getLocale());
+        if (text != null) {
+            buf.append(text);
+        } else {
+            numberPrinterParser().print(context, buf);
         }
-        numberPrinterParser().print(context, buf);
     }
 
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
-        if (position > length) {
+        if (position < 0 || position > length) {
             throw new IndexOutOfBoundsException();
         }
-        if (context.isStrict()) {
-            TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
-            if (textStore != null) {
-                long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
-                if (match == 0) {
-                    return ~position;
-                } else if (match > 0) {
-                    position += (match >>> 32);
-                    context.setParsedField(rule, (int) match);
-                    return position;
+        TextStyle style = (context.isStrict() ? textStyle : null);
+        Iterator<Entry<String, DateTimeField>> it = new SimpleDateTimeTextProvider().getTextIterator(rule, style, context.getLocale());
+        if (it != null) {
+            while (it.hasNext()) {
+                Entry<String, DateTimeField> entry = it.next();
+                String text = entry.getKey();
+                if (text.regionMatches(!context.isCaseSensitive(), 0, parseText, position, text.length())) {
+                    context.setParsed(rule, entry.getValue());
+                    return position + text.length();
                 }
             }
-        } else {
-            for (TextStyle textStyle : TextStyle.values()) {
-                TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
-                if (textStore != null) {
-                    long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
-                    if (match > 0) {
-                        position += (match >>> 32);
-                        context.setParsedField(rule, (int) match);
-                        return position;
-                    }
-                }
+            if (context.isStrict()) {
+                return ~position;
             }
         }
+        
+//        if (context.isStrict()) {
+//            TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
+//            if (textStore != null) {
+//                long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
+//                if (match == 0) {
+//                    return ~position;
+//                } else if (match > 0) {
+//                    position += (match >>> 32);
+//                    context.setParsedField(rule, (int) match);
+//                    return position;
+//                }
+//            }
+//        } else {
+//            for (TextStyle textStyle : TextStyle.values()) {
+//                TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
+//                if (textStore != null) {
+//                    long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
+//                    if (match > 0) {
+//                        position += (match >>> 32);
+//                        context.setParsedField(rule, (int) match);
+//                        return position;
+//                    }
+//                }
+//            }
+//        }
         return numberPrinterParser().parse(context, parseText, position);
     }
 

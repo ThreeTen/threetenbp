@@ -31,6 +31,7 @@
  */
 package javax.time.calendar.format;
 
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -53,11 +54,12 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 public abstract class DateTimeTextProvider extends LocaleServiceProvider {
 
     /**
-     * Gets the text for the specified field, locale and style.
+     * Gets the text for the specified field, locale and style
+     * for the purpose of printing.
      * <p>
      * The text associated with the value is returned.
-     * A result of null implies that there is no textual form for the rule-style-locale
-     * combination and that a number should be used instead.
+     * The null return value should be used if there is no applicable text, or
+     * if the text would be a numeric representation of the value.
      *
      * @param field  the field to get text for, not null
      * @param style  the style to get text for, not null
@@ -72,9 +74,9 @@ public abstract class DateTimeTextProvider extends LocaleServiceProvider {
      * <p>
      * The iterator must be returned in order from the longest text to the shortest.
      * <p>
-     * A result of null implies that there is no parsable textual form for the rule-style-locale
-     * combination and that parsing should try a number instead.
-     * A style can only be parsed if the textual values for that style are unique.
+     * The null return value should be used if there is no applicable parsable text, or
+     * if the text would be a numeric representation of the value.
+     * Text can only be parsed if all the values for that rule-style-locale combination are unique.
      *
      * @param rule  the rule to get text for, not null
      * @param style  the style to get text for, null for all parsable text
@@ -83,5 +85,17 @@ public abstract class DateTimeTextProvider extends LocaleServiceProvider {
      *  null if the rule or style is not parsable
      */
     public abstract Iterator<Entry<String, DateTimeField>> getTextIterator(DateTimeRule rule, TextStyle style, Locale locale);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Helper method to create an immutable entry.
+     * 
+     * @param text  the text, not null
+     * @param field  the field, not null
+     * @return the entry, not null
+     */
+    protected static <A, B> Entry<A, B> createEntry(A text, B field) {
+        return new SimpleImmutableEntry<A, B>(text, field);
+    }
 
 }

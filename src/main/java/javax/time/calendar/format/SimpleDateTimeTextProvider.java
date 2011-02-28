@@ -31,10 +31,23 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -52,45 +65,17 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 public final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
      // TODO: Better implementation based on CLDR
 
-//    DateTimeFormatterBuilder.checkNotNull(locale, "Locale must not be null");
-//    DateTimeFormatterBuilder.checkNotNull(valueTextMap, "Map must not be null");
-//    if (valueTextMap.containsKey(null) || valueTextMap.containsValue(null) || valueTextMap.containsValue("")) {
-//        throw new IllegalArgumentException("The map must not contain null or empty text");
-//    }
-//    this.rule = rule;
-//    this.locale = locale;
-//    Map<DateTimeField, String> copy = new HashMap<DateTimeField, String>(valueTextMap);
-//    Map<String, DateTimeField> reverse = new HashMap<String, DateTimeField>();
-//    Map<String, DateTimeField> insensitive = new HashMap<String, DateTimeField>();
-//    Set<Integer> lengthSet = new HashSet<Integer>();
-//    for (Map.Entry<DateTimeField, String> entry : copy.entrySet()) {
-//        String text = entry.getValue();
-//        DateTimeField value = entry.getKey();
-//        reverse.put(text, value);
-//        lengthSet.add(text.length());
-//        String lower = text.toLowerCase(locale);
-//        insensitive.put(lower, value);
-//        lengthSet.add(lower.length());
-//        String upper = text.toUpperCase(locale);
-//        insensitive.put(upper, value);
-//        lengthSet.add(upper.length());
-//    }
-//    if (reverse.size() < copy.size()) {
-//        // duplicate text for a given value, so parsing is not supported
-//        this.textValueMap = Collections.emptyMap();
-//        this.insensitiveTextValueMap = Collections.emptyMap();
-//        this.lengths = null;
-//    } else {
-//        textValueMap = Collections.unmodifiableMap(reverse);
-//        insensitiveTextValueMap = Collections.unmodifiableMap(insensitive);
-//        this.lengths = new int[lengthSet.size()];
-//        int i = 0;
-//        for (Iterator<Integer> it = lengthSet.iterator(); it.hasNext(); ) {
-//            lengths[i++] = it.next();
-//        }
-//        Arrays.sort(lengths);
-//    }
-//    this.valueTextMap = Collections.unmodifiableMap(copy);
+    /** Cache. */
+    private static final ConcurrentMap<Entry<DateTimeRule, Locale>, Object> CACHE =
+        new ConcurrentHashMap<Entry<DateTimeRule, Locale>, Object>(16, 0.75f, 2);
+    /** Comparator. */
+    private static final Comparator<Entry<String, DateTimeField>> COMPARATOR = new Comparator<Entry<String, DateTimeField>>() {
+        @Override
+        public int compare(Entry<String, DateTimeField> obj1, Entry<String, DateTimeField> obj2) {
+            return obj2.getKey().length() - obj1.getKey().length();  // longest to shortest
+        }
+    };
+
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
@@ -101,72 +86,204 @@ public final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     //-----------------------------------------------------------------------
     @Override
     public String getText(DateTimeField field, TextStyle style, Locale locale) {
-        return null;  // TODO
+        Object store = findStore(field.getRule(), locale);
+        if (store instanceof LocaleStore) {
+            return ((LocaleStore) store).getText(field, style);
+        }
+        return null;
     }
 
     @Override
     public Iterator<Entry<String, DateTimeField>> getTextIterator(DateTimeRule rule, TextStyle style, Locale locale) {
-        return null;  // TODO
+        Object store = findStore(rule, locale);
+        if (store instanceof LocaleStore) {
+            return ((LocaleStore) store).getTextIterator(style);
+        }
+        return null;
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the text for the specified field.
-//     * <p>
-//     * The text associated with the field is returned, or null if none found.
-//     *
-//     * @param field  the field to get text for
-//     * @return the text for the field, null if no text found
-//     */
-//    public String getValueText(DateTimeField field) {
-//        return valueTextMap.get(field);
-//    }
-//
-//    /**
-//     * Matches the specified text against the text-value map returning the
-//     * matched length and value.
-//     * <p>
-//     * This method is intended for use during parsing, and matches the search text
-//     * against the text-value map, optionally ignoring case.
-//     *
-//     * @param ignoreCase  true to ignore case during the matching
-//     * @param parseText  the text to match against
-//     * @return the parsed field, null if not parsed
-//     */
-//    public DateTimeField matchText(boolean ignoreCase, String parseText, int[] parsedPosition) {
-//        DateTimeFormatterBuilder.checkNotNull(parseText, "Search text must not be null");
-//        if (lengths == null) {
-//            return null;
-//        }
-//        int lengthsStart = Arrays.binarySearch(lengths, parseText.length());
-//        lengthsStart = (lengthsStart < 0 ? -lengthsStart - 2 : lengthsStart);
-//        if (ignoreCase) {
-//            parseText = parseText.toUpperCase(locale);
-//            for (int i = lengthsStart; i >= 0; i--) {
-//                DateTimeField field = insensitiveTextValueMap.get(parseText.substring(0, lengths[i]));
-//                if (field != null) {
-//                    parsedPosition[0] = lengths[i];
-//                    return field;
-//                }
-//            }
-//            parseText = parseText.toLowerCase(locale);
-//            for (int i = lengthsStart; i >= 0; i--) {
-//                DateTimeField field = insensitiveTextValueMap.get(parseText.substring(0, lengths[i]));
-//                if (field != null) {
-//                    parsedPosition[0] = lengths[i];
-//                    return field;
-//                }
-//            }
-//        } else {
-//            for (int i = lengthsStart; i >= 0; i--) {
-//                DateTimeField field = textValueMap.get(parseText.substring(0, lengths[i]));
-//                if (field != null) {
-//                    parsedPosition[0] = lengths[i];
-//                    return field;
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    //-----------------------------------------------------------------------
+    private Object findStore(DateTimeRule rule, Locale locale) {
+        Entry<DateTimeRule, Locale> key = createEntry(rule, locale);
+        Object store = CACHE.get(key);
+        if (store == null) {
+            store = createStore(rule, locale);
+            CACHE.putIfAbsent(key, store);
+            store = CACHE.get(key);
+        }
+        return store;
+    }
+
+    private Object createStore(DateTimeRule rule, Locale locale) {
+        if (rule.equals(MONTH_OF_YEAR)) {
+            DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
+            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
+            DateTimeField f1 = rule.field(1);
+            DateTimeField f2 = rule.field(2);
+            DateTimeField f3 = rule.field(3);
+            DateTimeField f4 = rule.field(4);
+            DateTimeField f5 = rule.field(5);
+            DateTimeField f6 = rule.field(6);
+            DateTimeField f7 = rule.field(7);
+            DateTimeField f8 = rule.field(8);
+            DateTimeField f9 = rule.field(7);
+            DateTimeField f10 = rule.field(10);
+            DateTimeField f11 = rule.field(11);
+            DateTimeField f12 = rule.field(12);
+            String[] array = oldSymbols.getMonths();
+            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
+            map.put(f1, array[Calendar.JANUARY]);
+            map.put(f2, array[Calendar.FEBRUARY]);
+            map.put(f3, array[Calendar.MARCH]);
+            map.put(f4, array[Calendar.APRIL]);
+            map.put(f5, array[Calendar.MAY]);
+            map.put(f6, array[Calendar.JUNE]);
+            map.put(f7, array[Calendar.JULY]);
+            map.put(f8, array[Calendar.AUGUST]);
+            map.put(f9, array[Calendar.SEPTEMBER]);
+            map.put(f10, array[Calendar.OCTOBER]);
+            map.put(f11, array[Calendar.NOVEMBER]);
+            map.put(f12, array[Calendar.DECEMBER]);
+            styleMap.put(TextStyle.FULL, map);
+            array = oldSymbols.getShortMonths();
+            map = new HashMap<DateTimeField, String>();
+            map.put(f1, array[Calendar.JANUARY]);
+            map.put(f2, array[Calendar.FEBRUARY]);
+            map.put(f3, array[Calendar.MARCH]);
+            map.put(f4, array[Calendar.APRIL]);
+            map.put(f5, array[Calendar.MAY]);
+            map.put(f6, array[Calendar.JUNE]);
+            map.put(f7, array[Calendar.JULY]);
+            map.put(f8, array[Calendar.AUGUST]);
+            map.put(f9, array[Calendar.SEPTEMBER]);
+            map.put(f10, array[Calendar.OCTOBER]);
+            map.put(f11, array[Calendar.NOVEMBER]);
+            map.put(f12, array[Calendar.DECEMBER]);
+            styleMap.put(TextStyle.SHORT, map);
+            return new LocaleStore(styleMap);
+        }
+        if (rule.equals(DAY_OF_WEEK)) {
+            DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
+            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
+            DateTimeField f1 = rule.field(1);
+            DateTimeField f2 = rule.field(2);
+            DateTimeField f3 = rule.field(3);
+            DateTimeField f4 = rule.field(4);
+            DateTimeField f5 = rule.field(5);
+            DateTimeField f6 = rule.field(6);
+            DateTimeField f7 = rule.field(7);
+            String[] array = oldSymbols.getWeekdays();
+            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
+            map.put(f1, array[Calendar.MONDAY]);
+            map.put(f2, array[Calendar.TUESDAY]);
+            map.put(f3, array[Calendar.WEDNESDAY]);
+            map.put(f4, array[Calendar.THURSDAY]);
+            map.put(f5, array[Calendar.FRIDAY]);
+            map.put(f6, array[Calendar.SATURDAY]);
+            map.put(f7, array[Calendar.SUNDAY]);
+            styleMap.put(TextStyle.FULL, map);
+            array = oldSymbols.getShortWeekdays();
+            map = new HashMap<DateTimeField, String>();
+            map.put(f1, array[Calendar.MONDAY]);
+            map.put(f2, array[Calendar.TUESDAY]);
+            map.put(f3, array[Calendar.WEDNESDAY]);
+            map.put(f4, array[Calendar.THURSDAY]);
+            map.put(f5, array[Calendar.FRIDAY]);
+            map.put(f6, array[Calendar.SATURDAY]);
+            map.put(f7, array[Calendar.SUNDAY]);
+            styleMap.put(TextStyle.SHORT, map);
+            return new LocaleStore(styleMap);
+        }
+        if (rule.equals(AMPM_OF_DAY)) {
+            DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
+            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
+            String[] array = oldSymbols.getAmPmStrings();
+            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
+            map.put(rule.field(0), array[Calendar.AM]);
+            map.put(rule.field(1), array[Calendar.PM]);
+            styleMap.put(TextStyle.FULL, map);
+            styleMap.put(TextStyle.SHORT, map);  // re-use, as we don't have different data
+            return new LocaleStore(styleMap);
+        }
+        return "";  // null marker for map
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Stores the text for a single locale.
+     * <p>
+     * Some fields have a textual representation, such as day-of-week or month-of-year.
+     * These textual representations can be captured in this class for printing
+     * and parsing.
+     * <p>
+     * This class is immutable and thread-safe.
+     *
+     * @author Stephen Colebourne
+     */
+    static final class LocaleStore {
+        /**
+         * Map of value to text.
+         */
+        private final Map<TextStyle, Map<DateTimeField, String>> valueTextMap;
+        /**
+         * Parsable data.
+         */
+        private final Map<TextStyle, List<Entry<String, DateTimeField>>> parsable;
+
+        //-----------------------------------------------------------------------
+        /**
+         * Constructor.
+         *
+         * @param valueTextMap  the map of values to text to store, not null
+         */
+        LocaleStore(Map<TextStyle, Map<DateTimeField, String>> valueTextMap) {
+            this.valueTextMap = valueTextMap;
+            Map<TextStyle, List<Entry<String, DateTimeField>>> map = new HashMap<TextStyle, List<Entry<String, DateTimeField>>>();
+            List<Entry<String, DateTimeField>> allList = new ArrayList<Entry<String, DateTimeField>>();
+            for (TextStyle style : valueTextMap.keySet()) {
+                Map<String, Entry<String, DateTimeField>> reverse = new HashMap<String, Entry<String, DateTimeField>>();
+                for (Map.Entry<DateTimeField, String> entry : valueTextMap.get(style).entrySet()) {
+                    if (reverse.put(entry.getValue(), createEntry(entry.getValue(), entry.getKey())) != null) {
+                        continue;  // not parsable, try next style
+                    }
+                }
+                List<Entry<String, DateTimeField>> list = new ArrayList<Entry<String, DateTimeField>>(reverse.values());
+                Collections.sort(list, COMPARATOR);
+                map.put(style, list);
+                allList.addAll(list);
+                map.put(null, allList);
+            }
+            Collections.sort(allList, COMPARATOR);
+            this.parsable = map;
+        }
+
+        //-----------------------------------------------------------------------
+        /**
+         * Gets the text for the specified field, locale and style
+         * for the purpose of printing.
+         *
+         * @param field  the field to get text for, not null
+         * @param style  the style to get text for, not null
+         * @return the text for the field value, null if no text found
+         */
+        String getText(DateTimeField field, TextStyle style) {
+            Map<DateTimeField, String> map = valueTextMap.get(style);
+            return map != null ? map.get(field) : null;
+        }
+
+        /**
+         * Gets an iterator of text to field for the specified style for the purpose of parsing.
+         * <p>
+         * The iterator must be returned in order from the longest text to the shortest.
+         *
+         * @param style  the style to get text for, null for all parsable text
+         * @return the iterator of text to field pairs, in order from longest text to shortest text,
+         *  null if the style is not parsable
+         */
+        Iterator<Entry<String, DateTimeField>> getTextIterator(TextStyle style) {
+            List<Entry<String, DateTimeField>> list = parsable.get(style);
+            return list != null ? list.iterator() : null;
+        }
+    }
 
 }
