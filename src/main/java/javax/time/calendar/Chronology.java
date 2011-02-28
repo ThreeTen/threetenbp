@@ -46,7 +46,7 @@ import java.io.Serializable;
  * The default chronology is {@link ISOChronology ISO8601} which is the
  * <i>de facto</i> world calendar today.
  * <p>
- * Chronology is an abstract class and must be implemented with care to
+ * This is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  * Wherever possible subclasses should be singletons with no public constructor.
