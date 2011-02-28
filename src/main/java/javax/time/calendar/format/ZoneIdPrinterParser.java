@@ -97,7 +97,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * The cached IDs.
      */
-    private static Set<String> preparedIDs;
+    private static Set<String> preparedIDs;  // TODO: used inside and outside sync block
 
     /**
      * This implementation looks for the longest matching string.
