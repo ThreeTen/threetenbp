@@ -33,6 +33,10 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 
+import java.util.Locale;
+
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+
 /**
  * A quarter-of-year, such as 'Q2'.
  * <p>
@@ -140,6 +144,24 @@ public enum QuarterOfYear {
 //        }
 //        return rule.reify(this);
 //    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the textual representation, such as 'Q1' or '4th quarter'.
+     * <p>
+     * This method is notionally specific to {@link ISOChronology} as it uses
+     * the quarter-of-year rule to obtain the text. However, it is expected that
+     * the text will be equivalent for all quarter-of-year rules, thus this aspect
+     * of the implementation should be irrelevant to applications.
+     * <p>
+     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
+     *
+     * @param locale  the locale to use, not null
+     * @return the short text value of the month-of-year, not null
+     */
+    public String getText(TextStyle style, Locale locale) {
+        return QUARTER_OF_YEAR.getText(getValue(), style, locale);
+    }
 
     //-----------------------------------------------------------------------
     /**

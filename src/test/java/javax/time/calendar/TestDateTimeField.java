@@ -50,6 +50,9 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Locale;
+
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -207,7 +210,27 @@ public class TestDateTimeField {
     }
 
     //-----------------------------------------------------------------------
-    // getFractionalValue()
+    // getText()
+    //-----------------------------------------------------------------------
+    public void test_getText() {
+        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
+        assertEquals(test.getText(TextStyle.SHORT, Locale.US), "Jan");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullStyle() {
+        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
+        test.getText(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullLocale() {
+        DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
+        test.getText(TextStyle.FULL, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // get()
     //-----------------------------------------------------------------------
     public void test_get() {
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_DAY), HOUR_OF_DAY.field(18));

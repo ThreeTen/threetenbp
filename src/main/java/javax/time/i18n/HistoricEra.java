@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -128,29 +128,15 @@ public enum HistoricEra implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the short textual representation of this BCE/CE, such as 'BCE' or 'CE'.
+     * Gets the textual representation, such as 'BCE' or 'CE'.
      * <p>
-     * If there is no textual mapping for the locale, then the value is
-     * returned as per {@link Integer#toString()}.
+     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param locale  the locale to use, not null
-     * @return the short text value of the BCE/CE, not null
+     * @return the short text value of the month-of-year, not null
      */
-    public String getShortText(Locale locale) {
-        return HistoricChronology.standardCutover().eraRule().getText(getValue(), locale, TextStyle.SHORT);
-    }
-
-    /**
-     * Gets the short textual representation of this day-of-week, such as 'BCE' or 'CE'.
-     * <p>
-     * If there is no textual mapping for the locale, then the value is
-     * returned as per {@link Integer#toString()}.
-     *
-     * @param locale  the locale to use, not null
-     * @return the long text value of the BCE/CE, not null
-     */
-    public String getText(Locale locale) {
-        return HistoricChronology.standardCutover().eraRule().getText(getValue(), locale, TextStyle.FULL);
+    public String getText(TextStyle style, Locale locale) {
+        return HistoricChronology.standardCutover().eraRule().getText(getValue(), style, locale);
     }
 
 }

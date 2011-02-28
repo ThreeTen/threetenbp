@@ -67,7 +67,8 @@
 - Use ArithmeticException in date classes
 - Add DateTimePrintContext
 - Rename DateTimeFormatterProvider to DateTimeFormatStyleProvider
-- Obtain text from DateTimeTextProvider
+- Obtain text from DateTimeTextProvider (remove code from DateTimeRule)
+- Alter/simplify getText() methods in enums
 
 0.6.3
 ===============================================================================

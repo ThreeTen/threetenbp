@@ -99,6 +99,7 @@ import javax.time.calendar.format.TestNumberParser;
 import javax.time.calendar.format.TestNumberPrinter;
 import javax.time.calendar.format.TestPadParserDecorator;
 import javax.time.calendar.format.TestPadPrinterDecorator;
+import javax.time.calendar.format.TestSimpleDateTimeTextProvider;
 import javax.time.calendar.format.TestStrictLenientPrinterParser;
 import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
@@ -214,6 +215,7 @@ public class AllTest {
             TestNumberPrinter.class,
             TestPadParserDecorator.class,
             TestPadPrinterDecorator.class,
+            TestSimpleDateTimeTextProvider.class,
             TestStrictLenientPrinterParser.class,
             TestStringLiteralPrinter.class,
             TestStringLiteralParser.class,

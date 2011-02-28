@@ -38,8 +38,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.time.calendar.AmPmOfDay;
-import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -94,30 +93,21 @@ public class TestAmPmOfDay {
 //    }
 
     //-----------------------------------------------------------------------
-    // getShortText()
-    //-----------------------------------------------------------------------
-    public void test_getShortText() {
-        assertEquals(AmPmOfDay.AM.getShortText(Locale.US), "AM");
-        assertEquals(AmPmOfDay.PM.getShortText(Locale.US), "PM");
-    }
-
-//    public void test_getShortText_noText() {
-//        assertEquals(AmPmOfDay.AM.getShortText(new Locale("", "")), "0");
-//        assertEquals(AmPmOfDay.PM.getShortText(new Locale("", "")), "1");
-//    }
-
-    //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
     public void test_getText() {
-        assertEquals(AmPmOfDay.AM.getText(Locale.US), "AM");
-        assertEquals(AmPmOfDay.PM.getText(Locale.US), "PM");
+        assertEquals(AmPmOfDay.AM.getText(TextStyle.SHORT, Locale.US), "AM");
     }
 
-//    public void test_getText_noText() {
-//        assertEquals(AmPmOfDay.AM.getText(new Locale("", "")), "0");
-//        assertEquals(AmPmOfDay.PM.getText(new Locale("", "")), "1");
-//    }
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullStyle() {
+        AmPmOfDay.AM.getText(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullLocale() {
+        AmPmOfDay.AM.getText(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // isAM()

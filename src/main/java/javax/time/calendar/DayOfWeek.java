@@ -190,39 +190,20 @@ public enum DayOfWeek {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the short textual representation of this day-of-week, such as 'Mon' or 'Fri'.
+     * Gets the textual representation, such as 'Mon' or 'Friday'.
      * <p>
      * This method is notionally specific to {@link ISOChronology} as it uses
      * the day-of-week rule to obtain the text. However, it is expected that
      * the text will be equivalent for all day-of-week rules, thus this aspect
      * of the implementation should be irrelevant to applications.
      * <p>
-     * If there is no textual mapping for the locale, then the ISO-8601
-     * {@link #getValue() value} is returned as per {@link Integer#toString()}.
+     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the day-of-week, not null
      */
-    public String getShortText(Locale locale) {
-        return DAY_OF_WEEK.getText(getValue(), locale, TextStyle.SHORT);
-    }
-
-    /**
-     * Gets the full textual representation of this day-of-week, such as 'Monday' or 'Friday'.
-     * <p>
-     * This method is notionally specific to {@link ISOChronology} as it uses
-     * the day-of-week rule to obtain the text. However, it is expected that
-     * the text will be equivalent for all day-of-week rules, thus this aspect
-     * of the implementation should be irrelevant to applications.
-     * <p>
-     * If there is no textual mapping for the locale, then the ISO-8601
-     * {@link #getValue() value} is returned as per {@link Integer#toString()}.
-     *
-     * @param locale  the locale to use, not null
-     * @return the full text value of the day-of-week, not null
-     */
-    public String getText(Locale locale) {
-        return DAY_OF_WEEK.getText(getValue(), locale, TextStyle.FULL);
+    public String getText(TextStyle style, Locale locale) {
+        return DAY_OF_WEEK.getText(getValue(), style, locale);
     }
 
     //-----------------------------------------------------------------------

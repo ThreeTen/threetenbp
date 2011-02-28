@@ -34,6 +34,7 @@ package javax.time.calendar.format;
 import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -115,6 +116,17 @@ public final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
     }
 
     private Object createStore(DateTimeRule rule, Locale locale) {
+        if (rule.equals(QUARTER_OF_YEAR)) {
+            Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
+            Map<DateTimeField, String> map = new HashMap<DateTimeField, String>();
+            map.put(rule.field(1), "Q1");
+            map.put(rule.field(2), "Q2");
+            map.put(rule.field(3), "Q3");
+            map.put(rule.field(4), "Q4");
+            styleMap.put(TextStyle.FULL, map);
+            styleMap.put(TextStyle.SHORT, map);
+            return new LocaleStore(styleMap);
+        }
         if (rule.equals(MONTH_OF_YEAR)) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
             Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
@@ -126,7 +138,7 @@ public final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             DateTimeField f6 = rule.field(6);
             DateTimeField f7 = rule.field(7);
             DateTimeField f8 = rule.field(8);
-            DateTimeField f9 = rule.field(7);
+            DateTimeField f9 = rule.field(9);
             DateTimeField f10 = rule.field(10);
             DateTimeField f11 = rule.field(11);
             DateTimeField f12 = rule.field(12);
@@ -234,7 +246,7 @@ public final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
         /**
          * Constructor.
          *
-         * @param valueTextMap  the map of values to text to store, not null
+         * @param valueTextMap  the map of values to text to store, assigned and not altered, not null
          */
         LocaleStore(Map<TextStyle, Map<DateTimeField, String>> valueTextMap) {
             this.valueTextMap = valueTextMap;

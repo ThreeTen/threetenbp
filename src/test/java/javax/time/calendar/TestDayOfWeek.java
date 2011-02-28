@@ -38,8 +38,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -115,72 +114,21 @@ public class TestDayOfWeek {
 //    }
 
     //-----------------------------------------------------------------------
-    // getShortText()
-    //-----------------------------------------------------------------------
-    public void test_getShortText_US() {
-        assertEquals(DayOfWeek.MONDAY.getShortText(Locale.US), "Mon");
-        assertEquals(DayOfWeek.TUESDAY.getShortText(Locale.US), "Tue");
-        assertEquals(DayOfWeek.WEDNESDAY.getShortText(Locale.US), "Wed");
-        assertEquals(DayOfWeek.THURSDAY.getShortText(Locale.US), "Thu");
-        assertEquals(DayOfWeek.FRIDAY.getShortText(Locale.US), "Fri");
-        assertEquals(DayOfWeek.SATURDAY.getShortText(Locale.US), "Sat");
-        assertEquals(DayOfWeek.SUNDAY.getShortText(Locale.US), "Sun");
-    }
-
-    public void test_getShortText_pt_BR() {
-        Locale ptBR = new Locale("pt", "BR");
-        assertEquals(DayOfWeek.MONDAY.getShortText(ptBR), "Seg");
-        assertEquals(DayOfWeek.TUESDAY.getShortText(ptBR), "Ter");
-        assertEquals(DayOfWeek.WEDNESDAY.getShortText(ptBR), "Qua");
-        assertEquals(DayOfWeek.THURSDAY.getShortText(ptBR), "Qui");
-        assertEquals(DayOfWeek.FRIDAY.getShortText(ptBR), "Sex");
-        assertEquals(DayOfWeek.SATURDAY.getShortText(ptBR), "S\u00E1b");
-        assertEquals(DayOfWeek.SUNDAY.getShortText(ptBR), "Dom");
-    }
-
-//    public void test_getShortText_noText() {
-//        assertEquals(DayOfWeek.MONDAY.getShortText(new Locale("", "")), "1");
-//        assertEquals(DayOfWeek.TUESDAY.getShortText(new Locale("", "")), "2");
-//        assertEquals(DayOfWeek.WEDNESDAY.getShortText(new Locale("", "")), "3");
-//        assertEquals(DayOfWeek.THURSDAY.getShortText(new Locale("", "")), "4");
-//        assertEquals(DayOfWeek.FRIDAY.getShortText(new Locale("", "")), "5");
-//        assertEquals(DayOfWeek.SATURDAY.getShortText(new Locale("", "")), "6");
-//        assertEquals(DayOfWeek.SUNDAY.getShortText(new Locale("", "")), "7");
-//    }
-
-    //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
-    public void test_getText_US() {
-        assertEquals(DayOfWeek.MONDAY.getText(Locale.US), "Monday");
-        assertEquals(DayOfWeek.TUESDAY.getText(Locale.US), "Tuesday");
-        assertEquals(DayOfWeek.WEDNESDAY.getText(Locale.US), "Wednesday");
-        assertEquals(DayOfWeek.THURSDAY.getText(Locale.US), "Thursday");
-        assertEquals(DayOfWeek.FRIDAY.getText(Locale.US), "Friday");
-        assertEquals(DayOfWeek.SATURDAY.getText(Locale.US), "Saturday");
-        assertEquals(DayOfWeek.SUNDAY.getText(Locale.US), "Sunday");
+    public void test_getText() {
+        assertEquals(DayOfWeek.MONDAY.getText(TextStyle.SHORT, Locale.US), "Mon");
     }
 
-    public void test_getText_pt_BR() {
-        Locale ptBR = new Locale("pt", "BR");
-        assertEquals(DayOfWeek.MONDAY.getText(ptBR), "Segunda-feira");
-        assertEquals(DayOfWeek.TUESDAY.getText(ptBR), "Ter\u00E7a-feira");
-        assertEquals(DayOfWeek.WEDNESDAY.getText(ptBR), "Quarta-feira");
-        assertEquals(DayOfWeek.THURSDAY.getText(ptBR), "Quinta-feira");
-        assertEquals(DayOfWeek.FRIDAY.getText(ptBR), "Sexta-feira");
-        assertEquals(DayOfWeek.SATURDAY.getText(ptBR), "S\u00E1bado");
-        assertEquals(DayOfWeek.SUNDAY.getText(ptBR), "Domingo");
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullStyle() {
+        DayOfWeek.MONDAY.getText(null, Locale.US);
     }
 
-//    public void test_getText_noText() {
-//        assertEquals(DayOfWeek.MONDAY.getText(new Locale("", "")), "1");
-//        assertEquals(DayOfWeek.TUESDAY.getText(new Locale("", "")), "2");
-//        assertEquals(DayOfWeek.WEDNESDAY.getText(new Locale("", "")), "3");
-//        assertEquals(DayOfWeek.THURSDAY.getText(new Locale("", "")), "4");
-//        assertEquals(DayOfWeek.FRIDAY.getText(new Locale("", "")), "5");
-//        assertEquals(DayOfWeek.SATURDAY.getText(new Locale("", "")), "6");
-//        assertEquals(DayOfWeek.SUNDAY.getText(new Locale("", "")), "7");
-//    }
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullLocale() {
+        DayOfWeek.MONDAY.getText(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // is...()

@@ -350,8 +350,9 @@ public final class JapaneseChronology extends Chronology implements Serializable
                 }
             }
         }
+        // TODO: never worked properly, needs to use proper provider
         @Override
-        public String getText(int value, Locale locale, TextStyle textStyle) {
+        public String getText(long value, TextStyle textStyle, Locale locale) {
             value = value + 3; // -3 is the min value.
             String[] names = null;
             String language = locale.getLanguage();
@@ -374,7 +375,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                     names = ERA_FULL_NAMES.get(FALLBACK_LANGUAGE);
                 }
             }
-            return names == null ? Integer.toString(value) : names[value];
+            return names == null ? Long.toString(value) : names[(int) value];
         }
     }
 

@@ -203,39 +203,20 @@ public enum MonthOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the short textual representation of this month-of-year, such as 'Jan' or 'Dec'.
+     * Gets the textual representation, such as 'Jan' or 'December'.
      * <p>
      * This method is notionally specific to {@link ISOChronology} as it uses
      * the month-of-year rule to obtain the text. However, it is expected that
      * the text will be equivalent for all month-of-year rules, thus this aspect
      * of the implementation should be irrelevant to applications.
      * <p>
-     * If there is no textual mapping for the locale, then the value is
-     * returned as per {@link Integer#toString()}.
+     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
      * @param locale  the locale to use, not null
      * @return the short text value of the month-of-year, not null
      */
-    public String getShortText(Locale locale) {
-        return MONTH_OF_YEAR.getText(getValue(), locale, TextStyle.SHORT);
-    }
-
-    /**
-     * Gets the full textual representation of this month-of-year, such as 'January' or 'December'.
-     * <p>
-     * This method is notionally specific to {@link ISOChronology} as it uses
-     * the month-of-year rule to obtain the text. However, it is expected that
-     * the text will be equivalent for all month-of-year rules, thus this aspect
-     * of the implementation should be irrelevant to applications.
-     * <p>
-     * If there is no textual mapping for the locale, then the value is
-     * returned as per {@link Integer#toString()}.
-     *
-     * @param locale  the locale to use, not null
-     * @return the full text value of the month-of-year, not null
-     */
-    public String getText(Locale locale) {
-        return MONTH_OF_YEAR.getText(getValue(), locale, TextStyle.FULL);
+    public String getText(TextStyle style, Locale locale) {
+        return MONTH_OF_YEAR.getText(getValue(), style, locale);
     }
 
     //-----------------------------------------------------------------------

@@ -31,13 +31,14 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.Locale;
 
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.QuarterOfYear;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -90,6 +91,23 @@ public class TestQuarterOfYear {
 //        
 //        assertEquals(QuarterOfYear.Q1.get(ISODateTimeRule.MONTH_OF_YEAR), null);
 //    }
+
+    //-----------------------------------------------------------------------
+    // getText()
+    //-----------------------------------------------------------------------
+    public void test_getText() {
+        assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "Q1");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullStyle() {
+        QuarterOfYear.Q1.getText(null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullLocale() {
+        QuarterOfYear.Q1.getText(TextStyle.FULL, null);
+    }
 
     //-----------------------------------------------------------------------
     // is...()

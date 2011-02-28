@@ -46,6 +46,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.Locale;
+
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.Test;
 
@@ -158,6 +161,23 @@ public class TestDateTimeRule {
         assertEquals(rule.getSmallestMaximumValue(), 21);
         assertEquals(rule.getMaximumValue(), 23);
         assertEquals(rule.isFixedValueSet(), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // getText()
+    //-----------------------------------------------------------------------
+    public void test_getText() {
+        assertEquals(MONTH_OF_YEAR.getText(1, TextStyle.SHORT, Locale.US), "Jan");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullStyle() {
+        MONTH_OF_YEAR.getText(1, null, Locale.US);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getText_nullLocale() {
+        MONTH_OF_YEAR.getText(1, TextStyle.FULL, null);
     }
 
     //-----------------------------------------------------------------------

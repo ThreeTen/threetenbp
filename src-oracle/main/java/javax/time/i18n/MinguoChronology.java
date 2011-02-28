@@ -314,8 +314,9 @@ public final class MinguoChronology extends Chronology implements Serializable {
             MinguoDate date = calendrical.get(MinguoDate.rule());
             return date != null ? field(date.getEra().getValue()) : null;
         }
+        // TODO: never worked properly, needs to use proper provider
         @Override
-        public String getText(int value, Locale locale, TextStyle textStyle) {
+        public String getText(long value, TextStyle textStyle, Locale locale) {
             String[] names = null;
             String language = locale.getLanguage();
             
@@ -337,7 +338,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
                     names = ERA_FULL_NAMES.get(FALLBACK_LANGUAGE);
                 }
             }
-            return names == null ? Integer.toString(value) : names[value];
+            return names == null ? Long.toString(value) : names[(int) value];
         }
     }
 

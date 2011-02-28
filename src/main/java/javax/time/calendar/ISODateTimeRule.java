@@ -45,14 +45,6 @@ import static javax.time.calendar.ISOPeriodUnit.YEARS;
 import static javax.time.calendar.ISOPeriodUnit._12_HOURS;
 
 import java.io.Serializable;
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * The rules of date and time used by the ISO calendar system, such as 'HourOfDay' or 'MonthOfYear'.
@@ -107,8 +99,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             long minimumValue,
             long maximumValue,
             long smallestMaximum) {
-        super(ISOChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue,
-                ordinal == AMPM_OF_DAY_ORDINAL || ordinal == DAY_OF_WEEK_ORDINAL || ordinal == MONTH_OF_YEAR_ORDINAL);
+        super(ISOChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue);
         this.ordinal = ordinal;  // 16 multiplier allow space for new rules
         this.smallestMaximum = smallestMaximum;
     }
@@ -264,78 +255,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             }
         }
         return super.getMaximumValue();
-    }
-    @Override
-    protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
-        DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
-        switch (ordinal) {
-            case AMPM_OF_DAY_ORDINAL: {
-                String[] array = oldSymbols.getAmPmStrings();
-                Map<Integer, String> map = new HashMap<Integer, String>();
-                map.put(0, array[Calendar.AM]);
-                map.put(1, array[Calendar.PM]);
-                TextStore textStore = new TextStore(locale, map);
-                textStores.put(TextStyle.FULL, textStore);
-                textStores.put(TextStyle.SHORT, textStore);  // re-use, as we don't have different data
-                break;
-            }
-            case DAY_OF_WEEK_ORDINAL: {
-                String[] array = oldSymbols.getWeekdays();
-                Map<Integer, String> map = new HashMap<Integer, String>();
-                map.put(1, array[Calendar.MONDAY]);
-                map.put(2, array[Calendar.TUESDAY]);
-                map.put(3, array[Calendar.WEDNESDAY]);
-                map.put(4, array[Calendar.THURSDAY]);
-                map.put(5, array[Calendar.FRIDAY]);
-                map.put(6, array[Calendar.SATURDAY]);
-                map.put(7, array[Calendar.SUNDAY]);
-                textStores.put(TextStyle.FULL, new TextStore(locale, map));
-                array = oldSymbols.getShortWeekdays();
-                map.clear();
-                map.put(1, array[Calendar.MONDAY]);
-                map.put(2, array[Calendar.TUESDAY]);
-                map.put(3, array[Calendar.WEDNESDAY]);
-                map.put(4, array[Calendar.THURSDAY]);
-                map.put(5, array[Calendar.FRIDAY]);
-                map.put(6, array[Calendar.SATURDAY]);
-                map.put(7, array[Calendar.SUNDAY]);
-                textStores.put(TextStyle.SHORT, new TextStore(locale, map));
-                break;
-            }
-            case MONTH_OF_YEAR_ORDINAL: {
-                String[] array = oldSymbols.getMonths();
-                Map<Integer, String> map = new HashMap<Integer, String>();
-                map.put(1, array[Calendar.JANUARY]);
-                map.put(2, array[Calendar.FEBRUARY]);
-                map.put(3, array[Calendar.MARCH]);
-                map.put(4, array[Calendar.APRIL]);
-                map.put(5, array[Calendar.MAY]);
-                map.put(6, array[Calendar.JUNE]);
-                map.put(7, array[Calendar.JULY]);
-                map.put(8, array[Calendar.AUGUST]);
-                map.put(9, array[Calendar.SEPTEMBER]);
-                map.put(10, array[Calendar.OCTOBER]);
-                map.put(11, array[Calendar.NOVEMBER]);
-                map.put(12, array[Calendar.DECEMBER]);
-                textStores.put(TextStyle.FULL, new TextStore(locale, map));
-                array = oldSymbols.getShortMonths();
-                map.clear();
-                map.put(1, array[Calendar.JANUARY]);
-                map.put(2, array[Calendar.FEBRUARY]);
-                map.put(3, array[Calendar.MARCH]);
-                map.put(4, array[Calendar.APRIL]);
-                map.put(5, array[Calendar.MAY]);
-                map.put(6, array[Calendar.JUNE]);
-                map.put(7, array[Calendar.JULY]);
-                map.put(8, array[Calendar.AUGUST]);
-                map.put(9, array[Calendar.SEPTEMBER]);
-                map.put(10, array[Calendar.OCTOBER]);
-                map.put(11, array[Calendar.NOVEMBER]);
-                map.put(12, array[Calendar.DECEMBER]);
-                textStores.put(TextStyle.SHORT, new TextStore(locale, map));
-                break;
-            }
-        }
     }
 
     //-----------------------------------------------------------------------

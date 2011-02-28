@@ -32,9 +32,12 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.SimpleDateTimeTextProvider;
 
 /**
  * A field of date-time measured using a single rule, such as 'MonthOfYear 12' or 'DayOfMonth 3'.
@@ -223,6 +226,23 @@ public final class DateTimeField
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the textual representation of this field.
+     * <p>
+     * This returns the textual representation of the field, such as for day-of-week or month-of-year.
+     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
+     *
+     * @param textStyle  the text style, not null
+     * @param locale  the locale to use, not null
+     * @return the textual representation of the field, not null
+     */
+    public String getText(TextStyle textStyle, Locale locale) {
+        ISOChronology.checkNotNull(textStyle, "TextStyle must not be null");
+        ISOChronology.checkNotNull(locale, "Locale must not be null");
+        String text = new SimpleDateTimeTextProvider().getText(this, textStyle, locale);
+        return text == null ? Long.toString(value) : text;
+    }
+
     /**
      * Gets the value of the specified calendrical rule.
      * <p>
