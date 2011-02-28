@@ -47,7 +47,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
  *
  * @author Stephen Colebourne
  */
-public abstract class DateTimeFormatterProvider extends LocaleServiceProvider {
+public abstract class DateTimeFormatStyleProvider extends LocaleServiceProvider {
 
     /**
      * Gets a localized date, time or date-time formatter.

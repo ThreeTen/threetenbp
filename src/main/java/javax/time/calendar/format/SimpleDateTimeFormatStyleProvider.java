@@ -43,11 +43,14 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 /**
  * The Service Provider Implementation to obtain date-time formatters for a style.
  * <p>
+ * This implementation is based on extraction of data from a {@link SimpleDateFormat}.
+ * <p>
  * This class is thread-safe.
  *
  * @author Stephen Colebourne
  */
-final class DateTimeFormatterProviderImpl extends DateTimeFormatterProvider {
+final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvider {
+    // TODO: Better implementation based on CLDR
 
     /** Cache of formatters. */
     private static final ConcurrentMap<String, Object> FORMATTER_CACHE =

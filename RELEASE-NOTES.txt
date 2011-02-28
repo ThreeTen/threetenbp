@@ -66,6 +66,7 @@
 - Remove CalendricalPrintFieldException
 - Use ArithmeticException in date classes
 - Add DateTimePrintContext
+- Rename DateTimeFormatterProvider to DateTimeFormatStleProvider
 
 0.6.3
 ===============================================================================
