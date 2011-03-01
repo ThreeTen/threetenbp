@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,18 +34,14 @@ package javax.time.calendar;
 import javax.time.calendar.format.CalendricalParseException;
 
 /**
- * An period parser that creates an instance of {@code Period} from a string
- * using the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
+ * A period parser that creates an instance of {@code Period} from a string.
+ * This parses the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
  *
  * @author Darryl West
  * @author Stephen Colebourne
  */
 final class PeriodParser {
 
-    /**
-     * The singleton instance.
-     */
-    private static final PeriodParser INSTANCE = new PeriodParser();
     /**
      * Used to validate the correct sequence of tokens.
      */
@@ -56,42 +52,64 @@ final class PeriodParser {
     private static final String ZERO = "PT0S";
 
     /**
-     * Restricted constructor.
+     * The number of years.
      */
-    private PeriodParser() { }
+    private int years;
+    /**
+     * The number of months.
+     */
+    private int months;
+    /**
+     * The number of days.
+     */
+    private int days;
+    /**
+     * The number of hours.
+     */
+    private int hours;
+    /**
+     * The number of minutes.
+     */
+    private int minutes;
+    /**
+     * The number of seconds.
+     */
+    private int seconds;
+    /**
+     * The number of nanoseconds.
+     */
+    private long nanos;
+    /**
+     * Whether the seconds were negative.
+     */
+    private boolean negativeSecs;
+    /**
+     * Parser position index.
+     */
+    private int index;
+    /**
+     * Original text.
+     */
+    private String text;
 
     /**
-     * Gets the singleton instance of the parser.
-     *
-     * @return the instance of the parser
+     * Constructor.
+     * 
+     * @param text  the text to parse, not null
      */
-    static PeriodParser getInstance() {
-        return INSTANCE;
+    PeriodParser(String text) {
+        this.text = text;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Period} from a string.
-     * <p>
-     * This will parse the string produced by {@code toString()} which is
-     * a subset of the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
-     * <p>
-     * The string consists of a series of numbers with a suffix identifying their meaning.
-     * The values, and suffixes, must be in the sequence year, month, day, hour, minute, second.
-     * Any of the number/suffix pairs may be omitted providing at least one is present.
-     * If the period is zero, the value is normally represented as {@code PT0S}.
-     * The numbers must consist of ASCII digits.
-     * Any of the numbers may be negative. Negative zero is not accepted.
-     * The number of nanoseconds is expressed as an optional fraction of the seconds.
-     * There must be at least one digit before any decimal point.
-     * There must be between 1 and 9 inclusive digits after any decimal point.
-     * The letters will all be accepted in upper or lower case.
-     * The decimal point may be either a dot or a comma.
+     * Performs the parse.
      *
      * @param text  the input string in the format PnYnMnDTnHnMn.nS, validated not null
      * @return the created Period, not null
      * @throws CalendricalParseException if the text cannot be parsed to a Period
      */
-    Period parse(final String text) {
+    Period parse() {
         // force to upper case and coerce the comma to dot
         String s = text.toUpperCase().replace(',', '.');
         
@@ -105,70 +123,69 @@ final class PeriodParser {
         validateCharactersAndOrdering(s, text);
         
         // strip off the leading P
-        ParseValues values = new ParseValues(text);
         String[] datetime = s.substring(1).split("T");
         switch (datetime.length) {
             case 2:
-                parseDate(values, datetime[0], 1);
-                parseTime(values, datetime[1], datetime[0].length() + 2);
+                parseDate(datetime[0], 1);
+                parseTime(datetime[1], datetime[0].length() + 2);
                 break;
             case 1:
-                parseDate(values, datetime[0], 1);
+                parseDate(datetime[0], 1);
                 break;
         }
-        return values.toPeriod();
+        return toPeriod();
     }
 
-    private void parseDate(ParseValues values, String s, int baseIndex) {
-        values.index = 0;
-        while (values.index < s.length()) {
-            String value = parseNumber(values, s);
-            if (values.index < s.length()) {
-                char c = s.charAt(values.index);
+    private void parseDate(String s, int baseIndex) {
+        index = 0;
+        while (index < s.length()) {
+            String value = parseNumber(s);
+            if (index < s.length()) {
+                char c = s.charAt(index);
                 switch(c) {
-                    case 'Y': values.years = parseInt(values, value, baseIndex) ; break;
-                    case 'M': values.months = parseInt(values, value, baseIndex) ; break;
-                    case 'D': values.days = parseInt(values, value, baseIndex) ; break;
+                    case 'Y': years = parseInt(value, baseIndex) ; break;
+                    case 'M': months = parseInt(value, baseIndex) ; break;
+                    case 'D': days = parseInt(value, baseIndex) ; break;
                     default:
                         throw new CalendricalParseException("Period could not be parsed, unrecognized letter '" +
-                                c + ": " + values.text, values.text, baseIndex + values.index);
+                                c + ": " + text, text, baseIndex + index);
                 }
-                values.index++;
+                index++;
             }
         }
     }
 
-    private void parseTime(ParseValues values, String s, int baseIndex) {
-        values.index = 0;
-        s = prepareTime(values, s, baseIndex);
-        while (values.index < s.length()) {
-            String value = parseNumber(values, s);
-            if (values.index < s.length()) {
-                char c = s.charAt(values.index);
+    private void parseTime(String s, int baseIndex) {
+        index = 0;
+        s = prepareTime(s, baseIndex);
+        while (index < s.length()) {
+            String value = parseNumber(s);
+            if (index < s.length()) {
+                char c = s.charAt(index);
                 switch(c) {
-                    case 'H': values.hours = parseInt(values, value, baseIndex) ; break;
-                    case 'M': values.minutes = parseInt(values, value, baseIndex) ; break;
-                    case 'S': values.seconds = parseInt(values, value, baseIndex) ; break;
-                    case 'N': values.nanos = parseNanos(values, value, baseIndex); break;
+                    case 'H': hours = parseInt(value, baseIndex) ; break;
+                    case 'M': minutes = parseInt(value, baseIndex) ; break;
+                    case 'S': seconds = parseInt(value, baseIndex) ; break;
+                    case 'N': nanos = parseNanos(value, baseIndex); break;
                     default:
                         throw new CalendricalParseException("Period could not be parsed, unrecognized letter '" +
-                                c + "': " + values.text, values.text, baseIndex + values.index);
+                                c + "': " + text, text, baseIndex + index);
                 }
-                values.index++;
+                index++;
             }
         }
     }
 
-    private long parseNanos(ParseValues values, String s, int baseIndex) {
+    private long parseNanos(String s, int baseIndex) {
         if (s.length() > 9) {
             throw new CalendricalParseException("Period could not be parsed, nanosecond range exceeded: " +
-                    values.text, values.text, baseIndex + values.index - s.length());
+                    text, text, baseIndex + index - s.length());
         }
         // pad to the right to create 10**9, then trim
         return Long.parseLong((s + "000000000").substring(0, 9));
     }
 
-    private String prepareTime(ParseValues values, String s, int baseIndex) {
+    private String prepareTime(String s, int baseIndex) {
         if (s.contains(".")) {
             int i = s.indexOf(".") + 1;
             
@@ -177,7 +194,7 @@ final class PeriodParser {
                 i++;
             } else {
                 throw new CalendricalParseException("Period could not be parsed, invalid decimal number: " +
-                        values.text, values.text, baseIndex + values.index);
+                        text, text, baseIndex + index);
             }
             
             // verify that only digits follow the decimal point followed by an S
@@ -188,42 +205,42 @@ final class PeriodParser {
                     i++;
                 } else {
                     throw new CalendricalParseException("Period could not be parsed, invalid decimal number: " +
-                            values.text, values.text, baseIndex + values.index);
+                            text, text, baseIndex + index);
                 }
             }
             s = s.replace('S', 'N').replace('.', 'S');
             if (s.contains("-0S")) {
-                values.negativeSecs = true;
+                negativeSecs = true;
                 s = s.replace("-0S", "0S");
             }
         }
         return s;
     }
 
-    private int parseInt(ParseValues values, String s, int baseIndex) {
+    private int parseInt(String s, int baseIndex) {
         try {
             int value = Integer.parseInt(s);
             if (s.charAt(0) == '-' && value == 0) {
                 throw new CalendricalParseException("Period could not be parsed, invalid number '" +
-                        s + "': " + values.text, values.text, baseIndex + values.index - s.length());
+                        s + "': " + text, text, baseIndex + index - s.length());
             }
             return value;
         } catch (NumberFormatException ex) {
             throw new CalendricalParseException("Period could not be parsed, invalid number '" +
-                    s + "': " + values.text, values.text, baseIndex + values.index - s.length());
+                    s + "': " + text, text, baseIndex + index - s.length());
         }
     }
 
-    private String parseNumber(ParseValues values, String s) {
-        int start = values.index;
-        while (values.index < s.length()) {
-            char c = s.charAt(values.index);
+    private String parseNumber(String s) {
+        int start = index;
+        while (index < s.length()) {
+            char c = s.charAt(index);
             if ((c < '0' || c > '9') && c != '-') {
                 break;
             }
-            values.index++;
+            index++;
         }
-        return s.substring(start, values.index);
+        return s.substring(start, index);
     }
 
     private void validateCharactersAndOrdering(String s, String text) {
@@ -251,58 +268,8 @@ final class PeriodParser {
         }
     }
 
-    /**
-     * Parse values container created for each parse.
-     */
-    private static class ParseValues {
-        /**
-         * The number of years.
-         */
-        private int years;
-        /**
-         * The number of months.
-         */
-        private int months;
-        /**
-         * The number of days.
-         */
-        private int days;
-        /**
-         * The number of hours.
-         */
-        private int hours;
-        /**
-         * The number of minutes.
-         */
-        private int minutes;
-        /**
-         * The number of seconds.
-         */
-        private int seconds;
-        /**
-         * The number of nanoseconds.
-         */
-        private long nanos;
-        /**
-         * Whether the seconds were negative.
-         */
-        private boolean negativeSecs;
-        /**
-         * Parser position index.
-         */
-        private int index;
-        /**
-         * Original text.
-         */
-        private String text;
-        
-        ParseValues(String text) {
-            this.text = text;
-        }
-        
-        Period toPeriod() {
-            return Period.of(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
-        }
+    private Period toPeriod() {
+        return Period.of(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
     }
 
 }
