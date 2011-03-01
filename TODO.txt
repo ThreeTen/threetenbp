@@ -70,8 +70,6 @@ Date/Time formatting
 - merger - days overflow
 - merge ISO weekyear
 - parse 24:00 - maybe a special end-of-day class?
-- format patterns - yyyy-MM-dd, check details and letters with CLDR
-- formats LONG/MEDIUM/SHORT from better data source
 - SPI for date-time text
 - strict/lenient parse
 ? upper/lower case
@@ -80,7 +78,6 @@ Date/Time formatting
 - parseInto(Calendrical)
 - default calendrical to pre-define era for example
 - check compatible with RFC "Wed, 02 Apr 2008" and j.u.Date "Wed Apr 02 time zone 2008"
-- isPrintDataAvailable() causes get of field value twice, can we drop method
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
@@ -123,6 +120,10 @@ Calendars
 - more calendar systems
 - Coptic year definition
 - plus/minus long vs int
+
+JDK integration
+- Proper integration into OpenJDK classes for providers
+- Proper CLDR provider implementations
 
 General
 - remove ArithmeticException from javadoc -> spec/overview

@@ -41,7 +41,6 @@ import java.util.Locale;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -81,26 +80,6 @@ public class TestDayOfWeek {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooHigh() {
         DayOfWeek.of(8);
-    }
-
-    //-----------------------------------------------------------------------
-    @DataProvider(name="localeFirstDay")
-    Object[][] localeFirstDay() {
-        return new Object[][] {
-            {Locale.FRANCE, DayOfWeek.MONDAY},
-            {new Locale("pt", "BR"), DayOfWeek.SUNDAY},
-            {Locale.US,     DayOfWeek.SUNDAY},
-        };
-    }
-
-    @Test(dataProvider="localeFirstDay")
-    public void test_firstDayOfWeekFor(Locale locale, DayOfWeek first) {
-        assertSame(DayOfWeek.firstDayOfWeekFor(locale), first);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_firstDayOfWeekFor_null() {
-        DayOfWeek.firstDayOfWeekFor(null);
     }
 
 //    //-----------------------------------------------------------------------

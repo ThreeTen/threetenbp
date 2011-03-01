@@ -31,35 +31,61 @@
  */
 package javax.time.calendar.format;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.Locale;
 
-import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZonedDateTime;
+import javax.time.calendar.DayOfWeek;
 
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Abstract PrinterParser test.
+ * Test DateTimeLocaleInfo.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class AbstractTestPrinterParser {
+public class TestDateTimeFormatSymbols {
 
-    protected DateTimePrintContext printEmptyContext;
-    protected DateTimePrintContext printContext;
-    protected DateTimeParseContext parseContext;
-    protected StringBuilder buf;
+    //-----------------------------------------------------------------------
+    @DataProvider(name="localeFirstDay")
+    Object[][] localeFirstDay() {
+        return new Object[][] {
+            {Locale.FRANCE, DayOfWeek.MONDAY},
+            // {new Locale("pt", "BR"), DayOfWeek.SUNDAY},  // JDK 6 has Monday
+            {Locale.US,     DayOfWeek.SUNDAY},
+        };
+    }
 
-    @BeforeMethod
-    public void setUp() {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.of(Locale.ENGLISH);
-        printEmptyContext = new DateTimePrintContext(DateTimeFields.EMPTY, symbols);
-        printContext = new DateTimePrintContext(ZonedDateTime.of(2011, 6, 30, 12, 30, 40, 0, ZoneId.of("Europe/Paris")), symbols);
-        parseContext = new DateTimeParseContext(symbols);
-        buf = new StringBuilder();
+    @Test(dataProvider="localeFirstDay")
+    public void test_getFirstDayOfWeek(Locale locale, DayOfWeek first) {
+        assertEquals(DateTimeFormatSymbols.of(locale).getFirstDayOfWeek(), first);
+    }
+
+    public void test_withFirstDayOfWeek() {
+        DateTimeFormatSymbols base = DateTimeFormatSymbols.DEFAULT;
+        assertEquals(base.withFirstDayOfWeek(DayOfWeek.THURSDAY).getFirstDayOfWeek(), DayOfWeek.THURSDAY);
+    }
+
+    public void test_zeroDigit() {
+        DateTimeFormatSymbols base = DateTimeFormatSymbols.DEFAULT;
+        assertEquals(base.withZeroDigit('A').getZeroDigit(), 'A');
+    }
+
+    public void test_positiveSign() {
+        DateTimeFormatSymbols base = DateTimeFormatSymbols.DEFAULT;
+        assertEquals(base.withPositiveSign('A').getPositiveSign(), 'A');
+    }
+
+    public void test_negativeSign() {
+        DateTimeFormatSymbols base = DateTimeFormatSymbols.DEFAULT;
+        assertEquals(base.withNegativeSign('A').getNegativeSign(), 'A');
+    }
+
+    public void test_decimalSeparator() {
+        DateTimeFormatSymbols base = DateTimeFormatSymbols.DEFAULT;
+        assertEquals(base.withDecimalSeparator('A').getDecimalSeparator(), 'A');
     }
 
 }

@@ -57,7 +57,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * Note that the implementation of {@link DateTimeRule} for day-of-week may
  * vary by calendar system.
  * <p>
- * DayOfWeek is an immutable and thread-safe enum.
+ * This is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -134,29 +134,6 @@ public enum DayOfWeek {
             default:
                 throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek, 1, 7);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the {@code DayOfWeek} instance that corresponds to the first
-     * day-of-week for a given {@code locale}.
-     * <p>
-     * If there is no information for a locale, {@code MONDAY} is returned.
-     *
-     * @param locale the locale to use, not null
-     * @return the DayOfWeek singleton, not null
-     */
-    public static DayOfWeek firstDayOfWeekFor(Locale locale) {
-        // TODO: Move/reinvent method
-        if (locale == null) {
-            throw new NullPointerException("Locale must not be null");
-        }
-        if (locale.equals(Locale.US) || (locale.getLanguage().equals("pt") &&
-              locale.getCountry().equals("BR"))) {
-            return SUNDAY;
-        }
-
-        return MONDAY;
     }
 
     //-----------------------------------------------------------------------

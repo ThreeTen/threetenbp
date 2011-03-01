@@ -144,11 +144,11 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             switch (signStyle) {
                 case EXCEEDS_PAD:
                     if (minWidth < 19 && value >= EXCEED_POINTS[minWidth]) {
-                        buf.append(symbols.getPositiveSignChar());
+                        buf.append(symbols.getPositiveSign());
                     }
                     break;
                 case ALWAYS:
-                    buf.append(symbols.getPositiveSignChar());
+                    buf.append(symbols.getPositiveSign());
                     break;
             }
         } else {
@@ -156,7 +156,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 case NORMAL:
                 case EXCEEDS_PAD:
                 case ALWAYS:
-                    buf.append(symbols.getNegativeSignChar());
+                    buf.append(symbols.getNegativeSign());
                     break;
                 case NOT_NEGATIVE:
                     throw new CalendricalPrintException("Rule " + rule.getName() +
@@ -165,7 +165,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             }
         }
         for (int i = 0; i < minWidth - str.length(); i++) {
-            buf.append(symbols.getZeroChar());
+            buf.append(symbols.getZeroDigit());
         }
         buf.append(str);
     }
@@ -190,7 +190,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         char sign = parseText.charAt(position);  // IOOBE if invalid position
         boolean negative = false;
         boolean positive = false;
-        if (sign == context.getSymbols().getPositiveSignChar()) {
+        if (sign == context.getSymbols().getPositiveSign()) {
             positive = true;
             switch (signStyle) {
                 case ALWAYS:
@@ -204,7 +204,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     position++;
                     break;
             }
-        } else if (sign == context.getSymbols().getNegativeSignChar()) {
+        } else if (sign == context.getSymbols().getNegativeSign()) {
             negative = true;
             switch (signStyle) {
                 case ALWAYS:

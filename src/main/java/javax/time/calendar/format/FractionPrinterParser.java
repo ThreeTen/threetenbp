@@ -93,9 +93,9 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
         BigDecimal fraction = rule.convertToFraction(value);
         if (fraction.scale() == 0) {  // scale is zero if value is zero
             if (minWidth > 0) {
-                buf.append(symbols.getDecimalPointChar());
+                buf.append(symbols.getDecimalSeparator());
                 for (int i = 0; i < minWidth; i++) {
-                    buf.append(symbols.getZeroChar());
+                    buf.append(symbols.getZeroDigit());
                 }
             }
         } else {
@@ -103,7 +103,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
             fraction = fraction.setScale(outputScale, RoundingMode.FLOOR);
             String str = fraction.toPlainString().substring(2);
             str = symbols.convertNumberToI18N(str);
-            buf.append(symbols.getDecimalPointChar());
+            buf.append(symbols.getDecimalSeparator());
             buf.append(str);
         }
     }
@@ -113,7 +113,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
         if (position == length ||
-                parseText.charAt(position) != context.getSymbols().getDecimalPointChar()) {
+                parseText.charAt(position) != context.getSymbols().getDecimalSeparator()) {
             // valid if whole field is optional, invalid if minimum width
             return (minWidth > 0 ? ~position : position);
         }

@@ -59,7 +59,7 @@ public class TestDateTimeParseContext {
 
     @BeforeMethod
     public void setUp() {
-        symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
+        symbols = DateTimeFormatSymbols.of(Locale.GERMANY);
         context = new DateTimeParseContext(symbols);
     }
 

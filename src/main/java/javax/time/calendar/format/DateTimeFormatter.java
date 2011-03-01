@@ -85,7 +85,7 @@ public final class DateTimeFormatter {
      */
     DateTimeFormatter(Locale locale, CompositePrinterParser printerParser) {
         // validated by caller
-        this.symbols = DateTimeFormatSymbols.getInstance(locale);
+        this.symbols = DateTimeFormatSymbols.of(locale);
         this.printerParser = printerParser;
     }
 
@@ -140,7 +140,7 @@ public final class DateTimeFormatter {
         if (locale.equals(this.getLocale())) {
             return this;
         }
-        DateTimeFormatSymbols newSymbols = DateTimeFormatSymbols.getInstance(locale);
+        DateTimeFormatSymbols newSymbols = DateTimeFormatSymbols.of(locale);
         return new DateTimeFormatter(newSymbols, printerParser);
     }
 

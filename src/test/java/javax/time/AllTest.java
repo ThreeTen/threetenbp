@@ -90,6 +90,7 @@ import javax.time.calendar.format.TestCalendricalPrintException;
 import javax.time.calendar.format.TestCaseSensitivePrinterParser;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
+import javax.time.calendar.format.TestDateTimeFormatSymbols;
 import javax.time.calendar.format.TestDateTimeFormatter;
 import javax.time.calendar.format.TestDateTimeFormatterBuilder;
 import javax.time.calendar.format.TestDateTimeFormatters;
@@ -205,6 +206,7 @@ public class AllTest {
             TestCaseSensitivePrinterParser.class,
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,
+            TestDateTimeFormatSymbols.class,
             TestDateTimeFormatter.class,
             TestDateTimeFormatters.class,
             TestDateTimeParseContext.class,
