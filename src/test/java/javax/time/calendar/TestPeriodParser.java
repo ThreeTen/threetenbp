@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,7 +41,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Tests for PeriodParser.
+ * Test PeriodParser.
  *
  * @author Darryl West
  * @author Stephen Colebourne
@@ -117,7 +117,7 @@ public class TestPeriodParser {
 
     @Test(dataProvider="Parse")
     public void factory_parse(String text, Period expected) {
-    	Period p = PeriodParser.getInstance().parse(text);
+    	Period p = new PeriodParser(text).parse();
         assertEquals(p, expected);
     }
 
@@ -125,7 +125,7 @@ public class TestPeriodParser {
     public void factory_parse_comma(String text, Period expected) {
     	if (text.contains(".")) {
     		text = text.replace('.', ',');
-    		Period p = PeriodParser.getInstance().parse(text);
+    		Period p = new PeriodParser(text).parse();
         	assertEquals(p, expected);
     	}
     }
@@ -179,7 +179,7 @@ public class TestPeriodParser {
     @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
     public void factory_parseFailures(String text, int errPos) {
         try {
-            PeriodParser.getInstance().parse(text);
+            new PeriodParser(text).parse();
         } catch (CalendricalParseException ex) {
             assertEquals(ex.getParsedString(), text);
             assertEquals(ex.getErrorIndex(), errPos);
@@ -192,7 +192,7 @@ public class TestPeriodParser {
     public void factory_parseFailures_comma(String text, int errPos) {
         text = text.replace('.', ',');
         try {
-            PeriodParser.getInstance().parse(text);
+            new PeriodParser(text).parse();
         } catch (CalendricalParseException ex) {
             assertEquals(ex.getParsedString(), text);
             assertEquals(ex.getErrorIndex(), errPos);
@@ -203,30 +203,30 @@ public class TestPeriodParser {
     @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooBig() {
     	String text = "PT" + Long.MAX_VALUE + "1S";
-    	PeriodParser.getInstance().parse(text);
+    	new PeriodParser(text).parse();
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooBig_decimal() {
     	String text = "PT" + Long.MAX_VALUE + "1.1S";
-    	PeriodParser.getInstance().parse(text);
+    	new PeriodParser(text).parse();
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooSmall() {
         String text = "PT" + Long.MIN_VALUE + "1S";
-        PeriodParser.getInstance().parse(text);
+        new PeriodParser(text).parse();
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooSmall_decimal() {
         String text = "PT" + Long.MIN_VALUE + ".1S";
-        PeriodParser.getInstance().parse(text);
+        new PeriodParser(text).parse();
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_null() {
-    	PeriodParser.getInstance().parse(null);
+    	new PeriodParser(null).parse();
     }
 
     @DataProvider(name="ParseSequenceFailures")
@@ -244,7 +244,7 @@ public class TestPeriodParser {
 
     @Test(dataProvider="ParseSequenceFailures", expectedExceptions=CalendricalParseException.class)
     public void factory_parse_badSequence(String text) {
-    	PeriodParser.getInstance().parse(text);
+    	new PeriodParser(text).parse();
     }
 
 }
