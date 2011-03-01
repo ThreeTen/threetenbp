@@ -83,22 +83,30 @@ public final class ChronologyDate
      * The underlying local date.
      */
     private final LocalDate date;
-//    /**
-//     * The calculated era.
-//     */
-//    private final transient int era;
-//    /**
-//     * The calculated year.
-//     */
-//    private final transient int year;
-//    /**
-//     * The calculated month.
-//     */
-//    private final transient int month;
-//    /**
-//     * The calculated day.
-//     */
-//    private final transient int day;
+    /**
+     * The proleptic-year.
+     */
+    private final transient int year;
+    /**
+     * The era.
+     */
+    private final transient int era;
+    /**
+     * The year-of-era.
+     */
+    private final transient int yearOfEra;
+    /**
+     * The month-of-year.
+     */
+    private final transient int monthOfYear;
+    /**
+     * The day-of-month.
+     */
+    private final transient int dayOfMonth;
+    /**
+     * The day-of-month.
+     */
+    private final transient int dayOfYear;
 
     //-----------------------------------------------------------------------
     /**
@@ -121,27 +129,38 @@ public final class ChronologyDate
      * This will use the era in use at the epoch of 1970-01-01.
      *
      * @param chrono  the chronology, not null
-     * @param year  the year to represent, within the valid range for the chronology
-     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
-     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
+     * @param year  the calendar system year to represent, within the valid range for the chronology
+     * @param monthOfYear  the calendar system month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the calendar system day-of-month to represent, within the valid range for the chronology
      * @return the calendar system date, not null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static ChronologyDate of(Chronology chrono, int year, int monthOfYear, int dayOfMonth) {
+        return of(chrono, 1, year, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Obtains a date for a chronology from the year, month-of-year and day-of-month.
+     * <p>
+     * This will use the era in use at the epoch of 1970-01-01.
+     *
+     * @param chrono  the chronology, not null
+     * @param era  the calendar system era, within the valid range for the chronology
+     * @param year  the calendar system year to represent, within the valid range for the chronology
+     * @param monthOfYear  the calendar system month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the calendar system day-of-month to represent, within the valid range for the chronology
+     * @return the calendar system date, not null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
+     */
+    public static ChronologyDate of(Chronology chrono, int era, int year, int monthOfYear, int dayOfMonth) {
         checkNotNull(chrono, "Chronology must not be null");
         if (chrono instanceof StandardChronology == false) {
             throw new IllegalArgumentException("Chronology does not implement StandardChronology");
         }
         StandardChronology schrono = (StandardChronology) chrono;
-//        chrono.year().checkValidValue(year);
-//        chrono.monthOfYear().checkValidValue(monthOfYear);
-//        chrono.dayOfMonth().checkValidValue(dayOfMonth);
-        LocalDate date = schrono.merge(1, year, monthOfYear, dayOfMonth);
-//        DateTimeFields fields = DateTimeFields.of(schrono.year(), year, schrono.monthOfYear(), monthOfYear)
-//            .with(schrono.dayOfMonth(), dayOfMonth);
-//        LocalDate date = LocalDate.rule().getValueChecked(fields);
-        return new ChronologyDate(schrono, date);
+        return schrono.createChronologyDate(era, year, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -157,7 +176,8 @@ public final class ChronologyDate
         if (chrono instanceof StandardChronology == false) {
             throw new IllegalArgumentException("Chronology does not implement StandardChronology");
         }
-        return new ChronologyDate((StandardChronology) chrono, date);
+        StandardChronology schrono = (StandardChronology) chrono;
+        return schrono.createChronologyDate(date);
     }
 
     /**
@@ -180,12 +200,32 @@ public final class ChronologyDate
     /**
      * Constructs an instance with the specified chronology and date.
      *
-     * @param chrono  the chronology, validated not null
-     * @param date  the date, validated not null
+     * @param chrono  the chronology, valid
+     * @param date  the date, valid
+     * @param era  the calendar system era, valid
+     * @param year  the calendar system year to represent, valid
+     * @param monthOfYear  the calendar system month-of-year to represent, valid
+     * @param dayOfMonth  the calendar system day-of-month to represent, valid
      */
-    private ChronologyDate(StandardChronology chrono, LocalDate date) {
+    ChronologyDate(StandardChronology chrono, LocalDate date,
+            int year, int era, int yearOfEra, int monthOfYear, int dayOfMonth, int dayOfYear) {
         this.chrono = chrono;
         this.date = date;
+        this.year = year;
+        this.era = era;
+        this.yearOfEra = yearOfEra;
+        this.monthOfYear = monthOfYear;
+        this.dayOfMonth = dayOfMonth;
+        this.dayOfYear = dayOfYear;
+    }
+
+    /**
+     * Recreate the date to obtain the transient values.
+     * 
+     * @return the complete date, not null
+     */
+    Object readResolve() {
+        return ChronologyDate.of(chrono, date);
     }
 
     //-----------------------------------------------------------------------
@@ -218,6 +258,17 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the proleptic-year as defined by the chronology.
+     * <p>
+     * The meaning of the result of this method is determined by the chronology.
+     *
+     * @return the year, within the valid range for the chronology
+     */
+    public int getProlepticYear() {
+        return year;
+    }
+
+    /**
      * Gets the era as defined by the chronology.
      * <p>
      * The meaning of the result of this method is determined by the chronology.
@@ -230,18 +281,19 @@ public final class ChronologyDate
      * @return the era, within the valid range for the chronology
      */
     public int getEra() {
-        return chrono.getEra(date);
+        return era;
     }
 
     /**
      * Gets the year-of-era as defined by the chronology.
      * <p>
+     * The year-of-era is a positive value within the range of the era.
      * The meaning of the result of this method is determined by the chronology.
      *
      * @return the year, within the valid range for the chronology
      */
     public int getYearOfEra() {
-        return chrono.getYearOfEra(date);
+        return yearOfEra;
     }
 
     /**
@@ -252,7 +304,7 @@ public final class ChronologyDate
      * @return the month-of-year, within the valid range for the chronology
      */
     public int getMonthOfYear() {
-        return chrono.getMonthOfYear(date);
+        return monthOfYear;
     }
 
     /**
@@ -263,7 +315,7 @@ public final class ChronologyDate
      * @return the day-of-month, within the valid range for the chronology
      */
     public int getDayOfMonth() {
-        return chrono.getDayOfMonth(date);
+        return dayOfMonth;
     }
 
     /**
@@ -274,7 +326,7 @@ public final class ChronologyDate
      * @return the day-of-year, within the valid range for the chronology
      */
     public int getDayOfYear() {
-        return chrono.getDayOfYear(date);
+        return dayOfYear;
     }
 
     /**
@@ -286,7 +338,7 @@ public final class ChronologyDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return chrono.getDayOfWeek(date);
+        return date.getDayOfWeek();
     }
 
     //-----------------------------------------------------------------------
@@ -296,7 +348,7 @@ public final class ChronologyDate
      * @return true if this date is in a leap year
      */
     public boolean isLeapYear() {
-        return chrono.isLeapYear(date);
+        return chrono.isLeapYear(this);
     }
 
     //-----------------------------------------------------------------------
@@ -321,19 +373,57 @@ public final class ChronologyDate
     /**
      * Returns a copy of this date with the date altered.
      * <p>
-     * This method changes the stored date.
+     * This method changes the stored ISO-8601 date.
      * This allows the date to be changed while retaining the calendar system.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to set in the result, not null
-     * @return a date based on this one with the requested chronology, not null
+     * @return a date based on this one with the requested ISO-8601 date, not null
      */
     public ChronologyDate withDate(LocalDate date) {
         if (this.date.equals(date)) {
             return this;
         }
         return ChronologyDate.of(chrono, date);
+    }
+
+    /**
+     * Returns a copy of this date with the era altered.
+     * <p>
+     * This calculates a new date with a different era.
+     * Where possible the result will have the same year-of-era, month-of-year and day-of-month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to set in the result, not null
+     * @return a date based on this one with the requested era, not null
+     */
+    public ChronologyDate withEra(int era) {
+        if (this.era == era) {
+            return this;
+        }
+        return ChronologyDate.of(chrono, era, yearOfEra, monthOfYear, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date with the specified number of days added.
+     * <p>
+     * This method adds the specified amount in days to the date.
+     * Other fields will be adjusted as necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to add, may be negative
+     * @return a date based on this date with the days added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronologyDate plusDays(long days) {
+        if (days == 0) {
+            return this;
+        }
+        return ChronologyDate.of(chrono, date.plusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -351,7 +441,9 @@ public final class ChronologyDate
     /**
      * Compares this date to another date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
+     * The comparison first compares the time-line position of the dates.
+     * It then compares the name of the chronologies.
+     * The second step ensures that the order is consistent with equals.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
@@ -364,6 +456,8 @@ public final class ChronologyDate
      * Checks if this date is after the specified date.
      * <p>
      * The comparison is based on the time-line position of the dates.
+     * This differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it ignores the chronology and only compares the underlying date.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
@@ -376,12 +470,29 @@ public final class ChronologyDate
      * Checks if this date is before the specified date.
      * <p>
      * The comparison is based on the time-line position of the dates.
+     * This differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it ignores the chronology and only compares the underlying date.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
      */
     public boolean isBefore(ChronologyDate other) {
         return date.isBefore(other.date);
+    }
+
+    /**
+     * Checks if this date is equal to that of the specified date.
+     * <p>
+     * The comparison is based on the time-line position of the dates.
+     * This differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it ignores the chronology and only compares the underlying date.
+     *
+     * @param other  the other date-time to compare to, not null
+     * @return true if this is after the specified date-time
+     * @throws NullPointerException if {@code other} is null
+     */
+    public boolean equalDate(ChronologyDate other) {
+        return date.equals(other.date);
     }
 
     //-----------------------------------------------------------------------
