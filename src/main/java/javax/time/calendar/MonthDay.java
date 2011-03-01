@@ -40,7 +40,6 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.format.CalendricalPrintException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 
