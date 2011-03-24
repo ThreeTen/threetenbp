@@ -39,6 +39,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
+import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.LocalDate;
 
 /**
@@ -259,15 +260,15 @@ public abstract class StandardChronology extends Chronology {
         return new DateRule();
     }
 
-//    /**
-//     * Gets the range of valid values for day-of-month.
-//     *
-//     * @param date  the date to check in this calendar system, null if no context date
-//     * @return true if the date is in a leap year
-//     */
-//    public DateTimeRuleRange getDayOfMonthValueRange(int monthOfYear, ChronologyDate date) {
-//        return DateTimeRuleRange.of(1, 28, 31);
-//    }
+    /**
+     * Gets the range of valid values for day-of-month.
+     *
+     * @param date  the date to check in this calendar system, null if no context date
+     * @return true if the date is in a leap year
+     */
+    public DateTimeRuleRange getDayOfMonthValueRange(int monthOfYear, ChronologyDate date) {
+        return DateTimeRuleRange.of(1, 28, 31);
+    }
 
     //-----------------------------------------------------------------------
     /**

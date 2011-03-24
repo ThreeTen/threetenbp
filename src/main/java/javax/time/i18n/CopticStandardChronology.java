@@ -34,7 +34,6 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.LocalDate;
 
 /**
@@ -62,6 +61,10 @@ public final class CopticStandardChronology extends StandardChronology implement
      * The serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * The number of days to add to MJD to get the Coptic epoch day.
+     */
+    private static final int MJD_TO_COPTIC = 574971;
 
     //-----------------------------------------------------------------------
     /**
@@ -118,8 +121,9 @@ public final class CopticStandardChronology extends StandardChronology implement
 
     @Override
     public ChronologyDate createDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
-        LocalDate date = null; // TODO
-//        LocalDate.ofModifiedJulianDays(epochDays - MJD_TO_COPTIC);
+        int doy0 = (monthOfYear - 1) * 30 + dayOfMonth - 1;
+        long epochDays = ((long) prolepticYear) * 365 + ((long) prolepticYear) / 4 + doy0;
+        LocalDate date = LocalDate.ofModifiedJulianDays(epochDays - MJD_TO_COPTIC);
         return buildDate(date, prolepticYear, monthOfYear, dayOfMonth);
     }
 
@@ -137,12 +141,6 @@ public final class CopticStandardChronology extends StandardChronology implement
     @Override
     public Era createEra(int eraValue) {
         return CopticEra.of(eraValue);
-    }
-
-    @Override
-    public CalendricalRule<ChronologyDate> dateRule() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
