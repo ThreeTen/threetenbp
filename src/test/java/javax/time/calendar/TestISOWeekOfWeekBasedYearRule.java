@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRule {
+public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeRule {
 
     public TestISOWeekOfWeekBasedYearRule() {
         super(LocalDate.of(2009, 12, 26), 52);

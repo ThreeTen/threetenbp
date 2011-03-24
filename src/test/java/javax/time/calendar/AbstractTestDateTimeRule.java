@@ -53,7 +53,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public abstract class AbstractTestDateTimeFieldRule {
+public abstract class AbstractTestDateTimeRule {
 
     private Calendrical testingCalendrical;
     private long testingValue;
@@ -63,7 +63,7 @@ public abstract class AbstractTestDateTimeFieldRule {
      * @param cal
      * @param testingValue
      */
-    protected AbstractTestDateTimeFieldRule(Calendrical cal, long testingValue) {
+    protected AbstractTestDateTimeRule(Calendrical cal, long testingValue) {
         this.testingCalendrical = cal;
         this.testingValue = testingValue;
     }

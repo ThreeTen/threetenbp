@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestISONanoOfDayRule extends AbstractTestDateTimeFieldRule {
+public class TestISONanoOfDayRule extends AbstractTestDateTimeRule {
 
     public TestISONanoOfDayRule() {
         super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), ((13L * 60L + 30L) * 60L + 40L) * 1000000000L + 50L);

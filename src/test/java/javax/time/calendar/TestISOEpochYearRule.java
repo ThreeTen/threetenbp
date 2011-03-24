@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOEpochYearRule extends AbstractTestDateTimeFieldRule {
+public class TestISOEpochYearRule extends AbstractTestDateTimeRule {
 
     public TestISOEpochYearRule() {
         super(LocalDate.of(2009, 12, 26), 39);

@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
+public class TestISOHourOfAmPmRule extends AbstractTestDateTimeRule {
 
     public TestISOHourOfAmPmRule() {
         super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), 1);

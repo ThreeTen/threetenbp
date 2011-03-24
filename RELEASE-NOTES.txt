@@ -70,6 +70,7 @@
 - Obtain text from DateTimeTextProvider (remove code from DateTimeRule)
 - Alter/simplify getText() methods in enums
 - Refactor DateTimeFormatSymbols
+- Add DateTimeRuleRange to replace DateTimeRule min/max methods
 
 0.6.3
 ===============================================================================

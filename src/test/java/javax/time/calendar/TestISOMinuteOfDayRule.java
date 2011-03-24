@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOMinuteOfDayRule extends AbstractTestDateTimeFieldRule {
+public class TestISOMinuteOfDayRule extends AbstractTestDateTimeRule {
 
     public TestISOMinuteOfDayRule() {
         super(LocalDateTime.of(2009, 12, 26, 13, 30, 40, 50), 13 * 60 + 30);
