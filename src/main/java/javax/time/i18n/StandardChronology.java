@@ -31,7 +31,12 @@
  */
 package javax.time.i18n;
 
-import javax.time.CalendricalException;
+import static javax.time.calendar.ISOPeriodUnit.DAYS;
+
+import java.io.Serializable;
+
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.LocalDate;
@@ -39,41 +44,12 @@ import javax.time.calendar.LocalDate;
 /**
  * A standard calendar system formed of eras, years, months and days.
  * <p>
- * Most calendar systems are formed of common elements - eras, years, months, weeks and days.
+ * Most calendar systems are formed of common elements - eras, years, months and days.
  * This class provides a common way to access this in association with {@link ChronologyDate}.
- * Note that not all calendar systems are standard.
+ * See the individual methods for descriptions of the standard concepts.
+ * <p>
+ * Note that not all calendar systems fit this "standard" definition.
  * For example, the Mayan calendar has a completely different way of counting.
- * <p>
- * <b>era</b> The largest division of the time-line.
- * Most calendar systems divide into two eras, such as CE/AD and BCE/BC on the Gregorian calendar.
- * This value may be positive or negative.
- * The era in use at 1970-01-01 must have the value 1.
- * Later eras must have sequentially higher values.
- * Earlier eras must have sequentially lower values.
- * Each chronology should have constants providing meaning to the era value.
- * <p>
- * <b>year-of-era</b> The year counted within the era.
- * This value must be positive and is a sequential count within the era.
- * The count may run backwards, for example, 2 BCE/BC is before 1 BCE/BC in the Gregorian calendar
- * despite being a larger value.
- * <p>
- * <b>proleptic-year</b> The year counted in a proleptic manner across the entire time-line.
- * This value may be positive or negative and is a sequential count.
- * Earlier years must have a smaller value than later years.
- * The proleptic-year numbering scheme should be the same as year-of-era for the era in use at 1970-01-01.
- * <p>
- * <b>month-of-year</b> The month counted within the year.
- * This value must be positive.
- * Earlier months must have a smaller value than later months.
- * There may be gaps in the sequence of values.
- * <p>
- * <b>day-of-month</b> The day counted within the month.
- * This value must be positive.
- * Earlier days must have a smaller value than later days.
- * There may be gaps in the sequence of values.
- * <p>
- * <b>day-of-year</b> The day counted within the year.
- * This value must be positive and is a sequential count from 1.
  * <p>
  * This is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
@@ -93,39 +69,216 @@ public abstract class StandardChronology extends Chronology {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a Coptic date from a standard ISO-8601 date.
-     *
-     * @return the Coptic date, not null
+     * Creates a date from the era, year-of-era, month-of-year and day-of-month fields.
+     * <p>
+     * This is the only way to create a {@code ChronologyDate}.
+     * The values passed to this method must be valid.
+     * They are not validated further before constructing the date object.
+     * 
+     * @param date  the equivalent ISO local date, not null
+     * @param prolepticYear  the era to represent, within the valid range for the chronology
+     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
+     * @return the date in this calendar system, not null
      */
-    public abstract ChronologyDate createChronologyDate(LocalDate date);
+    protected ChronologyDate buildDate(
+            LocalDate date, int prolepticYear, int monthOfYear, int dayOfMonth) {
+        return new ChronologyDate(this, date, prolepticYear, monthOfYear, dayOfMonth);
+    }
 
     /**
-     * Merges the era, year-of-era, month-of-year and day-of-month fields to form a date.
+     * Creates a date from the ISO equivalent local date.
      * 
-     * @param era  the calendar system era
-     * @param yearOfEra  the calendar system year-of-era
+     * @param date  ISO equivalent local date, not null
+     * @return the date in this calendar system, not null
+     */
+    public abstract ChronologyDate createDate(LocalDate date);
+
+    /**
+     * Creates a date from the proleptic-year, month-of-year and day-of-month fields.
+     * 
+     * @param prolepticYear  the calendar system proleptic-year
      * @param monthOfYear  the calendar system month-of-year
      * @param dayOfMonth  the calendar system day-of-month
-     * @return the date, not null
-     * @throws CalendricalException if unable to create a date
+     * @return the date in this calendar system, not null
      */
-    public abstract ChronologyDate createChronologyDate(int era, int yearOfEra, int monthOfYear, int dayOfMonth);
+    public abstract ChronologyDate createDate(int prolepticYear, int monthOfYear, int dayOfMonth);
 
     /**
-     * Checks if the specified date is in a leap year.
+     * Creates a date from the era, year-of-era, month-of-year and day-of-month fields.
      * <p>
-     * The date will always have the correct chronology.
+     * The default implementation uses {@link #getProlepticYear(Era, int)} and
+     * {@link #createDate(int, int, int)}.
+     * 
+     * @param era  the calendar system era, not null
+     * @param year  the calendar system year-of-era
+     * @param monthOfYear  the calendar system month-of-year
+     * @param dayOfMonth  the calendar system day-of-month
+     * @return the date in this calendar system, not null
+     */
+    public ChronologyDate createDate(Era era, int year, int monthOfYear, int dayOfMonth) {
+        return createDate(getProlepticYear(era, year), monthOfYear, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the proleptic-year from an era and year-of-era.
+     * <p>
+     * The proleptic-year is a single value representing the year.
+     * It combines the era and year-of-era, and increases uniformly as time progresses.
+     * The exact meaning is calendar system specific according to the following constraints.
+     * <p>
+     * The proleptic-year has a small, or negative, value in the past.
+     * Later years have sequentially higher values.
+     * Where possible, the proleptic-year will be the same as the year-of-era
+     * for the era that is active on 1970-01-01 however this is not guaranteed.
+     * <p>
+     * The default implementation assumes two eras.
+     * For the era with the value 1, the year-of-era increases sequentially with later dates.
+     * For the era with the value 0, the year-of-era increases sequentially with earlier dates.
+     * Year 1 of era 0 immediately precedes year 1 of era 1.
+     * This definition matches most calendar systems with a single epoch and two eras.
+     * If the calendar system has a different era or year-of-era definition then this
+     * method must be overridden.
      *
-     * @param date  the date to check, not null
+     * @param era  the era to use, not null
+     * @param yearOfEra  the year-of-era, may be out of range
+     * @return the calendar system proleptic-year
+     */
+    public int getProlepticYear(Era era, int yearOfEra) {
+        ChronologyDate.checkNotNull(era, "Era must not be null");
+        return (era.getValue() == 1 ? yearOfEra : 1 - yearOfEra);
+    }
+
+    /**
+     * Calculates the era from a date in this calendar system.
+     * <p>
+     * The era is, conceptually, the largest division of the time-line.
+     * Most calendar systems have a single epoch dividing the time-line into two eras.
+     * However, some have multiple eras, such as one for the reign of each leader.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The era in use at 1970-01-01 must have the value 1.
+     * Later eras must have sequentially higher values.
+     * Earlier eras must have sequentially lower values.
+     * Each chronology must refer to an enum or similar singleton to provide the era values.
+     * <p>
+     * The default implementation assumes two eras.
+     * For the era with the value 1, the year-of-era increases sequentially with later dates.
+     * For the era with the value 0, the year-of-era increases sequentially with earlier dates.
+     * Year 1 of era 0 immediately precedes year 1 of era 1.
+     * This definition matches most calendar systems with a single epoch and two eras.
+     * If the calendar system has a different era or year-of-era definition then this
+     * method must be overridden.
+     *
+     * @param date  the date to check in this calendar system, not null
+     * @return the calendar system era, not null
+     */
+    public Era getEra(ChronologyDate date) {
+        int year = date.getProlepticYear();
+        return (year > 0 ? createEra(1) : createEra(0));
+    }
+
+    /**
+     * Calculates the year-of-era from a date in this calendar system.
+     * <p>
+     * The year-of-era is a value representing the count of years within the era.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The year-of-era value must be positive.
+     * <p>
+     * The default implementation assumes two eras.
+     * For the era with the value 1, the year-of-era increases sequentially with later dates.
+     * For the era with the value 0, the year-of-era increases sequentially with earlier dates.
+     * Year 1 of era 0 immediately precedes year 1 of era 1.
+     * This definition matches most calendar systems with a single epoch and two eras.
+     * If the calendar system has a different era or year-of-era definition then this
+     * method must be overridden.
+     *
+     * @param date  the date to check in this calendar system, not null
+     * @return the calendar system year-of-era
+     */
+    public int getYearOfEra(ChronologyDate date) {
+        int year = date.getProlepticYear();
+        return (year > 0 ? year : 1 - year);
+    }
+
+    /**
+     * Calculates the day-of-year from a date in this calendar system.
+     * <p>
+     * The day-of-year is a value representing the count of days within the year.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The day-of-year value must be positive.
+     * The number of days in a year may vary.
+     *
+     * @param date  the date to check in this calendar system, not null
+     * @return the calendar system day-of-year
+     */
+    public abstract int getDayOfYear(ChronologyDate date);
+
+    /**
+     * Checks if the specified date in this calendar system is in a leap year.
+     * <p>
+     * A leap-year is a year of a longer length than normal.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * A leap-year must imply a year-length longer than a non leap-year.
+     *
+     * @param date  the date to check in this calendar system, not null
      * @return true if the date is in a leap year
      */
-    protected abstract boolean isLeapYear(ChronologyDate date);
+    public abstract boolean isLeapYear(ChronologyDate date);
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates the calendar system era object from the numeric value.
+     * <p>
+     * The era is, conceptually, the largest division of the time-line.
+     * Most calendar systems have a single epoch dividing the time-line into two eras.
+     * However, some have multiple eras, such as one for the reign of each leader.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The era in use at 1970-01-01 must have the value 1.
+     * Later eras must have sequentially higher values.
+     * Earlier eras must have sequentially lower values.
+     * Each chronology must refer to an enum or similar singleton to provide the era values.
+     * <p>
+     * This method returns the singleton era of the correct type for the specified era value.
+     *
+     * @return the calendar system era, not null
+     */
+    public abstract Era createEra(int eraValue);
 
     /**
      * Gets a calendrical rule for the {@code ChronologyDate}.
      * 
      * @return the rule, not null
      */
-    public abstract CalendricalRule<ChronologyDate> dateRule();
+    public CalendricalRule<ChronologyDate> dateRule() {
+        return new DateRule();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    final class DateRule extends CalendricalRule<ChronologyDate> implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private DateRule() {
+            super(ChronologyDate.class, StandardChronology.this, "ChronologyDate", DAYS, null);
+        }
+        @Override
+        protected ChronologyDate derive(Calendrical calendrical) {
+            LocalDate date = calendrical.get(LocalDate.rule());
+            return date != null ? createDate(date) : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            ChronologyDate date = merger.getValue(this);
+            merger.storeMerged(LocalDate.rule(), date.toLocalDate());
+            merger.removeProcessed(this);
+        }
+    }
 
 }

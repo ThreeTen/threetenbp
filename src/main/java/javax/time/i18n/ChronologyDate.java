@@ -84,29 +84,17 @@ public final class ChronologyDate
      */
     private final LocalDate date;
     /**
-     * The proleptic-year.
+     * The proleptic year.
      */
-    private final transient int year;
+    private final transient int prolepticYear;
     /**
-     * The era.
-     */
-    private final transient int era;
-    /**
-     * The year-of-era.
-     */
-    private final transient int yearOfEra;
-    /**
-     * The month-of-year.
+     * The month.
      */
     private final transient int monthOfYear;
     /**
-     * The day-of-month.
+     * The day.
      */
     private final transient int dayOfMonth;
-    /**
-     * The day-of-month.
-     */
-    private final transient int dayOfYear;
 
     //-----------------------------------------------------------------------
     /**
@@ -124,74 +112,96 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a date for a chronology from the year, month-of-year and day-of-month.
+     * Obtains a date for a chronology from the era, year-of-era, month-of-year and day-of-month.
      * <p>
-     * This will use the era in use at the epoch of 1970-01-01.
+     * This year used here is the {@link #getYearOfEra() year-of-era}.
+     * The exact meaning of each field is determined by the chronology.
      *
-     * @param chrono  the chronology, not null
-     * @param year  the calendar system year to represent, within the valid range for the chronology
-     * @param monthOfYear  the calendar system month-of-year to represent, within the valid range for the chronology
-     * @param dayOfMonth  the calendar system day-of-month to represent, within the valid range for the chronology
+     * @param chrono  the {@code StandardChronology}, not null
+     * @param era  the era to represent, valid for this chronology, not null
+     * @param yearOfEra  the year-of-era to represent, within the valid range for the chronology
+     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
      * @return the calendar system date, not null
+     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ChronologyDate of(Chronology chrono, int year, int monthOfYear, int dayOfMonth) {
-        return of(chrono, 1, year, monthOfYear, dayOfMonth);
+    public static ChronologyDate of(Chronology chrono, Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+        // accept Chronology rather than StandardChronology to aid interoperability
+        checkNotNull(chrono, "Chronology must not be null");
+        if (chrono instanceof StandardChronology == false) {
+            throw new ClassCastException("Chronology must implement StandardChronology");
+        }
+        StandardChronology schrono = (StandardChronology) chrono;
+        return schrono.createDate(era, yearOfEra, monthOfYear, dayOfMonth);
     }
 
     /**
      * Obtains a date for a chronology from the year, month-of-year and day-of-month.
      * <p>
-     * This will use the era in use at the epoch of 1970-01-01.
+     * This year used here is the {@link #getProlepticYear() proleptic-year}.
+     * The exact meaning of each field is determined by the chronology.
+     * The proleptic-year is typically the same as the year-of-era for the
+     * era that is active on 1970-01-01.
      *
-     * @param chrono  the chronology, not null
-     * @param era  the calendar system era, within the valid range for the chronology
-     * @param year  the calendar system year to represent, within the valid range for the chronology
-     * @param monthOfYear  the calendar system month-of-year to represent, within the valid range for the chronology
-     * @param dayOfMonth  the calendar system day-of-month to represent, within the valid range for the chronology
+     * @param chrono  the {@code StandardChronology}, not null
+     * @param prolepticYear  the proleptic-year to represent, within the valid range for the chronology
+     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
      * @return the calendar system date, not null
+     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ChronologyDate of(Chronology chrono, int era, int year, int monthOfYear, int dayOfMonth) {
+    public static ChronologyDate of(Chronology chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
+        // accept Chronology rather than StandardChronology to aid interoperability
         checkNotNull(chrono, "Chronology must not be null");
         if (chrono instanceof StandardChronology == false) {
-            throw new IllegalArgumentException("Chronology does not implement StandardChronology");
+            throw new ClassCastException("Chronology must implement StandardChronology");
         }
         StandardChronology schrono = (StandardChronology) chrono;
-        return schrono.createChronologyDate(era, year, monthOfYear, dayOfMonth);
+        return schrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
     }
 
     /**
      * Obtains a date for a chronology from an ISO-8601 date.
+     * <p>
+     * This will return a date in the specified chronology.
+     * The chronology must implement {@link StandardChronology}.
      *
-     * @param chrono  the chronology, not null
+     * @param chrono  the {@code StandardChronology}, not null
      * @param date  the standard ISO-8601 date representation, not null
      * @return the calendar system date, not null
+     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
      */
     public static ChronologyDate of(Chronology chrono, LocalDate date) {
+        // accept Chronology rather than StandardChronology to aid interoperability
         checkNotNull(chrono, "Chronology must not be null");
         checkNotNull(date, "LocalDate must not be null");
         if (chrono instanceof StandardChronology == false) {
-            throw new IllegalArgumentException("Chronology does not implement StandardChronology");
+            throw new ClassCastException("Chronology must implement StandardChronology");
         }
         StandardChronology schrono = (StandardChronology) chrono;
-        return schrono.createChronologyDate(date);
+        return schrono.createDate(date);
     }
 
     /**
      * Obtains a date for a chronology from a calendrical.
      * <p>
-     * This can be used extract the date directly from any implementation
-     * of {@code Calendrical}, including those in other calendar systems.
+     * This will return a date in the specified chronology.
+     * The chronology must implement {@link StandardChronology}.
+     * The underlying {@link LocalDate} is extracted from the calendrical, thus this
+     * method can be used with objects such as {@link OffsetDate} or {@link ZonedDateTime}.
      *
-     * @param chrono  the chronology, not null
+     * @param chrono  the {@code StandardChronology}, not null
      * @param calendrical  the calendrical to extract from, not null
      * @return the calendar system date, not null
      * @throws CalendricalException if the date cannot be obtained
+     * @throws ClassCastException if the chronology is not a {@code StandardChronology}
      */
     public static ChronologyDate of(Chronology chrono, Calendrical calendrical) {
+        // accept Chronology rather than StandardChronology to aid interoperability
         LocalDate date = LocalDate.rule().getValueChecked(calendrical);
         return of(chrono, date);
     }
@@ -200,32 +210,27 @@ public final class ChronologyDate
     /**
      * Constructs an instance with the specified chronology and date.
      *
-     * @param chrono  the chronology, valid
-     * @param date  the date, valid
-     * @param era  the calendar system era, valid
-     * @param year  the calendar system year to represent, valid
-     * @param monthOfYear  the calendar system month-of-year to represent, valid
-     * @param dayOfMonth  the calendar system day-of-month to represent, valid
+     * @param chrono  the chronology, validated not null
+     * @param date  the date, validated not null
+     * @param year  the proleptic-year to represent, within the valid range for the chronology
+     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
+     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
      */
-    ChronologyDate(StandardChronology chrono, LocalDate date,
-            int year, int era, int yearOfEra, int monthOfYear, int dayOfMonth, int dayOfYear) {
+    ChronologyDate(StandardChronology chrono, LocalDate date, int year, int monthOfYear, int dayOfMonth) {
         this.chrono = chrono;
         this.date = date;
-        this.year = year;
-        this.era = era;
-        this.yearOfEra = yearOfEra;
+        this.prolepticYear= year;
         this.monthOfYear = monthOfYear;
         this.dayOfMonth = dayOfMonth;
-        this.dayOfYear = dayOfYear;
     }
 
     /**
-     * Recreate the date to obtain the transient values.
+     * Resolve the transient fields.
      * 
-     * @return the complete date, not null
+     * @return the resolved date, not null
      */
-    Object readResolve() {
-        return ChronologyDate.of(chrono, date);
+    private Object readResolve() {
+        return chrono.createDate(date);
     }
 
     //-----------------------------------------------------------------------
@@ -258,48 +263,66 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the proleptic-year as defined by the chronology.
+     * Gets the era, as defined by the calendar system.
      * <p>
-     * The meaning of the result of this method is determined by the chronology.
+     * The era is, conceptually, the largest division of the time-line.
+     * Most calendar systems have a single epoch dividing the time-line into two eras.
+     * However, some have multiple eras, such as one for the reign of each leader.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The era in use at 1970-01-01 must have the value 1.
+     * Later eras must have sequentially higher values.
+     * Earlier eras must have sequentially lower values.
+     * Each chronology must refer to an enum or similar singleton to provide the era values.
+     * <p>
+     * All correctly implemented {@code Era} classes are singletons, thus it
+     * is valid code to write {@code date.getEra() == SomeEra.ERA_NAME)}.
      *
-     * @return the year, within the valid range for the chronology
+     * @return the era, of the correct type for this chronology, not null
      */
-    public int getProlepticYear() {
-        return year;
+    public Era getEra() {
+        return chrono.getEra(this);
     }
 
     /**
-     * Gets the era as defined by the chronology.
+     * Gets the year-of-era, as defined by the calendar system.
      * <p>
-     * The meaning of the result of this method is determined by the chronology.
+     * The year-of-era is a value representing the count of years within the era.
+     * The exact meaning is determined by the chronology according to the following constraints.
      * <p>
-     * The era in use at 1970-01-01 has the value 1.
-     * Later eras have sequentially higher values.
-     * Earlier eras have sequentially lower values.
-     * Each chronology should have constants providing meaning to the era value.
+     * The year-of-era value must be positive.
      *
-     * @return the era, within the valid range for the chronology
-     */
-    public int getEra() {
-        return era;
-    }
-
-    /**
-     * Gets the year-of-era as defined by the chronology.
-     * <p>
-     * The year-of-era is a positive value within the range of the era.
-     * The meaning of the result of this method is determined by the chronology.
-     *
-     * @return the year, within the valid range for the chronology
+     * @return the year-of-era, within the valid range for the chronology
      */
     public int getYearOfEra() {
-        return yearOfEra;
+        return chrono.getYearOfEra(this);
     }
 
     /**
-     * Gets the month-of-year as defined by the chronology.
+     * Gets the proleptic-year, as defined by the calendar system.
      * <p>
-     * The meaning of the result of this method is determined by the chronology.
+     * The proleptic-year is a single value representing the year.
+     * It combines the era and year-of-era, and increases uniformly as time progresses.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The proleptic-year has a small, or negative, value in the past.
+     * Later years have sequentially higher values.
+     * Where possible, the proleptic-year will be the same as the year-of-era
+     * for the era that is active on 1970-01-01 however this is not guaranteed.
+     *
+     * @return the proleptic-year, within the valid range for the chronology
+     */
+    public int getProlepticYear() {
+        return prolepticYear;
+    }
+
+    /**
+     * Gets the month-of-year, as defined by the calendar system.
+     * <p>
+     * The month-of-year is a value representing the count of months within the year.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The month-of-year value must be positive.
      *
      * @return the month-of-year, within the valid range for the chronology
      */
@@ -308,9 +331,12 @@ public final class ChronologyDate
     }
 
     /**
-     * Gets the day-of-month as defined by the chronology.
+     * Gets the day-of-month, as defined by the calendar system.
      * <p>
-     * The meaning of the result of this method is determined by the chronology.
+     * The day-of-month is a value representing the count of days within the month.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The day-of-month value must be positive.
      *
      * @return the day-of-month, within the valid range for the chronology
      */
@@ -319,21 +345,26 @@ public final class ChronologyDate
     }
 
     /**
-     * Gets the day-of-year as defined by the chronology.
+     * Gets the day-of-year, as defined by the calendar system.
      * <p>
-     * The meaning of the result of this method is determined by the chronology.
+     * The day-of-year is a value representing the count of days within the year.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * The day-of-year value must be positive.
+     * The number of days in a year may vary.
      *
      * @return the day-of-year, within the valid range for the chronology
      */
     public int getDayOfYear() {
-        return dayOfYear;
+        return chrono.getDayOfYear(this);
     }
 
     /**
-     * Gets the day-of-week, which is an enum {@code DayOfWeek}.
+     * Gets the day-of-week.
      * <p>
-     * All chronologies that can be used with this class have a standard seven day week
-     * in line with ISO-8601, hence the use of the {@link DayOfWeek} enum.
+     * All calendar systems that can be used with this class have a standard
+     * seven day week exactly in line with ISO-8601.
+     * As such, the same {@link DayOfWeek} enum is used.
      *
      * @return the day-of-week, not null
      */
@@ -343,7 +374,12 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the year is a leap year as defined by the chronology.
+     * Checks if the year is a leap year, as defined by the calendar system.
+     * <p>
+     * A leap-year is a year of a longer length than normal.
+     * The exact meaning is determined by the chronology according to the following constraints.
+     * <p>
+     * A leap-year must imply a year-length longer than a non leap-year.
      *
      * @return true if this date is in a leap year
      */
@@ -355,7 +391,7 @@ public final class ChronologyDate
     /**
      * Returns a copy of this date with the chronology altered.
      * <p>
-     * This method changes the stored chronology.
+     * This method returns a date object with the same local date in the specified chronology.
      * This allows the view of the underlying date to be changed to a different calendar system.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -373,13 +409,13 @@ public final class ChronologyDate
     /**
      * Returns a copy of this date with the date altered.
      * <p>
-     * This method changes the stored ISO-8601 date.
+     * This method changes the stored date.
      * This allows the date to be changed while retaining the calendar system.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to set in the result, not null
-     * @return a date based on this one with the requested ISO-8601 date, not null
+     * @return a date based on this one with the requested chronology, not null
      */
     public ChronologyDate withDate(LocalDate date) {
         if (this.date.equals(date)) {
@@ -388,22 +424,92 @@ public final class ChronologyDate
         return ChronologyDate.of(chrono, date);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this date with the era altered.
+     * Returns a copy of this date with the year value altered.
      * <p>
-     * This calculates a new date with a different era.
-     * Where possible the result will have the same year-of-era, month-of-year and day-of-month.
+     * This changes the era and year-of-era fields.
+     * The result of setting the year may leave another field, such as the
+     * day-of-month invalid. To avoid this, other fields may also be changed.
+     * For example, the day-of-month may be changed to the largest valid value.
+     * <p>
+     * For example, consider the ISO calendar system.
+     * Setting the year on 2012-02-29 to 2010 yields 2010-02-28.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param date  the date to set in the result, not null
-     * @return a date based on this one with the requested era, not null
+     * @param era  the era to represent, valid for the chronology, not null
+     * @param yearOfEra  the year-of-era to represent, within the valid range for the chronology
+     * @return a {@code ChronologyDate} based on this date with the specified year-of-era, not null
+     * @throws IllegalCalendarFieldValueException if the year-of-era is out of range
      */
-    public ChronologyDate withEra(int era) {
-        if (this.era == era) {
-            return this;
-        }
-        return ChronologyDate.of(chrono, era, yearOfEra, monthOfYear, dayOfMonth);
+    public ChronologyDate withYear(Era era, int yearOfEra) {
+        return chrono.createDate(era, yearOfEra, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Returns a copy of this date with the year-of-era value altered.
+     * <p>
+     * The result of setting the year may leave another field, such as the
+     * day-of-month invalid. To avoid this, other fields may also be changed.
+     * For example, the day-of-month may be changed to the largest valid value.
+     * <p>
+     * For example, consider the ISO calendar system.
+     * Setting the year-of-era on 2012-02-29 to 2010 yields 2010-02-28.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param yearOfEra  the year-of-era to represent, within the valid range for the chronology
+     * @return a {@code ChronologyDate} based on this date with the specified year-of-era, not null
+     * @throws IllegalCalendarFieldValueException if the year-of-era is out of range
+     */
+    public ChronologyDate withYearOfEra(int yearOfEra) {
+        return chrono.createDate(getEra(), yearOfEra, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Returns a copy of this date with the month-of-year value altered.
+     * <p>
+     * The result of setting the month-of-year may leave another field, such as the
+     * day-of-month invalid. To avoid this, other fields may also be changed.
+     * For example, the day-of-month may be changed to the largest valid value.
+     * <p>
+     * For example, consider the ISO calendar system.
+     * Setting the month on 2010-01-31 to 2 yields 2010-02-28.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month-of-year to represent, within the valid range for the chronology
+     * @return a {@code ChronologyDate} based on this date with the specified month-of-year, not null
+     * @throws IllegalCalendarFieldValueException if the month-of-year is out of range
+     */
+    public ChronologyDate withMonthOfYear(int monthOfYear) {
+        return chrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Returns a copy of this date with the day-of-month value altered.
+     * <p>
+     * The calendar system may support months with different lengths.
+     * If the day-of-month is within the maximum month length, but less than
+     * the actual month length for the current month, then the date will
+     * be changed to the following month.
+     * <p>
+     * For example, consider 2010-02-15 in the ISO calendar system.
+     * Setting the day-of-month to 28 yields 2010-02-28.
+     * Setting the day-of-month to 29 yields 2010-03-01.
+     * Setting the day-of-month to 30 yields 2010-03-02.
+     * Setting the day-of-month to 31 yields 2010-03-03.
+     * Setting the day-of-month to 32 throws an exception.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day-of-month to represent, within the valid range for the chronology
+     * @return a {@code ChronologyDate} based on this date with the specified day-of-month, not null
+     * @throws IllegalCalendarFieldValueException if the day-of-month is out of range
+     */
+    public ChronologyDate withDayOfMonth(int dayOfMonth) {
+        return chrono.createDate(prolepticYear, monthOfYear, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -439,25 +545,32 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date to another date.
+     * Compares this date to another based on the ISO equivalent local date
+     * and chronology.
      * <p>
-     * The comparison first compares the time-line position of the dates.
-     * It then compares the name of the chronologies.
-     * The second step ensures that the order is consistent with equals.
+     * The chronology is included to ensure that the ordering is consistent
+     * with {@code equals()}. To compare just the underlying local date,
+     * use the rule as a comparator:
+     * <pre>
+     *   LocalDate.rule().compare(date1, date2);    // single comparison...
+     *   Collections.sort(list, LocalDate.rule());  // or, sort a list
+     * </pre>
+     * The relative methods like {@link #isAfter} also compare based solely
+     * on the ISO equivalent local date.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(ChronologyDate other) {
-        return date.compareTo(other.date);
+        int cmp = date.compareTo(other.date);
+        return cmp == 0 ? 0 : chrono.getName().compareTo(other.chrono.getName());
     }
 
     /**
      * Checks if this date is after the specified date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
-     * This differs from the comparison in {@link #compareTo} and {@link #equals}
-     * in that it ignores the chronology and only compares the underlying date.
+     * The comparison is based on the underlying time-line position
+     * of the ISO equivalent local dates ignoring the chronology.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is after the specified date
@@ -469,9 +582,8 @@ public final class ChronologyDate
     /**
      * Checks if this date is before the specified date.
      * <p>
-     * The comparison is based on the time-line position of the dates.
-     * This differs from the comparison in {@link #compareTo} and {@link #equals}
-     * in that it ignores the chronology and only compares the underlying date.
+     * The comparison is based on the underlying time-line position
+     * of the ISO equivalent local dates ignoring the chronology.
      *
      * @param other  the other date to compare to, not null
      * @return true if this is before the specified date
@@ -481,15 +593,14 @@ public final class ChronologyDate
     }
 
     /**
-     * Checks if this date is equal to that of the specified date.
+     * Checks if this date equals the specified date
      * <p>
-     * The comparison is based on the time-line position of the dates.
-     * This differs from the comparison in {@link #compareTo} and {@link #equals}
-     * in that it ignores the chronology and only compares the underlying date.
+     * The comparison is based on the underlying time-line position
+     * of the ISO equivalent local dates ignoring the chronology. By contrast,
+     * {@link #compareTo} and {@link #equals} take the chronology into account.
      *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     * @throws NullPointerException if {@code other} is null
+     * @param other  the other date to compare to, not null
+     * @return true if the instant equals the instant of the specified date
      */
     public boolean equalDate(ChronologyDate other) {
         return date.equals(other.date);

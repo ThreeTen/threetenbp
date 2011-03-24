@@ -31,34 +31,39 @@
  */
 package javax.time.i18n;
 
+import java.io.Serializable;
+
+import javax.time.MathUtils;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.LocalDate;
 
 /**
  * The Coptic calendar system.
  * <p>
- * {@code CopticChronology} defines the rules of the Coptic calendar system.
- * The Coptic calendar has twelve months of 30 days followed by a thirteenth month
- * of 5 days, or 6 days in a leap year. Leap years occur every 4 years without fail.
+ * This {@link StandardChronology standard} chronology defines the rules of the Coptic calendar system.
+ * The Coptic calendar has twelve months of 30 days followed by an additional
+ * period of 5 or 6 days, modeled as the thirteenth month in this implementation.
  * <p>
- * Years are measured in the 'Era of the Martyrs'.
+ * Years are measured in the 'Era of the Martyrs' - AM.
  * 0001-01-01 (Coptic) equals 0284-08-29 (ISO).
+ * The supported range is from 1 to 99999999 (inclusive) in both eras.
  * <p>
  * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public final class CopticStandardChronology extends StandardChronology {
+public final class CopticStandardChronology extends StandardChronology implements Serializable {
 
     /**
-     * The singleton instance.
+     * The singleton instance of {@code JulianChronology}.
      */
     public static final CopticStandardChronology INSTANCE = new CopticStandardChronology();
     /**
-     * The epoch.
+     * The serialization version.
      */
-    public static final LocalDate EPOCH = LocalDate.of(284, 8, 29);  // TODO check
+    private static final long serialVersionUID = 1L;
 
+    //-----------------------------------------------------------------------
     /**
      * Restrictive constructor.
      */
@@ -66,73 +71,77 @@ public final class CopticStandardChronology extends StandardChronology {
     }
 
     /**
-     * Retain singleton.
-     * 
-     * @return the singleton, not null
+     * Resolves singleton.
+     *
+     * @return the singleton instance
      */
     private Object readResolve() {
         return INSTANCE;
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the name of the chronology, 'Coptic'.
+     *
+     * @return the name of the chronology, not null
+     */
     @Override
     public String getName() {
         return "Coptic";
     }
 
-    /**
-     * Creates a Coptic date from a standard ISO-8601 date.
-     *
-     * @return the Coptic date, not null
-     */
     @Override
-    public ChronologyDate createChronologyDate(LocalDate date) {
+    public ChronologyDate createDate(LocalDate date) {
+        ChronologyDate.checkNotNull(date, "LocalDate must not be null");
         long epochDays = date.toEpochDays();
-        int year = (int) (((epochDays * 4) + 1463) / 1461);
-        int era = (year < 1 ? 0 : 1);
-        int yoe = (year < 1 ? -year + 1 : year);
-        int startYearEpochDays = (year - 1) * 365 + (year / 4);
+        int prolepticYear = (int) (((epochDays * 4) + 1463) / 1461);
+        int startYearEpochDays = (prolepticYear - 1) * 365 + (prolepticYear / 4);
         int doy0 = (int) (epochDays - startYearEpochDays);
         int month = doy0 / 30 + 1;
         int dom = doy0 % 30 + 1;
-        return new ChronologyDate(INSTANCE, date, year, era, yoe, month, dom, doy0 + 1);
+        return buildDate(date, prolepticYear, month, dom);
     }
 
-    /**
-     * Creates a Coptic date from a standard ISO-8601 date.
-     *
-     * @return the Coptic date, not null
-     */
     @Override
-    public ChronologyDate createChronologyDate(int era, int yearOfEra, int monthOfYear, int dayOfMonth) {
-        // validate values
-        // calculate ISO date
-//        return new ChronologyDate(INSTANCE, date, year, era, yoe, month, dom, doy);
-        return null;
+    public ChronologyDate createDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
+        LocalDate date = null; // TODO
+//        LocalDate.ofModifiedJulianDays(epochDays - MJD_TO_COPTIC);
+        return buildDate(date, prolepticYear, monthOfYear, dayOfMonth);
     }
 
-    /**
-     * Checks if the specified date is in a leap year.
-     *
-     * @param date  the date to check, not null
-     * @return true if the date is in a leap year
-     */
     @Override
-    protected boolean isLeapYear(ChronologyDate date) {
-        if (date.getEra() == 0) {
-            return false;
-        } else {
-            return (date.getYearOfEra() % 4) == 3;
-        }
+    public int getDayOfYear(ChronologyDate date) {
+        return (date.getMonthOfYear() - 1) * 30 + date.getDayOfMonth();
     }
 
-    /**
-     * Gets a calendrical rule for the {@code ChronologyDate}.
-     * 
-     * @return the rule, not null
-     */
+    @Override
+    public boolean isLeapYear(ChronologyDate date) {
+        return MathUtils.floorMod(date.getProlepticYear(), 4) == 3;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public Era createEra(int eraValue) {
+        return CopticEra.of(eraValue);
+    }
+
     @Override
     public CalendricalRule<ChronologyDate> dateRule() {
+        // TODO Auto-generated method stub
         return null;
     }
 
