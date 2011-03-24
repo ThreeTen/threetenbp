@@ -12,11 +12,11 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.PeriodUnit;
-import javax.time.calendar.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -428,31 +428,30 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(MinguoChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, 31);
+            super(MinguoChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 28;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField moyVal = calendrical.get(MinguoChronology.monthOfYearRule());
             if (moyVal != null) {
                 MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
-                DateTimeField era = calendrical.get(MinguoEra.rule());
-                DateTimeField yoeVal = calendrical.get(MinguoChronology.yearOfEraRule());
-                if (era != null && yoeVal != null) {
-                    int yoe = yoeVal.getValidIntValue();
-                    int isoYear = (era.getValidIntValue() == MinguoEra.BEFORE_MINGUO.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                    return moy.lengthInDays(ISOChronology.isLeapYear(isoYear));
+                if (moy == MonthOfYear.FEBRUARY) {
+                    DateTimeField eraVal = calendrical.get(MinguoEra.rule());
+                    DateTimeField yoeVal = calendrical.get(MinguoChronology.yearOfEraRule());
+                    if (eraVal != null && yoeVal != null) {
+                        int yoe = yoeVal.getValidIntValue();
+                        int isoYear = (eraVal.getValidIntValue() == MinguoEra.BEFORE_MINGUO.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(ISOChronology.isLeapYear(isoYear)));
+                    }
+                    return DateTimeRuleRange.of(1, 28, 29);
                 } else {
-                    return moy.maxLengthInDays();
+                    return DateTimeRuleRange.of(1, moy.maxLengthInDays());
                 }
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -472,26 +471,21 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(MinguoChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, 366);
+            super(MinguoChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 365;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField era = calendrical.get(MinguoEra.rule());
             DateTimeField yoeVal = calendrical.get(MinguoChronology.yearOfEraRule());
             if (era != null && yoeVal != null) {
                 int yoe = yoeVal.getValidIntValue();
                 int isoYear = (era.getValidIntValue() == MinguoEra.BEFORE_MINGUO.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                Year year = Year.of(isoYear);
-                return year.lengthInDays();
+                return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

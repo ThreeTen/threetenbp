@@ -132,7 +132,7 @@ public enum DayOfWeek {
             case 7:
                 return SUNDAY;
             default:
-                throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek, 1, 7);
+                throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
         }
     }
 

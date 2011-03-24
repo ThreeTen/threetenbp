@@ -13,11 +13,11 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.PeriodUnit;
-import javax.time.calendar.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -438,31 +438,30 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(JapaneseChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, 31);
+            super(JapaneseChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 28;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField moyVal = calendrical.get(JapaneseChronology.monthOfYearRule());
             if (moyVal != null) {
                 MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
-                DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
-                DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
-                if (eraVal != null && yoeVal != null) {
-                    JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
-                    int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
-                    return moy.lengthInDays(ISOChronology.isLeapYear(isoYear));
+                if (moy == MonthOfYear.FEBRUARY) {
+                    DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
+                    DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
+                    if (eraVal != null && yoeVal != null) {
+                        JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
+                        int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(ISOChronology.isLeapYear(isoYear)));
+                    }
+                    return DateTimeRuleRange.of(1, 28, 29);
                 } else {
-                    return moy.maxLengthInDays();
+                    return DateTimeRuleRange.of(1, moy.maxLengthInDays());
                 }
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -482,26 +481,21 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(JapaneseChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, 366);
+            super(JapaneseChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 365;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
             DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
             if (eraVal != null && yoeVal != null) {
                 JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
                 int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
-                Year year = Year.of(isoYear);
-                return year.lengthInDays();
+                return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

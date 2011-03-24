@@ -116,7 +116,7 @@ public final class DayOfYear
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), ++dayOfYear, 1, 366);
+            throw new IllegalCalendarFieldValueException(rule(), ++dayOfYear);
         }
     }
 

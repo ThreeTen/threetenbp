@@ -112,7 +112,7 @@ public enum QuarterOfYear {
             case 4:
                 return Q4;
             default:
-                throw new IllegalCalendarFieldValueException(QUARTER_OF_YEAR, quarterOfYear, 1, 4);
+                throw new IllegalCalendarFieldValueException(QUARTER_OF_YEAR, quarterOfYear);
         }
     }
 

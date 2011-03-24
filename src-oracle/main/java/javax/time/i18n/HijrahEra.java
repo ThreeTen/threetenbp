@@ -63,7 +63,7 @@ public enum HijrahEra implements Calendrical {
             case 1:
                 return HIJRAH;
             default:
-                throw new IllegalCalendarFieldValueException(HijrahChronology.eraRule(), hijrahEra, 0, 1);
+                throw new IllegalCalendarFieldValueException(HijrahChronology.eraRule(), hijrahEra);
         }
     }
 

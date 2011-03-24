@@ -109,8 +109,7 @@ public final class MinuteOfHour
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(
-                rule(), minuteOfHour, rule().getMinimumValue(), rule().getMaximumValue());
+            throw new IllegalCalendarFieldValueException(rule(), minuteOfHour);
         }
     }
 

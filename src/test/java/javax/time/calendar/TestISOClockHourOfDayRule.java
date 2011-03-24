@@ -60,11 +60,7 @@ public class TestISOClockHourOfDayRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.ClockHourOfDay");
         assertEquals(rule.getName(), "ClockHourOfDay");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 24);
-        assertEquals(rule.getSmallestMaximumValue(), 24);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 24));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
     }

@@ -115,7 +115,7 @@ public final class DayOfMonth
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), ++dayOfMonth, 1, 31);
+            throw new IllegalCalendarFieldValueException(rule(), ++dayOfMonth);
         }
     }
 

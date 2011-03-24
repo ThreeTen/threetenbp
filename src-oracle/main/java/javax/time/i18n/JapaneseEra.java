@@ -108,7 +108,7 @@ public enum JapaneseEra implements Calendrical {
             case 2:
                 return HEISEI;
             default:
-                throw new IllegalCalendarFieldValueException(JapaneseChronology.eraRule(), japaneseEra, -3, 2);
+                throw new IllegalCalendarFieldValueException(JapaneseChronology.eraRule(), japaneseEra);
         }
     }
 

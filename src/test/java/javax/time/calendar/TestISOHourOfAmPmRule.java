@@ -60,11 +60,7 @@ public class TestISOHourOfAmPmRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.HourOfAmPm");
         assertEquals(rule.getName(), "HourOfAmPm");
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getMaximumValue(), 11);
-        assertEquals(rule.getSmallestMaximumValue(), 11);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 11));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit._12_HOURS);
     }

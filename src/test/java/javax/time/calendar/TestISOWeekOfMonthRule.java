@@ -60,12 +60,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekOfMonth");
         assertEquals(rule.getName(), "WeekOfMonth");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 5);
-        assertEquals(rule.getSmallestMaximumValue(), 4);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 4, 5));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.MONTHS);
     }
@@ -75,22 +70,22 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getMaximumValue_Calendrical_nonLeapFeb() {
         Calendrical cal = LocalDate.of(2007, 2, 1);
-        assertEquals(rule().getMaximumValue(cal), 4);
+        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 4));
     }
 
     public void test_getMaximumValue_Calendrical_leapFeb() {
         Calendrical cal = LocalDate.of(2008, 2, 1);
-        assertEquals(rule().getMaximumValue(cal), 5);
+        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 5));
     }
 
     public void test_getMaximumValue_Calendrical_nonLeapJune() {
         Calendrical cal = LocalDate.of(2007, 6, 1);
-        assertEquals(rule().getMaximumValue(cal), 5);
+        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 5));
     }
 
     public void test_getMaximumValue_Calendrical_leapJune() {
         Calendrical cal = LocalDate.of(2008, 6, 1);
-        assertEquals(rule().getMaximumValue(cal), 5);
+        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 5));
     }
 
     //-----------------------------------------------------------------------

@@ -90,7 +90,7 @@ public enum MinguoEra implements Calendrical {
             case 1:
                 return MINGUO;
             default:
-                throw new IllegalCalendarFieldValueException(MinguoChronology.eraRule(), minguoEra, 0, 1);
+                throw new IllegalCalendarFieldValueException(MinguoChronology.eraRule(), minguoEra);
         }
     }
 

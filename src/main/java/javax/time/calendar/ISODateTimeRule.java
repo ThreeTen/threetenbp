@@ -84,10 +84,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * Ordinal for performance and serialization.
      */
     private final int ordinal;
-    /**
-     * The smallest maximum value of the rule.
-     */
-    private final transient long smallestMaximum;
 
     /**
      * Restricted constructor.
@@ -99,9 +95,8 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             long minimumValue,
             long maximumValue,
             long smallestMaximum) {
-        super(ISOChronology.INSTANCE, name, periodUnit, periodRange, minimumValue, maximumValue);
+        super(ISOChronology.INSTANCE, name, periodUnit, periodRange, DateTimeRuleRange.of(minimumValue, smallestMaximum, maximumValue));
         this.ordinal = ordinal;  // 16 multiplier allow space for new rules
-        this.smallestMaximum = smallestMaximum;
     }
 
     /**
@@ -211,50 +206,62 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return null;
     }
     @Override
-    public long getSmallestMaximumValue() {
-        return smallestMaximum;
-    }
-    @Override
-    public long getMaximumValue(Calendrical calendrical) {
+    public DateTimeRuleRange getRange(Calendrical calendrical) {
+        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
-                DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-                if (moy == null) {
-                    return 31;
+                DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
+                if (moyVal != null) {
+                    MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
+                    if (moy == MonthOfYear.FEBRUARY) {
+                        DateTimeField yearVal = calendrical.get(YEAR);
+                        if (yearVal != null) {
+                            return DateTimeRuleRange.of(1, moy.lengthInDays(ISOChronology.isLeapYear(yearVal.getValue())));
+                        }
+                        return DateTimeRuleRange.of(1, 28, 29);
+                    } else {
+                        return DateTimeRuleRange.of(1, moy.maxLengthInDays());
+                    }
                 }
-                DateTimeField year = calendrical.get(YEAR);
-                if (year != null) {
-                    return MonthOfYear.of(moy.getValidIntValue()).lengthInDays(ISOChronology.isLeapYear(year.getValidIntValue()));
-                }
-                return MonthOfYear.of(moy.getValidIntValue()).maxLengthInDays();
+                break;
             }
             case DAY_OF_YEAR_ORDINAL: {
-                DateTimeField year = calendrical.get(YEAR);
-                return (year != null && ISOChronology.isLeapYear(year.getValidIntValue()) == false ? 365 : 366);
+                DateTimeField yearVal = calendrical.get(YEAR);
+                if (yearVal != null) {
+                    int len = ISOChronology.isLeapYear(yearVal.getValidIntValue()) ? 366 : 365;
+                    return DateTimeRuleRange.of(1, len);
+                }
+                break;
             }
             case WEEK_OF_MONTH_ORDINAL: {
-                DateTimeField year = calendrical.get(YEAR);
-                DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-                if (year != null && moy.getValue() == 2) {
-                    return ISOChronology.isLeapYear(year.getValidIntValue()) ? 5 : 4;
+                DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
+                if (moyVal != null) {
+                    if (moyVal.getValue() == 2) {
+                        DateTimeField yearVal = calendrical.get(YEAR);
+                        if (yearVal != null) {
+                            return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(yearVal.getValidIntValue()) ? 5 : 4);
+                        }
+                    } else {
+                        return DateTimeRuleRange.of(1, 5);
+                    }
                 }
-                return getMaximumValue();
+                break;
             }
             case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: {
                 // TODO: derive from WeekBasedYear
                 LocalDate date = calendrical.get(LocalDate.rule());
-                if (date == null) {
-                    return 53;
+                if (date != null) {
+                    date = date.withDayOfYear(1);
+                    if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
+                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && ISOChronology.isLeapYear(date.getYear()))) {
+                        return DateTimeRuleRange.of(1, 53);
+                    }
+                    return DateTimeRuleRange.of(1, 52);
                 }
-                date = date.withDayOfMonth(1).withMonthOfYear(1);
-                if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
-                        (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && ISOChronology.isLeapYear(date.getYear()))) {
-                    return 53;
-                }
-                return 52;
+                break;
             }
         }
-        return super.getMaximumValue();
+        return super.getRange();
     }
 
     //-----------------------------------------------------------------------

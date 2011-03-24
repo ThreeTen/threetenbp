@@ -111,8 +111,7 @@ public final class HourOfDay
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(
-                rule(), hourOfDay, rule().getMinimumValue(), rule().getMaximumValue());
+            throw new IllegalCalendarFieldValueException(rule(), hourOfDay);
         }
     }
 

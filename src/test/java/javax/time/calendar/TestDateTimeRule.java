@@ -79,18 +79,6 @@ public class TestDateTimeRule {
     }
 
     //-----------------------------------------------------------------------
-    // isIntValue()
-    //-----------------------------------------------------------------------
-    public void test_isIntValue() {
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isIntValue(), true);
-        assertEquals(new Mock(HOURS, DAYS, -1, 23).isIntValue(), true);
-        assertEquals(new Mock(HOURS, DAYS, Integer.MIN_VALUE, Integer.MAX_VALUE).isIntValue(), true);
-        assertEquals(new Mock(HOURS, DAYS, ((long) Integer.MIN_VALUE) - 1, Integer.MAX_VALUE).isIntValue(), false);
-        assertEquals(new Mock(HOURS, DAYS, Integer.MIN_VALUE, ((long) Integer.MAX_VALUE) + 1).isIntValue(), false);
-        assertEquals(new Mock(HOURS, DAYS, Long.MIN_VALUE, Long.MAX_VALUE).isIntValue(), false);
-    }
-
-    //-----------------------------------------------------------------------
     // checkIntValue()
     //-----------------------------------------------------------------------
     public void test_checkIntValue() {
@@ -108,19 +96,6 @@ public class TestDateTimeRule {
             assertEquals(ex.getRule(), rule);
             throw ex;
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // isValidValue()
-    //-----------------------------------------------------------------------
-    public void test_isValidValue() {
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isValidValue(0), true);
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isValidValue(1), true);
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isValidValue(23), true);
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isValidValue(-1), false);
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isValidValue(24), false);
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isValidValue(Long.MIN_VALUE), false);
-        assertEquals(new Mock(HOURS, DAYS, 0, 23).isValidValue(Long.MAX_VALUE), false);
     }
 
     //-----------------------------------------------------------------------
@@ -147,20 +122,12 @@ public class TestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_basics() {
         Mock rule = new Mock(HOURS, DAYS, 0, 23);
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getSmallestMaximumValue(), 23);
-        assertEquals(rule.getMaximumValue(), 23);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 23));
     }
 
     public void test_isFixedValueSet() {
         Mock rule = new Mock(HOURS, DAYS, 0, 23, 21);
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getSmallestMaximumValue(), 21);
-        assertEquals(rule.getMaximumValue(), 23);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 21, 23));
     }
 
     //-----------------------------------------------------------------------
@@ -335,18 +302,12 @@ public class TestDateTimeRule {
     //-----------------------------------------------------------------------
     static class Mock extends DateTimeRule {
         private static final long serialVersionUID = 1L;
-        private final long smallMax;
         
         protected Mock(PeriodUnit unit, PeriodUnit range, long min, long max) {
             this(unit, range, min, max, max);
         }
         protected Mock(PeriodUnit unit, PeriodUnit range, long min, long max, long smallMax) {
-            super(ISOChronology.INSTANCE, unit.toString() + "Of" + range.toString(), unit, range, min, max);
-            this.smallMax = smallMax;
-        }
-        @Override
-        public long getSmallestMaximumValue() {
-            return smallMax;
+            super(ISOChronology.INSTANCE, unit.toString() + "Of" + range.toString(), unit, range, DateTimeRuleRange.of(min, smallMax, max));
         }
     }
 

@@ -67,7 +67,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      */
     FractionPrinterParser(DateTimeRule rule, int minWidth, int maxWidth) {
         DateTimeFormatterBuilder.checkNotNull(rule, "DateTimeRule must not be null");
-        if (rule.isFixedValueSet() == false) {
+        if (rule.getRange().isFixed() == false) {
             throw new IllegalArgumentException("The rule must have a fixed set of values");
         }
         if (minWidth < 0 || minWidth > 9) {

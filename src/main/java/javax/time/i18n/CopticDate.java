@@ -38,6 +38,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.CalendricalRuleException;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -175,7 +176,7 @@ public final class CopticDate
      */
     private static CopticDate copticDateFromEpochDays(int epochDays) {
         if (epochDays < MIN_EPOCH_DAY || epochDays > MAX_EPOCH_DAY) {
-            throw new IllegalCalendarFieldValueException("Date exceeds supported range for CopticDate", CopticChronology.YEAR);
+            throw new CalendricalRuleException("Date exceeds supported range for CopticDate", CopticChronology.YEAR);
         }
         int year = ((epochDays * 4) + 1463) / 1461;
         int startYearEpochDays = (year - 1) * 365 + (year / 4);

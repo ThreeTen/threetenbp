@@ -60,11 +60,7 @@ public class TestISOAmPmOfDayRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.AmPmOfDay");
         assertEquals(rule.getName(), "AmPmOfDay");
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getMaximumValue(), 1);
-        assertEquals(rule.getSmallestMaximumValue(), 1);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit._12_HOURS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
     }

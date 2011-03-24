@@ -115,7 +115,7 @@ public final class WeekOfWeekBasedYear
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), ++weekOfWeekyear, 1, 53);
+            throw new IllegalCalendarFieldValueException(rule(), ++weekOfWeekyear);
         }
     }
 

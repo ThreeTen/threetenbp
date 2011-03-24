@@ -47,6 +47,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.CalendricalRuleException;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -513,7 +514,7 @@ public class TestCopticDate {
         try {
             test.plusDays(plus);
             fail();
-        } catch (IllegalCalendarFieldValueException ex) {
+        } catch (CalendricalRuleException ex) {
             assertEquals(ex.getRule(), CopticChronology.YEAR);
         }
     }

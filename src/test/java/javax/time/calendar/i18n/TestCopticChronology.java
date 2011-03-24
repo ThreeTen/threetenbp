@@ -47,6 +47,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRuleRange;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -107,11 +108,7 @@ public class TestCopticChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.Year");
         assertEquals(rule.getName(), "Year");
-        assertEquals(rule.getMinimumValue(), CopticDate.MIN_YEAR);
-        assertEquals(rule.getLargestMinimumValue(), CopticDate.MIN_YEAR);
-        assertEquals(rule.getMaximumValue(), CopticDate.MAX_YEAR);
-        assertEquals(rule.getSmallestMaximumValue(), CopticDate.MAX_YEAR);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(CopticDate.MIN_YEAR, CopticDate.MAX_YEAR));
         assertEquals(rule.getPeriodUnit(), CopticChronology.YEARS);
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
@@ -122,11 +119,7 @@ public class TestCopticChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 13);
-        assertEquals(rule.getSmallestMaximumValue(), 13);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 13));
         assertEquals(rule.getPeriodUnit(), CopticChronology.MONTHS);
         assertEquals(rule.getPeriodRange(), CopticChronology.YEARS);
         serialize(rule);
@@ -137,11 +130,7 @@ public class TestCopticChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 30);
-        assertEquals(rule.getSmallestMaximumValue(), 5);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 5, 30));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.MONTHS);
         serialize(rule);
@@ -152,11 +141,7 @@ public class TestCopticChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 366);
-        assertEquals(rule.getSmallestMaximumValue(), 365);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.YEARS);
         serialize(rule);
@@ -167,11 +152,7 @@ public class TestCopticChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Coptic.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 7);
-        assertEquals(rule.getSmallestMaximumValue(), 7);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.WEEKS);
         serialize(rule);

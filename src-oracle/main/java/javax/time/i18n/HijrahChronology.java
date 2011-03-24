@@ -13,6 +13,7 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodField;
 import javax.time.calendar.PeriodUnit;
@@ -406,7 +407,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            super(HijrahChronology.INSTANCE, "Era", periodEras(), null, 0, 1);
+            super(HijrahChronology.INSTANCE, "Era", periodEras(), null, DateTimeRuleRange.of(0, 1));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -456,7 +457,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         /** Constructor. */
         private YearOfEraRule() {
             super(HijrahChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
-                    HijrahDate.MIN_YEAR_OF_ERA, HijrahDate.MAX_YEAR_OF_ERA);
+                    DateTimeRuleRange.of(HijrahDate.MIN_YEAR_OF_ERA, HijrahDate.MAX_YEAR_OF_ERA));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -484,7 +485,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(HijrahChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
+            super(HijrahChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), DateTimeRuleRange.of(1, 12));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -507,18 +508,14 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(HijrahChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, HijrahDate.getMaximumDayOfMonth());
+            super(HijrahChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(),
+                    DateTimeRuleRange.of(1, HijrahDate.getSmallestMaximumDayOfMonth(), HijrahDate.getMaximumDayOfMonth()));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return HijrahDate.getSmallestMaximumDayOfMonth();
-        }
-
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(HijrahEra.rule());
             DateTimeField yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
             DateTimeField moyVal = calendrical.get(HijrahChronology.monthOfYearRule());
@@ -526,9 +523,9 @@ public final class HijrahChronology extends Chronology implements Serializable {
                 HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidIntValue()) : HijrahEra.HIJRAH);
                 int yoe = yoeVal.getValidIntValue();
                 int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoe : yoe);
-                return HijrahDate.getMonthLength(moyVal.getValidIntValue() - 1, hijrahYear);
+                return DateTimeRuleRange.of(1, HijrahDate.getMonthLength(moyVal.getValidIntValue() - 1, hijrahYear));
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -548,25 +545,22 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(HijrahChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, HijrahDate.getMaximumDayOfYear());
+            super(HijrahChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(),
+                    DateTimeRuleRange.of(1, HijrahDate.getSmallestMaximumDayOfYear(), HijrahDate.getMaximumDayOfYear()));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return HijrahDate.getSmallestMaximumDayOfYear();
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(HijrahEra.rule());
             DateTimeField yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
             if (yoeVal != null) {
                 HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidIntValue()) : HijrahEra.HIJRAH);
                 int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoeVal.getValidIntValue() : yoeVal.getValidIntValue());
-                return HijrahDate.getYearLength(hijrahYear);
+                return DateTimeRuleRange.of(1, HijrahDate.getYearLength(hijrahYear));
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -586,7 +580,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(HijrahChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super(HijrahChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), DateTimeRuleRange.of(1, 7));
         }
         private Object readResolve() {
             return INSTANCE;

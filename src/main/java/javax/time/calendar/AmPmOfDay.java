@@ -96,7 +96,7 @@ public enum AmPmOfDay {
             case 1:
                 return PM;
             default:
-                throw new IllegalCalendarFieldValueException(AMPM_OF_DAY, amPmOfDay, 0, 1);
+                throw new IllegalCalendarFieldValueException(AMPM_OF_DAY, amPmOfDay);
         }
     }
 

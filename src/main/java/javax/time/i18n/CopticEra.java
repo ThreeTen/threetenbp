@@ -86,7 +86,7 @@ public enum CopticEra implements Era {
             case 1:
                 return AM;
             default:
-                throw new IllegalCalendarFieldValueException(CopticChronology.DAY_OF_MONTH, era, 0, 1);  // TODO
+                throw new IllegalCalendarFieldValueException(CopticChronology.DAY_OF_MONTH, era);  // TODO
         }
     }
 

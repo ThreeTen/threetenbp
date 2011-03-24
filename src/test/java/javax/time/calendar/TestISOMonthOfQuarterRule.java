@@ -60,13 +60,7 @@ public class TestISOMonthOfQuarterRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MonthOfQuarter");
         assertEquals(rule.getName(), "MonthOfQuarter");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 3);
-        assertEquals(rule.getMaximumValue(LocalDate.of(2007, 6, 20)), 3);
-        assertEquals(rule.getSmallestMaximumValue(), 3);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 3));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MONTHS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.QUARTERS);
     }

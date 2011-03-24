@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-
 import org.testng.annotations.Test;
 
 /**
@@ -61,12 +60,7 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRul
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.WeekOfWeekBasedYear");
         assertEquals(rule.getName(), "WeekOfWeekBasedYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 53);
-        assertEquals(rule.getSmallestMaximumValue(), 52);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 52, 53));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.WEEK_BASED_YEARS);
     }
@@ -80,22 +74,22 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeFieldRul
         LocalDate date = LocalDate.of(1900, 1, 1);
         while (date.getYear() <= 2100) {
             if (date.getDayOfWeek() == DayOfWeek.THURSDAY ) {
-                assertEquals(rule().getMaximumValue(date), 53);
+                assertEquals(rule().getRange(date), DateTimeRuleRange.of(1, 53));
             } else if (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && date.isLeapYear()) {
-                assertEquals(rule().getMaximumValue(date), 53);
+                assertEquals(rule().getRange(date), DateTimeRuleRange.of(1, 53));
             } else {
-                assertEquals(rule().getMaximumValue(date), 52);
+                assertEquals(rule().getRange(date), DateTimeRuleRange.of(1, 52));
             }
             date = date.plusYears(1);
         }
     }
 
     public void test_getMaximumValue_Calendrical_sample() {
-        assertEquals(rule().getMaximumValue(LocalDate.of(2007, 6, 1)), 52);
-        assertEquals(rule().getMaximumValue(LocalDate.of(2008, 6, 1)), 52);
-        assertEquals(rule().getMaximumValue(LocalDate.of(2009, 6, 1)), 53);
-        assertEquals(rule().getMaximumValue(LocalDate.of(2010, 6, 1)), 52);
-        assertEquals(rule().getMaximumValue(LocalDate.of(2011, 6, 1)), 52);
+        assertEquals(rule().getRange(LocalDate.of(2007, 6, 1)), DateTimeRuleRange.of(1, 52));
+        assertEquals(rule().getRange(LocalDate.of(2008, 6, 1)), DateTimeRuleRange.of(1, 52));
+        assertEquals(rule().getRange(LocalDate.of(2009, 6, 1)), DateTimeRuleRange.of(1, 53));
+        assertEquals(rule().getRange(LocalDate.of(2010, 6, 1)), DateTimeRuleRange.of(1, 52));
+        assertEquals(rule().getRange(LocalDate.of(2011, 6, 1)), DateTimeRuleRange.of(1, 52));
     }
 
     //-----------------------------------------------------------------------

@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -114,16 +116,15 @@ public abstract class AbstractTestDateTimeFieldRule {
     }
 
     //-----------------------------------------------------------------------
-    // isValidValue(long)
+    // checkIntValue()
     //-----------------------------------------------------------------------
-    public void test_isValidValue_long() {
-        assertEquals(rule().isValidValue(rule().getLargestMinimumValue()), true);
-        assertEquals(rule().isValidValue(rule().getSmallestMaximumValue()), true);
-        if (rule().getMinimumValue() > Long.MIN_VALUE) {
-            assertEquals(rule().isValidValue((rule().getMinimumValue() - 1)), false);
-        }
-        if (rule().getMaximumValue() < Long.MAX_VALUE) {
-            assertEquals(rule().isValidValue((rule().getMaximumValue() + 1)), false);
+    @Test(expectedExceptions=CalendricalRuleException.class)
+    public void test_checkIntValue_valid() {
+        if (rule().getRange().isIntValue()) {
+            rule().checkIntValue();
+            throw new CalendricalRuleException("Dummy", rule());
+        } else {
+            rule().checkIntValue();
         }
     }
 
@@ -131,42 +132,40 @@ public abstract class AbstractTestDateTimeFieldRule {
     // checkValidValue(long)
     //-----------------------------------------------------------------------
     public void test_checkValue_long_valid() {
-        rule().checkValidValue(rule().getLargestMinimumValue());
-        rule().checkValidValue(rule().getSmallestMaximumValue());
+        rule().checkValidValue(rule().getRange().getLargestMinimumValue());
+        rule().checkValidValue(testingValue);
+        rule().checkValidValue(rule().getRange().getSmallestMaximumValue());
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidSmall() {
-        if (rule().getMinimumValue() > Long.MIN_VALUE) {
-            rule().checkValidValue((rule().getMinimumValue() - 1));
+        if (rule().getRange().getMinimumValue() > Long.MIN_VALUE) {
+            rule().checkValidValue((rule().getRange().getMinimumValue() - 1));
         } else {
-            throw new IllegalCalendarFieldValueException("", rule());
+            throw new IllegalCalendarFieldValueException(rule(), 0);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidBig() {
-        if (rule().getMaximumValue() < Long.MAX_VALUE) {
-            rule().checkValidValue((rule().getMaximumValue() + 1));
+        if (rule().getRange().getMaximumValue() < Long.MAX_VALUE) {
+            rule().checkValidValue((rule().getRange().getMaximumValue() + 1));
         } else {
-            throw new IllegalCalendarFieldValueException("", rule());
+            throw new IllegalCalendarFieldValueException(rule(), 0);
         }
     }
 
     //-----------------------------------------------------------------------
-    // getMinimumValue(Calendrical)
+    // getRange(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_getMinimumValue_Calendrical_noData() {
+    public void test_getRange_Calendrical_noData() {
         Calendrical cal = new MockSimpleCalendrical();
-        assertEquals(rule().getMinimumValue(cal), rule().getMinimumValue());
+        assertSame(rule().getRange(cal), rule().getRange());
     }
 
-    //-----------------------------------------------------------------------
-    // getMaximumValue(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_getMaximumValue_Calendrical_noData() {
-        Calendrical cal = new MockSimpleCalendrical();
-        assertEquals(rule().getMaximumValue(cal), rule().getMaximumValue());
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_getRange_Calendrical_null() {
+        rule().getRange(null);
     }
 
     //-----------------------------------------------------------------------

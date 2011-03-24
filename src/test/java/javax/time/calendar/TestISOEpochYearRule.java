@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.format.MockSimpleCalendrical;
-
 import org.testng.annotations.Test;
 
 /**
@@ -62,13 +60,7 @@ public class TestISOEpochYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.EpochYear");
         assertEquals(rule.getName(), "EpochYear");
-        assertEquals(rule.getMinimumValue(), Long.MIN_VALUE);
-        assertEquals(rule.getMinimumValue(new MockSimpleCalendrical()), Long.MIN_VALUE);
-        assertEquals(rule.getLargestMinimumValue(), Long.MIN_VALUE);
-        assertEquals(rule.getMaximumValue(), Long.MAX_VALUE);
-        assertEquals(rule.getMaximumValue(new MockSimpleCalendrical()), Long.MAX_VALUE);
-        assertEquals(rule.getSmallestMaximumValue(), Long.MAX_VALUE);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(Long.MIN_VALUE, Long.MAX_VALUE));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.YEARS);
         assertEquals(rule.getPeriodRange(), null);
     }

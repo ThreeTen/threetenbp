@@ -94,7 +94,7 @@ public enum HistoricEra implements Calendrical {
             case 1:
                 return CE;
             default:
-                throw new IllegalCalendarFieldValueException(HistoricChronology.standardCutover().eraRule(), era, 0, 1);
+                throw new IllegalCalendarFieldValueException(HistoricChronology.standardCutover().eraRule(), era);
         }
     }
 

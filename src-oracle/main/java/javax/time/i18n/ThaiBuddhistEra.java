@@ -63,7 +63,7 @@ public enum ThaiBuddhistEra implements Calendrical {
             case 1:
                 return BUDDHIST;
             default:
-                throw new IllegalCalendarFieldValueException(ThaiBuddhistChronology.eraRule(), thaiBuddhistEra, 0, 1);
+                throw new IllegalCalendarFieldValueException(ThaiBuddhistChronology.eraRule(), thaiBuddhistEra);
         }
     }
 

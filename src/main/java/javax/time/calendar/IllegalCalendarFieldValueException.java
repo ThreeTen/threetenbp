@@ -48,26 +48,31 @@ public class IllegalCalendarFieldValueException extends CalendricalRuleException
     private static final long serialVersionUID = 1L;
 
     /**
+     * The actual value that caused the exception.
+     */
+    private final long actual;
+
+    /**
      * Constructs a new illegal field value exception with a standard message.
      *
      * @param fieldRule  the field rule, not null
      * @param actual  the actual invalid value
-     * @param minValue  the minimum value allowed
-     * @param maxValue  the maximum value allowed
      */
-    public IllegalCalendarFieldValueException(DateTimeRule fieldRule, long actual, long minValue, long maxValue) {
+    public IllegalCalendarFieldValueException(DateTimeRule fieldRule, long actual) {
         super("Illegal value for " + fieldRule.getID() + " field, value " + actual +
-                " is not in the range " + minValue + " to " + maxValue, fieldRule);
+                " is not in the range " + fieldRule.getRange().getMinimumValue() +
+                " to " + fieldRule.getRange().getMaximumValue(), fieldRule);
+        this.actual = actual;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Constructs a new illegal field value exception with the specified message.
+     * Gets the actual value that was illegal.
      *
-     * @param message  the message to use for this exception, may be null
-     * @param fieldRule  the field rule, not null
+     * @return the actual invalid value
      */
-    public IllegalCalendarFieldValueException(String message, DateTimeRule fieldRule) {
-        super(message, fieldRule);
+    public long getActual() {
+        return actual;
     }
 
 }

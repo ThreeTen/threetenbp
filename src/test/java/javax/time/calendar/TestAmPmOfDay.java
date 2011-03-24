@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -79,7 +80,13 @@ public class TestAmPmOfDay {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooHigh() {
-        AmPmOfDay.of(2);
+        try {
+            AmPmOfDay.of(2);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getRule(), AMPM_OF_DAY);
+            assertEquals(ex.getActual(), 2);
+            throw ex;
+        }
     }
 
 //    //-----------------------------------------------------------------------

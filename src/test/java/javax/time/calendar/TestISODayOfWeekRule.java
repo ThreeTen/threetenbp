@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.format.MockSimpleCalendrical;
-
 import org.testng.annotations.Test;
 
 /**
@@ -62,13 +60,7 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(new MockSimpleCalendrical()), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 7);
-        assertEquals(rule.getMaximumValue(new MockSimpleCalendrical()), 7);
-        assertEquals(rule.getSmallestMaximumValue(), 7);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.WEEKS);
     }

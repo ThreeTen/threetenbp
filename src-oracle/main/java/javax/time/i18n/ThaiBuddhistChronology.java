@@ -12,12 +12,11 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.DayOfWeek;
+import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.PeriodUnit;
-import javax.time.calendar.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -433,31 +432,30 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(ThaiBuddhistChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, 31);
+            super(ThaiBuddhistChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 28;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField moyVal = calendrical.get(ThaiBuddhistChronology.monthOfYearRule());
             if (moyVal != null) {
                 MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
-                DateTimeField eraVal = calendrical.get(ThaiBuddhistEra.rule());
-                DateTimeField yoeVal = calendrical.get(ThaiBuddhistChronology.yearOfEraRule());
-                if (eraVal != null && yoeVal != null) {
-                    int yoe = yoeVal.getValidIntValue();
-                    int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                    return moy.lengthInDays(ISOChronology.isLeapYear(isoYear));
+                if (moy == MonthOfYear.FEBRUARY) {
+                    DateTimeField eraVal = calendrical.get(ThaiBuddhistEra.rule());
+                    DateTimeField yoeVal = calendrical.get(ThaiBuddhistChronology.yearOfEraRule());
+                    if (eraVal != null && yoeVal != null) {
+                        int yoe = yoeVal.getValidIntValue();
+                        int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(ISOChronology.isLeapYear(isoYear)));
+                    }
+                    return DateTimeRuleRange.of(1, 28, 29);
                 } else {
-                    return moy.maxLengthInDays();
+                    return DateTimeRuleRange.of(1, moy.maxLengthInDays());
                 }
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -477,26 +475,21 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(ThaiBuddhistChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, 366);
+            super(ThaiBuddhistChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 365;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(ThaiBuddhistEra.rule());
             DateTimeField yoeVal = calendrical.get(ThaiBuddhistChronology.yearOfEraRule());
             if (eraVal != null && yoeVal != null) {
                 int yoe = yoeVal.getValidIntValue();
                 int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                Year year = Year.of(isoYear);
-                return year.lengthInDays();
+                return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

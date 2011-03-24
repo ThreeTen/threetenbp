@@ -1,6 +1,8 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +16,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRuleRange;
 
 import org.testng.annotations.Test;
 
@@ -64,11 +67,7 @@ public class TestHijrahChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.Era");
         assertEquals(rule.getName(), "Era");
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getMaximumValue(), 1);
-        assertEquals(rule.getSmallestMaximumValue(), 1);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodEras());
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
@@ -80,11 +79,7 @@ public class TestHijrahChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
-        assertEquals(rule.getMinimumValue(), HijrahDate.MIN_YEAR_OF_ERA);
-        assertEquals(rule.getLargestMinimumValue(), HijrahDate.MIN_YEAR_OF_ERA);
-        assertEquals(rule.getMaximumValue(), HijrahDate.MAX_YEAR_OF_ERA);
-        assertEquals(rule.getSmallestMaximumValue(), HijrahDate.MAX_YEAR_OF_ERA);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(HijrahDate.MIN_YEAR_OF_ERA, HijrahDate.MAX_YEAR_OF_ERA));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodYears());
         assertEquals(rule.getPeriodRange(), HijrahChronology.periodEras());
         serialize(rule);
@@ -96,11 +91,7 @@ public class TestHijrahChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 12);
-        assertEquals(rule.getSmallestMaximumValue(), 12);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodMonths());
         assertEquals(rule.getPeriodRange(), HijrahChronology.periodYears());
     }
@@ -111,11 +102,7 @@ public class TestHijrahChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 30);
-        assertEquals(rule.getSmallestMaximumValue(), 29);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 29, 30));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodDays());
         assertEquals(rule.getPeriodRange(), HijrahChronology.periodMonths());
         serialize(rule);
@@ -127,11 +114,7 @@ public class TestHijrahChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 355);
-        assertEquals(rule.getSmallestMaximumValue(), 354);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 354, 355));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodDays());
         assertEquals(rule.getPeriodRange(), HijrahChronology.periodYears());
         serialize(rule);
@@ -144,11 +127,7 @@ public class TestHijrahChronology {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "Hijrah.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 7);
-        assertEquals(rule.getSmallestMaximumValue(), 7);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodDays());
         assertEquals(rule.getPeriodRange(), HijrahChronology.periodWeeks());
         serialize(rule);

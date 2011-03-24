@@ -39,6 +39,7 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -431,7 +432,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule(HistoricChronology chrono) {
-            super(chrono, "MonthOfYear", MONTHS, YEARS, 1, 13);
+            super(chrono, "MonthOfYear", MONTHS, YEARS, 1, 12);
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -451,25 +452,25 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule(HistoricChronology chrono) {
-            super(chrono, "DayOfMonth", periodDays(), MONTHS, 1, 30);
+            super(chrono, "DayOfMonth", periodDays(), MONTHS, DateTimeRuleRange.of(1, 28, 31));
             this.chrono = chrono;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 28;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(chrono.yearRule());
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField moy = calendrical.get(chrono.monthOfYearRule());
             if (moy != null) {
-                if (year != null) {
-                    return MonthOfYear.of(moy.getValidIntValue()).lengthInDays(chrono.isLeapYear(year.getValidIntValue()));
+                MonthOfYear month = MonthOfYear.of(moy.getValidIntValue());
+                if (month == MonthOfYear.FEBRUARY) {
+                    DateTimeField year = calendrical.get(chrono.yearRule());
+                    if (year != null) {
+                        return DateTimeRuleRange.of(1, month.lengthInDays(ISOChronology.isLeapYear(year.getValue())));
+                    }
+                    return DateTimeRuleRange.of(1, 28, 29);
                 } else {
-                    return MonthOfYear.of(moy.getValidIntValue()).maxLengthInDays();
+                    return DateTimeRuleRange.of(1, month.maxLengthInDays());
                 }
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -489,20 +490,16 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule(HistoricChronology chrono) {
-            super(chrono, "DayOfYear", periodDays(), YEARS, 1, 366);
+            super(chrono, "DayOfYear", periodDays(), YEARS, DateTimeRuleRange.of(1, 365, 366));
             this.chrono = chrono;
         }
         @Override
-        public long getSmallestMaximumValue() {
-            return 365;
-        }
-        @Override
-        public long getMaximumValue(Calendrical calendrical) {
+        public DateTimeRuleRange getRange(Calendrical calendrical) {
             DateTimeField year = calendrical.get(chrono.yearRule());
             if (year != null) {
-                return chrono.isLeapYear(year.getValidIntValue()) ? 366 : 365;
+                return DateTimeRuleRange.of(1, chrono.isLeapYear(year.getValidIntValue()) ? 366 : 365);
             }
-            return getMaximumValue();
+            return getRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

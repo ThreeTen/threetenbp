@@ -60,11 +60,7 @@ public class TestISOMinuteOfDayRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), DateTimeField.class);
         assertEquals(rule.getID(), "ISO.MinuteOfDay");
         assertEquals(rule.getName(), "MinuteOfDay");
-        assertEquals(rule.getMinimumValue(), 0);
-        assertEquals(rule.getLargestMinimumValue(), 0);
-        assertEquals(rule.getMaximumValue(), 24 * 60 - 1);
-        assertEquals(rule.getSmallestMaximumValue(), 24 * 60 - 1);
-        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 24 * 60 - 1));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MINUTES);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
     }
