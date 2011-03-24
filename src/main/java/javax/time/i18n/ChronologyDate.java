@@ -534,6 +534,26 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this date with the specified number of days subtracted.
+     * <p>
+     * This method subtracts the specified amount in days from the date.
+     * Other fields will be adjusted as necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a date based on this date with the days subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronologyDate minusDays(long days) {
+        if (days == 0) {
+            return this;
+        }
+        return ChronologyDate.of(chrono, date.minusDays(days));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date to a {@code LocalDate}, which is the default representation
      * of a date, and provides values in the ISO-8601 calendar system.
      *

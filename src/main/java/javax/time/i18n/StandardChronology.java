@@ -55,7 +55,7 @@ import javax.time.calendar.LocalDate;
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  * Wherever possible subclasses should be singletons with no public constructor.
- * It is recommended that subclasses implement {@code Serializable}
+ * It is recommended that subclasses implement {@code Serializable}.
  *
  * @author Stephen Colebourne
  */
@@ -257,6 +257,16 @@ public abstract class StandardChronology extends Chronology {
      */
     public CalendricalRule<ChronologyDate> dateRule() {
         return new DateRule();
+    }
+
+    /**
+     * Gets the range of valid values for day-of-month.
+     *
+     * @param date  the date to check in this calendar system, null if no context date
+     * @return true if the date is in a leap year
+     */
+    public DateTimeRuleRange getDayOfMonthValueRange(int monthOfYear, ChronologyDate date) {
+        return DateTimeRuleRange.of(1, 28, 31);
     }
 
     //-----------------------------------------------------------------------
