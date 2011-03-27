@@ -99,6 +99,10 @@ public enum DayOfWeek {
      * This has the numeric value of {@code 7}.
      */
     SUNDAY;
+    /**
+     * Private cache of all the constants.
+     */
+    private static final DayOfWeek[] ENUMS = DayOfWeek.values();
 
     //-----------------------------------------------------------------------
     /**
@@ -116,24 +120,10 @@ public enum DayOfWeek {
      * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
      */
     public static DayOfWeek of(int dayOfWeek) {
-        switch (dayOfWeek) {
-            case 1:
-                return MONDAY;
-            case 2:
-                return TUESDAY;
-            case 3:
-                return WEDNESDAY;
-            case 4:
-                return THURSDAY;
-            case 5:
-                return FRIDAY;
-            case 6:
-                return SATURDAY;
-            case 7:
-                return SUNDAY;
-            default:
-                throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
+        if (dayOfWeek < 1 || dayOfWeek > 12) {
+            throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
         }
+        return ENUMS[dayOfWeek - 1];
     }
 
     //-----------------------------------------------------------------------

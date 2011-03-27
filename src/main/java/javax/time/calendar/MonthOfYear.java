@@ -125,6 +125,10 @@ public enum MonthOfYear {
      * This has the numeric value of {@code 12}.
      */
     DECEMBER;
+    /**
+     * Private cache of all the constants.
+     */
+    private static final MonthOfYear[] ENUMS = MonthOfYear.values();
 
     //-----------------------------------------------------------------------
     /**
@@ -142,34 +146,10 @@ public enum MonthOfYear {
      * @throws IllegalCalendarFieldValueException if the month-of-year is invalid
      */
     public static MonthOfYear of(int monthOfYear) {
-        switch (monthOfYear) {
-            case 1:
-                return JANUARY;
-            case 2:
-                return FEBRUARY;
-            case 3:
-                return MARCH;
-            case 4:
-                return APRIL;
-            case 5:
-                return MAY;
-            case 6:
-                return JUNE;
-            case 7:
-                return JULY;
-            case 8:
-                return AUGUST;
-            case 9:
-                return SEPTEMBER;
-            case 10:
-                return OCTOBER;
-            case 11:
-                return NOVEMBER;
-            case 12:
-                return DECEMBER;
-            default:
-                throw new IllegalCalendarFieldValueException(MONTH_OF_YEAR, monthOfYear);
+        if (monthOfYear < 1 || monthOfYear > 12) {
+            throw new IllegalCalendarFieldValueException(MONTH_OF_YEAR, monthOfYear);
         }
+        return ENUMS[monthOfYear - 1];
     }
 
     //-----------------------------------------------------------------------
