@@ -43,7 +43,6 @@ Time scales
 
 Date/Time classes
 - factories from Calendrical...
-- DayOfWeek.firstDayOfWeekFor
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - factories taking double for seconds (LocalTime...)
 - OffsetDateTime.toEpochSecs() could be private
@@ -81,6 +80,7 @@ Date/Time formatting
 ? substitute text (replacing built in text for Months/DOW etc)
 
 Time zones
+- Use WET/CET/EET as valid short abbreviations?
 - Promote TimeDefinition to top-level type
 - don't use Local Mean Time (or anything before 1900?)
 - SPI for zone names
@@ -131,7 +131,6 @@ General
 - TimeSource get to nearest second etc. with caching?
 - cache todays date
 - localized day of week number
-- first day of week
 - get month/weekday text
 - get rule by name
 - get chrono by name
