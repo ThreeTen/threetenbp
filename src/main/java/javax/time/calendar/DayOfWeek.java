@@ -120,7 +120,7 @@ public enum DayOfWeek {
      * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
      */
     public static DayOfWeek of(int dayOfWeek) {
-        if (dayOfWeek < 1 || dayOfWeek > 12) {
+        if (dayOfWeek < 1 || dayOfWeek > 7) {
             throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
         }
         return ENUMS[dayOfWeek - 1];
