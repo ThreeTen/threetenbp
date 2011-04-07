@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -90,7 +91,8 @@ public abstract class AbstractTestDateTimeRule {
             if (Modifier.isStatic(field.getModifiers())) {
                 assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
             } else {
-                assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
+                assertFalse(Modifier.isPublic(field.getModifiers()), "Field:" + field.getName());
+                assertFalse(Modifier.isProtected(field.getModifiers()), "Field:" + field.getName());
                 assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
             }
         }
