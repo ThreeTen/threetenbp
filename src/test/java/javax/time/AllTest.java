@@ -80,6 +80,7 @@ import javax.time.calendar.TestPeriodFields;
 import javax.time.calendar.TestPeriodParser;
 import javax.time.calendar.TestPeriodUnit;
 import javax.time.calendar.TestQuarterOfYear;
+import javax.time.calendar.TestWeekRules;
 import javax.time.calendar.TestYear;
 import javax.time.calendar.TestYearMonth;
 import javax.time.calendar.TestZoneId;
@@ -195,10 +196,11 @@ public class AllTest {
             TestPeriodFields.class,
             TestPeriodUnit.class,
             TestQuarterOfYear.class,
-            TestZoneId.class,
+            TestWeekRules.class,
             TestYear.class,
             TestYearMonth.class,  // needs strict to block overflow leftovers
             TestZonedDateTime.class,
+            TestZoneId.class,
             TestZoneOffset.class,
             TestZoneResolvers.class,
             // format
