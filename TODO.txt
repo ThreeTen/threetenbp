@@ -59,6 +59,7 @@ Rules
 - test min/max year for week-based-year
 - remove Chronology and share
 - date time field rule serialization
+- Handle case where values have gaps, eg 1,2, 4,5,6, 8
 ? parse()
 ? merge -> normalize
 ? deriveInt for fields
