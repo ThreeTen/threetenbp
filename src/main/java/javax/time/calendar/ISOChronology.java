@@ -41,6 +41,7 @@ import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
@@ -288,6 +289,12 @@ public final class ISOChronology extends Chronology implements Serializable {
             merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(nodVal.getValidValue()));
             merger.removeProcessed(NANO_OF_DAY);
         }
+        
+//        merge(merger, HOUR_OF_DAY, AMPM_OF_DAY, HOUR_OF_AMPM);
+//        merge(merger, MINUTE_OF_DAY, HOUR_OF_DAY, MINUTE_OF_HOUR);
+//        merge(merger, SECOND_OF_DAY, MINUTE_OF_HOUR, SECOND_OF_MINUTE);
+//        merge(merger, NANO_OF_DAY, SECOND_OF_DAY, NANO_OF_SECOND);
+//        merge(merger, MILLI_OF_DAY, SECOND_OF_DAY, MILLI_OF_SECOND);
         
         // milli-of-day
         DateTimeField modVal = merger.getValue(MILLI_OF_DAY);

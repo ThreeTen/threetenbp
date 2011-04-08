@@ -167,7 +167,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      * <p>
      * This implementation uses {@link DateTimeRuleRange#isValidValue(long)}.
-     * Subclasses should not normally override this method.
+     * Subclasses should not normally override this method..
      *
      * @param value  the value to check
      * @return the valid value
@@ -221,6 +221,65 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      */
     public String getText(long value, TextStyle textStyle, Locale locale) {
         return field(value).getText(textStyle, locale);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the equivalent period for a value in this rule.
+     * <p>
+     * The period is the period that the value is after the start of the range.
+     * This essentially converts the value to a simple sequential zero-based value.
+     * The method will handle out of range values wherever possible.
+     * <p>
+     * For example, consider a day-of-year running from 1 to 365/366.
+     * The equivalent period will run from 0 to 364/365, as day 1 requires adding
+     * zero days to the start of the year.
+     * <p>
+     * This implementation simply returns the value as the period, which is suitable
+     * for any sequential zero-based field, such as minute-of-hour.
+     * Subclasses must override this as necessary.
+     *
+     * @param value  the value of this rule, may be outside the value range for the rule
+     * @return the period equivalent to the value of this rule in units of this rule, not null
+     * @throws CalendricalException if a suitable conversion is not possible
+     */
+    public long convertToPeriod(long value) {
+        return value;
+    }
+
+    /**
+     * Gets the equivalent value for a period measured in units of this rule.
+     * <p>
+     * The period is the period that the value is after the start of the range.
+     * This essentially converts the value from a simple sequential zero-based
+     * amount to the potentially complex value.
+     * The method will handle out of range values wherever possible.
+     * <p>
+     * For example, consider a day-of-year running from 1 to 365/366.
+     * The equivalent period will run from 0 to 364/365, as day 1 requires adding
+     * zero days to the start of the year.
+     * <p>
+     * This implementation simply returns the period as the value, which is suitable
+     * for any sequential zero-based field, such as minute-of-hour.
+     * Subclasses must override this as necessary.
+     *
+     * @param period  the period measured in units of this rule, positive or negative
+     * @return the value of this rule, potentially out of range, not null
+     * @throws CalendricalException if a suitable conversion is not possible
+     */
+    public long convertFromPeriod(long period) {
+        return period;
+    }
+
+    /**
+     * Merges two periods.
+     *
+     * @param period  the period measured in units of this rule, positive or negative
+     * @return the value of this rule, potentially out of range, not null
+     * @throws CalendricalException if a suitable conversion is not possible
+     */
+    public PeriodFields merge(long thisPeriod, PeriodField otherPeriod) {
+        return null;
     }
 
     //-----------------------------------------------------------------------

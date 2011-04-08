@@ -46,6 +46,8 @@ import static javax.time.calendar.ISOPeriodUnit._12_HOURS;
 
 import java.io.Serializable;
 
+import javax.time.MathUtils;
+
 /**
  * The rules of date and time used by the ISO calendar system, such as 'HourOfDay' or 'MonthOfYear'.
  * <p>
@@ -262,6 +264,34 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             }
         }
         return super.getRange();
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long convertToPeriod(long value) {
+        // TODO: model as one-based with one hour offset?
+        // 24 -> 0 is close to JDK, but depends on exact definition for this concept
+        switch (ordinal) {
+            case CLOCK_HOUR_OF_AMPM_ORDINAL:
+                return (value == 12 ? 0 : value);
+            case CLOCK_HOUR_OF_DAY_ORDINAL:
+                return (value == 24 ? 0 : value);
+            case DAY_OF_WEEK_ORDINAL:
+            case DAY_OF_MONTH_ORDINAL:
+            case DAY_OF_YEAR_ORDINAL:
+            case WEEK_OF_MONTH_ORDINAL:
+            case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
+            case WEEK_OF_YEAR_ORDINAL:
+            case MONTH_OF_QUARTER_ORDINAL:
+            case MONTH_OF_YEAR_ORDINAL:
+            case QUARTER_OF_YEAR_ORDINAL:
+                return MathUtils.safeDecrement(value);
+            case WEEK_BASED_YEAR_ORDINAL:
+            case YEAR_ORDINAL:
+                return MathUtils.safeSubtract(value, 1970);
+            default:
+                return value;
+        }
     }
 
     //-----------------------------------------------------------------------
