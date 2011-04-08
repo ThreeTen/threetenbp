@@ -72,6 +72,7 @@
 - Refactor DateTimeFormatSymbols
 - Add DateTimeRuleRange to replace DateTimeRule min/max methods
 - Add WeekRules
+- Add PeriodUnit.field(long)
 
 0.6.3
 ===============================================================================

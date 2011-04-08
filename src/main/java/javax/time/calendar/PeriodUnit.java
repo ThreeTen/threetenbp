@@ -296,6 +296,19 @@ public abstract class PeriodUnit
 
     //-----------------------------------------------------------------------
     /**
+     * Creates a period field for this unit.
+     * <p>
+     * Subclasses should not normally override this method.
+     * 
+     * @param amount  the amount of the period, measured in terms of this unit, positive or negative
+     * @return the created field, not null
+     */
+    public PeriodField field(long amount) {
+       return PeriodField.of(amount, this); 
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this unit to another.
      * <p>
      * The comparison is based primarily on the {@link #getEstimatedDuration() estimated duration}.

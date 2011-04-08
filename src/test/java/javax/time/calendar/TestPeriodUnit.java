@@ -274,6 +274,22 @@ public class TestPeriodUnit {
     }
 
     //-----------------------------------------------------------------------
+    // getEstimatedDuration()
+    //-----------------------------------------------------------------------
+    public void test_getEstimatedDuration() {
+        assertEquals(BASIC.getEstimatedDuration(), Duration.ofSeconds(1));
+        assertEquals(DERIVED1.getEstimatedDuration(), Duration.ofSeconds(30));
+    }
+
+    //-----------------------------------------------------------------------
+    // field(long)
+    //-----------------------------------------------------------------------
+    public void test_field() {
+        assertEquals(BASIC.field(2), PeriodField.of(2, BASIC));
+        assertEquals(DERIVED1.field(-3517369), PeriodField.of(-3517369,DERIVED1));
+    }
+
+    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_basic() {
