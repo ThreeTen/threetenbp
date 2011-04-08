@@ -31,9 +31,20 @@
  */
 package javax.time.calendar.zone;
 
-import static javax.time.calendar.DayOfWeek.*;
-import static javax.time.calendar.MonthOfYear.*;
-import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.*;
+import static javax.time.calendar.DayOfWeek.FRIDAY;
+import static javax.time.calendar.DayOfWeek.MONDAY;
+import static javax.time.calendar.DayOfWeek.SUNDAY;
+import static javax.time.calendar.DayOfWeek.THURSDAY;
+import static javax.time.calendar.MonthOfYear.APRIL;
+import static javax.time.calendar.MonthOfYear.AUGUST;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
+import static javax.time.calendar.MonthOfYear.MARCH;
+import static javax.time.calendar.MonthOfYear.NOVEMBER;
+import static javax.time.calendar.MonthOfYear.OCTOBER;
+import static javax.time.calendar.MonthOfYear.SEPTEMBER;
+import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.STANDARD;
+import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.UTC;
+import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.WALL;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.IllegalCalendarFieldValueException;

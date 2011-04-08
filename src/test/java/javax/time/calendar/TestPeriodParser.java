@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.Period;
-import javax.time.calendar.PeriodParser;
 import javax.time.calendar.format.CalendricalParseException;
 
 import org.testng.annotations.DataProvider;

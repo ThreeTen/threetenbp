@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.DayOfWeek.*;
+import static javax.time.calendar.DayOfWeek.MONDAY;
+import static javax.time.calendar.DayOfWeek.SUNDAY;
+import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -47,7 +49,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
-
 
 import org.testng.annotations.Test;
 

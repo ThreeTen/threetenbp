@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,8 +43,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.time.Duration;
-import javax.time.calendar.PeriodField;
-import javax.time.calendar.PeriodUnit;
 
 import org.testng.annotations.Test;
 

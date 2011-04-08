@@ -31,9 +31,6 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.PeriodFields;
-import javax.time.calendar.PeriodProvider;
-
 /**
  * Mock PeriodProvider that returns null.
  *
