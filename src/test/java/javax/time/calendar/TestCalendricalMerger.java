@@ -297,11 +297,11 @@ public class TestCalendricalMerger {
         assertMerged(m, null, LocalTime.rule(), time(21, 00));  // merged to 24:00
     }
 
-    public void test_merge_clockHourEndOfDay() {
-        CalendricalMerger m = createMerger(AMPM_OF_DAY, 1, CLOCK_HOUR_OF_AMPM, 12, STRICT_CONTEXT);  // 12am end-of-day
-        m.merge();
-        assertMerged(m, Period.ofDays(1), LocalTime.rule(), time(0, 00));  // merged to 24:00
-    }
+//    public void test_merge_clockHourEndOfDay() {
+//        CalendricalMerger m = createMerger(AMPM_OF_DAY, 1, CLOCK_HOUR_OF_AMPM, 12, STRICT_CONTEXT);  // 12am end-of-day
+//        m.merge();
+//        assertMerged(m, Period.ofDays(1), LocalTime.rule(), time(0, 00));  // merged to 24:00
+//    }
 
 //    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
 //    public void test_merge_strict() {

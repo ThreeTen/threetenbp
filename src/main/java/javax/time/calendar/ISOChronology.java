@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
@@ -46,6 +47,8 @@ import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
@@ -283,18 +286,24 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @param merger  the merger to use, not null
      */
     void merge(CalendricalMerger merger) {
+        merge(merger, CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM);
+        merge(merger, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY);
+        
+        merge(merger, HOUR_OF_AMPM, AMPM_OF_DAY, HOUR_OF_DAY);
+        merge(merger, NANO_OF_HOUR, HOUR_OF_DAY, NANO_OF_DAY);
+        merge(merger, MINUTE_OF_HOUR, HOUR_OF_DAY, MINUTE_OF_DAY);
+        merge(merger, NANO_OF_MINUTE, MINUTE_OF_DAY, NANO_OF_DAY);
+        merge(merger, SECOND_OF_MINUTE, MINUTE_OF_DAY, SECOND_OF_DAY);
+        merge(merger, NANO_OF_SECOND, SECOND_OF_DAY, NANO_OF_DAY);
+        merge(merger, MILLI_OF_SECOND, SECOND_OF_DAY, MILLI_OF_DAY);
+        
+        // TODO: add "fallback fields" concept to merger
         // nano-of-day
         DateTimeField nodVal = merger.getValue(NANO_OF_DAY);
         if (nodVal != null) {
             merger.storeMerged(LocalTime.rule(), LocalTime.ofNanoOfDay(nodVal.getValidValue()));
             merger.removeProcessed(NANO_OF_DAY);
         }
-        
-//        merge(merger, HOUR_OF_DAY, AMPM_OF_DAY, HOUR_OF_AMPM);
-//        merge(merger, MINUTE_OF_DAY, HOUR_OF_DAY, MINUTE_OF_HOUR);
-//        merge(merger, SECOND_OF_DAY, MINUTE_OF_HOUR, SECOND_OF_MINUTE);
-//        merge(merger, NANO_OF_DAY, SECOND_OF_DAY, NANO_OF_SECOND);
-//        merge(merger, MILLI_OF_DAY, SECOND_OF_DAY, MILLI_OF_SECOND);
         
         // milli-of-day
         DateTimeField modVal = merger.getValue(MILLI_OF_DAY);
@@ -305,83 +314,37 @@ public final class ISOChronology extends Chronology implements Serializable {
         
         // second-of-day
         DateTimeField sodVal = merger.getValue(SECOND_OF_DAY);
-        if (modVal != null) {
-            DateTimeField nosVal = merger.getValue(NANO_OF_SECOND);
-            if (nosVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidIntValue(), nosVal.getValidIntValue()));
-                merger.removeProcessed(NANO_OF_SECOND);
-            } else {
-                DateTimeField mosVal = merger.getValue(MILLI_OF_SECOND);
-                if (mosVal != null) {
-                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidIntValue(), mosVal.getValidIntValue() * 1000000));
-                    merger.removeProcessed(MILLI_OF_SECOND);
-                } else {
-                    merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidIntValue()));
-                }
-            }
+        if (sodVal != null) {
+            merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(sodVal.getValidIntValue()));
             merger.removeProcessed(SECOND_OF_DAY);
         }
         
-        // am-hour
-        DateTimeField amPm = merger.getValue(AMPM_OF_DAY);
-        if (amPm != null) {
-            merge(merger, HOUR_OF_DAY, AMPM_OF_DAY, HOUR_OF_AMPM);
-            DateTimeField chapVal = merger.getValue(ISODateTimeRule.CLOCK_HOUR_OF_AMPM);
-            if (chapVal != null) {
-                int hourOfDay = amPm.getValidIntValue() * 12 + chapVal.getValidIntValue();
-                if (hourOfDay == 24) {
-                    merger.addToOverflow(Period.ofDays(1));
-                    hourOfDay = 0;
-                }
-                merger.storeMergedField(HOUR_OF_DAY, hourOfDay);
-                merger.removeProcessed(AMPM_OF_DAY);
-                merger.removeProcessed(CLOCK_HOUR_OF_AMPM);
-            }
+        // minute-of-day
+        DateTimeField minodVal = merger.getValue(MINUTE_OF_DAY);
+        if (minodVal != null) {
+            merger.storeMerged(LocalTime.rule(), LocalTime.ofSecondOfDay(minodVal.getValidIntValue() * 60L));
+            merger.removeProcessed(MINUTE_OF_DAY);
         }
         
-        // hour-minute-second-nano
-        DateTimeField hourVal = merger.getValue(HOUR_OF_DAY);
-        if (hourVal != null) {
-            DateTimeField minuteVal = merger.getValue(MINUTE_OF_HOUR);
-            DateTimeField secondVal = merger.getValue(SECOND_OF_MINUTE);
-            DateTimeField mosVal = merger.getValue(MILLI_OF_SECOND);
-            DateTimeField nanoVal = merger.getValue(NANO_OF_SECOND);
-            if (minuteVal != null && secondVal != null && nanoVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), secondVal.getValidIntValue(), nanoVal.getValidIntValue()));
-                merger.removeProcessed(HOUR_OF_DAY);
-                merger.removeProcessed(MINUTE_OF_HOUR);
-                merger.removeProcessed(SECOND_OF_MINUTE);
-                merger.removeProcessed(NANO_OF_SECOND);
-            } else if (minuteVal != null && secondVal != null && mosVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), secondVal.getValidIntValue(), mosVal.getValidIntValue() * 1000000));
-                merger.removeProcessed(HOUR_OF_DAY);
-                merger.removeProcessed(MINUTE_OF_HOUR);
-                merger.removeProcessed(SECOND_OF_MINUTE);
-                merger.removeProcessed(MILLI_OF_SECOND);
-            } else if (minuteVal != null && secondVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), secondVal.getValidIntValue(), 0));
-                merger.removeProcessed(HOUR_OF_DAY);
-                merger.removeProcessed(MINUTE_OF_HOUR);
-                merger.removeProcessed(SECOND_OF_MINUTE);
-            } else if (minuteVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), minuteVal.getValidIntValue(), 0, 0));
-                merger.removeProcessed(HOUR_OF_DAY);
-                merger.removeProcessed(MINUTE_OF_HOUR);
-            } else {
-                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal.getValidIntValue(), 0));
-                merger.removeProcessed(HOUR_OF_DAY);
-            }
+        // hour-of-day
+        DateTimeField hodVal = merger.getValue(HOUR_OF_DAY);
+        if (hodVal != null) {
+            merger.storeMerged(LocalTime.rule(), LocalTime.of(hodVal.getValidIntValue(), 0));
+            merger.removeProcessed(HOUR_OF_DAY);
         }
         
-        // quarter-of-year and month-of-quarter
-        DateTimeField qoy = merger.getValue(QUARTER_OF_YEAR);
-        DateTimeField moqVal = merger.getValue(MONTH_OF_QUARTER);
-        if (qoy != null && moqVal != null) {
-            int moy = (qoy.getValidIntValue() - 1) * 3 + moqVal.getValidIntValue();
-            merger.storeMergedField(MONTH_OF_YEAR, moy);
-            merger.removeProcessed(QUARTER_OF_YEAR);
-            merger.removeProcessed(MONTH_OF_QUARTER);
-        }
+        // dates
+        merge(merger, MONTH_OF_QUARTER, QUARTER_OF_YEAR, MONTH_OF_YEAR);
+        
+//        // quarter-of-year and month-of-quarter
+//        DateTimeField qoy = merger.getValue(QUARTER_OF_YEAR);
+//        DateTimeField moqVal = merger.getValue(MONTH_OF_QUARTER);
+//        if (qoy != null && moqVal != null) {
+//            int moy = (qoy.getValidIntValue() - 1) * 3 + moqVal.getValidIntValue();
+//            merger.storeMergedField(MONTH_OF_YEAR, moy);
+//            merger.removeProcessed(QUARTER_OF_YEAR);
+//            merger.removeProcessed(MONTH_OF_QUARTER);
+//        }
         
         // year
         DateTimeField yearVal = merger.getValue(YEAR);
@@ -509,17 +472,46 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
     }
 
-    private void merge(CalendricalMerger merger, DateTimeRule destRule, DateTimeRule rule1, DateTimeRule rule2) {
-        DateTimeField field1 = merger.getValue(rule1);
+    /**
+     * Merges a field to a simpler form of itself.
+     * <p>
+     * This is used when two rules are alternate views of the same concept.
+     * The classic example of this is converting clock-hour-of-ampm to hour-of-ampm.
+     * 
+     * @param merger  the merger instance, not null
+     * @param sourceRule  the rule to merge, not null
+     * @param destRule  the rule to merge into, not null
+     */
+    private void merge(CalendricalMerger merger, DateTimeRule sourceRule, DateTimeRule destRule) {
+        DateTimeField field1 = merger.getValue(sourceRule);
         if (field1 != null) {
-            DateTimeField field2 = merger.getValue(rule2);
+            long period = sourceRule.convertToPeriod(field1.getValue());
+            merger.storeMergedField(destRule, destRule.convertFromPeriod(period));
+            merger.removeProcessed(sourceRule);
+        }
+    }
+
+    /**
+     * Merges two fields to form another.
+     * 
+     * @param merger  the merger instance, not null
+     * @param ruleSmaller  the smaller rule to merge - CofB, not null
+     * @param ruleLarger  the larger rule to merge - BofA, not null
+     * @param destRule  the rule to merge into - CofA, not null
+     */
+    private void merge(CalendricalMerger merger, DateTimeRule ruleSmaller, DateTimeRule ruleLarger, DateTimeRule destRule) {
+        DateTimeField field1 = merger.getValue(ruleLarger);
+        if (field1 != null) {
+            DateTimeField field2 = merger.getValue(ruleSmaller);
             if (field2 != null) {
-                // TODO: non-zero base
-                PeriodField conversion = rule1.getPeriodUnit().getEquivalentPeriod(rule2.getPeriodUnit());
-                PeriodField result = conversion.multipliedBy(field1.getValidIntValue()).plus(field2.getValidIntValue());
-                merger.storeMergedField(destRule, result.getAmount());
-                merger.removeProcessed(rule1);
-                merger.removeProcessed(rule2);
+                long period1 = ruleLarger.convertToPeriod(field1.getValidValue());  // TODO: strict/lenient
+                long period2 = ruleSmaller.convertToPeriod(field2.getValidValue());
+                PeriodField conversion = ruleLarger.getPeriodUnit().getEquivalentPeriod(ruleSmaller.getPeriodUnit());
+                long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
+                long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
+                merger.storeMergedField(destRule, destRule.convertFromPeriod(totalPeriod));
+                merger.removeProcessed(ruleLarger);
+                merger.removeProcessed(ruleSmaller);
             }
         }
     }

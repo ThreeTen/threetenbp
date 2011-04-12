@@ -269,13 +269,11 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     //-----------------------------------------------------------------------
     @Override
     public long convertToPeriod(long value) {
-        // TODO: model as one-based with one hour offset?
-        // 24 -> 0 is close to JDK, but depends on exact definition for this concept
         switch (ordinal) {
             case CLOCK_HOUR_OF_AMPM_ORDINAL:
-                return (value == 12 ? 0 : value);
+                return (value == 12 ? 0 : value);  // this matches GregorianCalendar
             case CLOCK_HOUR_OF_DAY_ORDINAL:
-                return (value == 24 ? 0 : value);
+                return (value == 24 ? 0 : value);  // this matches GregorianCalendar
             case DAY_OF_WEEK_ORDINAL:
             case DAY_OF_MONTH_ORDINAL:
             case DAY_OF_YEAR_ORDINAL:
@@ -291,6 +289,31 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 return MathUtils.safeSubtract(value, 1970);
             default:
                 return value;
+        }
+    }
+
+    @Override
+    public long convertFromPeriod(long amount) {
+        switch (ordinal) {
+            case CLOCK_HOUR_OF_AMPM_ORDINAL:
+                return (amount == 0 ? 12 : amount);
+            case CLOCK_HOUR_OF_DAY_ORDINAL:
+                return (amount == 0 ? 24 : amount);
+            case DAY_OF_WEEK_ORDINAL:
+            case DAY_OF_MONTH_ORDINAL:
+            case DAY_OF_YEAR_ORDINAL:
+            case WEEK_OF_MONTH_ORDINAL:
+            case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
+            case WEEK_OF_YEAR_ORDINAL:
+            case MONTH_OF_QUARTER_ORDINAL:
+            case MONTH_OF_YEAR_ORDINAL:
+            case QUARTER_OF_YEAR_ORDINAL:
+                return MathUtils.safeIncrement(amount);
+            case WEEK_BASED_YEAR_ORDINAL:
+            case YEAR_ORDINAL:
+                return MathUtils.safeAdd(amount, 1970);
+            default:
+                return amount;
         }
     }
 
@@ -318,34 +341,36 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     private static final int NANO_OF_SECOND_ORDINAL =       0 * 16;
-    private static final int NANO_OF_DAY_ORDINAL =          1 * 16;
-    private static final int MILLI_OF_SECOND_ORDINAL =      2 * 16;
-    private static final int MILLI_OF_DAY_ORDINAL =         3 * 16;
-    private static final int SECOND_OF_MINUTE_ORDINAL =     4 * 16;
-    private static final int SECOND_OF_DAY_ORDINAL =        5 * 16;
-    private static final int EPOCH_SECOND_ORDINAL =         6 * 16;
-    private static final int MINUTE_OF_HOUR_ORDINAL =       7 * 16;
-    private static final int MINUTE_OF_DAY_ORDINAL =        8 * 16;
-    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL =   9 * 16;
-    private static final int HOUR_OF_AMPM_ORDINAL =         10 * 16;
-    private static final int CLOCK_HOUR_OF_DAY_ORDINAL =    11 * 16;
-    private static final int HOUR_OF_DAY_ORDINAL =          12 * 16;
-    private static final int AMPM_OF_DAY_ORDINAL =          13 * 16;
-    private static final int DAY_OF_WEEK_ORDINAL =          14 * 16;
-    private static final int DAY_OF_MONTH_ORDINAL =         15 * 16;
-    private static final int DAY_OF_YEAR_ORDINAL =          16 * 16;
-    private static final int EPOCH_DAY_ORDINAL =            17 * 16;
-    private static final int WEEK_OF_MONTH_ORDINAL =        18 * 16;
-    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 19 * 16;
-    private static final int WEEK_OF_YEAR_ORDINAL =         20 * 16;
-    private static final int MONTH_OF_QUARTER_ORDINAL =     21 * 16;
-    private static final int MONTH_OF_YEAR_ORDINAL =        22 * 16;
-    private static final int EPOCH_MONTH_ORDINAL =          23 * 16;
-    private static final int QUARTER_OF_YEAR_ORDINAL =      24 * 16;
-    private static final int WEEK_BASED_YEAR_ORDINAL =      25 * 16;
-    private static final int YEAR_ORDINAL =                 26 * 16;
-    private static final int EPOCH_YEAR_ORDINAL =           27 * 16;
-    
+    private static final int NANO_OF_MINUTE_ORDINAL =       1 * 16;
+    private static final int NANO_OF_HOUR_ORDINAL =         2 * 16;
+    private static final int NANO_OF_DAY_ORDINAL =          3 * 16;
+    private static final int MILLI_OF_SECOND_ORDINAL =      4 * 16;
+    private static final int MILLI_OF_DAY_ORDINAL =         5 * 16;
+    private static final int SECOND_OF_MINUTE_ORDINAL =     6 * 16;
+    private static final int SECOND_OF_DAY_ORDINAL =        7 * 16;
+    private static final int EPOCH_SECOND_ORDINAL =         8 * 16;
+    private static final int MINUTE_OF_HOUR_ORDINAL =       9 * 16;
+    private static final int MINUTE_OF_DAY_ORDINAL =        10 * 16;
+    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL =   11 * 16;
+    private static final int HOUR_OF_AMPM_ORDINAL =         12 * 16;
+    private static final int CLOCK_HOUR_OF_DAY_ORDINAL =    13 * 16;
+    private static final int HOUR_OF_DAY_ORDINAL =          14 * 16;
+    private static final int AMPM_OF_DAY_ORDINAL =          15 * 16;
+    private static final int DAY_OF_WEEK_ORDINAL =          16 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL =         17 * 16;
+    private static final int DAY_OF_YEAR_ORDINAL =          18 * 16;
+    private static final int EPOCH_DAY_ORDINAL =            19 * 16;
+    private static final int WEEK_OF_MONTH_ORDINAL =        20 * 16;
+    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 21 * 16;
+    private static final int WEEK_OF_YEAR_ORDINAL =         22 * 16;
+    private static final int MONTH_OF_QUARTER_ORDINAL =     23 * 16;
+    private static final int MONTH_OF_YEAR_ORDINAL =        24 * 16;
+    private static final int EPOCH_MONTH_ORDINAL =          25 * 16;
+    private static final int QUARTER_OF_YEAR_ORDINAL =      26 * 16;
+    private static final int WEEK_BASED_YEAR_ORDINAL =      27 * 16;
+    private static final int YEAR_ORDINAL =                 28 * 16;
+    private static final int EPOCH_YEAR_ORDINAL =           29 * 16;
+
     //-----------------------------------------------------------------------
     /**
      * The rule for the nano-of-second field.
@@ -354,6 +379,20 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The values run from 0 to 999,999,999.
      */
     public static final DateTimeRule NANO_OF_SECOND = new ISODateTimeRule(NANO_OF_SECOND_ORDINAL, "NanoOfSecond", NANOS, SECONDS, 0, 999999999, 999999999);
+    /**
+     * The rule for the nano-of-minute field.
+     * <p>
+     * This field counts nanoseconds sequentially from the start of the minute.
+     * The values run from 0 to 59,999,999,999.
+     */
+    public static final DateTimeRule NANO_OF_MINUTE = new ISODateTimeRule(NANO_OF_MINUTE_ORDINAL, "NanoOfMinute", NANOS, MINUTES, 0, 59999999999L, 59999999999L);
+    /**
+     * The rule for the nano-of-hour field.
+     * <p>
+     * This field counts nanoseconds sequentially from the start of the hour.
+     * The values run from 0 to 3,599,999,999,999.
+     */
+    public static final DateTimeRule NANO_OF_HOUR = new ISODateTimeRule(NANO_OF_HOUR_ORDINAL, "NanoOfHour", NANOS, HOURS, 0, 3599999999999L, 3599999999999L);
     /**
      * The rule for the nano-of-day field.
      * <p>
@@ -587,7 +626,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * Indices must match ordinal passed to rule constructor.
      */
     private static final DateTimeRule[] RULE_CACHE = new DateTimeRule[] {
-        NANO_OF_SECOND, NANO_OF_DAY,
+        NANO_OF_SECOND, NANO_OF_SECOND, NANO_OF_MINUTE, NANO_OF_DAY,
         MILLI_OF_SECOND, MILLI_OF_DAY,
         SECOND_OF_MINUTE, SECOND_OF_DAY, EPOCH_SECOND,
         MINUTE_OF_HOUR, MINUTE_OF_DAY,
