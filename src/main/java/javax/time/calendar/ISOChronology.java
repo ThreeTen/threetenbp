@@ -38,6 +38,9 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_SECOND;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
@@ -286,16 +289,21 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @param merger  the merger to use, not null
      */
     void merge(CalendricalMerger merger) {
-        merge(merger, CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM);
-        merge(merger, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY);
+        normalizeSplit(merger, EPOCH_SECOND, SECOND_OF_DAY, EPOCH_DAY, 86400);
+        normalizeSplit(merger, EPOCH_MONTH, MONTH_OF_YEAR, EPOCH_YEAR, 12);
         
-        merge(merger, HOUR_OF_AMPM, AMPM_OF_DAY, HOUR_OF_DAY);
-        merge(merger, NANO_OF_HOUR, HOUR_OF_DAY, NANO_OF_DAY);
-        merge(merger, MINUTE_OF_HOUR, HOUR_OF_DAY, MINUTE_OF_DAY);
-        merge(merger, NANO_OF_MINUTE, MINUTE_OF_DAY, NANO_OF_DAY);
-        merge(merger, SECOND_OF_MINUTE, MINUTE_OF_DAY, SECOND_OF_DAY);
-        merge(merger, NANO_OF_SECOND, SECOND_OF_DAY, NANO_OF_DAY);
-        merge(merger, MILLI_OF_SECOND, SECOND_OF_DAY, MILLI_OF_DAY);
+        normalizeConvert(merger, CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM);
+        normalizeConvert(merger, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY);
+        normalizeConvert(merger, EPOCH_YEAR, YEAR);
+        
+        normalizeMerge(merger, HOUR_OF_AMPM, AMPM_OF_DAY, HOUR_OF_DAY);
+        normalizeMerge(merger, NANO_OF_HOUR, HOUR_OF_DAY, NANO_OF_DAY);
+        normalizeMerge(merger, MINUTE_OF_HOUR, HOUR_OF_DAY, MINUTE_OF_DAY);
+        normalizeMerge(merger, NANO_OF_MINUTE, MINUTE_OF_DAY, NANO_OF_DAY);
+        normalizeMerge(merger, SECOND_OF_MINUTE, MINUTE_OF_DAY, SECOND_OF_DAY);
+        normalizeMerge(merger, NANO_OF_SECOND, SECOND_OF_DAY, NANO_OF_DAY);
+        normalizeMerge(merger, MILLI_OF_SECOND, SECOND_OF_DAY, MILLI_OF_DAY);
+        normalizeMerge(merger, MONTH_OF_QUARTER, QUARTER_OF_YEAR, MONTH_OF_YEAR);
         
         // TODO: add "fallback fields" concept to merger
         // nano-of-day
@@ -332,19 +340,6 @@ public final class ISOChronology extends Chronology implements Serializable {
             merger.storeMerged(LocalTime.rule(), LocalTime.of(hodVal.getValidIntValue(), 0));
             merger.removeProcessed(HOUR_OF_DAY);
         }
-        
-        // dates
-        merge(merger, MONTH_OF_QUARTER, QUARTER_OF_YEAR, MONTH_OF_YEAR);
-        
-//        // quarter-of-year and month-of-quarter
-//        DateTimeField qoy = merger.getValue(QUARTER_OF_YEAR);
-//        DateTimeField moqVal = merger.getValue(MONTH_OF_QUARTER);
-//        if (qoy != null && moqVal != null) {
-//            int moy = (qoy.getValidIntValue() - 1) * 3 + moqVal.getValidIntValue();
-//            merger.storeMergedField(MONTH_OF_YEAR, moy);
-//            merger.removeProcessed(QUARTER_OF_YEAR);
-//            merger.removeProcessed(MONTH_OF_QUARTER);
-//        }
         
         // year
         DateTimeField yearVal = merger.getValue(YEAR);
@@ -482,7 +477,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @param sourceRule  the rule to merge, not null
      * @param destRule  the rule to merge into, not null
      */
-    private void merge(CalendricalMerger merger, DateTimeRule sourceRule, DateTimeRule destRule) {
+    protected void normalizeConvert(CalendricalMerger merger, DateTimeRule sourceRule, DateTimeRule destRule) {
         DateTimeField field1 = merger.getValue(sourceRule);
         if (field1 != null) {
             long period = sourceRule.convertToPeriod(field1.getValue());
@@ -493,13 +488,18 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     /**
      * Merges two fields to form another.
+     * <p>
+     * This is used to combine two fields into a larger whole.
+     * For example, merge hour-of-ampm and ampm-of-day to form hour-of-day.
+     * <p>
+     * The source rules must be related by {@link PeriodUnit#getEquivalentPeriod}.
      * 
      * @param merger  the merger instance, not null
-     * @param ruleSmaller  the smaller rule to merge - CofB, not null
-     * @param ruleLarger  the larger rule to merge - BofA, not null
-     * @param destRule  the rule to merge into - CofA, not null
+     * @param ruleSmaller  the smaller rule to merge - SmallOfMid, not null
+     * @param ruleLarger  the larger rule to merge - MidOfBig, not null
+     * @param destRule  the rule to merge into - SmallOfBig, not null
      */
-    private void merge(CalendricalMerger merger, DateTimeRule ruleSmaller, DateTimeRule ruleLarger, DateTimeRule destRule) {
+    protected void normalizeMerge(CalendricalMerger merger, DateTimeRule ruleSmaller, DateTimeRule ruleLarger, DateTimeRule destRule) {
         DateTimeField field1 = merger.getValue(ruleLarger);
         if (field1 != null) {
             DateTimeField field2 = merger.getValue(ruleSmaller);
@@ -513,6 +513,33 @@ public final class ISOChronology extends Chronology implements Serializable {
                 merger.removeProcessed(ruleLarger);
                 merger.removeProcessed(ruleSmaller);
             }
+        }
+    }
+
+    /**
+     * Splits a field to create two fields.
+     * <p>
+     * This is used to split one field to form two partial fields.
+     * For example, split epoch-month to form month-of-year and epoch-year.
+     * <p>
+     * A conversion is passed in rather than using the equivalent period.
+     * This handles cases across the day boundary.
+     * 
+     * @param merger  the merger instance, not null
+     * @param sourceRule  the rule to split - SmallOfBig, not null
+     * @param smallerRule  the smaller rule to merge - SmallOfMid, not null
+     * @param largerRule  the larger rule to merge - MidOfBig, not null
+     * @param conversion  the conversion factor to use
+     */
+    protected void normalizeSplit(CalendricalMerger merger, DateTimeRule sourceRule, DateTimeRule smallerRule, DateTimeRule largerRule, long conversion) {
+        DateTimeField field = merger.getValue(sourceRule);
+        if (field != null) {
+            long period = largerRule.convertToPeriod(field.getValue());
+            long largerPeriod = MathUtils.floorDiv(period, conversion);
+            long smallerPeriod = MathUtils.floorMod(period, conversion);
+            merger.storeMergedField(largerRule, largerRule.convertFromPeriod(largerPeriod));
+            merger.storeMergedField(smallerRule, smallerRule.convertFromPeriod(smallerPeriod));
+            merger.removeProcessed(sourceRule);
         }
     }
 
