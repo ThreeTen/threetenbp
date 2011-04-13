@@ -83,7 +83,7 @@ public class TestTimeSource_OffsetSystem {
             // assume can eventually get these within 10 milliseconds
             Instant instant = offset.instant();
             long systemMillis = System.currentTimeMillis();
-            if (systemMillis - (instant.toEpochMillisLong() + 2000) < 10) {
+            if (systemMillis - (instant.toEpochMilli() + 2000) < 10) {
                 return;  // success
             }
         }

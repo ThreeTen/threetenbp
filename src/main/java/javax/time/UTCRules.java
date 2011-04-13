@@ -217,14 +217,14 @@ public abstract class UTCRules {
         long mjd = utcInstant.getModifiedJulianDay();
         long utcNanos = utcInstant.getNanoOfDay();
         long epochDay = MathUtils.safeSubtract(mjd, OFFSET_MJD_EPOCH);
-        long epochSecs = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
+        long epochSec = MathUtils.safeMultiply(epochDay, SECS_PER_DAY);
         int leapAdj = getLeapSecondAdjustment(mjd);
         long startSlsNanos = (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND;
         long slsNanos = utcNanos;
         if (leapAdj != 0 && utcNanos >= startSlsNanos) {
             slsNanos = utcNanos - leapAdj * (utcNanos - startSlsNanos) / 1000;  // apply UTC-SLS mapping
         }
-        return Instant.ofEpochSeconds(epochSecs + slsNanos / NANOS_PER_SECOND, slsNanos % NANOS_PER_SECOND);
+        return Instant.ofEpochSecond(epochSec + slsNanos / NANOS_PER_SECOND, slsNanos % NANOS_PER_SECOND);
     }
 
     /**
@@ -249,9 +249,9 @@ public abstract class UTCRules {
      * @throws ArithmeticException if the capacity is exceeded
      */
     protected UTCInstant convertToUTC(Instant instant) {
-        long epochDay = MathUtils.floorDiv(instant.getEpochSeconds(), SECS_PER_DAY);
+        long epochDay = MathUtils.floorDiv(instant.getEpochSecond(), SECS_PER_DAY);
         long mjd = epochDay + OFFSET_MJD_EPOCH;
-        long slsNanos = MathUtils.floorMod(instant.getEpochSeconds(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
+        long slsNanos = MathUtils.floorMod(instant.getEpochSecond(), SECS_PER_DAY) * NANOS_PER_SECOND + instant.getNanoOfSecond();
         int leapAdj = getLeapSecondAdjustment(mjd);
         long startSlsNanos = (SECS_PER_DAY + leapAdj - 1000) * NANOS_PER_SECOND;
         long utcNanos = slsNanos;

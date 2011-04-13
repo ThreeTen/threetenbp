@@ -172,9 +172,9 @@ public final class OffsetDate
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         
-        long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
-        long yearZeroDays = MathUtils.floorDiv(epochSecs, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        LocalDate date = LocalDate.ofYearZeroDay(yearZeroDays);
+        long epochSec = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
+        long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        LocalDate date = LocalDate.ofYearZeroDay(yearZeroDay);
         return new OffsetDate(date, offset);
     }
 
@@ -1080,8 +1080,8 @@ public final class OffsetDate
      * @return an instant equivalent to midnight at the start of this day, not null
      */
     public Instant toInstant() {
-        long epochSecs = toEpochSeconds();
-        return Instant.ofEpochSeconds(epochSecs, 0);
+        long epochSec = toEpochSecond();
+        return Instant.ofEpochSecond(epochSec, 0);
     }
 
     /**
@@ -1098,7 +1098,7 @@ public final class OffsetDate
      * 
      * @return the epoch seconds value
      */
-    private long toEpochSeconds() {
+    private long toEpochSecond() {
         long epochDay = date.toEpochDay();
         long secs = epochDay * ISOChronology.SECONDS_PER_DAY;
         return secs - offset.getAmountSeconds();
@@ -1129,7 +1129,7 @@ public final class OffsetDate
         if (offset.equals(other.offset)) {
             return date.compareTo(other.date);
         }
-        int compare = MathUtils.safeCompare(toEpochSeconds(), other.toEpochSeconds());
+        int compare = MathUtils.safeCompare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
             compare = date.compareTo(other.date);
         }
@@ -1149,7 +1149,7 @@ public final class OffsetDate
      * @return true if this is after the instant of the specified date
      */
     public boolean isAfter(OffsetDate other) {
-        return toEpochSeconds() > other.toEpochSeconds();
+        return toEpochSecond() > other.toEpochSecond();
     }
 
     /**
@@ -1164,7 +1164,7 @@ public final class OffsetDate
      * @return true if this is before the instant of the specified date
      */
     public boolean isBefore(OffsetDate other) {
-        return toEpochSeconds() < other.toEpochSeconds();
+        return toEpochSecond() < other.toEpochSecond();
     }
 
     /**
@@ -1179,7 +1179,7 @@ public final class OffsetDate
      * @return true if the instant equals the instant of the specified date
      */
     public boolean equalInstant(OffsetDate other) {
-        return toEpochSeconds() == other.toEpochSeconds();
+        return toEpochSecond() == other.toEpochSecond();
     }
 
     //-----------------------------------------------------------------------

@@ -2729,7 +2729,7 @@ public abstract class Calendar
         Instant instant = Instant.of(instantProvider);
         long millis;
         try {
-            millis = instant.toEpochMillisLong();
+            millis = instant.toEpochMilli();
         } catch (ArithmeticException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -2751,6 +2751,6 @@ public abstract class Calendar
      * @since ?
      */
     public final Instant toInstant() {
-        return Instant.ofEpochMillis(getTimeInMillis());
+        return Instant.ofEpochMilli(getTimeInMillis());
     }
 }

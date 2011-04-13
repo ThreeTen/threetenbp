@@ -93,7 +93,7 @@ public class TestTimeSource_Fixed {
     //-----------------------------------------------------------------------
     public void test_fixed_millis() {
         TimeSource fixed = TimeSource.fixed(INSTANT);
-        assertEquals(fixed.millis(), INSTANT.toEpochMillisLong());
+        assertEquals(fixed.millis(), INSTANT.toEpochMilli());
     }
 
     //-----------------------------------------------------------------------

@@ -487,8 +487,8 @@ public class TestDuration {
 
     @Test(dataProvider="DurationBetween")
     public void factory_between_Instant_Instant(long secs1, int nanos1, long secs2, int nanos2, long expectedSeconds, int expectedNanoOfSecond) {
-        Instant start = Instant.ofEpochSeconds(secs1, nanos1);
-        Instant end = Instant.ofEpochSeconds(secs2, nanos2);
+        Instant start = Instant.ofEpochSecond(secs1, nanos1);
+        Instant end = Instant.ofEpochSecond(secs2, nanos2);
         Duration t = Duration.between(start, end);
         assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
@@ -496,20 +496,20 @@ public class TestDuration {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void factory_between_Instant_Instant_tooBig() {
-        Instant start = Instant.ofEpochSeconds(-1);
-        Instant end = Instant.ofEpochSeconds(Long.MAX_VALUE);
+        Instant start = Instant.ofEpochSecond(-1);
+        Instant end = Instant.ofEpochSecond(Long.MAX_VALUE);
         Duration.between(start, end);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_between_Instant_Instant_startNull() {
-        Instant end = Instant.ofEpochSeconds(1);
+        Instant end = Instant.ofEpochSecond(1);
         Duration.between(null, end);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_between_Instant_Instant_endNull() {
-        Instant start = Instant.ofEpochSeconds(1);
+        Instant start = Instant.ofEpochSecond(1);
         Duration.between(start, null);
     }
 

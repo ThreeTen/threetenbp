@@ -157,7 +157,7 @@ public class TestOffsetDateTime {
 
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -173,7 +173,7 @@ public class TestOffsetDateTime {
 
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-            Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), ZoneId.of(OFFSET_PONE));
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
@@ -190,7 +190,7 @@ public class TestOffsetDateTime {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         LocalTime expected = LocalTime.MIDNIGHT.plusNanos(123456789L);
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
-            Instant instant = Instant.ofEpochSeconds(i).plusNanos(123456789L);
+            Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
             Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1969);
@@ -366,35 +366,35 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // ofEpochSeconds()
+    // ofEpochSecond()
     //-----------------------------------------------------------------------
-    public void factory_ofEpochSeconds_longOffset_afterEpoch() {
+    public void factory_ofEpochSecond_longOffset_afterEpoch() {
         for (int i = 0; i < 100000; i++) {
-            OffsetDateTime test = OffsetDateTime.ofEpochSeconds(i, OFFSET_PONE);
+            OffsetDateTime test = OffsetDateTime.ofEpochSecond(i, OFFSET_PONE);
             assertEquals(test, OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_PONE).plusSeconds(i));
         }
     }
 
-    public void factory_ofEpochSeconds_longOffset_beforeEpoch() {
+    public void factory_ofEpochSecond_longOffset_beforeEpoch() {
         for (int i = 0; i < 100000; i++) {
-            OffsetDateTime test = OffsetDateTime.ofEpochSeconds(-i, OFFSET_PONE);
+            OffsetDateTime test = OffsetDateTime.ofEpochSecond(-i, OFFSET_PONE);
             assertEquals(test, OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_PONE).minusSeconds(i));
         }
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void factory_ofEpochSeconds_longOffset_tooBig() {
-        OffsetDateTime.ofEpochSeconds(Long.MAX_VALUE, OFFSET_PONE);  // TODO: better test
+    public void factory_ofEpochSecond_longOffset_tooBig() {
+        OffsetDateTime.ofEpochSecond(Long.MAX_VALUE, OFFSET_PONE);  // TODO: better test
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void factory_ofEpochSeconds_longOffset_tooSmall() {
-        OffsetDateTime.ofEpochSeconds(Long.MIN_VALUE, OFFSET_PONE);  // TODO: better test
+    public void factory_ofEpochSecond_longOffset_tooSmall() {
+        OffsetDateTime.ofEpochSecond(Long.MIN_VALUE, OFFSET_PONE);  // TODO: better test
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofEpochSeconds_longOffset_nullOffset() {
-        OffsetDateTime.ofEpochSeconds(0L, null);
+    public void factory_ofEpochSecond_longOffset_nullOffset() {
+        OffsetDateTime.ofEpochSecond(0L, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1364,19 +1364,19 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // toEpochSeconds()
+    // toEpochSecond()
     //-----------------------------------------------------------------------
-    public void test_toEpochSeconds_afterEpoch() {
+    public void test_toEpochSecond_afterEpoch() {
         for (int i = 0; i < 100000; i++) {
             OffsetDateTime a = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).plusSeconds(i);
-            assertEquals(a.toEpochSeconds(), i);
+            assertEquals(a.toEpochSecond(), i);
         }
     }
 
-    public void test_toEpochSeconds_beforeEpoch() {
+    public void test_toEpochSecond_beforeEpoch() {
         for (int i = 0; i < 100000; i++) {
             OffsetDateTime a = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).minusSeconds(i);
-            assertEquals(a.toEpochSeconds(), -i);
+            assertEquals(a.toEpochSecond(), -i);
         }
     }
 

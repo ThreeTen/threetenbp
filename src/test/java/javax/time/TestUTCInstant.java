@@ -86,7 +86,7 @@ public class TestUTCInstant {
 //
 //    public void now_TimeSource_allSecsInDay_utc() {
 //        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-//            TAIInstant expected = TAIInstant.ofEpochSeconds(i).plusNanos(123456789L);
+//            TAIInstant expected = TAIInstant.ofEpochSecond(i).plusNanos(123456789L);
 //            TimeSource clock = TimeSource.fixed(expected);
 //            TAIInstant test = TAIInstant.now(clock);
 //            assertEquals(test, expected);
@@ -95,7 +95,7 @@ public class TestUTCInstant {
 //
 //    public void now_TimeSource_allSecsInDay_beforeEpoch() {
 //        for (int i =-1; i >= -(24 * 60 * 60); i--) {
-//            TAIInstant expected = TAIInstant.ofEpochSeconds(i).plusNanos(123456789L);
+//            TAIInstant expected = TAIInstant.ofEpochSecond(i).plusNanos(123456789L);
 //            TimeSource clock = TimeSource.fixed(expected);
 //            TAIInstant test = TAIInstant.now(clock);
 //            assertEquals(test, expected);
@@ -108,12 +108,12 @@ public class TestUTCInstant {
 //    public void nowSystemClock() {
 //        TAIInstant expected = TAIInstant.now(TimeSource.system());
 //        TAIInstant test = TAIInstant.nowSystemClock();
-//        BigInteger diff = test.toEpochNanos().subtract(expected.toEpochNanos()).abs();
+//        BigInteger diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
 //        if (diff.compareTo(BigInteger.valueOf(100000000)) >= 0) {
 //            // may be date change
 //            expected = TAIInstant.now(TimeSource.system());
 //            test = TAIInstant.nowSystemClock();
-//            diff = test.toEpochNanos().subtract(expected.toEpochNanos()).abs();
+//            diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
 //        }
 //        assertTrue(diff.compareTo(BigInteger.valueOf(100000000)) < 0);  // less than 0.1 secs
 //    }
@@ -197,7 +197,7 @@ public class TestUTCInstant {
     // of(Instant)
     //-----------------------------------------------------------------------
     public void factory_of_Instant() {
-        UTCInstant test = UTCInstant.of(Instant.ofEpochSeconds(0, 2));  // 1970-01-01
+        UTCInstant test = UTCInstant.of(Instant.ofEpochSecond(0, 2));  // 1970-01-01
         assertEquals(test.getModifiedJulianDay(), 40587);
         assertEquals(test.getNanoOfDay(), 2);
         assertEquals(test.getRules(), UTCRules.system());
@@ -213,7 +213,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     public void factory_of_Instant_Rules() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
-        UTCInstant test = UTCInstant.of(Instant.ofEpochSeconds(0, 2), mockRules);  // 1970-01-01
+        UTCInstant test = UTCInstant.of(Instant.ofEpochSecond(0, 2), mockRules);  // 1970-01-01
         assertEquals(test.getModifiedJulianDay(), 40587);
         assertEquals(test.getNanoOfDay(), 2);
         assertEquals(test.getRules(), mockRules);
@@ -221,7 +221,7 @@ public class TestUTCInstant {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_Instant_Rules_null() {
-        UTCInstant.of(Instant.ofEpochSeconds(0, 2), (UTCRules) null);
+        UTCInstant.of(Instant.ofEpochSecond(0, 2), (UTCRules) null);
     }
 
     //-----------------------------------------------------------------------
@@ -485,7 +485,7 @@ public class TestUTCInstant {
     public void test_toInstant() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
-                Instant expected = Instant.ofEpochSeconds(315532800 + i * SECS_PER_DAY + j).plusNanos(2);
+                Instant expected = Instant.ofEpochSecond(315532800 + i * SECS_PER_DAY + j).plusNanos(2);
                 UTCInstant test = UTCInstant.ofModifiedJulianDay(44239 + i, j * NANOS_PER_SEC + 2);
                 assertEquals(test.toInstant(), expected, "Loop " + i + " " + j);
             }

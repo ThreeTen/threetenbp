@@ -164,7 +164,7 @@ public class TestZoneOffsetTransition {
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        Instant i = Instant.ofEpochSeconds(23875287L);
+        Instant i = Instant.ofEpochSecond(23875287L);
         ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i.minusSeconds(1), OFFSET_0200), OFFSET_0300);
         ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0300), OFFSET_0200);
         ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i.plusSeconds(1), OFFSET_0100), OFFSET_0400);
@@ -183,7 +183,7 @@ public class TestZoneOffsetTransition {
     }
 
     public void test_compareTo_sameInstant() {
-        Instant i = Instant.ofEpochSeconds(23875287L);
+        Instant i = Instant.ofEpochSecond(23875287L);
         ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0200), OFFSET_0300);
         ZoneOffsetTransition b = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0300), OFFSET_0200);
         ZoneOffsetTransition c = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0100), OFFSET_0400);

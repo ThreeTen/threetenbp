@@ -109,7 +109,7 @@ public final class LocalDateTime
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long localSeconds = now.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = now.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
         return create(localSeconds, now.getNanoOfSecond());
     }
 
@@ -391,7 +391,7 @@ public final class LocalDateTime
 //    public static LocalDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
 //        Instant instant = Instant.of(instantProvider);
 //        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-//        long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+//        long localSeconds = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
 //        return LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
 //    }
 

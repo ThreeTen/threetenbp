@@ -161,7 +161,7 @@ public final class LocalTime
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long secsOfDay = now.getEpochSeconds() % ISOChronology.SECONDS_PER_DAY;
+        long secsOfDay = now.getEpochSecond() % ISOChronology.SECONDS_PER_DAY;
         secsOfDay = (secsOfDay + offset.getAmountSeconds()) % ISOChronology.SECONDS_PER_DAY;
         if (secsOfDay < 0) {
             secsOfDay += ISOChronology.SECONDS_PER_DAY;

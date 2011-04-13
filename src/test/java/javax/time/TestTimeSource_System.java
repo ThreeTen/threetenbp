@@ -76,7 +76,7 @@ public class TestTimeSource_System {
             // assume can eventually get these within 10 milliseconds
             Instant instant = system.instant();
             long systemMillis = System.currentTimeMillis();
-            if (systemMillis - instant.toEpochMillisLong() < 10) {
+            if (systemMillis - instant.toEpochMilli() < 10) {
                 return;  // success
             }
         }

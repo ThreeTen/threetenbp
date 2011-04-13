@@ -122,9 +122,9 @@ public final class LocalDate
         // inline OffsetDate factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long epochSecs = now.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
-        long yearZeroDays = MathUtils.floorDiv(epochSecs, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        return LocalDate.ofYearZeroDay(yearZeroDays);
+        long epochSec = now.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
+        long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        return LocalDate.ofYearZeroDay(yearZeroDay);
     }
 
     //-----------------------------------------------------------------------

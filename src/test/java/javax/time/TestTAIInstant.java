@@ -85,7 +85,7 @@ public class TestTAIInstant {
 //
 //    public void now_TimeSource_allSecsInDay_utc() {
 //        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
-//            TAIInstant expected = TAIInstant.ofEpochSeconds(i).plusNanos(123456789L);
+//            TAIInstant expected = TAIInstant.ofEpochSecond(i).plusNanos(123456789L);
 //            TimeSource clock = TimeSource.fixed(expected);
 //            TAIInstant test = TAIInstant.now(clock);
 //            assertEquals(test, expected);
@@ -94,7 +94,7 @@ public class TestTAIInstant {
 //
 //    public void now_TimeSource_allSecsInDay_beforeEpoch() {
 //        for (int i =-1; i >= -(24 * 60 * 60); i--) {
-//            TAIInstant expected = TAIInstant.ofEpochSeconds(i).plusNanos(123456789L);
+//            TAIInstant expected = TAIInstant.ofEpochSecond(i).plusNanos(123456789L);
 //            TimeSource clock = TimeSource.fixed(expected);
 //            TAIInstant test = TAIInstant.now(clock);
 //            assertEquals(test, expected);
@@ -107,12 +107,12 @@ public class TestTAIInstant {
 //    public void nowSystemClock() {
 //        TAIInstant expected = TAIInstant.now(TimeSource.system());
 //        TAIInstant test = TAIInstant.nowSystemClock();
-//        BigInteger diff = test.toEpochNanos().subtract(expected.toEpochNanos()).abs();
+//        BigInteger diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
 //        if (diff.compareTo(BigInteger.valueOf(100000000)) >= 0) {
 //            // may be date change
 //            expected = TAIInstant.now(TimeSource.system());
 //            test = TAIInstant.nowSystemClock();
-//            diff = test.toEpochNanos().subtract(expected.toEpochNanos()).abs();
+//            diff = test.toEpochNano().subtract(expected.toEpochNano()).abs();
 //        }
 //        assertTrue(diff.compareTo(BigInteger.valueOf(100000000)) < 0);  // less than 0.1 secs
 //    }
@@ -155,7 +155,7 @@ public class TestTAIInstant {
     // of(Instant)
     //-----------------------------------------------------------------------
     public void factory_of_Instant() {
-        TAIInstant test = TAIInstant.of(Instant.ofEpochSeconds(0, 2));
+        TAIInstant test = TAIInstant.of(Instant.ofEpochSecond(0, 2));
         assertEquals(test.getTAISeconds(), (40587L - 36204) *  24 * 60 * 60 + 10); //((1970 - 1958) * 365 + 3) * 24 * 60 * 60 + 10);
         assertEquals(test.getNanoOfSecond(), 2);
     }
@@ -733,7 +733,7 @@ public class TestTAIInstant {
     public void test_toInstant() {
         for (int i = -1000; i < 1000; i++) {
             for (int j = 0; j < 10; j++) {
-                Instant expected = Instant.ofEpochSeconds(-378691200L + i * 24 * 60 * 60 + j).plusNanos(2);
+                Instant expected = Instant.ofEpochSecond(-378691200L + i * 24 * 60 * 60 + j).plusNanos(2);
                 TAIInstant test = TAIInstant.ofTAISeconds(i * 24 * 60 * 60 + j + 10, 2);
                 assertEquals(test.toInstant(), expected, "Loop " + i + " " + j);
             }

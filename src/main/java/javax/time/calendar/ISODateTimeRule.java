@@ -166,7 +166,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             }
             case EPOCH_SECOND_ORDINAL: {
                 LocalDateTime dateTime = calendrical.get(LocalDateTime.rule());
-                return dateTime != null ? field(dateTime.atOffset(ZoneOffset.UTC).toEpochSeconds()) : null;
+                return dateTime != null ? field(dateTime.atOffset(ZoneOffset.UTC).toEpochSecond()) : null;
             }
             case CLOCK_HOUR_OF_AMPM_ORDINAL: {
                 DateTimeField hourVal = calendrical.get(HOUR_OF_AMPM);  // TODO derive from just HOUR_OF_DAY?

@@ -190,7 +190,7 @@ public final class OffsetTime
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         
-        long secsOfDay = instant.getEpochSeconds() % ISOChronology.SECONDS_PER_DAY;
+        long secsOfDay = instant.getEpochSecond() % ISOChronology.SECONDS_PER_DAY;
         secsOfDay = (secsOfDay + offset.getAmountSeconds()) % ISOChronology.SECONDS_PER_DAY;
         if (secsOfDay < 0) {
             secsOfDay += ISOChronology.SECONDS_PER_DAY;
@@ -740,7 +740,7 @@ public final class OffsetTime
      * 
      * @return the epoch nanos value
      */
-    private long toEpochNanos() {
+    private long toEpochNano() {
         long nod = time.toNanoOfDay();
         long offsetNanos = offset.getAmountSeconds() * 1000000000L;
         return nod - offsetNanos;
@@ -774,7 +774,7 @@ public final class OffsetTime
         if (offset.equals(other.offset)) {
             return time.compareTo(other.time);
         }
-        int compare = MathUtils.safeCompare(toEpochNanos(), other.toEpochNanos());
+        int compare = MathUtils.safeCompare(toEpochNano(), other.toEpochNano());
         if (compare == 0) {
             compare = time.compareTo(other.time);
         }
@@ -794,7 +794,7 @@ public final class OffsetTime
      * @return true if this is after the instant of the specified time
      */
     public boolean isAfter(OffsetTime other) {
-        return toEpochNanos() > other.toEpochNanos();
+        return toEpochNano() > other.toEpochNano();
     }
 
     /**
@@ -809,7 +809,7 @@ public final class OffsetTime
      * @return true if this is before the instant of the specified time
      */
     public boolean isBefore(OffsetTime other) {
-        return toEpochNanos() < other.toEpochNanos();
+        return toEpochNano() < other.toEpochNano();
     }
 
     /**
@@ -824,7 +824,7 @@ public final class OffsetTime
      * @return true if this is equal to the instant of the specified time
      */
     public boolean equalInstant(OffsetTime other) {
-        return toEpochNanos() == other.toEpochNanos();
+        return toEpochNano() == other.toEpochNano();
     }
 
     //-----------------------------------------------------------------------

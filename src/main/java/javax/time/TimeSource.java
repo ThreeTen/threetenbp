@@ -244,7 +244,7 @@ public abstract class TimeSource {
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public long millis() {
-        return instant().toEpochMillisLong();
+        return instant().toEpochMilli();
     }
 
     // TODO: implement InstantProvider?
@@ -271,7 +271,7 @@ public abstract class TimeSource {
         /** {@inheritDoc} */
         @Override
         public Instant instant() {
-            return Instant.ofEpochMillis(System.currentTimeMillis());
+            return Instant.ofEpochMilli(System.currentTimeMillis());
         }
         /** {@inheritDoc} */
         @Override
@@ -343,7 +343,7 @@ public abstract class TimeSource {
         /** {@inheritDoc} */
         @Override
         public Instant instant() {
-            return Instant.ofEpochMillis(System.currentTimeMillis()).plus(offset);
+            return Instant.ofEpochMilli(System.currentTimeMillis()).plus(offset);
         }
         /** {@inheritDoc} */
         @Override

@@ -193,19 +193,19 @@ final class Ser implements Externalizable {
     /**
      * Writes the state to the stream.
      *
-     * @param epochSecs  the epoch seconds, not null
+     * @param epochSec  the epoch seconds, not null
      * @param out  the output stream, not null
      * @throws IOException if an error occurs
      */
-    static void writeEpochSecs(long epochSecs, DataOutput out) throws IOException {
-        if (epochSecs >= -4575744000L && epochSecs < 10413792000L && epochSecs % 900 == 0) {  // quarter hours between 1825 and 2300
-            int store = (int) ((epochSecs + 4575744000L) / 900);
+    static void writeEpochSec(long epochSec, DataOutput out) throws IOException {
+        if (epochSec >= -4575744000L && epochSec < 10413792000L && epochSec % 900 == 0) {  // quarter hours between 1825 and 2300
+            int store = (int) ((epochSec + 4575744000L) / 900);
             out.writeByte((store >>> 16) & 255);
             out.writeByte((store >>> 8) & 255);
             out.writeByte(store & 255);
         } else {
             out.writeByte(255);
-            out.writeLong(epochSecs);
+            out.writeLong(epochSec);
         }
     }
 
@@ -216,7 +216,7 @@ final class Ser implements Externalizable {
      * @return the epoch seconds, not null
      * @throws IOException if an error occurs
      */
-    static long readEpochSecs(DataInput in) throws IOException {
+    static long readEpochSec(DataInput in) throws IOException {
         int hiByte = in.readByte() & 255;
         if (hiByte == 255) {
             return in.readLong();

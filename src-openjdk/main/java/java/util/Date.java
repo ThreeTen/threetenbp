@@ -222,7 +222,7 @@ public class Date
     public Date(InstantProvider instantProvider) {
         Instant instant = Instant.of(instantProvider);
         try {
-            fastTime = instant.toEpochMillisLong();
+            fastTime = instant.toEpochMilli();
         } catch (ArithmeticException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -1415,7 +1415,7 @@ public class Date
         Instant instant = Instant.of(instantProvider);
         long millis;
         try {
-            millis = instant.toEpochMillisLong();
+            millis = instant.toEpochMilli();
         } catch (ArithmeticException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -1437,6 +1437,6 @@ public class Date
      * @since ?
      */
     public final Instant toInstant() {
-        return Instant.ofEpochMillis(getTime());
+        return Instant.ofEpochMilli(getTime());
     }
 }

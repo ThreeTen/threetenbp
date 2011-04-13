@@ -432,14 +432,14 @@ public final class ZonedDateTime
      * <p>
      * The nanosecond field is set to zero.
      *
-     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime ofEpochSeconds(long epochSeconds, ZoneId zone) {
+    public static ZonedDateTime ofEpochSecond(long epochSecond, ZoneId zone) {
         ISOChronology.checkNotNull(zone, "ZoneId must not be null");
-        return ZonedDateTime.ofInstant(Instant.ofEpochSeconds(epochSeconds, 0), zone);
+        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond, 0), zone);
     }
 
     //-----------------------------------------------------------------------
@@ -1975,8 +1975,8 @@ public final class ZonedDateTime
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
-    public long toEpochSeconds() {
-        return dateTime.toEpochSeconds();
+    public long toEpochSecond() {
+        return dateTime.toEpochSecond();
     }
 
     //-----------------------------------------------------------------------

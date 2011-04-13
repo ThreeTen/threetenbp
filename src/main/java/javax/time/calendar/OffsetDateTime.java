@@ -376,7 +376,7 @@ public final class OffsetDateTime
     public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-        long localSeconds = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
         return new OffsetDateTime(ldt, offset);
     }
@@ -388,13 +388,13 @@ public final class OffsetDateTime
      * <p>
      * The nanosecond field is set to zero.
      *
-     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @return the offset date-time, not null
      * @throws CalendricalException if the result exceeds the supported range
      */
-    public static OffsetDateTime ofEpochSeconds(long epochSeconds, ZoneOffset offset) {
+    public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-        long localSeconds = epochSeconds + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = epochSecond + offset.getAmountSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
         return new OffsetDateTime(ldt, offset);
     }
@@ -1669,7 +1669,7 @@ public final class OffsetDateTime
      * @return an Instant representing the same instant, not null
      */
     public Instant toInstant() {
-        return Instant.ofEpochSeconds(toEpochSeconds(), getNanoOfSecond());
+        return Instant.ofEpochSecond(toEpochSecond(), getNanoOfSecond());
     }
 
     /**
@@ -1726,7 +1726,7 @@ public final class OffsetDateTime
      *
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
-    public long toEpochSeconds() {
+    public long toEpochSecond() {
         long epochDay = dateTime.toLocalDate().toEpochDay();
         long secs = epochDay * ISOChronology.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
         secs -= offset.getAmountSeconds();
@@ -1760,7 +1760,7 @@ public final class OffsetDateTime
         if (offset.equals(other.offset)) {
             return dateTime.compareTo(other.dateTime);
         }
-        int compare = MathUtils.safeCompare(toEpochSeconds(), other.toEpochSeconds());
+        int compare = MathUtils.safeCompare(toEpochSecond(), other.toEpochSecond());
         if (compare == 0) {
             compare = MathUtils.safeCompare(getNanoOfSecond(), other.getNanoOfSecond());
             if (compare == 0) {
@@ -1782,10 +1782,10 @@ public final class OffsetDateTime
      * @return true if this is after the instant of the specified date-time
      */
     public boolean isAfter(OffsetDateTime other) {
-        long thisEpochSecs = toEpochSeconds();
-        long otherEpochSecs = other.toEpochSeconds();
-        return thisEpochSecs > otherEpochSecs ||
-            (thisEpochSecs == otherEpochSecs && getNanoOfSecond() > other.getNanoOfSecond());
+        long thisEpochSec = toEpochSecond();
+        long otherEpochSec = other.toEpochSecond();
+        return thisEpochSec > otherEpochSec ||
+            (thisEpochSec == otherEpochSec && getNanoOfSecond() > other.getNanoOfSecond());
     }
 
     /**
@@ -1799,10 +1799,10 @@ public final class OffsetDateTime
      * @return true if this is before the instant of the specified date-time
      */
     public boolean isBefore(OffsetDateTime other) {
-        long thisEpochSecs = toEpochSeconds();
-        long otherEpochSecs = other.toEpochSeconds();
-        return thisEpochSecs < otherEpochSecs ||
-            (thisEpochSecs == otherEpochSecs && getNanoOfSecond() < other.getNanoOfSecond());
+        long thisEpochSec = toEpochSecond();
+        long otherEpochSec = other.toEpochSecond();
+        return thisEpochSec < otherEpochSec ||
+            (thisEpochSec == otherEpochSec && getNanoOfSecond() < other.getNanoOfSecond());
     }
 
     /**
@@ -1816,7 +1816,7 @@ public final class OffsetDateTime
      * @return true if the instant equals the instant of the specified date-time
      */
     public boolean equalInstant(OffsetDateTime other) {
-        return toEpochSeconds() == other.toEpochSeconds() &&
+        return toEpochSecond() == other.toEpochSecond() &&
             getNanoOfSecond() == other.getNanoOfSecond();
     }
 

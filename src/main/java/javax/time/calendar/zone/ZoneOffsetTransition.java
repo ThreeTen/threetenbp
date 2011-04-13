@@ -122,7 +122,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @throws IOException if an error occurs
      */
     void writeExternal(DataOutput out) throws IOException {
-        Ser.writeEpochSecs(transition.toEpochSeconds(), out);
+        Ser.writeEpochSec(transition.toEpochSecond(), out);
         Ser.writeOffset(transition.getOffset(), out);
         Ser.writeOffset(transitionAfter.getOffset(), out);
     }
@@ -135,10 +135,10 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @throws IOException if an error occurs
      */
     static ZoneOffsetTransition readExternal(DataInput in) throws IOException {
-        long epochSeconds = Ser.readEpochSecs(in);
+        long epochSecond = Ser.readEpochSec(in);
         ZoneOffset before = Ser.readOffset(in);
         ZoneOffset after = Ser.readOffset(in);
-        return ZoneOffsetTransition.of(OffsetDateTime.ofEpochSeconds(epochSeconds, before), after);
+        return ZoneOffsetTransition.of(OffsetDateTime.ofEpochSecond(epochSecond, before), after);
     }
 
     //-----------------------------------------------------------------------
