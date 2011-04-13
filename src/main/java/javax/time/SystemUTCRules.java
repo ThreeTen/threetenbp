@@ -183,7 +183,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             mjd--;
             nod = SECS_PER_DAY * NANOS_PER_SECOND + (nod / NANOS_PER_SECOND) * NANOS_PER_SECOND + nod % NANOS_PER_SECOND;
         }
-        return UTCInstant.ofModifiedJulianDays(mjd, nod, this);
+        return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
     }
 
     //-------------------------------------------------------------------------

@@ -74,6 +74,7 @@
 - Add WeekRules
 - Add PeriodUnit.field(long)
 - Add with methods to UTCInstant
+- Rename ModifiedJulianDays/EpochDays to remove plural
 
 0.6.3
 ===============================================================================
