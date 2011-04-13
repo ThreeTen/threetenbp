@@ -126,7 +126,6 @@ public final class TAIInstant
      * @param taiSeconds  the number of seconds from the epoch of 1958-01-01T00:00:00(TAI)
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
      * @return the TAI instant, not null
-     * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public static TAIInstant ofTAISeconds(long taiSeconds, long nanoAdjustment) {
         long secs = MathUtils.safeAdd(taiSeconds, MathUtils.floorDiv(nanoAdjustment, NANOS_PER_SECOND));
@@ -207,12 +206,12 @@ public final class TAIInstant
     /**
      * Constructs an instance.
      *
-     * @param epochSeconds  the number of seconds from the epoch
+     * @param taiSeconds  the number of TAI seconds from the epoch
      * @param nanoOfSecond  the nanoseconds within the second, from 0 to 999,999,999
      */
-    private TAIInstant(long epochSeconds, int nanoOfSecond) {
+    private TAIInstant(long taiSeconds, int nanoOfSecond) {
         super();
-        this.seconds = epochSeconds;
+        this.seconds = taiSeconds;
         this.nanos = nanoOfSecond;
     }
 
@@ -231,6 +230,23 @@ public final class TAIInstant
     }
 
     /**
+     * Returns a copy of this {@code TAIInstant} with the number of seconds
+     * from the TAI epoch of 1958-01-01T00:00:00(TAI).
+     * <p>
+     * The TAI second count is a simple incrementing count of seconds where
+     * second 0 is 1958-01-01T00:00:00(TAI).
+     * The nanosecond part of the day is returned by {@code getNanosOfSecond}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param taiSeconds  the number of seconds from the epoch of 1958-01-01T00:00:00(TAI)
+     * @return a {@code TAIInstant} based on this instant with the requested second, not null
+     */
+    public TAIInstant withTAISeconds(long taiSeconds) {
+        return ofTAISeconds(taiSeconds, nanos);
+    }
+
+    /**
      * Gets the number of nanoseconds, later along the time-line, from the start
      * of the second.
      * <p>
@@ -241,6 +257,25 @@ public final class TAIInstant
      */
     public int getNanoOfSecond() {
         return nanos;
+    }
+
+    /**
+     * Returns a copy of this {@code TAIInstant} with the nano-of-second value changed.
+     * <p>
+     * The nanosecond-of-second value measures the total number of nanoseconds from
+     * the second returned by {@code getTAISeconds}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
+     * @return a {@code TAIInstant} based on this instant with the requested nano-of-second, not null
+     * @throws IllegalArgumentException if nanoOfSecond is out of range
+     */
+    public TAIInstant withNanoOfSecond(int nanoOfSecond) {
+        if (nanoOfSecond < 0 || nanoOfSecond >= NANOS_PER_SECOND) {
+            throw new IllegalArgumentException("NanoOfSecond must be from 0 to 999,999,999");
+        }
+        return ofTAISeconds(seconds, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------

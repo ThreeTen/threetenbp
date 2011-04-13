@@ -33,6 +33,7 @@ package javax.time;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -216,6 +217,61 @@ public class TestTAIInstant {
     public void factory_parse_String_null() {
         TAIInstant.parse((String) null);
     }
+
+    //-----------------------------------------------------------------------
+    // withTAISeconds()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="withTAISeconds")
+    Object[][] provider_withTAISeconds() {
+        return new Object[][] {
+            {0L, 12345L,  1L, 1L, 12345L},
+            {0L, 12345L,  -1L, -1L, 12345L},
+            {7L, 12345L,  2L, 2L, 12345L},
+            {7L, 12345L,  -2L, -2L, 12345L},
+            {-99L, 12345L,  3L, 3L, 12345L},
+            {-99L, 12345L,  -3L, -3L, 12345L},
+       };
+    }
+
+    @Test(dataProvider="withTAISeconds") 
+    public void test_withTAISeconds(long tai, long nanos, long newTai, Long expectedTai, Long expectedNanos) {
+        TAIInstant i = TAIInstant.ofTAISeconds(tai, nanos).withTAISeconds(newTai);
+        assertEquals(i.getTAISeconds(), expectedTai.longValue());
+        assertEquals(i.getNanoOfSecond(), expectedNanos.longValue());
+     }
+
+    //-----------------------------------------------------------------------
+    // withNanoOfSecond()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="withNanoOfSecond")
+    Object[][] provider_withNanoOfSecond() {
+        return new Object[][] {
+            {0L, 12345L,  1, 0L, 1L},
+            {7L, 12345L,  2, 7L, 2L},
+            {-99L, 12345L,  3, -99L, 3L},
+            {-99L, 12345L,  999999999, -99L, 999999999L},
+            {-99L, 12345L,  -1, null, null},
+            {-99L, 12345L,  1000000000, null, null},
+       };
+    }
+
+    @Test(dataProvider="withNanoOfSecond") 
+    public void test_withNanoOfSecond(long tai, long nanos, int newNano, Long expectedTai, Long expectedNanos) {
+        TAIInstant i = TAIInstant.ofTAISeconds(tai, nanos);
+        if (expectedTai != null) {
+            i = i.withNanoOfSecond(newNano);
+            assertEquals(i.getTAISeconds(), expectedTai.longValue());
+            assertEquals(i.getNanoOfSecond(), expectedNanos.longValue());
+        } else {
+            try {
+                i = i.withNanoOfSecond(newNano);
+                fail();
+            } catch (IllegalArgumentException ex) {
+                // expected
+            }
+        }
+        
+     }
 
     //-----------------------------------------------------------------------
     // plus(Duration)

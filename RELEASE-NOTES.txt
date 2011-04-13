@@ -73,7 +73,7 @@
 - Add DateTimeRuleRange to replace DateTimeRule min/max methods
 - Add WeekRules
 - Add PeriodUnit.field(long)
-- Add with methods to UTCInstant
+- Add with methods to UTCInstant/TAIInstant
 - Rename ModifiedJulianDays/EpochDays to remove plural
 
 0.6.3
