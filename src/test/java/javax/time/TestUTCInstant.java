@@ -294,7 +294,7 @@ public class TestUTCInstant {
      }
 
     //-----------------------------------------------------------------------
-    // withModifiedJulianDay()
+    // withNanoOfDay()
     //-----------------------------------------------------------------------
     @DataProvider(name="WithNanoOfDay")
     Object[][] provider_withNanoOfDay() {
