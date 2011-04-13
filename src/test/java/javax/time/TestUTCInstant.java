@@ -121,7 +121,7 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // ofModififiedJulianDay(long,long)
     //-----------------------------------------------------------------------
-    public void factory_ofModifiedJulianDays_long_long() {
+    public void factory_ofModifiedJulianDay_long_long() {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
                 UTCInstant t = UTCInstant.ofModifiedJulianDay(i, j);
@@ -133,7 +133,7 @@ public class TestUTCInstant {
         }
     }
 
-    public void factory_ofModifiedJulianDays_long_long_setupLeap() {
+    public void factory_ofModifiedJulianDay_long_long_setupLeap() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant t = UTCInstant.ofModifiedJulianDay(41683 - 1, SECS_PER_DAY * NANOS_PER_SEC + 2, mockRules);
         assertEquals(t.getModifiedJulianDay(), 41683 - 1);
@@ -142,19 +142,19 @@ public class TestUTCInstant {
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void factory_ofModifiedJulianDays_long_long_nanosNegative() {
+    public void factory_ofModifiedJulianDay_long_long_nanosNegative() {
         UTCInstant.ofModifiedJulianDay(2L, -1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void factory_ofModifiedJulianDays_long_long_nanosTooBigNotLeapDay() {
+    public void factory_ofModifiedJulianDay_long_long_nanosTooBigNotLeapDay() {
         UTCInstant.ofModifiedJulianDay(2L, SECS_PER_DAY * NANOS_PER_SEC);
     }
 
     //-----------------------------------------------------------------------
     // ofModififiedJulianDay(long,long,Rules)
     //-----------------------------------------------------------------------
-    public void factory_ofModifiedJulianDays_long_long_Rules() {
+    public void factory_ofModifiedJulianDay_long_long_Rules() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
@@ -167,7 +167,7 @@ public class TestUTCInstant {
         }
     }
 
-    public void factory_ofModifiedJulianDays_long_long_Rules_setupLeap() {
+    public void factory_ofModifiedJulianDay_long_long_Rules_setupLeap() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant t = UTCInstant.ofModifiedJulianDay(0, SECS_PER_DAY * NANOS_PER_SEC + 2, mockRules);
         assertEquals(t.getModifiedJulianDay(), 0);
@@ -177,19 +177,19 @@ public class TestUTCInstant {
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void factory_ofModifiedJulianDays_long_long_Rules_nanosNegative() {
+    public void factory_ofModifiedJulianDay_long_long_Rules_nanosNegative() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant.ofModifiedJulianDay(2L, -1, mockRules);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void factory_ofModifiedJulianDays_long_long_Rules_nanosTooBigNotDoubleLeapDay() {
+    public void factory_ofModifiedJulianDay_long_long_Rules_nanosTooBigNotDoubleLeapDay() {
         MockUTCRulesAlwaysLeap mockRules = new MockUTCRulesAlwaysLeap();
         UTCInstant.ofModifiedJulianDay(2L, (SECS_PER_DAY + 1) * NANOS_PER_SEC, mockRules);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofModifiedJulianDays_long_long_Rules_null() {
+    public void factory_ofModifiedJulianDay_long_long_Rules_null() {
         UTCInstant.ofModifiedJulianDay(0, 0, (UTCRules) null);
     }
 
@@ -261,8 +261,8 @@ public class TestUTCInstant {
     //-----------------------------------------------------------------------
     // withModifiedJulianDay()
     //-----------------------------------------------------------------------
-    @DataProvider(name="WithModifiedJulianDays")
-    Object[][] provider_withModifiedJulianDays() {
+    @DataProvider(name="WithModifiedJulianDay")
+    Object[][] provider_withModifiedJulianDay() {
         return new Object[][] {
             {0L, 12345L,  1L, 1L, 12345L},
             {0L, 12345L,  -1L, -1L, 12345L},
@@ -276,7 +276,7 @@ public class TestUTCInstant {
        };
     }
 
-    @Test(dataProvider="WithModifiedJulianDays") 
+    @Test(dataProvider="WithModifiedJulianDay") 
     public void test_withModifiedJulianDay(long mjd, long nanos, long newMjd, Long expectedMjd, Long expectedNanos) {
         UTCInstant i = UTCInstant.ofModifiedJulianDay(mjd, nanos, new MockUTCRulesLeapOn1000());
         if (expectedMjd != null) {

@@ -153,7 +153,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the day-of-week
      */
     static DayOfWeek getDayOfWeekFromDate(LocalDate date) {
-        long mjd = date.toModifiedJulianDays();
+        long mjd = date.toModifiedJulianDay();
         if (mjd < 0) {
             long weeks = mjd / 7;
             mjd += (-weeks + 1) * 7;
@@ -233,7 +233,7 @@ public final class ISOChronology extends Chronology implements Serializable {
     static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
         int wby = getWeekBasedYearFromDate(date);
         LocalDate yearStart = LocalDate.of(wby, MonthOfYear.JANUARY, 4);
-        return MathUtils.safeToInt((date.toModifiedJulianDays() - yearStart.toModifiedJulianDays() +
+        return MathUtils.safeToInt((date.toModifiedJulianDay() - yearStart.toModifiedJulianDay() +
                 yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
 
@@ -401,7 +401,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         // epoch-day
         DateTimeField edVal = merger.getValue(EPOCH_DAY);
         if (edVal != null) {
-            merger.storeMerged(LocalDate.rule(), LocalDate.ofEpochDays(edVal.getValidValue()));
+            merger.storeMerged(LocalDate.rule(), LocalDate.ofEpochDay(edVal.getValidValue()));
             merger.removeProcessed(EPOCH_DAY);
         }
         

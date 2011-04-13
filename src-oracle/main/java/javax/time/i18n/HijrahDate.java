@@ -374,7 +374,7 @@ public final class HijrahDate
      * The number of days are calculated with pure Gregorian calendar
      * based.
      */
-    private final long gregorianEpochDays;
+    private final long gregorianEpochDay;
     /**
      * True if year is leap year.
      */
@@ -412,7 +412,7 @@ public final class HijrahDate
         HijrahChronology.yearOfEraRule().checkValidValue(yearOfEra);
         HijrahChronology.monthOfYearRule().checkValidValue(monthOfYear);
         HijrahChronology.dayOfMonthRule().checkValidValue(dayOfMonth);
-        long gregorianDays = getGregorianEpochDays(era.getValue(), yearOfEra, monthOfYear, dayOfMonth);
+        long gregorianDays = getGregorianEpochDay(era.getValue(), yearOfEra, monthOfYear, dayOfMonth);
         return new HijrahDate(gregorianDays);
     }
 
@@ -438,7 +438,7 @@ public final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the year is invalid
      */
     static HijrahDate of(LocalDate date) {
-        long gregorianDays = date.toEpochDays();
+        long gregorianDays = date.toEpochDay();
         return new HijrahDate(gregorianDays);
     }
 
@@ -463,7 +463,7 @@ public final class HijrahDate
         this.dayOfMonth = dateInfo[3];
         this.dayOfYear = dateInfo[4];
         this.dayOfWeek = DayOfWeek.of(dateInfo[5]);
-        this.gregorianEpochDays = gregorianDay;
+        this.gregorianEpochDay = gregorianDay;
         this.isLeapYear = isLeapYear(this.yearOfEra);
     }
 
@@ -473,7 +473,7 @@ public final class HijrahDate
      * @return the resolved date, never null
      */
     private Object readResolve() {
-        return new HijrahDate(this.gregorianEpochDays);
+        return new HijrahDate(this.gregorianEpochDay);
     }
 
     //-----------------------------------------------------------------------
@@ -736,7 +736,7 @@ public final class HijrahDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public HijrahDate plusDays(long days) {
-        return new HijrahDate(this.gregorianEpochDays + days);
+        return new HijrahDate(this.gregorianEpochDay + days);
     }
 
     //-----------------------------------------------------------------------
@@ -818,7 +818,7 @@ public final class HijrahDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public HijrahDate minusDays(long days) {
-        return new HijrahDate(this.gregorianEpochDays - days);
+        return new HijrahDate(this.gregorianEpochDay - days);
     }
 
     //-----------------------------------------------------------------------
@@ -829,7 +829,7 @@ public final class HijrahDate
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
     public LocalDate toLocalDate() {
-        return LocalDate.ofEpochDays(this.gregorianEpochDays);
+        return LocalDate.ofEpochDay(this.gregorianEpochDay);
     }
 
     //-----------------------------------------------------------------------
@@ -842,7 +842,7 @@ public final class HijrahDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(HijrahDate other) {
-        return MathUtils.safeCompare(this.gregorianEpochDays, other.gregorianEpochDays);
+        return MathUtils.safeCompare(this.gregorianEpochDay, other.gregorianEpochDay);
     }
 
     /**
@@ -854,7 +854,7 @@ public final class HijrahDate
      * @return true if this is after the specified date
      */
     public boolean isAfter(HijrahDate other) {
-        return this.gregorianEpochDays > other.gregorianEpochDays;
+        return this.gregorianEpochDay > other.gregorianEpochDay;
     }
 
     /**
@@ -866,7 +866,7 @@ public final class HijrahDate
      * @return true if this is before the specified date
      */
     public boolean isBefore(HijrahDate other) {
-        return this.gregorianEpochDays < other.gregorianEpochDays;
+        return this.gregorianEpochDay < other.gregorianEpochDay;
     }
 
     //-----------------------------------------------------------------------
@@ -885,7 +885,7 @@ public final class HijrahDate
         }
         if (other instanceof HijrahDate) {
             HijrahDate otherDate = (HijrahDate) other;
-            return this.gregorianEpochDays == otherDate.gregorianEpochDays;
+            return this.gregorianEpochDay == otherDate.gregorianEpochDay;
         }
         return false;
     }
@@ -992,7 +992,7 @@ public final class HijrahDate
      * @param dayOfMonth  the day-of-month to represent, caller calculated
      * @return a julian day
      */
-    private static long getGregorianEpochDays(int era, int year, int monthOfYear, int dayOfMonth) {
+    private static long getGregorianEpochDay(int era, int year, int monthOfYear, int dayOfMonth) {
         long day = yearToGregorianEpochDay(era, year);
         day += getMonthDays(monthOfYear - 1, year);
         day += dayOfMonth;

@@ -231,7 +231,7 @@ public class TestUTCRules {
 
     @Test(dataProvider="LeapSeconds")
     public void test_leapSeconds(long mjd, int adjust, int offset, String checkDate) {
-        assertEquals(mjd, LocalDate.parse(checkDate).toModifiedJulianDays(), "Invalid test");
+        assertEquals(mjd, LocalDate.parse(checkDate).toModifiedJulianDay(), "Invalid test");
         
         assertEquals(rules.getLeapSecondAdjustment(mjd), adjust);
         assertEquals(rules.getTAIOffset(mjd), offset);

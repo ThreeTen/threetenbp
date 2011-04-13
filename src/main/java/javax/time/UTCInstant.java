@@ -506,7 +506,7 @@ public final class UTCInstant
      */
     @Override
     public String toString() {
-        LocalDate date = LocalDate.ofModifiedJulianDays(mjDay);  // TODO: capacity/import issues
+        LocalDate date = LocalDate.ofModifiedJulianDay(mjDay);  // TODO: capacity/import issues
         StringBuilder buf = new StringBuilder(18);
         int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);

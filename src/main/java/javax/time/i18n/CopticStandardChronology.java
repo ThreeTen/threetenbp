@@ -110,10 +110,10 @@ public final class CopticStandardChronology extends StandardChronology implement
     @Override
     public ChronologyDate createDate(LocalDate date) {
         ChronologyDate.checkNotNull(date, "LocalDate must not be null");
-        long epochDays = date.toEpochDays();
-        int prolepticYear = (int) (((epochDays * 4) + 1463) / 1461);
-        int startYearEpochDays = (prolepticYear - 1) * 365 + (prolepticYear / 4);
-        int doy0 = (int) (epochDays - startYearEpochDays);
+        long epochDay = date.toEpochDay();
+        int prolepticYear = (int) (((epochDay * 4) + 1463) / 1461);
+        int startYearEpochDay = (prolepticYear - 1) * 365 + (prolepticYear / 4);
+        int doy0 = (int) (epochDay - startYearEpochDay);
         int month = doy0 / 30 + 1;
         int dom = doy0 % 30 + 1;
         return buildDate(date, prolepticYear, month, dom);
@@ -122,8 +122,8 @@ public final class CopticStandardChronology extends StandardChronology implement
     @Override
     public ChronologyDate createDate(int prolepticYear, int monthOfYear, int dayOfMonth) {
         int doy0 = (monthOfYear - 1) * 30 + dayOfMonth - 1;
-        long epochDays = ((long) prolepticYear) * 365 + ((long) prolepticYear) / 4 + doy0;
-        LocalDate date = LocalDate.ofModifiedJulianDays(epochDays - MJD_TO_COPTIC);
+        long epochDay = ((long) prolepticYear) * 365 + ((long) prolepticYear) / 4 + doy0;
+        LocalDate date = LocalDate.ofModifiedJulianDay(epochDay - MJD_TO_COPTIC);
         return buildDate(date, prolepticYear, monthOfYear, dayOfMonth);
     }
 

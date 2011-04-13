@@ -95,7 +95,7 @@ public final class CopticDate
     /**
      * The Coptic epoch day count, 0001-01-01 = 0.
      */
-    private final int epochDays;
+    private final int epochDay;
     /**
      * The Coptic year.
      */
@@ -130,8 +130,8 @@ public final class CopticDate
                 throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.DAY_OF_MONTH);
             }
         }
-        int epochDays = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
-        return new CopticDate(epochDays, copticYear, copticMonthOfYear, copticDayOfMonth);
+        int epochDay = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
+        return new CopticDate(epochDay, copticYear, copticMonthOfYear, copticDayOfMonth);
     }
 
     /**
@@ -149,8 +149,8 @@ public final class CopticDate
         if (copticMonthOfYear == 13 && copticDayOfMonth > 5) {
             copticDayOfMonth = CopticChronology.isLeapYear(copticYear) ? 6 : 5;
         }
-        int epochDays = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
-        return new CopticDate(epochDays, copticYear, copticMonthOfYear, copticDayOfMonth);
+        int epochDay = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
+        return new CopticDate(epochDay, copticYear, copticMonthOfYear, copticDayOfMonth);
     }
 
     /**
@@ -170,33 +170,33 @@ public final class CopticDate
     /**
      * Obtains an instance of {@code CopticDate} from a number of epoch days.
      *
-     * @param epochDays  the epoch days to use, not null
+     * @param epochDay  the epoch days to use, not null
      * @return a CopticDate object, not null
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
-    private static CopticDate copticDateFromEpochDays(int epochDays) {
-        if (epochDays < MIN_EPOCH_DAY || epochDays > MAX_EPOCH_DAY) {
+    private static CopticDate copticDateFromEpochDay(int epochDay) {
+        if (epochDay < MIN_EPOCH_DAY || epochDay > MAX_EPOCH_DAY) {
             throw new CalendricalRuleException("Date exceeds supported range for CopticDate", CopticChronology.YEAR);
         }
-        int year = ((epochDays * 4) + 1463) / 1461;
-        int startYearEpochDays = (year - 1) * 365 + (year / 4);
-        int doy0 = epochDays - startYearEpochDays;
+        int year = ((epochDay * 4) + 1463) / 1461;
+        int startYearEpochDay = (year - 1) * 365 + (year / 4);
+        int doy0 = epochDay - startYearEpochDay;
         int month = doy0 / 30 + 1;
         int day = doy0 % 30 + 1;
-        return new CopticDate(epochDays, year, month, day);
+        return new CopticDate(epochDay, year, month, day);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified date.
      *
-     * @param epochDays  the Coptic epoch days, caller checked to be one or greater
+     * @param epochDay  the Coptic epoch days, caller checked to be one or greater
      * @param year  the year to represent, caller calculated
      * @param month  the month-of-year to represent, caller calculated
      * @param day  the day-of-month to represent, caller calculated
      */
-    private CopticDate(int epochDays, int year, int month, int day) {
-        this.epochDays = epochDays;
+    private CopticDate(int epochDay, int year, int month, int day) {
+        this.epochDay = epochDay;
         this.year = year;
         this.month = month;
         this.day = day;
@@ -208,7 +208,7 @@ public final class CopticDate
      * @return the resolved date, not null
      */
     private Object readResolve() {
-        return copticDateFromEpochDays(epochDays);
+        return copticDateFromEpochDay(epochDay);
     }
 
     //-----------------------------------------------------------------------
@@ -273,8 +273,8 @@ public final class CopticDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        int startYearEpochDays = (year - 1) * 365 + (year / 4);
-        return epochDays - startYearEpochDays + 1;
+        int startYearEpochDay = (year - 1) * 365 + (year / 4);
+        return epochDay - startYearEpochDay + 1;
     }
 
     /**
@@ -291,7 +291,7 @@ public final class CopticDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of((epochDays + 4) % 7 + 1);
+        return DayOfWeek.of((epochDay + 4) % 7 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -433,8 +433,8 @@ public final class CopticDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public CopticDate plusWeeks(int weeks) {
-        int newEpochDays = epochDays + MathUtils.safeMultiply(weeks, 7);  // may overflow, but caught in factory
-        return copticDateFromEpochDays(newEpochDays);
+        int newEpochDay = epochDay + MathUtils.safeMultiply(weeks, 7);  // may overflow, but caught in factory
+        return copticDateFromEpochDay(newEpochDay);
     }
 
     /**
@@ -449,8 +449,8 @@ public final class CopticDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public CopticDate plusDays(int days) {
-        int newEpochDays = epochDays + days;  // may overflow, but caught in factory
-        return copticDateFromEpochDays(newEpochDays);
+        int newEpochDay = epochDay + days;  // may overflow, but caught in factory
+        return copticDateFromEpochDay(newEpochDay);
     }
 
     //-----------------------------------------------------------------------
@@ -461,7 +461,7 @@ public final class CopticDate
      * @return the equivalent date in the ISO-8601 calendar system, not null
      */
     public LocalDate toLocalDate() {
-        return LocalDate.ofModifiedJulianDays(epochDays - MJD_TO_COPTIC);
+        return LocalDate.ofModifiedJulianDay(epochDay - MJD_TO_COPTIC);
     }
 
     //-----------------------------------------------------------------------
@@ -474,7 +474,7 @@ public final class CopticDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(CopticDate other) {
-        return MathUtils.safeCompare(epochDays, other.epochDays);
+        return MathUtils.safeCompare(epochDay, other.epochDay);
     }
 
     /**
@@ -486,7 +486,7 @@ public final class CopticDate
      * @return true if this is after the specified date
      */
     public boolean isAfter(CopticDate other) {
-        return epochDays > other.epochDays;
+        return epochDay > other.epochDay;
     }
 
     /**
@@ -498,7 +498,7 @@ public final class CopticDate
      * @return true if this is before the specified date
      */
     public boolean isBefore(CopticDate other) {
-        return epochDays < other.epochDays;
+        return epochDay < other.epochDay;
     }
 
     //-----------------------------------------------------------------------
@@ -517,7 +517,7 @@ public final class CopticDate
         }
         if (other instanceof CopticDate) {
             CopticDate otherDate = (CopticDate) other;
-            return epochDays == otherDate.epochDays;
+            return epochDay == otherDate.epochDay;
         }
         return false;
     }
@@ -529,7 +529,7 @@ public final class CopticDate
      */
     @Override
     public int hashCode() {
-        return epochDays;
+        return epochDay;
     }
 
     //-----------------------------------------------------------------------
@@ -589,8 +589,8 @@ public final class CopticDate
             if (ld == null) {
                 return null;
             }
-            long epochDays = ld.toModifiedJulianDays() + MJD_TO_COPTIC;
-            return copticDateFromEpochDays((int) epochDays);
+            long epochDay = ld.toModifiedJulianDay() + MJD_TO_COPTIC;
+            return copticDateFromEpochDay((int) epochDay);
         }
         @Override
         protected void merge(CalendricalMerger merger) {

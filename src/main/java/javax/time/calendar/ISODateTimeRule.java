@@ -154,7 +154,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                         case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
                         case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
                         case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
-                        case EPOCH_DAY_ORDINAL: return field(date.toEpochDays());
+                        case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
                         case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
                         case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
                         case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());

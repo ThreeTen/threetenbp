@@ -141,7 +141,7 @@ public class TestWeekOfWeekBasedYear {
     @Test(dataProvider="dateProvider")
     public void test_factory_Calendrical(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
         LocalDate date = LocalDate.of(startYear, startMonth, startDay);
-        long offset = LocalDate.of(endYear, endMonth, endDay).toModifiedJulianDays() - date.toModifiedJulianDays();
+        long offset = LocalDate.of(endYear, endMonth, endDay).toModifiedJulianDay() - date.toModifiedJulianDay();
         int week = 0;
 
         for (long l = 0; l < offset; l++) {
@@ -170,7 +170,7 @@ public class TestWeekOfWeekBasedYear {
     @Test(dataProvider="dateProvider")
     public void test_matchesCalendrical(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
         LocalDate date = LocalDate.of(startYear, startMonth, startDay);
-        long offset = LocalDate.of(endYear, endMonth, endDay).toModifiedJulianDays() - date.toModifiedJulianDays();
+        long offset = LocalDate.of(endYear, endMonth, endDay).toModifiedJulianDay() - date.toModifiedJulianDay();
         int week = 0;
 
         for (long l = 0; l < offset; l++) {

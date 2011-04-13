@@ -127,7 +127,7 @@ public final class LocalDateTime
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
         long yearZeroDays = MathUtils.floorDiv(localSeconds, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
         int secsOfDay = MathUtils.floorMod(localSeconds, ISOChronology.SECONDS_PER_DAY);
-        LocalDate date = LocalDate.ofYearZeroDays(yearZeroDays);
+        LocalDate date = LocalDate.ofYearZeroDay(yearZeroDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);
         return LocalDateTime.of(date, time);
     }

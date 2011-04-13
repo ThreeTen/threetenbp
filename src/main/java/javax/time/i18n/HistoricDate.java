@@ -91,7 +91,7 @@ public final class HistoricDate
 //    /**
 //     * The modified julian day count.
 //     */
-//    private final long mjDays;
+//    private final long mjDay;
     /**
      * The historic year.
      */
@@ -162,21 +162,21 @@ public final class HistoricDate
 //    /**
 //     * Obtains an instance of {@code HistoricDate} from a number of epoch days.
 //     *
-//     * @param epochDays  the epoch days to use, not null
+//     * @param epochDay  the epoch days to use, not null
 //     * @return a HistoricDate object, not null
 //     * @throws IllegalCalendarFieldValueException if the year range is exceeded
 //     */
-//    private static HistoricDate historicDateFromEpochDays(int epochDays) {
-//        if (epochDays < MIN_EPOCH_DAY || epochDays > MAX_EPOCH_DAY) {
+//    private static HistoricDate historicDateFromEpochDay(int epochDay) {
+//        if (epochDay < MIN_EPOCH_DAY || epochDay > MAX_EPOCH_DAY) {
 //            throw new IllegalCalendarFieldValueException(
 //                    "Date exceeds supported range for HistoricDate", HistoricChronology.yearRule());
 //        }
-//        int year = ((epochDays * 4) + 1463) / 1461;
-//        int startYearEpochDays = (year - 1) * 365 + (year / 4);
-//        int doy0 = epochDays - startYearEpochDays;
+//        int year = ((epochDay * 4) + 1463) / 1461;
+//        int startYearEpochDay = (year - 1) * 365 + (year / 4);
+//        int doy0 = epochDay - startYearEpochDay;
 //        int month = doy0 / 30 + 1;
 //        int day = doy0 % 30 + 1;
-//        return new HistoricDate(epochDays, year, month, day);
+//        return new HistoricDate(epochDay, year, month, day);
 //    }
 
     //-----------------------------------------------------------------------
@@ -201,7 +201,7 @@ public final class HistoricDate
 //     * @return the resolved date, not null
 //     */
 //    private Object readResolve() {
-//        return historicDateFromEpochDays(epochDays);
+//        return historicDateFromEpochDay(epochDay);
 //    }
 
     /**
@@ -323,7 +323,7 @@ public final class HistoricDate
      */
     public DayOfWeek getDayOfWeek() {
         return toLocalDate().getDayOfWeek();
-//        return DayOfWeek.of((int) ((mjDays + 4) % 7) + 1);
+//        return DayOfWeek.of((int) ((mjDay + 4) % 7) + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -460,7 +460,7 @@ public final class HistoricDate
         LocalDate possible = LocalDate.of(year, month, day);
         if (possible.isBefore(chrono.getCutover())) {
             long julYear1Days = (year - 1) * 365 + (year / 4) + chrono.getDayOfYear(this) - 1;
-            return LocalDate.ofModifiedJulianDays(julYear1Days + 0);  // TODO
+            return LocalDate.ofModifiedJulianDay(julYear1Days + 0);  // TODO
         } else {
             return possible;
         }
@@ -604,8 +604,8 @@ public final class HistoricDate
             if (ld == null) {
                 return null;
             }
-//            long epochDays = ld.toModifiedJulianDays() + MJD_TO_historic;
-//            return historicDateFromEpochDays((int) epochDays);
+//            long epochDay = ld.toModifiedJulianDay() + MJD_TO_historic;
+//            return historicDateFromEpochDay((int) epochDay);
             return null; // TODO
         }
         @Override

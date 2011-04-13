@@ -174,7 +174,7 @@ public final class OffsetDate
         
         long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
         long yearZeroDays = MathUtils.floorDiv(epochSecs, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        LocalDate date = LocalDate.ofYearZeroDays(yearZeroDays);
+        LocalDate date = LocalDate.ofYearZeroDay(yearZeroDays);
         return new OffsetDate(date, offset);
     }
 
@@ -1099,8 +1099,8 @@ public final class OffsetDate
      * @return the epoch seconds value
      */
     private long toEpochSeconds() {
-        long epochDays = date.toEpochDays();
-        long secs = epochDays * ISOChronology.SECONDS_PER_DAY;
+        long epochDay = date.toEpochDay();
+        long secs = epochDay * ISOChronology.SECONDS_PER_DAY;
         return secs - offset.getAmountSeconds();
     }
 

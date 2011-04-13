@@ -444,7 +444,7 @@ public final class Period
         if (totalMonths > 0 && days < 0) {
             totalMonths--;
             LocalDate calcDate = startDate.plusMonths(totalMonths);
-            days = (int) (endDate.toEpochDays() - calcDate.toEpochDays());  // safe
+            days = (int) (endDate.toEpochDay() - calcDate.toEpochDay());  // safe
         } else if (totalMonths < 0 && days > 0) {
             totalMonths++;
             days -= endDate.getMonthOfYear().lengthInDays(endDate.isLeapYear());
@@ -528,7 +528,7 @@ public final class Period
     public static Period daysBetween(DateProvider startDateProvider, DateProvider endDateProvider) {
         LocalDate startDate = LocalDate.of(startDateProvider);
         LocalDate endDate = LocalDate.of(endDateProvider);
-        long days = MathUtils.safeSubtract(endDate.toModifiedJulianDays(), startDate.toModifiedJulianDays());
+        long days = MathUtils.safeSubtract(endDate.toModifiedJulianDay(), startDate.toModifiedJulianDay());
         return ofDays(MathUtils.safeToInt(days));
     }
 

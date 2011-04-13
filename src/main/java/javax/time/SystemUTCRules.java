@@ -213,7 +213,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
                     }
                     LocalDate date = LocalDate.parse(split[0]);
                     int offset = Integer.parseInt(split[1]);
-                    leaps.put(date.toModifiedJulianDays(), offset);
+                    leaps.put(date.toModifiedJulianDay(), offset);
                 }
             }
             long[] dates = new long[leaps.size()];
