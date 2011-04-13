@@ -33,6 +33,7 @@ package javax.time;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -256,6 +257,72 @@ public class TestUTCInstant {
     public void factory_of_TAIInstant_Rules_null() {
         UTCInstant.of(TAIInstant.ofTAISeconds(0, 2), (UTCRules) null);
     }
+
+    //-----------------------------------------------------------------------
+    // withModifiedJulianDay()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="WithModifiedJulianDays")
+    Object[][] provider_withModifiedJulianDays() {
+        return new Object[][] {
+            {0L, 12345L,  1L, 1L, 12345L},
+            {0L, 12345L,  -1L, -1L, 12345L},
+            {7L, 12345L,  2L, 2L, 12345L},
+            {7L, 12345L,  -2L, -2L, 12345L},
+            {-99L, 12345L,  3L, 3L, 12345L},
+            {-99L, 12345L,  -3L, -3L, 12345L},
+            {1000L, NANOS_PER_SEC * SECS_PER_DAY,  999L, null, null},
+            {1000L, NANOS_PER_SEC * SECS_PER_DAY,  1000L, 1000L, NANOS_PER_SEC * SECS_PER_DAY},
+            {1000L, NANOS_PER_SEC * SECS_PER_DAY,  1001L, null, null},
+       };
+    }
+
+    @Test(dataProvider="WithModifiedJulianDays") 
+    public void test_withModifiedJulianDay(long mjd, long nanos, long newMjd, Long expectedMjd, Long expectedNanos) {
+        UTCInstant i = UTCInstant.ofModifiedJulianDays(mjd, nanos, new MockUTCRulesLeapOn1000());
+        if (expectedMjd != null) {
+            i = i.withModifiedJulianDays(newMjd);
+            assertEquals(i.getModifiedJulianDays(), expectedMjd.longValue());
+            assertEquals(i.getNanoOfDay(), expectedNanos.longValue());
+        } else {
+            try {
+                i = i.withModifiedJulianDays(newMjd);
+                fail();
+            } catch (IllegalArgumentException ex) {
+                // expected
+            }
+        }
+     }
+
+    //-----------------------------------------------------------------------
+    // withModifiedJulianDay()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="WithNanoOfDay")
+    Object[][] provider_withNanoOfDay() {
+        return new Object[][] {
+            {0L, 12345L,  1L, 0L, 1L},
+            {0L, 12345L,  -1L, null, null},
+            {7L, 12345L,  2L, 7L, 2L},
+            {-99L, 12345L,  3L, -99L, 3L},
+            {1000L, NANOS_PER_SEC * SECS_PER_DAY,  NANOS_PER_SEC * SECS_PER_DAY - 1, 1000L, NANOS_PER_SEC * SECS_PER_DAY - 1},
+       };
+    }
+
+    @Test(dataProvider="WithNanoOfDay") 
+    public void test_withNanoOfDay(long mjd, long nanos, long newNanoOfDay, Long expectedMjd, Long expectedNanos) {
+        UTCInstant i = UTCInstant.ofModifiedJulianDays(mjd, nanos, new MockUTCRulesLeapOn1000());
+        if (expectedMjd != null) {
+            i = i.withNanoOfDay(newNanoOfDay);
+            assertEquals(i.getModifiedJulianDays(), expectedMjd.longValue());
+            assertEquals(i.getNanoOfDay(), expectedNanos.longValue());
+        } else {
+            try {
+                i = i.withNanoOfDay(newNanoOfDay);
+                fail();
+            } catch (IllegalArgumentException ex) {
+                // expected
+            }
+        }
+     }
 
     //-----------------------------------------------------------------------
     // plus(Duration)

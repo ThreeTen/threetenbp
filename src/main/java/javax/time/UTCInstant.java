@@ -125,7 +125,7 @@ public final class UTCInstant
      * The number of nanoseconds, later along the time-line, from the MJD field.
      * This is always positive and includes leap seconds.
      */
-    private final long nanos;
+    private final long nanoOfDay;
     /**
      * The leap second rules.
      */
@@ -257,7 +257,7 @@ public final class UTCInstant
     private UTCInstant(long myDay, long nanoOfDay, UTCRules rules) {
         super();
         this.mjDay = myDay;
-        this.nanos = nanoOfDay;
+        this.nanoOfDay = nanoOfDay;
         this.rules = rules;
     }
 
@@ -277,8 +277,7 @@ public final class UTCInstant
      * The Modified Julian Day count is a simple incrementing count of days
      * where day 0 is 1858-11-17.
      * The nanosecond part of the day is returned by {@code getNanosOfDay}.
-     * <p>
-     * A Modified Julian Day varies in length, being one second longer on a leap day.
+     * The day varies in length, being one second longer on a leap day.
      *
      * @return the Modified Julian Day based on the epoch 1858-11-17
      */
@@ -287,17 +286,52 @@ public final class UTCInstant
     }
 
     /**
+     * Returns a copy of this {@code UTCInstant} with the Modified Julian Day (MJD) altered.
+     * <p>
+     * The Modified Julian Day count is a simple incrementing count of days
+     * where day 0 is 1858-11-17.
+     * The nanosecond part of the day is returned by {@code getNanosOfDay}.
+     * The day varies in length, being one second longer on a leap day.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param mjDay  the date as a Modified Julian Day (number of days from the epoch of 1858-11-17)
+     * @return a {@code UTCInstant} based on this instant with the requested day, not null
+     * @throws IllegalArgumentException if nanoOfDay becomes invalid
+     */
+    public UTCInstant withModifiedJulianDays(long mjDay) {
+        return ofModifiedJulianDays(mjDay, nanoOfDay, rules);
+    }
+
+    /**
      * Gets the number of nanoseconds, later along the time-line, from the start
      * of the Modified Julian Day.
      * <p>
-     * The nanosecond-of-day value measures the total number of nanoseconds from
-     * the Modified Julian Day returned by {@code getModifiedJulianDay}.
+     * The nanosecond-of-day value measures the total number of nanoseconds within
+     * the day from the start of the day returned by {@code getModifiedJulianDay}.
      * This value will include any additional leap seconds.
      *
      * @return the nanoseconds within the day, including leap seconds
      */
     public long getNanoOfDay() {
-        return nanos;
+        return nanoOfDay;
+    }
+
+    /**
+     * Returns a copy of this {@code UTCInstant} with the nano-of-day altered.
+     * <p>
+     * The nanosecond-of-day value measures the total number of nanoseconds within
+     * the day from the start of the day returned by {@code getModifiedJulianDay}.
+     * This value will include any additional leap seconds.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanoOfDay  the nanoseconds within the day, including leap seconds
+     * @return a {@code UTCInstant} based on this instant with the requested nano-of-day, not null
+     * @throws IllegalArgumentException if the nanoOfDay value is invalid
+     */
+    public UTCInstant withNanoOfDay(long nanoOfDay) {
+        return ofModifiedJulianDays(mjDay, nanoOfDay, rules);
     }
 
     //-----------------------------------------------------------------------
@@ -310,7 +344,7 @@ public final class UTCInstant
      * @return true if this instant is within a leap second
      */
     public boolean isLeapSecond() {
-        return nanos > SECS_PER_DAY * NANOS_PER_SECOND;
+        return nanoOfDay > SECS_PER_DAY * NANOS_PER_SECOND;
     }
 
     //-----------------------------------------------------------------------
@@ -421,7 +455,7 @@ public final class UTCInstant
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanos, otherInstant.nanos);
+        return MathUtils.safeCompare(nanoOfDay, otherInstant.nanoOfDay);
     }
 
     //-----------------------------------------------------------------------
@@ -444,7 +478,7 @@ public final class UTCInstant
         if (otherInstant instanceof UTCInstant) {
             UTCInstant other = (UTCInstant) otherInstant;
             return this.mjDay == other.mjDay &&
-                   this.nanos == other.nanos &&
+                   this.nanoOfDay == other.nanoOfDay &&
                    this.rules.equals(other.rules);
         }
         return false;
@@ -458,7 +492,7 @@ public final class UTCInstant
     @Override
     public int hashCode() {
         // TODO: Evaluate hash code
-        return ((int) (mjDay ^ (mjDay >>> 32))) + 51 * ((int) (nanos ^ (nanos >>> 32))) +
+        return ((int) (mjDay ^ (mjDay >>> 32))) + 51 * ((int) (nanoOfDay ^ (nanoOfDay >>> 32))) +
             rules.hashCode();
     }
 
@@ -474,7 +508,7 @@ public final class UTCInstant
     public String toString() {
         LocalDate date = LocalDate.ofModifiedJulianDays(mjDay);  // TODO: capacity/import issues
         StringBuilder buf = new StringBuilder(18);
-        int sod = (int) (nanos / NANOS_PER_SECOND);
+        int sod = (int) (nanoOfDay / NANOS_PER_SECOND);
         int hourValue = sod / (60 * 60);
         int minuteValue = (sod / 60) % 60;
         int secondValue = sod % 60;
@@ -483,7 +517,7 @@ public final class UTCInstant
             minuteValue = 59;
             secondValue += 60;
         }
-        int nanoValue = (int) (nanos % NANOS_PER_SECOND);
+        int nanoValue = (int) (nanoOfDay % NANOS_PER_SECOND);
         buf.append(date).append('T')
             .append(hourValue < 10 ? "0" : "").append(hourValue)
             .append(minuteValue < 10 ? ":0" : ":").append(minuteValue)

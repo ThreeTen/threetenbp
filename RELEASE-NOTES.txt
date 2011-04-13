@@ -73,6 +73,7 @@
 - Add DateTimeRuleRange to replace DateTimeRule min/max methods
 - Add WeekRules
 - Add PeriodUnit.field(long)
+- Add with methods to UTCInstant
 
 0.6.3
 ===============================================================================
