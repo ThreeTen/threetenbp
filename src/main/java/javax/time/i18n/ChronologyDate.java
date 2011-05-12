@@ -34,6 +34,7 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
@@ -42,8 +43,6 @@ import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.OffsetDate;
-import javax.time.calendar.ZonedDateTime;
 
 /**
  * A date based on standard chronology rules.
@@ -516,6 +515,26 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this date with the specified number of years added.
+     * <p>
+     * This method adds the specified amount in years to the date.
+     * Other fields will be adjusted as necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to add, may be negative
+     * @return a date based on this date with the years added, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronologyDate plusYears(long years) {
+        if (years == 0) {
+            return this;
+        }
+        int newYears = MathUtils.safeToInt(MathUtils.safeAdd(prolepticYear, years));
+        return ChronologyDate.of(chrono, newYears, monthOfYear, dayOfMonth);
+    }
+
+    /**
      * Returns a copy of this date with the specified number of days added.
      * <p>
      * This method adds the specified amount in days to the date.
@@ -535,6 +554,26 @@ public final class ChronologyDate
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this date with the specified number of years subtracted.
+     * <p>
+     * This method subtracts the specified amount in years from the date.
+     * Other fields will be adjusted as necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @return a date based on this date with the years subtracted, not null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ChronologyDate minusYears(long years) {
+        if (years == 0) {
+            return this;
+        }
+        int newYears = MathUtils.safeToInt(MathUtils.safeSubtract(prolepticYear, years));
+        return ChronologyDate.of(chrono, newYears, monthOfYear, dayOfMonth);
+    }
+
     /**
      * Returns a copy of this date with the specified number of days subtracted.
      * <p>
