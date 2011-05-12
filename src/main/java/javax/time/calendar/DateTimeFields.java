@@ -327,7 +327,7 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code DateTimeFields} with the specified field.
+     * Returns a copy of these fields with the specified field set.
      * <p>
      * This replaces the value of the rule if the rule is present,
      * or adds the field if the rule is not present.
@@ -343,7 +343,7 @@ public final class DateTimeFields
     }
 
     /**
-     * Returns a copy of this {@code DateTimeFields} with the specified field.
+     * Returns a copy of these fields with the specified field set.
      * <p>
      * This replaces the value of the rule if the rule is present,
      * or adds the field if the rule is not present.
@@ -373,7 +373,7 @@ public final class DateTimeFields
     }
 
     /**
-     * Returns a copy of this {@code DateTimeFields} with the specified field removed.
+     * Returns a copy of these fields with the specified field removed.
      * <p>
      * This removes the specified rule from those in the returned fields.
      * No error occurs if the rule is not present.
@@ -400,7 +400,7 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
 //    /**
-//     * Returns a copy of this {@code DateTimeFields} with the value of the specified rule rolled.
+//     * Returns a copy of these fields with the value of the specified rule rolled.
 //     * <p>
 //     * This rolls the value of one rule by the specified amount.
 //     * Rolling is the process of adding or subtracting the value of the field rolling
@@ -424,6 +424,64 @@ public final class DateTimeFields
 //        long rolled = rule.roll(value, amountToRollBy, this);
 //        return with(rule, rolled);
 //    }  // TODO
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of these fields with the values normalized.
+//     * <p>
+//     * The calculation examines each set of fields and attempts to combine them.
+//     * Any fields that are successfully combined are removed.
+//     * The result will be equivalent to these fields.
+//     * <p>
+//     * For example, the fields '[QuarterOfYear 2, MonthOfQuarter 3, DayOfMonth 4]'
+//     * will be normalized to '[MonthOfYear 6, DayOfMonth 4]'. The quarter-of-year
+//     * and month-of-quarter can be successfully merged without any loss of accuracy.
+//     * However, month-of-year and day-of-month cannot be merged without knowing
+//     * the year due to the different length of February in leap years.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @return a {@code DateTimeFields} based on this with the fields normalized, not null
+//     * @throws ArithmeticException if the calculation overflows
+//     */
+//    public DateTimeFields normalized() {
+//        if (size() == 0) {  // TODO normalized cache flag?
+//            return EMPTY;
+//        }
+//        DateTimeFields result = this;
+//        for (DateTimeField field : result) {
+//            DateTimeField normalized = field.getRule().normalize(field);
+//            if (normalized != field) {
+//                DateTimeField existing = getField(normalized.getRule());
+//                if (existing != null && existing.equals(normalized) == false) {
+//                    throw new CalendricalRuleException("Unable to normalize, " + field +
+//                            " normalized to " + normalized + " which is incompatible with " + existing, normalized.getRule());
+//                }
+//                result = result.without(field.getRule()).with(normalized);
+//            }
+//        }
+//        return result;
+//        
+////        if (size() == 1) {
+////            DateTimeField current = fields.get(0);
+////            DateTimeField normalized = current.getRule().normalize(current);
+////            if (current == normalized) {
+////                return this;
+////            }
+////            return DateTimeFields.of(normalized);
+////        }
+//        
+////        List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
+////        for (Iterator<DateTimeField> it = newFields.iterator(); it.hasNext(); ) {
+////            if (it.next().getRule().equals(rule)) {
+////                it.remove();
+////                if (newFields.size() == 0) {
+////                    return EMPTY;
+////                }
+////                return new DateTimeFields(newFields);
+////            }
+////        }
+//    }
 
     //-----------------------------------------------------------------------
     /**
