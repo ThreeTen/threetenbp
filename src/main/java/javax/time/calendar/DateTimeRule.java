@@ -271,17 +271,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
         return period;
     }
 
-    /**
-     * Merges two periods.
-     *
-     * @param period  the period measured in units of this rule, positive or negative
-     * @return the value of this rule, potentially out of range, not null
-     * @throws CalendricalException if a suitable conversion is not possible
-     */
-    public PeriodFields merge(long thisPeriod, PeriodField otherPeriod) {
-        return null;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Converts a value for this field to a fraction between 0 and 1.
