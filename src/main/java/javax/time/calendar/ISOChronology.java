@@ -44,6 +44,8 @@ import static javax.time.calendar.ISODateTimeRule.EPOCH_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MILLI_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MILLI_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
@@ -51,10 +53,12 @@ import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_MILLI;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.WEEK_OF_MONTH;
@@ -297,12 +301,37 @@ public final class ISOChronology extends Chronology implements Serializable {
         normalizeConvert(merger, EPOCH_YEAR, YEAR);
         
         normalizeMerge(merger, HOUR_OF_AMPM, AMPM_OF_DAY, HOUR_OF_DAY);
-        normalizeMerge(merger, NANO_OF_HOUR, HOUR_OF_DAY, NANO_OF_DAY);
-        normalizeMerge(merger, MINUTE_OF_HOUR, HOUR_OF_DAY, MINUTE_OF_DAY);
-        normalizeMerge(merger, NANO_OF_MINUTE, MINUTE_OF_DAY, NANO_OF_DAY);
-        normalizeMerge(merger, SECOND_OF_MINUTE, MINUTE_OF_DAY, SECOND_OF_DAY);
+        
+        normalizeMerge(merger, NANO_OF_MILLI, MILLI_OF_DAY, NANO_OF_DAY);
+        normalizeMerge(merger, NANO_OF_MILLI, MILLI_OF_HOUR, NANO_OF_HOUR);
+        normalizeMerge(merger, NANO_OF_MILLI, MILLI_OF_MINUTE, NANO_OF_MINUTE);
+        normalizeMerge(merger, NANO_OF_MILLI, MILLI_OF_SECOND, NANO_OF_SECOND);
+        
         normalizeMerge(merger, NANO_OF_SECOND, SECOND_OF_DAY, NANO_OF_DAY);
+        normalizeMerge(merger, NANO_OF_SECOND, SECOND_OF_HOUR, NANO_OF_HOUR);
+        normalizeMerge(merger, NANO_OF_SECOND, SECOND_OF_MINUTE, NANO_OF_MINUTE);
+        
+        normalizeMerge(merger, NANO_OF_MINUTE, MINUTE_OF_DAY, NANO_OF_DAY);
+        normalizeMerge(merger, NANO_OF_MINUTE, MINUTE_OF_HOUR, NANO_OF_HOUR);
+        
+        normalizeMerge(merger, NANO_OF_HOUR, HOUR_OF_DAY, NANO_OF_DAY);
+        
         normalizeMerge(merger, MILLI_OF_SECOND, SECOND_OF_DAY, MILLI_OF_DAY);
+        normalizeMerge(merger, MILLI_OF_SECOND, SECOND_OF_HOUR, MILLI_OF_HOUR);
+        normalizeMerge(merger, MILLI_OF_SECOND, SECOND_OF_MINUTE, MILLI_OF_MINUTE);
+        
+        normalizeMerge(merger, MILLI_OF_MINUTE, MINUTE_OF_DAY, MILLI_OF_DAY);
+        normalizeMerge(merger, MILLI_OF_MINUTE, MINUTE_OF_HOUR, MILLI_OF_HOUR);
+        
+        normalizeMerge(merger, MILLI_OF_HOUR, HOUR_OF_DAY, MILLI_OF_DAY);
+        
+        normalizeMerge(merger, SECOND_OF_MINUTE, MINUTE_OF_DAY, SECOND_OF_DAY);
+        normalizeMerge(merger, SECOND_OF_MINUTE, MINUTE_OF_HOUR, SECOND_OF_HOUR);
+        
+        normalizeMerge(merger, SECOND_OF_HOUR, HOUR_OF_DAY, SECOND_OF_DAY);
+        
+        normalizeMerge(merger, MINUTE_OF_HOUR, HOUR_OF_DAY, MINUTE_OF_DAY);
+        
         normalizeMerge(merger, MONTH_OF_QUARTER, QUARTER_OF_YEAR, MONTH_OF_YEAR);
         
         // TODO: add "fallback fields" concept to merger

@@ -114,11 +114,17 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         switch (ordinal) {
+            case NANO_OF_MILLI_ORDINAL:
             case NANO_OF_SECOND_ORDINAL:
+            case NANO_OF_MINUTE_ORDINAL:
+            case NANO_OF_HOUR_ORDINAL:
             case NANO_OF_DAY_ORDINAL:
             case MILLI_OF_SECOND_ORDINAL:
+            case MILLI_OF_MINUTE_ORDINAL:
+            case MILLI_OF_HOUR_ORDINAL:
             case MILLI_OF_DAY_ORDINAL:
             case SECOND_OF_MINUTE_ORDINAL:
+            case SECOND_OF_HOUR_ORDINAL:
             case SECOND_OF_DAY_ORDINAL:
             case MINUTE_OF_HOUR_ORDINAL:
             case MINUTE_OF_DAY_ORDINAL:
@@ -126,6 +132,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 LocalTime time = calendrical.get(LocalTime.rule());
                 if (time != null) {
                     switch (ordinal) {
+                        // TODO: derive new fields
                         case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
                         case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
                         case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
@@ -340,38 +347,49 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
-    private static final int NANO_OF_SECOND_ORDINAL =       0 * 16;
-    private static final int NANO_OF_MINUTE_ORDINAL =       1 * 16;
-    private static final int NANO_OF_HOUR_ORDINAL =         2 * 16;
-    private static final int NANO_OF_DAY_ORDINAL =          3 * 16;
-    private static final int MILLI_OF_SECOND_ORDINAL =      4 * 16;
-    private static final int MILLI_OF_DAY_ORDINAL =         5 * 16;
-    private static final int SECOND_OF_MINUTE_ORDINAL =     6 * 16;
-    private static final int SECOND_OF_DAY_ORDINAL =        7 * 16;
-    private static final int EPOCH_SECOND_ORDINAL =         8 * 16;
-    private static final int MINUTE_OF_HOUR_ORDINAL =       9 * 16;
-    private static final int MINUTE_OF_DAY_ORDINAL =        10 * 16;
-    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL =   11 * 16;
-    private static final int HOUR_OF_AMPM_ORDINAL =         12 * 16;
-    private static final int CLOCK_HOUR_OF_DAY_ORDINAL =    13 * 16;
-    private static final int HOUR_OF_DAY_ORDINAL =          14 * 16;
-    private static final int AMPM_OF_DAY_ORDINAL =          15 * 16;
-    private static final int DAY_OF_WEEK_ORDINAL =          16 * 16;
-    private static final int DAY_OF_MONTH_ORDINAL =         17 * 16;
-    private static final int DAY_OF_YEAR_ORDINAL =          18 * 16;
-    private static final int EPOCH_DAY_ORDINAL =            19 * 16;
-    private static final int WEEK_OF_MONTH_ORDINAL =        20 * 16;
-    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 21 * 16;
-    private static final int WEEK_OF_YEAR_ORDINAL =         22 * 16;
-    private static final int MONTH_OF_QUARTER_ORDINAL =     23 * 16;
-    private static final int MONTH_OF_YEAR_ORDINAL =        24 * 16;
-    private static final int EPOCH_MONTH_ORDINAL =          25 * 16;
-    private static final int QUARTER_OF_YEAR_ORDINAL =      26 * 16;
-    private static final int WEEK_BASED_YEAR_ORDINAL =      27 * 16;
-    private static final int YEAR_ORDINAL =                 28 * 16;
-    private static final int EPOCH_YEAR_ORDINAL =           29 * 16;
+    private static final int NANO_OF_MILLI_ORDINAL =        0 * 16;
+    private static final int NANO_OF_SECOND_ORDINAL =       1 * 16;
+    private static final int NANO_OF_MINUTE_ORDINAL =       2 * 16;
+    private static final int NANO_OF_HOUR_ORDINAL =         3 * 16;
+    private static final int NANO_OF_DAY_ORDINAL =          4 * 16;
+    private static final int MILLI_OF_SECOND_ORDINAL =      5 * 16;
+    private static final int MILLI_OF_MINUTE_ORDINAL =      6 * 16;
+    private static final int MILLI_OF_HOUR_ORDINAL =        7 * 16;
+    private static final int MILLI_OF_DAY_ORDINAL =         8 * 16;
+    private static final int SECOND_OF_MINUTE_ORDINAL =     9 * 16;
+    private static final int SECOND_OF_DAY_ORDINAL =        10 * 16;
+    private static final int SECOND_OF_HOUR_ORDINAL =       11 * 16;
+    private static final int EPOCH_SECOND_ORDINAL =         12 * 16;
+    private static final int MINUTE_OF_HOUR_ORDINAL =       13 * 16;
+    private static final int MINUTE_OF_DAY_ORDINAL =        14 * 16;
+    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL =   15 * 16;
+    private static final int HOUR_OF_AMPM_ORDINAL =         16 * 16;
+    private static final int CLOCK_HOUR_OF_DAY_ORDINAL =    17 * 16;
+    private static final int HOUR_OF_DAY_ORDINAL =          18 * 16;
+    private static final int AMPM_OF_DAY_ORDINAL =          19 * 16;
+    private static final int DAY_OF_WEEK_ORDINAL =          20 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL =         21 * 16;
+    private static final int DAY_OF_YEAR_ORDINAL =          22 * 16;
+    private static final int EPOCH_DAY_ORDINAL =            23 * 16;
+    private static final int WEEK_OF_MONTH_ORDINAL =        24 * 16;
+    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 25 * 16;
+    private static final int WEEK_OF_YEAR_ORDINAL =         26 * 16;
+    private static final int MONTH_OF_QUARTER_ORDINAL =     27 * 16;
+    private static final int MONTH_OF_YEAR_ORDINAL =        28 * 16;
+    private static final int EPOCH_MONTH_ORDINAL =          29 * 16;
+    private static final int QUARTER_OF_YEAR_ORDINAL =      30 * 16;
+    private static final int WEEK_BASED_YEAR_ORDINAL =      31 * 16;
+    private static final int YEAR_ORDINAL =                 32 * 16;
+    private static final int EPOCH_YEAR_ORDINAL =           33 * 16;
 
     //-----------------------------------------------------------------------
+    /**
+     * The rule for the nano-of-milli field.
+     * <p>
+     * This field counts nanoseconds sequentially from the start of the millisecond.
+     * The values run from 0 to 999,999.
+     */
+    public static final DateTimeRule NANO_OF_MILLI = new ISODateTimeRule(NANO_OF_MILLI_ORDINAL, "NanoOfMilli", NANOS, MILLIS, 0, 999999, 999999);
     /**
      * The rule for the nano-of-second field.
      * <p>
@@ -408,6 +426,20 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      */
     public static final DateTimeRule MILLI_OF_SECOND = new ISODateTimeRule(MILLI_OF_SECOND_ORDINAL, "MilliOfSecond", MILLIS, SECONDS, 0, 999, 999);
     /**
+     * The rule for the milli-of-minute field.
+     * <p>
+     * This field counts milliseconds sequentially from the start of the minute.
+     * The values run from 0 to 59,999.
+     */
+    public static final DateTimeRule MILLI_OF_MINUTE = new ISODateTimeRule(MILLI_OF_MINUTE_ORDINAL, "MilliOfMinute", MILLIS, MINUTES, 0, 59999, 59999);
+    /**
+     * The rule for the milli-of-hour field.
+     * <p>
+     * This field counts milliseconds sequentially from the start of the hour.
+     * The values run from 0 to 3,599,999.
+     */
+    public static final DateTimeRule MILLI_OF_HOUR = new ISODateTimeRule(MILLI_OF_HOUR_ORDINAL, "MilliOfHour", MILLIS, HOURS, 0, 3599999, 3599999);
+    /**
      * The rule for the milli-of-day field.
      * <p>
      * This field counts milliseconds sequentially from the start of the day.
@@ -421,6 +453,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The values run from 0 to 59.
      */
     public static final DateTimeRule SECOND_OF_MINUTE = new ISODateTimeRule(SECOND_OF_MINUTE_ORDINAL, "SecondOfMinute", SECONDS, MINUTES, 0, 59, 59);
+    /**
+     * The rule for the second-of-hour field.
+     * <p>
+     * This field counts seconds sequentially from the start of the hour.
+     * The values run from 0 to 3,599.
+     */
+    public static final DateTimeRule SECOND_OF_HOUR = new ISODateTimeRule(SECOND_OF_HOUR_ORDINAL, "SecondOfHour", SECONDS, HOURS, 0, 3599, 3599);
     /**
      * The rule for the second-of-day field.
      * <p>
