@@ -31,11 +31,15 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.time.MathUtils;
 
 /**
  * Rules defining how weeks are counted.
@@ -46,7 +50,7 @@ import java.util.concurrent.ConcurrentMap;
  * <li>The first day-of-week.
  * For example, the ISO-8601 standard considers Monday to be the first day-of-week.
  * <li>The minimal number of days in the first week.
- * For example, the ISO08601 standard counts the first week as the one with 4 days.
+ * For example, the ISO-08601 standard counts the first week as the one with 4 days.
  * </ul>
  * Together these two values allow the first week of the month or year to be calculated.
  * Within any month or year, the first week is the earliest seven day period, starting
@@ -63,6 +67,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * has a minimum of 4 days.
      */
     public static final WeekRules ISO8601 = new WeekRules(DayOfWeek.MONDAY, 4);
+
     /**
      * A serialization identifier for this class.
      */
@@ -174,8 +179,65 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts the specified day-of-week to an {@code int} value using the
-     * stored first day-of-week.
+     * Creates a date at the start of the week-based-year based on these rules.
+     * <p>
+     * These rules define the day-of-week that a week begins on and the minimal
+     * number of days in a month or year before the first week is counted.
+     * These rules are used to calculate what date a given year starts.
+     *
+     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
+     * @return the date that the week-based-year starts, not null
+     */
+    public LocalDate createDate(int weekBasedYear) {
+        LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDaysInFirstWeek);
+        return inFirstWeek.with(DateAdjusters.previousOrCurrent(firstDayOfWeek));
+    }
+
+    /**
+     * Creates a date from a week-based-year, week and day, all defined based
+     * on these rules.
+     * <p>
+     * These rules define the day-of-week that a week begins on and the minimal
+     * number of days in a month or year before the first week is counted.
+     * These rules are used to calculate the date equivalent to the input parameters.
+     * <p>
+     * The week and day-of-week are interpreted leniently. For example, a week value of
+     * -1 is two weeks before week 1, and a day-of-week value of 10 is three days after
+     * the day-of-week with the value 7.
+     *
+     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
+     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
+     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
+     *  the first day-of-week of these rules, any value
+     * @return the date equivalent to the input parameters, not null
+     */
+    public LocalDate createDate(int weekBasedYear, int weekOfWeekbasedYear, int ruleRelativeDayOfWeekValue) {
+        LocalDate startFirstWeek = createDate(weekBasedYear);
+        return startFirstWeek.plusDays((weekOfWeekbasedYear - 1L) * 7L + (ruleRelativeDayOfWeekValue - 1L));
+    }
+
+    /**
+     * Creates a date from a week-based-year and week based on these rules, combined
+     * with the standardized day-of-week.
+     * <p>
+     * These rules define the day-of-week that a week begins on and the minimal
+     * number of days in a month or year before the first week is counted.
+     * These rules are used to calculate the date equivalent to the input parameters.
+     *
+     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
+     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
+     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
+     *  the first day-of-week of these rules, any value
+     * @return the value for the day-of-week based on the first day-of-week, from 1 to 7
+     */
+    public LocalDate createDate(int weekBasedYear, int weekOfWeekbasedYear, DayOfWeek dayOfWeek) {
+        return createDate(weekBasedYear, weekOfWeekbasedYear, 1).with(DateAdjusters.nextOrCurrent(dayOfWeek));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts the standardized {@code DayOfWeek} to an {@code int} value
+     * relative to the first day-of-week.
      * <p>
      * The returned value will run from 1 to 7, with 1 being the stored first day-of-week.
      * For example, the first day-of-week in the US is Sunday, so passing Tuesday
@@ -184,29 +246,82 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @param dayOfWeek  the day-of-week to convert, not null
      * @return the value for the day-of-week based on the first day-of-week, from 1 to 7
      */
-    public int convertDayOfWeekToValue(DayOfWeek dayOfWeek) {
+    public int convertDayOfWeek(DayOfWeek dayOfWeek) {
         ISOChronology.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
-        return ((dayOfWeek.ordinal() - firstDayOfWeek.ordinal() + 7) % 7) + 1;
+        return dayOfWeek.roll(-firstDayOfWeek.ordinal()).getValue();
     }
 
     /**
-     * Converts the specified {@code int} value to a day-of-week using the
-     * stored first day-of-week.
+     * Converts the specified {@code int} value relative to the first
+     * day-of-week to a standardized {@code DayOfWeek}.
      * <p>
      * The value must run from 1 to 7, with 1 being converted to the stored first
      * day-of-week and subsequent values being converted to subsequent days.
      * For example, the value 1 would be converted to Sunday for rules based on the
      * conventions of the US and to Monday for rules based on the conventions of France.
      *
-     * @param dayOfWeekValue  the day-of-week value to convert, from 1 to 7
+     * @param ruleRelativeDayOfWeekValue  the day-of-week value to convert, relative to
+     *  the first day-of-week of these rules, from 1 to 7
      * @return the day-of-week object based on the first day-of-week, not null
-     * @throws IllegalArgumentException if the minimal days value is invalid
+     * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public DayOfWeek convertValueToDayOfWeek(int dayOfWeekValue) {
-        if (dayOfWeekValue < 1 || dayOfWeekValue > 7) {
-            throw new IllegalArgumentException("Minimal number of days is invalid");
-        }
-        return firstDayOfWeek.roll(dayOfWeekValue - 1);
+    public DayOfWeek convertDayOfWeek(int ruleRelativeDayOfWeekValue) {
+        dayOfWeek().checkValidValue(ruleRelativeDayOfWeekValue);
+        return firstDayOfWeek.roll(ruleRelativeDayOfWeekValue - 1);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets a rule that can be used to print, parse and manipulate the
+     * day-of-week value based on these rules.
+     * <p>
+     * See {@link #convertDayOfWeek(DayOfWeek)} for more information.
+     *
+     * @return the rule for the date, not null
+     */
+    public DateTimeRule dayOfWeek() {
+        return new DayOfWeekRule();
+    }
+
+    /**
+     * Gets a rule that can be used to print, parse and manipulate the
+     * week-of-week-based-year value.
+     * <p>
+     * Weeks defined used these rules do not necessarily align with years
+     * defined using the standard ISO-8601 calendar. This rule provides
+     * the means to access the week number, which is used with the
+     * {@link #weekBasedYear() week-based-year}.
+     * The week number for the first week of the week-based-year will be 1.
+     * <p>
+     * Note that the first week may start in the previous calendar year.
+     * Note also that the first few days of a calendar year may be in the
+     * week-based-year corresponding to the previous calendar year.
+     *
+     * @return the rule for the date, not null
+     */
+    public DateTimeRule weekOfWeekBasedYear() {
+        return null;  // TODO
+    }
+
+    /**
+     * Gets a rule that can be used to print, parse and manipulate the
+     * week-based-year value.
+     * <p>
+     * Weeks defined used these rules do not necessarily align with years
+     * defined using the standard ISO-8601 calendar. This rule provides
+     * the means to access the week-based-year, which is used with the
+     * {@link #weekOfWeekBasedYear() week-of-week-based-year}.
+     * The week-based-year will be the same as the calendar year except for
+     * a few days at the start and end of the year.
+     * <p>
+     * Note that the first week may start in the previous calendar year.
+     * Note also that the first few days of a calendar year may be in the
+     * week-based-year corresponding to the previous calendar year.
+     *
+     * @return the rule for the date, not null
+     */
+    public DateTimeRule weekBasedYear() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -225,7 +340,8 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
     /**
      * Checks if these rules are equal to the specified rules.
      * <p>
-     * The comparison is based on the entire state of the rules.
+     * The comparison is based on the entire state of the rules, which is
+     * the first day-of-week and minimal days.
      *
      * @param object  the other rules to compare to, null returns false
      * @return true if this is equal to the specified rules
@@ -260,6 +376,60 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
     @Override
     public String toString() {
         return "WeekRules[" + firstDayOfWeek + ',' + minimalDaysInFirstWeek + ']';
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Merges the fields for these week rules.
+     */
+    void merge(CalendricalMerger merger) {
+        DateTimeField y = merger.getValue(weekBasedYear());
+        DateTimeField woy = merger.getValue(weekOfWeekBasedYear());
+        DateTimeField dow = merger.getValue(dayOfWeek());
+        if (y != null && woy != null && dow != null) {
+            merger.storeMerged(LocalDate.rule(), null);
+            merger.removeProcessed(weekBasedYear());
+            merger.removeProcessed(weekOfWeekBasedYear());
+            merger.removeProcessed(dayOfWeek());
+        } else if (dow != null && dow.isValidValue()) {
+            merger.storeMergedField(DAY_OF_WEEK, convertDayOfWeek(dow.getValidIntValue()).getValue());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    final class DayOfWeekRule extends DateTimeRule implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private DayOfWeekRule() {
+            super(ISOChronology.INSTANCE, "DayOfWeek-" + WeekRules.this.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7);
+        }
+        @Override
+        protected DateTimeField derive(Calendrical calendrical) {
+            DateTimeField dow = calendrical.get(DAY_OF_WEEK);
+            if (dow != null && dow.isValidValue()) {
+                return field(((dow.getValue() - 1 - firstDayOfWeek.ordinal() + 7) % 7) + 1);
+            }
+//                long dow0 = MathUtils.safeDecrement(dow.getValue());
+//                long weeks = MathUtils.floorDiv(dow0, 7);
+//                dow0 = MathUtils.floorMod(dow0, 7);
+//                long adjustedDow = ((dow0 - firstDayOfWeek.ordinal() + 7) % 7) + 1;
+//                return field(MathUtils.safeAdd(adjustedDow, MathUtils.safeMultiply(weeks, 7)));
+            return null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            super.merge(merger);
+        }
+        @Override
+        public long convertToPeriod(long value) {
+            return MathUtils.safeDecrement(value);
+        }
+        @Override
+        public long convertFromPeriod(long amount) {
+            return MathUtils.safeIncrement(amount);
+        }
     }
 
 }

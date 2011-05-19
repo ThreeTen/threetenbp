@@ -38,6 +38,8 @@ import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.DayOfWeek.WEDNESDAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.MonthOfYear.JANUARY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -77,13 +79,13 @@ public class TestWeekRules {
     // factory of
     //-----------------------------------------------------------------------
     public void test_factory_of() {
-        assertEquals(WeekRules.of(MONDAY, 4).getFirstDayOfWeek(), MONDAY);
-        assertEquals(WeekRules.of(TUESDAY, 4).getFirstDayOfWeek(), TUESDAY);
-        assertEquals(WeekRules.of(SUNDAY, 4).getFirstDayOfWeek(), SUNDAY);
-        
-        assertEquals(WeekRules.of(MONDAY, 4).getMinimalDaysInFirstWeek(), 4);
-        assertEquals(WeekRules.of(MONDAY, 1).getMinimalDaysInFirstWeek(), 1);
-        assertEquals(WeekRules.of(MONDAY, 7).getMinimalDaysInFirstWeek(), 7);
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+                WeekRules rules = WeekRules.of(dow, minimalDays);
+                assertEquals(rules.getFirstDayOfWeek(), dow);
+                assertEquals(rules.getMinimalDaysInFirstWeek(), minimalDays);
+            }
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -133,69 +135,122 @@ public class TestWeekRules {
     }
 
     //-----------------------------------------------------------------------
-    // convertDayOfWeekToValue()
+    // createDate()
     //-----------------------------------------------------------------------
-    public void test_convertDayOfWeekToValue_MondayBased() {
-        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeekToValue(MONDAY), 1);
-        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeekToValue(TUESDAY), 2);
-        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeekToValue(WEDNESDAY), 3);
-        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeekToValue(THURSDAY), 4);
-        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeekToValue(FRIDAY), 5);
-        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeekToValue(SATURDAY), 6);
-        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeekToValue(SUNDAY), 7);
+    public void test_createDate() {
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+                WeekRules rules = WeekRules.of(dow, minimalDays);
+                for (int year = 1950; year < 2050; year++) {
+                    LocalDate date = rules.createDate(year);
+                    assertEquals(date.getDayOfWeek(), dow);
+                    LocalDate weekEnd = date.plusDays(6);
+                    assertEquals(weekEnd.getYear(), year);
+                    assertEquals(weekEnd.getMonthOfYear(), JANUARY);
+                    assertTrue(weekEnd.getDayOfMonth() >= minimalDays, date + " " + weekEnd);
+                }
+            }
+        }
     }
 
-    public void test_convertDayOfWeekToValue_SundayBased() {
-        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeekToValue(MONDAY), 2);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeekToValue(TUESDAY), 3);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeekToValue(WEDNESDAY), 4);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeekToValue(THURSDAY), 5);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeekToValue(FRIDAY), 6);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeekToValue(SATURDAY), 7);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeekToValue(SUNDAY), 1);
+    public void test_createDate_weekDay() {
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+                WeekRules rules = WeekRules.of(dow, minimalDays);
+                for (int year = 1950; year < 2050; year++) {
+                    LocalDate start = rules.createDate(year);
+                    for (int week = -60; week < 60; week += 20) {
+                        for (int day = -10; day < 10; day += 2) {
+                            LocalDate date = rules.createDate(year, week, day);
+                            assertEquals(date, start.plusWeeks(week - 1).plusDays(day - 1));
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    public void test_convertDayOfWeekToValue_FridayBased() {
-        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeekToValue(MONDAY), 4);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeekToValue(TUESDAY), 5);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeekToValue(WEDNESDAY), 6);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeekToValue(THURSDAY), 7);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeekToValue(FRIDAY), 1);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeekToValue(SATURDAY), 2);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeekToValue(SUNDAY), 3);
+    public void test_createDate_weekDayStandardized() {
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+                WeekRules rules = WeekRules.of(dow, minimalDays);
+                for (int year = 1950; year < 2050; year++) {
+                    LocalDate start = rules.createDate(year);
+                    for (int week = -60; week < 60; week += 20) {
+                        for (DayOfWeek day : DayOfWeek.values()) {
+                            LocalDate date = rules.createDate(year, week, day);
+                            assertEquals(date, start.plusWeeks(week - 1).with(DateAdjusters.nextOrCurrent(day)));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //-----------------------------------------------------------------------
-    // convertValueToDayOfWeek()
+    // convertToValue()
     //-----------------------------------------------------------------------
-    public void test_convertValueToDayOfWeek_MondayBased() {
-        assertEquals(WeekRules.of(MONDAY, 4).convertValueToDayOfWeek(1), MONDAY);
-        assertEquals(WeekRules.of(MONDAY, 4).convertValueToDayOfWeek(2), TUESDAY);
-        assertEquals(WeekRules.of(MONDAY, 4).convertValueToDayOfWeek(3), WEDNESDAY);
-        assertEquals(WeekRules.of(MONDAY, 4).convertValueToDayOfWeek(4), THURSDAY);
-        assertEquals(WeekRules.of(MONDAY, 4).convertValueToDayOfWeek(5), FRIDAY);
-        assertEquals(WeekRules.of(MONDAY, 4).convertValueToDayOfWeek(6), SATURDAY);
-        assertEquals(WeekRules.of(MONDAY, 4).convertValueToDayOfWeek(7), SUNDAY);
+    public void test_convertToValue_MondayBased() {
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(MONDAY), 1);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(TUESDAY), 2);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(WEDNESDAY), 3);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(THURSDAY), 4);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(FRIDAY), 5);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(SATURDAY), 6);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(SUNDAY), 7);
     }
 
-    public void test_convertValueToDayOfWeek_SundayBased() {
-        assertEquals(WeekRules.of(SUNDAY, 4).convertValueToDayOfWeek(2), MONDAY);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertValueToDayOfWeek(3), TUESDAY);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertValueToDayOfWeek(4), WEDNESDAY);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertValueToDayOfWeek(5), THURSDAY);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertValueToDayOfWeek(6), FRIDAY);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertValueToDayOfWeek(7), SATURDAY);
-        assertEquals(WeekRules.of(SUNDAY, 4).convertValueToDayOfWeek(1), SUNDAY);
+    public void test_convertToValue_SundayBased() {
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(MONDAY), 2);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(TUESDAY), 3);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(WEDNESDAY), 4);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(THURSDAY), 5);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(FRIDAY), 6);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(SATURDAY), 7);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(SUNDAY), 1);
     }
 
-    public void test_convertValueToDayOfWeek_FridayBased() {
-        assertEquals(WeekRules.of(FRIDAY, 4).convertValueToDayOfWeek(4), MONDAY);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertValueToDayOfWeek(5), TUESDAY);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertValueToDayOfWeek(6), WEDNESDAY);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertValueToDayOfWeek(7), THURSDAY);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertValueToDayOfWeek(1), FRIDAY);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertValueToDayOfWeek(2), SATURDAY);
-        assertEquals(WeekRules.of(FRIDAY, 4).convertValueToDayOfWeek(3), SUNDAY);
+    public void test_convertToValue_FridayBased() {
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(MONDAY), 4);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(TUESDAY), 5);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(WEDNESDAY), 6);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(THURSDAY), 7);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(FRIDAY), 1);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(SATURDAY), 2);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(SUNDAY), 3);
+    }
+
+    //-----------------------------------------------------------------------
+    // convertFromValue()
+    //-----------------------------------------------------------------------
+    public void test_convertFromValue_MondayBased() {
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(1), MONDAY);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(2), TUESDAY);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(3), WEDNESDAY);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(4), THURSDAY);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(5), FRIDAY);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(6), SATURDAY);
+        assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(7), SUNDAY);
+    }
+
+    public void test_convertFromValue_SundayBased() {
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(2), MONDAY);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(3), TUESDAY);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(4), WEDNESDAY);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(5), THURSDAY);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(6), FRIDAY);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(7), SATURDAY);
+        assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(1), SUNDAY);
+    }
+
+    public void test_convertFromValue_FridayBased() {
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(4), MONDAY);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(5), TUESDAY);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(6), WEDNESDAY);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(7), THURSDAY);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(1), FRIDAY);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(2), SATURDAY);
+        assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(3), SUNDAY);
     }
 
     //-----------------------------------------------------------------------
@@ -261,6 +316,54 @@ public class TestWeekRules {
     public void test_toString() {
         assertEquals(WeekRules.of(MONDAY, 4).toString(), "WeekRules[MONDAY,4]");
         assertEquals(WeekRules.of(SUNDAY, 1).toString(), "WeekRules[SUNDAY,1]");
+    }
+
+    //-----------------------------------------------------------------------
+    // dayOfWeek()
+    //-----------------------------------------------------------------------
+    public void test_dayOfWeek_sun1() {
+        DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
+        assertEquals(rule.toString(), "ISO.DayOfWeek-WeekRules[SUNDAY,1]");
+        
+        assertEquals(0, rule.convertToPeriod(1));
+        assertEquals(6, rule.convertToPeriod(7));
+        assertEquals(-1, rule.convertToPeriod(0));
+        assertEquals(7, rule.convertToPeriod(8));
+        
+        assertEquals(1, rule.convertFromPeriod(0));
+        assertEquals(7, rule.convertFromPeriod(6));
+        assertEquals(0, rule.convertFromPeriod(-1));
+        assertEquals(8, rule.convertFromPeriod(7));
+        
+//        assertEquals(rule.field(-7), rule.derive(DAY_OF_WEEK.field(-8)));  // 2prev Mon
+//        
+//        assertEquals(rule.field(-6), rule.derive(DAY_OF_WEEK.field(0)));  // prev Sun
+//        assertEquals(rule.field(-5), rule.derive(DAY_OF_WEEK.field(-6)));  // prev Mon
+//        assertEquals(rule.field(-4), rule.derive(DAY_OF_WEEK.field(-5)));  // prev Tue
+//        assertEquals(rule.field(-3), rule.derive(DAY_OF_WEEK.field(-4)));  // prev Wed
+//        assertEquals(rule.field(-2), rule.derive(DAY_OF_WEEK.field(-3)));  // prev Thu
+//        assertEquals(rule.field(-1), rule.derive(DAY_OF_WEEK.field(-2)));  // prev Fri
+//        assertEquals(rule.field(0), rule.derive(DAY_OF_WEEK.field(-1)));  // prev Sat
+        
+        assertEquals(rule.field(1), rule.derive(DAY_OF_WEEK.field(7)));  // Sun
+        assertEquals(rule.field(2), rule.derive(DAY_OF_WEEK.field(1)));  // Mon
+        assertEquals(rule.field(3), rule.derive(DAY_OF_WEEK.field(2)));  // Tue
+        assertEquals(rule.field(4), rule.derive(DAY_OF_WEEK.field(3)));  // Wed
+        assertEquals(rule.field(5), rule.derive(DAY_OF_WEEK.field(4)));  // Thu
+        assertEquals(rule.field(6), rule.derive(DAY_OF_WEEK.field(5)));  // Fri
+        assertEquals(rule.field(7), rule.derive(DAY_OF_WEEK.field(6)));  // Sat
+        assertEquals(null, rule.derive(DAY_OF_WEEK.field(0)));
+        assertEquals(null, rule.derive(DAY_OF_WEEK.field(8)));
+        
+//        assertEquals(rule.field(8), rule.derive(DAY_OF_WEEK.field(14)));  // next Sun
+//        assertEquals(rule.field(9), rule.derive(DAY_OF_WEEK.field(8)));  // next Mon
+//        assertEquals(rule.field(10), rule.derive(DAY_OF_WEEK.field(9)));  // next Tue
+//        assertEquals(rule.field(11), rule.derive(DAY_OF_WEEK.field(10)));  // next Wed
+//        assertEquals(rule.field(12), rule.derive(DAY_OF_WEEK.field(11)));  // next Thu
+//        assertEquals(rule.field(13), rule.derive(DAY_OF_WEEK.field(12)));  // next Fri
+//        assertEquals(rule.field(14), rule.derive(DAY_OF_WEEK.field(13)));  // next Sat
+//        
+//        assertEquals(rule.field(15), rule.derive(DAY_OF_WEEK.field(21)));  // 2next Sun
     }
 
 }
