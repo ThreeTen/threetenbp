@@ -101,37 +101,9 @@ public final class CalendricalMatchers {
         return Impl.LAST_DAY_OF_YEAR;
     }
 
-    /**
-     * Returns the weekend day matcher, which returns true if the date
-     * is Saturday or Sunday.
-     * <p>
-     * Some territories have weekends that do not consist of Saturday and Sunday.
-     * No implementation is supplied to support this, however a DateMatcher
-     * can be easily written to do so.
-     *
-     * @return the non weekend day matcher, not null
-     */
-    public static CalendricalMatcher weekendDay() {
-        return Impl.WEEKEND_DAY;
-    }
-
-    /**
-     * Returns the non weekend day matcher, which returns true if the date
-     * is between Monday and Friday inclusive.
-     * <p>
-     * Some territories have weekends that do not consist of Saturday and Sunday.
-     * No implementation is supplied to support this, however a DateMatcher
-     * can be easily written to do so.
-     *
-     * @return the non weekend day matcher, not null
-     */
-    public static CalendricalMatcher nonWeekendDay() {
-        return Impl.NON_WEEKEND_DAY;
-    }
-
     //-----------------------------------------------------------------------
     /**
-     * Enum implementing the adjusters.
+     * Enum implementing the matchers.
      */
     private static enum Impl implements CalendricalMatcher {
         /** Leap year matcher. */
@@ -171,22 +143,6 @@ public final class CalendricalMatchers {
                 return domVal != null && moyVal != null && domVal.getValue() == 31 && moyVal.getValue() == 12;
             }
         },
-        /** Non weekend matcher. */
-        WEEKEND_DAY {
-            /** {@inheritDoc} */
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField dow = calendrical.get(DAY_OF_WEEK);
-                return dow != null && (dow.getValue() == 6 || dow.getValue() == 7);
-            }
-        },
-        /** Non weekend matcher. */
-        NON_WEEKEND_DAY {
-            /** {@inheritDoc} */
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField dow = calendrical.get(DAY_OF_WEEK);
-                return dow != null && dow.getValue() >= 1 && dow.getValue() <= 5;
-            }
-        },
     }
 
     //-----------------------------------------------------------------------
@@ -207,6 +163,7 @@ public final class CalendricalMatchers {
     /**
      * Returns the day-of-week in month matcher, which returns true if the
      * date is the ordinal occurrence of the day-of-week in the month.
+     * This is used for expressions like the 'second Tuesday in March'.
      *
      * @param ordinal  ordinal, from 1 to 5
      * @param dayOfWeek  the day-of-week, not null

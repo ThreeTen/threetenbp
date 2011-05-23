@@ -111,7 +111,6 @@ Periods
 
 Matchers/Adjusters
 - DateTimeAdjuster
-- weekend?
 - more general next/previous
 ? recurrences
 

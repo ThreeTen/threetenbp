@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -108,18 +108,6 @@ public final class DateAdjusters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the next non weekend day adjuster, which adjusts the date one day
-     * forward skipping Saturday and Sunday.
-     *
-     * @return the next working day adjuster, not null
-     */
-    public static DateAdjuster nextNonWeekendDay() {
-        // TODO: This is not localized
-        return Impl.NEXT_NON_WEEKEND;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Enum implementing the adjusters.
      */
     private static enum Impl implements DateAdjuster {
@@ -152,21 +140,6 @@ public final class DateAdjusters {
                 return LocalDate.of(date.getYear(), MonthOfYear.DECEMBER, 31);
             }
         },
-        /** Next non weekend day adjuster. */
-        NEXT_NON_WEEKEND {
-            /** {@inheritDoc} */
-            public LocalDate adjustDate(LocalDate date) {
-                DayOfWeek dow = date.getDayOfWeek();
-                switch (dow) {
-                    case SATURDAY:
-                        return date.plusDays(2);
-                    case FRIDAY:
-                        return date.plusDays(3);
-                    default:
-                        return date.plusDays(1);
-                }
-            }
-        },
     }
 
     //-----------------------------------------------------------------------
@@ -190,8 +163,8 @@ public final class DateAdjusters {
 
     /**
      * Returns the day-of-week in month adjuster, which returns a new date
-     * in the same month with the ordinal day-of-week. This is used for
-     * expressions like 'second Tuesday in March'.
+     * in the same month with the ordinal day-of-week.
+     * This is used for expressions like the 'second Tuesday in March'.
      * <p>
      * The input 2007-12-15 for (1,MONDAY) will return 2007-12-03.<br />
      * The input 2007-12-15 for (2,TUESDAY) will return 2007-12-11.<br />

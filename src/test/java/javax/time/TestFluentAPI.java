@@ -35,7 +35,6 @@ import static javax.time.calendar.DateAdjusters.dayOfWeekInMonth;
 import static javax.time.calendar.DateAdjusters.firstInMonth;
 import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendar.DateAdjusters.next;
-import static javax.time.calendar.DateAdjusters.nextNonWeekendDay;
 import static javax.time.calendar.DateAdjusters.nextOrCurrent;
 import static javax.time.calendar.DayOfWeek.FRIDAY;
 import static javax.time.calendar.DayOfWeek.MONDAY;
@@ -111,8 +110,6 @@ public class TestFluentAPI {
         // date = LocalDate.date(clock().currentMonth(), dayOfMonth(6));
         
         date = date.with(lastDayOfMonth());
-        date = date.with(nextNonWeekendDay());
-//        date = date.with(nextMonday());
         date = date.with(next(MONDAY));
         date = date.with(nextOrCurrent(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));

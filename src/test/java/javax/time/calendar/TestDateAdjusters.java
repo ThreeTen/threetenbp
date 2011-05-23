@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,7 +32,6 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.DayOfWeek.MONDAY;
-import static javax.time.calendar.DayOfWeek.SATURDAY;
 import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static org.testng.Assert.assertEquals;
@@ -418,78 +417,6 @@ public class TestDateAdjusters {
                 }
             }
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // nextNonWeekendDay()
-    //-----------------------------------------------------------------------
-    public void test_nextNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        DateAdjuster nextNonWeekendDay = DateAdjusters.nextNonWeekendDay();
-        assertTrue(nextNonWeekendDay instanceof Serializable);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(nextNonWeekendDay);
-        oos.close();
-
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
-        assertSame(ois.readObject(), nextNonWeekendDay);
-    }
-
-    public void factory_nextNonWeekendDay() {
-        assertNotNull(DateAdjusters.nextNonWeekendDay());
-        assertSame(DateAdjusters.nextNonWeekendDay(), DateAdjusters.nextNonWeekendDay());
-    }
-
-    public void test_nextNonWeekendDay() {
-        for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(false); i++) {
-                LocalDate date = date(2007, month, i);
-                LocalDate test = DateAdjusters.nextNonWeekendDay().adjustDate(date);
-                assertTrue(test.isAfter(date));
-                assertFalse(test.getDayOfWeek().equals(SATURDAY));
-                assertFalse(test.getDayOfWeek().equals(SUNDAY));
-
-                switch (date.getDayOfWeek()) {
-                    case FRIDAY:
-                    case SATURDAY:
-                        assertEquals(test.getDayOfWeek(), MONDAY);
-                        break;
-                    default:
-                        assertEquals(date.getDayOfWeek().next(), test.getDayOfWeek());
-                }
-
-                if (test.getYear() == 2007) {
-                    int dayDiff = test.getDayOfYear() - date.getDayOfYear();
-
-                    switch (date.getDayOfWeek()) {
-                        case FRIDAY:
-                            assertEquals(dayDiff, 3);
-                            break;
-                        case SATURDAY:
-                            assertEquals(dayDiff, 2);
-                            break;
-                        default:
-                            assertEquals(dayDiff, 1);
-                    }
-                } else {
-                    assertEquals(test.getYear(), 2008);
-                    assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
-                    assertEquals(test.getDayOfMonth(), 1);
-                }
-            }
-        }
-    }
-
-    public void test_nextNonWeekendDay_yearChange() {
-        LocalDate friday = LocalDate.of(2010, MonthOfYear.DECEMBER, 31);
-        LocalDate monday = DateAdjusters.nextNonWeekendDay().adjustDate(friday);
-        assertEquals(LocalDate.of(2011, MonthOfYear.JANUARY, 3), monday);
-
-        LocalDate saturday = LocalDate.of(2011, MonthOfYear.DECEMBER, 31);
-        monday = DateAdjusters.nextNonWeekendDay().adjustDate(saturday);
-        assertEquals(LocalDate.of(2012, MonthOfYear.JANUARY, 2), monday);
     }
 
 //    //-----------------------------------------------------------------------

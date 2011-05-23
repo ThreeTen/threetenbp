@@ -75,6 +75,7 @@
 - Add PeriodUnit.field(long)
 - Add with methods to UTCInstant/TAIInstant
 - Rename ModifiedJulianDays/EpochDays/EpochSeconds/EpochMillis/EpochNanos to remove plural
+- Remove weekend code from main build (currently in extras)
 
 0.6.3
 ===============================================================================
