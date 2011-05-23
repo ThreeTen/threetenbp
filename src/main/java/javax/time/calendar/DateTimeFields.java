@@ -486,30 +486,6 @@ public final class DateTimeFields
             result = normalized(result, rule, grouped.get(rule));
         }
         return result;
-        
-//                // field is normalizable
-//                DateTimeField baseField = getField(baseRule);
-//                if (baseField != null) {
-//                    // TODO check by derive
-//                    result = result.without(rule);
-//                    return result.normalized();
-//                }
-//                DateTimeField normalized = field.normalized();
-//                if (normalized != field) {
-//                    result = result.without(rule).with(normalized);
-//                    return result.normalized();
-//                }
-//                grouped.putIfAbsent(baseRule, new ArrayList<DateTimeField>());
-//                grouped.get(baseRule).add(field);
-//                if (baseRule.getPeriodUnit().equals(rule.getPeriodUnit()) && 
-//                        baseRule.getPeriodRange().equals(rule.getPeriodRange())) {  // TODO: null
-//                    DateTimeField normalized = baseRule.field(baseRule.convertFromPeriod(rule.convertToPeriod(field.getValue())));
-//                    result = result.without(rule).with(normalized);
-//                }
-//            }
-            
-            
-            
 //            DateTimeField normalized = rule.normalize(field);
 //            if (normalized != field) {
 //                DateTimeField existing = getField(normalized.getRule());
@@ -519,27 +495,6 @@ public final class DateTimeFields
 //                }
 //                result = result.without(rule).with(normalized);
 //            }
-//        }
-        
-//        if (size() == 1) {
-//            DateTimeField current = fields.get(0);
-//            DateTimeField normalized = current.getRule().normalize(current);
-//            if (current == normalized) {
-//                return this;
-//            }
-//            return DateTimeFields.of(normalized);
-//        }
-        
-//        List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
-//        for (Iterator<DateTimeField> it = newFields.iterator(); it.hasNext(); ) {
-//            if (it.next().getRule().equals(rule)) {
-//                it.remove();
-//                if (newFields.size() == 0) {
-//                    return EMPTY;
-//                }
-//                return new DateTimeFields(newFields);
-//            }
-//        }
     }
 
     private DateTimeFields normalized(DateTimeFields result, DateTimeRule baseRule, List<DateTimeField> fields) {
@@ -547,20 +502,29 @@ public final class DateTimeFields
             return result;
         }
         DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
-        DateTimeField fieldLarger = fields.get(0);
-        DateTimeRule ruleLarger = fieldLarger.getRule();
-        DateTimeField fieldSmaller = fields.get(1);
-        DateTimeRule ruleSmaller = fieldSmaller.getRule();
-        DateTimeRule ruleCombined = ruleGroup.getRelatedRule(fieldLarger.getRule(), fieldSmaller.getRule());
-        System.out.println(fields + " " + ruleGroup.getRelatedRules() + " " + ruleCombined);
-        if (ruleCombined != null) {
-            long period1 = ruleLarger.convertToPeriod(fieldLarger.getValue());  // TODO: strict/lenient
-            long period2 = ruleSmaller.convertToPeriod(fieldSmaller.getValue());
-            PeriodField conversion = ruleLarger.getPeriodUnit().getEquivalentPeriod(ruleSmaller.getPeriodUnit());
-            long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
-            long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
-            DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(totalPeriod));
-            return result.without(ruleLarger).without(ruleSmaller).with(fieldCombined);
+        for (int i = 0; i < fields.size() - 1; i++) {
+            for (int j = i + 1; j < fields.size(); j++) {
+                DateTimeField fieldLarger = fields.get(i);
+                DateTimeRule ruleLarger = fieldLarger.getRule();
+                DateTimeField fieldSmaller = fields.get(j);
+                DateTimeRule ruleSmaller = fieldSmaller.getRule();
+                DateTimeRule ruleCombined = ruleGroup.getRelatedRule(fieldLarger.getRule(), fieldSmaller.getRule());
+                System.out.println(fields + " " + ruleGroup.getRelatedRules() + " " + ruleCombined);
+                if (ruleCombined != null) {
+                    long period1 = ruleLarger.convertToPeriod(fieldLarger.getValue());
+                    long period2 = ruleSmaller.convertToPeriod(fieldSmaller.getValue());
+                    PeriodField conversion = ruleLarger.getPeriodUnit().getEquivalentPeriod(ruleSmaller.getPeriodUnit());
+                    long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
+                    long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
+                    DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(totalPeriod));
+                    result = result.without(ruleLarger).without(ruleSmaller).with(fieldCombined);
+                    fields.remove(fieldLarger);
+                    fields.remove(fieldSmaller);
+                    fields.add(0, fieldCombined);
+                    i = 0;
+                    break;
+                }
+            }
         }
         return result;
     }
