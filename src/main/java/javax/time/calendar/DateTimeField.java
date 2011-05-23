@@ -243,6 +243,7 @@ public final class DateTimeField
         return text == null ? Long.toString(value) : text;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.
      * <p>
@@ -320,6 +321,50 @@ public final class DateTimeField
             result = baseRule.field(baseRule.convertFromPeriod(rule.convertToPeriod(value)));
         }
         return result;
+    }
+
+    /**
+     * Derives the value of the specified rule from this field.
+     * <p>
+     * This method queries the value of the specified rule based on this field.
+     * This will only return a result if the requested rule is a subset of the
+     * data held in this field and is suitable for derivation. For example,
+     * 'MinuteOfHour' is a subset of 'SecondOfDay', but is not a subset of 'HourOfDay'.
+     * <p>
+     * The calculation operates on a {@link #normalized() normalized} version of this field.
+     * It checks that the base rules are the same and that the requested rule
+     * has a unit and range within the bounds of this field. It then uses the
+     * {@link DateTimeRule#convertToPeriod(long) convert to/from period} methods
+     * to derive the value.
+     * If that fails, {@code null} will be returned.
+     *
+     * @param rule  the rule to derive, not null
+     * @return the derived value for the rule, null if the value cannot be derived
+     */
+    public DateTimeField derive(DateTimeRule rule) {
+        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
+        if (this.rule.equals(rule)) {
+            return this;
+        }
+        DateTimeField normalized = normalized();
+        DateTimeRule normalizedRule = normalized.getRule();
+        if (normalizedRule.equals(rule)) {
+            return normalized;
+        }
+        // TODO: un-normalize
+        DateTimeRule baseRule = rule.getBaseRule();
+        if (normalizedRule.getBaseRule().equals(baseRule)) {
+            if (normalizedRule.getPeriodUnit().compareTo(rule.getPeriodUnit()) <= 0 &&
+                    normalizedRule.getPeriodRange().compareTo(rule.getPeriodRange()) >= 0) {  // TODO: null
+                long period = normalizedRule.convertToPeriod(normalized.getValue());
+                PeriodField bottomConversion = rule.getPeriodUnit().getEquivalentPeriod(normalizedRule.getPeriodUnit());
+                period = MathUtils.floorDiv(period, bottomConversion.getAmount());
+                PeriodField topConversion = rule.getPeriodRange().getEquivalentPeriod(rule.getPeriodUnit());
+                period = MathUtils.floorMod(period, topConversion.getAmount());
+                return rule.field(rule.convertFromPeriod(period));
+            }
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

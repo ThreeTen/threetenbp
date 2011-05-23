@@ -580,7 +580,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * of a month. To achieve this, setup a {@link DateTimeFields} instance
      * using this rule and the {@link #DAY_OF_WEEK day-of-week} rule.
      */
-    public static final DateTimeRule WEEK_OF_MONTH = new ISODateTimeRule(WEEK_OF_MONTH_ORDINAL, "WeekOfMonth", WEEKS, MONTHS, 1, 5, 4, null);
+    public static final DateTimeRule WEEK_OF_MONTH = new ISODateTimeRule(WEEK_OF_MONTH_ORDINAL, "WeekOfMonth", WEEKS, MONTHS, 1, 5, 4, DAY_OF_MONTH);
     /**
      * The rule for the week-of-week-based-year field in the ISO chronology.
      * <p>
@@ -598,7 +598,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * This field counts weeks in groups of seven days starting from the first of January.
      * The 1st to the 7th of January is always week 1 while the 8th to the 14th is always week 2.
      */
-    public static final DateTimeRule WEEK_OF_YEAR = new ISODateTimeRule(WEEK_OF_YEAR_ORDINAL, "WeekOfYear", WEEKS, YEARS, 1, 53, 53, null);
+    public static final DateTimeRule WEEK_OF_YEAR = new ISODateTimeRule(WEEK_OF_YEAR_ORDINAL, "WeekOfYear", WEEKS, YEARS, 1, 53, 53, DAY_OF_YEAR);
 
     /**
      * The rule for the epoch-month field.

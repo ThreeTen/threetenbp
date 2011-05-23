@@ -464,8 +464,17 @@ public final class DateTimeFields
         for (DateTimeField field : this) {
             DateTimeField normalized = field.normalized();
             if (normalized != field) {
+                DateTimeField existing = result.getField(normalized.getRule());
+                if (existing != null && existing.equals(normalized) == false) {
+                    throw new CalendricalRuleException("Unable to normalize, " + field +
+                            " normalized to " + normalized + " which is incompatible with existing field " +
+                            existing + " in input " + this, normalized.getRule());
+                }
                 result = result.without(field.getRule()).with(normalized);
             }
+        }
+        if (result.size() < 2) {
+            return result;
         }
         
         // group according to base rule
@@ -480,53 +489,77 @@ public final class DateTimeFields
         }
         
         // normalize groups
-        // TODO: loop again (with evil protected against)
-        // handle atto-of-day added outside 310
+        // TODO: loop again (group again) if register on group is public
         for (DateTimeRule rule : grouped.keySet()) {
-            result = normalized(result, rule, grouped.get(rule));
+            result = mergeGroup(result, rule, grouped.get(rule));
         }
         return result;
-//            DateTimeField normalized = rule.normalize(field);
-//            if (normalized != field) {
-//                DateTimeField existing = getField(normalized.getRule());
-//                if (existing != null && existing.equals(normalized) == false) {
-//                    throw new CalendricalRuleException("Unable to normalize, " + field +
-//                            " normalized to " + normalized + " which is incompatible with " + existing, normalized.getRule());
-//                }
-//                result = result.without(rule).with(normalized);
-//            }
     }
 
-    private DateTimeFields normalized(DateTimeFields result, DateTimeRule baseRule, List<DateTimeField> fields) {
+    private DateTimeFields mergeGroup(DateTimeFields result, DateTimeRule baseRule, List<DateTimeField> fields) {
         if (fields.size() < 2) {
             return result;
         }
         DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
         for (int i = 0; i < fields.size() - 1; i++) {
             for (int j = i + 1; j < fields.size(); j++) {
+                DateTimeField field1 = fields.get(i);
+                DateTimeField field2 = fields.get(j);
+                DateTimeField calc = field1.derive(field2.getRule());
+                if (calc != null) {
+                    if (calc.equals(field2)) {
+                        result = result.without(field2.getRule());
+                        fields.remove(j--);
+                    } else {
+                        throw new CalendricalRuleException("Unable to normalize, " + field1 +
+                                " is incompatible with " + field2 + " in input " + this, field2.getRule());
+                    }
+                }
+            }
+        }
+        
+        for (int i = 0; i < fields.size() - 1; i++) {
+            for (int j = i + 1; j < fields.size(); j++) {
                 DateTimeField fieldLarger = fields.get(i);
-                DateTimeRule ruleLarger = fieldLarger.getRule();
                 DateTimeField fieldSmaller = fields.get(j);
-                DateTimeRule ruleSmaller = fieldSmaller.getRule();
+                
                 DateTimeRule ruleCombined = ruleGroup.getRelatedRule(fieldLarger.getRule(), fieldSmaller.getRule());
-                System.out.println(fields + " " + ruleGroup.getRelatedRules() + " " + ruleCombined);
+                System.out.println(fields + " " + /*ruleGroup.getRelatedRules() + " " +*/ ruleCombined);
                 if (ruleCombined != null) {
-                    long period1 = ruleLarger.convertToPeriod(fieldLarger.getValue());
-                    long period2 = ruleSmaller.convertToPeriod(fieldSmaller.getValue());
-                    PeriodField conversion = ruleLarger.getPeriodUnit().getEquivalentPeriod(ruleSmaller.getPeriodUnit());
-                    long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
-                    long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
-                    DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(totalPeriod));
-                    result = result.without(ruleLarger).without(ruleSmaller).with(fieldCombined);
-                    fields.remove(fieldLarger);
-                    fields.remove(fieldSmaller);
-                    fields.add(0, fieldCombined);
-                    i = 0;
+                    DateTimeField fieldCombined = merge(fieldLarger, fieldSmaller, ruleCombined);
+                    DateTimeField existing = result.getField(ruleCombined);
+                    if (existing != null && existing.equals(fieldCombined) == false) {
+                        throw new CalendricalRuleException("Unable to normalize, [" + fieldLarger +
+                                ", " + fieldSmaller + "] normalized to " + fieldCombined +
+                                " which is incompatible with existing field " +
+                                existing + " in input " + this, ruleCombined);
+                    }
+                    result = result.without(fieldLarger.getRule()).without(fieldSmaller.getRule()).with(fieldCombined);
+                    fields.set(i--, fieldCombined);
+                    fields.remove(j);
                     break;
                 }
             }
         }
         return result;
+    }
+
+    /**
+     * Merges the two fields to form an instance of the combined rule.
+     * For example, merge hour-of-ampm and ampm-of-day to form hour-of-day.
+     * 
+     * @param field1  the larger rule to merge - MidOfBig, not null
+     * @param field2  the smaller rule to merge - SmallOfMid, not null
+     * @param ruleCombined  the rule to merge into - SmallOfBig, not null
+     * @return combined field, not null
+     */
+    private DateTimeField merge(DateTimeField field1, DateTimeField field2, DateTimeRule ruleCombined) {
+        long period1 = field1.getRule().convertToPeriod(field1.getValue());
+        long period2 = field2.getRule().convertToPeriod(field2.getValue());
+        PeriodField conversion = field1.getRule().getPeriodUnit().getEquivalentPeriod(field2.getRule().getPeriodUnit());
+        long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
+        long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
+        return ruleCombined.field(ruleCombined.convertFromPeriod(totalPeriod));
     }
 
     //-----------------------------------------------------------------------

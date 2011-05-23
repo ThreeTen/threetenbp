@@ -113,6 +113,9 @@ public final class DateTimeRuleGroup {
             rule1 = rule2;
             rule2 = temp;
         }
+        if (rule2.getPeriodUnit().equals(rule1.getPeriodRange()) == false) {
+            return null;
+        }
         PeriodUnit requiredUnit = rule1.getPeriodUnit();
         PeriodUnit requiredRange = rule2.getPeriodRange();
         Map.Entry<PeriodUnit, PeriodUnit> entry = createEntry(requiredUnit, requiredRange);
