@@ -359,8 +359,8 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static final int MILLI_OF_HOUR_ORDINAL =        7 * 16;
     private static final int MILLI_OF_DAY_ORDINAL =         8 * 16;
     private static final int SECOND_OF_MINUTE_ORDINAL =     9 * 16;
-    private static final int SECOND_OF_DAY_ORDINAL =        10 * 16;
-    private static final int SECOND_OF_HOUR_ORDINAL =       11 * 16;
+    private static final int SECOND_OF_HOUR_ORDINAL =       10 * 16;
+    private static final int SECOND_OF_DAY_ORDINAL =        11 * 16;
     private static final int EPOCH_SECOND_ORDINAL =         12 * 16;
     private static final int MINUTE_OF_HOUR_ORDINAL =       13 * 16;
     private static final int MINUTE_OF_DAY_ORDINAL =        14 * 16;
