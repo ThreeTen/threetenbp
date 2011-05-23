@@ -50,11 +50,63 @@ import javax.time.MathUtils;
  * <li>The first day-of-week.
  * For example, the ISO-8601 standard considers Monday to be the first day-of-week.
  * <li>The minimal number of days in the first week.
- * For example, the ISO-08601 standard counts the first week as the one with 4 days.
+ * For example, the ISO-08601 standard counts the first week as needing at least 4 days.
  * </ul>
- * Together these two values allow the first week of the month or year to be calculated.
- * Within any month or year, the first week is the earliest seven day period, starting
- * on the defined first day-of-week with at least the minimal number of days.
+ * Together these two values allow a year or month to be divided into weeks.
+ * <p>
+ * <h4>Week based years</h4>
+ * Two fields are used: week-based-year and week-of-week-based-year.
+ * A week-based-year is equivalent to the standard calendar year except at the start of
+ * January and the end of December. Week 1 is the earliest seven day period, starting on
+ * the defined first day-of-week, with at least the minimal number of days. Days before
+ * the start of the first week are allocated to the last week of the previous year.
+ * For example:
+ * <p>
+ * <table cellpadding="0" cellspacing="3" border="0" style="text-align: left; width: 50%;">
+ * <tr><th>Date</th><td>Day-of-week</td>
+ *  <td>First day: Monday<br />Minimal days: 4</td><td>First day: Monday<br />Minimal days: 5</td></tr>
+ * <tr><th>2008-12-28</th><td>Sunday</td>
+ *  <td>Week 52 of week-based-year 2008</td><td>Week 52 of week-based-year 2008</td></tr>
+ * <tr><th>2008-12-29</th><td>Monday</td>
+ *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
+ * <tr><th>2008-12-31</th><td>Wednesday</td>
+ *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
+ * <tr><th>2008-01-01</th><td>Thursday</td>
+ *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
+ * <tr><th>2008-01-04</th><td>Sunday</td>
+ *  <td>Week 1 of week-based-year 2009</td><td>Week 53 of week-based-year 2008</td></tr>
+ * <tr><th>2008-01-05</th><td>Monday</td>
+ *  <td>Week 2 of week-based-year 2009</td><td>Week 1 of week-based-year 2009</td></tr>
+ * </table>
+ * <!--For example, if the first day-of-week is Monday and requires a minimum of 4 days in the
+ * first week, then week 1 of week-based-year 1998 runs from 1997-12-29 to 1998-01-04,
+ * because at least 4 days of that week are in the calendar year 1998. Whereas, if the
+ * minimal number of days is set to 5, then week 1 will run from  1998-01-05. -->
+ * <p>
+ * <h4>Week of month</h4>
+ * One field is used: week-of-month.
+ * The calculation ensures that weeks never overlap a month boundary.
+ * The month is divided into periods where each period starts on the defined first day-of-week.
+ * The earliest period is referred to as week 0 if it has less than the minimal number of days
+ * and week 1 if it has at least the minimal number of days.
+ * <p>
+ * <table cellpadding="0" cellspacing="3" border="0" style="text-align: left; width: 50%;">
+ * <tr><th>Date</th><td>Day-of-week</td>
+ *  <td>First day: Monday<br />Minimal days: 4</td><td>First day: Monday<br />Minimal days: 5</td></tr>
+ * <tr><th>2008-12-31</th><td>Wednesday</td>
+ *  <td>Week 5 of December 2008</td><td>Week 5 of December 2008</td></tr>
+ * <tr><th>2008-01-01</th><td>Thursday</td>
+ *  <td>Week 1 of January 2009</td><td>Week 0 of January 2009</td></tr>
+ * <tr><th>2008-01-04</th><td>Sunday</td>
+ *  <td>Week 1 of January 2009</td><td>Week 0 of January 2009</td></tr>
+ * <tr><th>2008-01-05</th><td>Monday</td>
+ *  <td>Week 2 of January 2009</td><td>Week 1 of January 2009</td></tr>
+ * </table>
+ * <!--For example, if the first day-of-week is Sunday and requires a minimum of 4 days in the
+ * first week, then 1998-01-01 to 1998-01-03 are week 0 and 1998-01-04 to 1998-01-10 are week 1,
+ * because 1998-01-04 is a Sunday and there are 3 days before it, which is less than the minimum.
+ * Whereas, if the minimal number of days is set to 3, then 1998-01-01 to 1998-01-03 are week 1
+ * and 1998-01-04 to 1998-01-10 are week 2.-->
  * <p>
  * This class is immutable and thread-safe.
  *
