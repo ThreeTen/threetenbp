@@ -482,15 +482,27 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * Merges the fields for these week rules.
      */
     void merge(CalendricalMerger merger) {
-        DateTimeField y = merger.getValue(weekBasedYear());
-        DateTimeField woy = merger.getValue(weekOfWeekBasedYear());
+        DateTimeField wby = merger.getValue(weekBasedYear());
+        DateTimeField wowby = merger.getValue(weekOfWeekBasedYear());
         DateTimeField dow = merger.getValue(dayOfWeek());
-        if (y != null && woy != null && dow != null) {
-            merger.storeMerged(LocalDate.rule(), null);
-            merger.removeProcessed(weekBasedYear());
-            merger.removeProcessed(weekOfWeekBasedYear());
-            merger.removeProcessed(dayOfWeek());
-        } else if (dow != null && dow.isValidValue()) {
+        DateTimeField sdow = merger.getValue(DAY_OF_WEEK);
+        if (wby != null && wowby != null) {
+            if (dow != null) {
+                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), MathUtils.safeToInt(dow.getValue()));
+                merger.storeMerged(LocalDate.rule(), merged);
+                merger.removeProcessed(weekBasedYear());
+                merger.removeProcessed(weekOfWeekBasedYear());
+                merger.removeProcessed(dayOfWeek());
+            } else if (sdow != null && sdow.isValidValue()) {
+                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), DayOfWeek.of(sdow.getValidIntValue()));
+                merger.storeMerged(LocalDate.rule(), merged);
+                merger.removeProcessed(weekBasedYear());
+                merger.removeProcessed(weekOfWeekBasedYear());
+                merger.removeProcessed(dayOfWeek());
+            }
+        }
+        // TODO: week-of-month
+        if (dow != null && dow.isValidValue()) {
             merger.storeMergedField(DAY_OF_WEEK, convertDayOfWeek(dow.getValidIntValue()).getValue());
         }
     }
