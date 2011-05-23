@@ -404,34 +404,34 @@ public class TestZonedDateTime {
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_of_OffsetDateTime_inGap() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 3, 30, 2, 30, OFFSET_0100);
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (CalendarConversionException ex) {
+        } catch (CalendricalException ex) {
             assertEquals(ex.getMessage().contains("daylight savings gap"), true);
             throw ex;
         }
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_of_OffsetDateTime_inOverlap_invalidOfset() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 10, 26, 2, 30, OFFSET_0130);
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (CalendarConversionException ex) {
+        } catch (CalendricalException ex) {
             assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
             throw ex;
         }
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_of_OffsetDateTime_invalidOffset() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0130);
         try {
             ZonedDateTime.of(odt, ZONE_PARIS);
-        } catch (CalendarConversionException ex) {
+        } catch (CalendricalException ex) {
             assertEquals(ex.getMessage().contains("invalid for time-zone"), true);
             throw ex;
         }

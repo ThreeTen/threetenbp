@@ -359,10 +359,10 @@ public final class ZonedDateTime
         ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
         if (info.isValidOffset(inputOffset) == false) {
             if (info.isTransition() && info.getTransition().isGap()) {
-                throw new CalendarConversionException("The local time " + dateTime.toLocalDateTime() +
+                throw new CalendricalException("The local time " + dateTime.toLocalDateTime() +
                         " does not exist in time-zone " + zone + " due to a daylight savings gap");
             }
-            throw new CalendarConversionException("The offset in the date-time " + dateTime +
+            throw new CalendricalException("The offset in the date-time " + dateTime +
                     " is invalid for time-zone " + zone);
         }
         return new ZonedDateTime(dateTime, zone);
@@ -718,7 +718,7 @@ public final class ZonedDateTime
      *
      * @param zone  the time-zone to change to, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
-     * @throws CalendarConversionException if the result exceeds the supported date range
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime withZoneSameInstant(ZoneId zone) {
         return zone == this.zone ? this : ofInstant(dateTime, zone);

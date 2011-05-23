@@ -166,7 +166,7 @@ public final class OffsetDate
      * @param instantProvider  the instant to convert, not null
      * @param offset  the zone offset, not null
      * @return the offset date, not null
-     * @throws CalendarConversionException if the instant exceeds the supported date range
+     * @throws CalendricalException if the instant exceeds the supported date range
      */
     public static OffsetDate ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);

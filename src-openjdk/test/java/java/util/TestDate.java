@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,16 +31,16 @@
  */
 package java.util;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Date;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.MockInstantProviderReturnsNull;
-import javax.time.calendar.CalendarConversionException;
 
 /**
  * Test java.util.Date additional methods.
@@ -118,7 +118,7 @@ public class TestDate {
         try {
             new Date(Instant.ofEpochSecond(Long.MAX_VALUE / 1000 + 1));
             fail();
-        } catch (CalendarConversionException ex) {
+        } catch (CalendricalException ex) {
             // expected
         }
     }
@@ -127,7 +127,7 @@ public class TestDate {
         try {
             new Date(Instant.ofEpochSecond(Long.MIN_VALUE / 1000 - 1));
             fail();
-        } catch (CalendarConversionException ex) {
+        } catch (CalendricalException ex) {
             // expected
         }
     }
@@ -167,7 +167,7 @@ public class TestDate {
         try {
             test.setInstant(Instant.ofEpochSecond(Long.MAX_VALUE / 1000 + 1));
             fail();
-        } catch (CalendarConversionException ex) {
+        } catch (CalendricalException ex) {
             // expected
         }
     }
@@ -177,7 +177,7 @@ public class TestDate {
         try {
             test.setInstant(Instant.ofEpochSecond(Long.MIN_VALUE / 1000 - 1));
             fail();
-        } catch (CalendarConversionException ex) {
+        } catch (CalendricalException ex) {
             // expected
         }
     }

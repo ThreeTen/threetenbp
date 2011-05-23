@@ -122,7 +122,7 @@ public final class LocalDateTime
      * @param localSeconds  the number of seconds from the local epoch of 1970-01-01T00:00:00
      * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
      * @return the local date-time, not null
-     * @throws CalendarConversionException if the instant exceeds the supported date range
+     * @throws CalendricalException if the instant exceeds the supported date range
      */
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
         long yearZeroDays = MathUtils.floorDiv(localSeconds, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
