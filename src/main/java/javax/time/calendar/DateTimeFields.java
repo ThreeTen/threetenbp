@@ -41,8 +41,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 
 /**
  * A set of fields of date-time, such as '[MonthOfYear 12, DayOfMonth 3]'.
@@ -425,63 +428,142 @@ public final class DateTimeFields
 //        return with(rule, rolled);
 //    }  // TODO
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of these fields with the values normalized.
-//     * <p>
-//     * The calculation examines each set of fields and attempts to combine them.
-//     * Any fields that are successfully combined are removed.
-//     * The result will be equivalent to these fields.
-//     * <p>
-//     * For example, the fields '[QuarterOfYear 2, MonthOfQuarter 3, DayOfMonth 4]'
-//     * will be normalized to '[MonthOfYear 6, DayOfMonth 4]'. The quarter-of-year
-//     * and month-of-quarter can be successfully merged without any loss of accuracy.
-//     * However, month-of-year and day-of-month cannot be merged without knowing
-//     * the year due to the different length of February in leap years.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @return a {@code DateTimeFields} based on this with the fields normalized, not null
-//     * @throws ArithmeticException if the calculation overflows
-//     */
-//    public DateTimeFields normalized() {
-//        if (size() == 0) {  // TODO normalized cache flag?
-//            return EMPTY;
-//        }
-//        DateTimeFields result = this;
-//        for (DateTimeField field : result) {
-//            DateTimeField normalized = field.getRule().normalize(field);
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of these fields with the values normalized.
+     * <p>
+     * The calculation examines each set of fields and attempts to combine them.
+     * Any fields that are successfully combined are removed.
+     * The result will be equivalent to these fields.
+     * <p>
+     * For example, the fields '[QuarterOfYear 2, MonthOfQuarter 3, DayOfMonth 4]'
+     * will be normalized to '[MonthOfYear 6, DayOfMonth 4]'. The quarter-of-year
+     * and month-of-quarter can be successfully merged without any loss of accuracy.
+     * However, month-of-year and day-of-month cannot be merged without knowing
+     * the year due to the different length of February in leap years.
+     * <p>
+     * During the combination process, some fields may be found to conflict.
+     * For example, a second-of-minute value of 12 conflicts with a second-of-day
+     * value of 0. An exception is thrown for conflicts.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a {@code DateTimeFields} based on this with the fields normalized, not null
+     * @throws CalendricalException if any fields conflict
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public DateTimeFields normalized() {
+        if (size() == 0) {
+            return EMPTY;
+        }
+        
+        // normalize each individual field in isolation
+        // do not restart after this, because the rule must define the correct base
+        // rule to ensure that it is completely normalized in isolation in one step
+        DateTimeFields result = this;
+        for (DateTimeField field : this) {
+            DateTimeField normalized = field.normalized();
+            if (normalized != field) {
+                result = result.without(field.getRule()).with(normalized);
+            }
+        }
+        
+        // group according to base rule
+        ConcurrentMap<DateTimeRule, List<DateTimeField>> grouped = new ConcurrentHashMap<DateTimeRule, List<DateTimeField>>();
+        for (DateTimeField field : result) {
+            DateTimeRule rule = field.getRule();
+            DateTimeRule baseRule = rule.getBaseRule();
+            if (baseRule != rule) {
+                grouped.putIfAbsent(baseRule, new ArrayList<DateTimeField>());
+                grouped.get(baseRule).add(field);
+            }
+        }
+        
+        // normalize groups
+        // TODO: loop again (with evil protected against)
+        // handle atto-of-day added outside 310
+        for (DateTimeRule rule : grouped.keySet()) {
+            result = normalized(result, rule, grouped.get(rule));
+        }
+        return result;
+        
+//                // field is normalizable
+//                DateTimeField baseField = getField(baseRule);
+//                if (baseField != null) {
+//                    // TODO check by derive
+//                    result = result.without(rule);
+//                    return result.normalized();
+//                }
+//                DateTimeField normalized = field.normalized();
+//                if (normalized != field) {
+//                    result = result.without(rule).with(normalized);
+//                    return result.normalized();
+//                }
+//                grouped.putIfAbsent(baseRule, new ArrayList<DateTimeField>());
+//                grouped.get(baseRule).add(field);
+//                if (baseRule.getPeriodUnit().equals(rule.getPeriodUnit()) && 
+//                        baseRule.getPeriodRange().equals(rule.getPeriodRange())) {  // TODO: null
+//                    DateTimeField normalized = baseRule.field(baseRule.convertFromPeriod(rule.convertToPeriod(field.getValue())));
+//                    result = result.without(rule).with(normalized);
+//                }
+//            }
+            
+            
+            
+//            DateTimeField normalized = rule.normalize(field);
 //            if (normalized != field) {
 //                DateTimeField existing = getField(normalized.getRule());
 //                if (existing != null && existing.equals(normalized) == false) {
 //                    throw new CalendricalRuleException("Unable to normalize, " + field +
 //                            " normalized to " + normalized + " which is incompatible with " + existing, normalized.getRule());
 //                }
-//                result = result.without(field.getRule()).with(normalized);
+//                result = result.without(rule).with(normalized);
 //            }
 //        }
-//        return result;
-//        
-////        if (size() == 1) {
-////            DateTimeField current = fields.get(0);
-////            DateTimeField normalized = current.getRule().normalize(current);
-////            if (current == normalized) {
-////                return this;
-////            }
-////            return DateTimeFields.of(normalized);
-////        }
-//        
-////        List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
-////        for (Iterator<DateTimeField> it = newFields.iterator(); it.hasNext(); ) {
-////            if (it.next().getRule().equals(rule)) {
-////                it.remove();
-////                if (newFields.size() == 0) {
-////                    return EMPTY;
-////                }
-////                return new DateTimeFields(newFields);
-////            }
-////        }
-//    }
+        
+//        if (size() == 1) {
+//            DateTimeField current = fields.get(0);
+//            DateTimeField normalized = current.getRule().normalize(current);
+//            if (current == normalized) {
+//                return this;
+//            }
+//            return DateTimeFields.of(normalized);
+//        }
+        
+//        List<DateTimeField> newFields = new ArrayList<DateTimeField>(fields);
+//        for (Iterator<DateTimeField> it = newFields.iterator(); it.hasNext(); ) {
+//            if (it.next().getRule().equals(rule)) {
+//                it.remove();
+//                if (newFields.size() == 0) {
+//                    return EMPTY;
+//                }
+//                return new DateTimeFields(newFields);
+//            }
+//        }
+    }
+
+    private DateTimeFields normalized(DateTimeFields result, DateTimeRule baseRule, List<DateTimeField> fields) {
+        if (fields.size() < 2) {
+            return result;
+        }
+        DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
+        DateTimeField fieldLarger = fields.get(0);
+        DateTimeRule ruleLarger = fieldLarger.getRule();
+        DateTimeField fieldSmaller = fields.get(1);
+        DateTimeRule ruleSmaller = fieldSmaller.getRule();
+        DateTimeRule ruleCombined = ruleGroup.getRelatedRule(fieldLarger.getRule(), fieldSmaller.getRule());
+        System.out.println(fields + " " + ruleGroup.getRelatedRules() + " " + ruleCombined);
+        if (ruleCombined != null) {
+            long period1 = ruleLarger.convertToPeriod(fieldLarger.getValue());  // TODO: strict/lenient
+            long period2 = ruleSmaller.convertToPeriod(fieldSmaller.getValue());
+            PeriodField conversion = ruleLarger.getPeriodUnit().getEquivalentPeriod(ruleSmaller.getPeriodUnit());
+            long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
+            long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
+            DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(totalPeriod));
+            return result.without(ruleLarger).without(ruleSmaller).with(fieldCombined);
+        }
+        return result;
+    }
 
     //-----------------------------------------------------------------------
     /**

@@ -60,9 +60,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
 
     /** The outer range of values for the rule. */
     private final DateTimeRuleRange range;
+    /** The base rule that this rule relates to. */
+    private final DateTimeRule baseRule;
 
     /**
-     * Constructor.
+     * Creates an instance specifying the minimum and maximum value of the rule.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
@@ -82,7 +84,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
     }
 
     /**
-     * Constructor.
+     * Creates an instance specifying the outer range of value for the rule.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
@@ -96,9 +98,35 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             DateTimeRuleRange range) {
+        this(chronology, name, periodUnit, periodRange, range, null);
+    }
+
+    /**
+     * Creates an instance specifying the outer range of value for the rule
+     * and the rule that this is related to.
+     *
+     * @param chronology  the chronology, not null
+     * @param name  the name of the type, not null
+     * @param periodUnit  the period unit, not null
+     * @param periodRange  the period range, not null
+     * @param range  the range, not null
+     * @param baseRule  the base rule that this rule relates to, null
+     *  if this rule does not relate to another rule
+     */
+    protected DateTimeRule(
+            Chronology chronology,
+            String name,
+            PeriodUnit periodUnit,
+            PeriodUnit periodRange,
+            DateTimeRuleRange range,
+            DateTimeRule baseRule) {
         super(DateTimeField.class, chronology, name, periodUnit, periodRange);
         ISOChronology.checkNotNull(range, "DateTimeRuleRange must not be null");
         this.range = range;
+        this.baseRule = (baseRule != null ? baseRule : this);
+        if (baseRule != null) {
+            DateTimeRuleGroup.of(baseRule).registerRelatedRule0(this);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -221,6 +249,22 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      */
     public String getText(long value, TextStyle textStyle, Locale locale) {
         return field(value).getText(textStyle, locale);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the base rule that this rule is related to.
+     * <p>
+     * Each rule typically has a connection to another rule.
+     * For example, the 'SecondOfMinute' and 'MinuteOfHour' rules are related
+     * and can be combined. The base rule is the rule that encompasses a group
+     * of related rules. For example, 'NanoOfDay' is the rule that encompasses
+     * all the major time rules.
+     *
+     * @return the base rule, not null
+     */
+    public DateTimeRule getBaseRule() {
+        return baseRule;
     }
 
     //-----------------------------------------------------------------------

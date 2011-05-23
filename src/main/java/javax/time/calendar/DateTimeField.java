@@ -296,6 +296,34 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
+     * Normalizes this field.
+     * <p>
+     * Some fields are alternate definitions of a more standard form.
+     * For example, 'ClockHourOfAmPm' is an alternate form of 'HourOfAmPm'.
+     * This method converts the alternate form to the normalized form.
+     * The result is equivalent to this field.
+     * <p>
+     * This checks the rule of this field against the associated base rule.
+     * If the period unit and range are the same, but the rules are different,
+     * then the {@link DateTimeRule#convertToPeriod(long) convert to/from period}
+     * methods are used to normalize.
+     *
+     * @return the equivalent field, {@code this} if already normalized, not null
+     */
+    public DateTimeField normalized() {
+        DateTimeField result = this;
+        DateTimeRule baseRule = rule.getBaseRule();
+        if (baseRule.equals(rule) == false &&
+                baseRule.getPeriodUnit().equals(rule.getPeriodUnit()) && 
+                (baseRule.getPeriodRange() == rule.getPeriodRange() ||
+                    (baseRule.getPeriodRange() != null && baseRule.getPeriodRange().equals(rule.getPeriodRange())))) {
+            result = baseRule.field(baseRule.convertFromPeriod(rule.convertToPeriod(value)));
+        }
+        return result;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this field to a {@code DateTimeFields} instance.
      * <p>
      * The returned fields instance will have {@code this} as a single field.
