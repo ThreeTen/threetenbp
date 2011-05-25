@@ -131,13 +131,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
         DateTimeRule baseRule = this;
         DateTimeRule normalizationRule = this;
         if (parentRule != null) {
-            baseRule = parentRule;
-            while (baseRule.getBaseRule() != baseRule) {
-                baseRule = baseRule.getBaseRule();
-            }
-            if (parentRule.getPeriodUnit().equals(periodUnit) && comparePeriodRange(parentRule) == 0) {
-                // TODO: find most normalized form
-                normalizationRule = parentRule;
+            baseRule = parentRule.getBaseRule();
+            DateTimeRule parentNormalizationRule = parentRule.getNormalizationRule();
+            if (parentNormalizationRule.getPeriodUnit().equals(periodUnit) &&
+                    comparePeriodRange(parentNormalizationRule) == 0) {
+                normalizationRule = parentNormalizationRule;
             } else {
                 DateTimeRuleGroup.of(baseRule).registerRelatedRule0(this);
             }

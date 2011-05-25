@@ -635,6 +635,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      */
     public static final DateTimeRule QUARTER_OF_YEAR = new ISODateTimeRule(QUARTER_OF_YEAR_ORDINAL, "QuarterOfYear", QUARTERS, YEARS, 1, 4, 4, EPOCH_MONTH);
     /**
+     * The rule for the epoch-year field.
+     * <p>
+     * This field counts years sequentially from 1970-01-01.
+     * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
+     */
+    public static final DateTimeRule EPOCH_YEAR = new ISODateTimeRule(EPOCH_YEAR_ORDINAL, "EpochYear", YEARS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, EPOCH_MONTH);
+    /**
      * The rule for the year field in the ISO chronology.
      * <p>
      * This field counts years using the modern civil calendar system as defined
@@ -649,7 +656,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * exists. This roughly equates to 1 BC/BCE, however the alignment is
      * not exact as explained above.
      */
-    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, EPOCH_MONTH);
+    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, EPOCH_YEAR);
 
     /**
      * The rule for the week-based-year field in the ISO chronology.
@@ -662,13 +669,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      */
     public static final DateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(
             WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, null);
-    /**
-     * The rule for the epoch-year field.
-     * <p>
-     * This field counts years sequentially from 1970-01-01.
-     * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
-     */
-    public static final DateTimeRule EPOCH_YEAR = new ISODateTimeRule(EPOCH_YEAR_ORDINAL, "EpochYear", YEARS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
 
     /**
      * Cache of rules for deserialization.

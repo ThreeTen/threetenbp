@@ -31,13 +31,16 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOPeriodUnit.DAYS;
+import static javax.time.calendar.ISOPeriodUnit._24_HOURS;
+
 import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.format.SimpleDateTimeTextProvider;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * A field of date-time measured using a single rule, such as 'MonthOfYear 12' or 'DayOfMonth 3'.
@@ -312,6 +315,7 @@ public final class DateTimeField
      * @return the equivalent field, {@code this} if already normalized, not null
      */
     public DateTimeField normalized() {
+        // TODO: remove?
         DateTimeRule normalizationRule = rule.getNormalizationRule();
         if (rule.equals(normalizationRule) == false && isNormalizable(rule, normalizationRule)) {
             return normalizationRule.field(normalizationRule.convertFromPeriod(rule.convertToPeriod(value)));
@@ -339,31 +343,43 @@ public final class DateTimeField
      */
     public DateTimeField derive(DateTimeRule ruleToDerive) {
         ISOChronology.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
-        // check if this is the desired output
+        // check if this is the desired output already
         if (this.rule.equals(ruleToDerive)) {
             return this;
         }
-        // normalize to remove oddities
-        DateTimeField normalized = normalized();
-        DateTimeRule normalizedRule = normalized.getRule();
-        if (normalizedRule.equals(ruleToDerive)) {
-            return normalized;
-        }
-        // un-normalize  // TODO: maybe remove if DAYS fixed
-        if (isNormalizable(normalizedRule, ruleToDerive)) {
-            long period = normalizedRule.convertToPeriod(normalized.getValue());
-            return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
-        }
-        // convert
-        if (normalizedRule.getPeriodUnit().compareTo(ruleToDerive.getPeriodUnit()) <= 0 &&
-                normalizedRule.comparePeriodRange(ruleToDerive) >= 0) {
-            // it is feasible, but is it permitted
-            DateTimeRule baseRule = ruleToDerive.getBaseRule();
-            if (normalizedRule.getBaseRule().equals(baseRule)) {
-                return derive(normalized, ruleToDerive);
-            }
+        // check conversion is feasible and permitted
+//        if (rule.getBaseRule().equals(ruleToDerive.getBaseRule())) {  // TODO: why not this?
+//            return derive(this, ruleToDerive);
+//        }
+//        return null;
+        if (rule.getBaseRule().equals(ruleToDerive.getBaseRule()) &&
+                rule.getPeriodUnit().compareTo(ruleToDerive.getPeriodUnit()) <= 0 &&
+                rule.comparePeriodRange(ruleToDerive) >= 0) {
+            return derive(this, ruleToDerive);
         }
         return null;
+        
+//        // normalize to remove oddities
+//        DateTimeField normalized = normalized();
+//        DateTimeRule normalizedRule = normalized.getRule();
+//        if (normalizedRule.equals(ruleToDerive)) {
+//            return normalized;
+//        }
+////        // un-normalize  // TODO: maybe remove if DAYS fixed
+////        if (isNormalizable(normalizedRule, ruleToDerive)) {
+////            long period = normalizedRule.convertToPeriod(normalized.getValue());
+////            return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
+////        }
+//        // convert
+//        if (normalizedRule.getPeriodUnit().compareTo(ruleToDerive.getPeriodUnit()) <= 0 &&
+//                normalizedRule.comparePeriodRange(ruleToDerive) >= 0) {
+//            // it is feasible, but is it permitted
+//            DateTimeRule baseRule = ruleToDerive.getBaseRule();
+//            if (normalizedRule.getBaseRule().equals(baseRule)) {
+//                return derive(normalized, ruleToDerive);
+//            }
+//        }
+//        return null;
     }
 
     private DateTimeField derive(DateTimeField field, DateTimeRule ruleToDerive) {
@@ -372,8 +388,15 @@ public final class DateTimeField
         long period = fieldRule.convertToPeriod(field.getValue());
         PeriodField bottomConversion = ruleToDerive.getPeriodUnit().getEquivalentPeriod(fieldRule.getPeriodUnit());
         period = MathUtils.floorDiv(period, bottomConversion.getAmount());
-        PeriodField topConversion = ruleToDerive.getPeriodRange().getEquivalentPeriod(ruleToDerive.getPeriodUnit());
-        period = MathUtils.floorMod(period, topConversion.getAmount());
+        if (ruleToDerive.getPeriodRange() != null) {
+            if (ruleToDerive.getPeriodRange().equals(DAYS)) {  // TODO: hack
+                PeriodField topConversion = _24_HOURS.getEquivalentPeriod(ruleToDerive.getPeriodUnit());
+                period = MathUtils.floorMod(period, topConversion.getAmount());
+            } else {
+                PeriodField topConversion = ruleToDerive.getPeriodRange().getEquivalentPeriod(ruleToDerive.getPeriodUnit());
+                period = MathUtils.floorMod(period, topConversion.getAmount());
+            }
+        }
         return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
     }
 

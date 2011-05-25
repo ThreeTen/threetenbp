@@ -35,13 +35,18 @@ import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
@@ -278,7 +283,7 @@ public class TestDateTimeField {
     @DataProvider(name="normalized")
     Object[][] data_normalized() {
         return new Object[][] {
-            {DateTimeField.of(YEAR, 2008), null},
+            {DateTimeField.of(EPOCH_YEAR, 38), null},
             {DateTimeField.of(MONTH_OF_YEAR, 6), null},
             {DateTimeField.of(HOUR_OF_DAY, 2), null},
             {DateTimeField.of(HOUR_OF_AMPM, 6), null},
@@ -302,6 +307,8 @@ public class TestDateTimeField {
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 1), DateTimeField.of(HOUR_OF_DAY, 23)},
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 24), DateTimeField.of(HOUR_OF_DAY, 0)},
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 25), DateTimeField.of(HOUR_OF_DAY, -1)},
+            
+            {DateTimeField.of(MockBigClockHourOfDayFieldRule.INSTANCE, 300), DateTimeField.of(HOUR_OF_DAY, 3)},
         };
     }
 
@@ -331,17 +338,32 @@ public class TestDateTimeField {
             // convert
             {DateTimeField.of(MONTH_OF_YEAR, 6), QUARTER_OF_YEAR, 2},
             {DateTimeField.of(MONTH_OF_YEAR, 6), MONTH_OF_QUARTER, 3},
+            {DateTimeField.of(EPOCH_MONTH, 42 * 12 + 3), MONTH_OF_YEAR, 4},
+            {DateTimeField.of(EPOCH_MONTH, 42 * 12 + 3), YEAR, 2012},
+            {DateTimeField.of(EPOCH_MONTH, 42 * 12 + 3), EPOCH_YEAR, 42},
             {DateTimeField.of(HOUR_OF_DAY, 14), HOUR_OF_AMPM, 2},
+            {DateTimeField.of(SECOND_OF_DAY, 15 * 3600 + 74), HOUR_OF_DAY, 15},
+            {DateTimeField.of(SECOND_OF_DAY, 3 * 3600 + 74), MINUTE_OF_HOUR, 1},
+            {DateTimeField.of(SECOND_OF_DAY, 3 * 3600 + 74), SECOND_OF_MINUTE, 14},
+            {DateTimeField.of(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), NANO_OF_SECOND, 123},
+            {DateTimeField.of(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), SECOND_OF_MINUTE, 14},
             
             // normalize
             {DateTimeField.of(CLOCK_HOUR_OF_DAY, 24), HOUR_OF_DAY, 0},
             {DateTimeField.of(HOUR_OF_DAY, 0), CLOCK_HOUR_OF_DAY, 24},
             {DateTimeField.of(CLOCK_HOUR_OF_DAY, 23), HOUR_OF_AMPM, 11},
+            {DateTimeField.of(MockBigClockHourOfDayFieldRule.INSTANCE, 1500), HOUR_OF_DAY, 15},
             
             // normalize - un-normalize
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 7), HOUR_OF_DAY, 17},
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 18), CLOCK_HOUR_OF_DAY, 6},
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 3), CLOCK_HOUR_OF_AMPM, 9},
+            {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 4), MockBigClockHourOfDayFieldRule.INSTANCE, 2000},
+            {DateTimeField.of(MockBigClockHourOfDayFieldRule.INSTANCE, 1900), MockReversedHourOfDayFieldRule.INSTANCE, 5},
+            
+            // convert - un-normalize
+            {DateTimeField.of(NANO_OF_DAY, (4 * 3600 + 74) * 1000000000L + 123), MockBigClockHourOfDayFieldRule.INSTANCE, 400},
+            {DateTimeField.of(NANO_OF_DAY, (4 * 3600 + 74) * 1000000000L + 123), MockReversedHourOfDayFieldRule.INSTANCE, 20},
         };
     }
 
