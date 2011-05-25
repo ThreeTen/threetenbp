@@ -62,6 +62,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
     private final DateTimeRuleRange range;
     /** The base rule that this rule relates to. */
     private final DateTimeRule baseRule;
+    /** The normalization rule that this rule relates to. */
+    private final DateTimeRule normalizationRule;
 
     /**
      * Creates an instance specifying the minimum and maximum value of the rule.
@@ -104,13 +106,16 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
     /**
      * Creates an instance specifying the outer range of value for the rule
      * and the rule that this is related to.
+     * <p>
+     * The parent rule is examined and the {@link #getBaseRule() base rule} and
+     * {@link #getNormalizationRule() normalization rule} set from it.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
      * @param periodRange  the period range, not null
      * @param range  the range, not null
-     * @param baseRule  the base rule that this rule relates to, null
+     * @param parentRule  the parent rule that this rule relates to, null
      *  if this rule does not relate to another rule
      */
     protected DateTimeRule(
@@ -119,14 +124,26 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             DateTimeRuleRange range,
-            DateTimeRule baseRule) {
+            DateTimeRule parentRule) {
         super(DateTimeField.class, chronology, name, periodUnit, periodRange);
         ISOChronology.checkNotNull(range, "DateTimeRuleRange must not be null");
         this.range = range;
-        this.baseRule = (baseRule != null ? baseRule : this);
-        if (baseRule != null) {
-            DateTimeRuleGroup.of(baseRule).registerRelatedRule0(this);
+        DateTimeRule baseRule = this;
+        DateTimeRule normalizationRule = this;
+        if (parentRule != null) {
+            baseRule = parentRule;
+            while (baseRule.getBaseRule() != baseRule) {
+                baseRule = baseRule.getBaseRule();
+            }
+            if (parentRule.getPeriodUnit().equals(periodUnit) && comparePeriodRange(parentRule) == 0) {
+                // TODO: find most normalized form
+                normalizationRule = parentRule;
+            } else {
+                DateTimeRuleGroup.of(baseRule).registerRelatedRule0(this);
+            }
         }
+        this.baseRule = baseRule;
+        this.normalizationRule = normalizationRule;
     }
 
     //-----------------------------------------------------------------------
@@ -261,10 +278,33 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      * of related rules. For example, 'NanoOfDay' is the rule that encompasses
      * all the major time rules.
      *
-     * @return the base rule, not null
+     * @return the base rule, {@code this} if this is the base rule, not null
      */
     public DateTimeRule getBaseRule() {
         return baseRule;
+    }
+
+    /**
+     * Gets a more fundamental rule that this rule is equivalent to.
+     * <p>
+     * A normalization rule is another, more fundamental, rule that represents
+     * the same concept as this rule, meaning that it can be normalized.
+     * The rule will always have the same period unit and period range, but not
+     * all rules with the same unit and range are necessarily normalizable.
+     * To be normalizable, the rules must also share a common definition as to
+     * the start of their {@link #convertToPeriod(long) period}.
+     * <p>
+     * For example, both 'ClockHourOfDay' and 'HourOfDay' represent the hour-of-day
+     * concept based on a common definition of period after midnight.
+     * 'HourOfDay' is the more fundamental definition. Thus, 'ClockHourOfDay'
+     * has a normalization rule of 'HourofDay', and 'HourofDay' has a null
+     * normalization rule.
+     *
+     * @return the base rule, {@code this} if this is the most fundamental version
+     *  of this concept, not null
+     */
+    public DateTimeRule getNormalizationRule() {
+        return normalizationRule;
     }
 
     //-----------------------------------------------------------------------
@@ -392,7 +432,23 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      * @return the created field, not null
      */
     public DateTimeField field(long value) {
-       return DateTimeField.of(this, value); 
+       return DateTimeField.of(this, value);
+    }
+
+    /**
+     * Compares the period range of this rule to another handling null as forever.
+     * 
+     * @param other the other rule, not null
+     * @return the comparator result
+     */
+    final int comparePeriodRange(DateTimeRule other) {
+        if (getPeriodRange() == null) {
+            return other.getPeriodRange() == null ? 0 : 1;
+        }
+        if (other.getPeriodRange() == null) {
+            return -1;
+        }
+       return getPeriodRange().compareTo(other.getPeriodRange());
     }
 
 }

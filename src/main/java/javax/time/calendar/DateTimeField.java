@@ -312,15 +312,11 @@ public final class DateTimeField
      * @return the equivalent field, {@code this} if already normalized, not null
      */
     public DateTimeField normalized() {
-        DateTimeField result = this;
-        DateTimeRule baseRule = rule.getBaseRule();
-        if (baseRule.equals(rule) == false &&
-                baseRule.getPeriodUnit().equals(rule.getPeriodUnit()) && 
-                (baseRule.getPeriodRange() == rule.getPeriodRange() ||
-                    (baseRule.getPeriodRange() != null && baseRule.getPeriodRange().equals(rule.getPeriodRange())))) {
-            result = baseRule.field(baseRule.convertFromPeriod(rule.convertToPeriod(value)));
+        DateTimeRule normalizationRule = rule.getNormalizationRule();
+        if (rule.equals(normalizationRule) == false && isNormalizable(rule, normalizationRule)) {
+            return normalizationRule.field(normalizationRule.convertFromPeriod(rule.convertToPeriod(value)));
         }
-        return result;
+        return this;
     }
 
     /**
@@ -338,33 +334,52 @@ public final class DateTimeField
      * to derive the value.
      * If that fails, {@code null} will be returned.
      *
-     * @param rule  the rule to derive, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the derived value for the rule, null if the value cannot be derived
      */
-    public DateTimeField derive(DateTimeRule rule) {
-        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
-        if (this.rule.equals(rule)) {
+    public DateTimeField derive(DateTimeRule ruleToDerive) {
+        ISOChronology.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
+        // check if this is the desired output
+        if (this.rule.equals(ruleToDerive)) {
             return this;
         }
+        // normalize to remove oddities
         DateTimeField normalized = normalized();
         DateTimeRule normalizedRule = normalized.getRule();
-        if (normalizedRule.equals(rule)) {
+        if (normalizedRule.equals(ruleToDerive)) {
             return normalized;
         }
-        // TODO: un-normalize
-        DateTimeRule baseRule = rule.getBaseRule();
-        if (normalizedRule.getBaseRule().equals(baseRule)) {
-            if (normalizedRule.getPeriodUnit().compareTo(rule.getPeriodUnit()) <= 0 &&
-                    normalizedRule.getPeriodRange().compareTo(rule.getPeriodRange()) >= 0) {  // TODO: null
-                long period = normalizedRule.convertToPeriod(normalized.getValue());
-                PeriodField bottomConversion = rule.getPeriodUnit().getEquivalentPeriod(normalizedRule.getPeriodUnit());
-                period = MathUtils.floorDiv(period, bottomConversion.getAmount());
-                PeriodField topConversion = rule.getPeriodRange().getEquivalentPeriod(rule.getPeriodUnit());
-                period = MathUtils.floorMod(period, topConversion.getAmount());
-                return rule.field(rule.convertFromPeriod(period));
+        // un-normalize  // TODO: maybe remove if DAYS fixed
+        if (isNormalizable(normalizedRule, ruleToDerive)) {
+            long period = normalizedRule.convertToPeriod(normalized.getValue());
+            return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
+        }
+        // convert
+        if (normalizedRule.getPeriodUnit().compareTo(ruleToDerive.getPeriodUnit()) <= 0 &&
+                normalizedRule.comparePeriodRange(ruleToDerive) >= 0) {
+            // it is feasible, but is it permitted
+            DateTimeRule baseRule = ruleToDerive.getBaseRule();
+            if (normalizedRule.getBaseRule().equals(baseRule)) {
+                return derive(normalized, ruleToDerive);
             }
         }
         return null;
+    }
+
+    private DateTimeField derive(DateTimeField field, DateTimeRule ruleToDerive) {
+        // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
+        DateTimeRule fieldRule = field.getRule();
+        long period = fieldRule.convertToPeriod(field.getValue());
+        PeriodField bottomConversion = ruleToDerive.getPeriodUnit().getEquivalentPeriod(fieldRule.getPeriodUnit());
+        period = MathUtils.floorDiv(period, bottomConversion.getAmount());
+        PeriodField topConversion = ruleToDerive.getPeriodRange().getEquivalentPeriod(ruleToDerive.getPeriodUnit());
+        period = MathUtils.floorMod(period, topConversion.getAmount());
+        return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
+    }
+
+    private boolean isNormalizable(DateTimeRule rule1, DateTimeRule rule2) {
+        return rule1.getPeriodUnit().equals(rule2.getPeriodUnit()) &&
+                rule1.comparePeriodRange(rule2) == 0;
     }
 
     //-----------------------------------------------------------------------

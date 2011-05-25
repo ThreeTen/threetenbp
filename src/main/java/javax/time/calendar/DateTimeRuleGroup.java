@@ -35,7 +35,6 @@ import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -134,8 +133,7 @@ public final class DateTimeRuleGroup {
         if (rule.getPeriodUnit().compareTo(baseRule.getPeriodUnit()) < 0) {
             throw new IllegalArgumentException("Rule includes information outside the boundaries of base rule " + baseRule.getName());
         }
-        if ((rule.getPeriodRange() == null && baseRule.getPeriodRange() != null) ||
-                (rule.getPeriodRange() != null && baseRule.getPeriodRange() != null && rule.getPeriodRange().compareTo(baseRule.getPeriodRange()) > 0)) {
+        if (rule.comparePeriodRange(baseRule) > 0) {
             throw new IllegalArgumentException("Rule includes information outside the boundaries of base rule " + baseRule.getName());
         }
         registerRelatedRule0(rule);
@@ -144,6 +142,9 @@ public final class DateTimeRuleGroup {
     /**
      */
     void registerRelatedRule0(DateTimeRule rule) {
+        if (rule.getPeriodUnit().equals(baseRule.getPeriodUnit()) && rule.comparePeriodRange(baseRule) == 0) {
+            return;  // don't register exact matches  // TODO: error?
+        }
         Map.Entry<PeriodUnit, PeriodUnit> entry = createEntry(rule.getPeriodUnit(), rule.getPeriodRange());
         DateTimeRule previous = rules.putIfAbsent(entry, rule);
         if (previous != null) {
@@ -155,7 +156,7 @@ public final class DateTimeRuleGroup {
      * @param rule
      * @return
      */
-    private SimpleImmutableEntry<PeriodUnit, PeriodUnit> createEntry(PeriodUnit unit, PeriodUnit range) {
+    private AbstractMap.SimpleImmutableEntry<PeriodUnit, PeriodUnit> createEntry(PeriodUnit unit, PeriodUnit range) {
         return new AbstractMap.SimpleImmutableEntry<PeriodUnit, PeriodUnit>(unit, range);
     }
 
