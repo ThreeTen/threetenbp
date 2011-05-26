@@ -176,6 +176,21 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetTime} from an {@code InstantProvider}
+     * using the UTC offset.
+     * <p>
+     * The date component of the instant is dropped during the conversion.
+     * This means that the conversion can never fail due to the instant being
+     * out of the valid range of dates.
+     *
+     * @param instantProvider  the instant to convert, not null
+     * @return the offset time in UTC, not null
+     */
+    public static OffsetTime ofInstantUTC(InstantProvider instantProvider) {
+        return ofInstant(instantProvider, ZoneOffset.UTC);
+    }
+
+    /**
      * Obtains an instance of {@code OffsetTime} from an {@code InstantProvider}.
      * <p>
      * The date component of the instant is dropped during the conversion.

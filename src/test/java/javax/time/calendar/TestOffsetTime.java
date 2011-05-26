@@ -231,26 +231,38 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    // fromInstant()
+    // ofInstant()
     //-----------------------------------------------------------------------
-    public void factory_fromInstant_multiProvider_checkAmbiguous() {
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factoryUTC_ofInstant_InstantProvider_nullInstant() {
+        OffsetTime.ofInstantUTC((Instant) null);
+    }
+
+    public void factoryUTC_ofInstant_InstantProvider() {
+        Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
+        OffsetTime test = OffsetTime.ofInstantUTC(instant);
+        check(test, 5, 10, 20, 0, ZoneOffset.UTC);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_ofInstant_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
         OffsetTime test = OffsetTime.ofInstant(mmp, ZoneOffset.UTC);
         check(test, 11, 30, 10, 500, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_InstantProvider_nullInstant() {
+    public void factory_ofInstant_InstantProvider_nullInstant() {
         OffsetTime.ofInstant((Instant) null, ZoneOffset.UTC);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_InstantProvider_nullOffset() {
+    public void factory_ofInstant_InstantProvider_nullOffset() {
         Instant instant = Instant.ofEpochSecond(0L);
         OffsetTime.ofInstant(instant, (ZoneOffset) null);
     }
 
-    public void factory_fromInstant_InstantProvider_allSecsInDay() {
+    public void factory_ofInstant_InstantProvider_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
             OffsetTime test = OffsetTime.ofInstant(instant, ZoneOffset.UTC);
@@ -261,7 +273,7 @@ public class TestOffsetTime {
         }
     }
 
-    public void factory_fromInstant_InstantProvider_beforeEpoch() {
+    public void factory_ofInstant_InstantProvider_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
             OffsetTime test = OffsetTime.ofInstant(instant, ZoneOffset.UTC);
@@ -273,7 +285,7 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_fromInstant_InstantProvider_maxYear() {
+    public void factory_ofInstant_InstantProvider_maxYear() {
         OffsetTime test = OffsetTime.ofInstant(Instant.ofEpochSecond(Long.MAX_VALUE), ZoneOffset.UTC);
         int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
         int min = (int) ((Long.MAX_VALUE / 60) % 60);
@@ -284,7 +296,7 @@ public class TestOffsetTime {
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_fromInstant_InstantProvider_minYear() {
+    public void factory_ofInstant_InstantProvider_minYear() {
         long oneDay = 24 * 60 * 60;
         long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
         

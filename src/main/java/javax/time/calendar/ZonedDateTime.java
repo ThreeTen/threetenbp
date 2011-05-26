@@ -341,7 +341,7 @@ public final class ZonedDateTime
      * <p>
      * An alternative to this method is {@link #ofInstant(OffsetDateTime, ZoneId)}.
      * This method will retain the date and time and throw an exception if
-     * the offset is invalid. The {@code fromInstant} method will change the
+     * the offset is invalid. The {@code ofInstant} method will change the
      * date and time if necessary to retain the same instant.
      *
      * @param dateTime  the offset date-time to use, not null
@@ -370,7 +370,23 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZonedDateTime} from an {@code Instant}.
+     * Obtains an instance of {@code ZonedDateTime} from an {@code InstantProvider}
+     * using the UTC zone.
+     * <p>
+     * This factory creates a {@code ZonedDateTime} from an instant using the UTC time-zone.
+     * If the instant represents a point on the time-line outside the supported year
+     * range then an exception will be thrown.
+     *
+     * @param instantProvider  the instant to convert, not null
+     * @return the zoned date-time in UTC, not null
+     * @throws CalendricalException if the result exceeds the supported range
+     */
+    public static ZonedDateTime ofInstantUTC(InstantProvider instantProvider) {
+        return ofInstant(instantProvider, ZoneId.UTC);
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from an {@code InstantProvider}.
      * <p>
      * This factory creates a {@code ZonedDateTime} from an instant and time-zone.
      * If the instant represents a point on the time-line outside the supported year
@@ -405,7 +421,7 @@ public final class ZonedDateTime
      * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
      * <p>
      * An alternative to this method is {@link #of(OffsetDateTime, ZoneId)}.
-     * The {@code fromInstant} method will change the date and time if necessary to
+     * The {@code ofInstant} method will change the date and time if necessary to
      * retain the same instant. The {@code dateTime} method will retain the date and
      * time and throw an exception if the offset is invalid.
      *

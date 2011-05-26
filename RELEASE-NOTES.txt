@@ -76,6 +76,7 @@
 - Add with methods to UTCInstant/TAIInstant
 - Rename ModifiedJulianDays/EpochDays/EpochSeconds/EpochMillis/EpochNanos to remove plural
 - Remove weekend code from main build (currently in extras)
+- Add ofInstantUTC factories to ZDT, ODT, OD, OT
 
 0.6.3
 ===============================================================================

@@ -366,6 +366,18 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}
+     * using the UTC offset.
+     *
+     * @param instantProvider  the instant to convert, not null
+     * @return the offset date-time in UTC, not null
+     * @throws CalendricalException if the instant exceeds the supported date range
+     */
+    public static OffsetDateTime ofInstantUTC(InstantProvider instantProvider) {
+        return ofInstant(instantProvider, ZoneOffset.UTC);
+    }
+
+    /**
      * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}.
      *
      * @param instantProvider  the instant to convert, not null

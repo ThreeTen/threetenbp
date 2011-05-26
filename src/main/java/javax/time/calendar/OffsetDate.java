@@ -158,6 +158,21 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetDate} from an {@code InstantProvider}
+     * using the UTC offset.
+     * <p>
+     * This conversion drops the time component of the instant effectively
+     * converting at midnight at the start of the UTC day.
+     *
+     * @param instantProvider  the instant to convert, not null
+     * @return the offset date in UTC, not null
+     * @throws CalendricalException if the instant exceeds the supported date range
+     */
+    public static OffsetDate ofInstantUTC(InstantProvider instantProvider) {
+        return ofInstant(instantProvider, ZoneOffset.UTC);
+    }
+
+    /**
      * Obtains an instance of {@code OffsetDate} from an {@code InstantProvider}.
      * <p>
      * This conversion drops the time component of the instant effectively
@@ -171,7 +186,6 @@ public final class OffsetDate
     public static OffsetDate ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-        
         long epochSec = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
         long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDay);
