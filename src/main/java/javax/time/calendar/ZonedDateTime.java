@@ -339,10 +339,10 @@ public final class ZonedDateTime
      * If the time-zone has a floating version, then this conversion will use the
      * latest time-zone rules that are valid for the input date-time.
      * <p>
-     * An alternative to this method is {@link #ofInstant(OffsetDateTime, ZoneId)}.
-     * This method will retain the date and time and throw an exception if
-     * the offset is invalid. The {@code ofInstant} method will change the
-     * date and time if necessary to retain the same instant.
+     * An alternative to this method is {@link #ofInstant}. This method will retain
+     * the date and time and throw an exception if the offset is invalid.
+     * The {@code ofInstant} method will change the date and time if necessary
+     * to retain the same instant.
      *
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time-zone, not null
@@ -393,6 +393,11 @@ public final class ZonedDateTime
      * range then an exception will be thrown.
      * <p>
      * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
+     * <p>
+     * If an {@code OffsetDateTime} is passed in then it will effectively be converted
+     * to an {@code Instant} in order to calculate the correct offset for the zone.
+     * This can change the local date and time. Use {@link #of(OffsetDateTime, ZoneId)}
+     * if you want to guarantee the same local date-time.
      *
      * @param instantProvider  the instant to convert, not null
      * @param zone  the time-zone, not null
@@ -400,45 +405,20 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstant(InstantProvider instantProvider, ZoneId zone) {
-        Instant instant = Instant.of(instantProvider);
+        ISOChronology.checkNotNull(instantProvider, "InstantProvider must not be null");
         ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
-        OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
-        return new ZonedDateTime(offsetDT, zone);
-    }
-
-    /**
-     * Obtains an instance of {@code ZonedDateTime} from the instant of an {@code OffsetDateTime}.
-     * <p>
-     * This factory creates a {@code ZonedDateTime} from an offset date-time and time-zone.
-     * This is an optimized implementation of:
-     * <pre>
-     * ZonedDateTime.ofInstant(offsetDateTime.toInstant(), zone);
-     * </pre>
-     * If the offset date-time is in the wrong offset for the zone at the gap, then the
-     * date, time and offset will be adjusted to ensure that the result has the same instant.
-     * <p>
-     * If the time-zone has a floating version, then this conversion will use the latest time-zone rules.
-     * <p>
-     * An alternative to this method is {@link #of(OffsetDateTime, ZoneId)}.
-     * The {@code ofInstant} method will change the date and time if necessary to
-     * retain the same instant. The {@code dateTime} method will retain the date and
-     * time and throw an exception if the offset is invalid.
-     *
-     * @param dateTime  the offset date-time to use, not null
-     * @param zone  the time-zone, not null
-     * @return the zoned date-time, not null
-     * @throws CalendricalException if the result exceeds the supported range
-     */
-    public static ZonedDateTime ofInstant(OffsetDateTime dateTime, ZoneId zone) {
-        ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
-        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
-        ZoneRules rules = zone.getRules();  // latest rules version
-        if (rules.isValidDateTime(dateTime) == false) {
-            ZoneOffset offsetForInstant = rules.getOffset(dateTime);
-            dateTime = dateTime.withOffsetSameInstant(offsetForInstant);
+        if (instantProvider instanceof OffsetDateTime) {  // optimize by trying to reuse the OffsetDateTime
+            OffsetDateTime odt = (OffsetDateTime) instantProvider;
+            if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
+                odt = odt.withOffsetSameInstant(rules.getOffset(odt));
+            }
+            return new ZonedDateTime(odt, zone);
+        } else {
+            Instant instant = Instant.of(instantProvider);
+            OffsetDateTime offsetDT = OffsetDateTime.ofInstant(instant, rules.getOffset(instant));
+            return new ZonedDateTime(offsetDT, zone);
         }
-        return new ZonedDateTime(dateTime, zone);
     }
 
     //-----------------------------------------------------------------------
