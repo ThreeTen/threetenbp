@@ -115,8 +115,10 @@ public final class DateTimeRuleGroup {
         if (rule2.getPeriodUnit().equals(rule1.getPeriodRange()) == false) {
             return null;
         }
-        PeriodUnit requiredUnit = rule1.getPeriodUnit();
-        PeriodUnit requiredRange = rule2.getPeriodRange();
+        return getRelatedRule(rule1.getPeriodUnit(), rule2.getPeriodRange());
+    }
+
+    public DateTimeRule getRelatedRule(PeriodUnit requiredUnit, PeriodUnit requiredRange) {
         Map.Entry<PeriodUnit, PeriodUnit> entry = createEntry(requiredUnit, requiredRange);
         if (entry.equals(createEntry(baseRule.getPeriodUnit(), baseRule.getPeriodRange()))) {
             return baseRule;

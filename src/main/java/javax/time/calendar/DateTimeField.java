@@ -323,6 +323,11 @@ public final class DateTimeField
         return this;
     }
 
+    private boolean isNormalizable(DateTimeRule rule1, DateTimeRule rule2) {
+        return rule1.getPeriodUnit().equals(rule2.getPeriodUnit()) &&
+                rule1.comparePeriodRange(rule2) == 0;
+    }
+
     /**
      * Derives the value of the specified rule from this field.
      * <p>
@@ -330,13 +335,10 @@ public final class DateTimeField
      * This will only return a result if the requested rule is a subset of the
      * data held in this field and is suitable for derivation. For example,
      * 'MinuteOfHour' is a subset of 'SecondOfDay', but is not a subset of 'HourOfDay'.
+     * If the rule cannot be derived, {@code null} is returned.
      * <p>
-     * The calculation operates on a {@link #normalized() normalized} version of this field.
-     * It checks that the base rules are the same and that the requested rule
-     * has a unit and range within the bounds of this field. It then uses the
-     * {@link DateTimeRule#convertToPeriod(long) convert to/from period} methods
-     * to derive the value.
-     * If that fails, {@code null} will be returned.
+     * The calculation is based on {@link DateTimeRule#getBaseRule()} and
+     * {@link DateTimeRule#convertToPeriod(long)}.
      *
      * @param ruleToDerive  the rule to derive, not null
      * @return the derived value for the rule, null if the value cannot be derived
@@ -348,41 +350,16 @@ public final class DateTimeField
             return this;
         }
         // check conversion is feasible and permitted
-//        if (rule.getBaseRule().equals(ruleToDerive.getBaseRule())) {  // TODO: why not this?
-//            return derive(this, ruleToDerive);
-//        }
-//        return null;
         if (rule.getBaseRule().equals(ruleToDerive.getBaseRule()) &&
                 rule.getPeriodUnit().compareTo(ruleToDerive.getPeriodUnit()) <= 0 &&
                 rule.comparePeriodRange(ruleToDerive) >= 0) {
             return derive(this, ruleToDerive);
         }
         return null;
-        
-//        // normalize to remove oddities
-//        DateTimeField normalized = normalized();
-//        DateTimeRule normalizedRule = normalized.getRule();
-//        if (normalizedRule.equals(ruleToDerive)) {
-//            return normalized;
-//        }
-////        // un-normalize  // TODO: maybe remove if DAYS fixed
-////        if (isNormalizable(normalizedRule, ruleToDerive)) {
-////            long period = normalizedRule.convertToPeriod(normalized.getValue());
-////            return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
-////        }
-//        // convert
-//        if (normalizedRule.getPeriodUnit().compareTo(ruleToDerive.getPeriodUnit()) <= 0 &&
-//                normalizedRule.comparePeriodRange(ruleToDerive) >= 0) {
-//            // it is feasible, but is it permitted
-//            DateTimeRule baseRule = ruleToDerive.getBaseRule();
-//            if (normalizedRule.getBaseRule().equals(baseRule)) {
-//                return derive(normalized, ruleToDerive);
-//            }
-//        }
-//        return null;
     }
 
     private DateTimeField derive(DateTimeField field, DateTimeRule ruleToDerive) {
+        // TODO: HourOfDay 27 should stay as is, because no way to get overflow day (or add NANO_OF_DAY_OVERFLOW)        
         // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
         DateTimeRule fieldRule = field.getRule();
         long period = fieldRule.convertToPeriod(field.getValue());
@@ -398,11 +375,6 @@ public final class DateTimeField
             }
         }
         return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
-    }
-
-    private boolean isNormalizable(DateTimeRule rule1, DateTimeRule rule2) {
-        return rule1.getPeriodUnit().equals(rule2.getPeriodUnit()) &&
-                rule1.comparePeriodRange(rule2) == 0;
     }
 
     //-----------------------------------------------------------------------

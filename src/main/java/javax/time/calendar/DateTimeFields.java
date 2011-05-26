@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOPeriodUnit.DAYS;
+import static javax.time.calendar.ISOPeriodUnit._24_HOURS;
+
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -560,6 +563,127 @@ public final class DateTimeFields
         long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
         long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
         return ruleCombined.field(ruleCombined.convertFromPeriod(totalPeriod));
+    }
+
+    /**
+     * Derives the value of the specified rule from these fields.
+     * <p>
+     * This method queries the value of the specified rule based on these fields.
+     * This will only return a result if the requested rule is a subset of the
+     * data held in these fields and is suitable for derivation. For example,
+     * 'MinuteOfHour' is a subset of 'SecondOfDay', but is not a subset of 'HourOfDay'.
+     * If the rule cannot be derived, {@code null} is returned.
+     * <p>
+     * The calculation is based on {@link DateTimeRule#getBaseRule()} and
+     * {@link DateTimeRule#convertToPeriod(long)}.
+     *
+     * @param ruleToDerive  the rule to derive, not null
+     * @return the derived value for the rule, null if the value cannot be derived
+     */
+    public DateTimeField derive(DateTimeRule ruleToDerive) {
+        ISOChronology.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
+        // optimize special cases
+        switch (size()) {
+            case 0:
+                return null;
+            case 1:
+                return fields.get(0).derive(ruleToDerive);
+            default:
+                return deriveForBase(ruleToDerive);
+        }
+    }
+
+    private DateTimeField deriveForBase(DateTimeRule ruleToDerive) {
+        DateTimeRule baseRule = ruleToDerive.getBaseRule();
+        List<DateTimeField> group = new ArrayList<DateTimeField>();
+        for (DateTimeField field : this) {
+            if (field.getRule().getBaseRule().equals(baseRule)) {
+                group.add(field);
+            }
+        }
+        DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
+        for (int i = 0; i < group.size() - 1; i++) {
+            for (int j = i + 1; j < group.size(); j++) {
+                DateTimeField field1 = group.get(i);
+                DateTimeField field2 = group.get(j);
+                
+                DateTimeField derived2 = field1.derive(field2.getRule());
+                if (derived2 != null) {
+                    if (derived2.equals(field2)) {
+                        group.remove(j);
+                        continue;
+                    } else {
+                        return null;
+                    }
+                }
+                
+                DateTimeField derived1 = field2.derive(field1.getRule());
+                if (derived1 != null) {
+                    if (derived1.equals(field1)) {
+                        group.remove(i--);
+                        break;
+                    } else {
+                        return null;
+                    }
+                }
+                
+                DateTimeRule ruleCombined = ruleGroup.getRelatedRule(field1.getRule(), field2.getRule());
+                if (ruleCombined != null) {
+                    DateTimeField fieldCombined = merge(field1, field2, ruleCombined);
+                    DateTimeField existing = getField(ruleCombined);
+                    if (existing != null && existing.equals(fieldCombined) == false) {
+                        return null;
+                    }
+                    group.set(i--, fieldCombined);
+                    group.remove(j);
+                    break;
+                }
+                
+                Long period1 = period(field1, field1.getRule().getPeriodUnit(), field2.getRule().getPeriodRange());
+                if (period1 != null) {
+                    Long period2 = period(field2, field1.getRule().getPeriodUnit(), field2.getRule().getPeriodRange());
+                    if (period2 != null) {
+                        if (period1.equals(period2)) {
+                            ruleCombined = ruleGroup.getRelatedRule(field2.getRule().getPeriodUnit(), field1.getRule().getPeriodRange());
+                            if (ruleCombined != null) {
+                                return null;
+                            }
+                            Long period = period(field2, field2.getRule().getPeriodUnit(), field1.getRule().getPeriodUnit());
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+        for (DateTimeField field : group) {
+            DateTimeField result = field.derive(ruleToDerive);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    private Long period(DateTimeField field, PeriodUnit unit, PeriodUnit range) {
+        DateTimeRule fieldRule = field.getRule();
+        if (fieldRule.getPeriodUnit().compareTo(unit) <= 0 &&
+                fieldRule.getPeriodRange().compareTo(range) >= 0) {  // TODO null
+            long period = fieldRule.convertToPeriod(field.getValue());
+            PeriodField bottomConversion = unit.getEquivalentPeriod(fieldRule.getPeriodUnit());
+            period = MathUtils.floorDiv(period, bottomConversion.getAmount());
+            if (range != null) {
+                if (range.equals(DAYS)) {  // TODO: hack
+                    PeriodField topConversion = _24_HOURS.getEquivalentPeriod(unit);
+                    period = MathUtils.floorMod(period, topConversion.getAmount());
+                } else {
+                    PeriodField topConversion = range.getEquivalentPeriod(unit);
+                    period = MathUtils.floorMod(period, topConversion.getAmount());
+                }
+            }
+            return period;
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------
