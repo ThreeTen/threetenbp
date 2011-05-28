@@ -1175,7 +1175,7 @@ public final class LocalTime
     /**
      * Outputs this time as a {@code String}, such as {@code 10:15}.
      * <p>
-     * The output will be one of the following formats:
+     * The output will be one of the following ISO-8601 formats:
      * <ul>
      * <li>{@code HH:mm}</li>
      * <li>{@code HH:mm:ss}</li>

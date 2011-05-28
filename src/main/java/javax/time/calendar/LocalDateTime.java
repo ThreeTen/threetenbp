@@ -1773,7 +1773,7 @@ public final class LocalDateTime
     /**
      * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30}.
      * <p>
-     * The output will be one of the following formats:
+     * The output will be one of the following ISO-8601 formats:
      * <ul>
      * <li>{@code yyyy-MM-dd'T'HH:mm}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ss}</li>

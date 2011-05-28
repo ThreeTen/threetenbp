@@ -637,18 +637,20 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Is this year equal to the specified year.
+     * Checks if this year is equal to another year.
+     * <p>
+     * The comparison is based on the time-line position of the years.
      *
-     * @param other  the other year to compare to, null returns false
-     * @return true if this point is equal to the specified year
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other year
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof Year) {
-            return year == ((Year) other).year;
+        if (obj instanceof Year) {
+            return year == ((Year) obj).year;
         }
         return false;
     }
@@ -665,9 +667,9 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the string form of the year.
+     * Outputs this year as a {@code String}.
      *
-     * @return the string form of the year
+     * @return a string representation of this year, not null
      */
     @Override
     public String toString() {

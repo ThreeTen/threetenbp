@@ -415,9 +415,7 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this rule as a {@code String}, such as 'MonthOfYear'.
-     * <p>
-     * The format includes the rule name.
+     * Outputs this rule as a {@code String}, using the name.
      *
      * @return a string representation of this rule, not null
      */

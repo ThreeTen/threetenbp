@@ -1644,10 +1644,12 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Is this period equal to the specified period.
+     * Checks if this period is equal to another period.
+     * <p>
+     * The comparison is based on the amounts held in the period.
      *
-     * @param obj  the other period to compare to, null returns false
-     * @return true if this instance is equal to the specified period
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other period
      */
     @Override
     public boolean equals(Object obj) {
@@ -1664,7 +1666,7 @@ public final class Period
     }
 
     /**
-     * Returns the hash code for this period.
+     * A hash code for this period.
      *
      * @return a suitable hash code
      */
@@ -1683,9 +1685,11 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the amount of time.
+     * Outputs this period as a {@code String}, such as {@code P6Y3M1DT12H}.
+     * <p>
+     * The output will be in the ISO-8601 period format.
      *
-     * @return the amount of time in ISO8601 string format
+     * @return a string representation of this period, not null
      */
     @Override
     public String toString() {

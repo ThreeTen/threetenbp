@@ -549,19 +549,21 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Is this month-day equal to the specified month-day.
+     * Checks if this month-day is equal to another month-day.
+     * <p>
+     * The comparison is based on the time-line position of the month-day within a year.
      *
-     * @param other  the other month-day to compare to, null returns false
-     * @return true if this point is equal to the specified month-day
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other month-day
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof MonthDay) {
-            MonthDay otherMD = (MonthDay) other;
-            return month == otherMD.month && day == otherMD.day;
+        if (obj instanceof MonthDay) {
+            MonthDay other = (MonthDay) obj;
+            return month == other.month && day == other.day;
         }
         return false;
     }
@@ -582,7 +584,7 @@ public final class MonthDay
      * <p>
      * The output will be in the format {@code --MM-dd}:
      *
-     * @return the formatted month-day, not null
+     * @return a string representation of this month-day, not null
      */
     @Override
     public String toString() {

@@ -633,19 +633,21 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Is this year-month equal to the specified year-month.
+     * Checks if this year-month is equal to another year-month.
+     * <p>
+     * The comparison is based on the time-line position of the year-months.
      *
-     * @param other  the other year-month to compare to, null returns false
-     * @return true if this point is equal to the specified year-month
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other year-month
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof YearMonth) {
-            YearMonth otherYM = (YearMonth) other;
-            return year == otherYM.year && month == otherYM.month;
+        if (obj instanceof YearMonth) {
+            YearMonth other = (YearMonth) obj;
+            return year == other.year && month == other.month;
         }
         return false;
     }
@@ -666,7 +668,7 @@ public final class YearMonth
      * <p>
      * The output will be in the format {@code yyyy-MM}:
      *
-     * @return the formatted year-month, not null
+     * @return a string representation of this year-month, not null
      */
     @Override
     public String toString() {

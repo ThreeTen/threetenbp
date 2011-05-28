@@ -721,23 +721,23 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this time-zone is equal to the specified time-zone.
+     * Checks if this time-zone ID is equal to another time-zone ID.
      * <p>
-     * This method returns true if the {@link #getID() id} of the two objects are equal.
+     * The comparison is based on the ID.
      *
-     * @param other  the other time-zone to compare to, null returns false
-     * @return true if this time-zone is equal to the specified time-zone
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other time-zone ID
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
            return true;
         }
-        if (other instanceof ZoneId) {
-            ZoneId otherZone = (ZoneId) other;
-            return getRegionID().equals(otherZone.getRegionID()) &&
-                    getVersionID().equals(otherZone.getVersionID()) &&
-                    getGroupID().equals(otherZone.getGroupID());
+        if (obj instanceof ZoneId) {
+            ZoneId other = (ZoneId) obj;
+            return getRegionID().equals(other.getRegionID()) &&
+                    getVersionID().equals(other.getVersionID()) &&
+                    getGroupID().equals(other.getGroupID());
         }
         return false;
     }
@@ -754,11 +754,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the time-zone.
-     * <p>
-     * This returns {@link #getID()}.
+     * Outputs this offset as a {@code String}, using the ID.
      *
-     * @return the time-zone ID, not null
+     * @return a string representation of this time-zone ID, not null
      */
     @Override
     public String toString() {

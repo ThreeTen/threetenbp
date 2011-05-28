@@ -1002,13 +1002,12 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instance equal to the specified period.
+     * Checks if this set of period fields is equal to another set of period fields .
      * <p>
-     * Two {@code PeriodFields} instances are equal if all the contained
-     * {@code PeriodField} instances are equal.
+     * The comparison is based on the complete set of fields.
      *
-     * @param obj  the other period to compare to, null returns false
-     * @return true if this instance is equal to the specified period
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other set of period fields 
      */
     @Override
     public boolean equals(Object obj) {
@@ -1023,7 +1022,7 @@ public final class PeriodFields
     }
 
     /**
-     * Returns the hash code for this period.
+     * A hash code for this period.
      *
      * @return a suitable hash code
      */
@@ -1034,9 +1033,11 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the period, such as '[6 Days, 13 Hours]'.
+     * Outputs this set of period fields as a {@code String}, such as {@code [6 Days, 13 Hours]}.
+     * <p>
+     * The output will include of the complete set of fields.
      *
-     * @return a descriptive representation of the period, not null
+     * @return a string representation of this set of fields, not null
      */
     @Override
     public String toString() {

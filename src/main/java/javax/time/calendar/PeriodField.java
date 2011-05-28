@@ -445,12 +445,12 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this period is equal to the specified period.
+     * Checks if this period is equal to another period.
      * <p>
-     * The comparison is based on the unit and amount.
+     * The comparison is based on the unit and value.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this period is the same as that specified
+     * @return true if this is equal to the other period
      */
     @Override
     public boolean equals(Object obj) {
@@ -466,7 +466,7 @@ public final class PeriodField
     }
 
     /**
-     * Returns the hash code for this period.
+     * A hash code for this period.
      *
      * @return a suitable hash code
      */
@@ -477,11 +477,11 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of this period, such as '6 Days'.
+     * Outputs this period as a {@code String}, such as {@code 6 Days}.
      * <p>
-     * The format consists of the amount, followed by a space, followed by the unit name.
+     * The output will consist of the amount, a space and the unit name.
      *
-     * @return a descriptive representation of this period, not null
+     * @return a string representation of this period, not null
      */
     @Override
     public String toString() {

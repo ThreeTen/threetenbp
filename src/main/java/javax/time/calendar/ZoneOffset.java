@@ -571,11 +571,12 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this instance is equal to the specified offset, comparing
-     * the amount of the offset in seconds.
+     * Checks if this offset is equal to another offset.
+     * <p>
+     * The comparison is based on the amount of the offset in seconds.
      *
-     * @param other  the other zone offset, null returns false
-     * @return true if this offset is the same as that specified
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other offset
      */
     @Override
     public boolean equals(Object other) {
@@ -589,7 +590,7 @@ public final class ZoneOffset
     }
 
     /**
-     * A hash code for the zone offset.
+     * A hash code for this offset.
      *
      * @return a suitable hash code
      */
@@ -600,10 +601,9 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the zone offset, which is the same
-     * as the normalized id.
+     * Outputs this offset as a {@code String}, using the normalized ID.
      *
-     * @return the id
+     * @return a string representation of this offset, not null
      */
     @Override
     public String toString() {

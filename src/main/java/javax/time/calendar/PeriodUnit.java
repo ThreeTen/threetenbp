@@ -338,10 +338,12 @@ public abstract class PeriodUnit
 
     //-----------------------------------------------------------------------
     /**
-     * Compares two units based on the name, estimated duration and equivalent period.
+     * Checks if this unit is equal to another unit.
+     * <p>
+     * The comparison is based on the name, estimated duration and equivalent period.
      *
-     * @param obj  the object to compare to, null returns false
-     * @return true if the units are the same
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other unit
      */
     @Override
     public boolean equals(Object obj) {
@@ -360,7 +362,7 @@ public abstract class PeriodUnit
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a hash code based on the name, estimated duration and equivalent period.
+     * A hash code for this unit.
      *
      * @return a suitable hash code
      */
@@ -371,11 +373,9 @@ public abstract class PeriodUnit
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the unit.
-     * <p>
-     * The string representation is the same as the name.
+     * Outputs this unit as a {@code String}, using the name.
      *
-     * @return the unit name, not null
+     * @return a string representation of this unit, not null
      */
     @Override
     public String toString() {

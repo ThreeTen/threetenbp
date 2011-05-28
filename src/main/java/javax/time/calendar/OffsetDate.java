@@ -1196,30 +1196,28 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code OffsetDate} is equal to the specified date.
+     * Checks if this date is equal to another date.
      * <p>
-     * This method returns true if the state of the two objects are equal.
-     * The state consists of the local date and the offset.
-     * <p>
+     * The comparison is based on the local-date and the offset.
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
      *
-     * @param other  the other date to compare to, null returns false
-     * @return true if this date is equal to the specified date
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof OffsetDate) {
-            OffsetDate zonedDate = (OffsetDate) other;
-            return date.equals(zonedDate.date) && offset.equals(zonedDate.offset);
+        if (obj instanceof OffsetDate) {
+            OffsetDate other = (OffsetDate) obj;
+            return date.equals(other.date) && offset.equals(other.offset);
         }
         return false;
     }
 
     /**
-     * A hash code for this {@code OffsetDate}.
+     * A hash code for this date.
      *
      * @return a suitable hash code
      */
@@ -1232,9 +1230,9 @@ public final class OffsetDate
     /**
      * Outputs this date as a {@code String}, such as {@code 2007-12-03+01:00}.
      * <p>
-     * The output will be in the format {@code yyyy-MM-ddXXXXX}.
+     * The output will be in the ISO-8601 format {@code yyyy-MM-ddXXXXX}.
      *
-     * @return the formatted date, not null
+     * @return a string representation of this date, not null
      */
     @Override
     public String toString() {

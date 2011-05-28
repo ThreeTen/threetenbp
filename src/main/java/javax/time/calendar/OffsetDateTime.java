@@ -1832,30 +1832,28 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code OffsetDateTime} is equal to the specified date-time.
+     * Checks if this date-time is equal to another date-time.
      * <p>
-     * This method returns true if the state of the two objects are equal.
-     * The state consists of the local date-time and the offset.
-     * <p>
+     * The comparison is based on the local date-time and the offset.
      * To compare for the same instant on the time-line, use {@link #equalInstant}.
      *
-     * @param other  the other date-time to compare to, null returns false
-     * @return true if this point is equal to the specified date-time
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date-time
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof OffsetDateTime) {
-            OffsetDateTime offsetDateTime = (OffsetDateTime) other;
-            return dateTime.equals(offsetDateTime.dateTime) && offset.equals(offsetDateTime.offset);
+        if (obj instanceof OffsetDateTime) {
+            OffsetDateTime other = (OffsetDateTime) obj;
+            return dateTime.equals(other.dateTime) && offset.equals(other.offset);
         }
         return false;
     }
 
     /**
-     * A hash code for this {@code OffsetDateTime}.
+     * A hash code for this date-time.
      *
      * @return a suitable hash code
      */
@@ -1868,7 +1866,7 @@ public final class OffsetDateTime
     /**
      * Outputs this date-time as a {@code String}, such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
-     * The output will be one of the following formats:
+     * The output will be one of the following ISO-8601 formats:
      * <ul>
      * <li>{@code yyyy-MM-dd'T'HH:mmXXXXX}</li>
      * <li>{@code yyyy-MM-dd'T'HH:mm:ssXXXXX}</li>
@@ -1879,7 +1877,7 @@ public final class OffsetDateTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted date-time, not null
+     * @return a string representation of this date-time, not null
      */
     @Override
     public String toString() {

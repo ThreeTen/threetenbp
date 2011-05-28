@@ -2041,28 +2041,29 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code ZonedDateTime} is equal to the specified date-time.
+     * Checks if this date-time is equal to another date-time.
      * <p>
-     * This compares the date-time and the offset.
+     * The comparison is based on the offset date-time and the zone.
+     * To compare for the same instant on the time-line, use {@link #equalInstant}.
      *
-     * @param other  the other date-time to compare to, null returns false
-     * @return true if this point is equal to the specified date-time
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date-time
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof ZonedDateTime) {
-            ZonedDateTime zonedDateTime = (ZonedDateTime) other;
-            return dateTime.equals(zonedDateTime.dateTime) &&
-                zone.equals(zonedDateTime.zone);
+        if (obj instanceof ZonedDateTime) {
+            ZonedDateTime other = (ZonedDateTime) obj;
+            return dateTime.equals(other.dateTime) &&
+                zone.equals(other.zone);
         }
         return false;
     }
 
     /**
-     * A hash code for this {@code ZonedDateTime}.
+     * A hash code for this date-time.
      *
      * @return a suitable hash code
      */
@@ -2087,7 +2088,7 @@ public final class ZonedDateTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted date-time, not null
+     * @return a string representation of this date-time, not null
      */
     @Override
     public String toString() {

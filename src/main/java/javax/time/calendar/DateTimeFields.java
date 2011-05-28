@@ -753,7 +753,7 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this set of fields as a {@code String}, such as '[MonthOfYear 12, DayOfMonth 3]'.
+     * Outputs this set of fields as a {@code String}, such as {@code [MonthOfYear 12, DayOfMonth 3]}.
      * <p>
      * The output will include of the complete set of fields.
      *

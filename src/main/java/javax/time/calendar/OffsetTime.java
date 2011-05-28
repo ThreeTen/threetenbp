@@ -841,27 +841,28 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code OffsetTime} is equal to the specified time.
+     * Checks if this time is equal to another time.
      * <p>
-     * The comparison is based on the time and the offset.
+     * The comparison is based on the local-time and the offset.
+     * To compare for the same instant on the time-line, use {@link #equalInstant}.
      *
-     * @param other  the other time to compare to, null returns false
-     * @return true if this point is equal to the specified time
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other time
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof OffsetTime) {
-            OffsetTime zonedTime = (OffsetTime) other;
-            return time.equals(zonedTime.time) && offset.equals(zonedTime.offset);
+        if (obj instanceof OffsetTime) {
+            OffsetTime other = (OffsetTime) obj;
+            return time.equals(other.time) && offset.equals(other.offset);
         }
         return false;
     }
 
     /**
-     * A hash code for this {@code OffsetTime}.
+     * A hash code for this time.
      *
      * @return a suitable hash code
      */
@@ -874,7 +875,7 @@ public final class OffsetTime
     /**
      * Outputs this time as a {@code String}, such as {@code 10:15:30+01:00}.
      * <p>
-     * The output will be one of the following formats:
+     * The output will be one of the following ISO-8601 formats:
      * <ul>
      * <li>{@code HH:mmXXXXX}</li>
      * <li>{@code HH:mm:ssXXXXX}</li>
@@ -885,7 +886,7 @@ public final class OffsetTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted time, not null
+     * @return a string representation of this time, not null
      */
     @Override
     public String toString() {
