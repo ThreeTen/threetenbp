@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -601,13 +602,18 @@ public final class DateTimeFields
                 group.add(field);
             }
         }
+        sort(group);
         DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
+        // merge
         for (int i = 0; i < group.size() - 1; i++) {
+            DateTimeField field1 = group.get(i);
             for (int j = i + 1; j < group.size(); j++) {
-                DateTimeField field1 = group.get(i);
                 DateTimeField field2 = group.get(j);
-                
-                DateTimeField derived2 = field1.derive(field2.getRule());
+                DateTimeRule rule1 = field1.getRule();
+                DateTimeRule rule2 = field2.getRule();
+                // remove if derived
+                // the fields share a base rule, so this must succeed if there field1 surrounds field2
+                DateTimeField derived2 = field1.derive(rule2);
                 if (derived2 != null) {
                     if (derived2.equals(field2)) {
                         group.remove(j);
@@ -616,46 +622,40 @@ public final class DateTimeFields
                         return null;
                     }
                 }
-                
-                DateTimeField derived1 = field2.derive(field1.getRule());
-                if (derived1 != null) {
-                    if (derived1.equals(field1)) {
-                        group.remove(i--);
-                        break;
-                    } else {
-                        return null;
-                    }
-                }
-                
-                DateTimeRule ruleCombined = ruleGroup.getRelatedRule(field1.getRule(), field2.getRule());
-                if (ruleCombined != null) {
-                    DateTimeField fieldCombined = merge(field1, field2, ruleCombined);
-                    DateTimeField existing = getField(ruleCombined);
-                    if (existing != null && existing.equals(fieldCombined) == false) {
-                        return null;
-                    }
-                    group.set(i--, fieldCombined);
-                    group.remove(j);
-                    break;
-                }
-                
-                Long period1 = period(field1, field1.getRule().getPeriodUnit(), field2.getRule().getPeriodRange());
-                if (period1 != null) {
-                    Long period2 = period(field2, field1.getRule().getPeriodUnit(), field2.getRule().getPeriodRange());
-                    if (period2 != null) {
-                        if (period1.equals(period2)) {
-                            ruleCombined = ruleGroup.getRelatedRule(field2.getRule().getPeriodUnit(), field1.getRule().getPeriodRange());
-                            if (ruleCombined != null) {
-                                return null;
-                            }
-                            Long period = period(field2, field2.getRule().getPeriodUnit(), field1.getRule().getPeriodUnit());
-                        } else {
+                // merge overlap or adjacent
+                if (DateTimeRule.comparePeriodUnits(rule2.getPeriodRange(), rule1.getPeriodUnit()) >= 0 &&
+                        DateTimeRule.comparePeriodUnits(rule2.getPeriodUnit(), rule1.getPeriodUnit()) < 0) {
+                    final long period1 = rule1.convertToPeriod(field1.getValue());
+                    final long period2 = rule2.convertToPeriod(field2.getValue());
+                    final PeriodField conversion1 = rule2.getPeriodRange().getEquivalentPeriod(rule1.getPeriodUnit());
+                    // if was an overlap, then check it is valid
+                    // this must be done before the combined rule check to ensure that the final derivation is OK
+                    if (DateTimeRule.comparePeriodUnits(rule2.getPeriodRange(), rule1.getPeriodUnit()) > 0) {
+                        long periodMid1 = MathUtils.floorMod(period1, conversion1.getAmount());
+                        final PeriodField conversion2 = rule2.getPeriodRange().getEquivalentPeriod(rule2.getPeriodUnit());
+                        final PeriodField conversion3 = rule1.getPeriodUnit().getEquivalentPeriod(rule2.getPeriodUnit());
+                        long periodMid2 = MathUtils.floorMod(period2, conversion2.getAmount());
+                        periodMid2 = MathUtils.floorDiv(periodMid2, conversion3.getAmount());
+                        if (periodMid1 != periodMid2) {
                             return null;
                         }
+                    }
+                    // merge if possible
+                    DateTimeRule ruleCombined = ruleGroup.getRelatedRule(rule2.getPeriodUnit(), rule1.getPeriodRange());
+                    if (ruleCombined != null) {
+                        long period = MathUtils.floorDiv(period1, conversion1.getAmount());
+                        final PeriodField conversion2 = rule2.getPeriodRange().getEquivalentPeriod(rule2.getPeriodUnit());
+                        period = MathUtils.safeMultiply(period, conversion2.getAmount());
+                        period = MathUtils.safeAdd(period, period2);
+                        DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(period));
+                        group.set(i--, fieldCombined);
+                        group.remove(j);
+                        break;
                     }
                 }
             }
         }
+        // derive result
         for (DateTimeField field : group) {
             DateTimeField result = field.derive(ruleToDerive);
             if (result != null) {
@@ -665,25 +665,16 @@ public final class DateTimeFields
         return null;
     }
 
-    private Long period(DateTimeField field, PeriodUnit unit, PeriodUnit range) {
-        DateTimeRule fieldRule = field.getRule();
-        if (fieldRule.getPeriodUnit().compareTo(unit) <= 0 &&
-                fieldRule.getPeriodRange().compareTo(range) >= 0) {  // TODO null
-            long period = fieldRule.convertToPeriod(field.getValue());
-            PeriodField bottomConversion = unit.getEquivalentPeriod(fieldRule.getPeriodUnit());
-            period = MathUtils.floorDiv(period, bottomConversion.getAmount());
-            if (range != null) {
-                if (range.equals(DAYS)) {  // TODO: hack
-                    PeriodField topConversion = _24_HOURS.getEquivalentPeriod(unit);
-                    period = MathUtils.floorMod(period, topConversion.getAmount());
-                } else {
-                    PeriodField topConversion = range.getEquivalentPeriod(unit);
-                    period = MathUtils.floorMod(period, topConversion.getAmount());
+    private void sort(List<DateTimeField> group) {
+        Collections.sort(group, new Comparator<DateTimeField>() {
+            public int compare(DateTimeField dtf1, DateTimeField dtf2) {
+                int cmp = -dtf1.getRule().comparePeriodRange(dtf2.getRule());
+                if (cmp == 0) {
+                    cmp = dtf1.getRule().comparePeriodUnit(dtf2.getRule());
                 }
+                return cmp;
             }
-            return period;
-        }
-        return null;
+        });
     }
 
     //-----------------------------------------------------------------------

@@ -106,16 +106,16 @@ public final class DateTimeRuleGroup {
 
     /**
      */
-    public DateTimeRule getRelatedRule(DateTimeRule rule1, DateTimeRule rule2) {
-        if (rule1.compareTo(rule2) > 0) {
-            DateTimeRule temp = rule1;
-            rule1 = rule2;
-            rule2 = temp;
-        }
-        if (rule2.getPeriodUnit().equals(rule1.getPeriodRange()) == false) {
+    public DateTimeRule getRelatedRule(DateTimeRule ruleBig, DateTimeRule ruleSmall) {
+//        if (rule1.compareTo(rule2) > 0) {
+//            DateTimeRule temp = rule1;
+//            rule1 = rule2;
+//            rule2 = temp;
+//        }
+        if (ruleBig.getPeriodUnit().equals(ruleSmall.getPeriodRange()) == false) {
             return null;
         }
-        return getRelatedRule(rule1.getPeriodUnit(), rule2.getPeriodRange());
+        return getRelatedRule(ruleSmall.getPeriodUnit(), ruleBig.getPeriodRange());
     }
 
     public DateTimeRule getRelatedRule(PeriodUnit requiredUnit, PeriodUnit requiredRange) {
