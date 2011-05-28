@@ -205,7 +205,7 @@ public final class ZoneResolvers {
      * This resolver is the same as the {{@link #postTransition()} resolver with
      * one additional rule. When processing an overlap, this resolver attempts
      * to use the same offset as the offset specified in the old date-time.
-     * If that offset is invalid then the later offset is chosen
+     * If that offset is invalid then the later offset is chosen.
      * <p>
      * This resolver is most commonly useful when adding or subtracting time
      * from a {@code ZonedDateTime}.
@@ -245,7 +245,7 @@ public final class ZoneResolvers {
     //-----------------------------------------------------------------------
     /**
      * Returns the push forward resolver, which changes the time of the result
-     * in a gap by adding the lenth of the gap.
+     * in a gap by adding the length of the gap.
      * <p>
      * If the discontinuity is a gap, then the resolver will add the length of
      * the gap in seconds to the local time.
