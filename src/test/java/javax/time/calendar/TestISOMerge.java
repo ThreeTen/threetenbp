@@ -38,6 +38,7 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_MINUTE;
@@ -72,7 +73,7 @@ public class TestISOMerge {
     @DataProvider(name = "normalized")
     public Object[][] data_normalized() {
         return new Object[][] {
-            {dtf(YEAR, 2011), dtf(YEAR, 2011)},
+            {dtf(YEAR, 2011), dtf(EPOCH_YEAR, 41)},
             {dtf(QUARTER_OF_YEAR, 2), dtf(QUARTER_OF_YEAR, 2)},
             {dtf(MONTH_OF_YEAR, 6), dtf(MONTH_OF_YEAR, 6)},
             {dtf(MONTH_OF_QUARTER, 3), dtf(MONTH_OF_QUARTER, 3)},
@@ -81,7 +82,7 @@ public class TestISOMerge {
             {dtf(DAY_OF_WEEK, 6), dtf(DAY_OF_WEEK, 6)},
             
             {dtf(MONTH_OF_YEAR, 6, DAY_OF_MONTH, 2), dtf(MONTH_OF_YEAR, 6, DAY_OF_MONTH, 2)},
-            {dtf(YEAR, 2011, DAY_OF_MONTH, 2), dtf(YEAR, 2011, DAY_OF_MONTH, 2)},
+            {dtf(YEAR, 2011, DAY_OF_MONTH, 2), dtf(EPOCH_YEAR, 41, DAY_OF_MONTH, 2)},
             {dtf(DAY_OF_MONTH, 13, DAY_OF_WEEK, 5), dtf(DAY_OF_MONTH, 13, DAY_OF_WEEK, 5)},
             {dtf(HOUR_OF_DAY, 14, SECOND_OF_MINUTE, 30), dtf(HOUR_OF_DAY, 14, SECOND_OF_MINUTE, 30)},
             

@@ -457,6 +457,7 @@ public final class DateTimeFields
      * @throws ArithmeticException if the calculation overflows
      */
     public DateTimeFields normalized() {
+        // TODO: fix or remove
         if (size() == 0) {
             return EMPTY;
         }
@@ -527,21 +528,23 @@ public final class DateTimeFields
                 DateTimeField fieldLarger = fields.get(i);
                 DateTimeField fieldSmaller = fields.get(j);
                 
-                DateTimeRule ruleCombined = ruleGroup.getRelatedRule(fieldLarger.getRule(), fieldSmaller.getRule());
-                System.out.println(fields + " " + /*ruleGroup.getRelatedRules() + " " +*/ ruleCombined);
-                if (ruleCombined != null) {
-                    DateTimeField fieldCombined = merge(fieldLarger, fieldSmaller, ruleCombined);
-                    DateTimeField existing = result.getField(ruleCombined);
-                    if (existing != null && existing.equals(fieldCombined) == false) {
-                        throw new CalendricalRuleException("Unable to normalize, [" + fieldLarger +
-                                ", " + fieldSmaller + "] normalized to " + fieldCombined +
-                                " which is incompatible with existing field " +
-                                existing + " in input " + this, ruleCombined);
+                if (fieldLarger.getRule().getPeriodUnit().equals(fieldSmaller.getRule().getPeriodRange())) {
+                    DateTimeRule ruleCombined = ruleGroup.getRelatedRule(fieldSmaller.getRule().getPeriodUnit(), fieldLarger.getRule().getPeriodRange());
+                    System.out.println(fields + " " + /*ruleGroup.getRelatedRules() + " " +*/ ruleCombined);
+                    if (ruleCombined != null) {
+                        DateTimeField fieldCombined = merge(fieldLarger, fieldSmaller, ruleCombined);
+                        DateTimeField existing = result.getField(ruleCombined);
+                        if (existing != null && existing.equals(fieldCombined) == false) {
+                            throw new CalendricalRuleException("Unable to normalize, [" + fieldLarger +
+                                    ", " + fieldSmaller + "] normalized to " + fieldCombined +
+                                    " which is incompatible with existing field " +
+                                    existing + " in input " + this, ruleCombined);
+                        }
+                        result = result.without(fieldLarger.getRule()).without(fieldSmaller.getRule()).with(fieldCombined);
+                        fields.set(i--, fieldCombined);
+                        fields.remove(j);
+                        break;
                     }
-                    result = result.without(fieldLarger.getRule()).without(fieldSmaller.getRule()).with(fieldCombined);
-                    fields.set(i--, fieldCombined);
-                    fields.remove(j);
-                    break;
                 }
             }
         }

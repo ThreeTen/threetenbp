@@ -32,9 +32,7 @@
 package javax.time.calendar;
 
 import java.util.AbstractMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -98,25 +96,11 @@ public final class DateTimeRuleGroup {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     */
-    public Set<DateTimeRule> getRelatedRules() {
-        return new HashSet<DateTimeRule>(rules.values());
-    }
-
-    /**
-     */
-    public DateTimeRule getRelatedRule(DateTimeRule ruleBig, DateTimeRule ruleSmall) {
-//        if (rule1.compareTo(rule2) > 0) {
-//            DateTimeRule temp = rule1;
-//            rule1 = rule2;
-//            rule2 = temp;
-//        }
-        if (ruleBig.getPeriodUnit().equals(ruleSmall.getPeriodRange()) == false) {
-            return null;
-        }
-        return getRelatedRule(ruleSmall.getPeriodUnit(), ruleBig.getPeriodRange());
-    }
+//    /**
+//     */
+//    public Set<DateTimeRule> getRelatedRules() {
+//        return new HashSet<DateTimeRule>(rules.values());
+//    }
 
     public DateTimeRule getRelatedRule(PeriodUnit requiredUnit, PeriodUnit requiredRange) {
         Map.Entry<PeriodUnit, PeriodUnit> entry = createEntry(requiredUnit, requiredRange);
