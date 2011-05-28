@@ -645,48 +645,48 @@ public class TestDateTimeFields {
         return new Object[][] {
             // single field
             // request original
-//            {dtf(YEAR, 2008), YEAR, 2008},
-//            {dtf(NANO_OF_DAY, 12345678901L), NANO_OF_DAY, 12345678901L},
-//            
-//            // no convert
-//            {dtf(YEAR, 2008), MONTH_OF_YEAR, null},
-//            {dtf(HOUR_OF_AMPM, 6), HOUR_OF_DAY, null},
-//            
-//            // convert
-//            {dtf(MONTH_OF_YEAR, 6), QUARTER_OF_YEAR, 2},
-//            {dtf(MONTH_OF_YEAR, 6), MONTH_OF_QUARTER, 3},
-//            {dtf(EPOCH_MONTH, 42 * 12 + 3), MONTH_OF_YEAR, 4},
-//            {dtf(EPOCH_MONTH, 42 * 12 + 3), YEAR, 2012},
-//            {dtf(EPOCH_MONTH, 42 * 12 + 3), EPOCH_YEAR, 42},
-//            {dtf(HOUR_OF_DAY, 14), HOUR_OF_AMPM, 2},
-//            {dtf(SECOND_OF_DAY, 15 * 3600 + 74), HOUR_OF_DAY, 15},
-//            {dtf(SECOND_OF_DAY, 3 * 3600 + 74), MINUTE_OF_HOUR, 1},
-//            {dtf(SECOND_OF_DAY, 3 * 3600 + 74), SECOND_OF_MINUTE, 14},
-//            {dtf(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), NANO_OF_SECOND, 123},
-//            {dtf(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), SECOND_OF_MINUTE, 14},
-//            
-//            // normalize
-//            {dtf(CLOCK_HOUR_OF_DAY, 24), HOUR_OF_DAY, 0},
-//            {dtf(HOUR_OF_DAY, 0), CLOCK_HOUR_OF_DAY, 24},
-//            {dtf(CLOCK_HOUR_OF_DAY, 23), HOUR_OF_AMPM, 11},
-//            {dtf(MockBigClockHourOfDayFieldRule.INSTANCE, 1500), HOUR_OF_DAY, 15},
-//            
-//            // normalize - un-normalize
-//            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 7), HOUR_OF_DAY, 17},
-//            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 18), CLOCK_HOUR_OF_DAY, 6},
-//            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 3), CLOCK_HOUR_OF_AMPM, 9},
-//            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 4), MockBigClockHourOfDayFieldRule.INSTANCE, 2000},
-//            {dtf(MockBigClockHourOfDayFieldRule.INSTANCE, 1900), MockReversedHourOfDayFieldRule.INSTANCE, 5},
-//            
-//            // convert - un-normalize
-//            {dtf(NANO_OF_DAY, (4 * 3600 + 74) * 1000000000L + 123), MockBigClockHourOfDayFieldRule.INSTANCE, 400},
-//            {dtf(NANO_OF_DAY, (4 * 3600 + 74) * 1000000000L + 123), MockReversedHourOfDayFieldRule.INSTANCE, 20},
-//            
-//            // two fields simple
-//            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), HOUR_OF_DAY, 14},
-//            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), HOUR_OF_AMPM, 2},
-//            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), MINUTE_OF_DAY, 14 * 60 + 30},
-//            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), SECOND_OF_DAY, null},
+            {dtf(YEAR, 2008), YEAR, 2008},
+            {dtf(NANO_OF_DAY, 12345678901L), NANO_OF_DAY, 12345678901L},
+            
+            // no convert
+            {dtf(YEAR, 2008), MONTH_OF_YEAR, null},
+            {dtf(HOUR_OF_AMPM, 6), HOUR_OF_DAY, null},
+            
+            // convert
+            {dtf(MONTH_OF_YEAR, 6), QUARTER_OF_YEAR, 2},
+            {dtf(MONTH_OF_YEAR, 6), MONTH_OF_QUARTER, 3},
+            {dtf(EPOCH_MONTH, 42 * 12 + 3), MONTH_OF_YEAR, 4},
+            {dtf(EPOCH_MONTH, 42 * 12 + 3), YEAR, 2012},
+            {dtf(EPOCH_MONTH, 42 * 12 + 3), EPOCH_YEAR, 42},
+            {dtf(HOUR_OF_DAY, 14), HOUR_OF_AMPM, 2},
+            {dtf(SECOND_OF_DAY, 15 * 3600 + 74), HOUR_OF_DAY, 15},
+            {dtf(SECOND_OF_DAY, 3 * 3600 + 74), MINUTE_OF_HOUR, 1},
+            {dtf(SECOND_OF_DAY, 3 * 3600 + 74), SECOND_OF_MINUTE, 14},
+            {dtf(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), NANO_OF_SECOND, 123},
+            {dtf(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), SECOND_OF_MINUTE, 14},
+            
+            // normalize
+            {dtf(CLOCK_HOUR_OF_DAY, 24), HOUR_OF_DAY, 0},
+            {dtf(HOUR_OF_DAY, 0), CLOCK_HOUR_OF_DAY, 24},
+            {dtf(CLOCK_HOUR_OF_DAY, 23), HOUR_OF_AMPM, 11},
+            {dtf(MockBigClockHourOfDayFieldRule.INSTANCE, 1500), HOUR_OF_DAY, 15},
+            
+            // normalize - un-normalize
+            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 7), HOUR_OF_DAY, 17},
+            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 18), CLOCK_HOUR_OF_DAY, 6},
+            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 3), CLOCK_HOUR_OF_AMPM, 9},
+            {dtf(MockReversedHourOfDayFieldRule.INSTANCE, 4), MockBigClockHourOfDayFieldRule.INSTANCE, 2000},
+            {dtf(MockBigClockHourOfDayFieldRule.INSTANCE, 1900), MockReversedHourOfDayFieldRule.INSTANCE, 5},
+            
+            // convert - un-normalize
+            {dtf(NANO_OF_DAY, (4 * 3600 + 74) * 1000000000L + 123), MockBigClockHourOfDayFieldRule.INSTANCE, 400},
+            {dtf(NANO_OF_DAY, (4 * 3600 + 74) * 1000000000L + 123), MockReversedHourOfDayFieldRule.INSTANCE, 20},
+            
+            // two fields simple
+            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), HOUR_OF_DAY, 14},
+            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), HOUR_OF_AMPM, 2},
+            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), MINUTE_OF_DAY, 14 * 60 + 30},
+            {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 30), SECOND_OF_DAY, null},
             {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 61), HOUR_OF_DAY, 15},
             {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 61), MINUTE_OF_HOUR, 1},
             
