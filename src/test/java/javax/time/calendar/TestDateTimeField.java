@@ -343,19 +343,24 @@ public class TestDateTimeField {
             {DateTimeField.of(EPOCH_MONTH, 42 * 12 + 3), EPOCH_YEAR, 42},
             {DateTimeField.of(HOUR_OF_DAY, 14), HOUR_OF_AMPM, 2},
             {DateTimeField.of(SECOND_OF_DAY, 15 * 3600 + 74), HOUR_OF_DAY, 15},
+            {DateTimeField.of(SECOND_OF_DAY, 25 * 3600 + 74), HOUR_OF_DAY, 25},
             {DateTimeField.of(SECOND_OF_DAY, 3 * 3600 + 74), MINUTE_OF_HOUR, 1},
             {DateTimeField.of(SECOND_OF_DAY, 3 * 3600 + 74), SECOND_OF_MINUTE, 14},
             {DateTimeField.of(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), NANO_OF_SECOND, 123},
             {DateTimeField.of(NANO_OF_DAY, (3 * 3600 + 74) * 1000000000L + 123), SECOND_OF_MINUTE, 14},
+            {DateTimeField.of(NANO_OF_DAY, (27 * 3600 + 74) * 1000000000L + 123), HOUR_OF_DAY, 27},
             
             // normalize
             {DateTimeField.of(CLOCK_HOUR_OF_DAY, 24), HOUR_OF_DAY, 0},
+            {DateTimeField.of(CLOCK_HOUR_OF_DAY, 25), HOUR_OF_DAY, 25},
             {DateTimeField.of(HOUR_OF_DAY, 0), CLOCK_HOUR_OF_DAY, 24},
             {DateTimeField.of(CLOCK_HOUR_OF_DAY, 23), HOUR_OF_AMPM, 11},
             {DateTimeField.of(MockBigClockHourOfDayFieldRule.INSTANCE, 1500), HOUR_OF_DAY, 15},
             
             // normalize - un-normalize
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 7), HOUR_OF_DAY, 17},
+            {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, -1), HOUR_OF_DAY, 25},
+            {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 25), HOUR_OF_DAY, -1},
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 18), CLOCK_HOUR_OF_DAY, 6},
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 3), CLOCK_HOUR_OF_AMPM, 9},
             {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 4), MockBigClockHourOfDayFieldRule.INSTANCE, 2000},

@@ -104,6 +104,17 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule defining this field.
+     * <p>
+     * For example, in the field 'MonthOfYear 12', the rule is 'MonthOfYear'.
+     *
+     * @return the field rule, not null
+     */
+    public DateTimeRule getRule() {
+        return rule;
+    }
+
+    /**
      * Gets the value of this field which may be outside the value range for the rule.
      * <p>
      * For example, in the field 'MonthOfYear 12', the value is 12.
@@ -112,17 +123,6 @@ public final class DateTimeField
      */
     public long getValue() {
         return value;
-    }
-
-    /**
-     * Gets the rule defining this field.
-     * <p>
-     * For example, in the field 'MonthOfYear 12', the unit is 'MonthOfYear'.
-     *
-     * @return the field unit, not null
-     */
-    public DateTimeRule getRule() {
-        return rule;
     }
 
     //-----------------------------------------------------------------------
@@ -323,7 +323,7 @@ public final class DateTimeField
         return this;
     }
 
-    private boolean isNormalizable(DateTimeRule rule1, DateTimeRule rule2) {
+    private static boolean isNormalizable(DateTimeRule rule1, DateTimeRule rule2) {
         return rule1.getPeriodUnit().equals(rule2.getPeriodUnit()) &&
                 rule1.comparePeriodRange(rule2) == 0;
     }
@@ -351,28 +351,26 @@ public final class DateTimeField
         }
         // check conversion is feasible and permitted
         if (rule.getBaseRule().equals(ruleToDerive.getBaseRule()) &&
-                rule.getPeriodUnit().compareTo(ruleToDerive.getPeriodUnit()) <= 0 &&
+                rule.comparePeriodUnit(ruleToDerive) <= 0 &&
                 rule.comparePeriodRange(ruleToDerive) >= 0) {
             return derive(this, ruleToDerive);
         }
         return null;
     }
 
-    private DateTimeField derive(DateTimeField field, DateTimeRule ruleToDerive) {
-        // TODO: HourOfDay 27 should stay as is, because no way to get overflow day (or add NANO_OF_DAY_OVERFLOW)        
+    private static DateTimeField derive(DateTimeField field, DateTimeRule ruleToDerive) {
         // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
         DateTimeRule fieldRule = field.getRule();
         long period = fieldRule.convertToPeriod(field.getValue());
         PeriodField bottomConversion = ruleToDerive.getPeriodUnit().getEquivalentPeriod(fieldRule.getPeriodUnit());
         period = MathUtils.floorDiv(period, bottomConversion.getAmount());
-        if (ruleToDerive.getPeriodRange() != null) {
-            if (ruleToDerive.getPeriodRange().equals(DAYS)) {  // TODO: hack
-                PeriodField topConversion = _24_HOURS.getEquivalentPeriod(ruleToDerive.getPeriodUnit());
-                period = MathUtils.floorMod(period, topConversion.getAmount());
-            } else {
-                PeriodField topConversion = ruleToDerive.getPeriodRange().getEquivalentPeriod(ruleToDerive.getPeriodUnit());
-                period = MathUtils.floorMod(period, topConversion.getAmount());
-            }
+        PeriodUnit rangeToDerive = ruleToDerive.getPeriodRange();
+        if (rangeToDerive != null && fieldRule.comparePeriodRange(ruleToDerive) != 0) {
+//                if (periodRange.equals(DAYS)) {  // TODO: hack
+//                    periodRange = _24_HOURS;
+//                }
+            PeriodField topConversion = rangeToDerive.getEquivalentPeriod(ruleToDerive.getPeriodUnit());
+            period = MathUtils.floorMod(period, topConversion.getAmount());
         }
         return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
     }

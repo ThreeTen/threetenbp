@@ -129,23 +129,12 @@ public final class DateTimeRuleGroup {
     //-----------------------------------------------------------------------
     /**
      */
-    public void registerRelatedRule(DateTimeRule rule) {
-        // TODO validate rule isn't from javax.time (use parallel private/package method)
-        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
-        if (rule.getPeriodUnit().compareTo(baseRule.getPeriodUnit()) < 0) {
+    void registerRelatedRule(DateTimeRule rule) {
+        if (rule.comparePeriodUnit(baseRule) < 0) {
             throw new IllegalArgumentException("Rule includes information outside the boundaries of base rule " + baseRule.getName());
         }
         if (rule.comparePeriodRange(baseRule) > 0) {
             throw new IllegalArgumentException("Rule includes information outside the boundaries of base rule " + baseRule.getName());
-        }
-        registerRelatedRule0(rule);
-    }
-
-    /**
-     */
-    void registerRelatedRule0(DateTimeRule rule) {
-        if (rule.getPeriodUnit().equals(baseRule.getPeriodUnit()) && rule.comparePeriodRange(baseRule) == 0) {
-            return;  // don't register exact matches  // TODO: error?
         }
         Map.Entry<PeriodUnit, PeriodUnit> entry = createEntry(rule.getPeriodUnit(), rule.getPeriodRange());
         DateTimeRule previous = rules.putIfAbsent(entry, rule);

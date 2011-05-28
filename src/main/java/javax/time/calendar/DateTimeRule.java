@@ -137,7 +137,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
                     comparePeriodRange(parentNormalizationRule) == 0) {
                 normalizationRule = parentNormalizationRule;
             } else {
-                DateTimeRuleGroup.of(baseRule).registerRelatedRule0(this);
+                DateTimeRuleGroup.of(baseRule).registerRelatedRule(this);
             }
         }
         this.baseRule = baseRule;
@@ -433,6 +433,17 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
        return DateTimeField.of(this, value);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Compares the period unit of this rule to another.
+     * 
+     * @param other the other rule, not null
+     * @return the comparator result
+     */
+    final int comparePeriodUnit(DateTimeRule other) {
+        return getPeriodUnit().compareTo(other.getPeriodUnit());
+    }
+
     /**
      * Compares the period range of this rule to another handling null as forever.
      * 
@@ -440,13 +451,23 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      * @return the comparator result
      */
     final int comparePeriodRange(DateTimeRule other) {
-        if (getPeriodRange() == null) {
-            return other.getPeriodRange() == null ? 0 : 1;
+        return comparePeriodUnits(getPeriodRange(), other.getPeriodRange());
+    }
+
+    /**
+     * Compares the period range of this rule to another handling null as forever.
+     * 
+     * @param other the other rule, not null
+     * @return the comparator result
+     */
+    static final int comparePeriodUnits(PeriodUnit unit1, PeriodUnit unit2) {
+        if (unit1 == null) {
+            return unit2 == null ? 0 : 1;
         }
-        if (other.getPeriodRange() == null) {
+        if (unit2 == null) {
             return -1;
         }
-       return getPeriodRange().compareTo(other.getPeriodRange());
+       return unit1.compareTo(unit2);
     }
 
 }
