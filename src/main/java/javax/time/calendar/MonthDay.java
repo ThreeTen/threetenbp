@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
 
 import java.io.Serializable;
 
@@ -486,7 +487,7 @@ public final class MonthDay
      * @see Year#isValidMonthDay(MonthDay)
      */
     public boolean isValidYear(int year) {
-        return (day == 29 && month.isFebruary() && ISOChronology.isLeapYear(year) == false) == false;
+        return (day == 29 && month == FEBRUARY && ISOChronology.isLeapYear(year) == false) == false;
     }
 
     //-----------------------------------------------------------------------

@@ -146,23 +146,4 @@ public enum AmPmOfDay {
         return AMPM_OF_DAY.getText(getValue(), style, locale);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance representing AM (ante-meridiem).
-     *
-     * @return true if this instance represents AM
-     */
-    public boolean isAm() {
-        return (this == AM);
-    }
-
-    /**
-     * Is this instance representing PM (post-meridiem).
-     *
-     * @return true if this instance represents PM
-     */
-    public boolean isPm() {
-        return (this == PM);
-    }
-
 }

@@ -165,43 +165,6 @@ public enum QuarterOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance representing Q1, from January to March inclusive.
-     *
-     * @return true if this instance represents Q1
-     */
-    public boolean isQ1() {
-        return (this == Q1);
-    }
-
-    /**
-     * Is this instance representing Q2, from April to June inclusive.
-     *
-     * @return true if this instance represents Q2
-     */
-    public boolean isQ2() {
-        return (this == Q2);
-    }
-
-    /**
-     * Is this instance representing Q3, from July to September inclusive.
-     *
-     * @return true if this instance represents Q3
-     */
-    public boolean isQ3() {
-        return (this == Q3);
-    }
-
-    /**
-     * Is this instance representing Q4, from October to December inclusive.
-     *
-     * @return true if this instance represents Q4
-     */
-    public boolean isQ4() {
-        return (this == Q4);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the next quarter-of-year.
      * <p>
      * This calculates based on the time-line, thus it rolls around the end of

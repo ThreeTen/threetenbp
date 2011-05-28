@@ -117,19 +117,6 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
-    // isAM()
-    //-----------------------------------------------------------------------
-    public void test_isAm() {
-        assertEquals(AmPmOfDay.AM.isAm(), true);
-        assertEquals(AmPmOfDay.PM.isAm(), false);
-    }
-
-    public void test_isPm() {
-        assertEquals(AmPmOfDay.AM.isPm(), false);
-        assertEquals(AmPmOfDay.PM.isPm(), true);
-    }
-
-    //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {

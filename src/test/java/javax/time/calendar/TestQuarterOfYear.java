@@ -110,37 +110,6 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // is...()
-    //-----------------------------------------------------------------------
-    public void test_isQ1() {
-        assertEquals(QuarterOfYear.Q1.isQ1(), true);
-        assertEquals(QuarterOfYear.Q2.isQ1(), false);
-        assertEquals(QuarterOfYear.Q3.isQ1(), false);
-        assertEquals(QuarterOfYear.Q4.isQ1(), false);
-    }
-
-    public void test_isQ2() {
-        assertEquals(QuarterOfYear.Q1.isQ2(), false);
-        assertEquals(QuarterOfYear.Q2.isQ2(), true);
-        assertEquals(QuarterOfYear.Q3.isQ2(), false);
-        assertEquals(QuarterOfYear.Q4.isQ2(), false);
-    }
-
-    public void test_isQ3() {
-        assertEquals(QuarterOfYear.Q1.isQ3(), false);
-        assertEquals(QuarterOfYear.Q2.isQ3(), false);
-        assertEquals(QuarterOfYear.Q3.isQ3(), true);
-        assertEquals(QuarterOfYear.Q4.isQ3(), false);
-    }
-
-    public void test_isQ4() {
-        assertEquals(QuarterOfYear.Q1.isQ4(), false);
-        assertEquals(QuarterOfYear.Q2.isQ4(), false);
-        assertEquals(QuarterOfYear.Q3.isQ4(), false);
-        assertEquals(QuarterOfYear.Q4.isQ4(), true);
-    }
-
-    //-----------------------------------------------------------------------
     // next()
     //-----------------------------------------------------------------------
     public void test_next() {
