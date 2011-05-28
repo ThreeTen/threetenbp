@@ -44,7 +44,7 @@ import javax.time.CalendricalException;
  * <p>
  * Each rule uses an underlying type to represent the data.
  * This is captured in the generic type of the rule.
- * The underlying type is reified and made available via {@link #getReifiedType()}.
+ * The underlying type is reified and made available via {@link #getType()}.
  * It is expected, but not enforced, that the underlying type is {@link Comparable}.
  * <p>
  * CalendricalRule is an abstract class and must be implemented with care to
@@ -65,7 +65,7 @@ public abstract class CalendricalRule<T>
     private static final long serialVersionUID = 1L;
 
     /** The reified class for the generic type. */
-    private final Class<T> reified;
+    private final Class<T> type;
     /** The name of the rule, not null. */
     private final String name;
 
@@ -85,7 +85,7 @@ public abstract class CalendricalRule<T>
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
-        this.reified = type;
+        this.type = type;
         this.name = name;
     }
 
@@ -106,7 +106,7 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the reified class representing the underlying type of the rule.
+     * Gets the type of the rule, which is a reification of the generic type.
      * <p>
      * Each rule uses an underlying type to represent the data.
      * This is captured in the generic type of the rule.
@@ -116,8 +116,8 @@ public abstract class CalendricalRule<T>
      *
      * @return the reified type of values of the rule, not null
      */
-    public final Class<T> getReifiedType() {
-        return reified;
+    public final Class<T> getType() {
+        return type;
     }
 
     /**
@@ -139,10 +139,10 @@ public abstract class CalendricalRule<T>
         if (value == null) {
             return null;
         }
-        if (reified.isInstance(value)) {
+        if (type.isInstance(value)) {
             return (T) value;
         }
-        throw new ClassCastException("Value of type " + value.getClass().getName() + " cannot be cast to type " + reified.getName());
+        throw new ClassCastException("Value of type " + value.getClass().getName() + " cannot be cast to type " + type.getName());
     }
 
     //-----------------------------------------------------------------------
@@ -281,7 +281,7 @@ public abstract class CalendricalRule<T>
      * @param value  the value to interpret, not null
      */
     final T interpretValue(CalendricalMerger merger, Object value) {
-        if (reified.isInstance(value)) {
+        if (type.isInstance(value)) {
             return reify(value);
         }
         T result = interpret(merger, value);

@@ -87,10 +87,10 @@ public class TestCalendricalRule {
     }
 
     //-----------------------------------------------------------------------
-    // getReifiedType()
+    // getType()
     //-----------------------------------------------------------------------
-    public void test_getReifiedType() {
-        assertEquals(new MockBigYearRule().getReifiedType(), BigInteger.class);
+    public void test_getType() {
+        assertEquals(new MockBigYearRule().getType(), BigInteger.class);
     }
 
     //-----------------------------------------------------------------------

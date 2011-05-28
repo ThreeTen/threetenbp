@@ -120,7 +120,7 @@ public enum HistoricEra implements Calendrical {
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule.getReifiedType() != HistoricEra.class) {
+        if (rule.getType() != HistoricEra.class) {
             return null;
         }
         return rule.reify(this);

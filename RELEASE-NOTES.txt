@@ -79,6 +79,7 @@
 - Add ofInstantUTC factories to ZDT, ODT, OD, OT
 - Remove Comparable, PeriodUnit, PeriodRange, ID and Chronology from CalendricalRule
 - Remove isXxx() methods from enums
+- Rename CalendricalRule.getReifiedType() to getType()
 
 0.6.3
 ===============================================================================

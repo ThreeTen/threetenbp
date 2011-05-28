@@ -64,7 +64,7 @@ public class TestHijrahChronology {
     @Test
     public void testEra() throws Exception {
         DateTimeRule rule = HijrahChronology.eraRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "HijrahEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodEras());
@@ -75,7 +75,7 @@ public class TestHijrahChronology {
     @Test
     public void testYearOfEra() throws Exception {
         DateTimeRule rule = HijrahChronology.yearOfEraRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "HijrahYearOfEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(HijrahDate.MIN_YEAR_OF_ERA, HijrahDate.MAX_YEAR_OF_ERA));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodYears());
@@ -86,7 +86,7 @@ public class TestHijrahChronology {
     @Test
     public void testMonthOfYear() throws Exception {
         DateTimeRule rule = HijrahChronology.monthOfYearRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "HijrahMonthOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodMonths());
@@ -96,7 +96,7 @@ public class TestHijrahChronology {
     @Test
     public void testDayOfMonth() throws Exception {
         DateTimeRule rule = HijrahChronology.dayOfMonthRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "HijrahDayOfMonth");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 29, 30));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodDays());
@@ -107,7 +107,7 @@ public class TestHijrahChronology {
     @Test
     public void testDayOfYear() throws Exception {
         DateTimeRule rule = HijrahChronology.dayOfYearRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "HijrahDayOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 354, 355));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodDays());
@@ -119,7 +119,7 @@ public class TestHijrahChronology {
     @Test
     public void testDayOfWeek() throws Exception {
         DateTimeRule rule = HijrahChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "HijrahDayOfWeek");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), HijrahChronology.periodDays());

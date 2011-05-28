@@ -64,7 +64,7 @@ public class TestJapaneseChronology {
     @Test
     public void testEra() throws Exception {
         DateTimeRule rule = JapaneseChronology.eraRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "JapaneseEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(-3, 2));
         assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodEras());
@@ -75,7 +75,7 @@ public class TestJapaneseChronology {
     @Test
     public void testYearOfEra() throws Exception {
         DateTimeRule rule = JapaneseChronology.yearOfEraRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "JapaneseYearOfEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(JapaneseDate.MIN_YEAR_OF_ERA, JapaneseDate.MAX_YEAR_OF_ERA));
         assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodYears());
@@ -86,7 +86,7 @@ public class TestJapaneseChronology {
     @Test
     public void testMonthOfYear() throws Exception {
         DateTimeRule rule = JapaneseChronology.monthOfYearRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "JapaneseMonthOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodMonths());
@@ -96,7 +96,7 @@ public class TestJapaneseChronology {
     @Test
     public void testDayOfMonth() throws Exception {
         DateTimeRule rule = JapaneseChronology.dayOfMonthRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "JapaneseDayOfMonth");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 28, 31));
         assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodDays());
@@ -107,7 +107,7 @@ public class TestJapaneseChronology {
     @Test
     public void testDayOfYear() throws Exception {
         DateTimeRule rule = JapaneseChronology.dayOfYearRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "JapaneseDayOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodDays());
@@ -119,7 +119,7 @@ public class TestJapaneseChronology {
     @Test
     public void testDayOfWeek() throws Exception {
         DateTimeRule rule = JapaneseChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "JapaneseDayOfWeek");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodDays());

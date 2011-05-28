@@ -57,7 +57,7 @@ public class TestISOWeekBasedYearRule extends AbstractTestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
         DateTimeRule rule = ISODateTimeRule.WEEK_BASED_YEAR;
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "WeekBasedYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(Year.MIN_YEAR, Year.MAX_YEAR));  // TODO: check numbers
         assertEquals(rule.getRange(DateTimeFields.EMPTY), DateTimeRuleRange.of(Year.MIN_YEAR, Year.MAX_YEAR));

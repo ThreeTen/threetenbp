@@ -64,7 +64,7 @@ public class TestMinguoChronology {
     @Test
     public void testEra() throws Exception {
         DateTimeRule rule = MinguoChronology.eraRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodEras());
@@ -75,7 +75,7 @@ public class TestMinguoChronology {
     @Test
     public void testYearOfEra() throws Exception {
         DateTimeRule rule = MinguoChronology.yearOfEraRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoYearOfEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(MinguoDate.MIN_YEAR_OF_ERA, MinguoDate.MAX_YEAR_OF_ERA));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodYears());
@@ -86,7 +86,7 @@ public class TestMinguoChronology {
     @Test
     public void testMonthOfYear() throws Exception {
         DateTimeRule rule = MinguoChronology.monthOfYearRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoMonthOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodMonths());
@@ -96,7 +96,7 @@ public class TestMinguoChronology {
     @Test
     public void testDayOfMonth() throws Exception {
         DateTimeRule rule = MinguoChronology.dayOfMonthRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoDayOfMonth");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 28, 31));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
@@ -107,7 +107,7 @@ public class TestMinguoChronology {
     @Test
     public void testDayOfYear() throws Exception {
         DateTimeRule rule = MinguoChronology.dayOfYearRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoDayOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
@@ -119,7 +119,7 @@ public class TestMinguoChronology {
     @Test
     public void testDayOfWeek() throws Exception {
         DateTimeRule rule = MinguoChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DateTimeField.class);
+        assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoDayOfWeek");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
