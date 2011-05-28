@@ -320,6 +320,9 @@ public abstract class PeriodUnit
      * @throws NullPointerException if other is null
      */
     public int compareTo(PeriodUnit other) {
+        if (other == this) {
+            return 0;
+        }
         int cmp = estimatedDuration.compareTo(other.estimatedDuration);
         if (cmp == 0) {
             cmp = name.compareTo(other.name);
