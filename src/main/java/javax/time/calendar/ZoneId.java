@@ -38,12 +38,14 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRulesGroup;
 
@@ -254,7 +256,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @param timeZoneIdentifier  the time-zone id, not null
      * @param aliasMap  a map of time-zone IDs (typically abbreviations) to real time-zone IDs, not null
      * @return the time-zone, not null
-     * @throws IllegalArgumentException if the time-zone cannot be found
+     * @throws CalendricalException if the time-zone cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
         ISOChronology.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
@@ -423,7 +425,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
     public abstract String getID();
 
     /**
-     * Gets the time-zone rules group ID, such as 'TZDB'.
+     * Gets the time-zone rules group ID, such as {@code TZDB}.
      * <p>
      * The group ID is the first part of the {@link #getID() full unique ID}.
      * Time zone rule data is supplied by a group, typically a company or organization.
@@ -436,7 +438,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
     public abstract String getGroupID();
 
     /**
-     * Gets the time-zone region identifier, such as 'Europe/London'.
+     * Gets the time-zone region identifier, such as {@code Europe/London}.
      * <p>
      * The region ID is the second part of the {@link #getID() full unique ID}.
      * Time zone rules are defined for a region and this element represents that region.
@@ -448,7 +450,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
     public abstract String getRegionID();
 
     /**
-     * Gets the time-zone rules group version, such as '2009b'.
+     * Gets the time-zone rules group version, such as '{@code 2009b}.
      * <p>
      * The version ID is the third part of the {@link #getID() full unique ID}.
      * Time zone rules change over time as governments change the associated laws.
@@ -702,20 +704,16 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the textual name of this zone.
+     * Gets the textual representation of the zone, such as 'British Time'.
+     * <p>
+     * This returns a textual description for the time-zone ID.
+     * <p>
+     * If no textual mapping is found then the {@link #getRegionID() region ID} is returned.
      *
-     * @return the time-zone name, not null
+     * @param locale  the locale to use, not null
+     * @return the short text value of the day-of-week, not null
      */
-    public String getName() {
-        return getRegionID();  // TODO
-    }
-
-    /**
-     * Gets the short textual name of this zone.
-     *
-     * @return the time-zone short name, not null
-     */
-    public String getShortName() {
+    public String getText(TextStyle style, Locale locale) {
         return getRegionID();  // TODO
     }
 

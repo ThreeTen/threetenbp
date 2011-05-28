@@ -80,6 +80,7 @@
 - Remove Comparable, PeriodUnit, PeriodRange, ID and Chronology from CalendricalRule
 - Remove isXxx() methods from enums
 - Rename CalendricalRule.getReifiedType() to getType()
+- Combine ZoneId.getName() and getShortName() into getText()
 
 0.6.3
 ===============================================================================
