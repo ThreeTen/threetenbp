@@ -600,7 +600,7 @@ public final class MinguoDate
         private static final CalendricalRule<MinguoDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MinguoDate.class, ISOChronology.INSTANCE, "MinguoDate", MinguoChronology.periodDays(), null);
+            super(MinguoDate.class, ISOChronology.INSTANCE, "MinguoDate");
         }
         private Object readResolve() {
             return INSTANCE;

@@ -801,7 +801,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
         private static final CalendricalRule<ZoneId> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZoneId.class, ISOChronology.INSTANCE, "TimeZone", null, null);
+            super(ZoneId.class, ISOChronology.INSTANCE, "TimeZone");
         }
         private Object readResolve() {
             return INSTANCE;

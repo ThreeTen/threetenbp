@@ -328,7 +328,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    public int compareTo(CalendricalRule<?> other) {
+    public int compareTo(DateTimeRule other) {
         if (other instanceof ISODateTimeRule) {
             return ordinal - ((ISODateTimeRule) other).ordinal;
         }

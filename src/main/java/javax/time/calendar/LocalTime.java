@@ -1408,7 +1408,7 @@ public final class LocalTime
         private static final CalendricalRule<LocalTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime", NANOS, DAYS);
+            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime");
         }
         private Object readResolve() {
             return INSTANCE;

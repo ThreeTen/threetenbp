@@ -52,12 +52,17 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
+public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
+        implements Comparable<DateTimeRule> {
     // TODO: broken serialization
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
 
+    /** The period unit, not null. */
+    private final PeriodUnit periodUnit;
+    /** The period range, not null. */
+    private final PeriodUnit periodRange;
     /** The outer range of values for the rule. */
     private final DateTimeRuleRange range;
     /** The base rule that this rule relates to. */
@@ -125,8 +130,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
             PeriodUnit periodRange,
             DateTimeRuleRange range,
             DateTimeRule parentRule) {
-        super(DateTimeField.class, chronology, name, periodUnit, periodRange);
+        super(DateTimeField.class, chronology, name);
+        ISOChronology.checkNotNull(periodUnit, "Period unit must not be null");
         ISOChronology.checkNotNull(range, "DateTimeRuleRange must not be null");
+        this.periodUnit = periodUnit;
+        this.periodRange = periodRange;
         this.range = range;
         DateTimeRule baseRule = this;
         DateTimeRule normalizationRule = this;
@@ -142,6 +150,45 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
         }
         this.baseRule = baseRule;
         this.normalizationRule = normalizationRule;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the unit that the rule is measured in.
+     * <p>
+     * Most rules define a field such as 'hour of day' or 'month of year'.
+     * The unit is the period that varies within the range.
+     * <p>
+     * For example, the rule for hour-of-day will return Hours, while the rule for
+     * month-of-year will return Months. The rule for a date will return Days
+     * as a date could alternately be described as 'days of forever'.
+     * <p>
+     * The {@code null} value is returned if the rule is not defined by a unit and range.
+     *
+     * @return the unit defining the rule unit, null if this rule isn't based on a period
+     */
+    public PeriodUnit getPeriodUnit() {
+        return periodUnit;
+    }
+
+    /**
+     * Gets the range that the rule is bound by.
+     * <p>
+     * Most rules define a field such as 'hour of day' or 'month of year'.
+     * The range is the period that the field varies within.
+     * <p>
+     * For example, the rule for hour-of-day will return Days, while the rule for
+     * month-of-year will return Years.
+     * <p>
+     * When the range is unbounded, such as for a date or the year field, then {@code null}
+     * will be returned.
+     * The {@code null} value is also returned if the rule is not defined by a unit and range.
+     *
+     * @return the unit defining the rule range, null if unbounded,
+     *  or if this rule isn't based on a period
+     */
+    public PeriodUnit getPeriodRange() {
+        return periodRange;
     }
 
     //-----------------------------------------------------------------------
@@ -431,6 +478,50 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField> {
      */
     public DateTimeField field(long value) {
        return DateTimeField.of(this, value);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this {@code CalendricalRule} to another.
+     * <p>
+     * The comparison is based on the period unit followed by the period range
+     * followed by the rule ID.
+     * The period unit is compared first, so MinuteOfHour will be less than
+     * HourOfDay, which will be less than DayOfWeek. When the period unit is
+     * the same, the period range is compared, so DayOfWeek is less than
+     * DayOfMonth, which is less than DayOfYear. Finally, the rule ID is compared.
+     *
+     * @param other  the other type to compare to, not null
+     * @return the comparator result, negative if less, positive if greater, zero if equal
+     */
+    public int compareTo(DateTimeRule other) {
+        if (this.getPeriodUnit() == null) {
+            if (other.getPeriodUnit() == null) {
+                return getID().compareTo(other.getID());
+            } else {
+                return 1;
+            }
+        } else if (other.getPeriodUnit() == null) {
+            return -1;
+        }
+        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
+        if (cmp != 0) {
+            return cmp;
+        }
+        if (this.getPeriodRange() == null) {
+            if (other.getPeriodRange() == null) {
+                return getID().compareTo(other.getID());
+            } else {
+                return 1;
+            }
+        } else if (other.getPeriodRange() == null) {
+            return -1;
+        }
+        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
+        if (cmp != 0) {
+            return cmp;
+        }
+        return getID().compareTo(other.getID());
     }
 
     //-----------------------------------------------------------------------

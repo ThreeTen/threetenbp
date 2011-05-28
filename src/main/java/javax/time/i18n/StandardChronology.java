@@ -277,7 +277,7 @@ public abstract class StandardChronology extends Chronology {
     final class DateRule extends CalendricalRule<ChronologyDate> implements Serializable {
         private static final long serialVersionUID = 1L;
         private DateRule() {
-            super(ChronologyDate.class, StandardChronology.this, "ChronologyDate", DAYS, null);
+            super(ChronologyDate.class, StandardChronology.this, "ChronologyDate");
         }
         @Override
         protected ChronologyDate derive(Calendrical calendrical) {

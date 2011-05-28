@@ -2127,7 +2127,7 @@ public final class ZonedDateTime
         private static final CalendricalRule<ZonedDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZonedDateTime.class, ISOChronology.INSTANCE, "ZonedDateTime", NANOS, null);
+            super(ZonedDateTime.class, ISOChronology.INSTANCE, "ZonedDateTime");
         }
         private Object readResolve() {
             return INSTANCE;

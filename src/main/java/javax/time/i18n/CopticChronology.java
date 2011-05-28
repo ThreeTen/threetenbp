@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.Duration;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -345,7 +344,7 @@ public final class CopticChronology extends Chronology implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        public int compareTo(CalendricalRule<?> other) {
+        public int compareTo(DateTimeRule other) {
             if (other instanceof Rule) {
                 return ordinal - ((Rule) other).ordinal;
             }

@@ -627,7 +627,7 @@ public final class MonthDay
         private static final CalendricalRule<MonthDay> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay", DAYS, YEARS);
+            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay");
         }
         private Object readResolve() {
             return INSTANCE;

@@ -578,7 +578,7 @@ public final class CopticDate
         private static final CalendricalRule<CopticDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(CopticDate.class, CopticChronology.INSTANCE, "CopticDate", CopticChronology.DAYS, null);
+            super(CopticDate.class, CopticChronology.INSTANCE, "CopticDate");
         }
         private Object readResolve() {
             return INSTANCE;

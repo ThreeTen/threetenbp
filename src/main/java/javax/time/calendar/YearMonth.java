@@ -720,7 +720,7 @@ public final class YearMonth
         private static final CalendricalRule<YearMonth> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(YearMonth.class, ISOChronology.INSTANCE, "YearMonth", MONTHS, null);
+            super(YearMonth.class, ISOChronology.INSTANCE, "YearMonth");
         }
         private Object readResolve() {
             return INSTANCE;

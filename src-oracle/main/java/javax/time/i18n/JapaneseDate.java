@@ -601,7 +601,7 @@ public final class JapaneseDate
         private static final CalendricalRule<JapaneseDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(JapaneseDate.class, ISOChronology.INSTANCE, "JapaneseDate", JapaneseChronology.periodDays(), null);
+            super(JapaneseDate.class, ISOChronology.INSTANCE, "JapaneseDate");
         }
         private Object readResolve() {
             return INSTANCE;

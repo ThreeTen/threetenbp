@@ -59,7 +59,7 @@ import javax.time.CalendricalException;
  *  {@code Number} or {@code Enum}, must be immutable, should be comparable
  */
 public abstract class CalendricalRule<T>
-        implements Comparable<CalendricalRule<?>>, Comparator<Calendrical>, Serializable {
+        implements Comparator<Calendrical>, Serializable {
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
@@ -72,10 +72,6 @@ public abstract class CalendricalRule<T>
     private final String id;
     /** The name of the rule, not null. */
     private final String name;
-    /** The period unit, not null. */
-    private final PeriodUnit periodUnit;
-    /** The period range, not null. */
-    private final PeriodUnit periodRange;
 
     /**
      * Constructor used to create a rule.
@@ -89,9 +85,7 @@ public abstract class CalendricalRule<T>
     protected CalendricalRule(
             Class<T> reifiedClass,
             Chronology chronology,
-            String name,
-            PeriodUnit periodUnit,
-            PeriodUnit periodRange) {
+            String name) {
         // avoid possible circular references by using inline NPE checks
         if (reifiedClass == null) {
             throw new NullPointerException("Reified class must not be null");
@@ -102,15 +96,10 @@ public abstract class CalendricalRule<T>
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
-        if (periodUnit == null && periodRange != null) {
-            throw new NullPointerException("Peiod unit must not be null if period range is non-null");
-        }
         this.reified = reifiedClass;
         this.chronology = chronology;
         this.id = chronology.getName() + '.' + name;
         this.name = name;
-        this.periodUnit = periodUnit;
-        this.periodRange = periodRange;
     }
 
     //-----------------------------------------------------------------------
@@ -146,45 +135,6 @@ public abstract class CalendricalRule<T>
      */
     public final String getName() {
         return name;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the unit that the rule is measured in.
-     * <p>
-     * Most rules define a field such as 'hour of day' or 'month of year'.
-     * The unit is the period that varies within the range.
-     * <p>
-     * For example, the rule for hour-of-day will return Hours, while the rule for
-     * month-of-year will return Months. The rule for a date will return Days
-     * as a date could alternately be described as 'days of forever'.
-     * <p>
-     * The {@code null} value is returned if the rule is not defined by a unit and range.
-     *
-     * @return the unit defining the rule unit, null if this rule isn't based on a period
-     */
-    public PeriodUnit getPeriodUnit() {
-        return periodUnit;
-    }
-
-    /**
-     * Gets the range that the rule is bound by.
-     * <p>
-     * Most rules define a field such as 'hour of day' or 'month of year'.
-     * The range is the period that the field varies within.
-     * <p>
-     * For example, the rule for hour-of-day will return Days, while the rule for
-     * month-of-year will return Years.
-     * <p>
-     * When the range is unbounded, such as for a date or the year field, then {@code null}
-     * will be returned.
-     * The {@code null} value is also returned if the rule is not defined by a unit and range.
-     *
-     * @return the unit defining the rule range, null if unbounded,
-     *  or if this rule isn't based on a period
-     */
-    public PeriodUnit getPeriodRange() {
-        return periodRange;
     }
 
     //-----------------------------------------------------------------------
@@ -463,51 +413,6 @@ public abstract class CalendricalRule<T>
             throw new IllegalArgumentException("Unable to compare as Calendrical does not provide rule: " + getName());
         }
         return value1.compareTo(value2);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this {@code CalendricalRule} to another.
-     * <p>
-     * The comparison is based on the period unit followed by the period range
-     * followed by the rule ID.
-     * The period unit is compared first, so MinuteOfHour will be less than
-     * HourOfDay, which will be less than DayOfWeek. When the period unit is
-     * the same, the period range is compared, so DayOfWeek is less than
-     * DayOfMonth, which is less than DayOfYear. Finally, the rule ID is compared.
-     *
-     * @param other  the other type to compare to, not null
-     * @return the comparator result, negative if less, positive if greater, zero if equal
-     * @throws NullPointerException if other is null
-     */
-    public int compareTo(CalendricalRule<?> other) {
-        if (this.getPeriodUnit() == null) {
-            if (other.getPeriodUnit() == null) {
-                return getID().compareTo(other.getID());
-            } else {
-                return 1;
-            }
-        } else if (other.getPeriodUnit() == null) {
-            return -1;
-        }
-        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
-        if (cmp != 0) {
-            return cmp;
-        }
-        if (this.getPeriodRange() == null) {
-            if (other.getPeriodRange() == null) {
-                return getID().compareTo(other.getID());
-            } else {
-                return 1;
-            }
-        } else if (other.getPeriodRange() == null) {
-            return -1;
-        }
-        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
-        if (cmp != 0) {
-            return cmp;
-        }
-        return getID().compareTo(other.getID());
     }
 
     //-----------------------------------------------------------------------

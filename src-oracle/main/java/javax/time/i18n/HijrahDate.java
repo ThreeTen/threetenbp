@@ -1920,7 +1920,7 @@ public final class HijrahDate
         private static final CalendricalRule<HijrahDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(HijrahDate.class, ISOChronology.INSTANCE, "HijrahDate", HijrahChronology.periodDays(), null);
+            super(HijrahDate.class, ISOChronology.INSTANCE, "HijrahDate");
         }
         private Object readResolve() {
             return INSTANCE;

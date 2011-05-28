@@ -926,7 +926,7 @@ public final class OffsetTime
         private static final CalendricalRule<OffsetTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(OffsetTime.class, ISOChronology.INSTANCE, "OffsetTime", NANOS, DAYS);
+            super(OffsetTime.class, ISOChronology.INSTANCE, "OffsetTime");
         }
         private Object readResolve() {
             return INSTANCE;

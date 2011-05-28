@@ -473,7 +473,7 @@ public class TestISOChronology {
     }
 
     public void test_compareTo_fields() {
-        List<CalendricalRule<?>> list = new ArrayList<CalendricalRule<?>>();
+        List<DateTimeRule> list = new ArrayList<DateTimeRule>();
         list.add(ISODateTimeRule.NANO_OF_SECOND);
         list.add(ISODateTimeRule.NANO_OF_DAY);
         list.add(ISODateTimeRule.MILLI_OF_SECOND);
@@ -503,7 +503,7 @@ public class TestISOChronology {
         list.add(ISODateTimeRule.YEAR);
         list.add(ISODateTimeRule.EPOCH_YEAR);
         
-        List<CalendricalRule<?>> test = new ArrayList<CalendricalRule<?>>(list);
+        List<DateTimeRule> test = new ArrayList<DateTimeRule>(list);
         Collections.shuffle(test);
         Collections.sort(test);
         assertEquals(test, list);

@@ -62,7 +62,7 @@ public class TestCalendricalRule {
     static class MockBigYearRule extends CalendricalRule<BigInteger> {
         private static final long serialVersionUID = 1L;
         protected MockBigYearRule() {
-            super(BigInteger.class, ISOChronology.INSTANCE, "MockBigYearRule", ISOPeriodUnit.YEARS, null);
+            super(BigInteger.class, ISOChronology.INSTANCE, "MockBigYearRule");
         }
         @Override
         protected BigInteger derive(Calendrical calendrical) {
@@ -73,7 +73,6 @@ public class TestCalendricalRule {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Comparable.class.isAssignableFrom(CalendricalRule.class));
         assertTrue(Comparator.class.isAssignableFrom(CalendricalRule.class));
         assertTrue(Serializable.class.isAssignableFrom(CalendricalRule.class));
     }

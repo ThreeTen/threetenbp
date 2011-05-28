@@ -125,7 +125,7 @@ public final class MockOtherDate
         private static final CalendricalRule<MockOtherDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MockOtherDate.class, ISOChronology.INSTANCE, "MockOtherDate", ISOPeriodUnit.DAYS, null);
+            super(MockOtherDate.class, ISOChronology.INSTANCE, "MockOtherDate");
         }
         private Object readResolve() {
             return INSTANCE;

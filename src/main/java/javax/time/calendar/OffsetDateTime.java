@@ -1919,7 +1919,7 @@ public final class OffsetDateTime
         private static final CalendricalRule<OffsetDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(OffsetDateTime.class, ISOChronology.INSTANCE, "OffsetDateTime", NANOS, null);
+            super(OffsetDateTime.class, ISOChronology.INSTANCE, "OffsetDateTime");
         }
         private Object readResolve() {
             return INSTANCE;

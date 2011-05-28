@@ -643,7 +643,7 @@ public final class ZoneOffset
         private static final CalendricalRule<ZoneOffset> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZoneOffset.class, ISOChronology.INSTANCE, "ZoneOffset", null, null);
+            super(ZoneOffset.class, ISOChronology.INSTANCE, "ZoneOffset");
         }
         private Object readResolve() {
             return INSTANCE;

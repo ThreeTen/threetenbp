@@ -184,11 +184,11 @@ public class TestDateTimeParseContext {
         context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(16));
         context.setParsed(ZoneId.rule(),ZoneId.of(ZoneOffset.ofHours(18)));
         
-        assertEquals(context.toString(), "{ISO.MonthOfYear=MonthOfYear 6, ISO.Year=Year 2008, ISO.TimeZone=UTC+18:00, ISO.ZoneOffset=+16:00}");
-    }
-
-    public void test_toString_empty() throws Exception {
-        assertEquals(context.toString(), "{}");
+        String str = context.toString();
+        assertEquals(str.contains("MonthOfYear 6"), true);
+        assertEquals(str.contains("Year 2008"), true);
+        assertEquals(str.contains("UTC+18:00"), true);
+        assertEquals(str.contains("+16:00"), true);
     }
 
 }
