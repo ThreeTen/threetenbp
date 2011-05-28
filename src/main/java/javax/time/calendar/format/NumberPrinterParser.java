@@ -316,12 +316,12 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     @Override
     public String toString() {
         if (minWidth == 1 && maxWidth == 19 && signStyle == SignStyle.NORMAL) {
-            return "Value(" + rule.getID() + ")";
+            return "Value(" + rule.getName() + ")";
         }
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
-            return "Value(" + rule.getID() + "," + minWidth + ")";
+            return "Value(" + rule.getName() + "," + minWidth + ")";
         }
-        return "Value(" + rule.getID() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
+        return "Value(" + rule.getName() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
     }
 
 }

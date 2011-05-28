@@ -31,8 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
-
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -1742,27 +1740,27 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code LocalDateTime} is equal to the specified date-time.
+     * Checks if this date-time is equal to another date-time.
      * <p>
      * The comparison is based on the time-line position of the date-times.
      *
-     * @param other  the other date-time to compare to, null returns false
-     * @return true if this point is equal to the specified date-time
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date-time
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof LocalDateTime) {
-            LocalDateTime dt = (LocalDateTime) other;
-            return date.equals(dt.date) && time.equals(dt.time);
+        if (obj instanceof LocalDateTime) {
+            LocalDateTime other = (LocalDateTime) obj;
+            return date.equals(other.date) && time.equals(other.time);
         }
         return false;
     }
 
     /**
-     * A hash code for this {@code LocalDateTime}.
+     * A hash code for this date-time.
      *
      * @return a suitable hash code
      */
@@ -1786,7 +1784,7 @@ public final class LocalDateTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted date-time, not null
+     * @return a string representation of this date-time, not null
      */
     @Override
     public String toString() {
@@ -1824,7 +1822,7 @@ public final class LocalDateTime
         private static final CalendricalRule<LocalDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalDateTime.class, ISOChronology.INSTANCE, "LocalDateTime");
+            super(LocalDateTime.class, "LocalDateTime");
         }
         private Object readResolve() {
             return INSTANCE;

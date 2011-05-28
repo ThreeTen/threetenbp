@@ -47,7 +47,7 @@ public final class MockReversedHourOfDayFieldRule extends DateTimeRule implement
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockReversedHourOfDayFieldRule() {
-        super(ISOChronology.INSTANCE, "ReversedHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
+        super("ReversedHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
                 DateTimeRuleRange.of(1, 24), HOUR_OF_DAY);
     }
     private Object readResolve() {

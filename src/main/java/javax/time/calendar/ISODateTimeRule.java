@@ -98,7 +98,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             long maximumValue,
             long smallestMaximum,
             DateTimeRule baseRule) {
-        super(ISOChronology.INSTANCE, name, periodUnit, periodRange,
+        super(name, periodUnit, periodRange,
                 DateTimeRuleRange.of(minimumValue, smallestMaximum, maximumValue), baseRule);
         this.ordinal = ordinal;  // 16 multiplier allow space for new rules
     }

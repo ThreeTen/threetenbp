@@ -264,17 +264,17 @@ public class TestNumberPrinter extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_toString1() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_DAY, 1, 19, SignStyle.NORMAL);
-        assertEquals(pp.toString(), "Value(ISO.HourOfDay)");
+        assertEquals(pp.toString(), "Value(HourOfDay)");
     }
 
     public void test_toString2() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_DAY, 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.toString(), "Value(ISO.HourOfDay,2)");
+        assertEquals(pp.toString(), "Value(HourOfDay,2)");
     }
 
     public void test_toString3() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(HOUR_OF_DAY, 1, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.toString(), "Value(ISO.HourOfDay,1,2,NOT_NEGATIVE)");
+        assertEquals(pp.toString(), "Value(HourOfDay,1,2,NOT_NEGATIVE)");
     }
 
 }

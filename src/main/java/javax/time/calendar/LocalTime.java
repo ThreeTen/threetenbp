@@ -37,8 +37,6 @@ import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
 
 import java.io.Serializable;
 
@@ -1142,28 +1140,28 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code LocalTime} is equal to the specified time.
+     * Checks if this time is equal to another time.
      * <p>
      * The comparison is based on the time-line position of the time within a day.
      *
-     * @param other  the other time to compare to, null returns false
-     * @return true if this point is equal to the specified time
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other time
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof LocalTime) {
-            LocalTime localTime = (LocalTime) other;
-            return hour == localTime.hour && minute == localTime.minute &&
-                    second == localTime.second && nano == localTime.nano;
+        if (obj instanceof LocalTime) {
+            LocalTime other = (LocalTime) obj;
+            return hour == other.hour && minute == other.minute &&
+                    second == other.second && nano == other.nano;
         }
         return false;
     }
 
     /**
-     * A hash code for this {@code LocalTime}.
+     * A hash code for this time.
      *
      * @return a suitable hash code
      */
@@ -1188,7 +1186,7 @@ public final class LocalTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted time, not null
+     * @return a string representation of this time, not null
      */
     @Override
     public String toString() {
@@ -1408,7 +1406,7 @@ public final class LocalTime
         private static final CalendricalRule<LocalTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime");
+            super(LocalTime.class, "LocalTime");
         }
         private Object readResolve() {
             return INSTANCE;

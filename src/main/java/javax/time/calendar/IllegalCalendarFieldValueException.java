@@ -59,7 +59,7 @@ public class IllegalCalendarFieldValueException extends CalendricalRuleException
      * @param actual  the actual invalid value
      */
     public IllegalCalendarFieldValueException(DateTimeRule fieldRule, long actual) {
-        super("Illegal value for " + fieldRule.getID() + " field, value " + actual +
+        super("Illegal value for " + fieldRule.getName() + " field, value " + actual +
                 " is not in the range " + fieldRule.getRange().getMinimumValue() +
                 " to " + fieldRule.getRange().getMaximumValue(), fieldRule);
         this.actual = actual;

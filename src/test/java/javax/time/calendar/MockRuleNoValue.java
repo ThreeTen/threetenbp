@@ -46,6 +46,6 @@ public class MockRuleNoValue extends CalendricalRule<Integer> {
     public static final MockRuleNoValue INSTANCE = new MockRuleNoValue();
 
     private MockRuleNoValue() {
-        super(Integer.class, ISOChronology.INSTANCE, "Mock");
+        super(Integer.class, "Mock");
     }
 }

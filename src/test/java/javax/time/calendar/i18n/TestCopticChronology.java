@@ -106,8 +106,7 @@ public class TestCopticChronology {
     public void test_yearRule() throws Exception {
         DateTimeRule rule = CopticChronology.YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "Coptic.Year");
-        assertEquals(rule.getName(), "Year");
+        assertEquals(rule.getName(), "CopticYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(CopticDate.MIN_YEAR, CopticDate.MAX_YEAR));
         assertEquals(rule.getPeriodUnit(), CopticChronology.YEARS);
         assertEquals(rule.getPeriodRange(), null);
@@ -117,8 +116,7 @@ public class TestCopticChronology {
     public void test_monthOfYearRule() throws Exception {
         DateTimeRule rule = CopticChronology.MONTH_OF_YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "Coptic.MonthOfYear");
-        assertEquals(rule.getName(), "MonthOfYear");
+        assertEquals(rule.getName(), "CopticMonthOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 13));
         assertEquals(rule.getPeriodUnit(), CopticChronology.MONTHS);
         assertEquals(rule.getPeriodRange(), CopticChronology.YEARS);
@@ -128,8 +126,7 @@ public class TestCopticChronology {
     public void test_dayOfMonthRule() throws Exception {
         DateTimeRule rule = CopticChronology.DAY_OF_MONTH;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "Coptic.DayOfMonth");
-        assertEquals(rule.getName(), "DayOfMonth");
+        assertEquals(rule.getName(), "CopticDayOfMonth");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 5, 30));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.MONTHS);
@@ -139,8 +136,7 @@ public class TestCopticChronology {
     public void test_dayOfYearRule() throws Exception {
         DateTimeRule rule = CopticChronology.DAY_OF_YEAR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "Coptic.DayOfYear");
-        assertEquals(rule.getName(), "DayOfYear");
+        assertEquals(rule.getName(), "CopticDayOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.YEARS);
@@ -150,8 +146,7 @@ public class TestCopticChronology {
     public void test_dayOfWeekRule() throws Exception {
         DateTimeRule rule = CopticChronology.DAY_OF_WEEK;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "Coptic.DayOfWeek");
-        assertEquals(rule.getName(), "DayOfWeek");
+        assertEquals(rule.getName(), "CopticDayOfWeek");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.WEEKS);

@@ -65,8 +65,7 @@ public class TestThaiBuddhistChronology {
     public void testEra() throws Exception {
         DateTimeRule rule = ThaiBuddhistChronology.eraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ThaiBuddhist.Era");
-        assertEquals(rule.getName(), "Era");
+        assertEquals(rule.getName(), "ThaiBuddhistEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodEras());
         assertEquals(rule.getPeriodRange(), null);
@@ -77,8 +76,7 @@ public class TestThaiBuddhistChronology {
     public void testYearOfEra() throws Exception {
         DateTimeRule rule = ThaiBuddhistChronology.yearOfEraRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ThaiBuddhist.YearOfEra");
-        assertEquals(rule.getName(), "YearOfEra");
+        assertEquals(rule.getName(), "ThaiBuddhistYearOfEra");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(ThaiBuddhistDate.MIN_YEAR_OF_ERA, ThaiBuddhistDate.MAX_YEAR_OF_ERA));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodYears());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodEras());
@@ -89,8 +87,7 @@ public class TestThaiBuddhistChronology {
     public void testMonthOfYear() throws Exception {
         DateTimeRule rule = ThaiBuddhistChronology.monthOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ThaiBuddhist.MonthOfYear");
-        assertEquals(rule.getName(), "MonthOfYear");
+        assertEquals(rule.getName(), "ThaiBuddhistMonthOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodMonths());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodYears());
@@ -100,8 +97,7 @@ public class TestThaiBuddhistChronology {
     public void testDayOfMonth() throws Exception {
         DateTimeRule rule = ThaiBuddhistChronology.dayOfMonthRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ThaiBuddhist.DayOfMonth");
-        assertEquals(rule.getName(), "DayOfMonth");
+        assertEquals(rule.getName(), "ThaiBuddhistDayOfMonth");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 28, 31));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodDays());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodMonths());
@@ -112,8 +108,7 @@ public class TestThaiBuddhistChronology {
     public void testDayOfYear() throws Exception {
         DateTimeRule rule = ThaiBuddhistChronology.dayOfYearRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ThaiBuddhist.DayOfYear");
-        assertEquals(rule.getName(), "DayOfYear");
+        assertEquals(rule.getName(), "ThaiBuddhistDayOfYear");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodDays());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodYears());
@@ -125,8 +120,7 @@ public class TestThaiBuddhistChronology {
     public void testDayOfWeek() throws Exception {
         DateTimeRule rule = ThaiBuddhistChronology.dayOfWeekRule();
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ThaiBuddhist.DayOfWeek");
-        assertEquals(rule.getName(), "DayOfWeek");
+        assertEquals(rule.getName(), "ThaiBuddhistDayOfWeek");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodDays());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodWeeks());

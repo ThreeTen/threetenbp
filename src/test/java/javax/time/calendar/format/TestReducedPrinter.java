@@ -157,7 +157,7 @@ public class TestReducedPrinter extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2005);
-        assertEquals(pp.toString(), "ReducedValue(ISO.Year,2,2005)");
+        assertEquals(pp.toString(), "ReducedValue(Year,2,2005)");
     }
 
 }

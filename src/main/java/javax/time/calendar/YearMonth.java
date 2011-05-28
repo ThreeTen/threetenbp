@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISOPeriodUnit.MONTHS;
 
 import java.io.Serializable;
 
@@ -720,7 +719,7 @@ public final class YearMonth
         private static final CalendricalRule<YearMonth> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(YearMonth.class, ISOChronology.INSTANCE, "YearMonth");
+            super(YearMonth.class, "YearMonth");
         }
         private Object readResolve() {
             return INSTANCE;

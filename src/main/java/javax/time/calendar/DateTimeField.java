@@ -31,9 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit._24_HOURS;
-
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -407,12 +404,12 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this field is equal to the specified field.
+     * Checks if this field is equal to another field.
      * <p>
      * The comparison is based on the rule and value.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this  is the same as that specified
+     * @return true if this is equal to the other field
      */
     @Override
     public boolean equals(Object obj) {
@@ -428,7 +425,7 @@ public final class DateTimeField
     }
 
     /**
-     * Returns the hash code for this field.
+     * A hash code for this field.
      *
      * @return a suitable hash code
      */
@@ -439,11 +436,11 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of this field, such as 'MonthOfYear 12'.
+     * Outputs this field as a {@code String}, such as {@code MonthOfYear 12}.
      * <p>
-     * The format consists of the rule name, followed by a space, followed by the value.
+     * The output will consist of the rule name, a space and the value.
      *
-     * @return a descriptive representation of this field, not null
+     * @return a string representation of this field, not null
      */
     @Override
     public String toString() {

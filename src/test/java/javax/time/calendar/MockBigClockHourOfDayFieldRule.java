@@ -47,7 +47,7 @@ public final class MockBigClockHourOfDayFieldRule extends DateTimeRule implement
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockBigClockHourOfDayFieldRule() {
-        super(ISOChronology.INSTANCE, "BigClockHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
+        super("BigClockHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
                 DateTimeRuleRange.of(0, 2300), CLOCK_HOUR_OF_DAY);
     }
     private Object readResolve() {

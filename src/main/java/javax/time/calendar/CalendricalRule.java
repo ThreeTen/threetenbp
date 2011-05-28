@@ -66,10 +66,6 @@ public abstract class CalendricalRule<T>
 
     /** The reified class for the generic type. */
     private final Class<T> reified;
-    /** The chronology of the rule, not null. */
-    private final Chronology chronology;
-    /** The id of the rule, not null. */
-    private final String id;
     /** The name of the rule, not null. */
     private final String name;
 
@@ -77,59 +73,30 @@ public abstract class CalendricalRule<T>
      * Constructor used to create a rule.
      *
      * @param reifiedClass  the reified class, not null
-     * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
-     * @param periodUnit  the period unit, may be null
-     * @param periodRange  the period range, may be null
      */
     protected CalendricalRule(
-            Class<T> reifiedClass,
-            Chronology chronology,
+            Class<T> type,
             String name) {
         // avoid possible circular references by using inline NPE checks
-        if (reifiedClass == null) {
+        if (type == null) {
             throw new NullPointerException("Reified class must not be null");
-        }
-        if (chronology == null) {
-            throw new NullPointerException("Chronology must not be null");
         }
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
-        this.reified = reifiedClass;
-        this.chronology = chronology;
-        this.id = chronology.getName() + '.' + name;
+        this.reified = type;
         this.name = name;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the chronology of the rule.
-     *
-     * @return the chronology of the rule, not null
-     */
-    public final Chronology getChronology() {
-        return chronology;
-    }
-
-    /**
-     * Gets the ID of the rule.
-     * <p>
-     * The ID is of the form 'ChronologyName.RuleName'.
-     * No two fields should have the same ID.
-     *
-     * @return the ID of the rule, not null
-     */
-    public final String getID() {
-        return id;
-    }
-
     /**
      * Gets the name of the rule.
      * <p>
      * Implementations should use the name that best represents themselves.
      * If the rule represents a field, then the form 'UnitOfRange' should be used.
      * Otherwise, use the simple class name of the generic type, such as 'ZoneOffset'.
+     * For debugging reasons, the name should be as unique as possible.
      *
      * @return the name of the rule, not null
      */
@@ -417,41 +384,46 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares two rules based on their ID.
+     * Checks if this rule is equal to another rule.
+     * <p>
+     * The comparison is based on the name and class.
      *
-     * @return true if the rules are the same
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other rule
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
+        if (obj instanceof CalendricalRule<?>) {
+            CalendricalRule<?> other = (CalendricalRule<?>) obj;
+            return getClass() == other.getClass() && name.equals(other.getName());
         }
-        return id.equals(((CalendricalRule<?>) obj).id);
+        return false;
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Returns a hash code based on the ID.
+     * A hash code for this rule.
      *
-     * @return a description of the rule
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return name.hashCode() + 7;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the rule.
+     * Outputs this rule as a {@code String}, such as 'MonthOfYear'.
+     * <p>
+     * The format includes the rule name.
      *
-     * @return a description of the rule, not null
+     * @return a string representation of this rule, not null
      */
     @Override
     public String toString() {
-        return id;
+        return name;
     }
 
 }

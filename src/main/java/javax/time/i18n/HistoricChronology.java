@@ -389,7 +389,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule(HistoricChronology chrono) {
-            super(chrono, "Era", periodEras(), null, 0, 1);
+            super("HistoricEra", periodEras(), null, 0, 1);
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -409,7 +409,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule(HistoricChronology chrono) {
-            super(chrono, "Year", YEARS, null, -(HistoricDate.MAX_YEAR - 1), HistoricDate.MAX_YEAR);
+            super("HistoricYear", YEARS, null, -(HistoricDate.MAX_YEAR - 1), HistoricDate.MAX_YEAR);
             this.chrono = chrono;
         }
         @Override
@@ -432,7 +432,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule(HistoricChronology chrono) {
-            super(chrono, "MonthOfYear", MONTHS, YEARS, 1, 12);
+            super("HistoricMonthOfYear", MONTHS, YEARS, 1, 12);
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -452,7 +452,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule(HistoricChronology chrono) {
-            super(chrono, "DayOfMonth", periodDays(), MONTHS, DateTimeRuleRange.of(1, 28, 31));
+            super("HistoricDayOfMonth", periodDays(), MONTHS, DateTimeRuleRange.of(1, 28, 31));
             this.chrono = chrono;
         }
         @Override
@@ -490,7 +490,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule(HistoricChronology chrono) {
-            super(chrono, "DayOfYear", periodDays(), YEARS, DateTimeRuleRange.of(1, 365, 366));
+            super("HistoricDayOfYear", periodDays(), YEARS, DateTimeRuleRange.of(1, 365, 366));
             this.chrono = chrono;
         }
         @Override
@@ -517,7 +517,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule(HistoricChronology chrono) {
-            super(chrono, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super("HistoricDayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

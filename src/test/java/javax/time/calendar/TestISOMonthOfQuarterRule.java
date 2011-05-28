@@ -58,7 +58,6 @@ public class TestISOMonthOfQuarterRule extends AbstractTestDateTimeRule {
     public void test_basics() throws Exception {
         DateTimeRule rule = ISODateTimeRule.MONTH_OF_QUARTER;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.MonthOfQuarter");
         assertEquals(rule.getName(), "MonthOfQuarter");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 3));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MONTHS);

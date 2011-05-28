@@ -307,7 +307,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        assertEquals(pp.toString(), "Fraction(ISO.NanoOfSecond,3,6)");
+        assertEquals(pp.toString(), "Fraction(NanoOfSecond,3,6)");
     }
 
     private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {

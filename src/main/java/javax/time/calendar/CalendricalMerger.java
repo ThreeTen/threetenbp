@@ -253,7 +253,7 @@ public final class CalendricalMerger implements Calendrical {
         if (oldValue != null) {
             if (oldValue.equals(value) == false) {
                 throw new InvalidCalendarFieldException("Merge resulted in two different values, " + value +
-                        " and " + oldValue + ", for " + rule.getID() + " given input " +
+                        " and " + oldValue + ", for " + rule.getName() + " given input " +
                         inputMap, rule);
             } else {
                 return;  // no change

@@ -304,7 +304,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            super(MinguoChronology.INSTANCE, "Era", periodEras(), null, 0, 1);
+            super("MinguoEra", periodEras(), null, 0, 1);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -353,7 +353,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearOfEraRule() {
-            super(MinguoChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
+            super("MinguoYearOfEra", periodYears(), periodEras(),
                     MinguoDate.MIN_YEAR_OF_ERA, MinguoDate.MAX_YEAR_OF_ERA);
         }
         private Object readResolve() {
@@ -405,7 +405,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(MinguoChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
+            super("MinguoMonthOfYear", periodMonths(), periodYears(), 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -428,7 +428,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(MinguoChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
+            super("MinguoDayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -471,7 +471,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(MinguoChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
+            super("MinguoDayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -505,7 +505,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(MinguoChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super("MinguoDayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;

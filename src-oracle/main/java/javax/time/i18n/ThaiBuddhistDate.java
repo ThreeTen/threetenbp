@@ -11,7 +11,6 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
@@ -600,7 +599,7 @@ public final class ThaiBuddhistDate
         private static final CalendricalRule<ThaiBuddhistDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ThaiBuddhistDate.class, ISOChronology.INSTANCE, "ThaiBuddhistDate");
+            super(ThaiBuddhistDate.class, "ThaiBuddhistDate");
         }
         private Object readResolve() {
             return INSTANCE;

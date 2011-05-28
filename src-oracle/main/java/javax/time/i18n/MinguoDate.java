@@ -11,7 +11,6 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
@@ -600,7 +599,7 @@ public final class MinguoDate
         private static final CalendricalRule<MinguoDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MinguoDate.class, ISOChronology.INSTANCE, "MinguoDate");
+            super(MinguoDate.class, "MinguoDate");
         }
         private Object readResolve() {
             return INSTANCE;

@@ -102,7 +102,7 @@ final class ReducedPrinterParser extends NumberPrinterParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "ReducedValue(" + rule.getID() + "," + minWidth + "," + baseValue + ")";
+        return "ReducedValue(" + rule.getName() + "," + minWidth + "," + baseValue + ")";
     }
 
 }

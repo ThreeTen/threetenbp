@@ -117,7 +117,7 @@ public abstract class Chronology implements Calendrical {
         private static final CalendricalRule<Chronology> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(Chronology.class, ISOChronology.INSTANCE, "Chronology");
+            super(Chronology.class, "Chronology");
         }
         private Object readResolve() {
             return INSTANCE;

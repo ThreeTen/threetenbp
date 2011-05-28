@@ -115,7 +115,6 @@ public class TestISOChronology {
     public void test_minuteOfHourRule() throws Exception {
         DateTimeRule rule = ISODateTimeRule.MINUTE_OF_HOUR;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.MinuteOfHour");
         assertEquals(rule.getName(), "MinuteOfHour");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 59));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MINUTES);
@@ -126,7 +125,6 @@ public class TestISOChronology {
     public void test_secondOfMinuteRule() throws Exception {
         DateTimeRule rule = ISODateTimeRule.SECOND_OF_MINUTE;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.SecondOfMinute");
         assertEquals(rule.getName(), "SecondOfMinute");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 59));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.SECONDS);
@@ -137,7 +135,6 @@ public class TestISOChronology {
     public void test_nanoOfSecondRule() throws Exception {
         DateTimeRule rule = ISODateTimeRule.NANO_OF_SECOND;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.NanoOfSecond");
         assertEquals(rule.getName(), "NanoOfSecond");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 999999999));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.NANOS);
@@ -149,7 +146,6 @@ public class TestISOChronology {
     public void test_secondOfDayRule() throws Exception {
         DateTimeRule rule = ISODateTimeRule.SECOND_OF_DAY;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.SecondOfDay");
         assertEquals(rule.getName(), "SecondOfDay");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 24 * 60 * 60 - 1));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.SECONDS);
@@ -160,7 +156,6 @@ public class TestISOChronology {
     public void test_milliOfDayRule() throws Exception {
         DateTimeRule rule = ISODateTimeRule.MILLI_OF_DAY;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.MilliOfDay");
         assertEquals(rule.getName(), "MilliOfDay");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 24 * 60 * 60 * 1000 - 1));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MILLIS);
@@ -171,7 +166,6 @@ public class TestISOChronology {
     public void test_milliOfSecondRule() throws Exception {
         DateTimeRule rule = ISODateTimeRule.MILLI_OF_SECOND;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.MilliOfSecond");
         assertEquals(rule.getName(), "MilliOfSecond");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 999));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MILLIS);

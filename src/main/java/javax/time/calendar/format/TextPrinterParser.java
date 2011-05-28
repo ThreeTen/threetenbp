@@ -151,9 +151,9 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     @Override
     public String toString() {
         if (textStyle == TextStyle.FULL) {
-            return "Text(" + rule.getID() + ")";
+            return "Text(" + rule.getName() + ")";
         }
-        return "Text(" + rule.getID() + "," + textStyle + ")";
+        return "Text(" + rule.getName() + "," + textStyle + ")";
     }
 
 }

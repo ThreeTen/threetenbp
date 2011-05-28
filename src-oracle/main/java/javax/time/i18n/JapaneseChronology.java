@@ -313,7 +313,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            super(JapaneseChronology.INSTANCE, "Era", periodEras(), null, -3, 2);
+            super("JapaneseEra", periodEras(), null, -3, 2);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -390,7 +390,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearOfEraRule() {
-            super(JapaneseChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
+            super("JapaneseYearOfEra", periodYears(), periodEras(),
                     JapaneseDate.MIN_YEAR_OF_ERA, JapaneseDate.MAX_YEAR_OF_ERA);
         }
         private Object readResolve() {
@@ -415,7 +415,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(JapaneseChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
+            super("JapaneseMonthOfYear", periodMonths(), periodYears(), 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -438,7 +438,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(JapaneseChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
+            super("JapaneseDayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -481,7 +481,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(JapaneseChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
+            super("JapaneseDayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -515,7 +515,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(JapaneseChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super("JapaneseDayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;

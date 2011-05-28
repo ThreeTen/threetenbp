@@ -37,7 +37,6 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.LocalDate;
 
 /**
@@ -125,7 +124,7 @@ public final class MockOtherDate
         private static final CalendricalRule<MockOtherDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MockOtherDate.class, ISOChronology.INSTANCE, "MockOtherDate");
+            super(MockOtherDate.class, "MockOtherDate");
         }
         private Object readResolve() {
             return INSTANCE;

@@ -81,13 +81,12 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @param maximumValue  the minimum value
      */
     protected DateTimeRule(
-            Chronology chronology,
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             long minimumValue,
             long maximumValue) {
-        this(chronology, name, periodUnit, periodRange, DateTimeRuleRange.of(minimumValue, maximumValue));
+        this(name, periodUnit, periodRange, DateTimeRuleRange.of(minimumValue, maximumValue));
     }
 
     /**
@@ -100,12 +99,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @param range  the range, not null
      */
     protected DateTimeRule(
-            Chronology chronology,
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             DateTimeRuleRange range) {
-        this(chronology, name, periodUnit, periodRange, range, null);
+        this(name, periodUnit, periodRange, range, null);
     }
 
     /**
@@ -115,7 +113,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * The parent rule is examined and the {@link #getBaseRule() base rule} and
      * {@link #getNormalizationRule() normalization rule} set from it.
      *
-     * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
      * @param periodRange  the period range, not null
@@ -124,13 +121,12 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      *  if this rule does not relate to another rule
      */
     protected DateTimeRule(
-            Chronology chronology,
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             DateTimeRuleRange range,
             DateTimeRule parentRule) {
-        super(DateTimeField.class, chronology, name);
+        super(DateTimeField.class, name);
         ISOChronology.checkNotNull(periodUnit, "Period unit must not be null");
         ISOChronology.checkNotNull(range, "DateTimeRuleRange must not be null");
         this.periodUnit = periodUnit;
@@ -497,7 +493,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     public int compareTo(DateTimeRule other) {
         if (this.getPeriodUnit() == null) {
             if (other.getPeriodUnit() == null) {
-                return getID().compareTo(other.getID());
+                return getName().compareTo(other.getName());
             } else {
                 return 1;
             }
@@ -510,7 +506,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         }
         if (this.getPeriodRange() == null) {
             if (other.getPeriodRange() == null) {
-                return getID().compareTo(other.getID());
+                return getName().compareTo(other.getName());
             } else {
                 return 1;
             }
@@ -521,7 +517,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         if (cmp != 0) {
             return cmp;
         }
-        return getID().compareTo(other.getID());
+        return getName().compareTo(other.getName());
     }
 
     //-----------------------------------------------------------------------

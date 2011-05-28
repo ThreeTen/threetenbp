@@ -62,7 +62,7 @@ public class TestCalendricalRule {
     static class MockBigYearRule extends CalendricalRule<BigInteger> {
         private static final long serialVersionUID = 1L;
         protected MockBigYearRule() {
-            super(BigInteger.class, ISOChronology.INSTANCE, "MockBigYearRule");
+            super(BigInteger.class, "MockBigYearRule");
         }
         @Override
         protected BigInteger derive(Calendrical calendrical) {
@@ -111,13 +111,6 @@ public class TestCalendricalRule {
     //-----------------------------------------------------------------------
     public void test_getName() {
         assertEquals(new MockBigYearRule().getName(), "MockBigYearRule");
-    }
-
-    //-----------------------------------------------------------------------
-    // getID()
-    //-----------------------------------------------------------------------
-    public void test_getID() {
-        assertEquals(new MockBigYearRule().getID(), "ISO.MockBigYearRule");
     }
 
     //-----------------------------------------------------------------------
@@ -205,14 +198,14 @@ public class TestCalendricalRule {
     // hashCode()
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        assertEquals(new MockBigYearRule().hashCode(), "ISO.MockBigYearRule".hashCode());
+        assertEquals(new MockBigYearRule().hashCode(), new MockBigYearRule().hashCode());
     }
 
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(new MockBigYearRule().toString(), "ISO.MockBigYearRule");
+        assertEquals(new MockBigYearRule().toString(), "MockBigYearRule");
     }
 
 }

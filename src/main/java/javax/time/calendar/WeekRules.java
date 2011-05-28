@@ -514,7 +514,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
     final class DayOfWeekRule extends DateTimeRule implements Serializable {
         private static final long serialVersionUID = 1L;
         private DayOfWeekRule() {
-            super(ISOChronology.INSTANCE, "DayOfWeek-" + WeekRules.this.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7);
+            super("DayOfWeek-" + WeekRules.this.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7);
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

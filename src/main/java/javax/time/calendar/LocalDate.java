@@ -34,7 +34,6 @@ package javax.time.calendar;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
 
 import java.io.Serializable;
 
@@ -1372,27 +1371,27 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code LocalDate} is equal to the specified date.
+     * Checks if this date is equal to another date.
      * <p>
      * The comparison is based on the time-line position of the dates.
      *
-     * @param other  the other date to compare to, null returns false
-     * @return true if this is equal to the specified date
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof LocalDate) {
-            LocalDate otherDate = (LocalDate) other;
-            return (year == otherDate.year && month == otherDate.month && day == otherDate.day);
+        if (obj instanceof LocalDate) {
+            LocalDate other = (LocalDate) obj;
+            return (year == other.year && month == other.month && day == other.day);
         }
         return false;
     }
 
     /**
-     * A hash code for this {@code LocalDate}.
+     * A hash code for this date.
      *
      * @return a suitable hash code
      */
@@ -1408,9 +1407,9 @@ public final class LocalDate
     /**
      * Outputs this date as a {@code String}, such as {@code 2007-12-03}.
      * <p>
-     * The output will be in the format {@code yyyy-MM-dd}.
+     * The output will be in the ISO-8601 format {@code yyyy-MM-dd}.
      *
-     * @return the formatted date, not null
+     * @return a string representation of this date, not null
      */
     @Override
     public String toString() {
@@ -1469,7 +1468,7 @@ public final class LocalDate
         private static final CalendricalRule<LocalDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalDate.class, ISOChronology.INSTANCE, "LocalDate");
+            super(LocalDate.class, "LocalDate");
         }
         private Object readResolve() {
             return INSTANCE;

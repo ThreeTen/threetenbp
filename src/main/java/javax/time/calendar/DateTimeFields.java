@@ -31,9 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit._24_HOURS;
-
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -725,12 +722,12 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this {@code DateTimeFields} is equal to the specified set of fields.
+     * Checks if this set of fields is equal to another set of fields.
      * <p>
      * The comparison is based on the complete set of fields.
      *
-     * @param other  the other fields to compare to, null returns false
-     * @return true if this is equal to the specified fields
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other fields
      */
     @Override
     public boolean equals(Object other) {
@@ -756,9 +753,11 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this fields as a {@code String}, such as {@code [MonthOfYear 12, DayOfMonth 3]}.
+     * Outputs this set of fields as a {@code String}, such as '[MonthOfYear 12, DayOfMonth 3]'.
+     * <p>
+     * The output will include of the complete set of fields.
      *
-     * @return a descriptive representation of this field, not null
+     * @return a string representation of this set of fields, not null
      */
     @Override
     public String toString() {

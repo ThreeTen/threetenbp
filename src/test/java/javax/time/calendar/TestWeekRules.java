@@ -391,7 +391,7 @@ public class TestWeekRules {
     //-----------------------------------------------------------------------
     public void test_dayOfWeek_sun1() {
         DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
-        assertEquals(rule.toString(), "ISO.DayOfWeek-WeekRules[SUNDAY,1]");
+        assertEquals(rule.toString(), "DayOfWeek-WeekRules[SUNDAY,1]");
         
         assertEquals(0, rule.convertToPeriod(1));
         assertEquals(6, rule.convertToPeriod(7));

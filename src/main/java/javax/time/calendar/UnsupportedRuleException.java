@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ public class UnsupportedRuleException extends CalendricalRuleException {
      * @param rule  the rule that is not supported, may be null
      */
     public UnsupportedRuleException(CalendricalRule<?> rule) {
-        super("Rule " + (rule == null ? "null" : rule.getID()) + " is not supported", rule);
+        super("Rule " + (rule == null ? "null" : rule.getName()) + " is not supported", rule);
     }
 
     /**

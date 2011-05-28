@@ -77,7 +77,7 @@
 - Rename ModifiedJulianDays/EpochDays/EpochSeconds/EpochMillis/EpochNanos to remove plural
 - Remove weekend code from main build (currently in extras)
 - Add ofInstantUTC factories to ZDT, ODT, OD, OT
-- Remove Comparable, PeriodUnit and PeriodRange from CalendricalRule
+- Remove Comparable, PeriodUnit, PeriodRange, ID and Chronology from CalendricalRule
 
 0.6.3
 ===============================================================================

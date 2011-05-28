@@ -147,7 +147,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Fraction(" + rule.getID() + "," + minWidth + "," + maxWidth + ")";
+        return "Fraction(" + rule.getName() + "," + minWidth + "," + maxWidth + ")";
     }
 
 }

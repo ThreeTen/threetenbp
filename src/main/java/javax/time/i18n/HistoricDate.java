@@ -593,7 +593,7 @@ public final class HistoricDate
         private static final long serialVersionUID = 1L;
         private Rule() {
             // TODO
-            super(HistoricDate.class, HistoricChronology.standardCutover(), "HistoricDate");
+            super(HistoricDate.class, "HistoricDate");
         }
         private Object readResolve() {
             return INSTANCE;

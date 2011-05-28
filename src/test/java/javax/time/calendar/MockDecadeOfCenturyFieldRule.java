@@ -48,7 +48,7 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeRule implements 
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockDecadeOfCenturyFieldRule() {
-        super(ISOChronology.INSTANCE, "DecadeOfCentury", ISOPeriodUnit.DECADES, ISOPeriodUnit.CENTURIES, 0, 9);
+        super("DecadeOfCentury", ISOPeriodUnit.DECADES, ISOPeriodUnit.CENTURIES, 0, 9);
     }
     private Object readResolve() {
         return INSTANCE;

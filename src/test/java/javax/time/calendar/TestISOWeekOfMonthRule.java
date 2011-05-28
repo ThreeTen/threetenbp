@@ -58,7 +58,6 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeRule {
     public void test_basics() throws Exception {
         DateTimeRule rule = ISODateTimeRule.WEEK_OF_MONTH;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.WeekOfMonth");
         assertEquals(rule.getName(), "WeekOfMonth");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 4, 5));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);

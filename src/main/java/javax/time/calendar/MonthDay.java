@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
@@ -627,7 +625,7 @@ public final class MonthDay
         private static final CalendricalRule<MonthDay> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay");
+            super(MonthDay.class, "MonthDay");
         }
         private Object readResolve() {
             return INSTANCE;

@@ -407,7 +407,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            super(HijrahChronology.INSTANCE, "Era", periodEras(), null, DateTimeRuleRange.of(0, 1));
+            super("HijrahEra", periodEras(), null, DateTimeRuleRange.of(0, 1));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -456,7 +456,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearOfEraRule() {
-            super(HijrahChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
+            super("HijrahYearOfEra", periodYears(), periodEras(),
                     DateTimeRuleRange.of(HijrahDate.MIN_YEAR_OF_ERA, HijrahDate.MAX_YEAR_OF_ERA));
         }
         private Object readResolve() {
@@ -485,7 +485,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(HijrahChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), DateTimeRuleRange.of(1, 12));
+            super("HijrahMonthOfYear", periodMonths(), periodYears(), DateTimeRuleRange.of(1, 12));
         }
         private Object readResolve() {
             return INSTANCE;
@@ -508,7 +508,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(HijrahChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(),
+            super("HijrahDayOfMonth", periodDays(), periodMonths(),
                     DateTimeRuleRange.of(1, HijrahDate.getSmallestMaximumDayOfMonth(), HijrahDate.getMaximumDayOfMonth()));
         }
         private Object readResolve() {
@@ -545,7 +545,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(HijrahChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(),
+            super("HijrahDayOfYear", periodDays(), periodYears(),
                     DateTimeRuleRange.of(1, HijrahDate.getSmallestMaximumDayOfYear(), HijrahDate.getMaximumDayOfYear()));
         }
         private Object readResolve() {
@@ -580,7 +580,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(HijrahChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), DateTimeRuleRange.of(1, 7));
+            super("HijrahDayOfWeek", periodDays(), periodWeeks(), DateTimeRuleRange.of(1, 7));
         }
         private Object readResolve() {
             return INSTANCE;

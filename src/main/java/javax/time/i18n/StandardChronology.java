@@ -31,8 +31,6 @@
  */
 package javax.time.i18n;
 
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
@@ -277,7 +275,7 @@ public abstract class StandardChronology extends Chronology {
     final class DateRule extends CalendricalRule<ChronologyDate> implements Serializable {
         private static final long serialVersionUID = 1L;
         private DateRule() {
-            super(ChronologyDate.class, StandardChronology.this, "ChronologyDate");
+            super(ChronologyDate.class, "ChronologyDate");
         }
         @Override
         protected ChronologyDate derive(Calendrical calendrical) {

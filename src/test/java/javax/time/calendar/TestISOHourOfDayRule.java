@@ -58,7 +58,6 @@ public class TestISOHourOfDayRule extends AbstractTestDateTimeRule {
     public void test_basics() throws Exception {
         DateTimeRule rule = ISODateTimeRule.HOUR_OF_DAY;
         assertEquals(rule.getReifiedType(), DateTimeField.class);
-        assertEquals(rule.getID(), "ISO.HourOfDay");
         assertEquals(rule.getName(), "HourOfDay");
         assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 23));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);

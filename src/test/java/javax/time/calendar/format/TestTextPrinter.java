@@ -122,12 +122,12 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
     //-----------------------------------------------------------------------
     public void test_toString1() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
-        assertEquals(pp.toString(), "Text(ISO.MonthOfYear)");
+        assertEquals(pp.toString(), "Text(MonthOfYear)");
     }
 
     public void test_toString2() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
-        assertEquals(pp.toString(), "Text(ISO.MonthOfYear,SHORT)");
+        assertEquals(pp.toString(), "Text(MonthOfYear,SHORT)");
     }
 
 }

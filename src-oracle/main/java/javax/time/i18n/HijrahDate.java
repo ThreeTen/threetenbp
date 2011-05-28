@@ -23,7 +23,6 @@ import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
@@ -1920,7 +1919,7 @@ public final class HijrahDate
         private static final CalendricalRule<HijrahDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(HijrahDate.class, ISOChronology.INSTANCE, "HijrahDate");
+            super(HijrahDate.class, "HijrahDate");
         }
         private Object readResolve() {
             return INSTANCE;
