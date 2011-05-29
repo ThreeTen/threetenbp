@@ -41,6 +41,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author Stephen Colebourne
  */
 public final class DateTimeRuleGroup {
+    // TODO: tidy up, or delete, or merge into DTRule
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
