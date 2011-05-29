@@ -49,7 +49,7 @@ public final class MockYearOfCenturyFieldRule extends DateTimeRule implements Se
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockYearOfCenturyFieldRule() {
-        super("YearOfCentury", YEARS, CENTURIES, 0, 99);
+        super("YearOfCentury", YEARS, CENTURIES, 0, 99, null);
     }
     private Object readResolve() {
         return INSTANCE;

@@ -73,7 +73,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     /**
      * Creates an instance specifying the minimum and maximum value of the rule.
      *
-     * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
      * @param periodRange  the period range, not null
@@ -85,25 +84,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             long minimumValue,
-            long maximumValue) {
-        this(name, periodUnit, periodRange, DateTimeRuleRange.of(minimumValue, maximumValue));
-    }
-
-    /**
-     * Creates an instance specifying the outer range of value for the rule.
-     *
-     * @param chronology  the chronology, not null
-     * @param name  the name of the type, not null
-     * @param periodUnit  the period unit, not null
-     * @param periodRange  the period range, not null
-     * @param range  the range, not null
-     */
-    protected DateTimeRule(
-            String name,
-            PeriodUnit periodUnit,
-            PeriodUnit periodRange,
-            DateTimeRuleRange range) {
-        this(name, periodUnit, periodRange, range, null);
+            long maximumValue,
+            DateTimeRule parentRule) {
+        this(name, periodUnit, periodRange, DateTimeRuleRange.of(minimumValue, maximumValue), parentRule);
     }
 
     /**

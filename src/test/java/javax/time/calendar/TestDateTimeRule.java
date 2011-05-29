@@ -307,7 +307,7 @@ public class TestDateTimeRule {
             this(unit, range, min, max, max);
         }
         protected Mock(PeriodUnit unit, PeriodUnit range, long min, long max, long smallMax) {
-            super(unit.toString() + "Of" + range.toString(), unit, range, DateTimeRuleRange.of(min, smallMax, max));
+            super(unit.toString() + "Of" + range.toString(), unit, range, DateTimeRuleRange.of(min, smallMax, max), null);
         }
     }
 

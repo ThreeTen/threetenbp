@@ -50,7 +50,7 @@ public final class MockCenturyFieldRule extends DateTimeRule implements Serializ
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockCenturyFieldRule() {
-        super("Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
+        super("Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100, null);
     }
     private Object readResolve() {
         return INSTANCE;

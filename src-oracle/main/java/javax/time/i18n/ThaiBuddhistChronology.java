@@ -308,7 +308,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            super("ThaiBuddhistEra", periodEras(), null, 0, 1);
+            super("ThaiBuddhistEra", periodEras(), null, 0, 1, null);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -358,7 +358,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         /** Constructor. */
         private YearOfEraRule() {
             super("ThaiBuddhistYearOfEra", periodYears(), periodEras(),
-                    ThaiBuddhistDate.MIN_YEAR_OF_ERA, ThaiBuddhistDate.MAX_YEAR_OF_ERA);
+                    ThaiBuddhistDate.MIN_YEAR_OF_ERA, ThaiBuddhistDate.MAX_YEAR_OF_ERA, null);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -409,7 +409,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super("ThaiBuddhistMonthOfYear", periodMonths(), periodYears(), 1, 12);
+            super("ThaiBuddhistMonthOfYear", periodMonths(), periodYears(), 1, 12, null);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -432,7 +432,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super("ThaiBuddhistDayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31));
+            super("ThaiBuddhistDayOfMonth", periodDays(), periodMonths(), DateTimeRuleRange.of(1, 28, 31), null);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -475,7 +475,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super("ThaiBuddhistDayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366));
+            super("ThaiBuddhistDayOfYear", periodDays(), periodYears(), DateTimeRuleRange.of(1, 365, 366), null);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -509,7 +509,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super("ThaiBuddhistDayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super("ThaiBuddhistDayOfWeek", periodDays(), periodWeeks(), 1, 7, null);
         }
         private Object readResolve() {
             return INSTANCE;

@@ -46,7 +46,7 @@ public final class MockOtherChronologyRule extends DateTimeRule implements Seria
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockOtherChronologyRule() {
-        super("Months", MockOtherChronology.OTHER_MONTHS, null, 0, 1000000000);
+        super("Months", MockOtherChronology.OTHER_MONTHS, null, 0, 1000000000, null);
     }
     private Object readResolve() {
         return INSTANCE;

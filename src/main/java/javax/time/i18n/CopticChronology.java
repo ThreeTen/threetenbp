@@ -281,7 +281,7 @@ public final class CopticChronology extends Chronology implements Serializable {
                 int minimumValue,
                 int smallestMaximumValue,
                 int maximumValue) {
-            super(name, periodUnit, periodRange, DateTimeRuleRange.of(minimumValue, smallestMaximumValue, maximumValue));
+            super(name, periodUnit, periodRange, DateTimeRuleRange.of(minimumValue, smallestMaximumValue, maximumValue), null);
             this.ordinal = ordinal;  // 16 multiplier allow space for new rules
         }
 
