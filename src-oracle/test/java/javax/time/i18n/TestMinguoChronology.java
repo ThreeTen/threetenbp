@@ -66,7 +66,7 @@ public class TestMinguoChronology {
         DateTimeRule rule = MinguoChronology.eraRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoEra");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodEras());
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
@@ -77,7 +77,7 @@ public class TestMinguoChronology {
         DateTimeRule rule = MinguoChronology.yearOfEraRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoYearOfEra");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(MinguoDate.MIN_YEAR_OF_ERA, MinguoDate.MAX_YEAR_OF_ERA));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(MinguoDate.MIN_YEAR_OF_ERA, MinguoDate.MAX_YEAR_OF_ERA));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodYears());
         assertEquals(rule.getPeriodRange(), MinguoChronology.periodEras());
         serialize(rule);
@@ -88,7 +88,7 @@ public class TestMinguoChronology {
         DateTimeRule rule = MinguoChronology.monthOfYearRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoMonthOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodMonths());
         assertEquals(rule.getPeriodRange(), MinguoChronology.periodYears());
     }
@@ -98,7 +98,7 @@ public class TestMinguoChronology {
         DateTimeRule rule = MinguoChronology.dayOfMonthRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoDayOfMonth");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 28, 31));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 28, 31));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
         assertEquals(rule.getPeriodRange(), MinguoChronology.periodMonths());
         serialize(rule);
@@ -109,7 +109,7 @@ public class TestMinguoChronology {
         DateTimeRule rule = MinguoChronology.dayOfYearRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoDayOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
         assertEquals(rule.getPeriodRange(), MinguoChronology.periodYears());
         serialize(rule);
@@ -121,7 +121,7 @@ public class TestMinguoChronology {
         DateTimeRule rule = MinguoChronology.dayOfWeekRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinguoDayOfWeek");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
         assertEquals(rule.getPeriodRange(), MinguoChronology.periodWeeks());
         serialize(rule);

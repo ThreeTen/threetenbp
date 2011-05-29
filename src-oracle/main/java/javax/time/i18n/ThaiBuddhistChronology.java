@@ -438,7 +438,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField moyVal = calendrical.get(ThaiBuddhistChronology.monthOfYearRule());
             if (moyVal != null) {
                 MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
@@ -455,7 +455,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
                     return DateTimeRuleRange.of(1, moy.maxLengthInDays());
                 }
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -481,7 +481,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(ThaiBuddhistEra.rule());
             DateTimeField yoeVal = calendrical.get(ThaiBuddhistChronology.yearOfEraRule());
             if (eraVal != null && yoeVal != null) {
@@ -489,7 +489,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
                 int isoYear = (eraVal.getValidIntValue() == ThaiBuddhistEra.BEFORE_BUDDHIST.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
                 return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

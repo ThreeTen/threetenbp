@@ -456,7 +456,7 @@ public final class HistoricChronology extends Chronology implements Serializable
             this.chrono = chrono;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField moy = calendrical.get(chrono.monthOfYearRule());
             if (moy != null) {
                 MonthOfYear month = MonthOfYear.of(moy.getValidIntValue());
@@ -470,7 +470,7 @@ public final class HistoricChronology extends Chronology implements Serializable
                     return DateTimeRuleRange.of(1, month.maxLengthInDays());
                 }
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -494,12 +494,12 @@ public final class HistoricChronology extends Chronology implements Serializable
             this.chrono = chrono;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField year = calendrical.get(chrono.yearRule());
             if (year != null) {
                 return DateTimeRuleRange.of(1, chrono.isLeapYear(year.getValidIntValue()) ? 366 : 365);
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

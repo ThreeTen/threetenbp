@@ -59,7 +59,7 @@ public class TestISOMonthOfYearRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.MONTH_OF_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MonthOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MONTHS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
     }

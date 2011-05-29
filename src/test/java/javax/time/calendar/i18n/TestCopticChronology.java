@@ -107,7 +107,7 @@ public class TestCopticChronology {
         DateTimeRule rule = CopticChronology.YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "CopticYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(CopticDate.MIN_YEAR, CopticDate.MAX_YEAR));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(CopticDate.MIN_YEAR, CopticDate.MAX_YEAR));
         assertEquals(rule.getPeriodUnit(), CopticChronology.YEARS);
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
@@ -117,7 +117,7 @@ public class TestCopticChronology {
         DateTimeRule rule = CopticChronology.MONTH_OF_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "CopticMonthOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 13));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 13));
         assertEquals(rule.getPeriodUnit(), CopticChronology.MONTHS);
         assertEquals(rule.getPeriodRange(), CopticChronology.YEARS);
         serialize(rule);
@@ -127,7 +127,7 @@ public class TestCopticChronology {
         DateTimeRule rule = CopticChronology.DAY_OF_MONTH;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "CopticDayOfMonth");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 5, 30));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 5, 30));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.MONTHS);
         serialize(rule);
@@ -137,7 +137,7 @@ public class TestCopticChronology {
         DateTimeRule rule = CopticChronology.DAY_OF_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "CopticDayOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.YEARS);
         serialize(rule);
@@ -147,7 +147,7 @@ public class TestCopticChronology {
         DateTimeRule rule = CopticChronology.DAY_OF_WEEK;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "CopticDayOfWeek");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), CopticChronology.DAYS);
         assertEquals(rule.getPeriodRange(), CopticChronology.WEEKS);
         serialize(rule);

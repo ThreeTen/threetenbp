@@ -515,7 +515,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(HijrahEra.rule());
             DateTimeField yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
             DateTimeField moyVal = calendrical.get(HijrahChronology.monthOfYearRule());
@@ -525,7 +525,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
                 int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoe : yoe);
                 return DateTimeRuleRange.of(1, HijrahDate.getMonthLength(moyVal.getValidIntValue() - 1, hijrahYear));
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -552,7 +552,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(HijrahEra.rule());
             DateTimeField yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
             if (yoeVal != null) {
@@ -560,7 +560,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
                 int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoeVal.getValidIntValue() : yoeVal.getValidIntValue());
                 return DateTimeRuleRange.of(1, HijrahDate.getYearLength(hijrahYear));
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

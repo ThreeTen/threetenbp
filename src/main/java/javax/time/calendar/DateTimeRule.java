@@ -116,7 +116,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
      * @param periodRange  the period range, not null
-     * @param range  the range, not null
+     * @param ruleRange  the range, not null
      * @param parentRule  the parent rule that this rule relates to, null
      *  if this rule does not relate to another rule
      */
@@ -124,14 +124,14 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
-            DateTimeRuleRange range,
+            DateTimeRuleRange ruleRange,
             DateTimeRule parentRule) {
         super(DateTimeField.class, name);
         ISOChronology.checkNotNull(periodUnit, "Period unit must not be null");
-        ISOChronology.checkNotNull(range, "DateTimeRuleRange must not be null");
+        ISOChronology.checkNotNull(ruleRange, "DateTimeRuleRange must not be null");
         this.periodUnit = periodUnit;
         this.periodRange = periodRange;
-        this.range = range;
+        this.range = ruleRange;
         DateTimeRule baseRule = this;
         DateTimeRule normalizationRule = this;
         if (parentRule != null) {
@@ -152,16 +152,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     /**
      * Gets the unit that the rule is measured in.
      * <p>
-     * Most rules define a field such as 'hour of day' or 'month of year'.
-     * The unit is the period that varies within the range.
-     * <p>
-     * For example, the rule for hour-of-day will return Hours, while the rule for
-     * month-of-year will return Months. The rule for a date will return Days
-     * as a date could alternately be described as 'days of forever'.
-     * <p>
-     * The {@code null} value is returned if the rule is not defined by a unit and range.
+     * The unit of the rule is the period that varies within the range.
+     * For example, in the rule 'MonthOfYear', the unit is 'Months'.
+     * See also {@link #getPeriodRange()}.
      *
-     * @return the unit defining the rule unit, null if this rule isn't based on a period
+     * @return the period unit defining the unit of the rule, not null
      */
     public PeriodUnit getPeriodUnit() {
         return periodUnit;
@@ -170,18 +165,15 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     /**
      * Gets the range that the rule is bound by.
      * <p>
-     * Most rules define a field such as 'hour of day' or 'month of year'.
-     * The range is the period that the field varies within.
+     * The range of the rule is the period that the field varies within.
+     * For example, in the rule 'MonthOfYear', the range is 'Years'.
+     * See also {@link #getPeriodUnit()}.
      * <p>
-     * For example, the rule for hour-of-day will return Days, while the rule for
-     * month-of-year will return Years.
-     * <p>
-     * When the range is unbounded, such as for a date or the year field, then {@code null}
-     * will be returned.
-     * The {@code null} value is also returned if the rule is not defined by a unit and range.
+     * A range of null means "forever". For example, the 'Year' rule
+     * is shorthand for 'YearOfForever'. It therefore has a unit of 'Years'
+     * and a range of "forever" (null).
      *
-     * @return the unit defining the rule range, null if unbounded,
-     *  or if this rule isn't based on a period
+     * @return the period unit defining the range of the rule, null means an unbound range (forever)
      */
     public PeriodUnit getPeriodRange() {
         return periodRange;
@@ -195,7 +187,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      *
      * @return the valid range of values, not null
      */
-    public DateTimeRuleRange getRange() {
+    public DateTimeRuleRange getValueRange() {
         return range;
     }
 
@@ -211,15 +203,15 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * 1 to between 28 and 29. If the calendrical specifies 'February' in a leap year,
      * then the returned range will be from 1 to 29 exactly.
      * <p>
-     * The default implementation returns {@link #getRange()}.
+     * The default implementation returns {@link #getValueRange()}.
      * Subclasses must override this as necessary.
      *
      * @param calendrical  context calendrical, not null
      * @return the valid range of values given the calendrical context, not null
      */
-    public DateTimeRuleRange getRange(Calendrical calendrical) {
+    public DateTimeRuleRange getValueRange(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
-        return getRange();
+        return getValueRange();
     }
 
     //-----------------------------------------------------------------------
@@ -238,7 +230,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @throws CalendricalException if the value does not fit in an {@code int}
      */
     public void checkIntValue() {
-        DateTimeRuleRange range = getRange();
+        DateTimeRuleRange range = getValueRange();
         if (range.isIntValue() == false) {
             throw new CalendricalRuleException("Rule does not specify an int value: " + getName(), this);
         }
@@ -260,7 +252,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public long checkValidValue(long value) {
-        DateTimeRuleRange range = getRange();
+        DateTimeRuleRange range = getValueRange();
         if (range.isValidValue(value) == false) {
             throw new IllegalCalendarFieldValueException(this, value);
         }
@@ -401,7 +393,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * Converts a value for this field to a fraction between 0 and 1.
      * <p>
      * The fractional value is between 0 (inclusive) and 1 (exclusive).
-     * It can only be returned if the {@link #getRange() value range} is fixed.
+     * It can only be returned if the {@link #getValueRange() value range} is fixed.
      * The fraction is obtained by calculation from the field range using 9 decimal
      * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
      * The calculation is inaccurate if the values do not run continuously from smallest to largest.
@@ -416,14 +408,14 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @throws CalendricalRuleException if the value cannot be converted to a fraction
      */
     public BigDecimal convertToFraction(long value) {
-        DateTimeRuleRange range = getRange();
+        DateTimeRuleRange range = getValueRange();
         if (range.isFixed() == false) {
             throw new CalendricalRuleException("The fractional value of " + getName() +
                     " cannot be obtained as the range is not fixed", this);
         }
         checkValidValue(value);
-        BigDecimal minBD = BigDecimal.valueOf(range.getMinimumValue());
-        BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximumValue()).subtract(minBD).add(BigDecimal.ONE);
+        BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());
+        BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximum()).subtract(minBD).add(BigDecimal.ONE);
         BigDecimal valueBD = BigDecimal.valueOf(value).subtract(minBD);
         BigDecimal fraction = valueBD.divide(rangeBD, 9, RoundingMode.FLOOR);
         // stripTrailingZeros bug
@@ -434,7 +426,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * Converts a fraction from 0 to 1 for this field to a value.
      * <p>
      * The fractional value must be between 0 (inclusive) and 1 (exclusive).
-     * It can only be returned if the {@link #getRange() value range} is fixed.
+     * It can only be returned if the {@link #getValueRange() value range} is fixed.
      * The value is obtained by calculation from the field range and a rounding
      * mode of {@link RoundingMode#FLOOR FLOOR}.
      * The calculation is inaccurate if the values do not run continuously from smallest to largest.
@@ -450,13 +442,13 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public long convertFromFraction(BigDecimal fraction) {
-        DateTimeRuleRange range = getRange();
+        DateTimeRuleRange range = getValueRange();
         if (range.isFixed() == false) {
             throw new UnsupportedRuleException("The fractional value of " + getName() +
                     " cannot be converted as the range is not fixed", this);
         }
-        BigDecimal minBD = BigDecimal.valueOf(range.getMinimumValue());
-        BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximumValue()).subtract(minBD).add(BigDecimal.ONE);
+        BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());
+        BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximum()).subtract(minBD).add(BigDecimal.ONE);
         BigDecimal valueBD = fraction.multiply(rangeBD).setScale(0, RoundingMode.FLOOR).add(minBD);
         long value = valueBD.longValueExact();
         checkValidValue(value);
@@ -481,43 +473,24 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * Compares this {@code CalendricalRule} to another.
      * <p>
      * The comparison is based on the period unit followed by the period range
-     * followed by the rule ID.
+     * followed by the rule name.
      * The period unit is compared first, so MinuteOfHour will be less than
      * HourOfDay, which will be less than DayOfWeek. When the period unit is
      * the same, the period range is compared, so DayOfWeek is less than
-     * DayOfMonth, which is less than DayOfYear. Finally, the rule ID is compared.
+     * DayOfMonth, which is less than DayOfYear. Finally, the rule name is compared.
      *
      * @param other  the other type to compare to, not null
      * @return the comparator result, negative if less, positive if greater, zero if equal
      */
     public int compareTo(DateTimeRule other) {
-        if (this.getPeriodUnit() == null) {
-            if (other.getPeriodUnit() == null) {
-                return getName().compareTo(other.getName());
-            } else {
-                return 1;
+        int cmp = comparePeriodUnit(other);
+        if (cmp == 0) {
+            cmp = comparePeriodRange(other);
+            if (cmp == 0) {
+                cmp = getName().compareTo(other.getName());
             }
-        } else if (other.getPeriodUnit() == null) {
-            return -1;
         }
-        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
-        if (cmp != 0) {
-            return cmp;
-        }
-        if (this.getPeriodRange() == null) {
-            if (other.getPeriodRange() == null) {
-                return getName().compareTo(other.getName());
-            } else {
-                return 1;
-            }
-        } else if (other.getPeriodRange() == null) {
-            return -1;
-        }
-        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
-        if (cmp != 0) {
-            return cmp;
-        }
-        return getName().compareTo(other.getName());
+        return cmp;
     }
 
     //-----------------------------------------------------------------------

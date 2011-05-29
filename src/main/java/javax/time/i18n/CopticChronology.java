@@ -314,7 +314,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             CopticChronology.merge(merger);
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             switch (ordinal) {
                 case DAY_OF_MONTH_ORDINAL: {
                     DateTimeField moy = calendrical.get(CopticChronology.MONTH_OF_YEAR);
@@ -339,7 +339,7 @@ public final class CopticChronology extends Chronology implements Serializable {
                     break;
                 }
             }
-            return super.getRange();
+            return super.getValueRange();
         }
 
         //-----------------------------------------------------------------------

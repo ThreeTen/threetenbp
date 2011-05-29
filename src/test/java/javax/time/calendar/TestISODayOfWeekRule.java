@@ -59,7 +59,7 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.DAY_OF_WEEK;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "DayOfWeek");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.WEEKS);
     }

@@ -444,7 +444,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField moyVal = calendrical.get(JapaneseChronology.monthOfYearRule());
             if (moyVal != null) {
                 MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
@@ -461,7 +461,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                     return DateTimeRuleRange.of(1, moy.maxLengthInDays());
                 }
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -487,7 +487,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField eraVal = calendrical.get(JapaneseEra.rule());
             DateTimeField yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
             if (eraVal != null && yoeVal != null) {
@@ -495,7 +495,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                 int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
                 return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

@@ -59,7 +59,7 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.DAY_OF_MONTH;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "DayOfMonth");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 28, 31));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 28, 31));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.MONTHS);
     }
@@ -69,37 +69,37 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_getMaximumValue_Calendrical_june() {
         Calendrical cal = YearMonth.of(2007, MonthOfYear.JUNE);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 30));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 30));
     }
 
     public void test_getMaximumValue_Calendrical_july() {
         Calendrical cal = YearMonth.of(2007, MonthOfYear.JULY);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 31));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 31));
     }
 
     public void test_getMaximumValue_Calendrical_febLeap() {
         Calendrical cal = YearMonth.of(2008, MonthOfYear.FEBRUARY);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 29));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 29));
     }
 
     public void test_getMaximumValue_Calendrical_febNonLeap() {
         Calendrical cal = YearMonth.of(2007, MonthOfYear.FEBRUARY);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 28));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 28));
     }
 
     public void test_getMaximumValue_Calendrical_juneNoYear() {
         Calendrical cal = DateTimeField.of(ISODateTimeRule.MONTH_OF_YEAR, 6);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 30));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 30));
     }
 
     public void test_getMaximumValue_Calendrical_julyNoYear() {
         Calendrical cal = DateTimeField.of(ISODateTimeRule.MONTH_OF_YEAR, 7);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 31));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 31));
     }
 
     public void test_getMaximumValue_Calendrical_febNoYear() {
         Calendrical cal = DateTimeField.of(ISODateTimeRule.MONTH_OF_YEAR, 2);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 28, 29));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 28, 29));
     }
 
     //-----------------------------------------------------------------------

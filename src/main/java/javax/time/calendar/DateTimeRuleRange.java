@@ -33,9 +33,8 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-
 /**
- * The range of values for a date-time field.
+ * The range of valid values for a date-time field.
  * <p>
  * All {@link DateTimeField} instances have a valid range of values.
  * For example, the ISO day-of-month runs from 1 to somewhere between 28 and 31.
@@ -163,7 +162,7 @@ public final class DateTimeRuleRange implements Serializable {
      *
      * @return the minimum value for this field
      */
-    public long getMinimumValue() {
+    public long getMinimum() {
         return minSmallest;
     }
 
@@ -175,7 +174,7 @@ public final class DateTimeRuleRange implements Serializable {
      *
      * @return the largest possible minimum value for this field
      */
-    public long getLargestMinimumValue() {
+    public long getLargestMinimum() {
         return minLargest;
     }
 
@@ -187,7 +186,7 @@ public final class DateTimeRuleRange implements Serializable {
      *
      * @return the smallest possible maximum value for this field
      */
-    public long getSmallestMaximumValue() {
+    public long getSmallestMaximum() {
         return maxSmallest;
     }
 
@@ -199,7 +198,7 @@ public final class DateTimeRuleRange implements Serializable {
      *
      * @return the maximum value for this field
      */
-    public long getMaximumValue() {
+    public long getMaximum() {
         return maxLargest;
     }
 
@@ -212,12 +211,12 @@ public final class DateTimeRuleRange implements Serializable {
      * For example, the ISO month-of-year has values from 1 to 12, which fits in an {@code int}.
      * By comparison, ISO nano-of-day runs from 1 to 86,400,000,000,000 which does not fit in an {@code int}.
      * <p>
-     * This implementation uses {@link #getMinimumValue()} and {@link #getMaximumValue()}.
+     * This implementation uses {@link #getMinimum()} and {@link #getMaximum()}.
      *
      * @return true if a valid value always fits in an {@code int}
      */
     public boolean isIntValue() {
-        return getMinimumValue() >= Integer.MIN_VALUE && getMaximumValue() <= Integer.MAX_VALUE;
+        return getMinimum() >= Integer.MIN_VALUE && getMaximum() <= Integer.MAX_VALUE;
     }
 
     /**
@@ -229,7 +228,7 @@ public final class DateTimeRuleRange implements Serializable {
      * @return true if the value is valid
      */
     public boolean isValidValue(long value) {
-        return (value >= getMinimumValue() && value <= getMaximumValue());
+        return (value >= getMinimum() && value <= getMaximum());
     }
 
     /**

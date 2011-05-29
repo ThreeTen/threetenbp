@@ -65,7 +65,7 @@ final class ReducedPrinterParser extends NumberPrinterParser {
         if (width < 1 || width > 18) {
             throw new IllegalArgumentException("The width must be from 1 to 18 inclusive but was " + width);
         }
-        if (rule.getRange().isValidValue(baseValue) == false) {
+        if (rule.getValueRange().isValidValue(baseValue) == false) {
             throw new IllegalArgumentException("The base value must be within the range of the field");
         }
         this.baseValue = baseValue;

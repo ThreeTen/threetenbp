@@ -59,7 +59,7 @@ public class TestISOAmPmOfDayRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.AMPM_OF_DAY;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "AmPmOfDay");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit._12_HOURS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
     }

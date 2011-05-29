@@ -59,7 +59,7 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.WEEK_OF_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "WeekOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 53));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 53));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
     }

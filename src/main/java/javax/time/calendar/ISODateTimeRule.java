@@ -217,7 +217,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return null;
     }
     @Override
-    public DateTimeRuleRange getRange(Calendrical calendrical) {
+    public DateTimeRuleRange getValueRange(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
@@ -272,7 +272,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
         }
-        return super.getRange();
+        return super.getValueRange();
     }
 
     //-----------------------------------------------------------------------

@@ -59,7 +59,7 @@ public class TestISONanoOfDayRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.NANO_OF_DAY;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "NanoOfDay");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 86399999999999L));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 86399999999999L));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.NANOS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
     }

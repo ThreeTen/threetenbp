@@ -59,7 +59,7 @@ public class TestISOClockHourOfAmPmRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ClockHourOfAmPm");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit._12_HOURS);
     }

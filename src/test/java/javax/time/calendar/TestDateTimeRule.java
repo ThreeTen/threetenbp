@@ -122,12 +122,12 @@ public class TestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_basics() {
         Mock rule = new Mock(HOURS, DAYS, 0, 23);
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 23));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 23));
     }
 
     public void test_isFixedValueSet() {
         Mock rule = new Mock(HOURS, DAYS, 0, 23, 21);
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 21, 23));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 21, 23));
     }
 
     //-----------------------------------------------------------------------

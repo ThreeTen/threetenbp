@@ -92,20 +92,20 @@ public class TestDateTimeRuleRange {
     //-----------------------------------------------------------------------
     public void test_of_longlong() {
         DateTimeRuleRange test = DateTimeRuleRange.of(1, 12);
-        assertEquals(test.getMinimumValue(), 1);
-        assertEquals(test.getLargestMinimumValue(), 1);
-        assertEquals(test.getSmallestMaximumValue(), 12);
-        assertEquals(test.getMaximumValue(), 12);
+        assertEquals(test.getMinimum(), 1);
+        assertEquals(test.getLargestMinimum(), 1);
+        assertEquals(test.getSmallestMaximum(), 12);
+        assertEquals(test.getMaximum(), 12);
         assertEquals(test.isFixed(), true);
         assertEquals(test.isIntValue(), true);
     }
 
     public void test_of_longlong_big() {
         DateTimeRuleRange test = DateTimeRuleRange.of(1, 123456789012345L);
-        assertEquals(test.getMinimumValue(), 1);
-        assertEquals(test.getLargestMinimumValue(), 1);
-        assertEquals(test.getSmallestMaximumValue(), 123456789012345L);
-        assertEquals(test.getMaximumValue(), 123456789012345L);
+        assertEquals(test.getMinimum(), 1);
+        assertEquals(test.getLargestMinimum(), 1);
+        assertEquals(test.getSmallestMaximum(), 123456789012345L);
+        assertEquals(test.getMaximum(), 123456789012345L);
         assertEquals(test.isFixed(), true);
         assertEquals(test.isIntValue(), false);
     }
@@ -120,10 +120,10 @@ public class TestDateTimeRuleRange {
     //-----------------------------------------------------------------------
     public void test_of_longlonglong() {
         DateTimeRuleRange test = DateTimeRuleRange.of(1, 28, 31);
-        assertEquals(test.getMinimumValue(), 1);
-        assertEquals(test.getLargestMinimumValue(), 1);
-        assertEquals(test.getSmallestMaximumValue(), 28);
-        assertEquals(test.getMaximumValue(), 31);
+        assertEquals(test.getMinimum(), 1);
+        assertEquals(test.getLargestMinimum(), 1);
+        assertEquals(test.getSmallestMaximum(), 28);
+        assertEquals(test.getMaximum(), 31);
         assertEquals(test.isFixed(), false);
         assertEquals(test.isIntValue(), true);
     }
@@ -143,10 +143,10 @@ public class TestDateTimeRuleRange {
     //-----------------------------------------------------------------------
     public void test_of_longlonglonglong() {
         DateTimeRuleRange test = DateTimeRuleRange.of(1, 2, 28, 31);
-        assertEquals(test.getMinimumValue(), 1);
-        assertEquals(test.getLargestMinimumValue(), 2);
-        assertEquals(test.getSmallestMaximumValue(), 28);
-        assertEquals(test.getMaximumValue(), 31);
+        assertEquals(test.getMinimum(), 1);
+        assertEquals(test.getLargestMinimum(), 2);
+        assertEquals(test.getSmallestMaximum(), 28);
+        assertEquals(test.getMaximum(), 31);
         assertEquals(test.isFixed(), false);
         assertEquals(test.isIntValue(), true);
     }

@@ -59,7 +59,7 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.DAY_OF_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "DayOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
     }
@@ -69,12 +69,12 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_getMaximumValue_Calendrical_leap() {
         Calendrical cal = LocalDate.of(2008, 1, 1);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 366));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 366));
     }
 
     public void test_getMaximumValue_Calendrical_nonLeap() {
         Calendrical cal = LocalDate.of(2007, 1, 1);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 365));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 365));
     }
 
     //-----------------------------------------------------------------------

@@ -59,7 +59,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.WEEK_OF_MONTH;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "WeekOfMonth");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 4, 5));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 4, 5));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.MONTHS);
     }
@@ -69,22 +69,22 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_getMaximumValue_Calendrical_nonLeapFeb() {
         Calendrical cal = LocalDate.of(2007, 2, 1);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 4));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 4));
     }
 
     public void test_getMaximumValue_Calendrical_leapFeb() {
         Calendrical cal = LocalDate.of(2008, 2, 1);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 5));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 5));
     }
 
     public void test_getMaximumValue_Calendrical_nonLeapJune() {
         Calendrical cal = LocalDate.of(2007, 6, 1);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 5));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 5));
     }
 
     public void test_getMaximumValue_Calendrical_leapJune() {
         Calendrical cal = LocalDate.of(2008, 6, 1);
-        assertEquals(rule().getRange(cal), DateTimeRuleRange.of(1, 5));
+        assertEquals(rule().getValueRange(cal), DateTimeRuleRange.of(1, 5));
     }
 
     //-----------------------------------------------------------------------

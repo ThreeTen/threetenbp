@@ -434,7 +434,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField moyVal = calendrical.get(MinguoChronology.monthOfYearRule());
             if (moyVal != null) {
                 MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
@@ -451,7 +451,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
                     return DateTimeRuleRange.of(1, moy.maxLengthInDays());
                 }
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {
@@ -477,7 +477,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        public DateTimeRuleRange getRange(Calendrical calendrical) {
+        public DateTimeRuleRange getValueRange(Calendrical calendrical) {
             DateTimeField era = calendrical.get(MinguoEra.rule());
             DateTimeField yoeVal = calendrical.get(MinguoChronology.yearOfEraRule());
             if (era != null && yoeVal != null) {
@@ -485,7 +485,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
                 int isoYear = (era.getValidIntValue() == MinguoEra.BEFORE_MINGUO.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
                 return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
             }
-            return getRange();
+            return getValueRange();
         }
         @Override
         protected DateTimeField derive(Calendrical calendrical) {

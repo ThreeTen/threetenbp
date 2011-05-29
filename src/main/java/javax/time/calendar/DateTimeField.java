@@ -174,7 +174,7 @@ public final class DateTimeField
      * @return true if the value is valid
      */
     public boolean isValidValue() {
-        return rule.getRange().isValidValue(value);
+        return rule.getValueRange().isValidValue(value);
     }
 
     /**
@@ -206,7 +206,7 @@ public final class DateTimeField
      * @throws CalendricalException if the value is invalid
      */
     public boolean isValidIntValue() {
-        return rule.getRange().isValidIntValue(value);
+        return rule.getValueRange().isValidIntValue(value);
     }
 
     /**

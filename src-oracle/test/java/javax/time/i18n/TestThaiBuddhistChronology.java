@@ -66,7 +66,7 @@ public class TestThaiBuddhistChronology {
         DateTimeRule rule = ThaiBuddhistChronology.eraRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ThaiBuddhistEra");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(0, 1));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 1));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodEras());
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
@@ -77,7 +77,7 @@ public class TestThaiBuddhistChronology {
         DateTimeRule rule = ThaiBuddhistChronology.yearOfEraRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ThaiBuddhistYearOfEra");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(ThaiBuddhistDate.MIN_YEAR_OF_ERA, ThaiBuddhistDate.MAX_YEAR_OF_ERA));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(ThaiBuddhistDate.MIN_YEAR_OF_ERA, ThaiBuddhistDate.MAX_YEAR_OF_ERA));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodYears());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodEras());
         serialize(rule);
@@ -88,7 +88,7 @@ public class TestThaiBuddhistChronology {
         DateTimeRule rule = ThaiBuddhistChronology.monthOfYearRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ThaiBuddhistMonthOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 12));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 12));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodMonths());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodYears());
     }
@@ -98,7 +98,7 @@ public class TestThaiBuddhistChronology {
         DateTimeRule rule = ThaiBuddhistChronology.dayOfMonthRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ThaiBuddhistDayOfMonth");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 28, 31));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 28, 31));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodDays());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodMonths());
         serialize(rule);
@@ -109,7 +109,7 @@ public class TestThaiBuddhistChronology {
         DateTimeRule rule = ThaiBuddhistChronology.dayOfYearRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ThaiBuddhistDayOfYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 365, 366));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 365, 366));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodDays());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodYears());
         serialize(rule);
@@ -121,7 +121,7 @@ public class TestThaiBuddhistChronology {
         DateTimeRule rule = ThaiBuddhistChronology.dayOfWeekRule();
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ThaiBuddhistDayOfWeek");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 7));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 7));
         assertEquals(rule.getPeriodUnit(), ThaiBuddhistChronology.periodDays());
         assertEquals(rule.getPeriodRange(), ThaiBuddhistChronology.periodWeeks());
         serialize(rule);

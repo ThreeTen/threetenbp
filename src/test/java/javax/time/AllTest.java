@@ -44,6 +44,7 @@ import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestDateTimeField;
 import javax.time.calendar.TestDateTimeFields;
 import javax.time.calendar.TestDateTimeRule;
+import javax.time.calendar.TestDateTimeRuleRange;
 import javax.time.calendar.TestDayOfWeek;
 import javax.time.calendar.TestISOAmPmOfDayRule;
 import javax.time.calendar.TestISOChronology;
@@ -55,6 +56,7 @@ import javax.time.calendar.TestISODayOfYearRule;
 import javax.time.calendar.TestISOEpochYearRule;
 import javax.time.calendar.TestISOHourOfAmPmRule;
 import javax.time.calendar.TestISOHourOfDayRule;
+import javax.time.calendar.TestISOMerge;
 import javax.time.calendar.TestISOMinuteOfDayRule;
 import javax.time.calendar.TestISOMonthOfQuarterRule;
 import javax.time.calendar.TestISOMonthOfYearRule;
@@ -160,6 +162,7 @@ public class AllTest {
             TestDateTimeField.class,
             TestDateTimeFields.class,
             TestDateTimeRule.class,
+            TestDateTimeRuleRange.class,
             TestDayOfWeek.class,
             TestISOAmPmOfDayRule.class,
             TestISOChronology.class,
@@ -171,6 +174,7 @@ public class AllTest {
             TestISOEpochYearRule.class,
             TestISOHourOfAmPmRule.class,
             TestISOHourOfDayRule.class,
+            TestISOMerge.class,
             TestISOMinuteOfDayRule.class,
             TestISOMonthOfQuarterRule.class,
             TestISOMonthOfYearRule.class,

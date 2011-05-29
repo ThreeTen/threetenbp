@@ -122,7 +122,7 @@ public abstract class AbstractTestDateTimeRule {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=CalendricalRuleException.class)
     public void test_checkIntValue_valid() {
-        if (rule().getRange().isIntValue()) {
+        if (rule().getValueRange().isIntValue()) {
             rule().checkIntValue();
             throw new CalendricalRuleException("Dummy", rule());
         } else {
@@ -134,15 +134,15 @@ public abstract class AbstractTestDateTimeRule {
     // checkValidValue(long)
     //-----------------------------------------------------------------------
     public void test_checkValue_long_valid() {
-        rule().checkValidValue(rule().getRange().getLargestMinimumValue());
+        rule().checkValidValue(rule().getValueRange().getLargestMinimum());
         rule().checkValidValue(testingValue);
-        rule().checkValidValue(rule().getRange().getSmallestMaximumValue());
+        rule().checkValidValue(rule().getValueRange().getSmallestMaximum());
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidSmall() {
-        if (rule().getRange().getMinimumValue() > Long.MIN_VALUE) {
-            rule().checkValidValue((rule().getRange().getMinimumValue() - 1));
+        if (rule().getValueRange().getMinimum() > Long.MIN_VALUE) {
+            rule().checkValidValue((rule().getValueRange().getMinimum() - 1));
         } else {
             throw new IllegalCalendarFieldValueException(rule(), 0);
         }
@@ -150,8 +150,8 @@ public abstract class AbstractTestDateTimeRule {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValue_long_invalidBig() {
-        if (rule().getRange().getMaximumValue() < Long.MAX_VALUE) {
-            rule().checkValidValue((rule().getRange().getMaximumValue() + 1));
+        if (rule().getValueRange().getMaximum() < Long.MAX_VALUE) {
+            rule().checkValidValue((rule().getValueRange().getMaximum() + 1));
         } else {
             throw new IllegalCalendarFieldValueException(rule(), 0);
         }
@@ -162,12 +162,12 @@ public abstract class AbstractTestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_getRange_Calendrical_noData() {
         Calendrical cal = new MockSimpleCalendrical();
-        assertSame(rule().getRange(cal), rule().getRange());
+        assertSame(rule().getValueRange(cal), rule().getValueRange());
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getRange_Calendrical_null() {
-        rule().getRange(null);
+        rule().getValueRange(null);
     }
 
     //-----------------------------------------------------------------------

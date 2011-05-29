@@ -159,9 +159,9 @@ public class TestFluentAPI {
         md = md.with(MARCH);
         md = md.rollDayOfMonth(3);
         
-        DAY_OF_MONTH.getRange().getMaximumValue();
+        DAY_OF_MONTH.getValueRange().getMaximum();
         date.getMonthOfYear().maxLengthInDays();
-        DAY_OF_MONTH.getRange(date).getMaximumValue();
+        DAY_OF_MONTH.getValueRange(date).getMaximum();
         FEBRUARY.maxLengthInDays();
 //        DayOfMonth.RULE.getMaximumValue(february());
         

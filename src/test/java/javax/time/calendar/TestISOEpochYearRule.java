@@ -59,7 +59,7 @@ public class TestISOEpochYearRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.EPOCH_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "EpochYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(Long.MIN_VALUE, Long.MAX_VALUE));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(Long.MIN_VALUE, Long.MAX_VALUE));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.YEARS);
         assertEquals(rule.getPeriodRange(), null);
     }

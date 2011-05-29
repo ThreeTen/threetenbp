@@ -59,7 +59,7 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeRule {
         DateTimeRule rule = ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "WeekOfWeekBasedYear");
-        assertEquals(rule.getRange(), DateTimeRuleRange.of(1, 52, 53));
+        assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 52, 53));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.WEEK_BASED_YEARS);
     }
@@ -73,22 +73,22 @@ public class TestISOWeekOfWeekBasedYearRule extends AbstractTestDateTimeRule {
         LocalDate date = LocalDate.of(1900, 1, 1);
         while (date.getYear() <= 2100) {
             if (date.getDayOfWeek() == DayOfWeek.THURSDAY ) {
-                assertEquals(rule().getRange(date), DateTimeRuleRange.of(1, 53));
+                assertEquals(rule().getValueRange(date), DateTimeRuleRange.of(1, 53));
             } else if (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && date.isLeapYear()) {
-                assertEquals(rule().getRange(date), DateTimeRuleRange.of(1, 53));
+                assertEquals(rule().getValueRange(date), DateTimeRuleRange.of(1, 53));
             } else {
-                assertEquals(rule().getRange(date), DateTimeRuleRange.of(1, 52));
+                assertEquals(rule().getValueRange(date), DateTimeRuleRange.of(1, 52));
             }
             date = date.plusYears(1);
         }
     }
 
     public void test_getMaximumValue_Calendrical_sample() {
-        assertEquals(rule().getRange(LocalDate.of(2007, 6, 1)), DateTimeRuleRange.of(1, 52));
-        assertEquals(rule().getRange(LocalDate.of(2008, 6, 1)), DateTimeRuleRange.of(1, 52));
-        assertEquals(rule().getRange(LocalDate.of(2009, 6, 1)), DateTimeRuleRange.of(1, 53));
-        assertEquals(rule().getRange(LocalDate.of(2010, 6, 1)), DateTimeRuleRange.of(1, 52));
-        assertEquals(rule().getRange(LocalDate.of(2011, 6, 1)), DateTimeRuleRange.of(1, 52));
+        assertEquals(rule().getValueRange(LocalDate.of(2007, 6, 1)), DateTimeRuleRange.of(1, 52));
+        assertEquals(rule().getValueRange(LocalDate.of(2008, 6, 1)), DateTimeRuleRange.of(1, 52));
+        assertEquals(rule().getValueRange(LocalDate.of(2009, 6, 1)), DateTimeRuleRange.of(1, 53));
+        assertEquals(rule().getValueRange(LocalDate.of(2010, 6, 1)), DateTimeRuleRange.of(1, 52));
+        assertEquals(rule().getValueRange(LocalDate.of(2011, 6, 1)), DateTimeRuleRange.of(1, 52));
     }
 
     //-----------------------------------------------------------------------
