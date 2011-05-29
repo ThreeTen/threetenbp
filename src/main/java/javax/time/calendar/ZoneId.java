@@ -412,6 +412,34 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this offset then
+     * {@code null} will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule instanceof CalendricalObjectRule<?>) {
+            switch (((CalendricalObjectRule<?>) rule).code) {
+                case CalendricalObjectRule.OFFSET: {  // TODO possibly remove
+                    if (isFixed()) {
+                        return (T) getRules().getOffset(Instant.EPOCH);
+                    }
+                    break;
+                }
+                case CalendricalObjectRule.ZONE: return (T) this;
+            }
+            return null;
+        }
+        return rule.derive(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the unique time-zone ID.
      * <p>
      * The unique key is created from the group ID, version ID and region ID.
@@ -763,24 +791,6 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule.equals(ZoneOffset.rule()) && isFixed()) {
-            return rule.reify(getRules().getOffset(Instant.EPOCH));
-        }
-        return rule().deriveValueFor(rule, this, this, null);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the rule for {@code ZoneId}.
      *
      * @return the rule for the time-zone, not null
@@ -793,11 +803,11 @@ public abstract class ZoneId implements Calendrical, Serializable {
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<ZoneId> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<ZoneId> implements Serializable {
         private static final CalendricalRule<ZoneId> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZoneId.class, "ZoneId");
+            super(ZoneId.class, ZONE);
         }
         private Object readResolve() {
             return INSTANCE;

@@ -284,8 +284,18 @@ public final class OffsetDate
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        if (rule instanceof CalendricalObjectRule<?>) {
+            switch (((CalendricalObjectRule<?>) rule).code) {
+                case CalendricalObjectRule.LD: return (T) toLocalDate();
+                case CalendricalObjectRule.OD: return (T) this;
+                case CalendricalObjectRule.OFFSET: return (T) getOffset();
+                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+            }
+            return null;
+        }
+        return rule.derive(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1266,19 +1276,14 @@ public final class OffsetDate
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<OffsetDate> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<OffsetDate> implements Serializable {
         private static final CalendricalRule<OffsetDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(OffsetDate.class, "OffsetDate");
+            super(OffsetDate.class, OD);
         }
         private Object readResolve() {
             return INSTANCE;
-        }
-        @Override
-        protected OffsetDate derive(Calendrical calendrical) {
-            OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
-            return odt != null ? odt.toOffsetDate() : null;
         }
     }
 

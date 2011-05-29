@@ -64,6 +64,28 @@ public abstract class Chronology implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this offset then
+     * {@code null} will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule instanceof CalendricalObjectRule<?>) {
+            if (((CalendricalObjectRule<?>) rule).code == CalendricalObjectRule.CHRONO) {
+                return (T) this;
+            }
+            return null;
+        }
+        return rule.derive(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the name of the chronology.
      * <p>
      * The name should not have the suffix 'Chronology'.
@@ -86,21 +108,6 @@ public abstract class Chronology implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the rule for {@code Chronology}.
      *
      * @return the rule for the chronology, not null
@@ -113,11 +120,11 @@ public abstract class Chronology implements Calendrical {
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<Chronology> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<Chronology> implements Serializable {
         private static final CalendricalRule<Chronology> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(Chronology.class, "Chronology");
+            super(Chronology.class, CHRONO);
         }
         private Object readResolve() {
             return INSTANCE;

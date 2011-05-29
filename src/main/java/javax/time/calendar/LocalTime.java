@@ -439,8 +439,16 @@ public final class LocalTime
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        if (rule instanceof CalendricalObjectRule<?>) {
+            switch (((CalendricalObjectRule<?>) rule).code) {
+                case CalendricalObjectRule.LT: return (T) this;
+                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+            }
+            return null;
+        }
+        return rule.derive(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1402,26 +1410,14 @@ public final class LocalTime
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<LocalTime> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<LocalTime> implements Serializable {
         private static final CalendricalRule<LocalTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalTime.class, "LocalTime");
+            super(LocalTime.class, LT);
         }
         private Object readResolve() {
             return INSTANCE;
-        }
-        @Override
-        protected LocalTime derive(Calendrical calendrical) {
-            LocalDateTime ldt = calendrical.get(LocalDateTime.rule());
-            if (ldt != null) {
-                return ldt.toLocalTime();
-            }
-            OffsetTime ot = calendrical.get(OffsetTime.rule());
-            if (ot != null) {
-                return ot.toLocalTime();
-            }
-            return null;
         }
     }
 

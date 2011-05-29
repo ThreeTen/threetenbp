@@ -351,8 +351,16 @@ public final class LocalDate
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        if (rule instanceof CalendricalObjectRule<?>) {
+            switch (((CalendricalObjectRule<?>) rule).code) {
+                case CalendricalObjectRule.LD: return (T) this;
+                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+            }
+            return null;
+        }
+        return rule.derive(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1464,26 +1472,14 @@ public final class LocalDate
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<LocalDate> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<LocalDate> implements Serializable {
         private static final CalendricalRule<LocalDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalDate.class, "LocalDate");
+            super(LocalDate.class, LD);
         }
         private Object readResolve() {
             return INSTANCE;
-        }
-        @Override
-        protected LocalDate derive(Calendrical calendrical) {
-            LocalDateTime ldt = calendrical.get(LocalDateTime.rule());
-            if (ldt != null) {
-                return ldt.toLocalDate();
-            }
-            OffsetDate od = calendrical.get(OffsetDate.rule());
-            if (od != null) {
-                return od.toLocalDate();
-            }
-            return null;
         }
     }
 

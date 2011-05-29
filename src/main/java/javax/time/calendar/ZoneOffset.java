@@ -418,6 +418,28 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this offset then
+     * {@code null} will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule instanceof CalendricalObjectRule<?>) {
+            if (((CalendricalObjectRule<?>) rule).code == CalendricalObjectRule.OFFSET) {
+                return (T) this;
+            }
+            return null;
+        }
+        return rule.derive(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the total zone offset in seconds.
      * <p>
      * This is the primary way to access the offset amount.
@@ -612,21 +634,6 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, null);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the rule for the zone-offset.
      *
      * @return the rule for the zone-offset, not null
@@ -639,30 +646,14 @@ public final class ZoneOffset
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<ZoneOffset> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<ZoneOffset> implements Serializable {
         private static final CalendricalRule<ZoneOffset> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZoneOffset.class, "ZoneOffset");
+            super(ZoneOffset.class, OFFSET);
         }
         private Object readResolve() {
             return INSTANCE;
-        }
-        @Override
-        protected ZoneOffset derive(Calendrical calendrical) {
-            OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
-            if (odt != null) {
-                return odt.getOffset();
-            }
-            OffsetDate od = calendrical.get(OffsetDate.rule());
-            if (od != null) {
-                return od.getOffset();
-            }
-            OffsetTime ot = calendrical.get(OffsetTime.rule());
-            if (ot != null) {
-                return ot.getOffset();
-            }
-            return null;
         }
     }
 

@@ -541,8 +541,24 @@ public final class ZonedDateTime
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        if (rule instanceof CalendricalObjectRule<?>) {
+            switch (((CalendricalObjectRule<?>) rule).code) {
+                case CalendricalObjectRule.LD: return (T) toLocalDate();
+                case CalendricalObjectRule.LT: return (T) toLocalTime();
+                case CalendricalObjectRule.LDT: return (T) toLocalDateTime();
+                case CalendricalObjectRule.OD: return (T) toOffsetDate();
+                case CalendricalObjectRule.OT: return (T) toOffsetTime();
+                case CalendricalObjectRule.ODT: return (T) toOffsetDateTime();
+                case CalendricalObjectRule.ZDT: return (T) this;
+                case CalendricalObjectRule.OFFSET: return (T) getOffset();
+                case CalendricalObjectRule.ZONE: return (T) zone;
+                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+            }
+            return null;
+        }
+        return rule.derive(this);
     }
 
     //-----------------------------------------------------------------------
@@ -2122,11 +2138,11 @@ public final class ZonedDateTime
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<ZonedDateTime> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<ZonedDateTime> implements Serializable {
         private static final CalendricalRule<ZonedDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZonedDateTime.class, "ZonedDateTime");
+            super(ZonedDateTime.class, ZDT);
         }
         private Object readResolve() {
             return INSTANCE;

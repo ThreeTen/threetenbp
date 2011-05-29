@@ -511,8 +511,22 @@ public final class OffsetDateTime
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        if (rule instanceof CalendricalObjectRule<?>) {
+            switch (((CalendricalObjectRule<?>) rule).code) {
+                case CalendricalObjectRule.LD: return (T) toLocalDate();
+                case CalendricalObjectRule.LT: return (T) toLocalTime();
+                case CalendricalObjectRule.LDT: return (T) toLocalDateTime();
+                case CalendricalObjectRule.OD: return (T) toOffsetDate();
+                case CalendricalObjectRule.OT: return (T) toOffsetTime();
+                case CalendricalObjectRule.ODT: return (T) this;
+                case CalendricalObjectRule.OFFSET: return (T) getOffset();
+                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+            }
+            return null;
+        }
+        return rule.derive(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1911,19 +1925,14 @@ public final class OffsetDateTime
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<OffsetDateTime> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<OffsetDateTime> implements Serializable {
         private static final CalendricalRule<OffsetDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(OffsetDateTime.class, "OffsetDateTime");
+            super(OffsetDateTime.class, ODT);
         }
         private Object readResolve() {
             return INSTANCE;
-        }
-        @Override
-        protected OffsetDateTime derive(Calendrical calendrical) {
-            ZonedDateTime zdt = calendrical.get(ZonedDateTime.rule());
-            return zdt != null ? zdt.toOffsetDateTime() : null;
         }
     }
 

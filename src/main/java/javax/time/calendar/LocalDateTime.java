@@ -489,8 +489,18 @@ public final class LocalDateTime
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        if (rule instanceof CalendricalObjectRule<?>) {
+            switch (((CalendricalObjectRule<?>) rule).code) {
+                case CalendricalObjectRule.LD: return (T) toLocalDate();
+                case CalendricalObjectRule.LT: return (T) toLocalTime();
+                case CalendricalObjectRule.LDT: return (T) this;
+                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+            }
+            return null;
+        }
+        return rule.derive(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1818,29 +1828,14 @@ public final class LocalDateTime
     /**
      * Rule implementation.
      */
-    static final class Rule extends CalendricalRule<LocalDateTime> implements Serializable {
+    static final class Rule extends CalendricalObjectRule<LocalDateTime> implements Serializable {
         private static final CalendricalRule<LocalDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalDateTime.class, "LocalDateTime");
+            super(LocalDateTime.class, LDT);
         }
         private Object readResolve() {
             return INSTANCE;
-        }
-        @Override
-        protected LocalDateTime derive(Calendrical calendrical) {
-            OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
-            return odt != null ? odt.toLocalDateTime() : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            ZoneOffset offset = merger.getValue(ZoneOffset.rule());
-            if (offset != null) {
-                LocalDateTime dateTime = merger.getValue(this);
-                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.of(dateTime, offset));
-                merger.removeProcessed(this);
-                merger.removeProcessed(ZoneOffset.rule());
-            }
         }
     }
 
