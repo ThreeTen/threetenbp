@@ -45,6 +45,7 @@ import java.io.Serializable;
  * A matcher allows any type of matching to be performed against a calendrical.
  * Examples might be checking of the calendrical represents Friday the Thirteenth,
  * or the last day of the month, or one of the American continent time-zones.
+ * All the implemented matchers depend on the ISO calendar system.
  * <p>
  * CalendricalMatchers is a utility class.
  * All matchers returned are immutable and thread-safe.
