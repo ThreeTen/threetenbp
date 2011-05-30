@@ -251,75 +251,75 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     // of() factories
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_intsMonth() {
+    public void factory_ofMidnight_intsMonth() {
         LocalDateTime dateTime = LocalDateTime.ofMidnight(2008, MonthOfYear.FEBRUARY, 29);
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_intsMonth_yearTooLow() {
+    public void factory_ofMidnight_intsMonth_yearTooLow() {
         LocalDateTime.ofMidnight(Integer.MIN_VALUE, MonthOfYear.FEBRUARY, 29);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_intsMonth_nullMonth() {
+    public void factory_ofMidnight_intsMonth_nullMonth() {
         LocalDateTime.ofMidnight(2008, null, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_intsMonth_dayTooLow() {
+    public void factory_ofMidnight_intsMonth_dayTooLow() {
         LocalDateTime.ofMidnight(2008, MonthOfYear.FEBRUARY, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_intsMonth_dayTooHigh() {
+    public void factory_ofMidnight_intsMonth_dayTooHigh() {
         LocalDateTime.ofMidnight(2008, MonthOfYear.MARCH, 32);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_ints() {
+    public void factory_ofMidnight_ints() {
         LocalDateTime dateTime = LocalDateTime.ofMidnight(2008, 2, 29);
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_ints_yearTooLow() {
+    public void factory_ofMidnight_ints_yearTooLow() {
         LocalDateTime.ofMidnight(Integer.MIN_VALUE, 2, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_ints_monthTooLow() {
+    public void factory_ofMidnight_ints_monthTooLow() {
         LocalDateTime.ofMidnight(2008, 0, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_ints_monthTooHigh() {
+    public void factory_ofMidnight_ints_monthTooHigh() {
         LocalDateTime.ofMidnight(2008, 13, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_ints_dayTooLow() {
+    public void factory_ofMidnight_ints_dayTooLow() {
         LocalDateTime.ofMidnight(2008, 2, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateMidnight_ints_dayTooHigh() {
+    public void factory_ofMidnight_ints_dayTooHigh() {
         LocalDateTime.ofMidnight(2008, 3, 32);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_DateProvider() {
+    public void factory_ofMidnight_DateProvider() {
         LocalDateTime dateTime = LocalDateTime.ofMidnight(LocalDate.of(2008, 2, 29));
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_DateProvider_null() {
+    public void factory_ofMidnight_DateProvider_null() {
         LocalDateTime.ofMidnight(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_DateProvider_null_toLocalDate() {
+    public void factory_ofMidnight_DateProvider_null_toLocalDate() {
         LocalDateTime.ofMidnight(new DateProvider() {
             public LocalDate toLocalDate() {
                 return null;
@@ -328,376 +328,376 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_multiProvider_checkAmbiguous() {
+    public void factory_ofMidnight_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
         LocalDateTime test = LocalDateTime.ofMidnight(mmp);
         check(test, 2008, 6, 30, 0, 0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_4intsMonth() {
+    public void factory_of_4intsMonth() {
         LocalDateTime dateTime = LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30);
         check(dateTime, 2007, 7, 15, 12, 30, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_4intsMonth_yearTooLow() {
+    public void factory_of_4intsMonth_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_4intsMonth_nullMonth() {
+    public void factory_of_4intsMonth_nullMonth() {
         LocalDateTime.of(2007, null, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_4intsMonth_dayTooLow() {
+    public void factory_of_4intsMonth_dayTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, -1, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_4intsMonth_dayTooHigh() {
+    public void factory_of_4intsMonth_dayTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 32, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_4intsMonth_hourTooLow() {
+    public void factory_of_4intsMonth_hourTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, -1, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_4intsMonth_hourTooHigh() {
+    public void factory_of_4intsMonth_hourTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 24, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_4intsMonth_minuteTooLow() {
+    public void factory_of_4intsMonth_minuteTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_4intsMonth_minuteTooHigh() {
+    public void factory_of_4intsMonth_minuteTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 60);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_5intsMonth() {
+    public void factory_of_5intsMonth() {
         LocalDateTime dateTime = LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_yearTooLow() {
+    public void factory_of_5intsMonth_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_5intsMonth_nullMonth() {
+    public void factory_of_5intsMonth_nullMonth() {
         LocalDateTime.of(2007, null, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_dayTooLow() {
+    public void factory_of_5intsMonth_dayTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, -1, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_dayTooHigh() {
+    public void factory_of_5intsMonth_dayTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 32, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_hourTooLow() {
+    public void factory_of_5intsMonth_hourTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, -1, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_hourTooHigh() {
+    public void factory_of_5intsMonth_hourTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 24, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_minuteTooLow() {
+    public void factory_of_5intsMonth_minuteTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, -1, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_minuteTooHigh() {
+    public void factory_of_5intsMonth_minuteTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 60, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_secondTooLow() {
+    public void factory_of_5intsMonth_secondTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5intsMonth_secondTooHigh() {
+    public void factory_of_5intsMonth_secondTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 60);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_6intsMonth() {
+    public void factory_of_6intsMonth() {
         LocalDateTime dateTime = LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40, 987654321);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_yearTooLow() {
+    public void factory_of_6intsMonth_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_6intsMonth_nullMonth() {
+    public void factory_of_6intsMonth_nullMonth() {
         LocalDateTime.of(2007, null, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_dayTooLow() {
+    public void factory_of_6intsMonth_dayTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, -1, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_dayTooHigh() {
+    public void factory_of_6intsMonth_dayTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 32, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_hourTooLow() {
+    public void factory_of_6intsMonth_hourTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, -1, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_hourTooHigh() {
+    public void factory_of_6intsMonth_hourTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 24, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_minuteTooLow() {
+    public void factory_of_6intsMonth_minuteTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, -1, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_minuteTooHigh() {
+    public void factory_of_6intsMonth_minuteTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 60, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_secondTooLow() {
+    public void factory_of_6intsMonth_secondTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, -1, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_secondTooHigh() {
+    public void factory_of_6intsMonth_secondTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 60, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_nanoTooLow() {
+    public void factory_of_6intsMonth_nanoTooLow() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6intsMonth_nanoTooHigh() {
+    public void factory_of_6intsMonth_nanoTooHigh() {
         LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40, 1000000000);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_5ints() {
+    public void factory_of_5ints() {
         LocalDateTime dateTime = LocalDateTime.of(2007, 7, 15, 12, 30);
         check(dateTime, 2007, 7, 15, 12, 30, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_yearTooLow() {
+    public void factory_of_5ints_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_monthTooLow() {
+    public void factory_of_5ints_monthTooLow() {
         LocalDateTime.of(2007, 0, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_monthTooHigh() {
+    public void factory_of_5ints_monthTooHigh() {
         LocalDateTime.of(2007, 13, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_dayTooLow() {
+    public void factory_of_5ints_dayTooLow() {
         LocalDateTime.of(2007, 7, -1, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_dayTooHigh() {
+    public void factory_of_5ints_dayTooHigh() {
         LocalDateTime.of(2007, 7, 32, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_hourTooLow() {
+    public void factory_of_5ints_hourTooLow() {
         LocalDateTime.of(2007, 7, 15, -1, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_hourTooHigh() {
+    public void factory_of_5ints_hourTooHigh() {
         LocalDateTime.of(2007, 7, 15, 24, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_minuteTooLow() {
+    public void factory_of_5ints_minuteTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_5ints_minuteTooHigh() {
+    public void factory_of_5ints_minuteTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 60);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_6ints() {
+    public void factory_of_6ints() {
         LocalDateTime dateTime = LocalDateTime.of(2007, 7, 15, 12, 30, 40);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_yearTooLow() {
+    public void factory_of_6ints_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_monthTooLow() {
+    public void factory_of_6ints_monthTooLow() {
         LocalDateTime.of(2007, 0, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_monthTooHigh() {
+    public void factory_of_6ints_monthTooHigh() {
         LocalDateTime.of(2007, 13, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_dayTooLow() {
+    public void factory_of_6ints_dayTooLow() {
         LocalDateTime.of(2007, 7, -1, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_dayTooHigh() {
+    public void factory_of_6ints_dayTooHigh() {
         LocalDateTime.of(2007, 7, 32, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_hourTooLow() {
+    public void factory_of_6ints_hourTooLow() {
         LocalDateTime.of(2007, 7, 15, -1, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_hourTooHigh() {
+    public void factory_of_6ints_hourTooHigh() {
         LocalDateTime.of(2007, 7, 15, 24, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_minuteTooLow() {
+    public void factory_of_6ints_minuteTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, -1, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_minuteTooHigh() {
+    public void factory_of_6ints_minuteTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 60, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_secondTooLow() {
+    public void factory_of_6ints_secondTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, 30, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_6ints_secondTooHigh() {
+    public void factory_of_6ints_secondTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 60);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_7ints() {
+    public void factory_of_7ints() {
         LocalDateTime dateTime = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_yearTooLow() {
+    public void factory_of_7ints_yearTooLow() {
         LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_monthTooLow() {
+    public void factory_of_7ints_monthTooLow() {
         LocalDateTime.of(2007, 0, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_monthTooHigh() {
+    public void factory_of_7ints_monthTooHigh() {
         LocalDateTime.of(2007, 13, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_dayTooLow() {
+    public void factory_of_7ints_dayTooLow() {
         LocalDateTime.of(2007, 7, -1, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_dayTooHigh() {
+    public void factory_of_7ints_dayTooHigh() {
         LocalDateTime.of(2007, 7, 32, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_hourTooLow() {
+    public void factory_of_7ints_hourTooLow() {
         LocalDateTime.of(2007, 7, 15, -1, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_hourTooHigh() {
+    public void factory_of_7ints_hourTooHigh() {
         LocalDateTime.of(2007, 7, 15, 24, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_minuteTooLow() {
+    public void factory_of_7ints_minuteTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, -1, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_minuteTooHigh() {
+    public void factory_of_7ints_minuteTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 60, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_secondTooLow() {
+    public void factory_of_7ints_secondTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, 30, -1, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_secondTooHigh() {
+    public void factory_of_7ints_secondTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 60, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_nanoTooLow() {
+    public void factory_of_7ints_nanoTooLow() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 40, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_dateTime_7ints_nanoTooHigh() {
+    public void factory_of_7ints_nanoTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 40, 1000000000);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_DateProvider_TimeProvider() {
+    public void factory_of_DateProvider_TimeProvider() {
         LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2007, 7, 15), LocalTime.of(12, 30, 40, 987654321));
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProvider_TimeProvider_nullDateProvider() {
+    public void factory_of_DateProvider_TimeProvider_nullDateProvider() {
         LocalDateTime.of(null, LocalTime.of(12, 30, 40, 987654321));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProvider_TimeProvider_null_toLocalDate() {
+    public void factory_of_DateProvider_TimeProvider_null_toLocalDate() {
         LocalDateTime.of(new DateProvider() {
             public LocalDate toLocalDate() {
                 return null;
@@ -706,12 +706,12 @@ public class TestLocalDateTime {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProvider_TimeProvider_nullTimeProvider() {
+    public void factory_of_DateProvider_TimeProvider_nullTimeProvider() {
         LocalDateTime.of(LocalDate.of(2007, 7, 15), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProvider_TimeProvider_null_toLocalTime() {
+    public void factory_of_DateProvider_TimeProvider_null_toLocalTime() {
         LocalDateTime.of(LocalDate.of(2007, 7, 15), new TimeProvider() {
             public LocalTime toLocalTime() {
                 return null;
@@ -735,7 +735,7 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_multiProvider_checkAmbiguous() {
+    public void factory_of_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
         LocalDateTime test = LocalDateTime.of(mmp);
         check(test, 2008, 6, 30, 11, 30, 10, 500);

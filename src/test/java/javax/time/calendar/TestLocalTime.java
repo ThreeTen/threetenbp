@@ -395,14 +395,14 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // fromSecondOfDay(long)
+    // ofSecondOfDay(long)
     //-----------------------------------------------------------------------
-    public void factory_fromSecondOfDay() {
+    public void factory_ofSecondOfDay() {
         LocalTime localTime = LocalTime.ofSecondOfDay(2 * 60 * 60 + 17 * 60 + 23);
         check(localTime, 2, 17, 23, 0);
     }
 
-    public void factory_fromSecondOfDay_singletons() {
+    public void factory_ofSecondOfDay_singletons() {
         for (int i = 0; i < 24; i++) {
             LocalTime test1 = LocalTime.ofSecondOfDay(i * 60L * 60L);
             LocalTime test2 = LocalTime.of(i, 0);
@@ -411,7 +411,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_fromSecondOfDay_tooLow() {
+    public void factory_ofSecondOfDay_tooLow() {
         try {
             LocalTime.ofSecondOfDay(-1);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -421,7 +421,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_fromSecondOfDay_tooHigh() {
+    public void factory_ofSecondOfDay_tooHigh() {
         try {
             LocalTime.ofSecondOfDay(24 * 60 * 60);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -431,14 +431,14 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // fromSecondOfDay(long, int)
+    // ofSecondOfDay(long, int)
     //-----------------------------------------------------------------------
-    public void factory_fromSecondOfDay_long_int() {
+    public void factory_ofSecondOfDay_long_int() {
         LocalTime localTime = LocalTime.ofSecondOfDay(2 * 60 * 60 + 17 * 60 + 23, 987);
         check(localTime, 2, 17, 23, 987);
     }
 
-    public void factory_fromSecondOfDay7_long_int_singletons() {
+    public void factory_ofSecondOfDay7_long_int_singletons() {
         for (int i = 0; i < 24; i++) {
             LocalTime test1 = LocalTime.ofSecondOfDay(i * 60L * 60L, 0);
             LocalTime test2 = LocalTime.of(i, 0);
@@ -447,7 +447,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_fromSecondOfDay_long_int_tooLowSecs() {
+    public void factory_ofSecondOfDay_long_int_tooLowSecs() {
         try {
             LocalTime.ofSecondOfDay(-1, 0);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -457,7 +457,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_fromSecondOfDay_long_int_tooHighSecs() {
+    public void factory_ofSecondOfDay_long_int_tooHighSecs() {
         try {
             LocalTime.ofSecondOfDay(24 * 60 * 60, 0);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -467,7 +467,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_fromSecondOfDay_long_int_tooLowNanos() {
+    public void factory_ofSecondOfDay_long_int_tooLowNanos() {
         try {
             LocalTime.ofSecondOfDay(0, -1);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -477,7 +477,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_fromSecondOfDay_long_int_tooHighNanos() {
+    public void factory_ofSecondOfDay_long_int_tooHighNanos() {
         try {
             LocalTime.ofSecondOfDay(0, 1000000000);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -487,14 +487,14 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // fromNanoOfDay(long)
+    // ofNanoOfDay(long)
     //-----------------------------------------------------------------------
-    public void factory_fromNanoOfDay() {
+    public void factory_ofNanoOfDay() {
         LocalTime localTime = LocalTime.ofNanoOfDay(60 * 60 * 1000000000L + 17);
         check(localTime, 1, 0, 0, 17);
     }
 
-    public void factory_fromNanoOfDay_singletons() {
+    public void factory_ofNanoOfDay_singletons() {
         for (int i = 0; i < 24; i++) {
             LocalTime test1 = LocalTime.ofNanoOfDay(i * 1000000000L * 60L * 60L);
             LocalTime test2 = LocalTime.of(i, 0);
@@ -503,12 +503,12 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void factory_fromNanoOfDay_tooLow() {
+    public void factory_ofNanoOfDay_tooLow() {
         LocalTime.ofNanoOfDay(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void factory_fromNanoOfDay_tooHigh() {
+    public void factory_ofNanoOfDay_tooHigh() {
         LocalTime.ofNanoOfDay(24 * 60 * 60 * 1000000000L);
     }
 
