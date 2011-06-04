@@ -31,9 +31,9 @@
  */
 package javax.time;
 
+import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZonedDateTime;
 
 /**
  * Test Class loading.
@@ -41,11 +41,14 @@ import javax.time.calendar.ZonedDateTime;
  *
  * @author Stephen Colebourne
  */
-public class ClassLoader {
+public class ClassLoaderTest {
 
     public static void main(String[] args) {
         System.out.println("************************************************************");
         MonthOfYear.of(5);
+        
+        System.out.println("************************************************************");
+        Object a = LocalDate.class;
         
 //        System.out.println("************************************************************");
 //        LocalDate.of(2011, 12, 20);
@@ -53,8 +56,8 @@ public class ClassLoader {
 //        System.out.println("************************************************************");
 //        new GregorianCalendar();
         
-        System.out.println("************************************************************");
-        ZonedDateTime.of(2011, 6, 5, 13, 30, 0, 0, ZoneId.of("Europe/Paris"));
+//        System.out.println("************************************************************");
+//        ZonedDateTime.of(2011, 6, 5, 13, 30, 0, 0, ZoneId.of("Europe/Paris"));
         
         System.out.println("************************************************************");
     }
