@@ -82,6 +82,9 @@ public final class MonthDay
         .appendLiteral('-')
         .appendValue(DAY_OF_MONTH, 2)
         .toFormatter();
+    static {
+        CalendricalRule.register(rule());
+    }
 
     /**
      * The month-of-year, not null.

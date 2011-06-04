@@ -33,6 +33,8 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.time.CalendricalException;
 
@@ -63,6 +65,9 @@ public abstract class CalendricalRule<T>
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
+    /** The rule groups. */
+    private static final ConcurrentMap<Class<?>, CalendricalRule<?>> RULES =
+        new ConcurrentHashMap<Class<?>, CalendricalRule<?>>(32, 0.75f, 2);
 
     /** The reified class for the generic type. */
     private final Class<T> type;
@@ -85,6 +90,60 @@ public abstract class CalendricalRule<T>
         }
         this.type = type;
         this.name = name;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Registers a rule for later lookup.
+     * <p>
+     * All rules that define a {@code Calendrical} class must call this method
+     * at the end of their constructors. This must be performed from a static
+     * block at the top of the main class. This ensures correct object creation
+     * and ensures that the lookup by class name will succeed.
+     * <p>
+     * Note that rules must define user-defined classes, not classes such as
+     * {@code String}, {@code Integer} or {@code BigDecimal}.
+     * Also note that any rule that extends {@code DateTimeRule} is defining
+     * a field rather than a class, and thus must not be registered.
+     * 
+     * @param rule  the rule to register, not null
+     * @throws IllegalArgumentException if the rule cannot be registered
+     */
+    public static void register(CalendricalRule<?> rule) {
+        if (rule instanceof DateTimeRule) {
+            throw new IllegalArgumentException("Rule must not extend DateTimeRule: " + rule.getName());
+        }
+        CalendricalRule<?> existing = RULES.putIfAbsent(rule.getType(), rule);
+        if (existing != null) {
+            if (existing == rule) {
+                throw new IllegalArgumentException("Cannot register rule twice: " + rule.getName());
+            } else {
+                throw new IllegalArgumentException("Cannot register two rules for the same Class: " +
+                    rule.getName() + " and " + existing.getName());
+            }
+        }
+    }
+
+    /**
+     * Obtains a {@code CalendricalRule} for a type.
+     * <p>
+     * All correctly implemented rules that define a {@code Calendrical} class
+     * can be looked up by the class name using this method.
+     * 
+     * @param ruleType  the rule type to lookup, not null
+     * @return the rule, null if not found
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> CalendricalRule<T> of(Class<T> ruleType) {
+        Class<?> type = ruleType;
+        while (type != null) {
+            Object rule = RULES.get(type);
+            if (rule != null) {
+                return (CalendricalRule<T>) rule;
+            }
+            type = type.getSuperclass();
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

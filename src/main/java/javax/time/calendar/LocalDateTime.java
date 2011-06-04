@@ -66,6 +66,9 @@ public final class LocalDateTime
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
+    static {
+        CalendricalRule.register(rule());
+    }
 
     /**
      * The date part.

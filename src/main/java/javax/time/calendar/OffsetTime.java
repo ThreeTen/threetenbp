@@ -64,6 +64,9 @@ public final class OffsetTime
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -1751032571L;
+    static {
+        CalendricalRule.register(rule());
+    }
 
     /**
      * The local time, not null.

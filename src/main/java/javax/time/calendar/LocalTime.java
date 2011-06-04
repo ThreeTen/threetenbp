@@ -110,6 +110,9 @@ public final class LocalTime
     private static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
     /** Nanos per day. */
     private static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
+    static {
+        CalendricalRule.register(rule());
+    }
 
     /**
      * The hour.

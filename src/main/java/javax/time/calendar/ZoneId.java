@@ -241,6 +241,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
         post.put("HST", "UTC-10:00");
         OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
     }
+    static {
+        CalendricalRule.register(rule());
+    }
 
     //-----------------------------------------------------------------------
     /**

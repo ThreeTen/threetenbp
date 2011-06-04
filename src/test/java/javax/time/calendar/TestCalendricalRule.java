@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -41,7 +42,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,18 +59,52 @@ import org.testng.annotations.Test;
 @Test
 public class TestCalendricalRule {
 
-    static class MockBigYearRule extends CalendricalRule<BigInteger> {
-        private static final long serialVersionUID = 1L;
-        protected MockBigYearRule() {
-            super(BigInteger.class, "MockBigYearRule");
+    static class MockBigYear implements Comparable<MockBigYear> {
+        private final long year;
+        MockBigYear(long year) {
+            this.year = year;
         }
         @Override
-        protected BigInteger derive(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(YEAR);
-            return year != null ? BigInteger.valueOf(year.getValidIntValue()) : null;
+        public int compareTo(MockBigYear other) {
+            return (int) (year - other.year);
         }
     }
 
+    static class MockBigYearRule extends CalendricalRule<MockBigYear> {
+        static final MockBigYearRule INSTANCE = new MockBigYearRule();
+        private static final long serialVersionUID = 1L;
+        protected MockBigYearRule() {
+            super(MockBigYear.class, "MockBigYearRule");
+        }
+        @Override
+        protected MockBigYear derive(Calendrical calendrical) {
+            DateTimeField year = calendrical.get(YEAR);
+            return year != null ? new MockBigYear(year.getValidValue()) : null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // lookup
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_register() {
+        CalendricalRule.register(MONTH_OF_YEAR);
+    }
+
+    public void test_lookup() {
+        assertEquals(CalendricalRule.of(LocalDate.class), LocalDate.rule());
+        assertEquals(CalendricalRule.of(ZoneId.class), ZoneId.rule());
+        assertEquals(CalendricalRule.of(ISOChronology.class), Chronology.rule());
+    }
+
+    public void test_register_lookup() {
+        assertEquals(CalendricalRule.of(MockBigYear.class), null);
+        CalendricalRule.register(MockBigYearRule.INSTANCE);
+        assertEquals(CalendricalRule.of(MockBigYear.class), MockBigYearRule.INSTANCE);
+    }
+
+    //-----------------------------------------------------------------------
+    // basics
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         assertTrue(Comparator.class.isAssignableFrom(CalendricalRule.class));
@@ -80,7 +114,7 @@ public class TestCalendricalRule {
     public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(new MockBigYearRule());
+        oos.writeObject(MockBigYearRule.INSTANCE);
         oos.close();
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertTrue(ois.readObject() instanceof MockBigYearRule);
@@ -90,27 +124,27 @@ public class TestCalendricalRule {
     // getType()
     //-----------------------------------------------------------------------
     public void test_getType() {
-        assertEquals(new MockBigYearRule().getType(), BigInteger.class);
+        assertEquals(MockBigYearRule.INSTANCE.getType(), MockBigYear.class);
     }
 
     //-----------------------------------------------------------------------
     // reify(Object)
     //-----------------------------------------------------------------------
     public void test_reify() {
-        BigInteger test = new MockBigYearRule().reify(BigInteger.ONE);
-        assertEquals(test, BigInteger.ONE);
+        MockBigYear test = MockBigYearRule.INSTANCE.reify(new MockBigYear(1));
+        assertEquals(test.year, 1);
     }
 
     @Test(expectedExceptions=ClassCastException.class)
     public void test_reify_wrongType() {
-        new MockBigYearRule().reify(Integer.valueOf(0));
+        MockBigYearRule.INSTANCE.reify(Integer.valueOf(0));
     }
 
     //-----------------------------------------------------------------------
     // getName()
     //-----------------------------------------------------------------------
     public void test_getName() {
-        assertEquals(new MockBigYearRule().getName(), "MockBigYearRule");
+        assertEquals(MockBigYearRule.INSTANCE.getName(), "MockBigYearRule");
     }
 
     //-----------------------------------------------------------------------
@@ -125,7 +159,7 @@ public class TestCalendricalRule {
         OffsetDate od = OffsetDate.of(2008, 6, 30, ZoneOffset.of("+01:00"));
         list.add(od);
         
-        Collections.sort(list, new MockBigYearRule());
+        Collections.sort(list, MockBigYearRule.INSTANCE);
         assertEquals(list.get(0), ldt);
         assertEquals(list.get(1), od);
         assertEquals(list.get(2), ld);
@@ -140,7 +174,7 @@ public class TestCalendricalRule {
         OffsetDate od = OffsetDate.of(2008, 6, 30, ZoneOffset.of("+01:00"));
         list.add(od);
         
-        Collections.sort(list, new MockBigYearRule());
+        Collections.sort(list, MockBigYearRule.INSTANCE);
         assertEquals(list.get(0), ldt);
         assertEquals(list.get(1), od);
         assertEquals(list.get(2), zdt);
@@ -149,22 +183,22 @@ public class TestCalendricalRule {
     public void test_comparator_combinations() {
         Year year2008 = Year.of(2008);
         Year year2009 = Year.of(2009);
-        assertEquals(new MockBigYearRule().compare(year2008, year2008), 0);
-        assertEquals(new MockBigYearRule().compare(year2008, year2009), -1);
-        assertEquals(new MockBigYearRule().compare(year2009, year2008), 1);
-        assertEquals(new MockBigYearRule().compare(year2009, year2009), 0);
+        assertEquals(MockBigYearRule.INSTANCE.compare(year2008, year2008), 0);
+        assertEquals(MockBigYearRule.INSTANCE.compare(year2008, year2009), -1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(year2009, year2008), 1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(year2009, year2009), 0);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_comparator_combinations_noValue1() {
         Year year2008 = Year.of(2008);
-        assertEquals(new MockBigYearRule().compare(year2008, new MockSimpleCalendrical()), -1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(year2008, new MockSimpleCalendrical()), -1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_comparator_combinations_noValue2() {
         Year year2008 = Year.of(2008);
-        assertEquals(new MockBigYearRule().compare(new MockSimpleCalendrical(), year2008), 1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(new MockSimpleCalendrical(), year2008), 1);
     }
 
     //-----------------------------------------------------------------------
@@ -179,7 +213,7 @@ public class TestCalendricalRule {
         OffsetDate od = OffsetDate.of(2008, 6, 30, ZoneOffset.of("+01:00"));
         list.add(od);
         
-        Collections.sort(list, new MockBigYearRule());
+        Collections.sort(list, MockBigYearRule.INSTANCE);
         assertEquals(list.get(0), ldt);
         assertEquals(list.get(1), od);
         assertEquals(list.get(2), ld);
@@ -189,23 +223,23 @@ public class TestCalendricalRule {
     // equals()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        assertEquals(new MockBigYearRule().equals(new MockBigYearRule()), true);
-        assertEquals(new MockBigYearRule().equals("OtherType"), false);
-        assertEquals(new MockBigYearRule().equals(null), false);
+        assertEquals(MockBigYearRule.INSTANCE.equals(MockBigYearRule.INSTANCE), true);
+        assertEquals(MockBigYearRule.INSTANCE.equals("OtherType"), false);
+        assertEquals(MockBigYearRule.INSTANCE.equals(null), false);
     }
 
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        assertEquals(new MockBigYearRule().hashCode(), new MockBigYearRule().hashCode());
+        assertEquals(MockBigYearRule.INSTANCE.hashCode(), MockBigYearRule.INSTANCE.hashCode());
     }
 
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(new MockBigYearRule().toString(), "MockBigYearRule");
+        assertEquals(MockBigYearRule.INSTANCE.toString(), "MockBigYearRule");
     }
 
 }
