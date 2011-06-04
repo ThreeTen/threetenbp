@@ -66,9 +66,6 @@ public final class CopticDate
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
-    static {
-        CalendricalRule.register(rule());
-    }
 
     /**
      * The minimum valid year.

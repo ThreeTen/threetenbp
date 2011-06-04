@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -81,26 +80,6 @@ public class TestCalendricalRule {
             DateTimeField year = calendrical.get(YEAR);
             return year != null ? new MockBigYear(year.getValidValue()) : null;
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // lookup
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_register() {
-        CalendricalRule.register(MONTH_OF_YEAR);
-    }
-
-    public void test_lookup() {
-        assertEquals(CalendricalRule.of(LocalDate.class), LocalDate.rule());
-        assertEquals(CalendricalRule.of(ZoneId.class), ZoneId.rule());
-        assertEquals(CalendricalRule.of(ISOChronology.class), Chronology.rule());
-    }
-
-    public void test_register_lookup() {
-        assertEquals(CalendricalRule.of(MockBigYear.class), null);
-        CalendricalRule.register(MockBigYearRule.INSTANCE);
-        assertEquals(CalendricalRule.of(MockBigYear.class), MockBigYearRule.INSTANCE);
     }
 
     //-----------------------------------------------------------------------

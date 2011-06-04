@@ -78,9 +78,6 @@ public final class YearMonth
         .appendLiteral('-')
         .appendValue(MONTH_OF_YEAR, 2)
         .toFormatter();
-    static {
-        CalendricalRule.register(rule());
-    }
 
     /**
      * The year.

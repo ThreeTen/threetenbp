@@ -37,9 +37,6 @@ public final class MinguoDate
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -135957664026407129L;
-    static {
-        CalendricalRule.register(rule());
-    }
 
     /**
      * The minimum valid year-of-era.

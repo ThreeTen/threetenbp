@@ -64,9 +64,6 @@ public final class OffsetDate
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -3618963189L;
-    static {
-        CalendricalRule.register(rule());
-    }
 
     /**
      * The date.

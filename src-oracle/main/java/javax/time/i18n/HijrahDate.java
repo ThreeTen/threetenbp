@@ -338,9 +338,6 @@ public final class HijrahDate
             // e.printStackTrace();
         }
     }
-    static {
-        CalendricalRule.register(rule());
-    }
     /**
      * Number of Gregorian day of July 19, year 622 (Gregorian), which is epoch day
      * of Hijrah calendar.

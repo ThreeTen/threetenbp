@@ -74,9 +74,6 @@ public final class ZonedDateTime
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -456761901L;
-    static {
-        CalendricalRule.register(rule());
-    }
 
     /**
      * The offset date-time.

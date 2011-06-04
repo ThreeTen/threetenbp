@@ -56,10 +56,6 @@ import java.io.Serializable;
  */
 public abstract class Chronology implements Calendrical {
 
-    static {
-        CalendricalRule.register(rule());
-    }
-
     /**
      * Restrictive constructor.
      */
