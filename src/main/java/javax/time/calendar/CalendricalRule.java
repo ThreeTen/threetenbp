@@ -75,9 +75,7 @@ public abstract class CalendricalRule<T>
      * @param reifiedClass  the reified class, not null
      * @param name  the name of the type, not null
      */
-    protected CalendricalRule(
-            Class<T> type,
-            String name) {
+    protected CalendricalRule(Class<T> type, String name) {
         // avoid possible circular references by using inline NPE checks
         if (type == null) {
             throw new NullPointerException("Reified class must not be null");
