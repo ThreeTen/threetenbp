@@ -79,7 +79,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestLocalDateTime {
+public class TestLocalDateTime extends AbstractTest {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.ofHours(2);
@@ -684,6 +684,43 @@ public class TestLocalDateTime {
     public void factory_of_7ints_nanoTooHigh() {
         LocalDateTime.of(2007, 7, 15, 12, 30, 40, 1000000000);
     }
+
+    // TODO
+//    //-----------------------------------------------------------------------
+//    // of(Calendrical...)
+//    //-----------------------------------------------------------------------
+//    @DataProvider(name = "factoryCalendricals")
+//    public Object[][] data_factoryCalendricals() {
+//        return new Object[][] {
+//            {cals((Calendrical) null), null},
+//            {cals(LocalDate.of(2008, 6, 30)), null},
+//            {cals(LocalTime.of(12, 30, 40, 987654321)), null},
+//            {cals(LocalDate.of(2008, 6, 30), LocalTime.of(12, 30, 40, 987654321)), LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321)},
+//            {cals(Year.of(2008), MonthDay.of(6, 30), LocalTime.of(12, 30, 40, 987654321)), LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321)},
+//            {cals(YearMonth.of(2008, 6), DAY_OF_MONTH.field(30), LocalTime.of(12, 30, 40, 987654321)), LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321)},
+//        };
+//    }
+//
+//    @Test(dataProvider = "factoryCalendricals")
+//    public void test_factoryCalendricals(List<Calendrical> inputList, LocalDateTime expected) {
+//        Calendrical[] input = inputList.toArray(new Calendrical[0]);
+//        if (expected != null) {
+//            assertEquals(LocalDateTime.ofMerged(input), expected);
+//        } else if (Arrays.asList(input).contains(null)) {
+//            try {
+//                LocalDateTime.ofMerged(input);
+//                fail("Input should throw NPE: " + Arrays.toString(input));
+//            } catch (NullPointerException ex) {
+//            }
+//        } else {
+//            try {
+//                LocalDateTime.ofMerged(input);
+//                fail("Input should not have merged: " + Arrays.toString(input));
+//            } catch (CalendricalException ex) {
+//                System.out.println(ex.getMessage());
+//            }
+//        }
+//    }
 
     //-----------------------------------------------------------------------
     public void factory_of_DateProvider_TimeProvider() {

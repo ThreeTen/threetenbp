@@ -78,7 +78,7 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestLocalDate {
+public class TestLocalDate extends AbstractTest {
 
 //    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
 //    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
@@ -301,6 +301,42 @@ public class TestLocalDate {
     public void factory_date_ints_yearTooLow() {
         LocalDate.of(Integer.MIN_VALUE, 1, 1);
     }
+
+    // TODO
+//    //-----------------------------------------------------------------------
+//    // of(Calendrical...)
+//    //-----------------------------------------------------------------------
+//    @DataProvider(name = "factoryCalendricals")
+//    public Object[][] data_factoryCalendricals() {
+//        return new Object[][] {
+//            {cals((Calendrical) null), null},
+//            {cals(LocalDate.of(2008, 6, 30)), LocalDate.of(2008, 6, 30)},
+//            {cals(Year.of(2008), MonthDay.of(6, 30)), LocalDate.of(2008, 6, 30)},
+//            {cals(MonthDay.of(6, 30), Year.of(2008)), LocalDate.of(2008, 6, 30)},
+//            {cals(YearMonth.of(2008, 6), DAY_OF_MONTH.field(30)), LocalDate.of(2008, 6, 30)},
+//        };
+//    }
+//
+//    @Test(dataProvider = "factoryCalendricals")
+//    public void test_factoryCalendricals(List<Calendrical> inputList, LocalDate expected) {
+//        Calendrical[] input = inputList.toArray(new Calendrical[0]);
+//        if (expected != null) {
+//            assertEquals(LocalDate.ofMerged(input), expected);
+//        } else if (Arrays.asList(input).contains(null)) {
+//            try {
+//                LocalDate.ofMerged(input);
+//                fail("Input should throw NPE: " + Arrays.toString(input));
+//            } catch (NullPointerException ex) {
+//            }
+//        } else {
+//            try {
+//                LocalDate.ofMerged(input);
+//                fail("Input should not have merged: " + Arrays.toString(input));
+//            } catch (CalendricalException ex) {
+//                System.out.println(ex.getMessage());
+//            }
+//        }
+//    }
 
     //-----------------------------------------------------------------------
     // of(DateProvider)

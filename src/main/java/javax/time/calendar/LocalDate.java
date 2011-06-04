@@ -184,6 +184,23 @@ public final class LocalDate
         return result;
     }
 
+//    //-----------------------------------------------------------------------
+//    // TODO
+//    /**
+//     * Obtains an instance of {@code LocalDate} from a set of calendricals.
+//     * <p>
+//     * A calendrical represents some form of date and time information.
+//     * This method combines the input calendricals into a date.
+//     * For example, this could be used to convert a date in another calendar
+//     * system, or to merge a {@link Year} and a {@link MonthDay}.
+//     *
+//     * @param calendricals  the calendricals to create a date from, no nulls, not null
+//     * @return the local date, not null
+//     */
+//    public static LocalDate ofMerged(Calendrical... calendricals) {
+//        return new CalendricalSet(calendricals).merge().derive(rule());
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDate} from the epoch day count.
