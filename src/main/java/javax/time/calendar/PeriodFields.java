@@ -970,6 +970,7 @@ public final class PeriodFields
      * If any field cannot be converted to these fields above then an exception is thrown.
      *
      * @return the duration of this period based on {@code ISOChronology} fields, not null
+     * @throws CalendricalException if this period cannot be converted to an exact duration
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
