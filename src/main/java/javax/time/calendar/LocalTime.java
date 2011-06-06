@@ -130,6 +130,16 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code LocalTime}.
+     *
+     * @return the rule for the time, not null
+     */
+    public static CalendricalRule<LocalTime> rule() {
+        return ISOCalendricalRule.LOCAL_TIME;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains the current time from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -441,10 +451,10 @@ public final class LocalTime
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof CalendricalObjectRule<?>) {
-            switch (((CalendricalObjectRule<?>) rule).code) {
-                case CalendricalObjectRule.LT: return (T) this;
-                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+        if (rule instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) this;
+                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
             }
             return null;
         }
@@ -1393,31 +1403,6 @@ public final class LocalTime
         @Override
         public String toString() {
             return getResultTime().toString() + " + P" + days + "D";
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code LocalTime}.
-     *
-     * @return the rule for the time, not null
-     */
-    public static CalendricalRule<LocalTime> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalObjectRule<LocalTime> implements Serializable {
-        private static final CalendricalRule<LocalTime> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(LocalTime.class, LT);
-        }
-        private Object readResolve() {
-            return INSTANCE;
         }
     }
 

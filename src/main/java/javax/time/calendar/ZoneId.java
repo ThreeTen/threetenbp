@@ -244,6 +244,16 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code ZoneId}.
+     *
+     * @return the rule for the time-zone, not null
+     */
+    public static CalendricalRule<ZoneId> rule() {
+        return ISOCalendricalRule.ZONE_ID;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code ZoneId} using its ID using a map
      * of aliases to supplement the standard zone IDs.
      * <p>
@@ -423,15 +433,15 @@ public abstract class ZoneId implements Calendrical, Serializable {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof CalendricalObjectRule<?>) {
-            switch (((CalendricalObjectRule<?>) rule).code) {
-                case CalendricalObjectRule.OFFSET: {  // TODO possibly remove
+        if (rule instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: {  // TODO possibly remove
                     if (isFixed()) {
                         return (T) getRules().getOffset(Instant.EPOCH);
                     }
                     break;
                 }
-                case CalendricalObjectRule.ZONE: return (T) this;
+                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) this;
             }
             return null;
         }
@@ -787,36 +797,6 @@ public abstract class ZoneId implements Calendrical, Serializable {
     @Override
     public String toString() {
         return getID();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code ZoneId}.
-     *
-     * @return the rule for the time-zone, not null
-     */
-    public static CalendricalRule<ZoneId> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalObjectRule<ZoneId> implements Serializable {
-        private static final CalendricalRule<ZoneId> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(ZoneId.class, ZONE);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected ZoneId derive(Calendrical calendrical) {
-            ZonedDateTime zdt = calendrical.get(ZonedDateTime.rule());
-            return zdt != null ? zdt.getZone() : null;
-        }
     }
 
     //-----------------------------------------------------------------------

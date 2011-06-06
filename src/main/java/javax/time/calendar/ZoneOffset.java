@@ -114,6 +114,16 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for the zone-offset.
+     *
+     * @return the rule for the zone-offset, not null
+     */
+    public static CalendricalRule<ZoneOffset> rule() {
+        return ISOCalendricalRule.ZONE_OFFSET;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code ZoneOffset} using the id.
      * <p>
      * This method parses the string id of a {@code ZoneOffset} to
@@ -429,8 +439,8 @@ public final class ZoneOffset
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof CalendricalObjectRule<?>) {
-            if (((CalendricalObjectRule<?>) rule).code == CalendricalObjectRule.OFFSET) {
+        if (rule instanceof ISOCalendricalRule<?>) {
+            if (rule.equals(ISOCalendricalRule.ZONE_OFFSET)) {
                 return (T) this;
             }
             return null;
@@ -630,31 +640,6 @@ public final class ZoneOffset
     @Override
     public String toString() {
         return id;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the zone-offset.
-     *
-     * @return the rule for the zone-offset, not null
-     */
-    public static CalendricalRule<ZoneOffset> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalObjectRule<ZoneOffset> implements Serializable {
-        private static final CalendricalRule<ZoneOffset> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(ZoneOffset.class, OFFSET);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
     }
 
 }

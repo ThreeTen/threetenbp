@@ -76,6 +76,16 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code OffsetDate}.
+     *
+     * @return the rule for the date, not null
+     */
+    public static CalendricalRule<OffsetDate> rule() {
+        return ISOCalendricalRule.OFFSET_DATE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains the current date from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -286,12 +296,12 @@ public final class OffsetDate
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof CalendricalObjectRule<?>) {
-            switch (((CalendricalObjectRule<?>) rule).code) {
-                case CalendricalObjectRule.LD: return (T) toLocalDate();
-                case CalendricalObjectRule.OD: return (T) this;
-                case CalendricalObjectRule.OFFSET: return (T) getOffset();
-                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+        if (rule instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
+                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) this;
+                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
+                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
             }
             return null;
         }
@@ -1260,31 +1270,6 @@ public final class OffsetDate
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetDate}.
-     *
-     * @return the rule for the date, not null
-     */
-    public static CalendricalRule<OffsetDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalObjectRule<OffsetDate> implements Serializable {
-        private static final CalendricalRule<OffsetDate> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(OffsetDate.class, OD);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
     }
 
 }

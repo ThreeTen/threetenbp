@@ -78,6 +78,16 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code LocalDateTime}.
+     *
+     * @return the rule for the date-time, not null
+     */
+    public static CalendricalRule<LocalDateTime> rule() {
+        return ISOCalendricalRule.LOCAL_DATE_TIME;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains the current date-time from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -508,12 +518,12 @@ public final class LocalDateTime
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof CalendricalObjectRule<?>) {
-            switch (((CalendricalObjectRule<?>) rule).code) {
-                case CalendricalObjectRule.LD: return (T) toLocalDate();
-                case CalendricalObjectRule.LT: return (T) toLocalTime();
-                case CalendricalObjectRule.LDT: return (T) this;
-                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+        if (rule instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
+                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
+                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) this;
+                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
             }
             return null;
         }
@@ -1829,31 +1839,6 @@ public final class LocalDateTime
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code LocalDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<LocalDateTime> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalObjectRule<LocalDateTime> implements Serializable {
-        private static final CalendricalRule<LocalDateTime> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(LocalDateTime.class, LDT);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
     }
 
 }

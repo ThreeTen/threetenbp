@@ -86,6 +86,16 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code ZonedDateTime}.
+     *
+     * @return the rule for the date-time, not null
+     */
+    public static CalendricalRule<ZonedDateTime> rule() {
+        return ISOCalendricalRule.ZONED_DATE_TIME;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains the current date-time from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -543,18 +553,18 @@ public final class ZonedDateTime
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof CalendricalObjectRule<?>) {
-            switch (((CalendricalObjectRule<?>) rule).code) {
-                case CalendricalObjectRule.LD: return (T) toLocalDate();
-                case CalendricalObjectRule.LT: return (T) toLocalTime();
-                case CalendricalObjectRule.LDT: return (T) toLocalDateTime();
-                case CalendricalObjectRule.OD: return (T) toOffsetDate();
-                case CalendricalObjectRule.OT: return (T) toOffsetTime();
-                case CalendricalObjectRule.ODT: return (T) toOffsetDateTime();
-                case CalendricalObjectRule.ZDT: return (T) this;
-                case CalendricalObjectRule.OFFSET: return (T) getOffset();
-                case CalendricalObjectRule.ZONE: return (T) zone;
-                case CalendricalObjectRule.CHRONO: return (T) ISOChronology.INSTANCE;
+        if (rule instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
+                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
+                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
+                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
+                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
+                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) toOffsetDateTime();
+                case ISOCalendricalRule.ZONED_DATE_TIME_ORDINAL: return (T) this;
+                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
+                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) zone;
+                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
             }
             return null;
         }
@@ -2122,31 +2132,6 @@ public final class ZonedDateTime
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code ZonedDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<ZonedDateTime> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalObjectRule<ZonedDateTime> implements Serializable {
-        private static final CalendricalRule<ZonedDateTime> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(ZonedDateTime.class, ZDT);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
     }
 
 }

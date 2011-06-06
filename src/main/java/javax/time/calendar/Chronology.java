@@ -31,8 +31,6 @@
  */
 package javax.time.calendar;
 
-import java.io.Serializable;
-
 /**
  * A calendar system, consisting of rules controlling the passage of human-scale time.
  * <p>
@@ -64,6 +62,16 @@ public abstract class Chronology implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code Chronology}.
+     *
+     * @return the rule for the chronology, not null
+     */
+    public static CalendricalRule<Chronology> rule() {
+        return ISOCalendricalRule.CHRONOLOGY;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -75,8 +83,8 @@ public abstract class Chronology implements Calendrical {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof CalendricalObjectRule<?>) {
-            if (((CalendricalObjectRule<?>) rule).code == CalendricalObjectRule.CHRONO) {
+        if (rule instanceof ISOCalendricalRule<?>) {
+            if (rule.equals(ISOCalendricalRule.CHRONOLOGY)) {
                 return (T) this;
             }
             return null;
@@ -104,31 +112,6 @@ public abstract class Chronology implements Calendrical {
     @Override
     public String toString() {
         return getName();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code Chronology}.
-     *
-     * @return the rule for the chronology, not null
-     */
-    public static CalendricalRule<Chronology> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalObjectRule<Chronology> implements Serializable {
-        private static final CalendricalRule<Chronology> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(Chronology.class, CHRONO);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
     }
 
 }
