@@ -164,7 +164,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * This is the date-time where the discontinuity begins.
      * For a gap, this local date-time never occurs, whereas for an overlap it occurs
      * just once after the entire transition is complete.
-     * This method is simply {@code getDateTime().toLocalDateTime()}
+     * This method is simply {@code getDateTimeBefore().toLocalDateTime()}
      * <p>
      * This value expresses the date-time normally used in verbal communications.
      * For example 'the clocks will move forward one hour tonight at 1am' (a gap) or
