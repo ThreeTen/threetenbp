@@ -113,6 +113,69 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Optimization for major classes.
+     */
+    DateTimeField derive(LocalDate date) {
+        switch (ordinal) {
+            case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
+            case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
+            case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
+            case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
+            case WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
+            case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
+            case WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
+            case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
+            case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
+            case EPOCH_MONTH_ORDINAL: return field(date.getYear() - 1970 + date.getMonthOfYear().ordinal());
+            case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
+            case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
+            case YEAR_ORDINAL: return field(date.getYear());
+            case EPOCH_YEAR_ORDINAL: return field(date.getYear() - 1970);
+        }
+        return null;
+    }
+
+    /**
+     * Optimization for major classes.
+     */
+    DateTimeField derive(LocalTime time) {
+        switch (ordinal) {
+            case NANO_OF_MILLI_ORDINAL: return field(time.getNanoOfSecond() % 1000000L);
+            case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
+            case NANO_OF_MINUTE_ORDINAL: return field(time.toNanoOfDay() % 60L * 1000000000L);
+            case NANO_OF_HOUR_ORDINAL: return field(time.toNanoOfDay() % 3600L * 1000000000L);
+            case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
+            case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
+            case MILLI_OF_MINUTE_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 60 * 1000L);
+            case MILLI_OF_HOUR_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 3600 * 1000L);
+            case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
+            case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
+            case SECOND_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour() * 60 + time.getSecondOfMinute());
+            case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
+//            case EPOCH_SECOND_ORDINAL: return field();
+            case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
+            case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return field(((time.getHourOfDay() + 11) % 12) + 1);
+            case HOUR_OF_AMPM_ORDINAL: return field(time.getHourOfDay() % 12);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return field(((time.getHourOfDay() + 23) % 24) + 1);
+            case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
+            case AMPM_OF_DAY_ORDINAL: return field(time.getHourOfDay() / 12);
+        }
+        return null;
+    }
+
+    /**
+     * Optimization for major classes.
+     */
+    DateTimeField derive(LocalDate date, LocalTime time) {
+        if (this.ordinal >= DAY_OF_WEEK_ORDINAL) {
+            return derive(date);
+        } else {
+            return derive(time);
+        }
+    }
+
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         switch (ordinal) {
@@ -138,7 +201,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                         case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
                         case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
                         case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
-                        case MILLI_OF_DAY_ORDINAL: return field((int) (time.toNanoOfDay() / 1000000L));
+                        case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
                         case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
                         case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
                         case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());

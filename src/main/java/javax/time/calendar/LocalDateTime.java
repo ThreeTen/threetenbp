@@ -527,6 +527,9 @@ public final class LocalDateTime
             }
             return null;
         }
+        if (rule instanceof ISODateTimeRule) {
+            return (T) ((ISODateTimeRule) rule).derive(date, time);
+        }
         return rule.derive(this);
     }
 

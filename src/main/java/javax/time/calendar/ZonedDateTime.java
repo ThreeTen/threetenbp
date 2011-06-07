@@ -568,6 +568,9 @@ public final class ZonedDateTime
             }
             return null;
         }
+        if (rule instanceof ISODateTimeRule) {
+            return (T) ((ISODateTimeRule) rule).derive(toLocalDate(), toLocalTime());
+        }
         return rule.derive(this);
     }
 

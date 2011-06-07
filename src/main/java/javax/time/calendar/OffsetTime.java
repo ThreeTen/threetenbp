@@ -313,6 +313,9 @@ public final class OffsetTime
             }
             return null;
         }
+        if (rule instanceof ISODateTimeRule) {
+            return (T) ((ISODateTimeRule) rule).derive(time);
+        }
         return rule.derive(this);
     }
 
