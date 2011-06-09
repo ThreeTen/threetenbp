@@ -36,8 +36,8 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.format.SimpleDateTimeTextProvider;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.SimpleDateTimeTextProvider;
 
 /**
  * A field of date-time measured using a single rule, such as 'MonthOfYear 12' or 'DayOfMonth 3'.
@@ -170,7 +170,6 @@ public final class DateTimeField
      * outer minimum and maximum range for the field is validated.
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      *
-     * @param value  the value to check
      * @return true if the value is valid
      */
     public boolean isValidValue() {

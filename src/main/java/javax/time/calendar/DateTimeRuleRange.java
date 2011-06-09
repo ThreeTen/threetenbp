@@ -77,8 +77,7 @@ public final class DateTimeRuleRange implements Serializable {
      * For example, the ISO month-of-year always runs from 1 to 12.
      * 
      * @param min  the minimum value
-     * @param maxSmallest  the smallest minimum value
-     * @param maxLargest  the largest minimum value
+     * @param max  the maximum value
      */
     public static DateTimeRuleRange of(long min, long max) {
         if (min > max) {
@@ -94,8 +93,8 @@ public final class DateTimeRuleRange implements Serializable {
      * For example, the ISO day-of-month always starts at 1, but ends between 28 and 31.
      * 
      * @param min  the minimum value
-     * @param maxSmallest  the smallest minimum value
-     * @param maxLargest  the largest minimum value
+     * @param maxSmallest  the smallest maximum value
+     * @param maxLargest  the largest maximum value
      */
     public static DateTimeRuleRange of(long min, long maxSmallest, long maxLargest) {
         return of(min, min, maxSmallest, maxLargest);
@@ -108,8 +107,8 @@ public final class DateTimeRuleRange implements Serializable {
      * 
      * @param minSmallest  the smallest minimum value
      * @param minLargest  the largest minimum value
-     * @param maxSmallest  the smallest minimum value
-     * @param maxLargest  the largest minimum value
+     * @param maxSmallest  the smallest maximum value
+     * @param maxLargest  the largest maximum value
      */
     public static DateTimeRuleRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         if (minSmallest > minLargest) {

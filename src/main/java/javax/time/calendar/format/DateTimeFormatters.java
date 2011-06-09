@@ -130,8 +130,9 @@ public final class DateTimeFormatters {
      * Exactly 5 pattern letters will use the {@link TextStyle#NARROW narrow form}.
      * <p>
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
-     * of digits and without padding as per {@link #appendValue(DateTimeRule)}. Otherwise, the
-     * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeRule, int)}.
+     * of digits and without padding as per {@link DateTimeFormatterBuilder#appendValue(DateTimeRule)}.
+     * Otherwise, the count of digits is used as the width of the output field as per
+     * {@link DateTimeFormatterBuilder#appendValue(DateTimeRule, int)}.
      * <p>
      * <b>Number/Text</b>: If the count of pattern letters is 3 or greater, use the Text rules above.
      * Otherwise use the Number rules above.
@@ -148,7 +149,8 @@ public final class DateTimeFormatters {
      * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
      * <p>
      * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
-     * If the count of letters is two, then a {@link #appendValueReduced reduced} two digit form is used.
+     * If the count of letters is two, then a {@link DateTimeFormatterBuilder#appendValueReduced reduced}
+     * two digit form is used.
      * For printing, this outputs the rightmost two digits. For parsing, this will parse using the
      * base value of 2000, resulting in a year within the range 2000 to 2099 inclusive.
      * If the count of letters is less than four (but not two), then the sign is only output for negative
@@ -170,8 +172,8 @@ public final class DateTimeFormatters {
      * <p>
      * <b>Zone names</b>: Time zone names ('z') cannot be parsed.
      * <p>
-     * <b>Optional section</b>: The optional section markers work exactly like calling {@link #optionalStart()}
-     * and {@link #optionalEnd()}.
+     * <b>Optional section</b>: The optional section markers work exactly like calling
+     * {@link DateTimeFormatterBuilder#optionalStart()} and {@link DateTimeFormatterBuilder#optionalEnd()}.
      * <p>
      * <b>Pad modifier</b>: Modifies the pattern that immediately follows to be padded with spaces.
      * The pad width is determined by the number of pattern letters.

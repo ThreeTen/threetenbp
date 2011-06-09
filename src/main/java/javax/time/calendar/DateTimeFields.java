@@ -126,10 +126,9 @@ public final class DateTimeFields
     /**
      * Obtains a {@code DateTimeFields} from a {@code DateTimeField}.
      * <p>
-     * The parameters represent the two parts of a phrase like 'MonthOfYear 12'.
+     * This simply wraps a {@code DateTimeField}.
      *
-     * @param rule  the rule defining the field, not null
-     * @param value  the value of the rule, not necessarily valid for the rule
+     * @param field  the field to wrap, not null
      * @return the date-time fields, not null
      */
     public static DateTimeFields of(DateTimeField field) {
@@ -141,10 +140,10 @@ public final class DateTimeFields
      * Obtains a {@code DateTimeFields} from an array of fields.
      * <p>
      * Each field represents a phrase like 'MonthOfYear 12'.
-     * ,p>
+     * <p>
      * The array must provide fields with no duplicate rules.
      *
-     * @param fieldsIterable  the iterable providing fields
+     * @param fields  the fields to use, no duplicate fields, not null, no nulls
      * @return the date-time fields, not null
      * @throws IllegalArgumentException if any rule is duplicated
      */
@@ -157,7 +156,7 @@ public final class DateTimeFields
      * Obtains a {@code DateTimeFields} from a collection of fields.
      * <p>
      * Each field represents a phrase like 'MonthOfYear 12'.
-     * ,p>
+     * <p>
      * The iterable must provide fields with no duplicate rules.
      *
      * @param fieldsIterable  the iterable providing fields
@@ -354,7 +353,7 @@ public final class DateTimeFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param fields  the fields to add to the returned object, not null
+     * @param field  the field to update in the returned object, not null
      * @return a {@code DateTimeFields} based on this fields with the specified field updated, not null
      */
     public DateTimeFields with(DateTimeField field) {
@@ -730,13 +729,13 @@ public final class DateTimeFields
      * @return true if this is equal to the other fields
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (other instanceof DateTimeFields) {
-            DateTimeFields otherFields = (DateTimeFields) other;
-            return fields.equals(otherFields.fields);
+        if (obj instanceof DateTimeFields) {
+            DateTimeFields other = (DateTimeFields) obj;
+            return fields.equals(other.fields);
         }
         return false;
     }

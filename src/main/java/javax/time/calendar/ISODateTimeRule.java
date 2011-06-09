@@ -725,7 +725,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The rule for the week-based-year field in the ISO chronology.
      * <p>
      * This field is the year that results from calculating weeks with the ISO-8601 algorithm.
-     * See {@link #weekOfWeekBasedYearRule() week of week-based-year} for details.
+     * See {@link #WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year} for details.
      * <p>
      * The week-based-year will either be 52 or 53 weeks long, depending on the
      * result of the algorithm for a particular date.

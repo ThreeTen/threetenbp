@@ -1034,7 +1034,7 @@ public final class LocalDateTime
      * <li>Add the date part of the period to the date part of this date-time
      * using {@link LocalDate#plus(PeriodProvider)} - which has some complex rules</li>
      * <li>Add the time part of the period to the time part of this date-time using
-     * {@link LocalTime#plusWithOverflow(int, int, int, long)}</li>
+     * {@link LocalTime#plusWithOverflow}</li>
      * <li>Add the overflow days from the time calculation to the calculated date</li>
      * <li>Combine the new date and time parts to form the result</li>
      * </ol>
@@ -1323,7 +1323,7 @@ public final class LocalDateTime
      * <li>Subtract the date part of the period from the date part of this date-time
      * using {@link LocalDate#minus(PeriodProvider)} - which has some complex rules</li>
      * <li>Subtract the time part of the period from the time part of this date-time using
-     * {@link LocalTime#minusWithOverflow(int, int, int, long)}</li>
+     * {@link LocalTime#minusWithOverflow}</li>
      * <li>Subtract the overflow days from the time calculation from the calculated date</li>
      * <li>Combine the new date and time parts to form the result</li>
      * </ol>

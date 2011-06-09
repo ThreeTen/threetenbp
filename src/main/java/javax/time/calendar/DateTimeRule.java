@@ -209,7 +209,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * This implementation uses {@link DateTimeRuleRange#isIntValue()}.
      * Subclasses should not normally override this method.
      *
-     * @return true if a valid value always fits in an {@code int}
      * @throws CalendricalException if the value does not fit in an {@code int}
      */
     public void checkIntValue() {
@@ -270,7 +269,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * Gets the textual representation of a value in this rule.
      * <p>
      * This returns the textual representation of the field, such as for day-of-week or month-of-year.
-     * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
+     * If no textual mapping is found then the numeric value is returned.
      * <p>
      * This implementation uses {@link #field(long)} and {@link DateTimeField#getText(TextStyle, Locale)}.
      * Subclasses should not normally override this method.
