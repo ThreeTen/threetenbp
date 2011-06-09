@@ -89,6 +89,9 @@ public abstract class Chronology implements Calendrical {
             }
             return null;
         }
+        if (rule instanceof ISODateTimeRule) {
+            return null;
+        }
         return rule.derive(this);
     }
 

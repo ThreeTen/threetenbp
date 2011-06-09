@@ -445,6 +445,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
             }
             return null;
         }
+        if (rule instanceof ISODateTimeRule) {
+            return null;
+        }
         return rule.derive(this);
     }
 

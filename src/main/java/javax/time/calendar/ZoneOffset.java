@@ -445,6 +445,9 @@ public final class ZoneOffset
             }
             return null;
         }
+        if (rule instanceof ISODateTimeRule) {
+            return null;
+        }
         return rule.derive(this);
     }
 
