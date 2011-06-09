@@ -486,9 +486,9 @@ public class TestISOChronology {
         list.add(ISODateTimeRule.DAY_OF_MONTH);
         list.add(ISODateTimeRule.DAY_OF_YEAR);
         list.add(ISODateTimeRule.EPOCH_DAY);
-        list.add(ISODateTimeRule.WEEK_OF_MONTH);
+        list.add(ISODateTimeRule.ALIGNED_WEEK_OF_MONTH);
         list.add(ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR);
-        list.add(ISODateTimeRule.WEEK_OF_YEAR);
+        list.add(ISODateTimeRule.ALIGNED_WEEK_OF_YEAR);
         list.add(ISODateTimeRule.MONTH_OF_QUARTER);
         list.add(ISODateTimeRule.MONTH_OF_YEAR);
         list.add(ISODateTimeRule.EPOCH_MONTH);

@@ -36,29 +36,29 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
- * Test ISO WeekOfYear rule.
+ * Test ISO AlignedWeekOfYear rule.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOWeekOfYearRule extends AbstractTestDateTimeRule {
+public class TestISOAlignedWeekOfYearRule extends AbstractTestDateTimeRule {
 
-    public TestISOWeekOfYearRule() {
+    public TestISOAlignedWeekOfYearRule() {
         super(LocalDate.of(2009, 12, 26), 52);
     }
 
     @Override
     protected DateTimeRule rule() {
-        return ISODateTimeRule.WEEK_OF_YEAR;
+        return ISODateTimeRule.ALIGNED_WEEK_OF_YEAR;
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeRule rule = ISODateTimeRule.WEEK_OF_YEAR;
+        DateTimeRule rule = ISODateTimeRule.ALIGNED_WEEK_OF_YEAR;
         assertEquals(rule.getType(), DateTimeField.class);
-        assertEquals(rule.getName(), "WeekOfYear");
+        assertEquals(rule.getName(), "AlignedWeekOfYear");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 53));
         assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
         assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);

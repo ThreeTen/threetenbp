@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
@@ -61,9 +63,7 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendar.ISODateTimeRule.WEEK_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendar.ISODateTimeRule.WEEK_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 
 import java.io.Serializable;
@@ -391,25 +391,25 @@ public final class ISOChronology extends Chronology implements Serializable {
                 merger.removeProcessed(DAY_OF_YEAR);
             }
             // year-week-day
-            DateTimeField woyVal = merger.getValue(WEEK_OF_YEAR);
+            DateTimeField woyVal = merger.getValue(ALIGNED_WEEK_OF_YEAR);
             DateTimeField dow = merger.getValue(DAY_OF_WEEK);
             if (woyVal != null && dow != null) {
                 LocalDate date = LocalDate.of(yearVal.getValidIntValue(), 1, 1).plusWeeks(woyVal.getValidIntValue() - 1);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(YEAR);
-                merger.removeProcessed(WEEK_OF_YEAR);
+                merger.removeProcessed(ALIGNED_WEEK_OF_YEAR);
                 merger.removeProcessed(DAY_OF_WEEK);
             }
             // year-month-week-day
-            DateTimeField womVal = merger.getValue(WEEK_OF_MONTH);
+            DateTimeField womVal = merger.getValue(ALIGNED_WEEK_OF_MONTH);
             if (moy != null && womVal != null && dow != null) {
                 LocalDate date = LocalDate.of(yearVal.getValidIntValue(), moy.getValidIntValue(), 1).plusWeeks(womVal.getValidIntValue() - 1);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(YEAR);
                 merger.removeProcessed(MONTH_OF_YEAR);
-                merger.removeProcessed(WEEK_OF_MONTH);
+                merger.removeProcessed(ALIGNED_WEEK_OF_MONTH);
                 merger.removeProcessed(DAY_OF_WEEK);
             }
         }

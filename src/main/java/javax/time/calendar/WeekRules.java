@@ -78,10 +78,6 @@ import javax.time.MathUtils;
  * <tr><th>2009-01-05</th><td>Monday</td>
  *  <td>Week 2 of week-based-year 2009</td><td>Week 1 of week-based-year 2009</td></tr>
  * </table>
- * <!--For example, if the first day-of-week is Monday and requires a minimum of 4 days in the
- * first week, then week 1 of week-based-year 1998 runs from 1997-12-29 to 1998-01-04,
- * because at least 4 days of that week are in the calendar year 1998. Whereas, if the
- * minimal number of days is set to 5, then week 1 will run from  1998-01-05. -->
  * <p>
  * <h4>Week of month</h4>
  * One field is used: week-of-month.
@@ -102,11 +98,6 @@ import javax.time.MathUtils;
  * <tr><th>2009-01-05</th><td>Monday</td>
  *  <td>Week 2 of January 2009</td><td>Week 1 of January 2009</td></tr>
  * </table>
- * <!--For example, if the first day-of-week is Sunday and requires a minimum of 4 days in the
- * first week, then 1998-01-01 to 1998-01-03 are week 0 and 1998-01-04 to 1998-01-10 are week 1,
- * because 1998-01-04 is a Sunday and there are 3 days before it, which is less than the minimum.
- * Whereas, if the minimal number of days is set to 3, then 1998-01-01 to 1998-01-03 are week 1
- * and 1998-01-04 to 1998-01-10 are week 2.-->
  * <p>
  * This class is immutable and thread-safe.
  *
@@ -117,6 +108,14 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
     /**
      * The ISO-8601 rules, where a week starts on Monday and the first week
      * has a minimum of 4 days.
+     * <p>
+     * The ISO-8601 standard defines a calendar system based on weeks.
+     * It uses the week-based-year and week-of-week-based-year concepts to split
+     * up the passage of days instead of the standard year/month/day.
+     * <p>
+     * Note that the first week may start in the previous calendar year.
+     * Note also that the first few days of a calendar year may be in the
+     * week-based-year corresponding to the previous calendar year.
      */
     public static final WeekRules ISO = new WeekRules(DayOfWeek.MONDAY, 4);
 

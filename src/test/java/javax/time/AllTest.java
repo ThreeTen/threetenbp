@@ -63,9 +63,9 @@ import javax.time.calendar.TestISOMonthOfYearRule;
 import javax.time.calendar.TestISONanoOfDayRule;
 import javax.time.calendar.TestISOQuarterOfYearRule;
 import javax.time.calendar.TestISOWeekBasedYearRule;
-import javax.time.calendar.TestISOWeekOfMonthRule;
+import javax.time.calendar.TestISOAlignedWeekOfMonthRule;
 import javax.time.calendar.TestISOWeekOfWeekBasedYearRule;
-import javax.time.calendar.TestISOWeekOfYearRule;
+import javax.time.calendar.TestISOAlignedWeekOfYearRule;
 import javax.time.calendar.TestISOYearRule;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
@@ -181,9 +181,9 @@ public class AllTest {
             TestISONanoOfDayRule.class,
             TestISOQuarterOfYearRule.class,
             TestISOWeekBasedYearRule.class,
-            TestISOWeekOfMonthRule.class,
+            TestISOAlignedWeekOfMonthRule.class,
             TestISOWeekOfWeekBasedYearRule.class,
-            TestISOWeekOfYearRule.class,
+            TestISOAlignedWeekOfYearRule.class,
             TestISOYearRule.class,
             TestLocalDate.class,
             TestLocalDateTime.class,

@@ -531,9 +531,9 @@ public class TestDateTimeFormatterBuilder {
             {"dd", "Value(DayOfMonth,2)"},
             {"ddd", "Value(DayOfMonth,3)"},
             
-            {"F", "Value(WeekOfMonth)"},
-            {"FF", "Value(WeekOfMonth,2)"},
-            {"FFF", "Value(WeekOfMonth,3)"},
+            {"F", "Value(AlignedWeekOfMonth)"},
+            {"FF", "Value(AlignedWeekOfMonth,2)"},
+            {"FFF", "Value(AlignedWeekOfMonth,3)"},
             
             {"E", "Value(DayOfWeek)"},
             {"EE", "Value(DayOfWeek,2)"},

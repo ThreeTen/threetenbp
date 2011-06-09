@@ -60,7 +60,7 @@ import javax.time.MathUtils;
  * Rules contain complex logic to allow them to be derived and combined to form other rules.
  * For example, the value for 'AmPmOfDay' can be derived from 'HourOfDay'.
  * <p>
- * Other calendar systems should be derived from these rules wherever possible.
+ * Other calendar systems should use these rules wherever possible to define their own rules.
  * For example, the definition of 'DayOfWeek' is usually the same in other calendar systems.
  * <p>
  * This class is final, immutable and thread-safe.
@@ -122,9 +122,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
             case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
             case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
-            case WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
             case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
-            case WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
             case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
             case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
             case EPOCH_MONTH_ORDINAL: return field(date.getYear() - 1970 + date.getMonthOfYear().ordinal());
@@ -264,11 +264,11 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
                 return moy != null ? field((moy.getValidIntValue() - 1) / 3 + 1) : null;
             }
-            case WEEK_OF_MONTH_ORDINAL: {
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
                 DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
                 return domVal != null ? field((domVal.getValidIntValue() + 6) / 7) : null;
             }
-            case WEEK_OF_YEAR_ORDINAL: {
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: {
                 DateTimeField doyVal = calendrical.get(DAY_OF_YEAR);
                 return doyVal != null ? field((doyVal.getValidIntValue() + 6) / 7) : null;
             }
@@ -307,7 +307,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 }
                 break;
             }
-            case WEEK_OF_MONTH_ORDINAL: {
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
                 DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
                 if (moyVal != null) {
                     if (moyVal.getValue() == 2) {
@@ -349,9 +349,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_WEEK_ORDINAL:
             case DAY_OF_MONTH_ORDINAL:
             case DAY_OF_YEAR_ORDINAL:
-            case WEEK_OF_MONTH_ORDINAL:
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL:
             case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
-            case WEEK_OF_YEAR_ORDINAL:
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL:
             case MONTH_OF_QUARTER_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL:
             case QUARTER_OF_YEAR_ORDINAL:
@@ -374,9 +374,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_WEEK_ORDINAL:
             case DAY_OF_MONTH_ORDINAL:
             case DAY_OF_YEAR_ORDINAL:
-            case WEEK_OF_MONTH_ORDINAL:
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL:
             case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
-            case WEEK_OF_YEAR_ORDINAL:
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL:
             case MONTH_OF_QUARTER_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL:
             case QUARTER_OF_YEAR_ORDINAL:
@@ -436,9 +436,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static final int DAY_OF_MONTH_ORDINAL =         21 * 16;
     private static final int DAY_OF_YEAR_ORDINAL =          22 * 16;
     private static final int EPOCH_DAY_ORDINAL =            23 * 16;
-    private static final int WEEK_OF_MONTH_ORDINAL =        24 * 16;
+    private static final int ALIGNED_WEEK_OF_MONTH_ORDINAL = 24 * 16;
     private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 25 * 16;
-    private static final int WEEK_OF_YEAR_ORDINAL =         26 * 16;
+    private static final int ALIGNED_WEEK_OF_YEAR_ORDINAL = 26 * 16;
     private static final int MONTH_OF_QUARTER_ORDINAL =     27 * 16;
     private static final int MONTH_OF_YEAR_ORDINAL =        28 * 16;
     private static final int EPOCH_MONTH_ORDINAL =          29 * 16;
@@ -633,17 +633,19 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      */
     public static final DateTimeRule EPOCH_DAY = new ISODateTimeRule(EPOCH_DAY_ORDINAL, "EpochDay", DAYS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
     /**
-     * The rule for the week-of-month field in the ISO chronology.
+     * The rule for the aligned-week-of-month field in the ISO chronology.
      * <p>
-     * This field counts weeks in groups of seven days starting from the first
+     * This field counts weeks in groups of seven days aligned with the first
      * day of the month. The 1st to the 7th of a month is always week 1 while the
      * 8th to the 14th is always week 2 and so on.
      * <p>
      * This field can be used to create concepts such as 'the second Saturday'
      * of a month. To achieve this, setup a {@link DateTimeFields} instance
      * using this rule and the {@link #DAY_OF_WEEK day-of-week} rule.
+     * <p>
+     * See {@link WeekRules} for other week fields, including that defined by ISO-8601.
      */
-    public static final DateTimeRule WEEK_OF_MONTH = new ISODateTimeRule(WEEK_OF_MONTH_ORDINAL, "WeekOfMonth", WEEKS, MONTHS, 1, 5, 4, DAY_OF_MONTH);
+    public static final DateTimeRule ALIGNED_WEEK_OF_MONTH = new ISODateTimeRule(ALIGNED_WEEK_OF_MONTH_ORDINAL, "AlignedWeekOfMonth", WEEKS, MONTHS, 1, 5, 4, DAY_OF_MONTH);
     /**
      * The rule for the week-of-week-based-year field in the ISO chronology.
      * <p>
@@ -656,12 +658,19 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      */
     public static final DateTimeRule WEEK_OF_WEEK_BASED_YEAR = new ISODateTimeRule(WEEK_OF_WEEK_BASED_YEAR_ORDINAL, "WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, 1, 53, 52, null);
     /**
-     * The rule for the week-of-year field in the ISO chronology.
+     * The rule for the aligned-week-of-year field in the ISO chronology.
      * <p>
-     * This field counts weeks in groups of seven days starting from the first of January.
-     * The 1st to the 7th of January is always week 1 while the 8th to the 14th is always week 2.
+     * This field counts weeks in groups of seven days aligned with the first of January.
+     * The 1st to the 7th of January is always week 1 while the 8th to the 14th is always
+     * week 2 and so on.
+     * <p>
+     * This field can be used to create concepts such as 'the second Saturday'
+     * of a year. To achieve this, setup a {@link DateTimeFields} instance
+     * using this rule and the {@link #DAY_OF_WEEK day-of-week} rule.
+     * <p>
+     * See {@link WeekRules} for other week fields, including that defined by ISO-8601.
      */
-    public static final DateTimeRule WEEK_OF_YEAR = new ISODateTimeRule(WEEK_OF_YEAR_ORDINAL, "WeekOfYear", WEEKS, YEARS, 1, 53, 53, DAY_OF_YEAR);
+    public static final DateTimeRule ALIGNED_WEEK_OF_YEAR = new ISODateTimeRule(ALIGNED_WEEK_OF_YEAR_ORDINAL, "AlignedWeekOfYear", WEEKS, YEARS, 1, 53, 53, DAY_OF_YEAR);
 
     /**
      * The rule for the epoch-month field.
@@ -744,7 +753,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         MINUTE_OF_HOUR, MINUTE_OF_DAY,
         CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY, AMPM_OF_DAY,
         DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY,
-        WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_YEAR,
+        ALIGNED_WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, ALIGNED_WEEK_OF_YEAR,
         MONTH_OF_QUARTER, MONTH_OF_YEAR, EPOCH_MONTH,
         QUARTER_OF_YEAR,
         WEEK_BASED_YEAR,
