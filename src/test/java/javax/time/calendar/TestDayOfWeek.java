@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -82,15 +84,34 @@ public class TestDayOfWeek {
         DayOfWeek.of(8);
     }
 
-//    //-----------------------------------------------------------------------
-//    // get()
-//    //-----------------------------------------------------------------------
-//    public void test_get() {
-//        assertEquals(DayOfWeek.MONDAY.get(ISODateTimeRule.DAY_OF_WEEK), DayOfWeek.MONDAY);
-//        assertEquals(DayOfWeek.THURSDAY.get(ISODateTimeRule.DAY_OF_WEEK), DayOfWeek.THURSDAY);
-//        
-//        assertEquals(DayOfWeek.MONDAY.get(ISODateTimeRule.MONTH_OF_YEAR), null);
-//    }
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendrical() {
+        assertEquals(DayOfWeek.of(LocalDate.of(2011, 6, 6)), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.of(DAY_OF_WEEK.field(4)), DayOfWeek.THURSDAY);
+    }
+
+    @Test(expectedExceptions=CalendricalRuleException.class)
+    public void test_factory_Calendrical_invalid() {
+        DayOfWeek.of(LocalTime.of(12, 30));
+    }
+
+    //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(DayOfWeek.MONDAY.get(DAY_OF_WEEK), DAY_OF_WEEK.field(1));
+        assertEquals(DayOfWeek.THURSDAY.get(DAY_OF_WEEK), DAY_OF_WEEK.field(4));
+        
+        assertEquals(DayOfWeek.MONDAY.get(MONTH_OF_YEAR), null);
+    }
+
+    //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(DayOfWeek.MONDAY.toField(), DAY_OF_WEEK.field(1));
+        assertEquals(DayOfWeek.THURSDAY.toField(), DAY_OF_WEEK.field(4));
+    }
 
     //-----------------------------------------------------------------------
     // getText()

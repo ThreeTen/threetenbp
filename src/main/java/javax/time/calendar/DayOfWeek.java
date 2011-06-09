@@ -62,7 +62,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek {
+public enum DayOfWeek implements Calendrical {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -112,8 +112,7 @@ public enum DayOfWeek {
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
      * <p>
-     * An exception is thrown if the value is invalid. The exception uses the
-     * {@link ISOChronology} day-of-week rule to indicate the failed rule.
+     * An exception is thrown if the value is invalid.
      *
      * @param dayOfWeek  the day-of-week to represent, from 1 (Monday) to 7 (Sunday)
      * @return the DayOfWeek singleton, not null
@@ -124,6 +123,24 @@ public enum DayOfWeek {
             throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
         }
         return ENUMS[dayOfWeek - 1];
+    }
+
+    /**
+     * Obtains an instance of {@code DayOfWeek} from a {@code Calendrical}.
+     * <p>
+     * {@code DayOfWeek} is an enum representing the 7 days of the week.
+     * This factory allows the enum to be obtained from a {@code Calendrical},
+     * for example {@code LocalDate} or {@code DateTimeField}.
+     * <p>
+     * An exception is thrown if the day-of-week cannot be obtained.
+     *
+     * @param calendrical  the calendrical to get the day-of-week from, not null
+     * @return the DayOfWeek singleton, not null
+     * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
+     */
+    public static DayOfWeek of(Calendrical calendrical) {
+        DateTimeField field = DAY_OF_WEEK.getValueChecked(calendrical);
+        return of(field.getValidIntValue());
     }
 
     //-----------------------------------------------------------------------
@@ -139,30 +156,40 @@ public enum DayOfWeek {
         return ordinal() + 1;
     }
 
-//    /**
-//     * Gets the value of the specified calendrical rule.
-//     * <p>
-//     * This returns the one of the day-of-week values if the type of the rule
-//     * is {@code DayOfWeek}. Other rules will return {@code null}.
-//     *
-//     * @param rule  the rule to use, not null
-//     * @return the value for the rule, null if the value cannot be returned
-//     */
-//    public <T> T get(CalendricalRule<T> rule) {
-//        if (rule.getReifiedType() != DayOfWeek.class) {
-//            return null;
-//        }
-//        return rule.reify(this);
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
+     * rule, or something derivable from it.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule instanceof DateTimeRule) {
+            return toField().get(rule);
+        }
+        return null;
+    }
+
+    /**
+     * Converts this day-of-week to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#DAY_OF_WEEK}.
+     *
+     * @return the equivalent day-of-week field, not null
+     */
+    public DateTimeField toField() {
+        return DAY_OF_WEEK.field(getValue());
+    }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the textual representation, such as 'Mon' or 'Friday'.
      * <p>
-     * This method is notionally specific to {@link ISOChronology} as it uses
-     * the day-of-week rule to obtain the text. However, it is expected that
-     * the text will be equivalent for all day-of-week rules, thus this aspect
-     * of the implementation should be irrelevant to applications.
+     * This enum uses the {@link ISODateTimeRule#DAY_OF_WEEK} rule to obtain the text.
+     * This allows the text to be localized by language, but not by chronology.
      * <p>
      * If no textual mapping is found then the {@link #getValue() numeric value} is returned.
      *
