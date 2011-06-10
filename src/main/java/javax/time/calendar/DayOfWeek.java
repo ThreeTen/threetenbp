@@ -158,34 +158,6 @@ public enum DayOfWeek implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
-     * rule, or something derivable from it.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof DateTimeRule) {
-            return toField().get(rule);
-        }
-        return null;
-    }
-
-    /**
-     * Converts this day-of-week to an equivalent field.
-     * <p>
-     * The field is based on {@link ISODateTimeRule#DAY_OF_WEEK}.
-     *
-     * @return the equivalent day-of-week field, not null
-     */
-    public DateTimeField toField() {
-        return DAY_OF_WEEK.field(getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the textual representation, such as 'Mon' or 'Friday'.
      * <p>
      * This enum uses the {@link ISODateTimeRule#DAY_OF_WEEK} rule to obtain the text.
@@ -238,6 +210,31 @@ public enum DayOfWeek implements Calendrical {
      */
     public DayOfWeek roll(int days) {
         return values()[(ordinal() + (days % 7 + 7)) % 7];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
+     * rule, or something derivable from it.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return toField().get(rule);
+    }
+
+    /**
+     * Converts this day-of-week to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#DAY_OF_WEEK}.
+     *
+     * @return the equivalent day-of-week field, not null
+     */
+    public DateTimeField toField() {
+        return DAY_OF_WEEK.field(getValue());
     }
 
 }
