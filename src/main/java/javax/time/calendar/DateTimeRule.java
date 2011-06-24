@@ -271,7 +271,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * This returns the textual representation of the field, such as for day-of-week or month-of-year.
      * If no textual mapping is found then the numeric value is returned.
      * <p>
-     * This implementation uses {@link #field(long)} and {@link DateTimeField#getText(TextStyle, Locale)}.
+     * This implementation uses {@link #field(long)} and {@link DateTimeField#getText(
+     * javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle, java.util.Locale)}.
+     * 
      * Subclasses should not normally override this method.
      *
      * @param value  the value to convert to text, must be valid for the rule

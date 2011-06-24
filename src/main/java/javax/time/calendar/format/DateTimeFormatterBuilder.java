@@ -411,7 +411,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The fractional value of the field will be output including the
      * preceeding decimal point. The preceeding value is not output.
-     * The fraction is obtained using {@link DateTimeRule#convertIntToFraction}.
+     * The fraction is obtained using {@link DateTimeRule#convertToFraction}.
      * <p>
      * The width of the output fraction can be controlled. Setting the
      * minimum width to zero will cause no output to be generated.

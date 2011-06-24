@@ -72,7 +72,7 @@ public abstract class CalendricalRule<T>
     /**
      * Constructor used to create a rule.
      *
-     * @param reifiedClass  the reified class, not null
+     * @param type  the reified class, not null
      * @param name  the name of the type, not null
      */
     protected CalendricalRule(Class<T> type, String name) {
