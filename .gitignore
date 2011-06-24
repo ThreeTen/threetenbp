@@ -2,5 +2,6 @@
 /bin/
 /lib/
 /.settings/
+/dist/
 /test-output/
 /temp*
