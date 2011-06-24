@@ -31,11 +31,9 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.DayOfWeek.MONDAY;
+import static javax.time.calendar.ISODateTimeRule.*;
+import static javax.time.calendar.MonthOfYear.JUNE;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
@@ -62,8 +60,9 @@ public class TestCalendricalNomalizer {
             {cals(EPOCH_MONTH.field((2011 - 1970) * 12 + 6 - 1), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6)), LocalDate.rule(), null},
-            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), MONTH_OF_QUARTER.field(1), DAY_OF_MONTH.field(30)), LocalDate.rule(), CalendricalException.class},
-            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), MONTH_OF_QUARTER.field(2), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
+            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(1), DAY_OF_MONTH.field(30)), LocalDate.rule(), CalendricalException.class},
+            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(2), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
+            {cals(YEAR.field(2011), JUNE, ALIGNED_WEEK_OF_MONTH.field(2), MONDAY), LocalDate.rule(), LocalDate.of(2011, 6, 13)},
             
             {cals(LocalDate.of(2011, 6, 30)), LocalTime.rule(), null},
             {cals(LocalTime.of(11, 30)), LocalTime.rule(), LocalTime.of(11, 30)},

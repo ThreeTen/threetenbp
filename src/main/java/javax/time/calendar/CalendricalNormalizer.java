@@ -565,49 +565,49 @@ public final class CalendricalNormalizer {
         sort(group);
         DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
         for (int i = 0; i < group.size() - 1; i++) {
-            final DateTimeField field1 = group.get(i);
+            final DateTimeField fieldLge = group.get(i);
             for (int j = i + 1; j < group.size(); j++) {
-                final DateTimeField field2 = group.get(j);
-                final DateTimeRule rule1 = field1.getRule();
-                final DateTimeRule rule2 = field2.getRule();
+                final DateTimeField fieldSml = group.get(j);
+                final DateTimeRule ruleLge = fieldLge.getRule();
+                final DateTimeRule ruleSml = fieldSml.getRule();
                 // remove if derived
-                // the fields share a base rule, so this must succeed if there field1 surrounds field2
-                final DateTimeField derived2 = field1.derive(rule2);
-                if (derived2 != null) {
-                    if (derived2.equals(field2)) {
+                // the fields share a base rule, so this must succeed if there fieldLge surrounds fieldSml
+                final DateTimeField derivedSml = fieldLge.derive(ruleSml);
+                if (derivedSml != null) {
+                    if (derivedSml.equals(fieldSml)) {
                         group.remove(j--);
                         continue;
                     } else {
-                        addError("Clash: " + field2 + " and " + derived2);
+                        addError("Clash: " + fieldSml + " and " + derivedSml);
                         return;
                     }
                 }
                 // merge overlap or adjacent
-                if (DateTimeRule.comparePeriodUnits(rule2.getPeriodRange(), rule1.getPeriodUnit()) >= 0 &&
-                        DateTimeRule.comparePeriodUnits(rule2.getPeriodUnit(), rule1.getPeriodUnit()) < 0) {
-                    final long period1 = rule1.convertToPeriod(field1.getValue());
-                    final long period2 = rule2.convertToPeriod(field2.getValue());
-                    final PeriodField conversion1 = rule2.getPeriodRange().getEquivalentPeriod(rule1.getPeriodUnit());
+                if (DateTimeRule.comparePeriodUnits(ruleSml.getPeriodRange(), ruleLge.getPeriodUnit()) >= 0 &&
+                        DateTimeRule.comparePeriodUnits(ruleSml.getPeriodUnit(), ruleLge.getPeriodUnit()) < 0) {
+                    final long periodLge = ruleLge.convertToPeriod(fieldLge.getValue());
+                    final long periodSml = ruleSml.convertToPeriod(fieldSml.getValue());
+                    final PeriodField conversion1 = ruleSml.getPeriodRange().getEquivalentPeriod(ruleLge.getPeriodUnit());
                     // if was an overlap, then check it is valid
                     // this must be done before the combined rule check to ensure that the final derivation is OK
-                    if (DateTimeRule.comparePeriodUnits(rule2.getPeriodRange(), rule1.getPeriodUnit()) > 0) {
-                        long periodMid1 = MathUtils.floorMod(period1, conversion1.getAmount());
-                        final PeriodField conversion2 = rule2.getPeriodRange().getEquivalentPeriod(rule2.getPeriodUnit());
-                        final PeriodField conversion3 = rule1.getPeriodUnit().getEquivalentPeriod(rule2.getPeriodUnit());
-                        long periodMid2 = MathUtils.floorMod(period2, conversion2.getAmount());
-                        periodMid2 = MathUtils.floorDiv(periodMid2, conversion3.getAmount());
-                        if (periodMid1 != periodMid2) {
-                            addError("Clash: " + field1 + " and " + field2);
+                    if (DateTimeRule.comparePeriodUnits(ruleSml.getPeriodRange(), ruleLge.getPeriodUnit()) > 0) {
+                        long periodMidLge = MathUtils.floorMod(periodLge, conversion1.getAmount());
+                        final PeriodField conversion2 = ruleSml.getPeriodRange().getEquivalentPeriod(ruleSml.getPeriodUnit());
+                        final PeriodField conversion3 = ruleLge.getPeriodUnit().getEquivalentPeriod(ruleSml.getPeriodUnit());
+                        long periodMidSml = MathUtils.floorMod(periodSml, conversion2.getAmount());
+                        periodMidSml = MathUtils.floorDiv(periodMidSml, conversion3.getAmount());
+                        if (periodMidLge != periodMidSml) {
+                            addError("Clash: " + fieldLge + " and " + fieldSml);
                             return;
                         }
                     }
                     // merge if possible
-                    DateTimeRule ruleCombined = ruleGroup.getRelatedRule(rule2.getPeriodUnit(), rule1.getPeriodRange());
+                    DateTimeRule ruleCombined = ruleGroup.getRelatedRule(ruleSml.getPeriodUnit(), ruleLge.getPeriodRange());
                     if (ruleCombined != null) {
-                        long period = MathUtils.floorDiv(period1, conversion1.getAmount());
-                        final PeriodField conversion2 = rule2.getPeriodRange().getEquivalentPeriod(rule2.getPeriodUnit());
+                        long period = MathUtils.floorDiv(periodLge, conversion1.getAmount());
+                        final PeriodField conversion2 = ruleSml.getPeriodRange().getEquivalentPeriod(ruleSml.getPeriodUnit());
                         period = MathUtils.safeMultiply(period, conversion2.getAmount());
-                        period = MathUtils.safeAdd(period, period2);
+                        period = MathUtils.safeAdd(period, periodSml);
                         DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(period));
                         group.set(i--, fieldCombined);
                         group.remove(j);

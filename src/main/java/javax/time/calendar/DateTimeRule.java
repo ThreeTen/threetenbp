@@ -56,6 +56,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         implements Comparable<DateTimeRule> {
     // TODO: broken serialization
 
+    @Override
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        return super.deriveFrom(merger);
+    }
+
     protected void normalize(CalendricalNormalizer merger) {
     }
 
