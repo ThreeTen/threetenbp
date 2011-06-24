@@ -106,14 +106,6 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    // toField()
-    //-----------------------------------------------------------------------
-    public void test_toField() {
-        assertEquals(DayOfWeek.MONDAY.toField(), DAY_OF_WEEK.field(1));
-        assertEquals(DayOfWeek.THURSDAY.toField(), DAY_OF_WEEK.field(4));
-    }
-
-    //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
     public void test_getText() {
@@ -193,6 +185,14 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.THURSDAY.roll(5), DayOfWeek.TUESDAY);
         assertEquals(DayOfWeek.THURSDAY.roll(6), DayOfWeek.WEDNESDAY);
         assertEquals(DayOfWeek.THURSDAY.roll(7), DayOfWeek.THURSDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(DayOfWeek.MONDAY.toField(), DAY_OF_WEEK.field(1));
+        assertEquals(DayOfWeek.THURSDAY.toField(), DAY_OF_WEEK.field(4));
     }
 
     //-----------------------------------------------------------------------

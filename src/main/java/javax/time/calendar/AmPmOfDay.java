@@ -53,15 +53,15 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
- * As such, this enum may be used by any calendar system that has the AM/PM concept.
- * Note that the implementation of {@link DateTimeRule} may vary by calendar system.
+ * As such, this enum may be used by any calendar system that has the month-of-year
+ * concept defined exactly equivalent to the ISO calendar system.
  * <p>
- * AmPmOfDay is an immutable and thread-safe enum.
+ * This is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum AmPmOfDay {
+public enum AmPmOfDay implements Calendrical {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -102,6 +102,19 @@ public enum AmPmOfDay {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This will only return a value for the {@link ISODateTimeRule#AMPM_OF_DAY}
+     * rule, or something derivable from it.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return toField().get(rule);
+    }
+
+    /**
      * Gets the AM/PM {@code int} value.
      * <p>
      * The values are numbered following {@link Calendar}, assigning 0 to AM and 1 to PM.
@@ -111,22 +124,6 @@ public enum AmPmOfDay {
     public int getValue() {
         return ordinal();
     }
-
-//    /**
-//     * Gets the value of the specified calendrical rule.
-//     * <p>
-//     * This returns the one of the AM/PM values if the type of the rule
-//     * is {@code AmPmOfDay}. Other rules will return {@code null}.
-//     *
-//     * @param rule  the rule to use, not null
-//     * @return the value for the rule, null if the value cannot be returned
-//     */
-//    public <T> T get(CalendricalRule<T> rule) {
-//        if (rule.getReifiedType() != AmPmOfDay.class) {
-//            return null;
-//        }
-//        return rule.reify(this);
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -144,6 +141,18 @@ public enum AmPmOfDay {
      */
     public String getText(TextStyle style, Locale locale) {
         return AMPM_OF_DAY.getText(getValue(), style, locale);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this AM/PM to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#AMPM_OF_DAY}.
+     *
+     * @return the equivalent AM/PM field, not null
+     */
+    public DateTimeField toField() {
+        return AMPM_OF_DAY.field(getValue());
     }
 
 }

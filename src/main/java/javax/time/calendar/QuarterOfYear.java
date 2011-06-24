@@ -54,16 +54,14 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the quarter-of-year
- * concept with a 4 quarter year where the names are equivalent to those defined.
- * Note that the implementation of {@link DateTimeRule} for quarter-of-year may
- * vary by calendar system.
+ * concept defined exactly equivalent to the ISO calendar system.
  * <p>
- * QuarterOfYear is an immutable and thread-safe enum.
+ * This is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear {
+public enum QuarterOfYear implements Calendrical {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -118,6 +116,19 @@ public enum QuarterOfYear {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This will only return a value for the {@link ISODateTimeRule#QUARTER_OF_YEAR}
+     * rule, or something derivable from it.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return toField().get(rule);
+    }
+
+    /**
      * Gets the quarter-of-year {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
@@ -128,22 +139,6 @@ public enum QuarterOfYear {
     public int getValue() {
         return ordinal() + 1;
     }
-
-//    /**
-//     * Gets the value of the specified calendrical rule.
-//     * <p>
-//     * This returns the one of the quarter values if the type of the rule
-//     * is {@code QuarterOfYear}. Other rules will return {@code null}.
-//     *
-//     * @param rule  the rule to use, not null
-//     * @return the value for the rule, null if the value cannot be returned
-//     */
-//    public <T> T get(CalendricalRule<T> rule) {
-//        if (rule.getReifiedType() != QuarterOfYear.class) {
-//            return null;
-//        }
-//        return rule.reify(this);
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -229,6 +224,18 @@ public enum QuarterOfYear {
             default:
                 return MonthOfYear.OCTOBER;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this quarter-of-year to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#QUARTER_OF_YEAR}.
+     *
+     * @return the equivalent quarter-of-year field, not null
+     */
+    public DateTimeField toField() {
+        return QUARTER_OF_YEAR.field(getValue());
     }
 
 }

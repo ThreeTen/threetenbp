@@ -54,16 +54,14 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the month-of-year
- * concept with a twelve month year where the names and month lengths are equivalent to
- * those defined. Note that the implementation of {@link DateTimeRule} for month-of-year
- * may vary by calendar system.
+ * concept defined exactly equivalent to the ISO calendar system.
  * <p>
- * MonthOfYear is an immutable and thread-safe enum.
+ * This is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear {
+public enum MonthOfYear implements Calendrical {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -154,6 +152,19 @@ public enum MonthOfYear {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This will only return a value for the {@link ISODateTimeRule#MONTH_OF_YEAR}
+     * rule, or something derivable from it.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return toField().get(rule);
+    }
+
+    /**
      * Gets the month-of-year {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
@@ -164,22 +175,6 @@ public enum MonthOfYear {
     public int getValue() {
         return ordinal() + 1;
     }
-
-//    /**
-//     * Gets the value of the specified calendrical rule.
-//     * <p>
-//     * This returns the one of the month values if the type of the rule
-//     * is {@code MonthOfYear}. Other rules will return {@code null}.
-//     *
-//     * @param rule  the rule to use, not null
-//     * @return the value for the rule, null if the value cannot be returned
-//     */
-//    public <T> T get(CalendricalRule<T> rule) {
-//        if (rule.getReifiedType() != MonthOfYear.class) {
-//            return null;
-//        }
-//        return rule.reify(this);
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -411,6 +406,18 @@ public enum MonthOfYear {
      */
     public int getMonthOfQuarter() {
         return (ordinal() % 3) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this month-of-year to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#MONTH_OF_YEAR}.
+     *
+     * @return the equivalent month-of-year field, not null
+     */
+    public DateTimeField toField() {
+        return MONTH_OF_YEAR.field(getValue());
     }
 
 }

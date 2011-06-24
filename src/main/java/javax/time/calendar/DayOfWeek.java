@@ -53,9 +53,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the day-of-week
- * concept with a seven day week where the names are equivalent to those defined.
- * Note that the implementation of {@link DateTimeRule} for day-of-week may
- * vary by calendar system.
+ * concept defined exactly equivalent to the ISO calendar system.
  * <p>
  * This is an immutable and thread-safe enum.
  *
@@ -145,6 +143,19 @@ public enum DayOfWeek implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
+     * rule, or something derivable from it.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return toField().get(rule);
+    }
+
+    /**
      * Gets the day-of-week {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
@@ -213,19 +224,6 @@ public enum DayOfWeek implements Calendrical {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
-     * rule, or something derivable from it.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        return toField().get(rule);
-    }
-
     /**
      * Converts this day-of-week to an equivalent field.
      * <p>

@@ -32,9 +32,8 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static org.testng.Assert.*;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -89,15 +88,15 @@ public class TestAmPmOfDay {
         }
     }
 
-//    //-----------------------------------------------------------------------
-//    // get()
-//    //-----------------------------------------------------------------------
-//    public void test_get() {
-//        assertEquals(AmPmOfDay.AM.get(ISODateTimeRule.AMPM_OF_DAY), AmPmOfDay.AM);
-//        assertEquals(AmPmOfDay.PM.get(ISODateTimeRule.AMPM_OF_DAY), AmPmOfDay.PM);
-//        
-//        assertEquals(AmPmOfDay.AM.get(ISODateTimeRule.HOUR_OF_AMPM), null);
-//    }
+    //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(AmPmOfDay.AM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(0));
+        assertEquals(AmPmOfDay.PM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(1));
+        
+        assertEquals(AmPmOfDay.AM.get(DAY_OF_WEEK), null);
+    }
 
     //-----------------------------------------------------------------------
     // getText()
@@ -114,6 +113,14 @@ public class TestAmPmOfDay {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getText_nullLocale() {
         AmPmOfDay.AM.getText(TextStyle.FULL, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(AmPmOfDay.AM.toField(), AMPM_OF_DAY.field(0));
+        assertEquals(AmPmOfDay.PM.toField(), AMPM_OF_DAY.field(1));
     }
 
     //-----------------------------------------------------------------------

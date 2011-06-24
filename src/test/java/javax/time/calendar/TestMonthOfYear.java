@@ -31,9 +31,8 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static javax.time.calendar.ISODateTimeRule.*;
+import static org.testng.Assert.*;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -84,15 +83,16 @@ public class TestMonthOfYear {
         MonthOfYear.of(13);
     }
 
-//    //-----------------------------------------------------------------------
-//    // get()
-//    //-----------------------------------------------------------------------
-//    public void test_get() {
-//        assertEquals(MonthOfYear.JANUARY.get(ISODateTimeRule.MONTH_OF_YEAR), MonthOfYear.JANUARY);
-//        assertEquals(MonthOfYear.AUGUST.get(ISODateTimeRule.MONTH_OF_YEAR), MonthOfYear.AUGUST);
-//        
-//        assertEquals(MonthOfYear.JANUARY.get(ISODateTimeRule.QUARTER_OF_YEAR), null);
-//    }
+    //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(MonthOfYear.JANUARY.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1));
+        assertEquals(MonthOfYear.APRIL.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(4));
+        
+        assertEquals(MonthOfYear.MAY.get(QUARTER_OF_YEAR), QUARTER_OF_YEAR.field(2));
+        assertEquals(MonthOfYear.FEBRUARY.get(DAY_OF_WEEK), null);
+    }
 
     //-----------------------------------------------------------------------
     // getText()
@@ -408,6 +408,14 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
         assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
         assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
+    }
+
+    //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(MonthOfYear.JANUARY.toField(), MONTH_OF_YEAR.field(1));
+        assertEquals(MonthOfYear.APRIL.toField(), MONTH_OF_YEAR.field(4));
     }
 
     //-----------------------------------------------------------------------
