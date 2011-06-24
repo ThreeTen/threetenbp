@@ -1,4 +1,0 @@
-#Sat May 26 22:18:40 BST 2007
-file_filter=in\:\\.java$\nin\:\\.properties$\nex\:Test*\n
-enabled=true
-filenames.config=checkstyle.xml
