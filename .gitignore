@@ -3,3 +3,4 @@
 /lib/
 /.settings/
 /test-output/
+/temp*
