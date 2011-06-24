@@ -448,6 +448,42 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZonedDateTime} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the zoned date-time, null if unable to obtain the date-time
+     */
+    static ZonedDateTime deriveFrom(CalendricalNormalizer normalized) {
+        ZoneOffset offset = normalized.getOffset(false);
+        if (offset != null) {
+            OffsetDateTime odt = OffsetDateTime.deriveFrom(normalized);
+            if (odt != null) {
+                ZoneId zone = normalized.getZone(false);
+                if (zone == null) {
+                    zone = ZoneId.of(offset);  // smart use of offset as zone
+                } else {
+                    ZoneRules rules = zone.getRules();  // latest rules version
+                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
+                        odt = odt.withOffsetSameInstant(rules.getOffset(odt));  // smart use of date-time as instant
+                    }
+                }
+                return new ZonedDateTime(odt, zone);
+            }
+        } else {
+            LocalDateTime ldt = LocalDateTime.deriveFrom(normalized);
+            ZoneId zone = normalized.getZone(true);
+            if (ldt != null && zone != null) {
+                OffsetDateTime odt = ZoneResolvers.postGapPreOverlap().resolve(zone, ldt, null);  // smart use of resolver
+                return new ZonedDateTime(odt, zone);
+            }
+        }
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code ZonedDateTime} from a text string such as
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
@@ -553,25 +589,10 @@ public final class ZonedDateTime
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) toOffsetDateTime();
-                case ISOCalendricalRule.ZONED_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) zone;
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
+        if (rule == rule()) {
+            return (T) this;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(toLocalDate(), toLocalTime());
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------

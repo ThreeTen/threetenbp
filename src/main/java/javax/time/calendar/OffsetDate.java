@@ -202,6 +202,24 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetDate} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the offset date, null if unable to obtain the date
+     */
+    static OffsetDate deriveFrom(CalendricalNormalizer normalized) {
+        LocalDate date = normalized.getDate(true);
+        ZoneOffset offset = normalized.getOffset(true);
+        if (date == null || offset == null) {
+            return null;
+        }
+        return new OffsetDate(date, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code OffsetDate} from a text string such as {@code 2007-12-03+01:00}.
      * <p>
      * The following format is accepted in ASCII:
@@ -296,19 +314,10 @@ public final class OffsetDate
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
+        if (rule == rule()) {
+            return (T) this;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(date);
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(rule, rule(), date, null, offset, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------

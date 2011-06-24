@@ -351,23 +351,6 @@ public final class LocalDateTime
         return new LocalDateTime(date, time);
     }
 
-//    //-----------------------------------------------------------------------
-//    // TODO
-//    /**
-//     * Obtains an instance of {@code LocalDateTime} from a set of calendricals.
-//     * <p>
-//     * A calendrical represents some form of date and time information.
-//     * This method combines the input calendricals into a date-time.
-//     * For example, this could be used to convert a date-time in another calendar
-//     * system, or to merge a {@link Year}, {@link MonthDay} and a {@link LocalTime}.
-//     *
-//     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-//     * @return the local date-time, not null
-//     */
-//    public static LocalDateTime ofMerged(Calendrical... calendricals) {
-//        return new CalendricalSet(calendricals).merge().derive(rule());
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDateTime} from a date and time.
@@ -400,25 +383,39 @@ public final class LocalDateTime
         return result;
     }
 
-//    /**
-//     * Obtains an instance of {@code LocalDateTime} from an {@code InstantProvider} using
-//     * an offset to define the correct local time.
-//     * <p>
-//     * In order to calculate the local date-time from an instant the offset is needed.
-//     * This is the same as calling {@code OffsetDateTime.of(instant, offset).toLocalDateTime()}
-//     * but saves an object creation.
-//     *
-//     * @param instantProvider  the instant to convert, not null
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws CalendarConversionException if the instant exceeds the supported date range
-//     */
-//    public static LocalDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
-//        Instant instant = Instant.of(instantProvider);
-//        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-//        long localSeconds = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
-//        return LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code LocalDateTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date-time.
+     * For example, this could be used to convert a date-time in another calendar
+     * system, or to merge a {@link Year}, {@link MonthDay} and a {@link LocalTime}.
+     *
+     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
+     * @return the local date-time, not null
+     * @throws CalendricalException if a date-time cannot be obtained
+     */
+    public static LocalDateTime ofMerged(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code LocalDateTime} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the local date-time, null if unable to obtain the date-time
+     */
+    static LocalDateTime deriveFrom(CalendricalNormalizer normalized) {
+        LocalDate date = normalized.getDate(true);
+        LocalTime time = normalized.getTime(true);
+        if (date == null || time == null) {
+            return null;
+        }
+        return new LocalDateTime(date, time);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -518,19 +515,10 @@ public final class LocalDateTime
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
+        if (rule == rule()) {
+            return (T) this;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(date, time);
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(rule, rule(), date, time, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------

@@ -421,6 +421,24 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetDateTime} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the offset date-time, null if unable to obtain the date-time
+     */
+    static OffsetDateTime deriveFrom(CalendricalNormalizer normalized) {
+        LocalDateTime dateTime = LocalDateTime.deriveFrom(normalized);
+        ZoneOffset offset = normalized.getOffset(true);
+        if (dateTime == null || offset == null) {
+            return null;
+        }
+        return new OffsetDateTime(dateTime, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code OffsetDateTime} from a text string such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
      * The following formats are accepted in ASCII:
@@ -523,23 +541,10 @@ public final class OffsetDateTime
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
+        if (rule == rule()) {
+            return (T) this;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(toLocalDate(), toLocalTime());
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), offset, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------

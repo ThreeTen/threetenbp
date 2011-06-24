@@ -338,6 +338,64 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return super.getValueRange();
     }
 
+    @Override
+    protected void normalize(CalendricalNormalizer merger) {
+        // TODO time
+        switch (ordinal) {
+            case EPOCH_MONTH_ORDINAL: {
+                DateTimeField epm = merger.getField(EPOCH_MONTH, false);
+                if (epm != null) {
+                    int year = MathUtils.safeAdd(MathUtils.safeToInt(epm.getValue() / 12), 1970);
+                    int moy = (int) (epm.getValue() % 12 + 1);
+                    // year-month-day
+                    DateTimeField dom = merger.getField(DAY_OF_MONTH, false);
+                    if (dom != null) {
+                        LocalDate date = LocalDate.of(year, moy, 1).plusDays(dom.getValue()).minusDays(1);
+                        merger.setDate(date, true);
+                    }
+                    // year-month-alignedWeek-day
+                    DateTimeField wom = merger.getField(ALIGNED_WEEK_OF_MONTH, false);
+                    DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
+                    if (wom != null && dow != null) {
+                        LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(wom.getValidIntValue() - 1);  // TODO lenient
+                        date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
+                        merger.setDate(date, true);
+                    }
+                }
+                break;
+            }
+            case EPOCH_YEAR_ORDINAL: {
+                DateTimeField epy = merger.getField(EPOCH_YEAR, false);
+                if (epy != null) {
+                    DateTimeField year = epy.derive(YEAR);
+                    // year-day
+                    DateTimeField doy = merger.getField(DAY_OF_YEAR, false);
+                    if (epy != null && doy != null) {
+                        LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
+                                .plusDays(doy.getValue()).minusDays(1);
+                        merger.setDate(date, true);
+                    }
+                    // year-alignedWeek-day
+                    DateTimeField woy = merger.getField(ALIGNED_WEEK_OF_YEAR, false);
+                    DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
+                    if (woy != null && dow != null) {
+                        LocalDate date = LocalDate.of(year.getValidIntValue(), 1, 1).plusWeeks(woy.getValidIntValue() - 1);
+                        date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
+                        merger.setDate(date, true);
+                    }
+                }
+                break;
+            }
+            case EPOCH_DAY_ORDINAL: {
+                DateTimeField epd = merger.getField(EPOCH_DAY, false);
+                if (epd != null) {
+                    merger.setDate(LocalDate.ofEpochDay(epd.getValue()), true);
+                }
+                break;
+            }
+        }
+    }
+
     //-----------------------------------------------------------------------
     @Override
     public long convertToPeriod(long value) {

@@ -44,7 +44,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
-import javax.time.Instant;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRulesGroup;
@@ -431,24 +430,8 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: {  // TODO possibly remove
-                    if (isFixed()) {
-                        return (T) getRules().getOffset(Instant.EPOCH);
-                    }
-                    break;
-                }
-                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) this;
-            }
-            return null;
-        }
-        if (rule instanceof ISODateTimeRule) {
-            return null;
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, this, null, null);
     }
 
     //-----------------------------------------------------------------------

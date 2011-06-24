@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -81,18 +81,8 @@ public abstract class Chronology implements Calendrical {
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            if (rule.equals(ISOCalendricalRule.CHRONOLOGY)) {
-                return (T) this;
-            }
-            return null;
-        }
-        if (rule instanceof ISODateTimeRule) {
-            return null;
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, this, null);
     }
 
     //-----------------------------------------------------------------------

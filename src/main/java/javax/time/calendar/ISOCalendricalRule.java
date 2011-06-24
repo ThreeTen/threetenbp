@@ -44,7 +44,7 @@ import java.io.Serializable;
  * class, such as {@code LocalDate}. This class exists to avoid writing those
  * separate classes, centralizing the singleton pattern and enhancing performance
  * via an {@code int} ordinal and package scope.
- * Thus, this design is an optimization and should not be considered best practice.
+ * Thus, this design is an optimization and should not necessarily be considered best practice.
  * <p>
  * This class is final, immutable and thread-safe.
  *
@@ -81,6 +81,25 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
      */
     private Object readResolve() {
         return RULE_CACHE[ordinal];
+    }
+
+    //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    protected T deriveFrom(CalendricalNormalizer merger) {
+        switch (ordinal) {
+            case LOCAL_DATE_ORDINAL: return (T) merger.getDate(true);
+            case LOCAL_TIME_ORDINAL: return (T) merger.getTime(true);
+            case LOCAL_DATE_TIME_ORDINAL: return (T) LocalDateTime.deriveFrom(merger);
+            case OFFSET_DATE_ORDINAL: return (T) OffsetDate.deriveFrom(merger);
+            case OFFSET_TIME_ORDINAL: return (T) OffsetTime.deriveFrom(merger);
+            case OFFSET_DATE_TIME_ORDINAL: return (T) OffsetDateTime.deriveFrom(merger);
+            case ZONED_DATE_TIME_ORDINAL: return (T) ZonedDateTime.deriveFrom(merger);
+            case ZONE_OFFSET_ORDINAL: return (T) merger.getOffset(true);
+            case ZONE_ID_ORDINAL: return (T) merger.getZone(true);
+            case CHRONOLOGY_ORDINAL: return (T) merger.getChronology(true);
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

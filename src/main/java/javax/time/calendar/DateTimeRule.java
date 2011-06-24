@@ -56,6 +56,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         implements Comparable<DateTimeRule> {
     // TODO: broken serialization
 
+    protected void normalize(CalendricalNormalizer merger) {
+    }
+
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
 

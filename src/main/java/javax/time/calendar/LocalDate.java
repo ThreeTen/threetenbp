@@ -378,19 +378,8 @@ public final class LocalDate
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) this;
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
-        }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(this);
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(rule, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

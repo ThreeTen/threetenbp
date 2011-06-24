@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.time.CalendricalException;
 
@@ -60,6 +61,13 @@ import javax.time.CalendricalException;
  */
 public abstract class CalendricalRule<T>
         implements Comparator<Calendrical>, Serializable {
+
+    public void merge(CalendricalNormalizer merger, List<CalendricalNormalizer> mergers) {
+    }
+
+    protected T deriveFrom(CalendricalNormalizer merger) {
+        return null;
+    }
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;

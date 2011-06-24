@@ -688,15 +688,15 @@ public final class DateTimeFields
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
         if (rule instanceof DateTimeRule) {
             DateTimeField field = getField((DateTimeRule) rule);
             if (field != null) {
-                return rule.reify(field);
+                return (T) field;
             }
         }
-        return rule.deriveValueFrom(this);
+        return CalendricalNormalizer.derive(rule, null, null, null, null, null, null, this);
     }
 
     //-----------------------------------------------------------------------
