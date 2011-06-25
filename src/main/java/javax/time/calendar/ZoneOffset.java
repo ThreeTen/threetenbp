@@ -610,7 +610,7 @@ public final class ZoneOffset
      * <p>
      * The comparison is based on the amount of the offset in seconds.
      *
-     * @param obj  the object to check, null returns false
+     * @param other  the object to check, null returns false
      * @return true if this is equal to the other offset
      */
     @Override

@@ -354,7 +354,7 @@ public final class DateTimeFormatter {
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the
      * {@link #print(Calendrical, Appendable) print} and
-     * {@link #parse(String, ParsePosition) parse} methods.
+     * {@link #parse(CharSequence, ParsePosition) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
      *

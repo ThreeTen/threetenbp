@@ -663,7 +663,7 @@ public final class OffsetDate
      * @param years  the years to add, may be negative
      * @return an {@code OffsetDate} based on this date with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(int, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendar.DateResolver)
      */
     public OffsetDate plusYears(long years) {
         return with(date.plusYears(years), offset);
@@ -711,7 +711,7 @@ public final class OffsetDate
      * @param months  the months to add, may be negative
      * @return an {@code OffsetDate} based on this date with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(int, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendar.DateResolver)
      */
     public OffsetDate plusMonths(long months) {
         return with(date.plusMonths(months), offset);
@@ -823,7 +823,7 @@ public final class OffsetDate
      * @param years  the years to subtract, may be negative
      * @return an {@code OffsetDate} based on this date with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(int, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendar.DateResolver)
      */
     public OffsetDate minusYears(long years) {
         return with(date.minusYears(years), offset);
@@ -871,7 +871,7 @@ public final class OffsetDate
      * @param months  the months to subtract, may be negative
      * @return an {@code OffsetDate} based on this date with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(int, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendar.DateResolver)
      */
     public OffsetDate minusMonths(long months) {
         return with(date.minusMonths(months), offset);

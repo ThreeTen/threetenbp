@@ -193,7 +193,8 @@ public final class ChronologyDate
      * This will return a date in the specified chronology.
      * The chronology must implement {@link StandardChronology}.
      * The underlying {@link LocalDate} is extracted from the calendrical, thus this
-     * method can be used with objects such as {@link OffsetDate} or {@link ZonedDateTime}.
+     * method can be used with objects such as {@link javax.time.calendar.OffsetDate}
+     * or {@link javax.time.calendar.ZonedDateTime}.
      *
      * @param chrono  the {@code StandardChronology}, not null
      * @param calendrical  the calendrical to extract from, not null
