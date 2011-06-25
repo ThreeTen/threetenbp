@@ -177,6 +177,7 @@ public final class DateTimeFormatters {
      * <p>
      * <b>Pad modifier</b>: Modifies the pattern that immediately follows to be padded with spaces.
      * The pad width is determined by the number of pattern letters.
+     * This is the same as calling {@link DateTimeFormatterBuilder#padNext(int)}.
      * <p>
      * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
      * <p>

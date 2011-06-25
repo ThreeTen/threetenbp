@@ -221,7 +221,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * For example, the ISO-8601 requires 4 days (more than half a week) to
      * be present before counting the first week.
      *
-     * @return the minimal number of days in the first week of a month or year (1-7)
+     * @return the minimal number of days in the first week of a month or year, from 1 to 7
      */
     public int getMinimalDaysInFirstWeek() {
         return minimalDaysInFirstWeek;

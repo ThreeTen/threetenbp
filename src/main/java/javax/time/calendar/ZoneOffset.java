@@ -610,16 +610,16 @@ public final class ZoneOffset
      * <p>
      * The comparison is based on the amount of the offset in seconds.
      *
-     * @param other  the object to check, null returns false
+     * @param obj  the object to check, null returns false
      * @return true if this is equal to the other offset
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
            return true;
         }
-        if (other instanceof ZoneOffset) {
-            return amountSeconds == ((ZoneOffset) other).amountSeconds;
+        if (obj instanceof ZoneOffset) {
+            return amountSeconds == ((ZoneOffset) obj).amountSeconds;
         }
         return false;
     }
