@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.time.CalendricalException;
@@ -61,10 +60,9 @@ import javax.time.MathUtils;
 public final class CalendricalNormalizer {
 
     /**
-     * The calendricals prior to merging.
-     * Null if not merging.
+     * The original input.
      */
-    private final List<Calendrical> calendricals;
+    private List<Calendrical> input;
     /**
      * The rule of the calendrical supplying the normalized fields.
      */
@@ -183,19 +181,16 @@ public final class CalendricalNormalizer {
             LocalDate date, LocalTime time, ZoneOffset offset, ZoneId zoneId, Chronology chrono, DateTimeFields fields) {
         ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         if (fields == null) {
+            // optimize simple cases
             if (ruleToDerive instanceof ISOCalendricalRule<?>) {
                 switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
                     case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (R) date;
                     case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (R) time;
-                    case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (R) LocalDateTime.of(date, time);
-                    case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (R) OffsetDate.of(date, offset);
-                    case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (R) OffsetTime.of(time, offset);
-                    case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (R) OffsetDateTime.of(date, time, offset);
                     case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (R) offset;
                     case ISOCalendricalRule.ZONE_ID_ORDINAL: return (R) zoneId;
                     case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (R) chrono;
+                    // other cases are not so simple, so drop through
                 }
-                // TODO ZonedDateTime drops through?
             } else if (ruleToDerive instanceof ISODateTimeRule) {
                 if (date != null && time != null) {
                     return (R) ((ISODateTimeRule) ruleToDerive).derive(date, time);
@@ -221,7 +216,7 @@ public final class CalendricalNormalizer {
      * @param mergers  the merged form of the calendricals, not null
      */
     private CalendricalNormalizer(Calendrical[] calendricals, List<CalendricalNormalizer> mergers) {
-        this.calendricals = Collections.unmodifiableList(Arrays.asList(calendricals));
+        this.input = Collections.unmodifiableList(Arrays.asList(calendricals));
         this.rule = null;
         for (CalendricalNormalizer merger : mergers) {
             if (merger.date != null) {
@@ -261,7 +256,6 @@ public final class CalendricalNormalizer {
     private CalendricalNormalizer(
             CalendricalRule<?> ruleOfData, LocalDate date, LocalTime time, ZoneOffset offset,
             ZoneId zone, Chronology chronology, DateTimeFields fields) {
-        this.calendricals = null;
         this.rule = ruleOfData;
         this.date = date;
         this.time = time;
@@ -272,19 +266,40 @@ public final class CalendricalNormalizer {
             for (DateTimeField field : fields) {
                 setField(field, false);  // can use false here as DateTimeFields ensure no rule clashes
             }
+            getInput();  // field map is modifiable, so lock input now
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * The original calendricals that have been merged.
-     * <p>
-     * This will only be present if this is the result of merging.
+     * The original input provided to the merger.
      * 
-     * @return the original calendricals, null if not the result of a merge
+     * @return the unmodifiable original input, not null
      */
-    public List<Calendrical> getMergedCalendricals() {
-        return calendricals;
+    public List<Calendrical> getInput() {
+        if (input == null) {
+            List<Calendrical> list = new ArrayList<Calendrical>();
+            if (date != null) {
+                list.add(date);
+            }
+            if (time != null) {
+                list.add(time);
+            }
+            if (offset != null) {
+                list.add(offset);
+            }
+            if (zone != null) {
+                list.add(zone);
+            }
+            if (chronology != null) {
+                list.add(chronology);
+            }
+            if (fields != null) {
+                list.addAll(fields.values());
+            }
+            input = Collections.unmodifiableList(list);
+        }
+        return input;
     }
 
     /**
@@ -550,7 +565,7 @@ public final class CalendricalNormalizer {
         // normalize groups
         // TODO: loop again (group again) if register on group is public
         fields.clear();
-        for (Entry<DateTimeRule, List<DateTimeField>> entry : grouped.entrySet()) {
+        for (Map.Entry<DateTimeRule, List<DateTimeField>> entry : grouped.entrySet()) {
             List<DateTimeField> group = entry.getValue();
             if (group.size() >= 2) {
                 mergeGroup(entry.getKey(), group);
@@ -694,29 +709,7 @@ public final class CalendricalNormalizer {
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
-        if (calendricals != null) {
-            return calendricals.toString();
-        }
-        List<Object> list = new ArrayList<Object>();
-        if (date != null) {
-            list.add(date);
-        }
-        if (time != null) {
-            list.add(time);
-        }
-        if (offset != null) {
-            list.add(offset);
-        }
-        if (zone != null) {
-            list.add(zone);
-        }
-        if (chronology != null) {
-            list.add(chronology);
-        }
-        if (fields != null) {
-            list.addAll(fields.values());
-        }
-        return list.toString();
+        return getInput().toString();
     }
 
     //-----------------------------------------------------------------------

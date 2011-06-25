@@ -589,8 +589,21 @@ public final class ZonedDateTime
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule == rule()) {
-            return (T) this;
+        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
+        if (rule instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
+                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
+                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
+                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
+                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
+                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) dateTime;
+                case ISOCalendricalRule.ZONED_DATE_TIME_ORDINAL: return (T) this;
+                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
+                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) getZone();
+                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
+            }
+            return null;
         }
         return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, getChronology(), null);
     }
