@@ -58,7 +58,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 
     @Override
     protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-        return super.deriveFrom(merger);
+        return merger.getField(this, true);
     }
 
     protected void normalize(CalendricalNormalizer merger) {

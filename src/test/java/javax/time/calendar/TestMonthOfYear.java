@@ -31,8 +31,12 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.*;
-import static org.testng.Assert.*;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -62,6 +66,13 @@ public class TestMonthOfYear {
         assertTrue(Enum.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(MonthOfYear.class));
+        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_rule() {
+        assertEquals(MonthOfYear.rule().getName(), "MonthOfYear");
+        assertEquals(MonthOfYear.rule().getType(), MonthOfYear.class);
     }
 
     //-----------------------------------------------------------------------
@@ -87,9 +98,13 @@ public class TestMonthOfYear {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
+        assertEquals(MonthOfYear.JANUARY.get(MonthOfYear.rule()), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.OCTOBER.get(MonthOfYear.rule()), MonthOfYear.OCTOBER);
+        
         assertEquals(MonthOfYear.JANUARY.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1));
         assertEquals(MonthOfYear.APRIL.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(4));
         
+        assertEquals(MonthOfYear.JULY.get(QuarterOfYear.rule()), QuarterOfYear.Q3);
         assertEquals(MonthOfYear.MAY.get(QUARTER_OF_YEAR), QUARTER_OF_YEAR.field(2));
         assertEquals(MonthOfYear.FEBRUARY.get(DAY_OF_WEEK), null);
     }

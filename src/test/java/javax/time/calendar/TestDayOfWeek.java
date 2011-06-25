@@ -63,6 +63,13 @@ public class TestDayOfWeek {
         assertTrue(Enum.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
+        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_rule() {
+        assertEquals(DayOfWeek.rule().getName(), "DayOfWeek");
+        assertEquals(DayOfWeek.rule().getType(), DayOfWeek.class);
     }
 
     //-----------------------------------------------------------------------
@@ -99,6 +106,9 @@ public class TestDayOfWeek {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
+        assertEquals(DayOfWeek.MONDAY.get(DayOfWeek.rule()), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.FRIDAY.get(DayOfWeek.rule()), DayOfWeek.FRIDAY);
+        
         assertEquals(DayOfWeek.MONDAY.get(DAY_OF_WEEK), DAY_OF_WEEK.field(1));
         assertEquals(DayOfWeek.THURSDAY.get(DAY_OF_WEEK), DAY_OF_WEEK.field(4));
         

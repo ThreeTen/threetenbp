@@ -94,6 +94,16 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code MonthDay}.
+     *
+     * @return the rule for the month-day, not null
+     */
+    public static CalendricalRule<MonthDay> rule() {
+        return ExtendedCalendricalRule.MONTH_DAY;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains the current month-day from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -187,6 +197,23 @@ public final class MonthDay
         return of(month.getValidIntValue(), dom.getValidIntValue());
     }
 
+    /**
+     * Obtains an instance of {@code MonthDay} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the MonthDay singleton, null if unable to obtain
+     */
+    static MonthDay deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField moy = merger.getField(MONTH_OF_YEAR, true);
+        DateTimeField dom = merger.getField(DAY_OF_MONTH, true);
+        if (moy == null || dom == null) {
+            return null;
+        }
+        return of(moy.getValidIntValue(), dom.getValidIntValue());
+    }
+
     //-------------------------------------------------------------------------
     /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
@@ -273,14 +300,10 @@ public final class MonthDay
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule.equals(MONTH_OF_YEAR)) {
-            return (T) MONTH_OF_YEAR.field(month.getValue());
+        if (rule == rule()) {
+            return (T) this;
         }
-        if (rule.equals(DAY_OF_MONTH)) {
-            return (T) DAY_OF_MONTH.field(day);
-        }
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, getChronology(), toFields());
     }
 
     //-----------------------------------------------------------------------
@@ -512,6 +535,19 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this month-day to an equivalent fields object.
+     * <p>
+     * The fields will contain {@link ISODateTimeRule#MONTH_OF_YEAR} and
+     * {@link ISODateTimeRule#DAY_OF_MONTH}.
+     *
+     * @return the equivalent fields, not null
+     */
+    public DateTimeFields toFields() {
+        return DateTimeFields.of(MONTH_OF_YEAR, month.getValue(), DAY_OF_MONTH, day);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this month-day to another month-day.
      *
      * @param other  the other month-day to compare to, not null
@@ -608,37 +644,6 @@ public final class MonthDay
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the month-day.
-     *
-     * @return the rule for the month-day, not null
-     */
-    public static CalendricalRule<MonthDay> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalRule<MonthDay> implements Serializable {
-        private static final CalendricalRule<MonthDay> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(MonthDay.class, "MonthDay");
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected MonthDay derive(Calendrical calendrical) {
-            DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-            DateTimeField dom = calendrical.get(DAY_OF_MONTH);
-            return moy != null && dom != null ? MonthDay.of(moy.getValidIntValue(), dom.getValidIntValue()) : null;
-        }
     }
 
 }

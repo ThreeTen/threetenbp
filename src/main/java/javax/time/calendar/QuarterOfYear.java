@@ -86,6 +86,19 @@ public enum QuarterOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code QuarterOfYear}.
+     * <p>
+     * This rule is a calendrical rule base on {@code QuarterOfYear}.
+     * The equivalent date-time rule is {@link ISODateTimeRule#QUARTER_OF_YEAR}.
+     *
+     * @return the rule for the quarter-of-year, not null
+     */
+    public static CalendricalRule<QuarterOfYear> rule() {
+        return ExtendedCalendricalRule.QUARTER_OF_YEAR;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code QuarterOfYear} from an {@code int} value.
      * <p>
      * {@code QuarterOfYear} is an enum representing the 4 quarters of the year.
@@ -114,6 +127,22 @@ public enum QuarterOfYear implements Calendrical {
         }
     }
 
+    /**
+     * Obtains an instance of {@code QuarterOfYear} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the QuarterOfYear singleton, null if unable to obtain
+     */
+    static QuarterOfYear deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField field = merger.getField(QUARTER_OF_YEAR, true);
+        if (field == null) {
+            return null;
+        }
+        return of(field.getValidIntValue());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.
@@ -124,8 +153,12 @@ public enum QuarterOfYear implements Calendrical {
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return toField().get(rule);
+        if (rule == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
     }
 
     /**

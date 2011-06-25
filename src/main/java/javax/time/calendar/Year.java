@@ -90,15 +90,15 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the year field operates.
+     * Gets the rule for {@code Year}.
      * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * This rule is a calendrical rule base on {@code Year}.
+     * The equivalent date-time rule is {@link ISODateTimeRule#YEAR}.
      *
-     * @return the year rule, not null
+     * @return the rule for the year, not null
      */
-    public static DateTimeRule rule() {
-        return YEAR;
+    public static CalendricalRule<Year> rule() {
+        return ExtendedCalendricalRule.YEAR;
     }
 
     //-----------------------------------------------------------------------
@@ -148,7 +148,7 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year of(int isoYear) {
-        rule().checkValidValue(isoYear);
+        YEAR.checkValidValue(isoYear);
         return new Year(isoYear);
     }
 
@@ -163,7 +163,23 @@ public final class Year
      * @throws UnsupportedRuleException if the year cannot be obtained
      */
     public static Year of(Calendrical calendrical) {
-        return Year.of(rule().getValueChecked(calendrical).getValidIntValue());
+        return Year.of(YEAR.getValueChecked(calendrical).getValidIntValue());
+    }
+
+    /**
+     * Obtains an instance of {@code Year} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the Year singleton, null if unable to obtain
+     */
+    static Year deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField field = merger.getField(YEAR, true);
+        if (field == null) {
+            return null;
+        }
+        return of(field.getValidIntValue());
     }
 
     //-----------------------------------------------------------------------
@@ -197,8 +213,12 @@ public final class Year
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(year), this, ISOChronology.INSTANCE);
+        if (rule == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
     }
 
     //-----------------------------------------------------------------------
@@ -319,7 +339,7 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        return of(rule().checkValidIntValue(year + years));  // overflow safe
+        return of(YEAR.checkValidIntValue(year + years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
@@ -360,7 +380,7 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        return of(rule().checkValidIntValue(year - years));  // overflow safe
+        return of(YEAR.checkValidIntValue(year - years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
@@ -374,7 +394,7 @@ public final class Year
      * @return true if the calendrical matches, false otherwise
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
-        DateTimeField calValue = calendrical.get(rule());
+        DateTimeField calValue = calendrical.get(YEAR);
         return calValue != null && calValue.getValue() == getValue();
     }
 
@@ -599,6 +619,18 @@ public final class Year
             throw new InvalidCalendarFieldException("Day of year 366 is invalid for year " + year, DAY_OF_YEAR);
         }
         return LocalDate.of(year, 1, 1).plusDays(dayOfYear - 1);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this year to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#YEAR}.
+     *
+     * @return the equivalent year field, not null
+     */
+    public DateTimeField toField() {
+        return YEAR.field(getValue());
     }
 
     //-----------------------------------------------------------------------

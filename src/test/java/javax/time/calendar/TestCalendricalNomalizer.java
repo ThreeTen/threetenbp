@@ -32,8 +32,15 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.DayOfWeek.MONDAY;
-import static javax.time.calendar.ISODateTimeRule.*;
+import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.MonthOfYear.JANUARY;
 import static javax.time.calendar.MonthOfYear.JUNE;
+import static javax.time.calendar.MonthOfYear.OCTOBER;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Arrays;
@@ -63,6 +70,26 @@ public class TestCalendricalNomalizer {
             {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(1), DAY_OF_MONTH.field(30)), LocalDate.rule(), CalendricalException.class},
             {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(2), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(YEAR.field(2011), JUNE, ALIGNED_WEEK_OF_MONTH.field(2), MONDAY), LocalDate.rule(), LocalDate.of(2011, 6, 13)},
+            {cals(YearMonth.of(2011, 6), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
+            {cals(Year.of(2011), MonthDay.of(6, 30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
+            {cals(Year.of(2011), JANUARY, DAY_OF_MONTH.field(23)), LocalDate.rule(), LocalDate.of(2011, 1, 23)},
+            
+            {cals(LocalDate.of(2011, 6, 30)), Year.rule(), Year.of(2011)},
+            {cals(YearMonth.of(2011, 6)), Year.rule(), Year.of(2011)},
+            {cals(YEAR.field(2011)), Year.rule(), Year.of(2011)},
+            {cals(OCTOBER), Year.rule(), null},
+            
+            {cals(LocalDate.of(2011, 6, 30)), YearMonth.rule(), YearMonth.of(2011, 6)},
+            {cals(Year.of(2011), OCTOBER), YearMonth.rule(), YearMonth.of(2011, 9)},
+            {cals(OCTOBER), YearMonth.rule(), null},
+            
+            {cals(LocalDate.of(2011, 6, 30)), MonthDay.rule(), MonthDay.of(6, 30)},
+            {cals(DAY_OF_MONTH.field(23), OCTOBER), MonthDay.rule(), MonthDay.of(9, 23)},
+            {cals(OCTOBER), MonthDay.rule(), null},
+            
+            {cals(LocalDate.of(2011, 6, 30)), MonthOfYear.rule(), JUNE},
+            {cals(DAY_OF_MONTH.field(23), OCTOBER), MonthOfYear.rule(), OCTOBER},
+            {cals(Year.of(2011)), MonthOfYear.rule(), null},
             
             {cals(LocalDate.of(2011, 6, 30)), LocalTime.rule(), null},
             {cals(LocalTime.of(11, 30)), LocalTime.rule(), LocalTime.of(11, 30)},

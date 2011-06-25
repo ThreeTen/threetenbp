@@ -370,7 +370,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     DateTimeField year = epy.derive(YEAR);
                     // year-day
                     DateTimeField doy = merger.getField(DAY_OF_YEAR, false);
-                    if (epy != null && doy != null) {
+                    if (doy != null) {
                         LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
                                 .plusDays(doy.getValue()).minusDays(1);
                         merger.setDate(date, true);

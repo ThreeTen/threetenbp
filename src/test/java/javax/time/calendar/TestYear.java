@@ -72,7 +72,8 @@ public class TestYear {
 
     //-----------------------------------------------------------------------
     public void test_rule() {
-        assertEquals(Year.rule(), YEAR);
+        assertEquals(Year.rule().getName(), "Year");
+        assertEquals(Year.rule().getType(), Year.class);
     }
 
     //-----------------------------------------------------------------------
@@ -146,7 +147,8 @@ public class TestYear {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
-        assertEquals(Year.of(1999).get(YEAR).getValue(), 1999);
+        assertEquals(Year.of(1999).get(Year.rule()), Year.of(1999));
+        assertEquals(Year.of(1999).get(YEAR), Year.of(1999));
         assertEquals(Year.of(1999).get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
     }
 
@@ -799,6 +801,13 @@ public class TestYear {
             assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
             throw ex;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(Year.of(2010).toField(), YEAR.field(2010));
     }
 
     //-----------------------------------------------------------------------

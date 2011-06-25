@@ -104,6 +104,19 @@ public enum DayOfWeek implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code DayOfWeek}.
+     * <p>
+     * This rule is a calendrical rule base on {@code DayOfWeek}.
+     * The equivalent date-time rule is {@link ISODateTimeRule#DAY_OF_WEEK}.
+     *
+     * @return the rule for the day-of-week, not null
+     */
+    public static CalendricalRule<DayOfWeek> rule() {
+        return ExtendedCalendricalRule.DAY_OF_WEEK;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code DayOfWeek} from an {@code int} value.
      * <p>
      * {@code DayOfWeek} is an enum representing the 7 days of the week.
@@ -141,6 +154,22 @@ public enum DayOfWeek implements Calendrical {
         return of(field.getValidIntValue());
     }
 
+    /**
+     * Obtains an instance of {@code DayOfWeek} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the DayOfWeek singleton, null if unable to obtain
+     */
+    static DayOfWeek deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField field = merger.getField(DAY_OF_WEEK, true);
+        if (field == null) {
+            return null;
+        }
+        return of(field.getValidIntValue());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.
@@ -151,8 +180,12 @@ public enum DayOfWeek implements Calendrical {
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return toField().get(rule);
+        if (rule == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
     }
 
     /**

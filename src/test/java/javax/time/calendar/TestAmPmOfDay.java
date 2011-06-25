@@ -33,7 +33,9 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -61,6 +63,13 @@ public class TestAmPmOfDay {
         assertTrue(Enum.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(AmPmOfDay.class));
+        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_rule() {
+        assertEquals(AmPmOfDay.rule().getName(), "AmPmOfDay");
+        assertEquals(AmPmOfDay.rule().getType(), AmPmOfDay.class);
     }
 
     //-----------------------------------------------------------------------
@@ -92,6 +101,9 @@ public class TestAmPmOfDay {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
+        assertEquals(AmPmOfDay.AM.get(AmPmOfDay.rule()), AmPmOfDay.AM);
+        assertEquals(AmPmOfDay.PM.get(AmPmOfDay.rule()), AmPmOfDay.PM);
+        
         assertEquals(AmPmOfDay.AM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(0));
         assertEquals(AmPmOfDay.PM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(1));
         

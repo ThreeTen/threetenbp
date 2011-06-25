@@ -90,6 +90,16 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code YearMonth}.
+     *
+     * @return the rule for the year-month, not null
+     */
+    public static CalendricalRule<YearMonth> rule() {
+        return ExtendedCalendricalRule.YEAR_MONTH;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains the current year-month from the system clock in the default time-zone.
      * <p>
      * This will query the {@link Clock#systemDefaultZone() system clock} in the default
@@ -162,6 +172,23 @@ public final class YearMonth
         DateTimeField year = YEAR.getValueChecked(calendrical);
         DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
         return of(year.getValidIntValue(), month.getValidIntValue());
+    }
+
+    /**
+     * Obtains an instance of {@code YearMonth} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the YearMonth singleton, null if unable to obtain
+     */
+    static YearMonth deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField year = merger.getField(YEAR, true);
+        DateTimeField moy = merger.getField(MONTH_OF_YEAR, true);
+        if (year == null || moy == null) {
+            return null;
+        }
+        return of(year.getValidIntValue(), moy.getValidIntValue());
     }
 
     //-------------------------------------------------------------------------
@@ -252,14 +279,10 @@ public final class YearMonth
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule.equals(YEAR)) {
-            return (T) YEAR.field(year);
+        if (rule == rule()) {
+            return (T) this;
         }
-        if (rule.equals(MONTH_OF_YEAR)) {
-            return (T) MONTH_OF_YEAR.field(month.getValue());
-        }
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, getChronology(), toFields());
     }
 
     //-----------------------------------------------------------------------
@@ -595,6 +618,19 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this year-month to an equivalent fields object.
+     * <p>
+     * The fields will contain {@link ISODateTimeRule#YEAR} and
+     * {@link ISODateTimeRule#MONTH_OF_YEAR}.
+     *
+     * @return the equivalent fields, not null
+     */
+    public DateTimeFields toFields() {
+        return DateTimeFields.of(YEAR, year, MONTH_OF_YEAR, month.getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this year-month to another year-month.
      *
      * @param other  the other year-month to compare to, not null
@@ -701,37 +737,6 @@ public final class YearMonth
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the year-month.
-     *
-     * @return the rule for the year-month, not null
-     */
-    public static CalendricalRule<YearMonth> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalRule<YearMonth> implements Serializable {
-        private static final CalendricalRule<YearMonth> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(YearMonth.class, "YearMonth");
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected YearMonth derive(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(YEAR);
-            DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-            return year != null && moy != null ? YearMonth.of(year.getValidIntValue(), moy.getValidIntValue()) : null;
-        }
     }
 
 }

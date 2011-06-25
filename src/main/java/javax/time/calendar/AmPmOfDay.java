@@ -76,6 +76,19 @@ public enum AmPmOfDay implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code AmPmOfDay}.
+     * <p>
+     * This rule is a calendrical rule base on {@code AmPmOfDay}.
+     * The equivalent date-time rule is {@link ISODateTimeRule#AMPM_OF_DAY}.
+     *
+     * @return the rule for the am-pm-of-day, not null
+     */
+    public static CalendricalRule<AmPmOfDay> rule() {
+        return ExtendedCalendricalRule.AM_PM_OF_DAY;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code AmPmOfDay} from an {@code int} value.
      * <p>
      * {@code AmPmOfDay} is an enum representing before and after midday.
@@ -100,6 +113,22 @@ public enum AmPmOfDay implements Calendrical {
         }
     }
 
+    /**
+     * Obtains an instance of {@code AmPmOfDay} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the AmPmOfDay singleton, null if unable to obtain
+     */
+    static AmPmOfDay deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField field = merger.getField(AMPM_OF_DAY, true);
+        if (field == null) {
+            return null;
+        }
+        return of(field.getValidIntValue());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.
@@ -110,8 +139,12 @@ public enum AmPmOfDay implements Calendrical {
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return toField().get(rule);
+        if (rule == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
     }
 
     /**
