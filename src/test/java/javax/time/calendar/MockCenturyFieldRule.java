@@ -44,22 +44,27 @@ import javax.time.MathUtils;
  * @author Stephen Colebourne
  */
 public final class MockCenturyFieldRule extends DateTimeRule implements Serializable {
+
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockCenturyFieldRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockCenturyFieldRule() {
         super("Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100, null);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         DateTimeField yearVal = calendrical.get(YEAR);
         return (yearVal == null ? null : field(yearVal.getValidIntValue() / 100));
     }
+
     @Override
     protected void merge(CalendricalMerger merger) {
         DateTimeField yocVal = merger.getValue(MockYearOfCenturyFieldRule.INSTANCE);
@@ -71,4 +76,5 @@ public final class MockCenturyFieldRule extends DateTimeRule implements Serializ
             merger.removeProcessed(MockYearOfCenturyFieldRule.INSTANCE);
         }
     }
+
 }

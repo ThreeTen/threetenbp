@@ -43,20 +43,25 @@ import java.io.Serializable;
  * @author Stephen Colebourne
  */
 public final class MockYearOfCenturyFieldRule extends DateTimeRule implements Serializable {
+
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockYearOfCenturyFieldRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockYearOfCenturyFieldRule() {
         super("YearOfCentury", YEARS, CENTURIES, 0, 99, null);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         DateTimeField yearVal = calendrical.get(YEAR);
         return (yearVal == null ? null : field(yearVal.getValidIntValue() % 100));
     }
+
 }

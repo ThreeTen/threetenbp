@@ -37,15 +37,16 @@ package javax.time.calendar;
  * @author Stephen Colebourne
  */
 public class MockRuleNoValue extends CalendricalRule<Integer> {
-    /**
-     * A serialization identifier for this class.
-     */
+
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
     /** Instance. */
     public static final MockRuleNoValue INSTANCE = new MockRuleNoValue();
 
+    /** Constructor. */
     private MockRuleNoValue() {
         super(Integer.class, "Mock");
     }
+
 }

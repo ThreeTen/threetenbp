@@ -41,24 +41,30 @@ import java.io.Serializable;
  * @author Stephen Colebourne
  */
 public final class MockReversedHourOfDayFieldRule extends DateTimeRule implements Serializable {
+
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockReversedHourOfDayFieldRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockReversedHourOfDayFieldRule() {
         super("ReversedHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
                 DateTimeRuleRange.of(1, 24), HOUR_OF_DAY);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
     @Override
     public long convertToPeriod(long value) {
         return 24 - value;
     }
+
     @Override
     public long convertFromPeriod(long period) {
         return 24 - period;
     }
+
 }

@@ -44,20 +44,24 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeRule implements 
 
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockDecadeOfCenturyFieldRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockDecadeOfCenturyFieldRule() {
         super("DecadeOfCentury", ISOPeriodUnit.DECADES, ISOPeriodUnit.CENTURIES, 0, 9, null);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
     @Override
     protected DateTimeField derive(Calendrical calendrical) {
         DateTimeField yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
         return (yocVal == null ? null : field(yocVal.getValidIntValue() / 10));
     }
+
     @Override
     protected void merge(CalendricalMerger merger) {
         DateTimeField yodVal = merger.getValue(MockYearOfDecadeFieldRule.INSTANCE);
@@ -69,4 +73,5 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeRule implements 
             merger.removeProcessed(MockYearOfDecadeFieldRule.INSTANCE);
         }
     }
+
 }
