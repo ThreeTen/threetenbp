@@ -31,7 +31,6 @@
  */
 package javax.time;
 
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
 

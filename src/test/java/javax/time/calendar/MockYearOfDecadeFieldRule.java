@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
 import java.io.Serializable;
 
@@ -51,7 +51,7 @@ public final class MockYearOfDecadeFieldRule extends DateTimeRule implements Ser
 
     /** Constructor. */
     private MockYearOfDecadeFieldRule() {
-        super("YearOfDecade", ISOPeriodUnit.YEARS, ISOPeriodUnit.DECADES, 0, 9, EPOCH_MONTH);
+        super("YearOfDecade", ISOPeriodUnit.YEARS, ISOPeriodUnit.DECADES, 0, 9, ZERO_EPOCH_MONTH);
     }
 
     private Object readResolve() {

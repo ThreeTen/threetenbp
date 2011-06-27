@@ -37,8 +37,6 @@ import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_MINUTE;
@@ -55,6 +53,7 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -73,7 +72,7 @@ public class TestISOMerge {
     @DataProvider(name = "normalized")
     public Object[][] data_normalized() {
         return new Object[][] {
-            {dtf(YEAR, 2011), dtf(EPOCH_YEAR, 41)},
+            {dtf(YEAR, 2011), dtf(YEAR, 2011)},
             {dtf(QUARTER_OF_YEAR, 2), dtf(QUARTER_OF_YEAR, 2)},
             {dtf(MONTH_OF_YEAR, 6), dtf(MONTH_OF_YEAR, 6)},
             {dtf(MONTH_OF_QUARTER, 3), dtf(MONTH_OF_QUARTER, 3)},
@@ -82,7 +81,7 @@ public class TestISOMerge {
             {dtf(DAY_OF_WEEK, 6), dtf(DAY_OF_WEEK, 6)},
             
             {dtf(MONTH_OF_YEAR, 6, DAY_OF_MONTH, 2), dtf(MONTH_OF_YEAR, 6, DAY_OF_MONTH, 2)},
-            {dtf(YEAR, 2011, DAY_OF_MONTH, 2), dtf(EPOCH_YEAR, 41, DAY_OF_MONTH, 2)},
+            {dtf(YEAR, 2011, DAY_OF_MONTH, 2), dtf(YEAR, 2011, DAY_OF_MONTH, 2)},
             {dtf(DAY_OF_MONTH, 13, DAY_OF_WEEK, 5), dtf(DAY_OF_MONTH, 13, DAY_OF_WEEK, 5)},
             {dtf(HOUR_OF_DAY, 14, SECOND_OF_MINUTE, 30), dtf(HOUR_OF_DAY, 14, SECOND_OF_MINUTE, 30)},
             
@@ -110,7 +109,7 @@ public class TestISOMerge {
             {dtf(MINUTE_OF_DAY, 14 * 60 + 5, MINUTE_OF_HOUR, 5), dtf(MINUTE_OF_DAY, 14 * 60 + 5)},
             
             {dtf(QUARTER_OF_YEAR, 2, MONTH_OF_QUARTER, 3), dtf(MONTH_OF_YEAR, 6)},
-            {dtf(YEAR, 2011, MONTH_OF_YEAR, 3), dtf(EPOCH_MONTH, 41 * 12 + 3 - 1)},
+            {dtf(YEAR, 2011, MONTH_OF_YEAR, 3), dtf(ZERO_EPOCH_MONTH, 2011 * 12 + 3 - 1)},
             
             {dtf(CLOCK_HOUR_OF_DAY, 15, HOUR_OF_DAY, 9), null},
             {dtf(HOUR_OF_DAY, 14, MINUTE_OF_HOUR, 3, MINUTE_OF_DAY, 99), null},

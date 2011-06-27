@@ -40,9 +40,7 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_SECOND;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
@@ -65,6 +63,7 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
 import java.io.Serializable;
 
@@ -294,11 +293,10 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     void merge(CalendricalMerger merger) {
         normalizeSplit(merger, EPOCH_SECOND, SECOND_OF_DAY, EPOCH_DAY, 86400);
-        normalizeSplit(merger, EPOCH_MONTH, MONTH_OF_YEAR, EPOCH_YEAR, 12);
+        normalizeSplit(merger, ZERO_EPOCH_MONTH, MONTH_OF_YEAR, YEAR, 12);
         
         normalizeConvert(merger, CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM);
         normalizeConvert(merger, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY);
-        normalizeConvert(merger, EPOCH_YEAR, YEAR);
         
         normalizeMerge(merger, HOUR_OF_AMPM, AMPM_OF_DAY, HOUR_OF_DAY);
         

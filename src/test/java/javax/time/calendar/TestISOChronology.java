@@ -491,11 +491,10 @@ public class TestISOChronology {
         list.add(ISODateTimeRule.ALIGNED_WEEK_OF_YEAR);
         list.add(ISODateTimeRule.MONTH_OF_QUARTER);
         list.add(ISODateTimeRule.MONTH_OF_YEAR);
-        list.add(ISODateTimeRule.EPOCH_MONTH);
+        list.add(ISODateTimeRule.ZERO_EPOCH_MONTH);
         list.add(ISODateTimeRule.QUARTER_OF_YEAR);
         list.add(ISODateTimeRule.WEEK_BASED_YEAR);
         list.add(ISODateTimeRule.YEAR);
-        list.add(ISODateTimeRule.EPOCH_YEAR);
         
         List<DateTimeRule> test = new ArrayList<DateTimeRule>(list);
         Collections.shuffle(test);

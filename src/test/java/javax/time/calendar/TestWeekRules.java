@@ -38,7 +38,6 @@ import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.DayOfWeek.WEDNESDAY;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
 import static javax.time.calendar.MonthOfYear.JANUARY;
 import static javax.time.calendar.MonthOfYear.MARCH;

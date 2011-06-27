@@ -43,6 +43,8 @@ import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.OffsetDate;
+import javax.time.calendar.ZonedDateTime;
 
 /**
  * A date based on standard chronology rules.
