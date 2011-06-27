@@ -34,8 +34,9 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.Duration;
+import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -180,36 +181,6 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Merges the fields.
-     * 
-     * @param merger  the merge context
-     */
-    static void merge(CalendricalMerger merger) {
-        DateTimeField year = merger.getValue(CopticChronology.YEAR);
-        if (year != null) {
-            // year-month-day
-            DateTimeField moy = merger.getValue(CopticChronology.MONTH_OF_YEAR);
-            DateTimeField dom = merger.getValue(CopticChronology.DAY_OF_MONTH);
-            if (moy != null && dom != null) {
-                CopticDate date = CopticDate.of(year.getValidIntValue(), moy.getValidIntValue(), dom.getValidIntValue());
-                merger.storeMerged(CopticDate.rule(), date);
-                merger.removeProcessed(CopticChronology.YEAR);
-                merger.removeProcessed(CopticChronology.MONTH_OF_YEAR);
-                merger.removeProcessed(CopticChronology.DAY_OF_MONTH);
-            }
-            // year-day
-            DateTimeField doy = merger.getValue(CopticChronology.DAY_OF_YEAR);
-            if (doy != null) {
-                CopticDate date = CopticDate.of(year.getValidIntValue(), 1, 1).withDayOfYear(doy.getValidIntValue());
-                merger.storeMerged(CopticDate.rule(), date);
-                merger.removeProcessed(CopticChronology.YEAR);
-                merger.removeProcessed(CopticChronology.DAY_OF_YEAR);
-            }
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * The period unit for days in the Coptic calendar system.
      * <p>
      * This is equivalent to the ISO days period unit.
@@ -296,8 +267,27 @@ public final class CopticChronology extends Chronology implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            CopticDate date = calendrical.get(CopticDate.rule());
+        protected void normalize(CalendricalNormalizer merger) {
+            DateTimeField year = merger.getField(CopticChronology.YEAR, false);
+            if (year != null) {
+                // year-month-day
+                DateTimeField moy = merger.getField(CopticChronology.MONTH_OF_YEAR, false);
+                DateTimeField dom = merger.getField(CopticChronology.DAY_OF_MONTH, false);
+                if (moy != null && dom != null) {
+                    CopticDate date = CopticDate.of(year.getValidIntValue(), moy.getValidIntValue(), dom.getValidIntValue());
+                    merger.setDate(date.toLocalDate(), true);
+                }
+                // year-day
+                DateTimeField doy = merger.getField(CopticChronology.DAY_OF_YEAR, false);
+                if (doy != null) {
+                    CopticDate date = CopticDate.of(year.getValidIntValue(), 1, 1).withDayOfYear(doy.getValidIntValue());
+                    merger.setDate(date.toLocalDate(), true);
+                }
+            }
+        }
+        @Override
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            CopticDate date = merger.derive(CopticDate.rule());
             if (date != null) {
                 switch (ordinal) {
                     case DAY_OF_WEEK_ORDINAL: return field(date.getDayOfWeek().getValue());
@@ -308,10 +298,6 @@ public final class CopticChronology extends Chronology implements Serializable {
                 }
             }
             return null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            CopticChronology.merge(merger);
         }
         @Override
         public DateTimeRuleRange getValueRange(Calendrical calendrical) {
@@ -340,6 +326,22 @@ public final class CopticChronology extends Chronology implements Serializable {
                 }
             }
             return super.getValueRange();
+        }
+        @Override
+        public long convertToPeriod(long value) {
+            if (ordinal == YEAR_ORDINAL) {
+                return value;
+            } else {
+                return MathUtils.safeDecrement(value);
+            }
+        }
+        @Override
+        public long convertFromPeriod(long period) {
+            if (ordinal == YEAR_ORDINAL) {
+                return period;
+            } else {
+                return MathUtils.safeIncrement(period);
+            }
         }
 
         //-----------------------------------------------------------------------

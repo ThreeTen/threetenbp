@@ -163,7 +163,7 @@ public enum DayOfWeek implements Calendrical {
      * @return the DayOfWeek singleton, null if unable to obtain
      */
     static DayOfWeek deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getField(DAY_OF_WEEK, true);
+        DateTimeField field = merger.getFieldDerived(DAY_OF_WEEK, true);
         if (field == null) {
             return null;
         }
@@ -185,7 +185,7 @@ public enum DayOfWeek implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
+        return CalendricalNormalizer.derive(rule, rule(), toField());
     }
 
     /**

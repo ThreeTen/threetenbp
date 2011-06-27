@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -176,6 +177,33 @@ public final class CalendricalNormalizer {
      * @param fields  the fields to derive from, may be null
      * @return the derived value for the rule, null if unable to derive
      */
+    public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, DateTimeField field) {
+        ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
+        ISOChronology.checkNotNull(field, "DateTimeField must not be null");
+        CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, null, null, null, null, null, Collections.singleton(field));
+        merger.normalize();
+        return merger.derive(ruleToDerive);
+    }
+
+    /**
+     * Derives the specified rule from a the normalized set of objects.
+     * <p>
+     * This method is designed to be called from {@link Calendrical#get(CalendricalRule)}.
+     * The class implementing the interface must call this method passing in
+     * parameters to fully describe the state of the object to be derived from.
+     * Avoid duplicating information between the date, time and fields if possible.
+     * 
+     * @param <R>  the type of the desired rule
+     * @param ruleToDerive  the rule to derive, not null
+     * @param ruleOfData  the rule of the data to derive from, may be null
+     * @param date  the date to derive from, may be null
+     * @param time  the time to derive from, may be null
+     * @param offset  the zone offset to derive from, may be null
+     * @param zoneId  the zone ID to derive from, may be null
+     * @param chrono  the chronology to derive from, may be null
+     * @param fields  the fields to derive from, may be null
+     * @return the derived value for the rule, null if unable to derive
+     */
     @SuppressWarnings("unchecked")
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData,
             LocalDate date, LocalTime time, ZoneOffset offset, ZoneId zoneId, Chronology chrono, DateTimeFields fields) {
@@ -192,15 +220,7 @@ public final class CalendricalNormalizer {
                     // other cases are not so simple, so drop through
                 }
             } else if (ruleToDerive instanceof ISODateTimeRule) {
-                if (date != null && time != null) {
-                    return (R) ((ISODateTimeRule) ruleToDerive).derive(date, time);
-                } else if (date != null) {
-                    return (R) ((ISODateTimeRule) ruleToDerive).derive(date);
-                } else if (time != null) {
-                    return (R) ((ISODateTimeRule) ruleToDerive).derive(time);
-                } else {
-                    return null;
-                }
+                return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
             }
         }
         CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, date, time, offset, zoneId, chrono, fields);
@@ -255,7 +275,7 @@ public final class CalendricalNormalizer {
      */
     private CalendricalNormalizer(
             CalendricalRule<?> ruleOfData, LocalDate date, LocalTime time, ZoneOffset offset,
-            ZoneId zone, Chronology chronology, DateTimeFields fields) {
+            ZoneId zone, Chronology chronology, Iterable<DateTimeField> fields) {
         this.rule = ruleOfData;
         this.date = date;
         this.time = time;
@@ -418,6 +438,35 @@ public final class CalendricalNormalizer {
         return field;
     }
 
+    /**
+     * Gets a field by rule, deriving the value.
+     * <p>
+     * The flag is set to <code>true</code> if the value is required and an error
+     * should be stored if it is not available. Note that the value is returned
+     * whether it is null or not and no exception is thrown.
+     * 
+     * @param rule  the rule to retrieve, null returns null
+     * @return the field, may be null
+     */
+    public DateTimeField getFieldDerived(DateTimeRule rule, boolean storeErrorIfNull) {
+        DateTimeField result = rule.deriveFrom(this);
+        if (result == null && fields != null) {
+            DateTimeRule baseRule = rule.getBaseRule();
+            for (DateTimeField field : fields.values()) {
+                if (field.getRule().getBaseRule().equals(baseRule)) {
+                    result = field.derive(rule);
+                    if (result != null) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (storeErrorIfNull && result == null) {
+            addError("Missing field " + rule.getName());
+        }
+        return result;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Sets the date.
@@ -533,7 +582,12 @@ public final class CalendricalNormalizer {
         // do not call from the constructor
         if (fields != null && fields.size() > 0) {
             normalizeAuto();
-            normalizeManual();
+            if (errors.size() == 0) {
+                normalizeManual();
+                if (errors.size() == 0) {
+                    normalizeCrossCheck();
+                }
+            }
         }
     }
 
@@ -646,10 +700,25 @@ public final class CalendricalNormalizer {
     }
 
     private void normalizeManual() {
-        if (errors.size() == 0) {
-            for (DateTimeField field : fields.values()) {
-                field.getRule().normalize(this);
+        for (DateTimeField field : fields.values()) {
+            field.getRule().normalize(this);
+        }
+    }
+
+    private void normalizeCrossCheck() {
+        for (Iterator<DateTimeField> it = fields.values().iterator(); it.hasNext(); ) {
+            DateTimeField field = it.next();
+            DateTimeField derived = field.getRule().deriveFrom(this);
+            if (derived != null) {
+                if (derived.equals(field) == false) {
+                    addError("Cross-check clash: " + field + " and " + derived);
+                } else {
+                    it.remove();
+                }
             }
+        }
+        if (fields.size() == 0) {
+            fields = null;
         }
     }
 
@@ -664,11 +733,11 @@ public final class CalendricalNormalizer {
             return null;  // quiet
         }
         try {
-            return ruleToDerive.deriveFrom(this);
-//            if (result == null) {
-//                addError("Unable to derive " + ruleToDerive + ": " + this);
-//            }
-//            return result;
+            R result = ruleToDerive.deriveFrom(this);
+            if (result == null && ruleToDerive instanceof DateTimeRule) {
+                return (R) getFieldDerived((DateTimeRule) ruleToDerive, false);
+            }
+            return result;
         } catch (RuntimeException ex) {
             addError(ex.getMessage());
             return null;
@@ -679,6 +748,9 @@ public final class CalendricalNormalizer {
         R result = derive(ruleToDerive);
         if (errors.size() > 0) {
             throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this + ": " + errors);
+        }
+        if (result == null) {
+            throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this);
         }
         return result;
     }

@@ -38,10 +38,12 @@ import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
 import static javax.time.calendar.MonthOfYear.JANUARY;
 import static javax.time.calendar.MonthOfYear.JUNE;
 import static javax.time.calendar.MonthOfYear.OCTOBER;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,40 +63,60 @@ public class TestCalendricalNomalizer {
     @DataProvider(name = "merge")
     public Object[][] data_merge() {
         return new Object[][] {
+            {cals(), LocalDate.rule(), null},
             {cals(LocalDate.of(2011, 6, 30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(LocalTime.of(11, 30)), LocalDate.rule(), null},
             {cals(LocalDate.of(2011, 6, 30), LocalTime.of(11, 30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(EPOCH_MONTH.field((2011 - 1970) * 12 + 6 - 1), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6)), LocalDate.rule(), null},
-            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(1), DAY_OF_MONTH.field(30)), LocalDate.rule(), CalendricalException.class},
             {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(2), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(YEAR.field(2011), JUNE, ALIGNED_WEEK_OF_MONTH.field(2), MONDAY), LocalDate.rule(), LocalDate.of(2011, 6, 13)},
             {cals(YearMonth.of(2011, 6), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(Year.of(2011), MonthDay.of(6, 30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
             {cals(Year.of(2011), JANUARY, DAY_OF_MONTH.field(23)), LocalDate.rule(), LocalDate.of(2011, 1, 23)},
+            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(1), DAY_OF_MONTH.field(30)), LocalDate.rule(), CalendricalException.class},
+            {cals(LocalDate.of(2011, 6, 30), LocalDate.of(2011, 6, 22)), LocalDate.rule(), CalendricalException.class},
+            {cals(LocalDate.of(2011, 6, 30), FEBRUARY), LocalDate.rule(), CalendricalException.class},
             
             {cals(LocalDate.of(2011, 6, 30)), Year.rule(), Year.of(2011)},
+            {cals(LocalTime.of(11, 30)), Year.rule(), null},
+            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), Year.rule(), Year.of(2011)},
             {cals(YearMonth.of(2011, 6)), Year.rule(), Year.of(2011)},
             {cals(YEAR.field(2011)), Year.rule(), Year.of(2011)},
             {cals(OCTOBER), Year.rule(), null},
             
             {cals(LocalDate.of(2011, 6, 30)), YearMonth.rule(), YearMonth.of(2011, 6)},
-            {cals(Year.of(2011), OCTOBER), YearMonth.rule(), YearMonth.of(2011, 9)},
+            {cals(LocalTime.of(11, 30)), YearMonth.rule(), null},
+            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), YearMonth.rule(), YearMonth.of(2011, 6)},
+            {cals(Year.of(2011), OCTOBER), YearMonth.rule(), YearMonth.of(2011, 10)},
             {cals(OCTOBER), YearMonth.rule(), null},
             
             {cals(LocalDate.of(2011, 6, 30)), MonthDay.rule(), MonthDay.of(6, 30)},
-            {cals(DAY_OF_MONTH.field(23), OCTOBER), MonthDay.rule(), MonthDay.of(9, 23)},
+            {cals(LocalTime.of(11, 30)), MonthDay.rule(), null},
+            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MonthDay.rule(), MonthDay.of(6, 30)},
+            {cals(DAY_OF_MONTH.field(23), OCTOBER), MonthDay.rule(), MonthDay.of(10, 23)},
             {cals(OCTOBER), MonthDay.rule(), null},
             
             {cals(LocalDate.of(2011, 6, 30)), MonthOfYear.rule(), JUNE},
+            {cals(LocalTime.of(11, 30)), MonthOfYear.rule(), null},
+            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MonthOfYear.rule(), JUNE},
             {cals(DAY_OF_MONTH.field(23), OCTOBER), MonthOfYear.rule(), OCTOBER},
             {cals(Year.of(2011)), MonthOfYear.rule(), null},
             
+            {cals(LocalDate.of(2011, 6, 30)), MONTH_OF_YEAR, MONTH_OF_YEAR.field(6)},
+            {cals(LocalTime.of(11, 30)), MONTH_OF_YEAR, null},
+            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MONTH_OF_YEAR, MONTH_OF_YEAR.field(6)},
+            {cals(DAY_OF_MONTH.field(23), OCTOBER), MONTH_OF_YEAR, MONTH_OF_YEAR.field(10)},
+            {cals(Year.of(2011)), MonthOfYear.rule(), null},
+            
+            {cals(), LocalTime.rule(), null},
             {cals(LocalDate.of(2011, 6, 30)), LocalTime.rule(), null},
             {cals(LocalTime.of(11, 30)), LocalTime.rule(), LocalTime.of(11, 30)},
+            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MonthDay.rule(), MonthDay.of(6, 30)},
             {cals(LocalDate.of(2011, 6, 30), LocalTime.of(11, 30)), LocalTime.rule(), LocalTime.of(11, 30)},
             
+            {cals(), LocalDateTime.rule(), null},
             {cals(LocalDate.of(2011, 6, 30)), LocalDateTime.rule(), null},
             {cals(LocalTime.of(11, 30)), LocalDateTime.rule(), null},
             {cals(LocalDate.of(2011, 6, 30), LocalTime.of(11, 30)), LocalDateTime.rule(), LocalDateTime.of(2011, 6, 30, 11, 30)},
@@ -107,6 +129,7 @@ public class TestCalendricalNomalizer {
         if (expectedVal instanceof Class) {
             try {
                 CalendricalNormalizer.merge(array);
+                fail();
             } catch (CalendricalException ex) {
                 System.out.println(ex);
             }
@@ -130,7 +153,8 @@ public class TestCalendricalNomalizer {
             Calendrical[] array = calendicals.toArray(new Calendrical[calendicals.size()]);
             CalendricalNormalizer m = CalendricalNormalizer.merge(array);
             try {
-                m.deriveChecked(ruleToDerive);
+                Object d = m.deriveChecked(ruleToDerive);
+                fail("Failed to throw error: " + calendicals + " -> " + ruleToDerive + " = " + d);
             } catch (CalendricalException ex) {
                 System.out.println(ex);
             }

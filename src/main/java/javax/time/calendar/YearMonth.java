@@ -183,8 +183,8 @@ public final class YearMonth
      * @return the YearMonth singleton, null if unable to obtain
      */
     static YearMonth deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField year = merger.getField(YEAR, true);
-        DateTimeField moy = merger.getField(MONTH_OF_YEAR, true);
+        DateTimeField year = merger.getFieldDerived(YEAR, true);
+        DateTimeField moy = merger.getFieldDerived(MONTH_OF_YEAR, true);
         if (year == null || moy == null) {
             return null;
         }

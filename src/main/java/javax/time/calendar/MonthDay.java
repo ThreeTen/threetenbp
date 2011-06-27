@@ -206,8 +206,8 @@ public final class MonthDay
      * @return the MonthDay singleton, null if unable to obtain
      */
     static MonthDay deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField moy = merger.getField(MONTH_OF_YEAR, true);
-        DateTimeField dom = merger.getField(DAY_OF_MONTH, true);
+        DateTimeField moy = merger.getFieldDerived(MONTH_OF_YEAR, true);
+        DateTimeField dom = merger.getFieldDerived(DAY_OF_MONTH, true);
         if (moy == null || dom == null) {
             return null;
         }

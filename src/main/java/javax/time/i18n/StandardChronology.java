@@ -33,8 +33,7 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeRuleRange;
@@ -275,18 +274,15 @@ public abstract class StandardChronology extends Chronology {
     final class DateRule extends CalendricalRule<ChronologyDate> implements Serializable {
         private static final long serialVersionUID = 1L;
         private DateRule() {
-            super(ChronologyDate.class, "ChronologyDate");
+            super(ChronologyDate.class, "ChronologyDate<" + StandardChronology.this.getName() + ">");
         }
         @Override
-        protected ChronologyDate derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return date != null ? createDate(date) : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            ChronologyDate date = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-            merger.removeProcessed(this);
+        protected ChronologyDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate date = merger.getDate(true);
+            if (date == null) {
+                return null;
+            }
+            return createDate(date);
         }
     }
 

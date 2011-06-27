@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
+
 import java.io.Serializable;
+
+import javax.time.MathUtils;
 
 /**
  * Mock rule.
@@ -47,7 +51,7 @@ public final class MockYearOfDecadeFieldRule extends DateTimeRule implements Ser
 
     /** Constructor. */
     private MockYearOfDecadeFieldRule() {
-        super("YearOfDecade", ISOPeriodUnit.YEARS, ISOPeriodUnit.DECADES, 0, 9, null);
+        super("YearOfDecade", ISOPeriodUnit.YEARS, ISOPeriodUnit.DECADES, 0, 9, EPOCH_MONTH);
     }
 
     private Object readResolve() {
@@ -55,9 +59,12 @@ public final class MockYearOfDecadeFieldRule extends DateTimeRule implements Ser
     }
 
     @Override
-    protected DateTimeField derive(Calendrical calendrical) {
-        DateTimeField yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
-        return (yocVal == null ? null : field(yocVal.getValidIntValue() % 10));
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        LocalDate date = merger.getDate(false);
+        if (date == null) {
+            return null;
+        }
+        return field(MathUtils.floorMod(date.getYear(), 10));
     }
 
 }

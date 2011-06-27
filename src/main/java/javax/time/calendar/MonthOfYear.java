@@ -172,7 +172,7 @@ public enum MonthOfYear implements Calendrical {
      * @return the MonthOfYear singleton, null if unable to obtain
      */
     static MonthOfYear deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getField(MONTH_OF_YEAR, true);
+        DateTimeField field = merger.getFieldDerived(MONTH_OF_YEAR, true);
         if (field == null) {
             return null;
         }
@@ -194,7 +194,7 @@ public enum MonthOfYear implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
+        return CalendricalNormalizer.derive(rule, rule(), toField());
     }
 
     /**

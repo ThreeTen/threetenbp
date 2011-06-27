@@ -122,7 +122,7 @@ public enum AmPmOfDay implements Calendrical {
      * @return the AmPmOfDay singleton, null if unable to obtain
      */
     static AmPmOfDay deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getField(AMPM_OF_DAY, true);
+        DateTimeField field = merger.getFieldDerived(AMPM_OF_DAY, true);
         if (field == null) {
             return null;
         }
@@ -144,7 +144,7 @@ public enum AmPmOfDay implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
+        return CalendricalNormalizer.derive(rule, rule(), toField());
     }
 
     /**

@@ -136,7 +136,7 @@ public enum QuarterOfYear implements Calendrical {
      * @return the QuarterOfYear singleton, null if unable to obtain
      */
     static QuarterOfYear deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getField(QUARTER_OF_YEAR, true);
+        DateTimeField field = merger.getFieldDerived(QUARTER_OF_YEAR, true);
         if (field == null) {
             return null;
         }
@@ -158,7 +158,7 @@ public enum QuarterOfYear implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
+        return CalendricalNormalizer.derive(rule, rule(), toField());
     }
 
     /**

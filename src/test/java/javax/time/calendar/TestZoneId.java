@@ -1316,7 +1316,7 @@ public class TestZoneId {
         assertEquals(test.get(YEAR), null);
         assertEquals(test.get(HOUR_OF_DAY), null);
         assertEquals(test.get(LocalDate.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), ZoneOffset.ofHours(3));
+        assertEquals(test.get(ZoneOffset.rule()), null);  // could get ZoneOffset.ofHours(3), but seems like a bad idea
         assertEquals(test.get(ZoneId.rule()), test);
     }
 

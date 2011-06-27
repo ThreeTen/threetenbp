@@ -516,8 +516,8 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             super("DayOfWeek-" + WeekRules.this.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7, null);
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            DateTimeField dow = calendrical.get(DAY_OF_WEEK);
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            DateTimeField dow = merger.getFieldDerived(DAY_OF_WEEK, true);
             if (dow != null && dow.isValidValue()) {
                 return field(((dow.getValue() - 1 - firstDayOfWeek.ordinal() + 7) % 7) + 1);
             }
@@ -527,10 +527,6 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
 //                long adjustedDow = ((dow0 - firstDayOfWeek.ordinal() + 7) % 7) + 1;
 //                return field(MathUtils.safeAdd(adjustedDow, MathUtils.safeMultiply(weeks, 7)));
             return null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            super.merge(merger);
         }
         @Override
         public long convertToPeriod(long value) {

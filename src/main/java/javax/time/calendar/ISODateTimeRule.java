@@ -113,172 +113,110 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Optimization for major classes.
-     */
-    DateTimeField derive(LocalDate date) {
-        switch (ordinal) {
-            case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
-            case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
-            case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
-            case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
-            case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
-            case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
-            case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
-            case EPOCH_MONTH_ORDINAL: return field(date.getYear() - 1970 + date.getMonthOfYear().ordinal());
-            case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
-            case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
-            case YEAR_ORDINAL: return field(date.getYear());
-            case EPOCH_YEAR_ORDINAL: return field(date.getYear() - 1970);
-        }
-        return null;
-    }
+//    @Override
+//    protected DateTimeField derive(Calendrical calendrical) {
+//        switch (ordinal) {
+//            case NANO_OF_MILLI_ORDINAL:
+//            case NANO_OF_SECOND_ORDINAL:
+//            case NANO_OF_MINUTE_ORDINAL:
+//            case NANO_OF_HOUR_ORDINAL:
+//            case NANO_OF_DAY_ORDINAL:
+//            case MILLI_OF_SECOND_ORDINAL:
+//            case MILLI_OF_MINUTE_ORDINAL:
+//            case MILLI_OF_HOUR_ORDINAL:
+//            case MILLI_OF_DAY_ORDINAL:
+//            case SECOND_OF_MINUTE_ORDINAL:
+//            case SECOND_OF_HOUR_ORDINAL:
+//            case SECOND_OF_DAY_ORDINAL:
+//            case MINUTE_OF_HOUR_ORDINAL:
+//            case MINUTE_OF_DAY_ORDINAL:
+//            case HOUR_OF_DAY_ORDINAL: {
+//                LocalTime time = calendrical.get(LocalTime.rule());
+//                if (time != null) {
+//                    switch (ordinal) {
+//                        // TODO: derive new fields
+//                        case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
+//                        case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
+//                        case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
+//                        case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
+//                        case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
+//                        case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
+//                        case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
+//                        case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
+//                        case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
+//                    }
+//                }
+//                break;
+//            }
+//            case DAY_OF_WEEK_ORDINAL:
+//            case DAY_OF_MONTH_ORDINAL:
+//            case DAY_OF_YEAR_ORDINAL:
+//            case EPOCH_DAY_ORDINAL:
+//            case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
+//            case WEEK_BASED_YEAR_ORDINAL:
+//            case MONTH_OF_YEAR_ORDINAL:
+//            case EPOCH_MONTH_ORDINAL:
+//            case YEAR_ORDINAL: {
+//                LocalDate date = calendrical.get(LocalDate.rule());
+//                if (date != null) {
+//                    switch (ordinal) {
+//                        case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
+//                        case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
+//                        case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
+//                        case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
+//                        case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
+//                        case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
+//                        case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
+//                        case EPOCH_MONTH_ORDINAL: return field(date.getYear() - 1970 + date.getMonthOfYear().ordinal());
+//                        case YEAR_ORDINAL: return field(date.getYear());
+//                    }
+//                }
+//                break;
+//            }
+//            case EPOCH_SECOND_ORDINAL: {
+//                LocalDateTime dateTime = calendrical.get(LocalDateTime.rule());
+//                return dateTime != null ? field(dateTime.atOffset(ZoneOffset.UTC).toEpochSecond()) : null;
+//            }
+//            case CLOCK_HOUR_OF_AMPM_ORDINAL: {
+//                DateTimeField hourVal = calendrical.get(HOUR_OF_AMPM);  // TODO derive from just HOUR_OF_DAY?
+//                return hourVal != null ? field(((hourVal.getValidIntValue() + 11) % 12) + 1) : null;
+//            }
+//            case HOUR_OF_AMPM_ORDINAL: {
+//                DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
+//                return hourVal != null ? field(hourVal.getValidIntValue() % 12) : null;
+//            }
+//            case CLOCK_HOUR_OF_DAY_ORDINAL: {
+//                DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
+//                return hourVal != null ? field(((hourVal.getValidIntValue() + 23) % 24) + 1) : null;
+//            }
+//            case AMPM_OF_DAY_ORDINAL: {
+//                DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
+//                return hourVal != null ? field(hourVal.getValidIntValue() / 12) : null;
+//            }
+//            case MONTH_OF_QUARTER_ORDINAL: {
+//                DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
+//                return moy != null ? field(((moy.getValidIntValue() - 1) % 3 + 1)) : null;
+//            }
+//            case QUARTER_OF_YEAR_ORDINAL: {
+//                DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
+//                return moy != null ? field((moy.getValidIntValue() - 1) / 3 + 1) : null;
+//            }
+//            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
+//                DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
+//                return domVal != null ? field((domVal.getValidIntValue() + 6) / 7) : null;
+//            }
+//            case ALIGNED_WEEK_OF_YEAR_ORDINAL: {
+//                DateTimeField doyVal = calendrical.get(DAY_OF_YEAR);
+//                return doyVal != null ? field((doyVal.getValidIntValue() + 6) / 7) : null;
+//            }
+//            case EPOCH_YEAR_ORDINAL: {
+//                DateTimeField yearVal = calendrical.get(YEAR);
+//                return yearVal != null ? field(yearVal.getValue()  - 1970) : null;
+//            }
+//        }
+//        return null;
+//    }
 
-    /**
-     * Optimization for major classes.
-     */
-    DateTimeField derive(LocalTime time) {
-        switch (ordinal) {
-            case NANO_OF_MILLI_ORDINAL: return field(time.getNanoOfSecond() % 1000000L);
-            case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
-            case NANO_OF_MINUTE_ORDINAL: return field(time.toNanoOfDay() % 60L * 1000000000L);
-            case NANO_OF_HOUR_ORDINAL: return field(time.toNanoOfDay() % 3600L * 1000000000L);
-            case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
-            case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
-            case MILLI_OF_MINUTE_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 60 * 1000L);
-            case MILLI_OF_HOUR_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 3600 * 1000L);
-            case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
-            case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
-            case SECOND_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour() * 60 + time.getSecondOfMinute());
-            case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
-//            case EPOCH_SECOND_ORDINAL: return field();
-            case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
-            case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return field(((time.getHourOfDay() + 11) % 12) + 1);
-            case HOUR_OF_AMPM_ORDINAL: return field(time.getHourOfDay() % 12);
-            case CLOCK_HOUR_OF_DAY_ORDINAL: return field(((time.getHourOfDay() + 23) % 24) + 1);
-            case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
-            case AMPM_OF_DAY_ORDINAL: return field(time.getHourOfDay() / 12);
-        }
-        return null;
-    }
-
-    /**
-     * Optimization for major classes.
-     */
-    DateTimeField derive(LocalDate date, LocalTime time) {
-        if (this.ordinal >= DAY_OF_WEEK_ORDINAL) {
-            return derive(date);
-        } else {
-            return derive(time);
-        }
-    }
-
-    @Override
-    protected DateTimeField derive(Calendrical calendrical) {
-        switch (ordinal) {
-            case NANO_OF_MILLI_ORDINAL:
-            case NANO_OF_SECOND_ORDINAL:
-            case NANO_OF_MINUTE_ORDINAL:
-            case NANO_OF_HOUR_ORDINAL:
-            case NANO_OF_DAY_ORDINAL:
-            case MILLI_OF_SECOND_ORDINAL:
-            case MILLI_OF_MINUTE_ORDINAL:
-            case MILLI_OF_HOUR_ORDINAL:
-            case MILLI_OF_DAY_ORDINAL:
-            case SECOND_OF_MINUTE_ORDINAL:
-            case SECOND_OF_HOUR_ORDINAL:
-            case SECOND_OF_DAY_ORDINAL:
-            case MINUTE_OF_HOUR_ORDINAL:
-            case MINUTE_OF_DAY_ORDINAL:
-            case HOUR_OF_DAY_ORDINAL: {
-                LocalTime time = calendrical.get(LocalTime.rule());
-                if (time != null) {
-                    switch (ordinal) {
-                        // TODO: derive new fields
-                        case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
-                        case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
-                        case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
-                        case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
-                        case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
-                        case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
-                        case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
-                        case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
-                        case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
-                    }
-                }
-                break;
-            }
-            case DAY_OF_WEEK_ORDINAL:
-            case DAY_OF_MONTH_ORDINAL:
-            case DAY_OF_YEAR_ORDINAL:
-            case EPOCH_DAY_ORDINAL:
-            case WEEK_OF_WEEK_BASED_YEAR_ORDINAL:
-            case WEEK_BASED_YEAR_ORDINAL:
-            case MONTH_OF_YEAR_ORDINAL:
-            case EPOCH_MONTH_ORDINAL:
-            case YEAR_ORDINAL: {
-                LocalDate date = calendrical.get(LocalDate.rule());
-                if (date != null) {
-                    switch (ordinal) {
-                        case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
-                        case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
-                        case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
-                        case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
-                        case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
-                        case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
-                        case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
-                        case EPOCH_MONTH_ORDINAL: return field(date.getYear() - 1970 + date.getMonthOfYear().ordinal());
-                        case YEAR_ORDINAL: return field(date.getYear());
-                    }
-                }
-                break;
-            }
-            case EPOCH_SECOND_ORDINAL: {
-                LocalDateTime dateTime = calendrical.get(LocalDateTime.rule());
-                return dateTime != null ? field(dateTime.atOffset(ZoneOffset.UTC).toEpochSecond()) : null;
-            }
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: {
-                DateTimeField hourVal = calendrical.get(HOUR_OF_AMPM);  // TODO derive from just HOUR_OF_DAY?
-                return hourVal != null ? field(((hourVal.getValidIntValue() + 11) % 12) + 1) : null;
-            }
-            case HOUR_OF_AMPM_ORDINAL: {
-                DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
-                return hourVal != null ? field(hourVal.getValidIntValue() % 12) : null;
-            }
-            case CLOCK_HOUR_OF_DAY_ORDINAL: {
-                DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
-                return hourVal != null ? field(((hourVal.getValidIntValue() + 23) % 24) + 1) : null;
-            }
-            case AMPM_OF_DAY_ORDINAL: {
-                DateTimeField hourVal = calendrical.get(HOUR_OF_DAY);
-                return hourVal != null ? field(hourVal.getValidIntValue() / 12) : null;
-            }
-            case MONTH_OF_QUARTER_ORDINAL: {
-                DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-                return moy != null ? field(((moy.getValidIntValue() - 1) % 3 + 1)) : null;
-            }
-            case QUARTER_OF_YEAR_ORDINAL: {
-                DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-                return moy != null ? field((moy.getValidIntValue() - 1) / 3 + 1) : null;
-            }
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
-                DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
-                return domVal != null ? field((domVal.getValidIntValue() + 6) / 7) : null;
-            }
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: {
-                DateTimeField doyVal = calendrical.get(DAY_OF_YEAR);
-                return doyVal != null ? field((doyVal.getValidIntValue() + 6) / 7) : null;
-            }
-            case EPOCH_YEAR_ORDINAL: {
-                DateTimeField yearVal = calendrical.get(YEAR);
-                return yearVal != null ? field(yearVal.getValue()  - 1970) : null;
-            }
-        }
-        return null;
-    }
     @Override
     public DateTimeRuleRange getValueRange(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
@@ -338,9 +276,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return super.getValueRange();
     }
 
+    //-------------------------------------------------------------------------
     @Override
     protected void normalize(CalendricalNormalizer merger) {
-        // TODO time
         switch (ordinal) {
             case EPOCH_MONTH_ORDINAL: {
                 DateTimeField epm = merger.getField(EPOCH_MONTH, false);
@@ -393,7 +331,90 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 }
                 break;
             }
+            case NANO_OF_DAY_ORDINAL: {
+                DateTimeField nod = merger.getField(NANO_OF_DAY, false);
+                if (nod != null) {
+                    LocalTime time = LocalTime.ofNanoOfDay(nod.getValue());  // TODO: lenient overflow
+                    merger.setTime(time, true);
+                }
+                break;
+            }
+            case EPOCH_SECOND_ORDINAL: {
+                DateTimeField eps = merger.getField(EPOCH_SECOND, false);
+                DateTimeField nos = merger.getField(NANO_OF_SECOND, false);  // TODO: handle other nano fields
+                if (eps != null && nos != null) {
+                    OffsetDateTime odt = OffsetDateTime.ofEpochSecond(eps.getValue(), ZoneOffset.UTC);
+                    odt = odt.plusNanos(nos.getValue());
+                    merger.setDate(odt.toLocalDate(), true);
+                    merger.setTime(odt.toLocalTime(), true);
+                    merger.setOffset(odt.getOffset(), true);
+                }
+                break;
+            }
         }
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        return deriveFrom(merger.getDate(false), merger.getTime(false), merger.getOffset(false));
+    }
+
+    /**
+     * Derive from the major classes.
+     */
+    DateTimeField deriveFrom(LocalDate date, LocalTime time, ZoneOffset offset) {
+        if (ordinal >= DAY_OF_WEEK_ORDINAL) {
+            if (date != null) {
+                switch (ordinal) {
+                    case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
+                    case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
+                    case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
+                    case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
+                    case ALIGNED_WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
+                    case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
+                    case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
+                    case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
+                    case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
+                    case EPOCH_MONTH_ORDINAL: return field((date.getYear() - 1970) * 12 + date.getMonthOfYear().ordinal());  // overflow
+                    case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
+                    case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
+                    case YEAR_ORDINAL: return field(date.getYear());
+                    case EPOCH_YEAR_ORDINAL: return field(date.getYear() - 1970);
+                }
+            }
+        } else {
+            if (time != null) {
+                switch (ordinal) {
+                    case NANO_OF_MILLI_ORDINAL: return field(time.getNanoOfSecond() % 1000000L);
+                    case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
+                    case NANO_OF_MINUTE_ORDINAL: return field(time.toNanoOfDay() % 60L * 1000000000L);
+                    case NANO_OF_HOUR_ORDINAL: return field(time.toNanoOfDay() % 3600L * 1000000000L);
+                    case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
+                    case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
+                    case MILLI_OF_MINUTE_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 60 * 1000L);
+                    case MILLI_OF_HOUR_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 3600 * 1000L);
+                    case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
+                    case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
+                    case SECOND_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour() * 60 + time.getSecondOfMinute());
+                    case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
+                    case EPOCH_SECOND_ORDINAL: {
+                        if (date != null && offset != null) {
+                            field(OffsetDateTime.of(date, time, offset).toEpochSecond());
+                        }
+                        break;
+                    }
+                    case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
+                    case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
+                    case CLOCK_HOUR_OF_AMPM_ORDINAL: return field(((time.getHourOfDay() + 11) % 12) + 1);
+                    case HOUR_OF_AMPM_ORDINAL: return field(time.getHourOfDay() % 12);
+                    case CLOCK_HOUR_OF_DAY_ORDINAL: return field(((time.getHourOfDay() + 23) % 24) + 1);
+                    case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
+                    case AMPM_OF_DAY_ORDINAL: return field(time.getHourOfDay() / 12);
+                }
+            }
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

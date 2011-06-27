@@ -56,14 +56,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         implements Comparable<DateTimeRule> {
     // TODO: broken serialization
 
-    @Override
-    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-        return merger.getField(this, true);
-    }
-
-    protected void normalize(CalendricalNormalizer merger) {
-    }
-
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
 
@@ -289,6 +281,57 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      */
     public String getText(long value, TextStyle textStyle, Locale locale) {
         return field(value).getText(textStyle, locale);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Override point to allow the rule to normalize the fields in the merger.
+     * <p>
+     * This is part of the merge process, which exists to extract the maximum
+     * information possible from a set calendrical data. The merger will automatically
+     * normalize fields using the {@link #getNormalizationRule() normalization rule}.
+     * It will then merge fields with the same {@link #getBaseRule() base rule}.
+     * This method is then called to combine the resulting fields into objects like
+     * {@code LocalDate} or {@code LocalTime}.
+     * <p>
+     * A typical implementation will extract one or more fields, combine them to
+     * form an object, and then store the object back into the merger.
+     * The fields that were processed should also be removed from the merger.
+     * Implementations should avoid throwing exceptions and should add an error to the merger instead.
+     * <p>
+     * This implementation does nothing.
+     * 
+     * @param merger  the merger to process, not null
+     */
+    protected void normalize(CalendricalNormalizer merger) {
+        // override to normalize fields to objects
+    }
+
+    /**
+     * Override point to derive the field for this rule from the merger.
+     * <p>
+     * This is part of the merge process, which exists to extract the maximum
+     * information possible from a set calendrical data. Before this method is
+     * called, the merger will be {@link #normalize normalized}.
+     * This method is then called to extract information from the objects of the normalized form.
+     * <p>
+     * A typical implementation will check the objects and determine if the field can be
+     * derived from them. For example, the year can be derived from a {@code LocalDate}.
+     * In general, only the objects should be used for derivation, as any remaining fields
+     * are handled by the merger.
+     * <p>
+     * Implementations should avoid throwing exceptions and should avoid adding errors to the merger.
+     * It is strongly recommended to treat the merger as immutable.
+     * <p>
+     * This implementation uses {@link CalendricalNormalizer#getFieldDerived}
+     * 
+     * @param merger  the merger to process, not null
+     * @return the derived field, null if unable to derive
+     */
+    @Override
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        // override to derive field from objects
+        return null;
     }
 
     //-----------------------------------------------------------------------

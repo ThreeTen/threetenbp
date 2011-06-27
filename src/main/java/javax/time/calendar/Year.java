@@ -175,7 +175,7 @@ public final class Year
      * @return the Year singleton, null if unable to obtain
      */
     static Year deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getField(YEAR, true);
+        DateTimeField field = merger.getFieldDerived(YEAR, true);
         if (field == null) {
             return null;
         }
@@ -218,7 +218,7 @@ public final class Year
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, null, toField().toDateTimeFields());
+        return CalendricalNormalizer.derive(rule, rule(), toField());
     }
 
     //-----------------------------------------------------------------------

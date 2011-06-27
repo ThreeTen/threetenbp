@@ -148,7 +148,7 @@ public class TestYear {
     //-----------------------------------------------------------------------
     public void test_get() {
         assertEquals(Year.of(1999).get(Year.rule()), Year.of(1999));
-        assertEquals(Year.of(1999).get(YEAR), Year.of(1999));
+        assertEquals(Year.of(1999).get(YEAR), YEAR.field(1999));
         assertEquals(Year.of(1999).get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
     }
 
