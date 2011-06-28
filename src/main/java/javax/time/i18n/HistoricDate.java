@@ -34,7 +34,7 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
@@ -104,6 +104,16 @@ public final class HistoricDate
      * The historic day-of-month.
      */
     private final transient int day;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code HistoricDate}.
+     *
+     * @return the rule for the date, not null
+     */
+    public static CalendricalRule<HistoricDate> rule() {
+        return Rule.INSTANCE;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -245,11 +255,12 @@ public final class HistoricDate
      * @return the value for the field
      * @throws UnsupportedRuleException if no value for the field is found
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule.equals(LocalDate.rule())) {  // NPE check
-            return rule.reify(toLocalDate());
+        if (rule == rule()) {
+            return (T) this;
         }
-        return rule().deriveValueFor(rule, this, this, chrono);
+        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -576,43 +587,26 @@ public final class HistoricDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for {@code HistoricDate}.
-     *
-     * @return the field rule for the date, not null
-     */
-    public static CalendricalRule<HistoricDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Rule implementation.
      */
     static final class Rule extends CalendricalRule<HistoricDate> implements Serializable {
         private static final CalendricalRule<HistoricDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            // TODO
             super(HistoricDate.class, "HistoricDate");
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected HistoricDate derive(Calendrical calendrical) {
-            LocalDate ld = calendrical.get(LocalDate.rule());
-            if (ld == null) {
+        protected HistoricDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate date = merger.getDate(true);
+            if (date == null) {
                 return null;
             }
 //            long epochDay = ld.toModifiedJulianDay() + MJD_TO_historic;
 //            return historicDateFromEpochDay((int) epochDay);
             return null; // TODO
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            HistoricDate cd = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), cd.toLocalDate());
-            merger.removeProcessed(this);
         }
     }
 

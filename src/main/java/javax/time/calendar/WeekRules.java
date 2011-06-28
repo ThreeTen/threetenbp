@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.DayOfWeek.MONDAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 
 import java.io.Serializable;
@@ -378,7 +379,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the rule for the date, not null
      */
     public DateTimeRule dayOfWeek() {
-        return new DayOfWeekRule();
+        return new DayOfWeekRule(this);
     }
 
     /**
@@ -476,50 +477,58 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         return "WeekRules[" + firstDayOfWeek + ',' + minimalDaysInFirstWeek + ']';
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Merges the fields for these week rules.
-     */
-    void merge(CalendricalMerger merger) {
-        DateTimeField wby = merger.getValue(weekBasedYear());
-        DateTimeField wowby = merger.getValue(weekOfWeekBasedYear());
-        DateTimeField dow = merger.getValue(dayOfWeek());
-        DateTimeField sdow = merger.getValue(DAY_OF_WEEK);
-        if (wby != null && wowby != null) {
-            if (dow != null) {
-                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), MathUtils.safeToInt(dow.getValue()));
-                merger.storeMerged(LocalDate.rule(), merged);
-                merger.removeProcessed(weekBasedYear());
-                merger.removeProcessed(weekOfWeekBasedYear());
-                merger.removeProcessed(dayOfWeek());
-            } else if (sdow != null && sdow.isValidValue()) {
-                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), DayOfWeek.of(sdow.getValidIntValue()));
-                merger.storeMerged(LocalDate.rule(), merged);
-                merger.removeProcessed(weekBasedYear());
-                merger.removeProcessed(weekOfWeekBasedYear());
-                merger.removeProcessed(dayOfWeek());
-            }
-        }
-        // TODO: week-of-month
-        if (dow != null && dow.isValidValue()) {
-            merger.storeMergedField(DAY_OF_WEEK, convertDayOfWeek(dow.getValidIntValue()).getValue());
-        }
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Merges the fields for these week rules.
+//     */
+//    void merge(CalendricalMerger merger) {
+//        DateTimeField wby = merger.getValue(weekBasedYear());
+//        DateTimeField wowby = merger.getValue(weekOfWeekBasedYear());
+//        DateTimeField dow = merger.getValue(dayOfWeek());
+//        DateTimeField sdow = merger.getValue(DAY_OF_WEEK);
+//        if (wby != null && wowby != null) {
+//            if (dow != null) {
+//                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), MathUtils.safeToInt(dow.getValue()));
+//                merger.storeMerged(LocalDate.rule(), merged);
+//                merger.removeProcessed(weekBasedYear());
+//                merger.removeProcessed(weekOfWeekBasedYear());
+//                merger.removeProcessed(dayOfWeek());
+//            } else if (sdow != null && sdow.isValidValue()) {
+//                LocalDate merged = createWeekBasedYearDate(wby.getValidIntValue(), MathUtils.safeToInt(wowby.getValue()), DayOfWeek.of(sdow.getValidIntValue()));
+//                merger.storeMerged(LocalDate.rule(), merged);
+//                merger.removeProcessed(weekBasedYear());
+//                merger.removeProcessed(weekOfWeekBasedYear());
+//                merger.removeProcessed(dayOfWeek());
+//            }
+//        }
+//        // TODO: week-of-month
+//        if (dow != null && dow.isValidValue()) {
+//            merger.storeMergedField(DAY_OF_WEEK, convertDayOfWeek(dow.getValidIntValue()).getValue());
+//        }
+//    }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    final class DayOfWeekRule extends DateTimeRule implements Serializable {
+    static final class DayOfWeekRule extends DateTimeRule implements Serializable {
         private static final long serialVersionUID = 1L;
-        private DayOfWeekRule() {
-            super("DayOfWeek-" + WeekRules.this.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7, null);
+        private WeekRules weekRules;
+
+        DayOfWeekRule(WeekRules weekRules) {
+            super("DayOfWeek-" + weekRules.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7,
+                    weekRules.getFirstDayOfWeek() == MONDAY ? DAY_OF_WEEK : null);
+            this.weekRules = weekRules;
+        }
+        @Override
+        protected void normalize(CalendricalNormalizer merger) {
+            super.normalize(merger);
         }
         @Override
         protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
             DateTimeField dow = merger.getFieldDerived(DAY_OF_WEEK, true);
             if (dow != null && dow.isValidValue()) {
-                return field(((dow.getValue() - 1 - firstDayOfWeek.ordinal() + 7) % 7) + 1);
+                return field(((dow.getValue() - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1);
             }
 //                long dow0 = MathUtils.safeDecrement(dow.getValue());
 //                long weeks = MathUtils.floorDiv(dow0, 7);
