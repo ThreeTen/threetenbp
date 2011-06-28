@@ -31,17 +31,20 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.DayOfWeek.MONDAY;
+import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 import static javax.time.calendar.MonthOfYear.FEBRUARY;
-import static javax.time.calendar.MonthOfYear.JANUARY;
 import static javax.time.calendar.MonthOfYear.JUNE;
 import static javax.time.calendar.MonthOfYear.OCTOBER;
+import static javax.time.calendar.QuarterOfYear.Q2;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -59,67 +62,232 @@ import org.testng.annotations.Test;
 @Test
 public class TestCalendricalNomalizer {
 
+    private static final ZoneOffset OFFSET = ZoneOffset.of("+03:00");
+    private static final OffsetDateTime OFFSET_DATE_TIME_2011_06_30_11_30 = OffsetDateTime.of(2011, 6, 30, 11, 30, OFFSET);
+    private static final LocalDateTime DATE_TIME_2011_06_30_11_30 = LocalDateTime.of(2011, 6, 30, 11, 30);
+    private static final LocalDate DATE_2011_06_30 = LocalDate.of(2011, 6, 30);
+    private static final Year YEAR_2011 = Year.of(2011);
+    private static final YearMonth YEAR_MONTH_2011_06 = YearMonth.of(2011, 6);
+    private static final MonthDay MONTH_DAY_06_30 = MonthDay.of(6, 30);
+    private static final LocalTime TIME_11_30 = LocalTime.of(11, 30);
+    private static final DateTimeField FIELD_YEAR_2011 = YEAR.field(2011);
+    private static final DateTimeField FIELD_MOY_06 = MONTH_OF_YEAR.field(6);
+    private static final DateTimeField FIELD_DOM_30 = DAY_OF_MONTH.field(30);
+    private static final DateTimeField FIELD_QOY_2 = QUARTER_OF_YEAR.field(2);
+    private static final DateTimeField FIELD_MOQ_3 = MONTH_OF_QUARTER.field(3);
+    private static final DateTimeField FIELD_DOW_4 = DAY_OF_WEEK.field(4);
+    private static final DateTimeField FIELD_DOY_181 = DAY_OF_YEAR.field(181);
+    private static final DateTimeField FIELD_ZEM_2011_06 = ZERO_EPOCH_MONTH.field(2011 * 12 + 6 - 1);
+    private static final DateTimeField FIELD_AWOM_5 = ALIGNED_WEEK_OF_MONTH.field(5);
+
     //-----------------------------------------------------------------------
     @DataProvider(name = "merge")
     public Object[][] data_merge() {
         return new Object[][] {
-            {cals(), LocalDate.rule(), null},
-            {cals(LocalDate.of(2011, 6, 30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
-            {cals(LocalTime.of(11, 30)), LocalDate.rule(), null},
-            {cals(LocalDate.of(2011, 6, 30), LocalTime.of(11, 30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
-            {cals(ZERO_EPOCH_MONTH.field(2011 * 12 + 6 - 1), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
-            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
-            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6)), LocalDate.rule(), null},
-            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(2), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
-            {cals(YEAR.field(2011), JUNE, ALIGNED_WEEK_OF_MONTH.field(2), MONDAY), LocalDate.rule(), LocalDate.of(2011, 6, 13)},
-            {cals(YearMonth.of(2011, 6), DAY_OF_MONTH.field(30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
-            {cals(Year.of(2011), MonthDay.of(6, 30)), LocalDate.rule(), LocalDate.of(2011, 6, 30)},
-            {cals(Year.of(2011), JANUARY, DAY_OF_MONTH.field(23)), LocalDate.rule(), LocalDate.of(2011, 1, 23)},
-            {cals(YEAR.field(2011), MONTH_OF_YEAR.field(6), QUARTER_OF_YEAR.field(1), DAY_OF_MONTH.field(30)), LocalDate.rule(), CalendricalException.class},
-            {cals(LocalDate.of(2011, 6, 30), LocalDate.of(2011, 6, 22)), LocalDate.rule(), CalendricalException.class},
-            {cals(LocalDate.of(2011, 6, 30), FEBRUARY), LocalDate.rule(), CalendricalException.class},
+//            // from nothing
+//            {cals(), LocalDate.rule(), null},
+//            {cals(), LocalTime.rule(), null},
+//            {cals(), LocalDateTime.rule(), null},
+//            {cals(), OffsetDate.rule(), null},
+//            {cals(), OffsetTime.rule(), null},
+//            {cals(), OffsetDateTime.rule(), null},
+//            {cals(), ZonedDateTime.rule(), null},
+//            {cals(), ZoneOffset.rule(), null},
+//            {cals(), ZoneId.rule(), null},
+//            {cals(), Chronology.rule(), null},
+//            
+//            // from LocalDateTime
+//            {cals(DATE_TIME_2011_06_30_11_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(DATE_TIME_2011_06_30_11_30), LocalTime.rule(), TIME_11_30},
+//            {cals(DATE_TIME_2011_06_30_11_30), LocalDateTime.rule(), DATE_TIME_2011_06_30_11_30},
+//            {cals(DATE_TIME_2011_06_30_11_30), OffsetDate.rule(), null},
+//            {cals(DATE_TIME_2011_06_30_11_30), OffsetTime.rule(), null},
+//            {cals(DATE_TIME_2011_06_30_11_30), OffsetDateTime.rule(), null},
+//            {cals(DATE_TIME_2011_06_30_11_30), ZonedDateTime.rule(), null},
+//            {cals(DATE_TIME_2011_06_30_11_30), ZoneOffset.rule(), null},
+//            {cals(DATE_TIME_2011_06_30_11_30), ZoneId.rule(), null},
+//            {cals(DATE_TIME_2011_06_30_11_30), Chronology.rule(), ISOChronology.INSTANCE},
+//            {cals(DATE_TIME_2011_06_30_11_30), Year.rule(), YEAR_2011},
+//            {cals(DATE_TIME_2011_06_30_11_30), YearMonth.rule(), YEAR_MONTH_2011_06},
+//            {cals(DATE_TIME_2011_06_30_11_30), MonthDay.rule(), MONTH_DAY_06_30},
+//            {cals(DATE_TIME_2011_06_30_11_30), QuarterOfYear.rule(), Q2},
+//            {cals(DATE_TIME_2011_06_30_11_30), MonthOfYear.rule(), JUNE},
+//            {cals(DATE_TIME_2011_06_30_11_30), DayOfWeek.rule(), THURSDAY},
+//            {cals(DATE_TIME_2011_06_30_11_30), YEAR, FIELD_YEAR_2011},
+//            {cals(DATE_TIME_2011_06_30_11_30), QUARTER_OF_YEAR, FIELD_QOY_2},
+//            {cals(DATE_TIME_2011_06_30_11_30), ZERO_EPOCH_MONTH, FIELD_ZEM_2011_06},
+//            {cals(DATE_TIME_2011_06_30_11_30), MONTH_OF_YEAR, FIELD_MOY_06},
+//            {cals(DATE_TIME_2011_06_30_11_30), MONTH_OF_QUARTER, FIELD_MOQ_3},
+//            {cals(DATE_TIME_2011_06_30_11_30), DAY_OF_YEAR, FIELD_DOY_181},
+//            {cals(DATE_TIME_2011_06_30_11_30), DAY_OF_MONTH, FIELD_DOM_30},
+//            {cals(DATE_TIME_2011_06_30_11_30), DAY_OF_WEEK, FIELD_DOW_4},
+//            {cals(DATE_TIME_2011_06_30_11_30), ALIGNED_WEEK_OF_MONTH, FIELD_AWOM_5},
+//            // TODO time
+//            
+//            // from LocalDate
+//            {cals(DATE_2011_06_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(DATE_2011_06_30), LocalTime.rule(), null},
+//            {cals(DATE_2011_06_30), LocalDateTime.rule(), null},
+//            {cals(DATE_2011_06_30), OffsetDate.rule(), null},
+//            {cals(DATE_2011_06_30), OffsetTime.rule(), null},
+//            {cals(DATE_2011_06_30), OffsetDateTime.rule(), null},
+//            {cals(DATE_2011_06_30), ZonedDateTime.rule(), null},
+//            {cals(DATE_2011_06_30), ZoneOffset.rule(), null},
+//            {cals(DATE_2011_06_30), ZoneId.rule(), null},
+//            {cals(DATE_2011_06_30), Chronology.rule(), ISOChronology.INSTANCE},
+//            {cals(DATE_2011_06_30), Year.rule(), YEAR_2011},
+//            {cals(DATE_2011_06_30), YearMonth.rule(), YEAR_MONTH_2011_06},
+//            {cals(DATE_2011_06_30), MonthDay.rule(), MONTH_DAY_06_30},
+//            {cals(DATE_2011_06_30), QuarterOfYear.rule(), Q2},
+//            {cals(DATE_2011_06_30), MonthOfYear.rule(), JUNE},
+//            {cals(DATE_2011_06_30), DayOfWeek.rule(), THURSDAY},
+//            {cals(DATE_2011_06_30), YEAR, FIELD_YEAR_2011},
+//            {cals(DATE_2011_06_30), QUARTER_OF_YEAR, FIELD_QOY_2},
+//            {cals(DATE_2011_06_30), ZERO_EPOCH_MONTH, FIELD_ZEM_2011_06},
+//            {cals(DATE_2011_06_30), MONTH_OF_YEAR, FIELD_MOY_06},
+//            {cals(DATE_2011_06_30), MONTH_OF_QUARTER, FIELD_MOQ_3},
+//            {cals(DATE_2011_06_30), DAY_OF_YEAR, FIELD_DOY_181},
+//            {cals(DATE_2011_06_30), DAY_OF_MONTH, FIELD_DOM_30},
+//            {cals(DATE_2011_06_30), DAY_OF_WEEK, FIELD_DOW_4},
+//            {cals(DATE_2011_06_30), ALIGNED_WEEK_OF_MONTH, FIELD_AWOM_5},
+//            
+//            // from Year
+//            {cals(YEAR_2011), LocalDate.rule(), null},
+//            {cals(YEAR_2011), LocalTime.rule(), null},
+//            {cals(YEAR_2011), LocalDateTime.rule(), null},
+//            {cals(YEAR_2011), OffsetDate.rule(), null},
+//            {cals(YEAR_2011), OffsetTime.rule(), null},
+//            {cals(YEAR_2011), OffsetDateTime.rule(), null},
+//            {cals(YEAR_2011), ZonedDateTime.rule(), null},
+//            {cals(YEAR_2011), ZoneOffset.rule(), null},
+//            {cals(YEAR_2011), ZoneId.rule(), null},
+//            {cals(YEAR_2011), Chronology.rule(), ISOChronology.INSTANCE},
+//            {cals(YEAR_2011), Year.rule(), YEAR_2011},
+//            {cals(YEAR_2011), YearMonth.rule(), null},
+//            {cals(YEAR_2011), MonthDay.rule(), null},
+//            {cals(YEAR_2011), QuarterOfYear.rule(), null},
+//            {cals(YEAR_2011), MonthOfYear.rule(), null},
+//            {cals(YEAR_2011), DayOfWeek.rule(), null},
+//            {cals(YEAR_2011), YEAR, FIELD_YEAR_2011},
+//            {cals(YEAR_2011), QUARTER_OF_YEAR, null},
+//            {cals(YEAR_2011), ZERO_EPOCH_MONTH, null},
+//            {cals(YEAR_2011), MONTH_OF_YEAR, null},
+//            {cals(YEAR_2011), MONTH_OF_QUARTER, null},
+//            {cals(YEAR_2011), DAY_OF_YEAR, null},
+//            {cals(YEAR_2011), DAY_OF_MONTH, null},
+//            {cals(YEAR_2011), DAY_OF_WEEK, null},
+//            {cals(YEAR_2011), ALIGNED_WEEK_OF_MONTH, null},
+//            
+//            // from YearMonth
+//            {cals(YEAR_MONTH_2011_06), LocalDate.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), LocalTime.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), LocalDateTime.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), OffsetDate.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), OffsetTime.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), OffsetDateTime.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), ZonedDateTime.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), ZoneOffset.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), ZoneId.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), Chronology.rule(), ISOChronology.INSTANCE},
+//            {cals(YEAR_MONTH_2011_06), Year.rule(), YEAR_2011},
+//            {cals(YEAR_MONTH_2011_06), YearMonth.rule(), YEAR_MONTH_2011_06},
+//            {cals(YEAR_MONTH_2011_06), MonthDay.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), QuarterOfYear.rule(), Q2},
+//            {cals(YEAR_MONTH_2011_06), MonthOfYear.rule(), JUNE},
+//            {cals(YEAR_MONTH_2011_06), DayOfWeek.rule(), null},
+//            {cals(YEAR_MONTH_2011_06), YEAR, FIELD_YEAR_2011},
+//            {cals(YEAR_MONTH_2011_06), QUARTER_OF_YEAR, FIELD_QOY_2},
+//            {cals(YEAR_MONTH_2011_06), ZERO_EPOCH_MONTH, FIELD_ZEM_2011_06},
+//            {cals(YEAR_MONTH_2011_06), MONTH_OF_YEAR, FIELD_MOY_06},
+//            {cals(YEAR_MONTH_2011_06), MONTH_OF_QUARTER, FIELD_MOQ_3},
+//            {cals(YEAR_MONTH_2011_06), DAY_OF_YEAR, null},
+//            {cals(YEAR_MONTH_2011_06), DAY_OF_MONTH, null},
+//            {cals(YEAR_MONTH_2011_06), DAY_OF_WEEK, null},
+//            {cals(YEAR_MONTH_2011_06), ALIGNED_WEEK_OF_MONTH, null},
+//            
+//            // from MonthDay
+//            {cals(MONTH_DAY_06_30), LocalDate.rule(), null},
+//            {cals(MONTH_DAY_06_30), LocalTime.rule(), null},
+//            {cals(MONTH_DAY_06_30), LocalDateTime.rule(), null},
+//            {cals(MONTH_DAY_06_30), OffsetDate.rule(), null},
+//            {cals(MONTH_DAY_06_30), OffsetTime.rule(), null},
+//            {cals(MONTH_DAY_06_30), OffsetDateTime.rule(), null},
+//            {cals(MONTH_DAY_06_30), ZonedDateTime.rule(), null},
+//            {cals(MONTH_DAY_06_30), ZoneOffset.rule(), null},
+//            {cals(MONTH_DAY_06_30), ZoneId.rule(), null},
+//            {cals(MONTH_DAY_06_30), Chronology.rule(), ISOChronology.INSTANCE},
+//            {cals(MONTH_DAY_06_30), Year.rule(), null},
+//            {cals(MONTH_DAY_06_30), YearMonth.rule(), null},
+//            {cals(MONTH_DAY_06_30), MonthDay.rule(), MONTH_DAY_06_30},
+//            {cals(MONTH_DAY_06_30), QuarterOfYear.rule(), Q2},
+//            {cals(MONTH_DAY_06_30), MonthOfYear.rule(), JUNE},
+//            {cals(MONTH_DAY_06_30), DayOfWeek.rule(), null},
+//            {cals(MONTH_DAY_06_30), YEAR, null},
+//            {cals(MONTH_DAY_06_30), QUARTER_OF_YEAR, FIELD_QOY_2},
+//            {cals(MONTH_DAY_06_30), ZERO_EPOCH_MONTH, null},
+//            {cals(MONTH_DAY_06_30), MONTH_OF_YEAR, FIELD_MOY_06},
+//            {cals(MONTH_DAY_06_30), MONTH_OF_QUARTER, FIELD_MOQ_3},
+//            {cals(MONTH_DAY_06_30), DAY_OF_YEAR, null},
+//            {cals(MONTH_DAY_06_30), DAY_OF_MONTH, FIELD_DOM_30},
+//            {cals(MONTH_DAY_06_30), DAY_OF_WEEK, null},
+//            {cals(MONTH_DAY_06_30), ALIGNED_WEEK_OF_MONTH, FIELD_AWOM_5},
+//            
+//            // create date
+//            {cals(DATE_2011_06_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(TIME_11_30), LocalDate.rule(), null},
+//            {cals(DATE_TIME_2011_06_30_11_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(DATE_2011_06_30, TIME_11_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(FIELD_ZEM_2011_06, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(FIELD_YEAR_2011, FIELD_MOY_06, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(FIELD_YEAR_2011, JUNE, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(FIELD_YEAR_2011, FIELD_MOY_06, FIELD_QOY_2, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(FIELD_YEAR_2011, JUNE, FIELD_QOY_2, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+//            {cals(FIELD_YEAR_2011, JUNE, Q2, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+            {cals(FIELD_YEAR_2011, Q2, FIELD_MOQ_3, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+            {cals(YEAR_MONTH_2011_06, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+            {cals(YEAR_2011, MONTH_DAY_06_30), LocalDate.rule(), DATE_2011_06_30},
+            {cals(FIELD_YEAR_2011, JUNE, FIELD_AWOM_5, THURSDAY), LocalDate.rule(), DATE_2011_06_30},
+            {cals(FIELD_YEAR_2011, FIELD_MOY_06), LocalDate.rule(), null},
+            {cals(FIELD_YEAR_2011, FIELD_MOY_06, QUARTER_OF_YEAR.field(1), FIELD_DOM_30), LocalDate.rule(), CalendricalException.class},
+            {cals(DATE_2011_06_30, LocalDate.of(2011, 6, 22)), LocalDate.rule(), CalendricalException.class},
+            {cals(DATE_2011_06_30, FEBRUARY), LocalDate.rule(), CalendricalException.class},
             
-            {cals(LocalDate.of(2011, 6, 30)), Year.rule(), Year.of(2011)},
-            {cals(LocalTime.of(11, 30)), Year.rule(), null},
-            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), Year.rule(), Year.of(2011)},
-            {cals(YearMonth.of(2011, 6)), Year.rule(), Year.of(2011)},
-            {cals(YEAR.field(2011)), Year.rule(), Year.of(2011)},
+            // create Year
+            {cals(TIME_11_30), Year.rule(), null},
+            {cals(DATE_TIME_2011_06_30_11_30), Year.rule(), YEAR_2011},
+            {cals(FIELD_YEAR_2011), Year.rule(), YEAR_2011},
             {cals(OCTOBER), Year.rule(), null},
             
-            {cals(LocalDate.of(2011, 6, 30)), YearMonth.rule(), YearMonth.of(2011, 6)},
-            {cals(LocalTime.of(11, 30)), YearMonth.rule(), null},
-            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), YearMonth.rule(), YearMonth.of(2011, 6)},
-            {cals(Year.of(2011), OCTOBER), YearMonth.rule(), YearMonth.of(2011, 10)},
+            // create YearMonth
+            {cals(TIME_11_30), YearMonth.rule(), null},
+            {cals(DATE_TIME_2011_06_30_11_30), YearMonth.rule(), YEAR_MONTH_2011_06},
+            {cals(YEAR_2011, OCTOBER), YearMonth.rule(), YearMonth.of(2011, 10)},
             {cals(OCTOBER), YearMonth.rule(), null},
             
-            {cals(LocalDate.of(2011, 6, 30)), MonthDay.rule(), MonthDay.of(6, 30)},
-            {cals(LocalTime.of(11, 30)), MonthDay.rule(), null},
-            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MonthDay.rule(), MonthDay.of(6, 30)},
+            // create MonthDay
+            {cals(TIME_11_30), MonthDay.rule(), null},
+            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MonthDay.rule(), MONTH_DAY_06_30},
             {cals(DAY_OF_MONTH.field(23), OCTOBER), MonthDay.rule(), MonthDay.of(10, 23)},
             {cals(OCTOBER), MonthDay.rule(), null},
             
-            {cals(LocalDate.of(2011, 6, 30)), MonthOfYear.rule(), JUNE},
-            {cals(LocalTime.of(11, 30)), MonthOfYear.rule(), null},
-            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MonthOfYear.rule(), JUNE},
+            // create MonthOfYear
+            {cals(TIME_11_30), MonthOfYear.rule(), null},
+            {cals(DATE_TIME_2011_06_30_11_30), MonthOfYear.rule(), JUNE},
             {cals(DAY_OF_MONTH.field(23), OCTOBER), MonthOfYear.rule(), OCTOBER},
-            {cals(Year.of(2011)), MonthOfYear.rule(), null},
             
-            {cals(LocalDate.of(2011, 6, 30)), MONTH_OF_YEAR, MONTH_OF_YEAR.field(6)},
-            {cals(LocalTime.of(11, 30)), MONTH_OF_YEAR, null},
-            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MONTH_OF_YEAR, MONTH_OF_YEAR.field(6)},
+            // create Field:MonthOfYear
+            {cals(TIME_11_30), MONTH_OF_YEAR, null},
+            {cals(DATE_TIME_2011_06_30_11_30), MONTH_OF_YEAR, FIELD_MOY_06},
             {cals(DAY_OF_MONTH.field(23), OCTOBER), MONTH_OF_YEAR, MONTH_OF_YEAR.field(10)},
-            {cals(Year.of(2011)), MonthOfYear.rule(), null},
             
-            {cals(), LocalTime.rule(), null},
-            {cals(LocalDate.of(2011, 6, 30)), LocalTime.rule(), null},
-            {cals(LocalTime.of(11, 30)), LocalTime.rule(), LocalTime.of(11, 30)},
-            {cals(LocalDateTime.of(2011, 6, 30, 12, 30)), MonthDay.rule(), MonthDay.of(6, 30)},
-            {cals(LocalDate.of(2011, 6, 30), LocalTime.of(11, 30)), LocalTime.rule(), LocalTime.of(11, 30)},
+            // create LocalTime
+            {cals(TIME_11_30), LocalTime.rule(), TIME_11_30},
+            {cals(DATE_TIME_2011_06_30_11_30), LocalTime.rule(), TIME_11_30},
+            {cals(DATE_2011_06_30, TIME_11_30), LocalTime.rule(), TIME_11_30},
             
-            {cals(), LocalDateTime.rule(), null},
-            {cals(LocalDate.of(2011, 6, 30)), LocalDateTime.rule(), null},
-            {cals(LocalTime.of(11, 30)), LocalDateTime.rule(), null},
-            {cals(LocalDate.of(2011, 6, 30), LocalTime.of(11, 30)), LocalDateTime.rule(), LocalDateTime.of(2011, 6, 30, 11, 30)},
+            // create LocalDateTime
+            {cals(TIME_11_30), LocalDateTime.rule(), null},
+            {cals(DATE_2011_06_30, TIME_11_30), LocalDateTime.rule(), DATE_TIME_2011_06_30_11_30},
         };
     }
 
