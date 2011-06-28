@@ -201,11 +201,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         int newPos = pp.parse(parseContext, result, 0);
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
-        if (value == 0 && minWidth == 0) {
-            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-        } else {
-            assertParsed(parseContext, NANO_OF_SECOND, expectedValue);
-        }
+        assertParsed(parseContext, NANO_OF_SECOND, value == 0 && minWidth == 0 ? null : expectedValue);
     }
 
     @Test(dataProvider="Nanos")
@@ -214,11 +210,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         int newPos = pp.parse(parseContext, result + " ", 0);
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
-        if (value == 0 && minWidth == 0) {
-            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-        } else {
-            assertParsed(parseContext, NANO_OF_SECOND, expectedValue);
-        }
+        assertParsed(parseContext, NANO_OF_SECOND, value == 0 && minWidth == 0 ? null : expectedValue);
     }
 
     @Test(dataProvider="Nanos")
@@ -227,11 +219,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         int newPos = pp.parse(parseContext, " " + result, 1);
         assertEquals(newPos, result.length() + 1);
         int expectedValue = fixParsedValue(maxWidth, value);
-        if (value == 0 && minWidth == 0) {
-            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-        } else {
-            assertParsed(parseContext, NANO_OF_SECOND, expectedValue);
-        }
+        assertParsed(parseContext, NANO_OF_SECOND, value == 0 && minWidth == 0 ? null : expectedValue);
     }
 
     private int fixParsedValue(int maxWidth, int value) {
@@ -247,67 +235,7 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_OF_MINUTE, minWidth, maxWidth);
         int newPos = pp.parse(parseContext, result, 0);
         assertEquals(newPos, result.length());
-        if (value == 0 && minWidth == 0) {
-            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(SECOND_OF_MINUTE), false);
-        } else {
-            assertParsed(parseContext, SECOND_OF_MINUTE, value);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_parse_nothing_minWidth() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(parseContext, "", 0);
-        assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-    }
-
-    public void test_parse_noPoint() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(parseContext, "A", 0);
-        assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-    }
-
-    public void test_parse_point_noDigits() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(parseContext, ".", 0);
-        assertEquals(newPos, ~1);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-    }
-
-    public void test_parse_point_notMinWidthDigits1() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(parseContext, ".5", 0);
-        assertEquals(newPos, ~1);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-    }
-
-    public void test_parse_point_notMinWidthDigits2() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(parseContext, ".51", 0);
-        assertEquals(newPos, ~1);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-    }
-
-    public void test_parse_point_nonDigit1() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(parseContext, ".A23456", 0);
-        assertEquals(newPos, ~1);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-    }
-
-    public void test_parse_point_nonDigit2() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        int newPos = pp.parse(parseContext, ".1A3456", 0);
-        assertEquals(newPos, ~1);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(NANO_OF_SECOND), false);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_toString() throws Exception {
-        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
-        assertEquals(pp.toString(), "Fraction(NanoOfSecond,3,6)");
+        assertParsed(parseContext, SECOND_OF_MINUTE, value == 0 && minWidth == 0 ? null : value);
     }
 
     private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {
@@ -316,6 +244,33 @@ public class TestFractionPrinterParser extends AbstractTestPrinterParser {
         } else {
             assertEquals(context.getParsed(rule), DateTimeField.of(rule, value.longValue()));
         }
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="ParseNothing")
+    Object[][] provider_parseNothing() {
+        return new Object[][] {
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), "", 0, ~0},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), "A", 0, ~0},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".5", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".51", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".A23456", 0, ~1},
+            {new FractionPrinterParser(NANO_OF_SECOND, 3, 6), ".1A3456", 0, ~1},
+        };
+    }
+
+    @Test(dataProvider = "ParseNothing")
+    public void test_parse_nothing(FractionPrinterParser pp, String text, int pos, int expected) {
+        int newPos = pp.parse(parseContext, text, pos);
+        assertEquals(newPos, expected);
+        assertEquals(parseContext.getParsed(NANO_OF_SECOND), null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString() throws Exception {
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_OF_SECOND, 3, 6);
+        assertEquals(pp.toString(), "Fraction(NanoOfSecond,3,6)");
     }
 
 }

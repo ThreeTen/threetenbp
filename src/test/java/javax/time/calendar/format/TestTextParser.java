@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Locale;
 
@@ -54,16 +55,22 @@ import org.testng.annotations.Test;
 public class TestTextParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_print_invalidPositionTooSmall() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.parse(parseContext, "Monday", -1);
+    @DataProvider(name="error")
+    Object[][] data_error() {
+        return new Object[][] {
+            {new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL), "Monday", -1, IndexOutOfBoundsException.class},
+            {new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL), "Monday", 7, IndexOutOfBoundsException.class},
+        };
     }
 
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_print_invalidPositionTooBig() throws Exception {
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        pp.parse(parseContext, "Monday", 7);
+    @Test(dataProvider="error")
+    public void test_parse_error(TextPrinterParser pp, String text, int pos, Class<?> expected) {
+        try {
+            pp.parse(parseContext, text, pos);
+        } catch (RuntimeException ex) {
+            assertTrue(expected.isInstance(ex));
+            assertEquals(parseContext.getParsedRules().size(), 0);
+        }
     }
 
     //-----------------------------------------------------------------------

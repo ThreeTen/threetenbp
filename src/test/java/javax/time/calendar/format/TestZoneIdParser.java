@@ -32,6 +32,7 @@
 package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Set;
 
@@ -52,16 +53,22 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
     private static final ZoneId TIME_ZONE_DENVER = ZoneId.of(AMERICA_DENVER);
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_parse_negativePosition() throws Exception {
-        ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        pp.parse(parseContext, "hello", -1);
+    @DataProvider(name="error")
+    Object[][] data_error() {
+        return new Object[][] {
+            {new ZoneIdPrinterParser(), "hello", -1, IndexOutOfBoundsException.class},
+            {new ZoneIdPrinterParser(), "hello", 6, IndexOutOfBoundsException.class},
+        };
     }
 
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_parse_offEndPosition() throws Exception {
-        ZoneIdPrinterParser pp = new ZoneIdPrinterParser();
-        pp.parse(parseContext, "hello", 6);
+    @Test(dataProvider="error")
+    public void test_parse_error(ZoneIdPrinterParser pp, String text, int pos, Class<?> expected) {
+        try {
+            pp.parse(parseContext, text, pos);
+        } catch (RuntimeException ex) {
+            assertTrue(expected.isInstance(ex));
+            assertEquals(parseContext.getParsedRules().size(), 0);
+        }
     }
 
     //-----------------------------------------------------------------------
