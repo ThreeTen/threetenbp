@@ -176,72 +176,47 @@ public abstract class CalendricalRule<T>
         return value;
     }
 
-//    /**
-//     * Derives the value of this rule from a calendrical.
-//     * <p>
-//     * This method derives the value for this field from other fields in the calendrical
-//     * without directly querying the calendrical for the value.
-//     * <p>
-//     * For example, if this field is quarter-of-year, then the value can be derived
-//     * from month-of-year.
-//     * <p>
-//     * The implementation only needs to derive the value based on its immediate parents.
-//     * The use of {@link Calendrical#get} will extract any further parents on demand.
-//     * <p>
-//     * A typical implementation of this method obtains the parent value and performs a calculation.
-//     * For example, here is a simple implementation for the quarter-of-year field:
-//     * <pre>
-//     * Integer moyVal = calendrical.get(ISODateTimeRule.MONTH_OF_YEAR);
-//     * return (moyVal != null ? ((moyVal - 1) % 4) + 1) : null;
-//     * </pre>
-//     * <p>
-//     * This method is designed to be overridden in subclasses.
-//     * The subclass implementation must be thread-safe.
-//     * The subclass implementation must not request the value of this rule from
-//     * the specified calendrical, otherwise a stack overflow error will occur.
-//     *
-//     * @param calendrical  the calendrical to derive from, not null
-//     * @return the derived value, null if unable to derive
-//     */
-
-//    /**
-//     * Merges this field with other fields to form higher level fields.
-//     * <p>
-//     * The aim of this method is to assist in the process of extracting the most
-//     * date-time information possible from a map of field-value pairs.
-//     * The merging process is controlled by the mutable merger instance and
-//     * the input and output of the this merge are held there.
-//     * <p>
-//     * Subclasses that override this method may use methods on the merger to
-//     * obtain the values to merge. The value is guaranteed to be available for
-//     * this field if this method is called.
-//     * <p>
-//     * If the override successfully merged some fields then the following must be performed.
-//     * The merged field must be stored using {@link CalendricalMerger#storeMerged}.
-//     * Each field used in the merge must be marked as being used by calling
-//     * {@link CalendricalMerger#removeProcessed}.
-//     * <p>
-//     * An example to merge two fields into one - hour of AM/PM and AM/PM:
-//     * <pre>
-//     *  Integer hapVal = merger.getValue(ISODateTimeRule.HOUR_OF_AMPM);
-//     *  if (hapVal != null) {
-//     *    AmPmOfDay amPm = merger.getValue(this);
-//     *    int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
-//     *    merger.storeMerged(ISODateTimeRule.HOUR_OF_DAY, hourOfDay);
-//     *    merger.removeProcessed(this);
-//     *    merger.removeProcessed(ISODateTimeRule.HOUR_OF_AMPM);
-//     *  }
-//     * </pre>
-//     *
-//     * @param merger  the merger instance controlling the merge process, not null
-//     */
-
-
-    public void merge(CalendricalNormalizer merger, List<CalendricalNormalizer> mergers) {
+    //-------------------------------------------------------------------------
+    /**
+     * Override point to affect the merging process.
+     * <p>
+     * This method is called during merging on the rule associated with each semi-normalized merger.
+     * The implementation has the opportunity to adjust the mergers, potentially handling
+     * any conflicts. For example, the {@code OffsetTime} rule could check to see if there
+     * is an {@code OffsetDate} with a conflicting offset, and adjust the time accordingly.
+     * 
+     * @param merger  the merger that was created from an instance of the object associated with this rule, not null
+     * @param mergers  all the mergers being processed, unmodifiable, but containing modifiable mergers, not null
+     */
+    protected void merge(CalendricalNormalizer merger, List<CalendricalNormalizer> mergers) {
+        // override to alter the merge process
     }
 
+    /**
+     * Override point to derive the value for this rule from the merger.
+     * <p>
+     * This is part of the merge process, which exists to extract the maximum
+     * information possible from a set calendrical data. Before this method is
+     * called, the merger will be normalized, which ensures that any fields that can be
+     * converted to objects will have been. Thus this method is primarily used
+     * to create objects from the normalized form.
+     * <p>
+     * A typical implementation will check the objects and determine if the value can be
+     * derived from them. For example, a {@code LocalDateTime} can be derived from a
+     * {@code LocalDate} and a {@code LocalTime}.
+     * In general, only the objects should be used for derivation, as derivation from any
+     * remaining fields is handled directly by the merger.
+     * <p>
+     * Implementations should avoid throwing exceptions and use the merger error mechanism instead.
+     * It is strongly recommended to treat the data in the merger as immutable.
+     * <p>
+     * This implementation uses {@link CalendricalNormalizer#getFieldDerived}
+     * 
+     * @param merger  the merger to process, not null
+     * @return the derived field, null if unable to derive
+     */
     protected T deriveFrom(CalendricalNormalizer merger) {
-        return null;
+        return null;  // override to derive the value from the normalized form
     }
 
     //-----------------------------------------------------------------------

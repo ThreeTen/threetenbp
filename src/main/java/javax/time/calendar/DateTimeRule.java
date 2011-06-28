@@ -307,33 +307,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         // override to normalize fields to objects
     }
 
-    /**
-     * Override point to derive the field for this rule from the merger.
-     * <p>
-     * This is part of the merge process, which exists to extract the maximum
-     * information possible from a set calendrical data. Before this method is
-     * called, the merger will be {@link #normalize normalized}.
-     * This method is then called to extract information from the objects of the normalized form.
-     * <p>
-     * A typical implementation will check the objects and determine if the field can be
-     * derived from them. For example, the year can be derived from a {@code LocalDate}.
-     * In general, only the objects should be used for derivation, as any remaining fields
-     * are handled by the merger.
-     * <p>
-     * Implementations should avoid throwing exceptions and should avoid adding errors to the merger.
-     * It is strongly recommended to treat the merger as immutable.
-     * <p>
-     * This implementation uses {@link CalendricalNormalizer#getFieldDerived}
-     * 
-     * @param merger  the merger to process, not null
-     * @return the derived field, null if unable to derive
-     */
-    @Override
-    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-        // override to derive field from objects
-        return null;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the base rule that this rule is related to.
