@@ -19,7 +19,7 @@ import java.util.zip.ZipFile;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
@@ -379,6 +379,17 @@ public final class HijrahDate
      */
     private final transient boolean isLeapYear;
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code HijrahDate}.
+     *
+     * @return the rule for the date, never null
+     */
+    public static CalendricalRule<HijrahDate> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-------------------------------------------------------------------------
     /**
      * Obtains an instance of {@code HijrahDate} from the Hijrah era year,
      * month-of-year and day-of-month. This uses the Hijrah era.
@@ -497,7 +508,7 @@ public final class HijrahDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, HijrahChronology.INSTANCE);
+        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -1903,16 +1914,6 @@ public final class HijrahDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code HijrahDate}.
-     *
-     * @return the rule for the date, never null
-     */
-    public static CalendricalRule<HijrahDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Rule implementation.
      */
     static final class Rule extends CalendricalRule<HijrahDate> implements Serializable {
@@ -1925,15 +1926,9 @@ public final class HijrahDate
             return INSTANCE;
         }
         @Override
-        protected HijrahDate derive(Calendrical calendrical) {
-            LocalDate ld = calendrical.get(LocalDate.rule());
+        protected HijrahDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate ld = merger.getDate(true);
             return ld != null ? HijrahDate.of(ld) : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            HijrahDate date = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-            merger.removeProcessed(this);
         }
     }
 

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
@@ -53,6 +53,16 @@ public final class MinguoDate
      * The underlying date.
      */
     private final LocalDate date;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code MinguoDate}.
+     *
+     * @return the rule for the date, never null
+     */
+    public static CalendricalRule<MinguoDate> rule() {
+        return Rule.INSTANCE;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -171,7 +181,7 @@ public final class MinguoDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, MinguoChronology.INSTANCE);
+        return CalendricalNormalizer.derive(rule, rule(), date, null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -583,16 +593,6 @@ public final class MinguoDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code MinguoDate}.
-     *
-     * @return the rule for the date, never null
-     */
-    public static CalendricalRule<MinguoDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Rule implementation.
      */
     static final class Rule extends CalendricalRule<MinguoDate> implements Serializable {
@@ -605,15 +605,9 @@ public final class MinguoDate
             return INSTANCE;
         }
         @Override
-        protected MinguoDate derive(Calendrical calendrical) {
-            LocalDate ld = calendrical.get(LocalDate.rule());
+        protected MinguoDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate ld = merger.getDate(true);
             return ld != null ? MinguoDate.of(ld) : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            MinguoDate date = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-            merger.removeProcessed(this);
         }
     }
 
