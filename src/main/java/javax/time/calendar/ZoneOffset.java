@@ -32,10 +32,8 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.time.CalendricalException;
 
@@ -76,11 +74,9 @@ public final class ZoneOffset
         implements Calendrical, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
-    private static final ReadWriteLock CACHE_LOCK = new ReentrantReadWriteLock();
-    /** Cache of time-zone offset by offset in seconds. */
-    private static final Map<Integer, ZoneOffset> SECONDS_CACHE = new HashMap<Integer, ZoneOffset>();
+    private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
     /** Cache of time-zone offset by id. */
-    private static final Map<String, ZoneOffset> ID_CACHE = new HashMap<String, ZoneOffset>();
+    private static final ConcurrentMap<String, ZoneOffset> ID_CACHE = new ConcurrentHashMap<String, ZoneOffset>(16, 0.75f, 4);
 
     /**
      * The time-zone offset for UTC, with an id of 'Z'.
@@ -156,14 +152,9 @@ public final class ZoneOffset
             throw new NullPointerException("The offset ID must not be null");
         }
         // "Z" is always in the cache
-        CACHE_LOCK.readLock().lock();
-        try {
-            ZoneOffset offset = ID_CACHE.get(offsetID);
-            if (offset != null) {
-                return offset;
-            }
-        } finally {
-            CACHE_LOCK.readLock().unlock();
+        ZoneOffset offset = ID_CACHE.get(offsetID);
+        if (offset != null) {
+            return offset;
         }
         
         // parse - +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
@@ -362,27 +353,14 @@ public final class ZoneOffset
         }
         if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
             Integer totalSecs = totalSeconds;
-            CACHE_LOCK.readLock().lock();
-            try {
-                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-                if (result != null) {
-                    return result;
-                }
-            } finally {
-                CACHE_LOCK.readLock().unlock();
+            ZoneOffset result = SECONDS_CACHE.get(totalSecs);
+            if (result == null) {
+                result = new ZoneOffset(totalSeconds);
+                SECONDS_CACHE.putIfAbsent(totalSecs, result);
+                result = SECONDS_CACHE.get(totalSecs);
+                ID_CACHE.putIfAbsent(result.getID(), result);
             }
-            CACHE_LOCK.writeLock().lock();
-            try {
-                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-                if (result == null) {
-                    result = new ZoneOffset(totalSeconds);
-                    SECONDS_CACHE.put(totalSecs, result);
-                    ID_CACHE.put(result.getID(), result);
-                }
-                return result;
-            } finally {
-                CACHE_LOCK.writeLock().unlock();
-            }
+            return result;
         } else {
             return new ZoneOffset(totalSeconds);
         }
