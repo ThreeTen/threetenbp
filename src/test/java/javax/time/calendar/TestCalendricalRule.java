@@ -46,8 +46,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.time.calendar.format.MockSimpleCalendrical;
-
 import org.testng.annotations.Test;
 
 /**
@@ -171,13 +169,13 @@ public class TestCalendricalRule {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_comparator_combinations_noValue1() {
         Year year2008 = Year.of(2008);
-        assertEquals(MockBigYearRule.INSTANCE.compare(year2008, new MockSimpleCalendrical()), -1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(year2008, DateTimeFields.EMPTY), -1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_comparator_combinations_noValue2() {
         Year year2008 = Year.of(2008);
-        assertEquals(MockBigYearRule.INSTANCE.compare(new MockSimpleCalendrical(), year2008), 1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(DateTimeFields.EMPTY, year2008), 1);
     }
 
     //-----------------------------------------------------------------------

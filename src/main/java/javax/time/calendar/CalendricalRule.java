@@ -35,8 +35,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.time.CalendricalException;
-
 /**
  * A rule defining how a single well-defined calendrical element operates.
  * <p>
@@ -61,13 +59,6 @@ import javax.time.CalendricalException;
  */
 public abstract class CalendricalRule<T>
         implements Comparator<Calendrical>, Serializable {
-
-    public void merge(CalendricalNormalizer merger, List<CalendricalNormalizer> mergers) {
-    }
-
-    protected T deriveFrom(CalendricalNormalizer merger) {
-        return null;
-    }
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
@@ -185,167 +176,72 @@ public abstract class CalendricalRule<T>
         return value;
     }
 
-    /**
-     * Derives the value of the specified rule from a calendrical.
-     * <p>
-     * This method is provided for implementations of {@link Calendrical#get}
-     * and is rarely called directly by application code. It is used when the
-     * calendrical has its own rule, and this method is called on the rule of the
-     * calendrical implementation, not the rule passed into the {@code get} method.
-     * <pre>
-     *   public <T> T get(CalendricalRule<T> rule) {
-     *     return IMPLEMENTATION_RULE.deriveValueFor(rule, this, this);
-     *   }
-     * </pre>
-     * The last parameter in the code snippet above is always {@code this}, however
-     * the second parameter may be a different representation, for example in {@link Year#get}.
-     * <p>
-     * If this rule and the specified rule are the same, then the value is returned.
-     * Otherwise, an attempt is made to {@link #derive} the field value.
-     *
-     * @param rule  the rule to retrieve, not null
-     * @param value  the value to return if this rule is the specified rule, not null
-     * @param calendrical  the calendrical to get the value from, not null
-     * @param chronology  the chronology the value belongs to, null if chronology neutral
-     * @return the value, null if unable to derive the value
-     */
-    public final <R> R deriveValueFor(CalendricalRule<R> rule, T value, Calendrical calendrical, Chronology chronology) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        ISOChronology.checkNotNull(value, "Value must not be null");
-        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
-        if (rule.equals(this)) {
-            return rule.reify(value);
-        }
-        if (rule.equals(Chronology.rule())) {
-            return rule.reify(chronology);
-        }
-        return rule.derive(calendrical);
+//    /**
+//     * Derives the value of this rule from a calendrical.
+//     * <p>
+//     * This method derives the value for this field from other fields in the calendrical
+//     * without directly querying the calendrical for the value.
+//     * <p>
+//     * For example, if this field is quarter-of-year, then the value can be derived
+//     * from month-of-year.
+//     * <p>
+//     * The implementation only needs to derive the value based on its immediate parents.
+//     * The use of {@link Calendrical#get} will extract any further parents on demand.
+//     * <p>
+//     * A typical implementation of this method obtains the parent value and performs a calculation.
+//     * For example, here is a simple implementation for the quarter-of-year field:
+//     * <pre>
+//     * Integer moyVal = calendrical.get(ISODateTimeRule.MONTH_OF_YEAR);
+//     * return (moyVal != null ? ((moyVal - 1) % 4) + 1) : null;
+//     * </pre>
+//     * <p>
+//     * This method is designed to be overridden in subclasses.
+//     * The subclass implementation must be thread-safe.
+//     * The subclass implementation must not request the value of this rule from
+//     * the specified calendrical, otherwise a stack overflow error will occur.
+//     *
+//     * @param calendrical  the calendrical to derive from, not null
+//     * @return the derived value, null if unable to derive
+//     */
+
+//    /**
+//     * Merges this field with other fields to form higher level fields.
+//     * <p>
+//     * The aim of this method is to assist in the process of extracting the most
+//     * date-time information possible from a map of field-value pairs.
+//     * The merging process is controlled by the mutable merger instance and
+//     * the input and output of the this merge are held there.
+//     * <p>
+//     * Subclasses that override this method may use methods on the merger to
+//     * obtain the values to merge. The value is guaranteed to be available for
+//     * this field if this method is called.
+//     * <p>
+//     * If the override successfully merged some fields then the following must be performed.
+//     * The merged field must be stored using {@link CalendricalMerger#storeMerged}.
+//     * Each field used in the merge must be marked as being used by calling
+//     * {@link CalendricalMerger#removeProcessed}.
+//     * <p>
+//     * An example to merge two fields into one - hour of AM/PM and AM/PM:
+//     * <pre>
+//     *  Integer hapVal = merger.getValue(ISODateTimeRule.HOUR_OF_AMPM);
+//     *  if (hapVal != null) {
+//     *    AmPmOfDay amPm = merger.getValue(this);
+//     *    int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
+//     *    merger.storeMerged(ISODateTimeRule.HOUR_OF_DAY, hourOfDay);
+//     *    merger.removeProcessed(this);
+//     *    merger.removeProcessed(ISODateTimeRule.HOUR_OF_AMPM);
+//     *  }
+//     * </pre>
+//     *
+//     * @param merger  the merger instance controlling the merge process, not null
+//     */
+
+
+    public void merge(CalendricalNormalizer merger, List<CalendricalNormalizer> mergers) {
     }
 
-    /**
-     * Derives the value of this rule from a calendrical.
-     * <p>
-     * This method is provided for implementations of {@link Calendrical#get}
-     * and is rarely called directly by application code. It is used when the
-     * calendrical has its own values but does not have its own rule.
-     * <pre>
-     *   public <T> T get(CalendricalRule<T> rule) {
-     *     // return data, for example
-     *     if (rule.equals(...)) {
-     *       return valueForRule;
-     *     }
-     *     // call this method
-     *     return rule.deriveValueFrom(this);
-     *   }
-     * </pre>
-     *
-     * @param calendrical  the calendrical to get the value from, not null
-     * @return the value, null if unable to derive the value
-     */
-    public final T deriveValueFrom(Calendrical calendrical) {
-        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
-        return derive(calendrical);
-    }
-
-    /**
-     * Derives the value of this rule from a calendrical.
-     * <p>
-     * This method derives the value for this field from other fields in the calendrical
-     * without directly querying the calendrical for the value.
-     * <p>
-     * For example, if this field is quarter-of-year, then the value can be derived
-     * from month-of-year.
-     * <p>
-     * The implementation only needs to derive the value based on its immediate parents.
-     * The use of {@link Calendrical#get} will extract any further parents on demand.
-     * <p>
-     * A typical implementation of this method obtains the parent value and performs a calculation.
-     * For example, here is a simple implementation for the quarter-of-year field:
-     * <pre>
-     * Integer moyVal = calendrical.get(ISODateTimeRule.MONTH_OF_YEAR);
-     * return (moyVal != null ? ((moyVal - 1) % 4) + 1) : null;
-     * </pre>
-     * <p>
-     * This method is designed to be overridden in subclasses.
-     * The subclass implementation must be thread-safe.
-     * The subclass implementation must not request the value of this rule from
-     * the specified calendrical, otherwise a stack overflow error will occur.
-     *
-     * @param calendrical  the calendrical to derive from, not null
-     * @return the derived value, null if unable to derive
-     */
-    protected T derive(Calendrical calendrical) {
-        return null;  // do nothing - override if this field can derive
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Interprets the specified value converting it into an in range value of the
-     * correct type for this rule.
-     *
-     * @param merger  the merger instance controlling the merge process, not null
-     * @param value  the value to interpret, not null
-     */
-    final T interpretValue(CalendricalMerger merger, Object value) {
-        if (type.isInstance(value)) {
-            return reify(value);
-        }
-        T result = interpret(merger, value);
-        if (result != null) {
-            return result;
-        }
-        throw new CalendricalException("Unable to complete merge as input contains an unknown type " +
-                " for rule '" + getName() + "': " + value.getClass().getName());
-    }
-
-    /**
-     * Interprets the specified value converting it into an in range value of the
-     * correct type for this rule.
-     * <p>
-     * Before this method is called, the value will be checked to ensure it is not of
-     * the type of this rule.
-     *
-     * @param merger  the merger instance controlling the merge process, not null
-     * @param value  the value to interpret, null if unable to interpret the value
-     * @return the interpreted value
-     */
-    protected T interpret(CalendricalMerger merger, Object value) {
+    protected T deriveFrom(CalendricalNormalizer merger) {
         return null;
-    }
-
-    /**
-     * Merges this field with other fields to form higher level fields.
-     * <p>
-     * The aim of this method is to assist in the process of extracting the most
-     * date-time information possible from a map of field-value pairs.
-     * The merging process is controlled by the mutable merger instance and
-     * the input and output of the this merge are held there.
-     * <p>
-     * Subclasses that override this method may use methods on the merger to
-     * obtain the values to merge. The value is guaranteed to be available for
-     * this field if this method is called.
-     * <p>
-     * If the override successfully merged some fields then the following must be performed.
-     * The merged field must be stored using {@link CalendricalMerger#storeMerged}.
-     * Each field used in the merge must be marked as being used by calling
-     * {@link CalendricalMerger#removeProcessed}.
-     * <p>
-     * An example to merge two fields into one - hour of AM/PM and AM/PM:
-     * <pre>
-     *  Integer hapVal = merger.getValue(ISODateTimeRule.HOUR_OF_AMPM);
-     *  if (hapVal != null) {
-     *    AmPmOfDay amPm = merger.getValue(this);
-     *    int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
-     *    merger.storeMerged(ISODateTimeRule.HOUR_OF_DAY, hourOfDay);
-     *    merger.removeProcessed(this);
-     *    merger.removeProcessed(ISODateTimeRule.HOUR_OF_AMPM);
-     *  }
-     * </pre>
-     *
-     * @param merger  the merger instance controlling the merge process, not null
-     */
-    protected void merge(CalendricalMerger merger) {
-        // do nothing - override if this rule can merge data to a more significant rule
     }
 
     //-----------------------------------------------------------------------

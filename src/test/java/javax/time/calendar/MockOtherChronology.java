@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -42,8 +42,6 @@ public final class MockOtherChronology extends Chronology {
 
     /** Singleton instance. */
     public static final MockOtherChronology INSTANCE = new MockOtherChronology();
-    /** A serialization identifier for this class. */
-    private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockOtherChronology() {
     }

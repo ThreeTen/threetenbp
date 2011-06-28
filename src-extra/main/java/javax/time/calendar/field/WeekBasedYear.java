@@ -38,10 +38,10 @@ import java.io.Serializable;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
@@ -162,8 +162,12 @@ public final class WeekBasedYear
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(weekyear), this, ISOChronology.INSTANCE);
+        if (rule == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(rule, rule(), rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

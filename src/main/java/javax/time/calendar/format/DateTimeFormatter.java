@@ -40,7 +40,6 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 
@@ -351,7 +350,7 @@ public final class DateTimeFormatter {
      * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
      * The {@link Format} instance will print any {@link Calendrical}
-     * and parses to a merged {@link CalendricalMerger}.
+     * and parses to a merged {@link CalendricalNormalizer}.
      * <p>
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the

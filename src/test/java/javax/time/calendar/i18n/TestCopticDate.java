@@ -49,13 +49,13 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalRuleException;
 import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -164,7 +164,7 @@ public class TestCopticDate {
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void factory_of_Calendrical_noData() throws Exception {
-        CopticDate.of(new MockSimpleCalendrical());
+        CopticDate.of(DateTimeFields.EMPTY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

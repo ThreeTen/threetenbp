@@ -50,7 +50,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;

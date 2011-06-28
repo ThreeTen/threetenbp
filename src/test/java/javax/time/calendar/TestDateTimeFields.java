@@ -1006,9 +1006,9 @@ public class TestDateTimeFields {
         return DateTimeFields.of(DateTimeField.of(r1, v1), DateTimeField.of(r2, v2), DateTimeField.of(r3, v3));
     }
 
-    private DateTimeFields dtf(DateTimeRule r1, long v1, DateTimeRule r2, long v2, DateTimeRule r3, long v3, DateTimeRule r4, long v4) {
-        return DateTimeFields.of(DateTimeField.of(r1, v1), DateTimeField.of(r2, v2), DateTimeField.of(r3, v3), DateTimeField.of(r4, v4));
-    }
+//    private DateTimeFields dtf(DateTimeRule r1, long v1, DateTimeRule r2, long v2, DateTimeRule r3, long v3, DateTimeRule r4, long v4) {
+//        return DateTimeFields.of(DateTimeField.of(r1, v1), DateTimeField.of(r2, v2), DateTimeField.of(r3, v3), DateTimeField.of(r4, v4));
+//    }
 
     private void assertFields(
             DateTimeFields fields,

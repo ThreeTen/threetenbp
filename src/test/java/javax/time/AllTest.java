@@ -35,7 +35,6 @@ import java.util.Arrays;
 
 import javax.time.calendar.TestAmPmOfDay;
 import javax.time.calendar.TestCalendricalMatchers;
-import javax.time.calendar.TestCalendricalMerger;
 import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
@@ -152,7 +151,6 @@ public class AllTest {
             TestUTCRules.class,
             // calendar classes
             TestAmPmOfDay.class,
-            TestCalendricalMerger.class,
             TestCalendricalMatchers.class,
             TestCalendricalRule.class,
             TestClock.class,

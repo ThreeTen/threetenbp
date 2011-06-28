@@ -73,10 +73,10 @@ public class Performance {
         LocalTime time = LocalTime.of(12, 30, 20);
         System.out.println(time);
         
-//        List<LocalDateTime> jsrs = setupDateTime();
-//        queryListDateTime(jsrs);
-//        formatListDateTime(jsrs);
-//        sortListDateTime(jsrs);
+        List<LocalDateTime> jsrs = setupDateTime();
+        queryListDateTime(jsrs);
+        formatListDateTime(jsrs);
+        sortListDateTime(jsrs);
 
         List<ZonedDateTime> zdt = setupZonedDateTime();
         queryListZonedDateTime(zdt);
@@ -89,10 +89,10 @@ public class Performance {
 //        queryList(times);
 //        formatList(dates);
 
-//        List<GregorianCalendar> gcals = setupGCal();
-//        queryListGCal(gcals);
-//        formatListGCal(gcals);
-//        sortListGCal(gcals);
+        List<GregorianCalendar> gcals = setupGCal();
+        queryListGCal(gcals);
+        formatListGCal(gcals);
+        sortListGCal(gcals);
         
     }
 

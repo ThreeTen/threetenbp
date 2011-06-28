@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateProvider;
@@ -258,10 +259,7 @@ public final class ChronologyDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> rule) {
-        if (rule.equals(LocalDate.rule())) {  // NPE check
-            return rule.reify(date);
-        }
-        return chrono.dateRule().deriveValueFor(rule, this, this, chrono);
+        return CalendricalNormalizer.derive(rule, chrono.dateRule(), date, null, null, null, chrono, null);
     }
 
     //-----------------------------------------------------------------------

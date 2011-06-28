@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateTimeField;
@@ -164,8 +165,12 @@ public final class DayOfYear
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(dayOfYear), this, ISOChronology.INSTANCE);
+        if (rule == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(rule, rule(), rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
@@ -393,9 +392,9 @@ public final class HistoricChronology extends Chronology implements Serializable
             super("HistoricEra", periodEras(), null, 0, 1, null);
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            HistoricDate cd = calendrical.get(HistoricDate.rule());
-            return cd != null ? field(cd.getEra().getValue()) : null;
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            HistoricDate date = merger.derive(HistoricDate.rule());
+            return date != null ? field(date.getEra().getValue()) : null;
         }
     }
 
