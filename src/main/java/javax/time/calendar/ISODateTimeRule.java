@@ -275,7 +275,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
                     case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
                     case YEAR_ORDINAL: return field(date.getYear());
-                    case EPOCH_YEAR_ORDINAL: return field(date.getYear());
                 }
             }
         } else {
@@ -409,11 +408,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static final int ALIGNED_WEEK_OF_YEAR_ORDINAL = 26 * 16;
     private static final int MONTH_OF_QUARTER_ORDINAL =     27 * 16;
     private static final int MONTH_OF_YEAR_ORDINAL =        28 * 16;
-    private static final int ZERO_EPOCH_MONTH_ORDINAL =          29 * 16;
+    private static final int ZERO_EPOCH_MONTH_ORDINAL =     29 * 16;
     private static final int QUARTER_OF_YEAR_ORDINAL =      30 * 16;
     private static final int WEEK_BASED_YEAR_ORDINAL =      31 * 16;
     private static final int YEAR_ORDINAL =                 32 * 16;
-    private static final int EPOCH_YEAR_ORDINAL =           33 * 16;
 
     //-----------------------------------------------------------------------
     /**
