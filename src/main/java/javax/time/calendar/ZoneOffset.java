@@ -155,6 +155,7 @@ public final class ZoneOffset
         if (offsetID == null) {
             throw new NullPointerException("The offset ID must not be null");
         }
+        // "Z" is always in the cache
         CACHE_LOCK.readLock().lock();
         try {
             ZoneOffset offset = ID_CACHE.get(offsetID);
@@ -165,10 +166,7 @@ public final class ZoneOffset
             CACHE_LOCK.readLock().unlock();
         }
         
-//        // parse - Z, +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
-//        if (offsetID.equals("Z")) {
-//            return UTC;
-//        }
+        // parse - +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
         final int hours, minutes, seconds;
         int len = offsetID.length();
         switch (len) {
