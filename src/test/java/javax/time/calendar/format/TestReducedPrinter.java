@@ -37,8 +37,8 @@ import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -52,7 +52,7 @@ import org.testng.annotations.Test;
 public class TestReducedPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_print_emptyCalendrical() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(YEAR, 2, 2010);
         pp.print(printEmptyContext, buf);

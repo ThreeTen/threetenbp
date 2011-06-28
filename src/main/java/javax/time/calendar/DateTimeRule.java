@@ -471,13 +471,12 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      *
      * @param fraction  the fraction to convert, not null
      * @return the value of the field, valid for this rule
-     * @throws UnsupportedRuleException if the value cannot be converted
-     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @throws CalendricalException if the value cannot be converted
      */
     public long convertFromFraction(BigDecimal fraction) {
         DateTimeRuleRange range = getValueRange();
         if (range.isFixed() == false) {
-            throw new UnsupportedRuleException("The fractional value of " + getName() +
+            throw new CalendricalRuleException("The fractional value of " + getName() +
                     " cannot be converted as the range is not fixed", this);
         }
         BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());

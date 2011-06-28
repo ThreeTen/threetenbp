@@ -3,12 +3,12 @@
  */
 package javax.time.i18n;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Defines the valid eras for the Thai Buddhist calendar system.
@@ -77,7 +77,7 @@ public enum ThaiBuddhistEra implements Calendrical {
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the ThaiBuddhistEra enum instance, never null
-     * @throws UnsupportedRuleException if the era cannot be obtained
+     * @throws CalendricalException if the era cannot be obtained
      */
     public static ThaiBuddhistEra of(Calendrical calendrical) {
         return of(rule().getValueChecked(calendrical).getValidIntValue());

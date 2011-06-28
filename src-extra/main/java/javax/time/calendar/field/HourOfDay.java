@@ -37,6 +37,7 @@ import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.AmPmOfDay;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
@@ -47,7 +48,6 @@ import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a hour-of-day in the ISO-8601 calendar system.
@@ -137,7 +137,7 @@ public final class HourOfDay
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the HourOfDay instance, never null
-     * @throws UnsupportedRuleException if the hour-of-day cannot be obtained
+     * @throws CalendricalException if the hour-of-day cannot be obtained
      */
     public static HourOfDay hourOfDay(Calendrical calendrical) {
         return hourOfDay(rule().getValueChecked(calendrical).getValidIntValue());

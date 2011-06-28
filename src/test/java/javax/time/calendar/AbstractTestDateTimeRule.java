@@ -44,6 +44,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.Test;
@@ -189,7 +190,7 @@ public abstract class AbstractTestDateTimeRule {
         assertEquals(rule().getValueChecked(testingCalendrical), DateTimeField.of(rule(), testingValue));
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_getValueChecked_Calendrical_cannotDerive() {
         Calendrical cal = new MockSimpleCalendrical();
         rule().getValueChecked(cal);

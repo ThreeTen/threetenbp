@@ -36,6 +36,7 @@ import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalNormalizer;
@@ -43,7 +44,6 @@ import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a week of week-based-year in the ISO-8601 calendar system.
@@ -127,7 +127,7 @@ public final class WeekOfWeekBasedYear
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the WeekOfWeekBasedYear instance, never null
-     * @throws UnsupportedRuleException if the week-of-week-based-year cannot be obtained
+     * @throws CalendricalException if the week-of-week-based-year cannot be obtained
      */
     public static WeekOfWeekBasedYear weekOfWeekBasedYear(Calendrical calendrical) {
         return weekOfWeekBasedYear(rule().getValueChecked(calendrical).getValidIntValue());

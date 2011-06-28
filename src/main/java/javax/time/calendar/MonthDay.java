@@ -188,8 +188,7 @@ public final class MonthDay
      *
      * @param calendrical  the calendrical to use, not null
      * @return the month-day, not null
-     * @throws UnsupportedRuleException if either field cannot be found
-     * @throws InvalidCalendarFieldException if the value for either field is invalid
+     * @throws CalendricalException if the month-day cannot be obtained
      */
     public static MonthDay of(Calendrical calendrical) {
         DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);

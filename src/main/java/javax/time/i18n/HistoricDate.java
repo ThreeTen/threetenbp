@@ -33,6 +33,7 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
@@ -42,7 +43,6 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A date in the Historic calendar system.
@@ -163,7 +163,7 @@ public final class HistoricDate
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the Historic date, not null
-     * @throws UnsupportedRuleException if the day-of-week cannot be obtained
+     * @throws CalendricalException if the day-of-week cannot be obtained
      */
     public static HistoricDate of(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
@@ -246,14 +246,14 @@ public final class HistoricDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendar field.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date then
+     * {@code null} will be returned.
      *
-     * @param rule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedRuleException if no value for the field is found
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {

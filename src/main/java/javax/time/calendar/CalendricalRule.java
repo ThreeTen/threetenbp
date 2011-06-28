@@ -166,12 +166,12 @@ public abstract class CalendricalRule<T>
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, not null
-     * @throws UnsupportedRuleException if the rule cannot be extracted
+     * @throws CalendricalException if the rule cannot be extracted
      */
     public final T getValueChecked(Calendrical calendrical) {
         T value = getValue(calendrical);
         if (value == null) {
-            throw new UnsupportedRuleException(this);
+            throw new CalendricalRuleException("Unable to obtain " + getName() + " from " + calendrical, this);
         }
         return value;
     }

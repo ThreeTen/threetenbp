@@ -36,6 +36,7 @@ import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalNormalizer;
@@ -44,7 +45,6 @@ import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a nano-of-second in the ISO-8601 calendar system.
@@ -113,7 +113,7 @@ public final class NanoOfSecond
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the NanoOfSecond instance, never null
-     * @throws UnsupportedRuleException if the nano-of-second cannot be obtained
+     * @throws CalendricalException if the nano-of-second cannot be obtained
      */
     public static NanoOfSecond nanoOfSecond(Calendrical calendrical) {
         return nanoOfSecond(rule().getValueChecked(calendrical).getValidIntValue());

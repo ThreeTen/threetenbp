@@ -38,6 +38,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -165,8 +166,7 @@ public final class YearMonth
      *
      * @param calendrical  the calendrical to use, not null
      * @return the year-month, not null
-     * @throws UnsupportedRuleException if either field cannot be found
-     * @throws InvalidCalendarFieldException if the value for either field is invalid
+     * @throws CalendricalException if the year-month cannot be obtained
      */
     public static YearMonth of(Calendrical calendrical) {
         DateTimeField year = YEAR.getValueChecked(calendrical);

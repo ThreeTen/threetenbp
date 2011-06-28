@@ -160,7 +160,7 @@ public final class Year
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the Year instance, not null
-     * @throws UnsupportedRuleException if the year cannot be obtained
+     * @throws CalendricalException if the year cannot be obtained
      */
     public static Year of(Calendrical calendrical) {
         return Year.of(YEAR.getValueChecked(calendrical).getValidIntValue());

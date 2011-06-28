@@ -45,6 +45,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateTimeFields;
@@ -53,7 +54,6 @@ import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -216,7 +216,7 @@ public class TestWeekBasedYear {
     }
 
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_Calendrical_noData() {
         WeekBasedYear.weekBasedYear(DateTimeFields.EMPTY);
     }

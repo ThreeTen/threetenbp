@@ -133,7 +133,7 @@ public class TestYear {
         }
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_Calendrical_unsupported() {
         Year.of(DateTimeFields.EMPTY);
     }

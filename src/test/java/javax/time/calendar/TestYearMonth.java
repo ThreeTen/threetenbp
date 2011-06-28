@@ -240,7 +240,7 @@ public class TestYearMonth {
         assertEquals(YearMonth.of(cal), TEST_2008_06);
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_Calendrical_unsupportedField() {
         Calendrical cal = LocalTime.of(12, 30);
         YearMonth.of(cal);

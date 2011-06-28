@@ -50,6 +50,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
@@ -233,7 +234,7 @@ public class TestMonthDay {
         assertEquals(MonthDay.of(cal), TEST_07_15);
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_Calendrical_unsupportedField() {
         Calendrical cal = LocalTime.of(12, 30);
         MonthDay.of(cal);

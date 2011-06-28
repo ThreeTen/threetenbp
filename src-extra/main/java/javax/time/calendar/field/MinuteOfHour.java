@@ -36,6 +36,7 @@ import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalNormalizer;
@@ -45,7 +46,6 @@ import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a minute-of-hour in the ISO-8601 calendar system.
@@ -121,7 +121,7 @@ public final class MinuteOfHour
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the MinuteOfHour instance, never null
-     * @throws UnsupportedRuleException if the minute-of-hour cannot be obtained
+     * @throws CalendricalException if the minute-of-hour cannot be obtained
      */
     public static MinuteOfHour minuteOfHour(Calendrical calendrical) {
         return minuteOfHour(rule().getValueChecked(calendrical).getValidIntValue());

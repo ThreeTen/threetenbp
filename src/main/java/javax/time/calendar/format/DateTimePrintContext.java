@@ -33,9 +33,9 @@ package javax.time.calendar.format;
 
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Context object used during date and time printing.
@@ -117,7 +117,7 @@ public final class DateTimePrintContext {
      *
      * @param rule  the rue to find, not null
      * @return the value, not null
-     * @throws UnsupportedRuleException if the rule is not available
+     * @throws CalendricalException if the rule is not available
      */
     public <T> T getValueChecked(CalendricalRule<T> rule) {
         return rule.getValueChecked(calendrical);
