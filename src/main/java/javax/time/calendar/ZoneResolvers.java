@@ -70,7 +70,7 @@ public final class ZoneResolvers {
     /**
      * Class implementing strict resolver.
      */
-    private static class Strict extends ZoneResolver {
+    private static final class Strict extends ZoneResolver {
         /** The singleton instance. */
         private static final Strict INSTANCE = new Strict();
         
@@ -108,7 +108,7 @@ public final class ZoneResolvers {
     /**
      * Class implementing preTransition resolver.
      */
-    private static class PreTransition extends ZoneResolver {
+    private static final class PreTransition extends ZoneResolver {
         /** The singleton instance. */
         private static final ZoneResolver INSTANCE = new PreTransition();
         
@@ -143,7 +143,7 @@ public final class ZoneResolvers {
     /**
      * Class implementing postTransition resolver.
      */
-    private static class PostTransition extends ZoneResolver {
+    private static final class PostTransition extends ZoneResolver {
         /** The singleton instance. */
         private static final ZoneResolver INSTANCE = new PostTransition();
         
@@ -177,7 +177,7 @@ public final class ZoneResolvers {
     /**
      * Class implementing postGapPreOverlap resolver.
      */
-    private static class PostGapPreOverlap extends ZoneResolver {
+    private static final class PostGapPreOverlap extends ZoneResolver {
         /** The singleton instance. */
         private static final ZoneResolver INSTANCE = new PostGapPreOverlap();
         
@@ -219,7 +219,7 @@ public final class ZoneResolvers {
     /**
      * Class implementing retain offset resolver.
      */
-    private static class RetainOffset extends ZoneResolver {
+    private static final class RetainOffset extends ZoneResolver {
         /** The singleton instance. */
         private static final ZoneResolver INSTANCE = new RetainOffset();
         
@@ -264,7 +264,7 @@ public final class ZoneResolvers {
     /**
      * Class implementing push forward resolver.
      */
-    private static class PushForward extends ZoneResolver {
+    private static final class PushForward extends ZoneResolver {
         /** The singleton instance. */
         private static final ZoneResolver INSTANCE = new PushForward();
         
@@ -307,7 +307,7 @@ public final class ZoneResolvers {
     /**
      * Class implementing combination resolver.
      */
-    private static class Combination extends ZoneResolver {
+    private static final class Combination extends ZoneResolver {
         /** The gap resolver. */
         private final ZoneResolver gapResolver;
         /** The overlap resolver. */
@@ -318,7 +318,7 @@ public final class ZoneResolvers {
          * @param gapResolver  the resolver to use for a gap, not null
          * @param overlapResolver  the resolver to use for an overlap, not null
          */
-        public Combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
+        Combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
             this.gapResolver = gapResolver;
             this.overlapResolver = overlapResolver;
         }
