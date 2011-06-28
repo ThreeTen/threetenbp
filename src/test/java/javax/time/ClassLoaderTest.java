@@ -31,13 +31,21 @@
  */
 package javax.time;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
+import java.util.zip.ZipInputStream;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZonedDateTime;
@@ -58,6 +66,24 @@ public class ClassLoaderTest {
         a.toString();
         a = Pattern.compile("hello[a-z][^f]{2}");
         a.toString();
+        a = new HashMap().entrySet();
+        a.toString();
+        a = new HashMap().values();
+        a.toString();
+        a = new HashMap().keySet();
+        a.toString();
+        a = new TreeMap().entrySet();
+        a.toString();
+        a = new TreeMap().values();
+        a.toString();
+        a = new TreeMap().keySet();
+        a.toString();
+        try {
+            a = new DataInputStream(new ZipInputStream(new FileInputStream("/a.zip")));
+        } catch (FileNotFoundException ex) {
+            // ignore
+        }
+        a.toString();
         
         System.out.println("************************************************************");
         a = Calendrical.class;
@@ -69,7 +95,13 @@ public class ClassLoaderTest {
         a = LocalDate.class;
         
         System.out.println("************************************************************");
-        LocalDate.of(2011, 12, 20);
+        LocalDate d = LocalDate.of(2011, 12, 20);
+        
+        System.out.println("************************************************************");
+        LocalTime t = LocalTime.of(12, 20);
+        
+        System.out.println("************************************************************");
+        LocalDateTime.of(d, t);
         
         System.out.println("************************************************************");
         new GregorianCalendar();

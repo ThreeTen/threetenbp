@@ -70,18 +70,34 @@ public class Performance {
      * @param args  the arguments
      */
     public static void main(String[] args) {
+        for (int i = 0; i < 5; i++) {
+            System.out.println("-------------------------------------");
+            process();
+        }
+    }
+    public static void process() {
         LocalTime time = LocalTime.of(12, 30, 20);
         System.out.println(time);
         
-        List<LocalDateTime> jsrs = setupDateTime();
-        queryListDateTime(jsrs);
-        formatListDateTime(jsrs);
-        sortListDateTime(jsrs);
+        List<LocalDateTime> ldt = setupDateTime();
+        queryListDateTime(ldt);
+        formatListDateTime(ldt);
+        sortListDateTime(ldt);
 
         List<ZonedDateTime> zdt = setupZonedDateTime();
         queryListZonedDateTime(zdt);
         formatListZonedDateTime(zdt);
         sortListZonedDateTime(zdt);
+
+        List<Instant> instants = setupInstant();
+        queryListInstant(instants);
+        formatListInstant(instants);
+        sortListInstant(instants);
+
+        List<Date> judates = setupDate();
+        queryListDate(judates);
+        formatListDate(judates);
+        sortListDate(judates);
 
 //        List<LocalTime> times = setupTime();
 //        List<LocalDate> dates = setupDate();
@@ -153,9 +169,9 @@ public class Performance {
         List<ZonedDateTime> list = new ArrayList<ZonedDateTime>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            ZonedDateTime t = ZonedDateTime.of(LocalDateTime.of(
+            ZonedDateTime t = ZonedDateTime.of(
                     2008/*random.nextInt(10000)*/, random.nextInt(12) + 1, random.nextInt(28) + 1,
-                    random.nextInt(24), random.nextInt(60), random.nextInt(60)),
+                    random.nextInt(24), random.nextInt(60), random.nextInt(60), 0,
                     tz, ZoneResolvers.postTransition());
             list.add(t);
         }
@@ -196,6 +212,91 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+    }
+
+    //-----------------------------------------------------------------------
+    private static List<Instant> setupInstant() {
+        Random random = new Random(47658758756875687L);
+        List<Instant> list = new ArrayList<Instant>(SIZE);
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            Instant t = Instant.ofEpochMilli(random.nextLong());
+            list.add(t);
+        }
+        long end = System.nanoTime();
+        System.out.println("Instant:   Setup:  " + NF.format(end - start) + " ns");
+        return list;
+    }
+
+    private static void sortListInstant(List<Instant> list) {
+        long start = System.nanoTime();
+        Collections.sort(list);
+        long end = System.nanoTime();
+        System.out.println("Instant:   Sort:   " + NF.format(end - start) + " ns");
+    }
+
+    private static void queryListInstant(List<Instant> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (Instant dt : list) {
+            total += dt.getEpochSecond();
+            total += dt.getNanoOfSecond();
+        }
+        long end = System.nanoTime();
+        System.out.println("Instant:   Query:  " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    private static void formatListInstant(List<Instant> list) {
+        StringBuilder buf = new StringBuilder();
+        long start = System.nanoTime();
+        for (Instant dt : list) {
+            buf.setLength(0);
+            buf.append(dt.toString());
+        }
+        long end = System.nanoTime();
+        System.out.println("Instant:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+    }
+
+    //-----------------------------------------------------------------------
+    private static List<Date> setupDate() {
+        Random random = new Random(47658758756875687L);
+        List<Date> list = new ArrayList<Date>(SIZE);
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            Date t = new Date(random.nextLong());
+            list.add(t);
+        }
+        long end = System.nanoTime();
+        System.out.println("Date:      Setup:  " + NF.format(end - start) + " ns");
+        return list;
+    }
+
+    private static void sortListDate(List<Date> list) {
+        long start = System.nanoTime();
+        Collections.sort(list);
+        long end = System.nanoTime();
+        System.out.println("Date:      Sort:   " + NF.format(end - start) + " ns");
+    }
+
+    private static void queryListDate(List<Date> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (Date dt : list) {
+            total += dt.getTime();
+        }
+        long end = System.nanoTime();
+        System.out.println("Date:      Query:  " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    private static void formatListDate(List<Date> list) {
+        StringBuilder buf = new StringBuilder();
+        long start = System.nanoTime();
+        for (Date dt : list) {
+            buf.setLength(0);
+            buf.append(dt.toString());
+        }
+        long end = System.nanoTime();
+        System.out.println("Date:      Format: " + NF.format(end - start) + " ns" + " " + buf);
     }
 
 //    //-----------------------------------------------------------------------

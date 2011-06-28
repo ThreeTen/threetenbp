@@ -254,8 +254,9 @@ public enum QuarterOfYear implements Calendrical {
             case Q3:
                 return MonthOfYear.JULY;
             case Q4:
-            default:
                 return MonthOfYear.OCTOBER;
+            default:
+                throw new IllegalStateException("Unreachable");
         }
     }
 
