@@ -331,27 +331,11 @@ public class TestYearMonth {
         }
     }
 
-//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-//    public void factory_parse_fail_noDash(String text, int pos) {
-//        if (text.lastIndexOf('-') >= 0) {
-//            text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
-//        }
-//        try {
-//            YearMonth.parse(text);
-//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getParsedString(), text);
-//            assertEquals(ex.getErrorIndex(), pos);
-//            throw ex;
-//        }
-//    }
-
     //-----------------------------------------------------------------------
-    // TODO: Fix code
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void factory_parse_illegalValue_Month() {
-//        YearMonth.parse("2008-13");
-//    }
+    @Test(expectedExceptions=CalendricalParseException.class)
+    public void factory_parse_illegalValue_Month() {
+        YearMonth.parse("2008-13");
+    }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {

@@ -513,7 +513,7 @@ public final class ZonedDateTime
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30+01:00[Europe/Paris]', not null
      * @return the parsed zoned date-time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(String text) {
         return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
@@ -528,7 +528,7 @@ public final class ZonedDateTime
      * @param formatter  the formatter to use, not null
      * @return the parsed zoned date-time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");

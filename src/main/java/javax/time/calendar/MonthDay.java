@@ -228,7 +228,7 @@ public final class MonthDay
      *
      * @param text  the text to parse such as '--12-03', not null
      * @return the parsed month-day, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(String text) {
         return PARSER.parse(text, rule());
@@ -243,7 +243,7 @@ public final class MonthDay
      * @param formatter  the formatter to use, not null
      * @return the parsed month-day, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");

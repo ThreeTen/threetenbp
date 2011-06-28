@@ -488,12 +488,12 @@ public class TestLocalDate extends AbstractTest {
         LocalDate.parse(unparsable);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalValue() {
         LocalDate.parse("2008-06-32");
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidValue() {
         LocalDate.parse("2008-06-31");
     }

@@ -67,7 +67,7 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--2", 0);
         assertEquals(result, 3);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(parseContext.getParsed().size(), 1);
         assertParsed(MONTH_OF_YEAR, 2L);
     }
 
@@ -76,7 +76,7 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--22", 0);
         assertEquals(result, 3);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(parseContext.getParsed().size(), 1);
         assertParsed(MONTH_OF_YEAR, 2L);
     }
 
@@ -85,7 +85,7 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "-1", 0);
         assertEquals(result, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_decoratedErrorPassedBack() throws Exception {
@@ -93,7 +93,7 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
                 null, new NumberPrinterParser(MONTH_OF_YEAR, 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(parseContext, "--A", 0);
         assertEquals(result, ~2);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_decoratedDidNotParseToPadWidth() throws Exception {
@@ -110,7 +110,7 @@ public class TestPadParserDecorator extends AbstractTestPrinterParser {
                 null, new StringLiteralPrinterParser("-HELLO-"), 8, '-');
         int result = pp.parse(parseContext, "--HELLO-", 0);
         assertEquals(result, 8);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     private void assertParsed(DateTimeRule rule, Number value) {

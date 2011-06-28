@@ -346,17 +346,17 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------s
-    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions={CalendricalParseException.class})
     public void factory_parse_illegalHour() {
         OffsetTime.parse("25:00+01:00");
     }
 
-    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions={CalendricalParseException.class})
     public void factory_parse_illegalMinute() {
         OffsetTime.parse("12:60+01:00");
     }
 
-    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions={CalendricalParseException.class})
     public void factory_parse_illegalSecond() {
         OffsetTime.parse("12:12:60+01:00");
     }

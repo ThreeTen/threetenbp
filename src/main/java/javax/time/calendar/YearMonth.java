@@ -207,7 +207,7 @@ public final class YearMonth
      *
      * @param text  the text to parse such as '2007-12', not null
      * @return the parsed year-month, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static YearMonth parse(String text) {
         return PARSER.parse(text, rule());
@@ -222,7 +222,7 @@ public final class YearMonth
      * @param formatter  the formatter to use, not null
      * @return the parsed year-month, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static YearMonth parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");

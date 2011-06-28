@@ -361,7 +361,7 @@ public final class LocalTime
      *
      * @param text  the text to parse such as '10:15:30', not null
      * @return the parsed local time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(String text) {
         return DateTimeFormatters.isoLocalTime().parse(text, rule());
@@ -376,7 +376,7 @@ public final class LocalTime
      * @param formatter  the formatter to use, not null
      * @return the parsed local time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");

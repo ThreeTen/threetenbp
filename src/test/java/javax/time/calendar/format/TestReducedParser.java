@@ -65,7 +65,7 @@ public class TestReducedParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsedRules().size(), 0);
+            assertEquals(parseContext.getParsed().size(), 0);
         }
     }
 
@@ -135,7 +135,6 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         int newPos = pp.parse(parseContext, input, pos);
         assertEquals(newPos, parseLen);
         assertParsed(YEAR, parseVal);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(YEAR), parseVal != null);
     }
 
     @Test(dataProvider="Parse") 
@@ -144,7 +143,6 @@ public class TestReducedParser extends AbstractTestPrinterParser {
         int newPos = pp.parse(parseContext, input, pos);
         assertEquals(newPos, parseLen);
         assertParsed(YEAR, parseVal);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(YEAR), parseVal != null);
     }
 
     private void assertParsed(DateTimeRule rule, Number value) {

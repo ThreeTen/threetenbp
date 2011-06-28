@@ -546,17 +546,17 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------s
-    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalHour() {
         LocalTime.parse("25:00");
     }
 
-    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalMinute() {
         LocalTime.parse("12:60");
     }
 
-    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalSecond() {
         LocalTime.parse("12:12:60");
     }

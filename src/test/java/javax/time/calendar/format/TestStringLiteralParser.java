@@ -76,7 +76,7 @@ public class TestStringLiteralParser extends AbstractTestPrinterParser {
         parseContext.setCaseSensitive(caseSensitive);
         int result = pp.parse(parseContext, text, pos);
         assertEquals(result, expectedPos);
-        assertEquals(parseContext.getParsedRules().size(), 0);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -94,7 +94,7 @@ public class TestStringLiteralParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsedRules().size(), 0);
+            assertEquals(parseContext.getParsed().size(), 0);
         }
     }
 

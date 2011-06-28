@@ -69,19 +69,11 @@ public class TestTextParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsedRules().size(), 0);
+            assertEquals(parseContext.getParsed().size(), 0);
         }
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_replaceContextValue() throws Exception {
-        parseContext.setParsedField(DAY_OF_WEEK, 2);
-        TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
-        int newPos = pp.parse(parseContext, "Monday", 0);
-        assertEquals(newPos, 6);
-        assertParsed(parseContext, DAY_OF_WEEK, 1);
-    }
-
     public void test_parse_midStr() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "XxxMondayXxx", 3);
@@ -101,21 +93,21 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "Munday", 0);
         assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_noMatch2() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "Monday", 3);
         assertEquals(newPos, ~3);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_noMatch_atEnd() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "Monday", 6);
         assertEquals(newPos, ~6);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -184,7 +176,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(parseContext, input.toUpperCase(), 0);
         assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     @Test(dataProvider="parseText")
@@ -203,7 +195,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(parseContext, input.toLowerCase(), 0);
         assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_WEEK), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     @Test(dataProvider="parseText")
@@ -231,7 +223,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "Janua", 0);
         assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_full_strict_number_noMatch() throws Exception {
@@ -239,7 +231,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
         int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -264,7 +256,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -274,7 +266,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "janvier", 0);  // correct short form is 'janv.'
         assertEquals(newPos, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(MONTH_OF_YEAR), false);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     public void test_parse_french_short_strict_short_match() throws Exception {

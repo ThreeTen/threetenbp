@@ -67,7 +67,7 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsedRules().size(), 0);
+            assertEquals(parseContext.getParsed().size(), 0);
         }
     }
 
@@ -169,8 +169,8 @@ public class TestZoneIdParser extends AbstractTestPrinterParser {
     }
 
     private void assertParsed(ZoneId expectedZone) {
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), expectedZone == null ? 0 : 1);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().get(ZoneId.rule()), expectedZone);
+        assertEquals(parseContext.getParsed().size(), expectedZone == null ? 0 : 1);
+        assertEquals(parseContext.getParsed(ZoneId.class), expectedZone);
     }
 
 }

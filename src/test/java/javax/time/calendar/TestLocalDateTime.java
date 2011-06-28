@@ -65,6 +65,7 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.TimeSource;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.i18n.CopticChronology;
 
@@ -793,12 +794,12 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(t.getNanoOfSecond(), n);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalValue() {
         LocalDateTime.parse("2008-06-32T11:15");
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidValue() {
         LocalDateTime.parse("2008-06-31T11:15");
     }

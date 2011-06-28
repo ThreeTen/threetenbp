@@ -184,14 +184,14 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     // year-month-day
                     DateTimeField dom = merger.getField(DAY_OF_MONTH, false);
                     if (dom != null) {
-                        LocalDate date = LocalDate.of(year, moy, 1).plusDays(dom.getValue()).minusDays(1);
+                        LocalDate date = LocalDate.of(year, moy, 1).plusDays(MathUtils.safeDecrement(dom.getValue()));
                         merger.setDate(date, true);
                     }
                     // year-month-alignedWeek-day
                     DateTimeField wom = merger.getField(ALIGNED_WEEK_OF_MONTH, false);
                     DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
                     if (wom != null && dow != null) {
-                        LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(wom.getValidIntValue() - 1);  // TODO lenient
+                        LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(MathUtils.safeDecrement(wom.getValidIntValue()));
                         date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
                         merger.setDate(date, true);
                     }
@@ -223,6 +223,22 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 DateTimeField epd = merger.getField(EPOCH_DAY, false);
                 if (epd != null) {
                     merger.setDate(LocalDate.ofEpochDay(epd.getValue()), true);
+                }
+                break;
+            }
+            case ISODateTimeRule.MINUTE_OF_DAY_ORDINAL: {  // TODO: this is a Bad Idea
+                DateTimeField mod = merger.getField(MINUTE_OF_DAY, false);
+                if (mod != null) {
+                    LocalTime time = LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));  // TODO: lenient overflow
+                    merger.setTime(time, true);
+                }
+                break;
+            }
+            case SECOND_OF_DAY_ORDINAL: {  // TODO: this is a Bad Idea
+                DateTimeField sod = merger.getField(SECOND_OF_DAY, false);
+                if (sod != null) {
+                    LocalTime time = LocalTime.ofSecondOfDay(sod.getValue());  // TODO: lenient overflow
+                    merger.setTime(time, true);
                 }
                 break;
             }
@@ -271,7 +287,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
                     case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
                     case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
-                    case ZERO_EPOCH_MONTH_ORDINAL: return field(MathUtils.safeAdd(MathUtils.safeMultiply(date.getYear(), 12), date.getMonthOfYear().ordinal()));
+                    case ZERO_EPOCH_MONTH_ORDINAL: return field(MathUtils.safeAdd(MathUtils.safeMultiply(date.getYear(), 12L), date.getMonthOfYear().ordinal()));
                     case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
                     case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
                     case YEAR_ORDINAL: return field(date.getYear());

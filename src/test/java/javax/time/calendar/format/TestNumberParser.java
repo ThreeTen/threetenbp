@@ -66,7 +66,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
             pp.parse(parseContext, text, pos);
         } catch (RuntimeException ex) {
             assertTrue(expected.isInstance(ex));
-            assertEquals(parseContext.getParsedRules().size(), 0);
+            assertEquals(parseContext.getParsed().size(), 0);
         }
     }
 
@@ -142,21 +142,7 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         if (expectedPos > 0) {
             assertParsed(parseContext, DAY_OF_MONTH, expectedValue);
         } else {
-            assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), false);
-        }
-    }
-
-    @Test(dataProvider="parseData")
-    public void test_parse_replace(int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth, String text, int pos, int expectedPos, long expectedValue) {
-        parseContext.setParsedField(DAY_OF_MONTH, 0);
-        NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, minWidth, maxWidth, signStyle);
-        if (subsequentWidth > 0) {
-            pp = pp.withSubsequentWidth(subsequentWidth);
-        }
-        int newPos = pp.parse(parseContext, text, pos);
-        assertEquals(newPos, expectedPos);
-        if (expectedPos > 0) {
-            assertParsed(parseContext, DAY_OF_MONTH, expectedValue);
+            assertEquals(parseContext.getParsed().size(), 0);
         }
     }
 
@@ -280,7 +266,6 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, parseLen);
         assertParsed(parseContext, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
     }
 
     //-----------------------------------------------------------------------
@@ -385,7 +370,6 @@ public class TestNumberParser extends AbstractTestPrinterParser {
         int newPos = pp.parse(parseContext, input, 0);
         assertEquals(newPos, parseLen);
         assertParsed(parseContext, DAY_OF_MONTH, (parseVal != null ? (long) parseVal : null));
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().containsKey(DAY_OF_MONTH), parseVal != null);
     }
 
     private void assertParsed(DateTimeParseContext context, DateTimeRule rule, Number value) {

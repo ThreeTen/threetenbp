@@ -134,17 +134,16 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             int startPos = position + 3;
             int endPos = new ZoneOffsetPrinterParser("", "+HH:MM:ss").parse(newContext, parseText, startPos);
             if (endPos < 0) {
-                context.setParsed(ZoneId.rule(), ZoneId.UTC);
+                context.setParsed(ZoneId.UTC);
                 return startPos;
             }
-            ZoneId zone = ZoneId.of((ZoneOffset) newContext.getParsed(ZoneOffset.rule()));
-            context.setParsed(ZoneId.rule(), zone);
+            ZoneId zone = ZoneId.of((ZoneOffset) newContext.getParsed(ZoneOffset.class));
+            context.setParsed(zone);
             return endPos;
         }
         
         // parse
         String parsedZoneId = null;
-        int count = 0;
         while (tree != null) {
             int nodeLength = tree.length;
             if (position + nodeLength > length) {
@@ -152,7 +151,6 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             }
             parsedZoneId = parseText.substring(position, position + nodeLength);
             tree = tree.get(parsedZoneId);
-            ++count;
         }
         
         if (parsedZoneId != null && preparedIDs.contains(parsedZoneId)) {
@@ -169,7 +167,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
                     }
                 }
             }
-            context.setParsed(ZoneId.rule(), zone);
+            context.setParsed(zone);
             return pos;
         } else {
             return ~position;

@@ -50,6 +50,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
@@ -309,21 +310,20 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalValue_Day() {
         MonthDay.parse("--06-32");
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidValue_Day() {
         MonthDay.parse("--06-31");
     }
 
-    // TODO: Fix code
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void factory_parse_illegalValue_Month() {
-//        MonthDay.parse("--13-25");
-//    }
+    @Test(expectedExceptions=CalendricalParseException.class)
+    public void factory_parse_illegalValue_Month() {
+        MonthDay.parse("--13-25");
+    }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {

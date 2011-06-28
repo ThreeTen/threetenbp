@@ -48,12 +48,13 @@ import static org.testng.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.text.ParsePosition;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DateTimeRule;
@@ -191,24 +192,24 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDate(year, month, day);
             // offset/zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoLocalDate().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalDate().parse(input, new ParsePosition(0)), expected);
         }
     }
 
     @Test
     public void test_parse_isoLocalDate_999999999() {
         MockSimpleCalendrical expected = createDate(999999999, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+999999999-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+999999999-08-06", new ParsePosition(0)), expected);
         assertEquals(LocalDate.parse("+999999999-08-06"), LocalDate.of(999999999, 8, 6));
     }
 
     @Test
     public void test_parse_isoLocalDate_1000000000() {
         MockSimpleCalendrical expected = createDate(1000000000, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+1000000000-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions = CalendricalException.class)
     public void test_parse_isoLocalDate_1000000000_failedCreate() {
         LocalDate.parse("+1000000000-08-06");
     }
@@ -216,17 +217,17 @@ public class TestDateTimeFormatters {
     @Test
     public void test_parse_isoLocalDate_M999999999() {
         MockSimpleCalendrical expected = createDate(-999999999, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-999999999-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-999999999-08-06", new ParsePosition(0)), expected);
         assertEquals(LocalDate.parse("-999999999-08-06"), LocalDate.of(-999999999, 8, 6));
     }
 
     @Test
     public void test_parse_isoLocalDate_M1000000000() {
         MockSimpleCalendrical expected = createDate(-1000000000, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-1000000000-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions = CalendricalException.class)
     public void test_parse_isoLocalDate_M1000000000_failedCreate() {
         LocalDate.parse("-1000000000-08-06");
     }
@@ -279,7 +280,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDate(year, month, day);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoOffsetDate().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetDate().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -336,7 +337,7 @@ public class TestDateTimeFormatters {
                     expected.put(ZoneId.rule(), ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoDate().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoDate().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -400,7 +401,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createTime(hour, min, sec, nano);
             // offset/zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoLocalTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -464,7 +465,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createTime(hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zoneId is not expected from parse
-            assertParseMatch(DateTimeFormatters.isoOffsetTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -533,7 +534,7 @@ public class TestDateTimeFormatters {
                     expected.put(ZoneId.rule(), ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -606,7 +607,7 @@ public class TestDateTimeFormatters {
             String input, Class<?> invalid) {
         if (input != null) {
             MockSimpleCalendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
-            assertParseMatch(DateTimeFormatters.isoLocalDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -680,7 +681,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoOffsetDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -754,7 +755,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
             buildCalendrical(expected, offsetId, zoneId);
-            assertParseMatch(DateTimeFormatters.isoZonedDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoZonedDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -833,7 +834,7 @@ public class TestDateTimeFormatters {
                     expected.put(ZoneId.rule(), ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -878,12 +879,12 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     public void test_parse_isoOrdinalDate() {
         MockSimpleCalendrical expected = new MockSimpleCalendrical(YEAR, YEAR.field(2008), DAY_OF_YEAR, DAY_OF_YEAR.field(123));
-        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("2008-123"), expected);
+        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("2008-123", new ParsePosition(0)), expected);
     }
 
     public void test_parse_isoOrdinalDate_largeYear() {
         MockSimpleCalendrical expected = new MockSimpleCalendrical(YEAR, YEAR.field(123456), DAY_OF_YEAR, DAY_OF_YEAR.field(123));
-        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("+123456-123"), expected);
+        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("+123456-123", new ParsePosition(0)), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -1017,7 +1018,7 @@ public class TestDateTimeFormatters {
         expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(2004));
         expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(1));
         expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(1));
-        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("2004-W01-1"), expected);
+        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("2004-W01-1", new ParsePosition(0)), expected);
     }
 
     public void test_parse_weekDate_largeYear() {
@@ -1025,7 +1026,7 @@ public class TestDateTimeFormatters {
         expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(123456));
         expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(4));
         expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(5));
-        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("+123456-W04-5"), expected);
+        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("+123456-W04-5", new ParsePosition(0)), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -1117,12 +1118,12 @@ public class TestDateTimeFormatters {
         }
     }
 
-    private void assertParseMatch(CalendricalMerger merger, MockSimpleCalendrical expected) {
+    private void assertParseMatch(DateTimeParseContext merger, MockSimpleCalendrical expected) {
         for (CalendricalRule<?> rule : expected.rules()) {
             if (rule instanceof DateTimeRule) {
-                assertEquals(((DateTimeRule) rule).getValue(expected), merger.getInputMap().get(rule), "Failed on rule: " + rule.getName());
+                assertEquals(merger.getParsed((DateTimeRule) rule), ((DateTimeRule) rule).getValue(expected), "Failed on rule: " + rule.getName());
             } else {
-                assertEquals(merger.getInputMap().get(rule), expected.get(rule), "Failed on rule: " + rule.getName());
+                assertEquals(merger.getParsed(rule.getType()), expected.get(rule), "Failed on rule: " + rule.getName());
             }
         }
     }

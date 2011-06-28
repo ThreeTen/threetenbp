@@ -465,7 +465,7 @@ public final class OffsetDateTime
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30+01:00', not null
      * @return the parsed offset date-time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(String text) {
         return DateTimeFormatters.isoOffsetDateTime().parse(text, rule());
@@ -480,7 +480,7 @@ public final class OffsetDateTime
      * @param formatter  the formatter to use, not null
      * @return the parsed offset date-time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");

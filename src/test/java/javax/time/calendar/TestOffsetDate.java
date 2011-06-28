@@ -437,17 +437,17 @@ public class TestOffsetDate {
         };
     }
 
-    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class})
+    @Test(dataProvider="sampleBadParse", expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidText(String unparsable) {
         OffsetDate.parse(unparsable);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalValue() {
         OffsetDate.parse("2008-06-32+01:00");
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidValue() {
         OffsetDate.parse("2008-06-31+01:00");
     }
