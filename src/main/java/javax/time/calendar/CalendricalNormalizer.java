@@ -131,20 +131,20 @@ public final class CalendricalNormalizer {
         ISOChronology.checkNotNull(calendricals, "Calendricals must not be null");
         CalendricalNormalizer target;
         try {
-            List<CalendricalNormalizer> mergers = new ArrayList<CalendricalNormalizer>(calendricals.length);
+            List<CalendricalNormalizer> semiNormalized = new ArrayList<CalendricalNormalizer>(calendricals.length);
             for (Calendrical calendrical : calendricals) {
                 CalendricalNormalizer merger = rule().getValue(calendrical);
                 if (merger != null) {  // ignore anything with no normalized form
-                    mergers.add(merger);
+                    semiNormalized.add(merger);
                 }
             }
-            mergers = Collections.unmodifiableList(mergers);  // make list safe for external use
-            for (CalendricalNormalizer merger : mergers) {
+            semiNormalized = Collections.unmodifiableList(semiNormalized);  // make list safe for external use
+            for (CalendricalNormalizer merger : semiNormalized) {
                 if (merger.getRule() != null) {
-                    merger.getRule().merge(merger, mergers);
+                    merger.getRule().merge(merger, semiNormalized);
                 }
             }
-            target = new CalendricalNormalizer(calendricals, mergers);
+            target = new CalendricalNormalizer(calendricals, semiNormalized);
             target.normalize();
         } catch (RuntimeException ex) { 
             // provide more useful error message
@@ -785,8 +785,10 @@ public final class CalendricalNormalizer {
     }
 
     //-----------------------------------------------------------------------
-    // TODO
-    static class Rule extends CalendricalRule<CalendricalNormalizer> {
+    /**
+     * Rule class.
+     */
+    static final class Rule extends CalendricalRule<CalendricalNormalizer> {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Serialization version. */
