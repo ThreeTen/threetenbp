@@ -112,7 +112,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return RULE_CACHE[ordinal / 16];
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @Override
     public DateTimeRuleRange getValueRange(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
@@ -172,7 +172,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return super.getValueRange();
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @Override
     protected void normalize(CalendricalNormalizer merger) {
         switch (ordinal) {
@@ -265,7 +265,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         }
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @Override
     protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
         return deriveFrom(merger.getDate(false), merger.getTime(false), merger.getOffset(false));

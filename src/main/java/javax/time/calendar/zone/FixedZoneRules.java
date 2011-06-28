@@ -73,7 +73,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
         this.offset = offset;
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Uses a serialization delegate.
      *
@@ -105,7 +105,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
         return new FixedZoneRules(offset);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
     public ZoneOffset getOffset(InstantProvider instant) {

@@ -176,7 +176,7 @@ public abstract class CalendricalRule<T>
         return value;
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Override point to affect the merging process.
      * <p>

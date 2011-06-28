@@ -197,7 +197,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         this.offsetAfter = offsetAfter;
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Uses a serialization delegate.
      *

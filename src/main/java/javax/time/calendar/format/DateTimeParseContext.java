@@ -187,7 +187,7 @@ public final class DateTimeParseContext {
         return calendricals.get(calendricals.size() - 1);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Gets the first field matching the specified rule.
      * <p>

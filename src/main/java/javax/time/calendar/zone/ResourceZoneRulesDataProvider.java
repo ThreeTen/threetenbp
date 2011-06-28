@@ -190,7 +190,7 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
         return regions;
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Loads the rule.
      * 
@@ -214,7 +214,7 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
         return groupID + ":#" + versions;
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Version of the rules.
      * <p>

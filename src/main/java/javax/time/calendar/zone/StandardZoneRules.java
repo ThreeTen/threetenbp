@@ -196,7 +196,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         this.savingsLocalTransitions = localTransitionList.toArray(new LocalDateTime[localTransitionList.size()]);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Uses a serialization delegate.
      *

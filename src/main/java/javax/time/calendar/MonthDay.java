@@ -213,7 +213,7 @@ public final class MonthDay
         return of(moy.getValidIntValue(), dom.getValidIntValue());
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
      * <p>

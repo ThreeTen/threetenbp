@@ -283,7 +283,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return field(value).getText(textStyle, locale);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Override point to allow the rule to normalize the fields in the merger.
      * <p>

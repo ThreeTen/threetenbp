@@ -191,7 +191,7 @@ public final class YearMonth
         return of(year.getValidIntValue(), moy.getValidIntValue());
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
      * <p>

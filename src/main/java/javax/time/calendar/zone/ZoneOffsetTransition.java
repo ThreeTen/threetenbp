@@ -106,7 +106,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
         this.transitionAfter = transition.withOffsetSameInstant(offsetAfter);  // cached for performance
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Uses a serialization delegate.
      *
