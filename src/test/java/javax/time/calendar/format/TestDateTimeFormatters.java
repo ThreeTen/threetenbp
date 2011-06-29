@@ -179,7 +179,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoLocalDate().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -267,7 +267,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoOffsetDate().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -319,7 +319,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoDate().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -388,7 +388,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoLocalTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -452,7 +452,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoOffsetTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -516,7 +516,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -594,7 +594,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoLocalDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -667,7 +667,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoOffsetDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -741,7 +741,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoZonedDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -815,7 +815,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
