@@ -359,16 +359,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.

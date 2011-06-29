@@ -421,7 +421,6 @@ public class TestOffsetTime {
         LocalTime localTime = LocalTime.of(h, m, s, n);
         OffsetTime a = OffsetTime.of(localTime, offset);
         assertSame(a.getOffset(), offset);
-        assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
         assertEquals(a.getHourOfDay(), localTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localTime.getMinuteOfHour());

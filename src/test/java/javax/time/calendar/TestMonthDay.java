@@ -349,13 +349,6 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    // getChronology()
-    //-----------------------------------------------------------------------
-    public void test_getChronology() {
-        assertEquals(ISOChronology.INSTANCE, TEST_07_15.getChronology());
-    }
-
-    //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {

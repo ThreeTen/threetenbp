@@ -522,13 +522,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // getChronology()
-    //-----------------------------------------------------------------------
-    public void test_getChronology() {
-        assertSame(ISOChronology.INSTANCE, TEST_2007_07_15.getChronology());
-    }
-
-    //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {

@@ -49,16 +49,14 @@ Date/Time classes
 - Year.parse() and toString(DateTimeFormatter), based on YearMonth/MonthDay
 ? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
-? remove getChronology()
 ? getMonthOfYear() -> getMonth(), etc
 ? with(rule, value)
 ? MAX_DATE/MIN_DATE etc
 ? Calendrical rule for date/time as a period (for between calculations)
 
 Rules
-- ensure can merge MonthDay and Year
 - test min/max year for week-based-year
-- remove Chronology and share
+- ensure other calendar systems re-use ISO defined rules
 - date time field rule serialization
 - Handle case where values have gaps, eg 1,2, 4,5,6, 8
 ? parse()

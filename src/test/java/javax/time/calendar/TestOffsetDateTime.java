@@ -490,13 +490,13 @@ public class TestOffsetDateTime {
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         OffsetDateTime a = OffsetDateTime.of(localDateTime, offset);
         assertSame(a.getOffset(), offset);
-        assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonthOfYear(), localDate.getMonthOfYear());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
+        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
         
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
@@ -509,19 +509,6 @@ public class TestOffsetDateTime {
         assertEquals(a.toOffsetDate(), OffsetDate.of(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
-    }
-
-    //-----------------------------------------------------------------------
-    // isLeapYear()
-    //-----------------------------------------------------------------------
-    public void test_isLeapYear() {
-        assertEquals(OffsetDateTime.of(1999, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDateTime.of(2000, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), true);
-        assertEquals(OffsetDateTime.of(2001, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDateTime.of(2002, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDateTime.of(2003, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDateTime.of(2004, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), true);
-        assertEquals(OffsetDateTime.of(2005, 1, 1, 0, 0, OFFSET_PONE).isLeapYear(), false);
     }
 
     //-----------------------------------------------------------------------

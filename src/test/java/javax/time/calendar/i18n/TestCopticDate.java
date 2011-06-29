@@ -32,7 +32,6 @@
 package javax.time.calendar.i18n;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -49,6 +48,7 @@ import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalRuleException;
+import javax.time.calendar.Chronology;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DayOfWeek;
@@ -173,17 +173,13 @@ public class TestCopticDate {
     }
 
     //-----------------------------------------------------------------------
-    public void test_getChronology() throws Exception {
-        assertSame(CopticChronology.INSTANCE, TEST_1234_7_15.getChronology());
-    }
-
-    //-----------------------------------------------------------------------
     public void test_get() throws Exception {
         assertEquals(TEST_1234_7_15.get(CopticChronology.YEAR).getValidIntValue(), TEST_1234_7_15.getYear());
         assertEquals(TEST_1234_7_15.get(CopticChronology.MONTH_OF_YEAR).getValidIntValue(), TEST_1234_7_15.getMonthOfYear());
         assertEquals(TEST_1234_7_15.get(CopticChronology.DAY_OF_MONTH).getValidIntValue(), TEST_1234_7_15.getDayOfMonth());
         assertEquals(TEST_1234_7_15.get(CopticChronology.DAY_OF_YEAR).getValidIntValue(), TEST_1234_7_15.getDayOfYear());
         assertEquals(TEST_1234_7_15.get(CopticChronology.DAY_OF_WEEK).getValidIntValue(), TEST_1234_7_15.getDayOfWeek().getValue());
+        assertEquals(TEST_1234_7_15.get(Chronology.rule()), CopticChronology.INSTANCE);
     }
 
     public void test_get_unsupported() throws Exception {

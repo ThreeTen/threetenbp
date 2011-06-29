@@ -361,13 +361,6 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // getChronology()
-    //-----------------------------------------------------------------------
-    public void test_getChronology() {
-        assertEquals(ISOChronology.INSTANCE, TEST_2008_06.getChronology());
-    }
-
-    //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {

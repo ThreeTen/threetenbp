@@ -37,6 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneOffsetInfo;
@@ -568,16 +569,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date-time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -605,7 +596,7 @@ public final class ZonedDateTime
             }
             return null;
         }
-        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, getChronology(), null);
+        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

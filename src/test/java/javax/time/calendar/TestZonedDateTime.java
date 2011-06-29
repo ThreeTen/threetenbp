@@ -641,13 +641,13 @@ public class TestZonedDateTime {
         ZonedDateTime a = ZonedDateTime.of(localDateTime, zone);
         assertSame(a.getOffset(), offset);
         assertSame(a.getZone(), zone);
-        assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonthOfYear(), localDate.getMonthOfYear());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
+        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
         
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
@@ -661,19 +661,6 @@ public class TestZonedDateTime {
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
         assertEquals(a.toOffsetDateTime(), OffsetDateTime.of(localDateTime, offset));
         assertEquals(a.toString(), a.toOffsetDateTime().toString() + "[" + zone.toString() + "]");
-    }
-
-    //-----------------------------------------------------------------------
-    // isLeapYear()
-    //-----------------------------------------------------------------------
-    public void test_isLeapYear() {
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(1999, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), true);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2001, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2002, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2003, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2004, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), true);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2005, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
     }
 
     //-----------------------------------------------------------------------

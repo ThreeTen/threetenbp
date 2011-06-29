@@ -223,16 +223,6 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date uses, which is the Coptic calendar system.
-     *
-     * @return the Coptic chronology, not null
-     */
-    public CopticChronology getChronology() {
-        return CopticChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -246,7 +236,7 @@ public final class CopticDate
         if (rule == rule()) {
             return rule.reify(this);
         }
-        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), null, null, null, getChronology(), null);
+        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), null, null, null, CopticChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

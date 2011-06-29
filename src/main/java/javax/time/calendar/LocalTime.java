@@ -44,6 +44,7 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -426,16 +427,6 @@ public final class LocalTime
      */
     private Object readResolve() {
         return create(hour, minute, second, nano);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the chronology that this time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
     }
 
     //-----------------------------------------------------------------------

@@ -38,6 +38,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.MathUtils;
 import javax.time.calendar.LocalTime.Overflow;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -494,16 +495,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date-time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -518,7 +509,7 @@ public final class LocalDateTime
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), date, time, null, null, getChronology(), null);
+        return CalendricalNormalizer.derive(rule, rule(), date, time, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

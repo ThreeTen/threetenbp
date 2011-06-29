@@ -258,16 +258,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this year-month uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -282,7 +272,7 @@ public final class YearMonth
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, getChronology(), toFields());
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
     }
 
     //-----------------------------------------------------------------------

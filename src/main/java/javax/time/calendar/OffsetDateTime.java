@@ -38,6 +38,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -520,16 +521,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date-time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -555,7 +546,7 @@ public final class OffsetDateTime
             }
             return null;
         }
-        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), offset, null, getChronology(), null);
+        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

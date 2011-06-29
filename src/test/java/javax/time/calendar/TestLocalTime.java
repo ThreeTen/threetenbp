@@ -586,13 +586,6 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // getChronology()
-    //-----------------------------------------------------------------------
-    public void test_getChronology() {
-        assertSame(ISOChronology.INSTANCE, TEST_12_30_40_987654321.getChronology());
-    }
-
-    //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {

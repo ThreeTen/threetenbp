@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 
@@ -278,16 +279,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this month-day uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -302,7 +293,7 @@ public final class MonthDay
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, getChronology(), toFields());
+        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
     }
 
     //-----------------------------------------------------------------------

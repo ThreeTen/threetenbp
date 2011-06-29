@@ -82,6 +82,8 @@
 - Rename CalendricalRule.getReifiedType() to getType()
 - Combine ZoneId.getName() and getShortName() into getText()
 - Rename WeekOfMonth to AlignedWeekOfMonth, similarly for WeekOfYear
+- Remove getChronology() in most places, Use get(Chronology.rule()) instead
+- Rewrite merging
 
 0.6.3
 ===============================================================================

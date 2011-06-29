@@ -501,11 +501,6 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    public void test_getChronology() {
-        assertSame(ISOChronology.INSTANCE, TEST_2007_07_15_PONE.getChronology());
-    }
-
-    //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleDates")
@@ -526,13 +521,13 @@ public class TestOffsetDate {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
         assertSame(a.getOffset(), offset);
-        assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonthOfYear(), localDate.getMonthOfYear());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
+        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
         
         assertSame(a.toLocalDate(), localDate);
         assertEquals(a.toString(), localDate.toString() + offset.toString());
@@ -612,19 +607,6 @@ public class TestOffsetDate {
                 dow = dow.next();
             }
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // isLeapYear()
-    //-----------------------------------------------------------------------
-    public void test_isLeapYear() {
-        assertEquals(OffsetDate.of(1999, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2000, 1, 1, OFFSET_PONE).isLeapYear(), true);
-        assertEquals(OffsetDate.of(2001, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2002, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2003, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2004, 1, 1, OFFSET_PONE).isLeapYear(), true);
-        assertEquals(OffsetDate.of(2005, 1, 1, OFFSET_PONE).isLeapYear(), false);
     }
 
     //-----------------------------------------------------------------------

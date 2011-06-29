@@ -37,6 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -293,16 +294,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
@@ -317,7 +308,7 @@ public final class OffsetDate
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), date, null, offset, null, getChronology(), null);
+        return CalendricalNormalizer.derive(rule, rule(), date, null, offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
