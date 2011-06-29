@@ -170,7 +170,7 @@ public final class DayOfYear
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), rule().field(getValue()));
+        return CalendricalNormalizer.derive(rule, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

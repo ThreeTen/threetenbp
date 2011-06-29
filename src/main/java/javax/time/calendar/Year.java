@@ -218,7 +218,7 @@ public final class Year
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), toField());
+        return CalendricalNormalizer.derive(rule, rule(), ISOChronology.INSTANCE, toField());
     }
 
     //-----------------------------------------------------------------------

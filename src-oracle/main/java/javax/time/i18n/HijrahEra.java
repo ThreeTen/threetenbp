@@ -99,7 +99,7 @@ public enum HijrahEra implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), rule().field(getValue()));
+        return CalendricalNormalizer.derive(rule, rule(), HijrahChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

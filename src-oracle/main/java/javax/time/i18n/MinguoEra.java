@@ -126,7 +126,7 @@ public enum MinguoEra implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), rule().field(getValue()));
+        return CalendricalNormalizer.derive(rule, rule(), MinguoChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

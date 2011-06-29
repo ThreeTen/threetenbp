@@ -160,7 +160,7 @@ public enum JapaneseEra implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), rule().field(getValue()));
+        return CalendricalNormalizer.derive(rule, rule(), JapaneseChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

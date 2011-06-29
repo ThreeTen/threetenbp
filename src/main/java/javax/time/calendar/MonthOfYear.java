@@ -194,7 +194,7 @@ public enum MonthOfYear implements Calendrical {
         if (rule == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), toField());
+        return CalendricalNormalizer.derive(rule, rule(), null, toField());
     }
 
     /**

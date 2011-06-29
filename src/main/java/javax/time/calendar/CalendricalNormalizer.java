@@ -177,33 +177,6 @@ public final class CalendricalNormalizer {
      * @param fields  the fields to derive from, may be null
      * @return the derived value for the rule, null if unable to derive
      */
-    public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, DateTimeField field) {
-        ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
-        ISOChronology.checkNotNull(field, "DateTimeField must not be null");
-        CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, null, null, null, null, null, Collections.singleton(field));
-        merger.normalize();
-        return merger.derive(ruleToDerive);
-    }
-
-    /**
-     * Derives the specified rule from a the normalized set of objects.
-     * <p>
-     * This method is designed to be called from {@link Calendrical#get(CalendricalRule)}.
-     * The class implementing the interface must call this method passing in
-     * parameters to fully describe the state of the object to be derived from.
-     * Avoid duplicating information between the date, time and fields if possible.
-     * 
-     * @param <R>  the type of the desired rule
-     * @param ruleToDerive  the rule to derive, not null
-     * @param ruleOfData  the rule of the data to derive from, may be null
-     * @param date  the date to derive from, may be null
-     * @param time  the time to derive from, may be null
-     * @param offset  the zone offset to derive from, may be null
-     * @param zoneId  the zone ID to derive from, may be null
-     * @param chrono  the chronology to derive from, may be null
-     * @param fields  the fields to derive from, may be null
-     * @return the derived value for the rule, null if unable to derive
-     */
     @SuppressWarnings("unchecked")
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData,
             LocalDate date, LocalTime time, ZoneOffset offset, ZoneId zoneId, Chronology chrono, DateTimeFields fields) {
@@ -224,6 +197,28 @@ public final class CalendricalNormalizer {
             }
         }
         CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, date, time, offset, zoneId, chrono, fields);
+        merger.normalize();
+        return merger.derive(ruleToDerive);
+    }
+
+    /**
+     * Derives the specified rule from a the normalized set of objects.
+     * <p>
+     * This method is designed to be called from {@link Calendrical#get(CalendricalRule)}.
+     * The class implementing the interface must call this method passing in
+     * parameters to fully describe the state of the object to be derived from.
+     * 
+     * @param <R>  the type of the desired rule
+     * @param ruleToDerive  the rule to derive, not null
+     * @param ruleOfData  the rule of the data to derive from, may be null
+     * @param chrono  the chronology to derive from, may be null
+     * @param field  the field to derive from, may be null
+     * @return the derived value for the rule, null if unable to derive
+     */
+    public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, Chronology chrono, DateTimeField field) {
+        ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
+        ISOChronology.checkNotNull(field, "DateTimeField must not be null");
+        CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, null, null, null, null, chrono, Collections.singleton(field));
         merger.normalize();
         return merger.derive(ruleToDerive);
     }
