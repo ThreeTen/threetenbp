@@ -735,11 +735,11 @@ public class TestDateTimeFields {
     }
 
     @Test(dataProvider = "derive")
-    public void test_derive(DateTimeFields input, DateTimeRule rule, Number output) {
+    public void test_get_derive(DateTimeFields input, DateTimeRule rule, Number output) {
         if (output == null) {
-            assertEquals(input.derive(rule), null);
+            assertEquals(input.get(rule), null);
         } else {
-            assertEquals(input.derive(rule),rule.field(output.longValue()));
+            assertEquals(input.get(rule),rule.field(output.longValue()));
         }
     }
 

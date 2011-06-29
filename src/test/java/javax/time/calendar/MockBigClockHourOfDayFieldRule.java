@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 
 import java.io.Serializable;
 
@@ -55,6 +56,15 @@ public final class MockBigClockHourOfDayFieldRule extends DateTimeRule implement
 
     private Object readResolve() {
         return INSTANCE;
+    }
+
+    @Override
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField hod = merger.derive(HOUR_OF_DAY);
+        if (hod == null) {
+            return null;
+        }
+        return field(convertFromPeriod(hod.getValue()));
     }
 
     @Override

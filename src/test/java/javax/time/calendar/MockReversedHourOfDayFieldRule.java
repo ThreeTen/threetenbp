@@ -58,6 +58,15 @@ public final class MockReversedHourOfDayFieldRule extends DateTimeRule implement
     }
 
     @Override
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField hod = merger.derive(HOUR_OF_DAY);
+        if (hod == null) {
+            return null;
+        }
+        return field(convertFromPeriod(hod.getValue()));
+    }
+
+    @Override
     public long convertToPeriod(long value) {
         return 24 - value;
     }

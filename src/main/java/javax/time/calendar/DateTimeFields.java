@@ -36,17 +36,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
 
 /**
  * A set of fields of date-time, such as '[MonthOfYear 12, DayOfMonth 3]'.
@@ -199,6 +195,23 @@ public final class DateTimeFields
      */
     private Object readResolve() throws ObjectStreamException {
         return fields.isEmpty() ? EMPTY : this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * {@code null} will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        // no optimization here
+        // using the local fields would leave conflicts unresolved
+        return CalendricalNormalizer.derive(rule, null, null, null, null, null, null, this);
     }
 
     //-----------------------------------------------------------------------
@@ -427,277 +440,6 @@ public final class DateTimeFields
 //        long rolled = rule.roll(value, amountToRollBy, this);
 //        return with(rule, rolled);
 //    }  // TODO
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of these fields with the values normalized.
-     * <p>
-     * The calculation examines each set of fields and attempts to combine them.
-     * Any fields that are successfully combined are removed.
-     * The result will be equivalent to these fields.
-     * <p>
-     * For example, the fields '[QuarterOfYear 2, MonthOfQuarter 3, DayOfMonth 4]'
-     * will be normalized to '[MonthOfYear 6, DayOfMonth 4]'. The quarter-of-year
-     * and month-of-quarter can be successfully merged without any loss of accuracy.
-     * However, month-of-year and day-of-month cannot be merged without knowing
-     * the year due to the different length of February in leap years.
-     * <p>
-     * During the combination process, some fields may be found to conflict.
-     * For example, a second-of-minute value of 12 conflicts with a second-of-day
-     * value of 0. An exception is thrown for conflicts.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a {@code DateTimeFields} based on this with the fields normalized, not null
-     * @throws CalendricalException if any fields conflict
-     * @throws ArithmeticException if the calculation overflows
-     */
-    public DateTimeFields normalized() {
-        // TODO: fix or remove
-        if (size() == 0) {
-            return EMPTY;
-        }
-        
-        // normalize each individual field in isolation
-        // do not restart after this, because the rule must define the correct base
-        // rule to ensure that it is completely normalized in isolation in one step
-        DateTimeFields result = this;
-        for (DateTimeField field : this) {
-            DateTimeField normalized = field.normalized();
-            if (normalized != field) {
-                DateTimeField existing = result.getField(normalized.getRule());
-                if (existing != null && existing.equals(normalized) == false) {
-                    throw new CalendricalRuleException("Unable to normalize, " + field +
-                            " normalized to " + normalized + " which is incompatible with existing field " +
-                            existing + " in input " + this, normalized.getRule());
-                }
-                result = result.without(field.getRule()).with(normalized);
-            }
-        }
-        if (result.size() < 2) {
-            return result;
-        }
-        
-        // group according to base rule
-        ConcurrentMap<DateTimeRule, List<DateTimeField>> grouped = new ConcurrentHashMap<DateTimeRule, List<DateTimeField>>();
-        for (DateTimeField field : result) {
-            DateTimeRule rule = field.getRule();
-            DateTimeRule baseRule = rule.getBaseRule();
-            if (baseRule != rule) {
-                grouped.putIfAbsent(baseRule, new ArrayList<DateTimeField>());
-                grouped.get(baseRule).add(field);
-            }
-        }
-        
-        // normalize groups
-        // TODO: loop again (group again) if register on group is public
-        for (DateTimeRule rule : grouped.keySet()) {
-            result = mergeGroup(result, rule, grouped.get(rule));
-        }
-        return result;
-    }
-
-    private DateTimeFields mergeGroup(DateTimeFields result, DateTimeRule baseRule, List<DateTimeField> fields) {
-        if (fields.size() < 2) {
-            return result;
-        }
-        DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
-        for (int i = 0; i < fields.size() - 1; i++) {
-            for (int j = i + 1; j < fields.size(); j++) {
-                DateTimeField field1 = fields.get(i);
-                DateTimeField field2 = fields.get(j);
-                DateTimeField calc = field1.derive(field2.getRule());
-                if (calc != null) {
-                    if (calc.equals(field2)) {
-                        result = result.without(field2.getRule());
-                        fields.remove(j--);
-                    } else {
-                        throw new CalendricalRuleException("Unable to normalize, " + field1 +
-                                " is incompatible with " + field2 + " in input " + this, field2.getRule());
-                    }
-                }
-            }
-        }
-        
-        for (int i = 0; i < fields.size() - 1; i++) {
-            for (int j = i + 1; j < fields.size(); j++) {
-                DateTimeField fieldLarger = fields.get(i);
-                DateTimeField fieldSmaller = fields.get(j);
-                
-                if (fieldLarger.getRule().getPeriodUnit().equals(fieldSmaller.getRule().getPeriodRange())) {
-                    DateTimeRule ruleCombined = ruleGroup.getRelatedRule(fieldSmaller.getRule().getPeriodUnit(), fieldLarger.getRule().getPeriodRange());
-                    System.out.println(fields + " " + /*ruleGroup.getRelatedRules() + " " +*/ ruleCombined);
-                    if (ruleCombined != null) {
-                        DateTimeField fieldCombined = merge(fieldLarger, fieldSmaller, ruleCombined);
-                        DateTimeField existing = result.getField(ruleCombined);
-                        if (existing != null && existing.equals(fieldCombined) == false) {
-                            throw new CalendricalRuleException("Unable to normalize, [" + fieldLarger +
-                                    ", " + fieldSmaller + "] normalized to " + fieldCombined +
-                                    " which is incompatible with existing field " +
-                                    existing + " in input " + this, ruleCombined);
-                        }
-                        result = result.without(fieldLarger.getRule()).without(fieldSmaller.getRule()).with(fieldCombined);
-                        fields.set(i--, fieldCombined);
-                        fields.remove(j);
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Merges the two fields to form an instance of the combined rule.
-     * For example, merge hour-of-ampm and ampm-of-day to form hour-of-day.
-     * 
-     * @param field1  the larger rule to merge - MidOfBig, not null
-     * @param field2  the smaller rule to merge - SmallOfMid, not null
-     * @param ruleCombined  the rule to merge into - SmallOfBig, not null
-     * @return combined field, not null
-     */
-    private DateTimeField merge(DateTimeField field1, DateTimeField field2, DateTimeRule ruleCombined) {
-        long period1 = field1.getRule().convertToPeriod(field1.getValue());
-        long period2 = field2.getRule().convertToPeriod(field2.getValue());
-        PeriodField conversion = field1.getRule().getPeriodUnit().getEquivalentPeriod(field2.getRule().getPeriodUnit());
-        long scaledPeriod1 = MathUtils.safeMultiply(period1, conversion.getAmount());
-        long totalPeriod = MathUtils.safeAdd(scaledPeriod1, period2);
-        return ruleCombined.field(ruleCombined.convertFromPeriod(totalPeriod));
-    }
-
-    /**
-     * Derives the value of the specified rule from these fields.
-     * <p>
-     * This method queries the value of the specified rule based on these fields.
-     * This will only return a result if the requested rule is a subset of the
-     * data held in these fields and is suitable for derivation. For example,
-     * 'MinuteOfHour' is a subset of 'SecondOfDay', but is not a subset of 'HourOfDay'.
-     * If the rule cannot be derived, {@code null} is returned.
-     * <p>
-     * The calculation is based on {@link DateTimeRule#getBaseRule()} and
-     * {@link DateTimeRule#convertToPeriod(long)}.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the derived value for the rule, null if the value cannot be derived
-     */
-    public DateTimeField derive(DateTimeRule ruleToDerive) {
-        ISOChronology.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
-        // optimize special cases
-        switch (size()) {
-            case 0:
-                return null;
-            case 1:
-                return fields.get(0).derive(ruleToDerive);
-            default:
-                return deriveForBase(ruleToDerive);
-        }
-    }
-
-    private DateTimeField deriveForBase(DateTimeRule ruleToDerive) {
-        DateTimeRule baseRule = ruleToDerive.getBaseRule();
-        List<DateTimeField> group = new ArrayList<DateTimeField>();
-        for (DateTimeField field : this) {
-            if (field.getRule().getBaseRule().equals(baseRule)) {
-                group.add(field);
-            }
-        }
-        sort(group);
-        DateTimeRuleGroup ruleGroup = DateTimeRuleGroup.of(baseRule);
-        // merge
-        for (int i = 0; i < group.size() - 1; i++) {
-            DateTimeField field1 = group.get(i);
-            for (int j = i + 1; j < group.size(); j++) {
-                DateTimeField field2 = group.get(j);
-                DateTimeRule rule1 = field1.getRule();
-                DateTimeRule rule2 = field2.getRule();
-                // remove if derived
-                // the fields share a base rule, so this must succeed if there field1 surrounds field2
-                DateTimeField derived2 = field1.derive(rule2);
-                if (derived2 != null) {
-                    if (derived2.equals(field2)) {
-                        group.remove(j);
-                        continue;
-                    } else {
-                        return null;
-                    }
-                }
-                // merge overlap or adjacent
-                if (DateTimeRule.comparePeriodUnits(rule2.getPeriodRange(), rule1.getPeriodUnit()) >= 0 &&
-                        DateTimeRule.comparePeriodUnits(rule2.getPeriodUnit(), rule1.getPeriodUnit()) < 0) {
-                    final long period1 = rule1.convertToPeriod(field1.getValue());
-                    final long period2 = rule2.convertToPeriod(field2.getValue());
-                    final PeriodField conversion1 = rule2.getPeriodRange().getEquivalentPeriod(rule1.getPeriodUnit());
-                    // if was an overlap, then check it is valid
-                    // this must be done before the combined rule check to ensure that the final derivation is OK
-                    if (DateTimeRule.comparePeriodUnits(rule2.getPeriodRange(), rule1.getPeriodUnit()) > 0) {
-                        long periodMid1 = MathUtils.floorMod(period1, conversion1.getAmount());
-                        final PeriodField conversion2 = rule2.getPeriodRange().getEquivalentPeriod(rule2.getPeriodUnit());
-                        final PeriodField conversion3 = rule1.getPeriodUnit().getEquivalentPeriod(rule2.getPeriodUnit());
-                        long periodMid2 = MathUtils.floorMod(period2, conversion2.getAmount());
-                        periodMid2 = MathUtils.floorDiv(periodMid2, conversion3.getAmount());
-                        if (periodMid1 != periodMid2) {
-                            return null;
-                        }
-                    }
-                    // merge if possible
-                    DateTimeRule ruleCombined = ruleGroup.getRelatedRule(rule2.getPeriodUnit(), rule1.getPeriodRange());
-                    if (ruleCombined != null) {
-                        long period = MathUtils.floorDiv(period1, conversion1.getAmount());
-                        final PeriodField conversion2 = rule2.getPeriodRange().getEquivalentPeriod(rule2.getPeriodUnit());
-                        period = MathUtils.safeMultiply(period, conversion2.getAmount());
-                        period = MathUtils.safeAdd(period, period2);
-                        DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(period));
-                        group.set(i--, fieldCombined);
-                        group.remove(j);
-                        break;
-                    }
-                }
-            }
-        }
-        // derive result
-        for (DateTimeField field : group) {
-            DateTimeField result = field.derive(ruleToDerive);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
-    }
-
-    private void sort(List<DateTimeField> group) {
-        Collections.sort(group, new Comparator<DateTimeField>() {
-            public int compare(DateTimeField dtf1, DateTimeField dtf2) {
-                int cmp = -dtf1.getRule().comparePeriodRange(dtf2.getRule());
-                if (cmp == 0) {
-                    cmp = dtf1.getRule().comparePeriodUnit(dtf2.getRule());
-                }
-                return cmp;
-            }
-        });
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * an attempt is made to derive the value.
-     * If that fails, {@code null} will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof DateTimeRule) {
-            DateTimeField field = getField((DateTimeRule) rule);
-            if (field != null) {
-                return (T) field;
-            }
-        }
-        return CalendricalNormalizer.derive(rule, null, null, null, null, null, null, this);
-    }
 
     //-----------------------------------------------------------------------
     /**

@@ -35,6 +35,7 @@ import java.util.Arrays;
 
 import javax.time.calendar.TestAmPmOfDay;
 import javax.time.calendar.TestCalendricalMatchers;
+import javax.time.calendar.TestCalendricalNomalizer;
 import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
@@ -56,7 +57,6 @@ import javax.time.calendar.TestISODayOfWeekRule;
 import javax.time.calendar.TestISODayOfYearRule;
 import javax.time.calendar.TestISOHourOfAmPmRule;
 import javax.time.calendar.TestISOHourOfDayRule;
-import javax.time.calendar.TestISOMerge;
 import javax.time.calendar.TestISOMinuteOfDayRule;
 import javax.time.calendar.TestISOMonthOfQuarterRule;
 import javax.time.calendar.TestISOMonthOfYearRule;
@@ -152,6 +152,7 @@ public class AllTest {
             // calendar classes
             TestAmPmOfDay.class,
             TestCalendricalMatchers.class,
+            TestCalendricalNomalizer.class,
             TestCalendricalRule.class,
             TestClock.class,
             TestClock_TimeSourceClock.class,
@@ -162,6 +163,7 @@ public class AllTest {
             TestDateTimeRule.class,
             TestDateTimeRuleRange.class,
             TestDayOfWeek.class,
+            TestISOAlignedWeekOfMonthRule.class,
             TestISOAlignedWeekOfYearRule.class,
             TestISOAmPmOfDayRule.class,
             TestISOChronology.class,
@@ -172,21 +174,19 @@ public class AllTest {
             TestISODayOfYearRule.class,
             TestISOHourOfAmPmRule.class,
             TestISOHourOfDayRule.class,
-            TestISOMerge.class,
             TestISOMinuteOfDayRule.class,
             TestISOMonthOfQuarterRule.class,
             TestISOMonthOfYearRule.class,
             TestISONanoOfDayRule.class,
             TestISOQuarterOfYearRule.class,
             TestISOWeekBasedYearRule.class,
-            TestISOAlignedWeekOfMonthRule.class,
             TestISOWeekOfWeekBasedYearRule.class,
-            TestISOZeroEpochMonthRule.class,
             TestISOYearRule.class,
+            TestISOZeroEpochMonthRule.class,
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
-            TestMonthDay.class,  // needs strict to block overflow leftovers
+            TestMonthDay.class,
             TestMonthOfYear.class,
             TestOffsetDate.class,
             TestOffsetDateTime.class,
@@ -200,7 +200,7 @@ public class AllTest {
             TestQuarterOfYear.class,
             TestWeekRules.class,
             TestYear.class,
-            TestYearMonth.class,  // needs strict to block overflow leftovers
+            TestYearMonth.class,
             TestZonedDateTime.class,
             TestZoneId.class,
             TestZoneOffset.class,
