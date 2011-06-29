@@ -39,11 +39,6 @@ import static javax.time.calendar.ISOPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Locale;
@@ -63,19 +58,8 @@ public class TestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         assertTrue(CalendricalRule.class.isAssignableFrom(DateTimeRule.class));
-        assertTrue(Serializable.class.isAssignableFrom(DateTimeRule.class));
         assertTrue(Comparable.class.isAssignableFrom(DateTimeRule.class));
         assertTrue(Comparator.class.isAssignableFrom(DateTimeRule.class));
-    }
-
-    public void test_serialization() throws Exception {
-        DateTimeRule rule = new Mock(HOURS, DAYS, 0, 23);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(rule);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertEquals(ois.readObject(), rule);
     }
 
     //-----------------------------------------------------------------------
@@ -301,8 +285,6 @@ public class TestDateTimeRule {
 
     //-----------------------------------------------------------------------
     static class Mock extends DateTimeRule {
-        private static final long serialVersionUID = 1L;
-        
         protected Mock(PeriodUnit unit, PeriodUnit range, long min, long max) {
             this(unit, range, min, max, max);
         }

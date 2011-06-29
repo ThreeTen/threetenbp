@@ -46,18 +46,14 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * This class is abstract and must be implemented with care to
  * ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe and must
- * ensure serialization works correctly.
+ * All instantiable subclasses must be final, immutable and thread-safe.
+ * Subclasses should implement {@code equals}, {@code hashCode} and {@code Serializable}.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         implements Comparable<DateTimeRule> {
-    // TODO: broken serialization
-
-    /** A serialization identifier for this class. */
-    private static final long serialVersionUID = 1L;
 
     /** The period unit, not null. */
     private final PeriodUnit periodUnit;
@@ -69,6 +65,18 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     private final DateTimeRule baseRule;
     /** The normalization rule that this rule relates to. */
     private final DateTimeRule normalizationRule;
+
+    /**
+     * Dummy constructor used in deserialization.
+     */
+    protected DateTimeRule() {
+        // TODO: remove constructor if possible
+        periodUnit = null;
+        periodRange = null;
+        range = null;
+        baseRule = null;
+        normalizationRule = null;
+    }
 
     /**
      * Creates an instance specifying the minimum and maximum value of the rule.
@@ -496,6 +504,40 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             }
         }
         return cmp;
+    }
+
+    /**
+     * Checks if this rule is equal to another rule.
+     * <p>
+     * The comparison is based on the name and class.
+     *
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other rule
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj != null && getClass() == obj.getClass()) {
+            DateTimeRule other = (DateTimeRule) obj;
+            return getPeriodUnit().equals(other.getPeriodUnit()) &&
+                    getPeriodRange().equals(other.getPeriodRange()) &&
+                    getType().equals(other.getType()) &&
+                    getName().equals(other.getName());
+        }
+        return false;
+    }
+
+    /**
+     * A hash code for this rule.
+     *
+     * @return a suitable hash code
+     */
+    @Override
+    public int hashCode() {
+        return getClass().hashCode() ^ getPeriodUnit().hashCode() ^ getPeriodRange().hashCode() ^
+                getType().hashCode() ^ getName().hashCode();
     }
 
     //-----------------------------------------------------------------------

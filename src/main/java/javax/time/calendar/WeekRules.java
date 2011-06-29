@@ -136,7 +136,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
     /**
      * The minimal number of days in the first week.
      */
-    private final int minimalDaysInFirstWeek;
+    private final int minimalDays;
 
     /**
      * Obtains an instance of {@code WeekRules} from the first day-of-week and minimal days.
@@ -198,7 +198,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             throw new IllegalArgumentException("Minimal number of days is invalid");
         }
         this.firstDayOfWeek = firstDayOfWeek;
-        this.minimalDaysInFirstWeek = minimalDaysInFirstWeek;
+        this.minimalDays = minimalDaysInFirstWeek;
     }
 
     //-----------------------------------------------------------------------
@@ -226,7 +226,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the number of seconds added, or removed, from the date, either -1 or 1
      */
     public int getMinimalDaysInFirstWeek() {
-        return minimalDaysInFirstWeek;
+        return minimalDays;
     }
 
     //-----------------------------------------------------------------------
@@ -241,7 +241,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the date that the week-based-year starts, not null
      */
     public LocalDate createWeekBasedYearDate(int weekBasedYear) {
-        LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDaysInFirstWeek);
+        LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDays);
         return inFirstWeek.with(DateAdjusters.previousOrCurrent(firstDayOfWeek));
     }
 
@@ -309,7 +309,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      */
     public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
         LocalDate startWeek = yearMonth.atDay(1).with(DateAdjusters.nextOrCurrent(firstDayOfWeek));
-        int weekValue = (startWeek.getDayOfMonth() > minimalDaysInFirstWeek ? 2 : 1);
+        int weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
         return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));
     }
 
@@ -463,7 +463,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      */
     @Override
     public int hashCode() {
-        return firstDayOfWeek.ordinal() * 7 + minimalDaysInFirstWeek;
+        return firstDayOfWeek.ordinal() * 7 + minimalDays;
     }
 
     //-----------------------------------------------------------------------
@@ -474,7 +474,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      */
     @Override
     public String toString() {
-        return "WeekRules[" + firstDayOfWeek + ',' + minimalDaysInFirstWeek + ']';
+        return "WeekRules[" + firstDayOfWeek + ',' + minimalDays + ']';
     }
 
 //    //-----------------------------------------------------------------------
@@ -513,12 +513,15 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      */
     static final class DayOfWeekRule extends DateTimeRule implements Serializable {
         private static final long serialVersionUID = 1L;
-        private WeekRules weekRules;
+        private final WeekRules weekRules;
 
         DayOfWeekRule(WeekRules weekRules) {
             super("DayOfWeek-" + weekRules.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7,
                     weekRules.getFirstDayOfWeek() == MONDAY ? DAY_OF_WEEK : null);
             this.weekRules = weekRules;
+        }
+        private Object readResolve() {
+            return weekRules.dayOfWeek();
         }
         @Override
         protected void normalize(CalendricalNormalizer merger) {

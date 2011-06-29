@@ -31,9 +31,10 @@
  */
 package javax.time.calendar;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.time.CalendricalException;
 
 /**
  * A rule defining how a single well-defined calendrical element operates.
@@ -48,8 +49,8 @@ import java.util.List;
  * <p>
  * CalendricalRule is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe and must
- * ensure serialization works correctly.
+ * All instantiable subclasses must be final, immutable and thread-safe.
+ * Subclasses should implement {@code equals}, {@code hashCode} and {@code Serializable}.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -58,15 +59,21 @@ import java.util.List;
  *  {@code Number} or {@code Enum}, must be immutable, should be comparable
  */
 public abstract class CalendricalRule<T>
-        implements Comparator<Calendrical>, Serializable {
-
-    /** A serialization identifier for this class. */
-    private static final long serialVersionUID = 1L;
+        implements Comparator<Calendrical> {
 
     /** The reified class for the generic type. */
     private final Class<T> type;
     /** The name of the rule, not null. */
     private final String name;
+
+    /**
+     * Dummy constructor used in deserialization.
+     */
+    protected CalendricalRule() {
+        // TODO: remove constructor if possible
+        type = null;
+        name = null;
+    }
 
     /**
      * Constructor used to create a rule.
@@ -257,37 +264,6 @@ public abstract class CalendricalRule<T>
             throw new IllegalArgumentException("Unable to compare as Calendrical does not provide rule: " + getName());
         }
         return value1.compareTo(value2);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this rule is equal to another rule.
-     * <p>
-     * The comparison is based on the name and class.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other rule
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof CalendricalRule<?>) {
-            CalendricalRule<?> other = (CalendricalRule<?>) obj;
-            return getClass() == other.getClass() && name.equals(other.getName());
-        }
-        return false;
-    }
-
-    /**
-     * A hash code for this rule.
-     *
-     * @return a suitable hash code
-     */
-    @Override
-    public int hashCode() {
-        return name.hashCode() + 7;
     }
 
     //-----------------------------------------------------------------------

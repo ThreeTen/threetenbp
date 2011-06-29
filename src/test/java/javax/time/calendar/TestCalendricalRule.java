@@ -67,7 +67,7 @@ public class TestCalendricalRule {
         }
     }
 
-    static class MockBigYearRule extends CalendricalRule<MockBigYear> {
+    static class MockBigYearRule extends CalendricalRule<MockBigYear> implements Serializable {
         static final MockBigYearRule INSTANCE = new MockBigYearRule();
         private static final long serialVersionUID = 1L;
         protected MockBigYearRule() {
@@ -85,7 +85,6 @@ public class TestCalendricalRule {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         assertTrue(Comparator.class.isAssignableFrom(CalendricalRule.class));
-        assertTrue(Serializable.class.isAssignableFrom(CalendricalRule.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
