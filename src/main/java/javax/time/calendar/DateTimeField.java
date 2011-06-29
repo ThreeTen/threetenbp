@@ -108,15 +108,15 @@ public final class DateTimeField
      * an attempt is made to derive the value.
      * If that fails, {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (this.rule.equals(rule)) {
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (this.rule.equals(ruleToDerive)) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, this.rule, null, this);
+        return CalendricalNormalizer.derive(ruleToDerive, this.rule, null, this);
     }
 
     //-----------------------------------------------------------------------

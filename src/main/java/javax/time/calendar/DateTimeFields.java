@@ -205,13 +205,13 @@ public final class DateTimeFields
      * If the value cannot be returned for the rule from this instance then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
         // no optimization here
         // using the local fields would leave conflicts unresolved
-        return CalendricalNormalizer.derive(rule, null, null, null, null, null, null, this);
+        return CalendricalNormalizer.derive(ruleToDerive, null, null, null, null, null, null, this);
     }
 
     //-----------------------------------------------------------------------

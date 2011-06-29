@@ -177,11 +177,11 @@ public final class ThaiBuddhistDate
      * If the value cannot be returned for the rule from this date then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return CalendricalNormalizer.derive(rule, rule(), date, null, null, null, getChronology(), null);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), date, null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------

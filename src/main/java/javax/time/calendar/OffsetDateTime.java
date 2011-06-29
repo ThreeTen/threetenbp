@@ -527,14 +527,14 @@ public final class OffsetDateTime
      * If the value cannot be returned for the rule from this date-time then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
         // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
                 case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
                 case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
                 case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) dateTime;
@@ -546,7 +546,7 @@ public final class OffsetDateTime
             }
             return null;
         }
-        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), toLocalTime(), offset, null, ISOChronology.INSTANCE, null);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

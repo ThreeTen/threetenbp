@@ -229,14 +229,14 @@ public final class CopticDate
      * If the value cannot be returned for the rule from this date then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule == rule()) {
-            return rule.reify(this);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return ruleToDerive.reify(this);
         }
-        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), null, null, null, CopticChronology.INSTANCE, null);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, CopticChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

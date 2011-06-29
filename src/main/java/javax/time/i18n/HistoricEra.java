@@ -116,14 +116,14 @@ public enum HistoricEra implements Calendrical {
      * This returns the one of the era values if the type of the rule
      * is {@code HistoricEra}. Other rules will return {@code null}.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule.getType() != HistoricEra.class) {
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive.getType() != HistoricEra.class) {
             return null;
         }
-        return rule.reify(this);
+        return ruleToDerive.reify(this);
     }
 
     //-----------------------------------------------------------------------

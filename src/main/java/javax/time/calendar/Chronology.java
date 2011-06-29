@@ -78,11 +78,15 @@ public abstract class Chronology implements Calendrical {
      * If the value cannot be returned for the rule from this offset then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return CalendricalNormalizer.derive(rule, rule(), null, null, null, null, this, null);
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, null, this, null);
     }
 
     //-----------------------------------------------------------------------

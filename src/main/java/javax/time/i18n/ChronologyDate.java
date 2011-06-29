@@ -255,11 +255,11 @@ public final class ChronologyDate
      * If the value cannot be returned for the rule from this date then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return CalendricalNormalizer.derive(rule, chrono.dateRule(), date, null, null, null, chrono, null);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, chrono.dateRule(), date, null, null, null, chrono, null);
     }
 
     //-----------------------------------------------------------------------

@@ -177,15 +177,15 @@ public enum DayOfWeek implements Calendrical {
      * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
      * rule, or something derivable from it.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule == rule()) {
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(rule, rule(), null, toField());
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, toField());
     }
 
     /**
