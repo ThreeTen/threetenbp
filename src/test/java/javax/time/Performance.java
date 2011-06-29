@@ -31,6 +31,12 @@
  */
 package javax.time;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.YEAR;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -110,6 +116,7 @@ public class Performance {
         formatListGCal(gcals);
         sortListGCal(gcals);
         
+        deriveDateTime(ldt);
     }
 
     //-----------------------------------------------------------------------
@@ -160,6 +167,20 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+    }
+
+    private static void deriveDateTime(List<LocalDateTime> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (LocalDateTime dt : list) {
+            total += dt.get(YEAR).getValue();
+            total += dt.get(MONTH_OF_YEAR).getValue();
+            total += dt.get(DAY_OF_MONTH).getValue();
+            total += dt.get(HOUR_OF_DAY).getValue();
+            total += dt.get(MINUTE_OF_HOUR).getValue();
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalDT:   Derive: " + NF.format(end - start) + " ns" + " " + total);
     }
 
     //-----------------------------------------------------------------------
