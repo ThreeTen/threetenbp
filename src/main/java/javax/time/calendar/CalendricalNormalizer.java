@@ -730,7 +730,10 @@ public final class CalendricalNormalizer {
         try {
             R result = ruleToDerive.deriveFrom(this);
             if (result == null && ruleToDerive instanceof DateTimeRule) {
-                return (R) getFieldDerived((DateTimeRule) ruleToDerive, false);
+                result = (R) getFieldDerived((DateTimeRule) ruleToDerive, false);
+            }
+            if (errors.size() > 0) {
+                return null;
             }
             return result;
         } catch (RuntimeException ex) {
