@@ -49,6 +49,7 @@ import java.io.ObjectInputStream;
 
 import javax.time.Instant;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeProvider;
@@ -3132,16 +3133,13 @@ public class GregorianCalendar
      * correct day in the ISO calendar system, which will also be the same value
      * for Modified Julian Days.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      * @since ?
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return toZonedDateTime().get(rule);
-//        if (rule.equals(ZonedDateTime.rule())) {
-//            
-//        }
-//        return rule().deriveValueQuiet(rule, this, this);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        ZonedDateTime zdt = toZonedDateTime();
+        return CalendricalNormalizer.derive(ruleToDerive, null, zdt.toLocalDate(), zdt.toLocalTime(), zdt.getOffset(), zdt.getZone(), null, null);
     }
 
 }
