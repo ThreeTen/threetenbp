@@ -260,21 +260,6 @@ public final class Year
     }
 
     /**
-     * Returns the next leap year after the current year.
-     * The definition of a leap year is specified in {@link #isLeap()}.
-     *
-     * @return the next leap year after this year, not null
-     * @throws CalendricalException if the maximum year is reached
-     */
-    public Year nextLeap() {
-        Year temp = next();
-        while (!temp.isLeap()) {
-            temp = temp.next();
-        }
-        return temp;
-    }
-
-    /**
      * Returns the previous year.
      *
      * @return the previous year, not null
@@ -285,21 +270,6 @@ public final class Year
             throw new CalendricalRuleException("Year is already at the minimum value", YEAR);
         }
         return of(year - 1);
-    }
-
-    /**
-     * Returns the previous leap year before the current year.
-     * The definition of a leap year is specified in {@link #isLeap()}.
-     *
-     * @return the previous leap year after this year, not null
-     * @throws CalendricalException if the minimum year is reached
-     */
-    public Year previousLeap() {
-        Year temp = previous();
-        while (!temp.isLeap()) {
-            temp = temp.previous();
-        }
-        return temp;
     }
 
     //-----------------------------------------------------------------------
@@ -459,87 +429,6 @@ public final class Year
     public boolean isValidMonthDay(MonthDay monthDay) {
         return monthDay != null && monthDay.isValidYear(year);
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the ISO proleptic year, from MIN_YEAR to MAX_YEAR.
-//     * <p>
-//     * The year 2AD/CE is represented by 2.<br />
-//     * The year 1AD/CE is represented by 1.<br />
-//     * The year 1BC/BCE is represented by 0.<br />
-//     * The year 2BC/BCE is represented by -1.<br />
-//     *
-//     * @return the ISO proleptic year, from MIN_YEAR to MAX_YEAR
-//     */
-//    public int getISOYear() {
-//        return year;
-//    }
-//
-//    /**
-//     * Returns a new {@code Year} instance with a different year.
-//     * <p>
-//     * The year 2AD/CE is represented by 2.<br />
-//     * The year 1AD/CE is represented by 1.<br />
-//     * The year 1BC/BCE is represented by 0.<br />
-//     * The year 2BC/BCE is represented by -1.<br />
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param isoYear  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @return a new updated Year, not null
-//     */
-//    public Year withISOYear(int isoYear) {
-//        rule().checkValue(isoYear);
-//        return null;
-//    }
-
-//    /**
-//     * Gets the year of era, from 1 to MAX_YEAR, which is used in combination
-//     * with {@link #getEstimatedEra()}.
-//     * <p>
-//     * The year 2, estimated as 2AD/CE is represented by 2.<br />
-//     * The year 1, estimated as 1AD/CE is represented by 1.<br />
-//     * The year 0, estimated as 1BC/BCE is represented by 1.<br />
-//     * The year -1, estimated as 2BC/BCE is represented by 2.<br />
-//     *
-//     * @return the year of era, from 1 to MAX_YEAR
-//     */
-//    public int getYearOfEra() {
-//        // TODO: ISO Year doesn't have an era
-//        return (year > 0 ? year : -(year - 1));
-//    }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the century of era, from 0 to MAX_YEAR / 100.
-//     * <p>
-//     * This method uses a simple definition of century, being the
-//     * ISO year divided by 100, which is the same as the printed ISO year
-//     * without the last two digits.
-//     * <p>
-//     * The value 20 will be returned from 2000 to 2099.<br/>
-//     * The value 19 will be returned from 1900 to 1999.<br/>
-//     * The value 1 will be returned from 100 to 199.<br/>
-//     * The value 0 will be returned from -99 to 99 (199 years in the century).<br/>
-//     * The value -1 will be returned from -100 to 199.<br/>
-//     *
-//     * @return the century of era, from 0 to MAX_YEAR / 100
-//     */
-//    public int getISOCentury() {
-//        return year / 100;
-//    }
-//
-//    /**
-//     * Gets the year of century, from 0 to 99, which is used in combination
-//     * with {@link #getCenturyOfEra()}.
-//     * This is the lower two digits of the ISO year.
-//     *
-//     * @return the year of era, from 0 to 99
-//     */
-//    public int getYearOfISOCentury() {
-//        int yoc = year % 100;
-//        return yoc < 0 ? yoc + 100 : yoc;
-//    }
 
     //-----------------------------------------------------------------------
     /**
