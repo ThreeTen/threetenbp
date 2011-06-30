@@ -34,6 +34,9 @@ package javax.time.calendar;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
+import static javax.time.calendar.MonthOfYear.JANUARY;
+import static javax.time.calendar.MonthOfYear.JUNE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -41,6 +44,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -92,6 +96,38 @@ public class TestMonthOfYear {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_tooHigh() {
         MonthOfYear.of(13);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(MonthOfYear.from(LocalDate.of(2011, 6, 6)), JUNE);
+        assertEquals(MonthOfYear.from(MONTH_OF_YEAR.field(1)), JANUARY);
+        assertEquals(MonthOfYear.from(LocalDate.of(2011, 6, 6), JUNE.toField()), JUNE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        MonthOfYear.from(JANUARY, FEBRUARY.toField());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        MonthOfYear.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        MonthOfYear.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        MonthOfYear.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        MonthOfYear.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

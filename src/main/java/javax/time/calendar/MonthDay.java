@@ -181,20 +181,19 @@ public final class MonthDay
         return of(MonthOfYear.of(monthOfYear), dayOfMonth);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthDay} from a Calendrical.
+     * Obtains an instance of {@code MonthDay} from a set of calendricals.
      * <p>
-     * This method will create a MonthDay from the Calendrical by extracting the
-     * month-of-year and day-of-month fields.
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a month-day.
      *
-     * @param calendrical  the calendrical to use, not null
+     * @param calendricals  the calendricals to create a month-day from, no nulls, not null
      * @return the month-day, not null
-     * @throws CalendricalException if the month-day cannot be obtained
+     * @throws CalendricalException if unable to merge to a month-day
      */
-    public static MonthDay of(Calendrical calendrical) {
-        DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
-        DateTimeField dom = DAY_OF_MONTH.getValueChecked(calendrical);
-        return of(month.getValidIntValue(), dom.getValidIntValue());
+    public static MonthDay from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     /**

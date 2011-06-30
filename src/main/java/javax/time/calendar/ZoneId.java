@@ -414,6 +414,21 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZoneId} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a time-zone.
+     *
+     * @param calendricals  the calendricals to create a time-zone from, no nulls, not null
+     * @return the time-zone, not null
+     * @throws CalendricalException if unable to merge to a time-zone
+     */
+    public static ZoneId from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Constructor only accessible within the package.
      */
     ZoneId() {

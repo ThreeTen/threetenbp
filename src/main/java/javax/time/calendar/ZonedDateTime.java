@@ -449,6 +449,20 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZonedDateTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date-time.
+     *
+     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
+     * @return the zoned date-time, not null
+     * @throws CalendricalException if unable to merge to a zoned date-time
+     */
+    public static ZonedDateTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
      * Obtains an instance of {@code ZonedDateTime} from the normalized form.
      * <p>
      * This internal method is used by the associated rule.

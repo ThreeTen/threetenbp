@@ -403,6 +403,41 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    // from()
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(OffsetDate.from(OFFSET_PONE, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+        assertEquals(OffsetDate.from(OFFSET_PTWO, MonthDay.of(7, 15), YEAR.field(2007)), OffsetDate.of(2007, 7, 15, OFFSET_PTWO));
+        assertEquals(OffsetDate.from(OFFSET_PONE, LocalDate.of(2007, 7, 15)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+        assertEquals(OffsetDate.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        OffsetDate.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        OffsetDate.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        OffsetDate.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        OffsetDate.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        OffsetDate.from((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleToString")

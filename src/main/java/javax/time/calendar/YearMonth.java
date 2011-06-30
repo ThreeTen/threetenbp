@@ -158,20 +158,19 @@ public final class YearMonth
         return of(year, MonthOfYear.of(monthOfYear));
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearMonth} from a Calendrical.
+     * Obtains an instance of {@code YearMonth} from a set of calendricals.
      * <p>
-     * This method will create a year-month from the Calendrical by extracting
-     * the year and month-of-year fields.
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a year-month.
      *
-     * @param calendrical  the calendrical to use, not null
+     * @param calendricals  the calendricals to create a year-month from, no nulls, not null
      * @return the year-month, not null
-     * @throws CalendricalException if the year-month cannot be obtained
+     * @throws CalendricalException if unable to merge to a year-month
      */
-    public static YearMonth of(Calendrical calendrical) {
-        DateTimeField year = YEAR.getValueChecked(calendrical);
-        DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
-        return of(year.getValidIntValue(), month.getValidIntValue());
+    public static YearMonth from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     /**

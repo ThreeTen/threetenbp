@@ -536,7 +536,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      */
     @Override
     public int hashCode() {
-        return getClass().hashCode() ^ getPeriodUnit().hashCode() ^ getPeriodRange().hashCode() ^
+        return getClass().hashCode() ^ getPeriodUnit().hashCode() ^
+                (getPeriodRange() == null ? 0 : getPeriodRange().hashCode()) ^
                 getType().hashCode() ^ getName().hashCode();
     }
 

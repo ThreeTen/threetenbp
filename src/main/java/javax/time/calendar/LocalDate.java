@@ -40,6 +40,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -194,23 +195,6 @@ public final class LocalDate
         return result;
     }
 
-//    //-----------------------------------------------------------------------
-//    // TODO
-//    /**
-//     * Obtains an instance of {@code LocalDate} from a set of calendricals.
-//     * <p>
-//     * A calendrical represents some form of date and time information.
-//     * This method combines the input calendricals into a date.
-//     * For example, this could be used to convert a date in another calendar
-//     * system, or to merge a {@link Year} and a {@link MonthDay}.
-//     *
-//     * @param calendricals  the calendricals to create a date from, no nulls, not null
-//     * @return the local date, not null
-//     */
-//    public static LocalDate ofMerged(Calendrical... calendricals) {
-//        return new CalendricalSet(calendricals).merge().derive(rule());
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDate} from the epoch day count.
@@ -279,6 +263,21 @@ public final class LocalDate
         // check year now we are certain it is correct
         int year = YEAR.checkValidIntValue(yearEst);
         return new LocalDate(year, MonthOfYear.of(month), dom);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code LocalDate} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date.
+     *
+     * @param calendricals  the calendricals to create a date from, no nulls, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to merge to a local date
+     */
+    public static LocalDate from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     //-----------------------------------------------------------------------

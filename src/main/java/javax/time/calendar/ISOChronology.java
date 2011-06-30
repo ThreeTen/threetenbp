@@ -174,13 +174,13 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @return the week-based-year
      */
     static int getWeekBasedYearFromDate(LocalDate date) {
-        Year year = Year.of(date);  // use ISO year object so previous/next are checked
+        int year = date.getYear();  // use ISO year object so previous/next are checked
         if (date.getMonthOfYear() == MonthOfYear.JANUARY) {
             int dom = date.getDayOfMonth();
             if (dom < 4) {
                 int dow = date.getDayOfWeek().getValue();
                 if (dow > dom + 3) {
-                    year = year.previous();
+                    year--;
                 }
             }
         } else if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
@@ -188,11 +188,11 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (dom > 28) {
                 int dow = date.getDayOfWeek().getValue();
                 if (dow <= dom % 7) {
-                    year = year.next();
+                    year++;
                 }
             }
         }
-        return year.getValue();
+        return year;
     }
 
     /**

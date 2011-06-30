@@ -422,6 +422,20 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetDateTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date-time.
+     *
+     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
+     * @return the offset date-time, not null
+     * @throws CalendricalException if unable to merge to an offset date-time
+     */
+    public static OffsetDateTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
      * Obtains an instance of {@code OffsetDateTime} from the normalized form.
      * <p>
      * This internal method is used by the associated rule.

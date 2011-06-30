@@ -36,6 +36,7 @@ import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import java.util.Calendar;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -99,7 +100,7 @@ public enum AmPmOfDay implements Calendrical {
      * {@link ISOChronology} AM/PM rule to indicate the failed rule.
      *
      * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
-     * @return the AmPmOfDay singleton, not null
+     * @return the AM/PM, not null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public static AmPmOfDay of(int amPmOfDay) {
@@ -111,6 +112,21 @@ public enum AmPmOfDay implements Calendrical {
             default:
                 throw new IllegalCalendarFieldValueException(AMPM_OF_DAY, amPmOfDay);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code AmPmOfDay} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into AM/PM.
+     *
+     * @param calendricals  the calendricals to create AM/PM from, no nulls, not null
+     * @return the AM/PM, not null
+     * @throws CalendricalException if unable to merge to AM/PM
+     */
+    public static AmPmOfDay from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     /**

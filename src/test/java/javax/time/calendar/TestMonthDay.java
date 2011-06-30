@@ -34,6 +34,8 @@ package javax.time.calendar;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.MonthOfYear.JANUARY;
+import static javax.time.calendar.MonthOfYear.JULY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -55,7 +57,6 @@ import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -224,25 +225,34 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_Calendrical() {
-        Calendrical cal = new MockSimpleCalendrical(MONTH_OF_YEAR, DateTimeField.of(MONTH_OF_YEAR, 7), DAY_OF_MONTH, DateTimeField.of(DAY_OF_MONTH, 15));
-        assertEquals(MonthDay.of(cal), TEST_07_15);
-    }
-
-    public void factory_Calendrical_otherFieldsIgnored() {
-        Calendrical cal = LocalDate.of(2007, 7, 15);
-        assertEquals(MonthDay.of(cal), TEST_07_15);
+    public void test_factory_Calendricals() {
+        assertEquals(MonthDay.from(JULY, DAY_OF_MONTH.field(15)), TEST_07_15);
+        assertEquals(MonthDay.from(LocalDate.of(2007, 7, 15)), TEST_07_15);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void factory_Calendrical_unsupportedField() {
-        Calendrical cal = LocalTime.of(12, 30);
-        MonthDay.of(cal);
+    public void test_factory_Calendricals_invalid_clash() {
+        MonthDay.from(LocalDate.of(2007, 7, 15), JANUARY);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        MonthDay.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        MonthDay.from();
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_Calendrical_null() {
-        MonthDay.of((Calendrical) null);
+    public void test_factory_Calendricals_nullArray() {
+        MonthDay.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        MonthDay.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

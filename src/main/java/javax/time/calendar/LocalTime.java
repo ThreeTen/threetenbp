@@ -346,6 +346,21 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code LocalTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a time.
+     *
+     * @param calendricals  the calendricals to create a time from, no nulls, not null
+     * @return the local time, not null
+     * @throws CalendricalException if unable to merge to a local time
+     */
+    public static LocalTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.
      * <p>
      * The following formats are accepted in ASCII:

@@ -289,6 +289,21 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZoneOffset} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a zone-offset.
+     *
+     * @param calendricals  the calendricals to create a zone-offset from, no nulls, not null
+     * @return the zone-offset, not null
+     * @throws CalendricalException if unable to merge to a zone-offset
+     */
+    public static ZoneOffset from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Validates the offset fields.
      *
      * @param hours  the time-zone offset in hours, from -18 to +18

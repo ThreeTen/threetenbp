@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -125,6 +126,21 @@ public enum QuarterOfYear implements Calendrical {
             default:
                 throw new IllegalCalendarFieldValueException(QUARTER_OF_YEAR, quarterOfYear);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code QuarterOfYear} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a quarter-of-year.
+     *
+     * @param calendricals  the calendricals to create a quarter-of-year from, no nulls, not null
+     * @return the quarter-of-year, not null
+     * @throws CalendricalException if unable to merge to a quarter-of-year
+     */
+    public static QuarterOfYear from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     /**

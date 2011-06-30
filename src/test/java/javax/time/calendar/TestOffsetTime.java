@@ -63,6 +63,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.TimeSource;
@@ -309,6 +310,40 @@ public class TestOffsetTime {
         assertEquals(test.getMinuteOfHour(), min);
         assertEquals(test.getSecondOfMinute(), sec);
         assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // from()
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(OffsetTime.from(OFFSET_PONE, AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), OffsetTime.of(17, 30, OFFSET_PONE));
+        assertEquals(OffsetTime.from(LocalTime.of(17, 30), OFFSET_PONE), OffsetTime.of(17, 30, OFFSET_PONE));
+        assertEquals(OffsetTime.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetTime.of(17, 30, OFFSET_PONE));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        OffsetTime.from(AmPmOfDay.PM, HOUR_OF_AMPM.field(5), HOUR_OF_DAY.field(20));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        OffsetTime.from(LocalDate.of(2007, 7, 15));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        OffsetTime.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        OffsetTime.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        OffsetTime.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

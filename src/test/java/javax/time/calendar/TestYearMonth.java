@@ -39,6 +39,8 @@ import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.DECADES;
 import static javax.time.calendar.ISOPeriodUnit.MONTHS;
 import static javax.time.calendar.ISOPeriodUnit.YEARS;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
+import static javax.time.calendar.MonthOfYear.JULY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -60,7 +62,6 @@ import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -230,25 +231,35 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_Calendrical() {
-        Calendrical cal = new MockSimpleCalendrical(YEAR, YEAR.field(2008), MONTH_OF_YEAR, MONTH_OF_YEAR.field(6));
-        assertEquals(YearMonth.of(cal), TEST_2008_06);
-    }
-
-    public void factory_Calendrical_otherFieldsIgnored() {
-        Calendrical cal = LocalDate.of(2008, 6, 30);
-        assertEquals(YearMonth.of(cal), TEST_2008_06);
+    public void test_factory_Calendricals() {
+        assertEquals(YearMonth.from(LocalDate.of(2007, 7, 15)), YearMonth.of(2007, 7));
+        assertEquals(YearMonth.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7), JULY), YearMonth.of(2007, 7));
+        assertEquals(YearMonth.from(Year.of(2007), JULY), YearMonth.of(2007, 7));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
-    public void factory_Calendrical_unsupportedField() {
-        Calendrical cal = LocalTime.of(12, 30);
-        YearMonth.of(cal);
+    public void test_factory_Calendricals_invalid_clash() {
+        YearMonth.from(Year.of(2007), JULY, FEBRUARY);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        YearMonth.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        YearMonth.from();
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_Calendrical_null() {
-        YearMonth.of((Calendrical) null);
+    public void test_factory_Calendricals_nullArray() {
+        YearMonth.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        YearMonth.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

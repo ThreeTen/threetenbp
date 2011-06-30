@@ -147,7 +147,9 @@ public final class CalendricalNormalizer {
             }
             target = new CalendricalNormalizer(calendricals, semiNormalized);
             target.normalize();
-        } catch (RuntimeException ex) { 
+        } catch (NullPointerException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
             // provide more useful error message
             throw new CalendricalException("Unable to merge " + Arrays.toString(calendricals) + ": " + ex.getMessage(), ex);
         }

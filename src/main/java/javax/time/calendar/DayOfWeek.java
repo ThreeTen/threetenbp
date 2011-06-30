@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -136,22 +137,19 @@ public enum DayOfWeek implements Calendrical {
         return ENUMS[dayOfWeek - 1];
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code DayOfWeek} from a {@code Calendrical}.
+     * Obtains an instance of {@code DayOfWeek} from a set of calendricals.
      * <p>
-     * {@code DayOfWeek} is an enum representing the 7 days of the week.
-     * This factory allows the enum to be obtained from a {@code Calendrical},
-     * for example {@code LocalDate} or {@code DateTimeField}.
-     * <p>
-     * An exception is thrown if the day-of-week cannot be obtained.
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a day-of-week.
      *
-     * @param calendrical  the calendrical to get the day-of-week from, not null
-     * @return the DayOfWeek singleton, not null
-     * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
+     * @param calendricals  the calendricals to create a day-of-week from, no nulls, not null
+     * @return the day-of-week, not null
+     * @throws CalendricalException if unable to merge to a day-of-week
      */
-    public static DayOfWeek of(Calendrical calendrical) {
-        DateTimeField field = DAY_OF_WEEK.getValueChecked(calendrical);
-        return of(field.getValidIntValue());
+    public static DayOfWeek from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     /**

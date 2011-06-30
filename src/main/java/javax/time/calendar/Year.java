@@ -129,7 +129,7 @@ public final class Year
      */
     public static Year now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
-        return Year.of(now);
+        return Year.of(now.getYear());
     }
 
     //-----------------------------------------------------------------------
@@ -152,18 +152,19 @@ public final class Year
         return new Year(isoYear);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Year} from a calendrical.
+     * Obtains an instance of {@code Year} from a set of calendricals.
      * <p>
-     * This can be used extract the year value directly from any implementation
-     * of {@code Calendrical}, including those in other calendar systems.
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a year.
      *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the Year instance, not null
-     * @throws CalendricalException if the year cannot be obtained
+     * @param calendricals  the calendricals to create a year from, no nulls, not null
+     * @return the year, not null
+     * @throws CalendricalException if unable to merge to a year
      */
-    public static Year of(Calendrical calendrical) {
-        return Year.of(YEAR.getValueChecked(calendrical).getValidIntValue());
+    public static Year from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     /**

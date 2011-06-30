@@ -390,14 +390,12 @@ public final class LocalDateTime
      * <p>
      * A calendrical represents some form of date and time information.
      * This method combines the input calendricals into a date-time.
-     * For example, this could be used to convert a date-time in another calendar
-     * system, or to merge a {@link Year}, {@link MonthDay} and a {@link LocalTime}.
      *
      * @param calendricals  the calendricals to create a date-time from, no nulls, not null
      * @return the local date-time, not null
-     * @throws CalendricalException if a date-time cannot be obtained
+     * @throws CalendricalException if unable to merge to a local date-time
      */
-    public static LocalDateTime ofMerged(Calendrical... calendricals) {
+    public static LocalDateTime from(Calendrical... calendricals) {
         return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 

@@ -40,6 +40,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -95,6 +96,38 @@ public class TestAmPmOfDay {
             assertEquals(ex.getActual(), 2);
             throw ex;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(AmPmOfDay.from(LocalTime.of(8, 30)), AmPmOfDay.AM);
+        assertEquals(AmPmOfDay.from(LocalTime.of(17, 30)), AmPmOfDay.PM);
+        assertEquals(AmPmOfDay.from(AMPM_OF_DAY.field(1)), AmPmOfDay.PM);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        AmPmOfDay.from(AmPmOfDay.AM, AmPmOfDay.PM.toField());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        AmPmOfDay.from(LocalDate.of(2007, 7, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        AmPmOfDay.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        AmPmOfDay.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        AmPmOfDay.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

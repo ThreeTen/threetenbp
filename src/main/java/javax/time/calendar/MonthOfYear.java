@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -161,6 +162,21 @@ public enum MonthOfYear implements Calendrical {
             throw new IllegalCalendarFieldValueException(MONTH_OF_YEAR, monthOfYear);
         }
         return ENUMS[monthOfYear - 1];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code MonthOfYear} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a month-of-year.
+     *
+     * @param calendricals  the calendricals to create a month-of-year from, no nulls, not null
+     * @return the month-of-year, not null
+     * @throws CalendricalException if unable to merge to a month-of-year
+     */
+    public static MonthOfYear from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
     /**
