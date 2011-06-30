@@ -36,6 +36,7 @@ Simple tasks
 - LocalDate constants for MIN_DATE/MAX_DATE (using Year.MIN_VALUE Jan 1/MAX_VALUE Dec 31)
 - LocalTime constants for MIN_TIME/MAX_TIME (using MIN = MIDNIGHT, and MAX = 23:59:59.999999999)
 - LocalDateTime constants for MIN_DATE_TIME/MAX_DATE_TIME (combining min and max from LocalDate/LocalTime)
+- Obtain rules from TZDB rather than a file
 
 
 More complex tasks
@@ -49,7 +50,6 @@ Instant
 - toString/parse
 
 Time scales
-- Obtain rules from TZDB rather than a file?
 
 Date/Time classes
 - DateResolver rework - takes int or MonthOfDay or calendricals
@@ -64,7 +64,6 @@ Date/Time classes
 Rules
 - test min/max year for week-based-year
 - ensure other calendar systems re-use ISO defined rules
-- rule serialization currently requires empty constructors
 - Handle case where values have gaps, eg 1,2, 4,5,6, 8
 ? parse()
 ? merge -> normalize
