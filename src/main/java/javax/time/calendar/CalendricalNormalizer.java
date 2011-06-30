@@ -676,8 +676,9 @@ public final class CalendricalNormalizer {
                         period = MathUtils.safeMultiply(period, conversion2.getAmount());
                         period = MathUtils.safeAdd(period, periodSml);
                         DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(period));
-                        group.set(i--, fieldCombined);
+                        group.set(i, fieldCombined);
                         group.remove(j);
+                        i = -1;
                         break;
                     }
                 }
