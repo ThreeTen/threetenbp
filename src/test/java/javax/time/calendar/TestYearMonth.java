@@ -871,39 +871,6 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // rollMonthOfYear()
-    //-----------------------------------------------------------------------
-    public void test_rollMonthOfYear() {
-        YearMonth base = YearMonth.of(2008, 7);
-        assertSame(base.rollMonthOfYear(0), base);
-        assertEquals(base.rollMonthOfYear(1), YearMonth.of(2008, 8));
-        assertEquals(base.rollMonthOfYear(2), YearMonth.of(2008, 9));
-        assertEquals(base.rollMonthOfYear(3), YearMonth.of(2008, 10));
-        assertEquals(base.rollMonthOfYear(4), YearMonth.of(2008, 11));
-        assertEquals(base.rollMonthOfYear(5), YearMonth.of(2008, 12));
-        assertEquals(base.rollMonthOfYear(6), YearMonth.of(2008, 1));
-        assertEquals(base.rollMonthOfYear(7), YearMonth.of(2008, 2));
-        assertEquals(base.rollMonthOfYear(8), YearMonth.of(2008, 3));
-        assertEquals(base.rollMonthOfYear(9), YearMonth.of(2008, 4));
-        assertEquals(base.rollMonthOfYear(10), YearMonth.of(2008, 5));
-        assertEquals(base.rollMonthOfYear(11), YearMonth.of(2008, 6));
-        assertEquals(base.rollMonthOfYear(12), YearMonth.of(2008, 7));
-        
-        assertEquals(base.rollMonthOfYear(-1), YearMonth.of(2008, 6));
-        assertEquals(base.rollMonthOfYear(-2), YearMonth.of(2008, 5));
-        assertEquals(base.rollMonthOfYear(-3), YearMonth.of(2008, 4));
-        assertEquals(base.rollMonthOfYear(-4), YearMonth.of(2008, 3));
-        assertEquals(base.rollMonthOfYear(-5), YearMonth.of(2008, 2));
-        assertEquals(base.rollMonthOfYear(-6), YearMonth.of(2008, 1));
-        assertEquals(base.rollMonthOfYear(-7), YearMonth.of(2008, 12));
-        assertEquals(base.rollMonthOfYear(-8), YearMonth.of(2008, 11));
-        assertEquals(base.rollMonthOfYear(-9), YearMonth.of(2008, 10));
-        assertEquals(base.rollMonthOfYear(-10), YearMonth.of(2008, 9));
-        assertEquals(base.rollMonthOfYear(-11), YearMonth.of(2008, 8));
-        assertEquals(base.rollMonthOfYear(-12), YearMonth.of(2008, 7));
-    }
-
-    //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
     public void test_adjustDate() {

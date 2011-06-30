@@ -482,24 +482,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Rolls the month-of-year, adding the specified number of months to a copy
-     * of this {@code YearMonth}.
-     * <p>
-     * This method will add the specified number of months to the month-day,
-     * rolling from December back to January if necessary.
-     * The year is not altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to roll by, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the month rolled, not null
-     */
-    public YearMonth rollMonthOfYear(int months) {
-        return with(month.roll(months));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the year-month extracted from the calendrical matches this.
      * <p>
      * This method implements the {@code CalendricalMatcher} interface.
