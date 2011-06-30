@@ -84,6 +84,7 @@
 - Rename WeekOfMonth to AlignedWeekOfMonth, similarly for WeekOfYear
 - Remove getChronology() in most places, Use get(Chronology.rule()) instead
 - Rewrite merging
+- Factories from Calendrical varargs
 
 0.6.3
 ===============================================================================
