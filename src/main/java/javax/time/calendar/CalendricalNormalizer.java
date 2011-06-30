@@ -444,26 +444,33 @@ public final class CalendricalNormalizer {
      * should be stored if it is not available. Note that the value is returned
      * whether it is null or not and no exception is thrown.
      * 
-     * @param rule  the rule to retrieve, null returns null
+     * @param ruleToDerive  the rule to retrieve, null returns null
      * @return the field, may be null
      */
-    public DateTimeField getFieldDerived(DateTimeRule rule, boolean storeErrorIfNull) {
-        DateTimeField result = rule.deriveFrom(this);
-        if (result == null && fields != null) {
-            DateTimeRule baseRule = rule.getBaseRule();
+    public DateTimeField getFieldDerived(DateTimeRule ruleToDerive, boolean storeErrorIfNull) {
+        DateTimeField result = ruleToDerive.deriveFrom(this);
+        if (result == null) {
+            result = deriveField(ruleToDerive);
+        }
+        if (storeErrorIfNull && result == null) {
+            addError("Missing field " + ruleToDerive.getName());
+        }
+        return result;
+    }
+
+    private DateTimeField deriveField(DateTimeRule ruleToDerive) {
+        if (fields != null) {
+            DateTimeRule baseRule = ruleToDerive.getBaseRule();
             for (DateTimeField field : fields.values()) {
                 if (field.getRule().getBaseRule().equals(baseRule)) {
-                    result = field.derive(rule);
+                    DateTimeField result = field.derive(ruleToDerive);
                     if (result != null) {
-                        break;
+                        return result;
                     }
                 }
             }
         }
-        if (storeErrorIfNull && result == null) {
-            addError("Missing field " + rule.getName());
-        }
-        return result;
+        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -747,7 +754,7 @@ public final class CalendricalNormalizer {
         try {
             R result = ruleToDerive.deriveFrom(this);
             if (result == null && ruleToDerive instanceof DateTimeRule) {
-                result = (R) getFieldDerived((DateTimeRule) ruleToDerive, false);
+                result = (R) deriveField((DateTimeRule) ruleToDerive);
             }
             if (errors.size() > 0) {
                 return null;
