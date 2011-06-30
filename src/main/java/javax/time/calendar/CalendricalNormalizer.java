@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -721,11 +722,11 @@ public final class CalendricalNormalizer {
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     public <R> R derive(CalendricalRule<R> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (R) this;
-        }
         if (errors.size() > 0) {
             return null;  // quiet
+        }
+        if (ruleToDerive == rule()) {
+            return (R) this;
         }
         try {
             R result = ruleToDerive.deriveFrom(this);
@@ -744,10 +745,10 @@ public final class CalendricalNormalizer {
 
     public <R> R deriveChecked(CalendricalRule<R> ruleToDerive) {
         R result = derive(ruleToDerive);
-        if (errors.size() > 0) {
-            throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this + ": " + errors);
-        }
         if (result == null) {
+            if (errors.size() > 0) {
+                throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this + ": " + errors);
+            }
             throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this);
         }
         return result;
@@ -786,7 +787,7 @@ public final class CalendricalNormalizer {
     /**
      * Rule class.
      */
-    static final class Rule extends CalendricalRule<CalendricalNormalizer> {
+    static final class Rule extends CalendricalRule<CalendricalNormalizer> implements Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Serialization version. */
@@ -794,6 +795,10 @@ public final class CalendricalNormalizer {
 
         private Rule() {
             super(CalendricalNormalizer.class, "CalendricalNormalizer");  // TODO
+        }
+
+        private Object readResolve() {
+            return INSTANCE;
         }
     }
 
