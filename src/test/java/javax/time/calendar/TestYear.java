@@ -899,7 +899,7 @@ public class TestYear {
     public void test_toString() {
         for (int i = -4; i <= 2104; i++) {
             Year a = Year.of(i);
-            assertEquals(a.toString(), "Year=" + i);
+            assertEquals(a.toString(), "" + i);
         }
     }
 

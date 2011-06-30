@@ -706,7 +706,7 @@ public final class Year
      */
     @Override
     public String toString() {
-        return "Year=" + Integer.toString(year);
+        return Integer.toString(year);
     }
 
 }
