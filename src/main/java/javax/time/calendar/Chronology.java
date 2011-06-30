@@ -41,7 +41,7 @@ package javax.time.calendar;
  * fields which are supported in the vast majority of calendar systems.
  * Subclasses will provide the full set of fields for that calendar system.
  * <p>
- * The default chronology is {@link ISOChronology ISO8601} which is the
+ * The default chronology is {@link ISOChronology ISO-8601} which is the
  * <i>de facto</i> world calendar today.
  * <p>
  * This is an abstract class and must be implemented with care to

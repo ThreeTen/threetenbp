@@ -93,7 +93,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * leap year as it is divisible by 400.
      * <p>
      * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO8601 standard.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
      * @param year  the year to check, may be outside the valid range for the rule
      * @return true if the year is a leap year

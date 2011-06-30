@@ -537,7 +537,7 @@ public final class Period
      * Obtains a {@code Period} from a text string such as {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * This will parse the string produced by {@code toString()} which is
-     * a subset of the ISO8601 period format {@code PnYnMnDTnHnMn.nS}.
+     * a subset of the ISO-8601 period format {@code PnYnMnDTnHnMn.nS}.
      * <p>
      * The string consists of a series of numbers with a suffix identifying their meaning.
      * The values, and suffixes, must be in the sequence year, month, day, hour, minute, second.
