@@ -226,22 +226,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 }
                 break;
             }
-            case ISODateTimeRule.MINUTE_OF_DAY_ORDINAL: {  // TODO: this is a Bad Idea
-                DateTimeField mod = merger.getField(MINUTE_OF_DAY, false);
-                if (mod != null) {
-                    LocalTime time = LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));  // TODO: lenient overflow
-                    merger.setTime(time, true);
-                }
-                break;
-            }
-            case SECOND_OF_DAY_ORDINAL: {  // TODO: this is a Bad Idea
-                DateTimeField sod = merger.getField(SECOND_OF_DAY, false);
-                if (sod != null) {
-                    LocalTime time = LocalTime.ofSecondOfDay(sod.getValue());  // TODO: lenient overflow
-                    merger.setTime(time, true);
-                }
-                break;
-            }
             case NANO_OF_DAY_ORDINAL: {
                 DateTimeField nod = merger.getField(NANO_OF_DAY, false);
                 if (nod != null) {

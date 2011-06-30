@@ -409,7 +409,7 @@ public final class LocalDateTime
      */
     static LocalDateTime deriveFrom(CalendricalNormalizer normalized) {
         LocalDate date = normalized.getDate(true);
-        LocalTime time = normalized.getTime(true);
+        LocalTime time = normalized.derive(LocalTime.rule());
         if (date == null || time == null) {
             return null;
         }

@@ -246,7 +246,7 @@ public final class OffsetTime
      * @return the offset time, null if unable to obtain the time
      */
     static OffsetTime deriveFrom(CalendricalNormalizer normalized) {
-        LocalTime time = normalized.getTime(true);
+        LocalTime time = normalized.derive(LocalTime.rule());
         ZoneOffset offset = normalized.getOffset(true);
         if (time == null || offset == null) {
             return null;

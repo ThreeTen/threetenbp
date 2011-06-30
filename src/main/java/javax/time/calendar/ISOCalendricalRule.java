@@ -31,7 +31,13 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+
 import java.io.Serializable;
+
+import javax.time.MathUtils;
 
 /**
  * Internal class supplying the rules for the principal date and time objects.
@@ -89,7 +95,24 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
     protected T deriveFrom(CalendricalNormalizer merger) {
         switch (ordinal) {
             case LOCAL_DATE_ORDINAL: return (T) merger.getDate(true);
-            case LOCAL_TIME_ORDINAL: return (T) merger.getTime(true);
+            case LOCAL_TIME_ORDINAL: {
+                LocalTime time = merger.getTime(false);
+                if (time == null) {
+                    DateTimeField lod = merger.getField(MILLI_OF_DAY, false);
+                    if (lod != null) {
+                        return (T) LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
+                    }
+                    DateTimeField sod = merger.getField(SECOND_OF_DAY, false);
+                    if (sod != null) {
+                        return (T) LocalTime.ofSecondOfDay(sod.getValue());
+                    }
+                    DateTimeField mod = merger.getField(MINUTE_OF_DAY, false);
+                    if (mod != null) {
+                        return (T) LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));
+                    }
+                }
+                return (T) time;
+            }
             case LOCAL_DATE_TIME_ORDINAL: return (T) LocalDateTime.deriveFrom(merger);
             case OFFSET_DATE_ORDINAL: return (T) OffsetDate.deriveFrom(merger);
             case OFFSET_TIME_ORDINAL: return (T) OffsetTime.deriveFrom(merger);
