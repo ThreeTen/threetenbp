@@ -146,6 +146,7 @@ public final class CalendricalNormalizer {
                 }
             }
             target = new CalendricalNormalizer(calendricals, semiNormalized);
+            target.validate();
             target.normalize();
         } catch (NullPointerException ex) {
             throw ex;
@@ -571,6 +572,18 @@ public final class CalendricalNormalizer {
         return newObj;
     }
 
+    // phase 1
+    //-----------------------------------------------------------------------
+    private void validate() {
+        if (fields != null) {
+            for (DateTimeField field : fields.values()) {
+                if (field.isValidValue() == false) {
+                    addError("Value out of range: " + field);
+                }
+            }
+        }
+    }
+
     // phase 2
     //-----------------------------------------------------------------------
     /**
@@ -585,6 +598,9 @@ public final class CalendricalNormalizer {
                 if (errors.size() == 0) {
                     normalizeCrossCheck();
                 }
+            }
+            if (fields.size() == 0) {
+                fields = null;
             }
         }
     }
@@ -715,9 +731,6 @@ public final class CalendricalNormalizer {
                     it.remove();
                 }
             }
-        }
-        if (fields.size() == 0) {
-            fields = null;
         }
     }
 
