@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import javax.time.Duration;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -331,39 +331,6 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Merges the fields.
-     * 
-     * @param merger  the merge context
-     */
-    static void merge(CalendricalMerger merger) {
-        DateTimeField eraVal = merger.getValue(eraRule());
-        HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidIntValue()) : HijrahEra.HIJRAH);
-        DateTimeField yoeVal = merger.getValue(yearOfEraRule());
-        // era, year, month, day-of-month
-        DateTimeField moyVal = merger.getValue(monthOfYearRule());
-        DateTimeField domVal = merger.getValue(dayOfMonthRule());
-        if (moyVal != null && domVal != null) {
-            HijrahDate date = HijrahDate.of(era, yoeVal.getValidIntValue(), moyVal.getValidIntValue(), domVal.getValidIntValue());
-            merger.storeMerged(HijrahDate.rule(), date);
-            merger.removeProcessed(eraRule());
-            merger.removeProcessed(yearOfEraRule());
-            merger.removeProcessed(monthOfYearRule());
-            merger.removeProcessed(dayOfMonthRule());
-        }
-        // era, year, day-of-year
-        DateTimeField doyVal = merger.getValue(dayOfYearRule());
-        if (doyVal != null) {
-            HijrahDate date = HijrahDate.of(era, yoeVal.getValidIntValue(), 1, 1).plusDays(doyVal.getValidIntValue() - 1);
-            merger.storeMerged(HijrahDate.rule(), date);
-            merger.removeProcessed(eraRule());
-            merger.removeProcessed(yearOfEraRule());
-            merger.removeProcessed(yearOfEraRule());
-            merger.removeProcessed(dayOfYearRule());
-        }
-    }
-
-    //-----------------------------------------------------------------------
 //    /**
 //     * Rule implementation.
 //     */
@@ -413,8 +380,8 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            HijrahDate date = calendrical.get(HijrahDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            HijrahDate date = merger.derive(HijrahDate.rule());
             return date != null ? field(date.getEra().getValue()) : null;
         }
         // TODO: never worked properly, needs to use proper provider
@@ -464,13 +431,36 @@ public final class HijrahChronology extends Chronology implements Serializable {
         }
         // TODO: min/max years based on era
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            HijrahDate date = calendrical.get(HijrahDate.rule());
-            return date != null ? field(date.getYearOfEra()) : null;
+        protected void normalize(CalendricalNormalizer merger) {
+            DateTimeField eraVal = merger.getFieldDerived(eraRule(), false);
+            HijrahEra era = (eraVal != null ? HijrahEra.of(eraVal.getValidIntValue()) : HijrahEra.HIJRAH);
+            DateTimeField yoeVal = merger.getFieldDerived(yearOfEraRule(), false);
+            // era, year, month, day-of-month
+            DateTimeField moyVal = merger.getFieldDerived(monthOfYearRule(), false);
+            DateTimeField domVal = merger.getFieldDerived(dayOfMonthRule(), false);
+            if (moyVal != null && domVal != null) {
+                HijrahDate date = HijrahDate.of(era, yoeVal.getValidIntValue(), moyVal.getValidIntValue(), domVal.getValidIntValue());
+                merger.setDate(date.toLocalDate(), true);
+//                merger.removeProcessed(eraRule());
+//                merger.removeProcessed(yearOfEraRule());
+//                merger.removeProcessed(monthOfYearRule());
+//                merger.removeProcessed(dayOfMonthRule());
+            }
+            // era, year, day-of-year
+            DateTimeField doyVal = merger.getFieldDerived(dayOfYearRule(), false);
+            if (doyVal != null) {
+                HijrahDate date = HijrahDate.of(era, yoeVal.getValidIntValue(), 1, 1).plusDays(doyVal.getValidIntValue() - 1);
+                merger.setDate(date.toLocalDate(), true);
+//                merger.removeProcessed(eraRule());
+//                merger.removeProcessed(yearOfEraRule());
+//                merger.removeProcessed(yearOfEraRule());
+//                merger.removeProcessed(dayOfYearRule());
+            }
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            HijrahChronology.merge(merger);
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            HijrahDate date = merger.derive(HijrahDate.rule());
+            return date != null ? field(date.getYearOfEra()) : null;
         }
     }
 
@@ -491,8 +481,8 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            HijrahDate date = calendrical.get(HijrahDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            HijrahDate date = merger.derive(HijrahDate.rule());
             return date != null ? field(date.getMonthOfYear()) : null;
         }
     }
@@ -528,8 +518,8 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return getValueRange();
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            HijrahDate date = calendrical.get(HijrahDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            HijrahDate date = merger.derive(HijrahDate.rule());
             return date != null ? field(date.getDayOfMonth()) : null;
         }
     }
@@ -563,8 +553,8 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return getValueRange();
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            HijrahDate date = calendrical.get(HijrahDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            HijrahDate date = merger.derive(HijrahDate.rule());
             return date != null ? field(date.getDayOfYear()) : null;
         }
     }
@@ -586,8 +576,8 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            HijrahDate date = calendrical.get(HijrahDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            HijrahDate date = merger.derive(HijrahDate.rule());
             return date != null ? field(date.getDayOfWeek().getValue()) : null;
         }
     }

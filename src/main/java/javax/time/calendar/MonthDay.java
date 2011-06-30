@@ -39,6 +39,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 
@@ -91,6 +92,16 @@ public final class MonthDay
      * The day-of-month.
      */
     private final int day;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code MonthDay}.
+     *
+     * @return the rule for the month-day, not null
+     */
+    public static CalendricalRule<MonthDay> rule() {
+        return ExtendedCalendricalRule.MONTH_DAY;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -170,24 +181,39 @@ public final class MonthDay
         return of(MonthOfYear.of(monthOfYear), dayOfMonth);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthDay} from a Calendrical.
+     * Obtains an instance of {@code MonthDay} from a set of calendricals.
      * <p>
-     * This method will create a MonthDay from the Calendrical by extracting the
-     * month-of-year and day-of-month fields.
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a month-day.
      *
-     * @param calendrical  the calendrical to use, not null
+     * @param calendricals  the calendricals to create a month-day from, no nulls, not null
      * @return the month-day, not null
-     * @throws UnsupportedRuleException if either field cannot be found
-     * @throws InvalidCalendarFieldException if the value for either field is invalid
+     * @throws CalendricalException if unable to merge to a month-day
      */
-    public static MonthDay of(Calendrical calendrical) {
-        DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
-        DateTimeField dom = DAY_OF_MONTH.getValueChecked(calendrical);
-        return of(month.getValidIntValue(), dom.getValidIntValue());
+    public static MonthDay from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
-    //-------------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code MonthDay} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the MonthDay singleton, null if unable to obtain
+     */
+    static MonthDay deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField moy = merger.getFieldDerived(MONTH_OF_YEAR, true);
+        DateTimeField dom = merger.getFieldDerived(DAY_OF_MONTH, true);
+        if (moy == null || dom == null) {
+            return null;
+        }
+        return of(moy.getValidIntValue(), dom.getValidIntValue());
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
      * <p>
@@ -201,7 +227,7 @@ public final class MonthDay
      *
      * @param text  the text to parse such as '--12-03', not null
      * @return the parsed month-day, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(String text) {
         return PARSER.parse(text, rule());
@@ -216,7 +242,7 @@ public final class MonthDay
      * @param formatter  the formatter to use, not null
      * @return the parsed month-day, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -252,35 +278,21 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this month-day uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this month-day then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule.equals(MONTH_OF_YEAR)) {
-            return (T) MONTH_OF_YEAR.field(month.getValue());
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
         }
-        if (rule.equals(DAY_OF_MONTH)) {
-            return (T) DAY_OF_MONTH.field(day);
-        }
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
     }
 
     //-----------------------------------------------------------------------
@@ -512,6 +524,19 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this month-day to an equivalent fields object.
+     * <p>
+     * The fields will contain {@link ISODateTimeRule#MONTH_OF_YEAR} and
+     * {@link ISODateTimeRule#DAY_OF_MONTH}.
+     *
+     * @return the equivalent fields, not null
+     */
+    public DateTimeFields toFields() {
+        return DateTimeFields.of(MONTH_OF_YEAR, month.getValue(), DAY_OF_MONTH, day);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this month-day to another month-day.
      *
      * @param other  the other month-day to compare to, not null
@@ -608,37 +633,6 @@ public final class MonthDay
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the month-day.
-     *
-     * @return the rule for the month-day, not null
-     */
-    public static CalendricalRule<MonthDay> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalRule<MonthDay> implements Serializable {
-        private static final CalendricalRule<MonthDay> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(MonthDay.class, "MonthDay");
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected MonthDay derive(Calendrical calendrical) {
-            DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-            DateTimeField dom = calendrical.get(DAY_OF_MONTH);
-            return moy != null && dom != null ? MonthDay.of(moy.getValidIntValue(), dom.getValidIntValue()) : null;
-        }
     }
 
 }

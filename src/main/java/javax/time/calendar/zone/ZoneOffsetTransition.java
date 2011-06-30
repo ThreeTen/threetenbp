@@ -30,7 +30,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package javax.time.calendar.zone;
-import java.io.DataInput;
+
+import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
@@ -105,7 +106,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
         this.transitionAfter = transition.withOffsetSameInstant(offsetAfter);  // cached for performance
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Uses a serialization delegate.
      *

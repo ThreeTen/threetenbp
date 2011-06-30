@@ -32,7 +32,6 @@
 package javax.time.calendar.i18n;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -45,17 +44,18 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalRuleException;
+import javax.time.calendar.Chronology;
 import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -162,19 +162,14 @@ public class TestCopticDate {
         assertCopticDate(CopticDate.of(TEST_1234_7_15), 1234, 7, 15);
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_of_Calendrical_noData() throws Exception {
-        CopticDate.of(new MockSimpleCalendrical());
+        CopticDate.of(DateTimeFields.EMPTY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_of_Calendrical_null() throws Exception {
         CopticDate.of((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_getChronology() throws Exception {
-        assertSame(CopticChronology.INSTANCE, TEST_1234_7_15.getChronology());
     }
 
     //-----------------------------------------------------------------------
@@ -184,6 +179,7 @@ public class TestCopticDate {
         assertEquals(TEST_1234_7_15.get(CopticChronology.DAY_OF_MONTH).getValidIntValue(), TEST_1234_7_15.getDayOfMonth());
         assertEquals(TEST_1234_7_15.get(CopticChronology.DAY_OF_YEAR).getValidIntValue(), TEST_1234_7_15.getDayOfYear());
         assertEquals(TEST_1234_7_15.get(CopticChronology.DAY_OF_WEEK).getValidIntValue(), TEST_1234_7_15.getDayOfWeek().getValue());
+        assertEquals(TEST_1234_7_15.get(Chronology.rule()), CopticChronology.INSTANCE);
     }
 
     public void test_get_unsupported() throws Exception {

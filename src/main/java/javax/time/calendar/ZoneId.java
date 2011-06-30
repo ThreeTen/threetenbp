@@ -44,7 +44,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
-import javax.time.Instant;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRulesGroup;
@@ -415,6 +414,21 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZoneId} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a time-zone.
+     *
+     * @param calendricals  the calendricals to create a time-zone from, no nulls, not null
+     * @return the time-zone, not null
+     * @throws CalendricalException if unable to merge to a time-zone
+     */
+    public static ZoneId from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Constructor only accessible within the package.
      */
     ZoneId() {
@@ -428,27 +442,11 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * If the value cannot be returned for the rule from this offset then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: {  // TODO possibly remove
-                    if (isFixed()) {
-                        return (T) getRules().getOffset(Instant.EPOCH);
-                    }
-                    break;
-                }
-                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) this;
-            }
-            return null;
-        }
-        if (rule instanceof ISODateTimeRule) {
-            return null;
-        }
-        return rule.derive(this);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, this, null, null);
     }
 
     //-----------------------------------------------------------------------

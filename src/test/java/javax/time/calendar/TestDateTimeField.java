@@ -35,8 +35,6 @@ import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
@@ -49,6 +47,8 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.MonthOfYear.SEPTEMBER;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertSame;
@@ -245,6 +245,7 @@ public class TestDateTimeField {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
+        assertEquals(DateTimeField.of(MONTH_OF_YEAR, 9).get(MonthOfYear.rule()), SEPTEMBER);
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_DAY), HOUR_OF_DAY.field(18));
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_AMPM), HOUR_OF_AMPM.field(6));
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(MONTH_OF_YEAR), null);
@@ -283,7 +284,7 @@ public class TestDateTimeField {
     @DataProvider(name="normalized")
     Object[][] data_normalized() {
         return new Object[][] {
-            {DateTimeField.of(EPOCH_YEAR, 38), null},
+            {DateTimeField.of(YEAR, 2008), null},
             {DateTimeField.of(MONTH_OF_YEAR, 6), null},
             {DateTimeField.of(HOUR_OF_DAY, 2), null},
             {DateTimeField.of(HOUR_OF_AMPM, 6), null},
@@ -338,9 +339,8 @@ public class TestDateTimeField {
             // convert
             {DateTimeField.of(MONTH_OF_YEAR, 6), QUARTER_OF_YEAR, 2},
             {DateTimeField.of(MONTH_OF_YEAR, 6), MONTH_OF_QUARTER, 3},
-            {DateTimeField.of(EPOCH_MONTH, 42 * 12 + 3), MONTH_OF_YEAR, 4},
-            {DateTimeField.of(EPOCH_MONTH, 42 * 12 + 3), YEAR, 2012},
-            {DateTimeField.of(EPOCH_MONTH, 42 * 12 + 3), EPOCH_YEAR, 42},
+            {DateTimeField.of(ZERO_EPOCH_MONTH, 2012 * 12 + 3), MONTH_OF_YEAR, 4},
+            {DateTimeField.of(ZERO_EPOCH_MONTH, 2012 * 12 + 3), YEAR, 2012},
             {DateTimeField.of(HOUR_OF_DAY, 14), HOUR_OF_AMPM, 2},
             {DateTimeField.of(SECOND_OF_DAY, 15 * 3600 + 74), HOUR_OF_DAY, 15},
             {DateTimeField.of(SECOND_OF_DAY, 25 * 3600 + 74), HOUR_OF_DAY, 25},

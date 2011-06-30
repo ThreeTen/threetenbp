@@ -44,6 +44,7 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -345,6 +346,21 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code LocalTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a time.
+     *
+     * @param calendricals  the calendricals to create a time from, no nulls, not null
+     * @return the local time, not null
+     * @throws CalendricalException if unable to merge to a local time
+     */
+    public static LocalTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.
      * <p>
      * The following formats are accepted in ASCII:
@@ -361,7 +377,7 @@ public final class LocalTime
      *
      * @param text  the text to parse such as '10:15:30', not null
      * @return the parsed local time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(String text) {
         return DateTimeFormatters.isoLocalTime().parse(text, rule());
@@ -376,7 +392,7 @@ public final class LocalTime
      * @param formatter  the formatter to use, not null
      * @return the parsed local time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -430,38 +446,17 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this time then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
-        }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(this);
-        }
-        return rule.derive(this);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, this, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

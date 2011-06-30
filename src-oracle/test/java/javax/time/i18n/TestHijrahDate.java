@@ -16,12 +16,11 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -128,9 +127,9 @@ public class TestHijrahDate {
         assertHijrahDate(HijrahDate.of(testDate), testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_of_Calendrical_noData() throws Exception {
-        HijrahDate.of(new MockSimpleCalendrical());
+        HijrahDate.of(DateTimeFields.EMPTY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

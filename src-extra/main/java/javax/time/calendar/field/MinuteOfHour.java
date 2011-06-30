@@ -36,8 +36,10 @@ import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -45,7 +47,6 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a minute-of-hour in the ISO-8601 calendar system.
@@ -121,7 +122,7 @@ public final class MinuteOfHour
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the MinuteOfHour instance, never null
-     * @throws UnsupportedRuleException if the minute-of-hour cannot be obtained
+     * @throws CalendricalException if the minute-of-hour cannot be obtained
      */
     public static MinuteOfHour minuteOfHour(Calendrical calendrical) {
         return minuteOfHour(rule().getValueChecked(calendrical).getValidIntValue());
@@ -154,11 +155,15 @@ public final class MinuteOfHour
      * If the value cannot be returned for the rule from this instance then
      * <code>null</code> will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(minuteOfHour), this, ISOChronology.INSTANCE);
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

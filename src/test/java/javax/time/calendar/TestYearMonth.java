@@ -39,6 +39,8 @@ import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.DECADES;
 import static javax.time.calendar.ISOPeriodUnit.MONTHS;
 import static javax.time.calendar.ISOPeriodUnit.YEARS;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
+import static javax.time.calendar.MonthOfYear.JULY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -60,7 +62,6 @@ import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -230,25 +231,35 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_Calendrical() {
-        Calendrical cal = new MockSimpleCalendrical(YEAR, YEAR.field(2008), MONTH_OF_YEAR, MONTH_OF_YEAR.field(6));
-        assertEquals(YearMonth.of(cal), TEST_2008_06);
+    public void test_factory_Calendricals() {
+        assertEquals(YearMonth.from(LocalDate.of(2007, 7, 15)), YearMonth.of(2007, 7));
+        assertEquals(YearMonth.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7), JULY), YearMonth.of(2007, 7));
+        assertEquals(YearMonth.from(Year.of(2007), JULY), YearMonth.of(2007, 7));
     }
 
-    public void factory_Calendrical_otherFieldsIgnored() {
-        Calendrical cal = LocalDate.of(2008, 6, 30);
-        assertEquals(YearMonth.of(cal), TEST_2008_06);
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        YearMonth.from(Year.of(2007), JULY, FEBRUARY);
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void factory_Calendrical_unsupportedField() {
-        Calendrical cal = LocalTime.of(12, 30);
-        YearMonth.of(cal);
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        YearMonth.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        YearMonth.from();
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_Calendrical_null() {
-        YearMonth.of((Calendrical) null);
+    public void test_factory_Calendricals_nullArray() {
+        YearMonth.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        YearMonth.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
@@ -331,27 +342,11 @@ public class TestYearMonth {
         }
     }
 
-//    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-//    public void factory_parse_fail_noDash(String text, int pos) {
-//        if (text.lastIndexOf('-') >= 0) {
-//            text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
-//        }
-//        try {
-//            YearMonth.parse(text);
-//            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-//        } catch (CalendricalParseException ex) {
-//            assertEquals(ex.getParsedString(), text);
-//            assertEquals(ex.getErrorIndex(), pos);
-//            throw ex;
-//        }
-//    }
-
     //-----------------------------------------------------------------------
-    // TODO: Fix code
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void factory_parse_illegalValue_Month() {
-//        YearMonth.parse("2008-13");
-//    }
+    @Test(expectedExceptions=CalendricalParseException.class)
+    public void factory_parse_illegalValue_Month() {
+        YearMonth.parse("2008-13");
+    }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
@@ -374,13 +369,6 @@ public class TestYearMonth {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_formatter_nullFormatter() {
         YearMonth.parse("2010 12", null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getChronology()
-    //-----------------------------------------------------------------------
-    public void test_getChronology() {
-        assertEquals(ISOChronology.INSTANCE, TEST_2008_06.getChronology());
     }
 
     //-----------------------------------------------------------------------
@@ -883,39 +871,6 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // rollMonthOfYear()
-    //-----------------------------------------------------------------------
-    public void test_rollMonthOfYear() {
-        YearMonth base = YearMonth.of(2008, 7);
-        assertSame(base.rollMonthOfYear(0), base);
-        assertEquals(base.rollMonthOfYear(1), YearMonth.of(2008, 8));
-        assertEquals(base.rollMonthOfYear(2), YearMonth.of(2008, 9));
-        assertEquals(base.rollMonthOfYear(3), YearMonth.of(2008, 10));
-        assertEquals(base.rollMonthOfYear(4), YearMonth.of(2008, 11));
-        assertEquals(base.rollMonthOfYear(5), YearMonth.of(2008, 12));
-        assertEquals(base.rollMonthOfYear(6), YearMonth.of(2008, 1));
-        assertEquals(base.rollMonthOfYear(7), YearMonth.of(2008, 2));
-        assertEquals(base.rollMonthOfYear(8), YearMonth.of(2008, 3));
-        assertEquals(base.rollMonthOfYear(9), YearMonth.of(2008, 4));
-        assertEquals(base.rollMonthOfYear(10), YearMonth.of(2008, 5));
-        assertEquals(base.rollMonthOfYear(11), YearMonth.of(2008, 6));
-        assertEquals(base.rollMonthOfYear(12), YearMonth.of(2008, 7));
-        
-        assertEquals(base.rollMonthOfYear(-1), YearMonth.of(2008, 6));
-        assertEquals(base.rollMonthOfYear(-2), YearMonth.of(2008, 5));
-        assertEquals(base.rollMonthOfYear(-3), YearMonth.of(2008, 4));
-        assertEquals(base.rollMonthOfYear(-4), YearMonth.of(2008, 3));
-        assertEquals(base.rollMonthOfYear(-5), YearMonth.of(2008, 2));
-        assertEquals(base.rollMonthOfYear(-6), YearMonth.of(2008, 1));
-        assertEquals(base.rollMonthOfYear(-7), YearMonth.of(2008, 12));
-        assertEquals(base.rollMonthOfYear(-8), YearMonth.of(2008, 11));
-        assertEquals(base.rollMonthOfYear(-9), YearMonth.of(2008, 10));
-        assertEquals(base.rollMonthOfYear(-10), YearMonth.of(2008, 9));
-        assertEquals(base.rollMonthOfYear(-11), YearMonth.of(2008, 8));
-        assertEquals(base.rollMonthOfYear(-12), YearMonth.of(2008, 7));
-    }
-
-    //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
     public void test_adjustDate() {
@@ -1073,6 +1028,13 @@ public class TestYearMonth {
             assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // toFields()
+    //-----------------------------------------------------------------------
+    public void test_toFields() {
+        assertEquals(YearMonth.of(2010, 6).toFields(), DateTimeFields.of(YEAR, 2010, MONTH_OF_YEAR, 6));
     }
 
     //-----------------------------------------------------------------------

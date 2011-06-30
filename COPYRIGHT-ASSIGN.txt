@@ -14,8 +14,9 @@ and set out the intellectual property rights you grant to us (Stephen Colebourne
 in the contributed materials. If this contribution is on behalf of a company, the term 'you' will also mean the
 company you identify below.
 
-To contribute to the project you must agree to these terms. You must confirm your agreement by email to the
-dev@jsr-310.dev.java.net mailing list before any contribution can be utilized.
+To contribute to the project you must agree to these terms. You must confirm your agreement before any
+contribution can be utilized. This could as part of the first patch, or by sending an email to
+the mailing list, currently threeten-develop@lists.sourceforge.net
 
 Read this agreement carefully before signing.
 

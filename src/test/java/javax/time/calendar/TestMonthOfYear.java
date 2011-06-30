@@ -31,6 +31,12 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.MonthOfYear.FEBRUARY;
+import static javax.time.calendar.MonthOfYear.JANUARY;
+import static javax.time.calendar.MonthOfYear.JUNE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -38,6 +44,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -63,6 +70,13 @@ public class TestMonthOfYear {
         assertTrue(Enum.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(MonthOfYear.class));
+        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_rule() {
+        assertEquals(MonthOfYear.rule().getName(), "MonthOfYear");
+        assertEquals(MonthOfYear.rule().getType(), MonthOfYear.class);
     }
 
     //-----------------------------------------------------------------------
@@ -84,15 +98,52 @@ public class TestMonthOfYear {
         MonthOfYear.of(13);
     }
 
-//    //-----------------------------------------------------------------------
-//    // get()
-//    //-----------------------------------------------------------------------
-//    public void test_get() {
-//        assertEquals(MonthOfYear.JANUARY.get(ISODateTimeRule.MONTH_OF_YEAR), MonthOfYear.JANUARY);
-//        assertEquals(MonthOfYear.AUGUST.get(ISODateTimeRule.MONTH_OF_YEAR), MonthOfYear.AUGUST);
-//        
-//        assertEquals(MonthOfYear.JANUARY.get(ISODateTimeRule.QUARTER_OF_YEAR), null);
-//    }
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(MonthOfYear.from(LocalDate.of(2011, 6, 6)), JUNE);
+        assertEquals(MonthOfYear.from(MONTH_OF_YEAR.field(1)), JANUARY);
+        assertEquals(MonthOfYear.from(LocalDate.of(2011, 6, 6), JUNE.toField()), JUNE);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        MonthOfYear.from(JANUARY, FEBRUARY.toField());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        MonthOfYear.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        MonthOfYear.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        MonthOfYear.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        MonthOfYear.from((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(MonthOfYear.JANUARY.get(MonthOfYear.rule()), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.OCTOBER.get(MonthOfYear.rule()), MonthOfYear.OCTOBER);
+        
+        assertEquals(MonthOfYear.JANUARY.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1));
+        assertEquals(MonthOfYear.APRIL.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(4));
+        
+        assertEquals(MonthOfYear.JULY.get(QuarterOfYear.rule()), QuarterOfYear.Q3);
+        assertEquals(MonthOfYear.MAY.get(QUARTER_OF_YEAR), QUARTER_OF_YEAR.field(2));
+        assertEquals(MonthOfYear.FEBRUARY.get(DAY_OF_WEEK), null);
+    }
 
     //-----------------------------------------------------------------------
     // getText()
@@ -408,6 +459,14 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
         assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
         assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
+    }
+
+    //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(MonthOfYear.JANUARY.toField(), MONTH_OF_YEAR.field(1));
+        assertEquals(MonthOfYear.APRIL.toField(), MONTH_OF_YEAR.field(4));
     }
 
     //-----------------------------------------------------------------------

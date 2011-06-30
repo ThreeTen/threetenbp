@@ -38,6 +38,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -421,6 +422,38 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetDateTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date-time.
+     *
+     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
+     * @return the offset date-time, not null
+     * @throws CalendricalException if unable to merge to an offset date-time
+     */
+    public static OffsetDateTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the offset date-time, null if unable to obtain the date-time
+     */
+    static OffsetDateTime deriveFrom(CalendricalNormalizer normalized) {
+        LocalDateTime dateTime = LocalDateTime.deriveFrom(normalized);
+        ZoneOffset offset = normalized.getOffset(true);
+        if (dateTime == null || offset == null) {
+            return null;
+        }
+        return new OffsetDateTime(dateTime, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code OffsetDateTime} from a text string such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
      * The following formats are accepted in ASCII:
@@ -447,7 +480,7 @@ public final class OffsetDateTime
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30+01:00', not null
      * @return the parsed offset date-time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(String text) {
         return DateTimeFormatters.isoOffsetDateTime().parse(text, rule());
@@ -462,7 +495,7 @@ public final class OffsetDateTime
      * @param formatter  the formatter to use, not null
      * @return the parsed offset date-time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -502,44 +535,32 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date-time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date-time then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
+        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
                 case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
                 case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
+                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) dateTime;
                 case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
                 case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
                 case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
+                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) offset;
                 case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
             }
             return null;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(toLocalDate(), toLocalTime());
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -738,7 +759,7 @@ public final class OffsetDateTime
      * leap year as it is divisible by 400.
      * <p>
      * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO8601 standard.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
      * @return true if the year is leap, false otherwise
      */

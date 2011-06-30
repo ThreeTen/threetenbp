@@ -37,9 +37,11 @@ import static javax.time.calendar.ISODateTimeRule.YEAR;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateTimeField;
@@ -48,7 +50,6 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.Year;
 
 /**
@@ -128,7 +129,7 @@ public final class DayOfYear
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the DayOfYear instance, never null
-     * @throws UnsupportedRuleException if the day-of-year cannot be obtained
+     * @throws CalendricalException if the day-of-year cannot be obtained
      */
     public static DayOfYear dayOfYear(Calendrical calendrical) {
         return dayOfYear(rule().getValueChecked(calendrical).getValidIntValue());
@@ -161,11 +162,15 @@ public final class DayOfYear
      * If the value cannot be returned for the rule from this instance then
      * <code>null</code> will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(dayOfYear), this, ISOChronology.INSTANCE);
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

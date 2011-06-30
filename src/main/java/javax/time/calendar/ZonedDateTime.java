@@ -37,6 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneOffsetInfo;
@@ -448,6 +449,56 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZonedDateTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date-time.
+     *
+     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
+     * @return the zoned date-time, not null
+     * @throws CalendricalException if unable to merge to a zoned date-time
+     */
+    public static ZonedDateTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the zoned date-time, null if unable to obtain the date-time
+     */
+    static ZonedDateTime deriveFrom(CalendricalNormalizer normalized) {
+        ZoneOffset offset = normalized.getOffset(false);
+        if (offset != null) {
+            OffsetDateTime odt = OffsetDateTime.deriveFrom(normalized);
+            if (odt != null) {
+                ZoneId zone = normalized.getZone(false);
+                if (zone == null) {
+                    zone = ZoneId.of(offset);  // smart use of offset as zone
+                } else {
+                    ZoneRules rules = zone.getRules();  // latest rules version
+                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
+                        odt = odt.withOffsetSameInstant(rules.getOffset(odt));  // smart use of date-time as instant
+                    }
+                }
+                return new ZonedDateTime(odt, zone);
+            }
+        } else {
+            LocalDateTime ldt = LocalDateTime.deriveFrom(normalized);
+            ZoneId zone = normalized.getZone(true);
+            if (ldt != null && zone != null) {
+                OffsetDateTime odt = ZoneResolvers.postGapPreOverlap().resolve(zone, ldt, null);  // smart use of resolver
+                return new ZonedDateTime(odt, zone);
+            }
+        }
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code ZonedDateTime} from a text string such as
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
@@ -477,7 +528,7 @@ public final class ZonedDateTime
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30+01:00[Europe/Paris]', not null
      * @return the parsed zoned date-time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(String text) {
         return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
@@ -492,7 +543,7 @@ public final class ZonedDateTime
      * @param formatter  the formatter to use, not null
      * @return the parsed zoned date-time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -532,46 +583,34 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date-time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date-time then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
+        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
+            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
                 case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
                 case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
                 case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
                 case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
                 case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) toOffsetDateTime();
+                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) dateTime;
                 case ISOCalendricalRule.ZONED_DATE_TIME_ORDINAL: return (T) this;
                 case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) zone;
+                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) getZone();
                 case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
             }
             return null;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(toLocalDate(), toLocalTime());
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -919,7 +958,7 @@ public final class ZonedDateTime
      * leap year as it is divisible by 400.
      * <p>
      * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO8601 standard.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
      * @return true if the year is leap, false otherwise
      */

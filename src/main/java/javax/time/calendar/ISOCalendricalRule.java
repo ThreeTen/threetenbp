@@ -31,7 +31,13 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+
 import java.io.Serializable;
+
+import javax.time.MathUtils;
 
 /**
  * Internal class supplying the rules for the principal date and time objects.
@@ -44,7 +50,7 @@ import java.io.Serializable;
  * class, such as {@code LocalDate}. This class exists to avoid writing those
  * separate classes, centralizing the singleton pattern and enhancing performance
  * via an {@code int} ordinal and package scope.
- * Thus, this design is an optimization and should not be considered best practice.
+ * Thus, this design is an optimization and should not necessarily be considered best practice.
  * <p>
  * This class is final, immutable and thread-safe.
  *
@@ -81,6 +87,42 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
      */
     private Object readResolve() {
         return RULE_CACHE[ordinal];
+    }
+
+    //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    protected T deriveFrom(CalendricalNormalizer merger) {
+        switch (ordinal) {
+            case LOCAL_DATE_ORDINAL: return (T) merger.getDate(true);
+            case LOCAL_TIME_ORDINAL: {
+                LocalTime time = merger.getTime(false);
+                if (time == null) {
+                    DateTimeField lod = merger.getField(MILLI_OF_DAY, false);
+                    if (lod != null) {
+                        return (T) LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
+                    }
+                    DateTimeField sod = merger.getField(SECOND_OF_DAY, false);
+                    if (sod != null) {
+                        return (T) LocalTime.ofSecondOfDay(sod.getValue());
+                    }
+                    DateTimeField mod = merger.getField(MINUTE_OF_DAY, false);
+                    if (mod != null) {
+                        return (T) LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));
+                    }
+                }
+                return (T) time;
+            }
+            case LOCAL_DATE_TIME_ORDINAL: return (T) LocalDateTime.deriveFrom(merger);
+            case OFFSET_DATE_ORDINAL: return (T) OffsetDate.deriveFrom(merger);
+            case OFFSET_TIME_ORDINAL: return (T) OffsetTime.deriveFrom(merger);
+            case OFFSET_DATE_TIME_ORDINAL: return (T) OffsetDateTime.deriveFrom(merger);
+            case ZONED_DATE_TIME_ORDINAL: return (T) ZonedDateTime.deriveFrom(merger);
+            case ZONE_OFFSET_ORDINAL: return (T) merger.getOffset(true);
+            case ZONE_ID_ORDINAL: return (T) merger.getZone(true);
+            case CHRONOLOGY_ORDINAL: return (T) merger.getChronology(true);
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

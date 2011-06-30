@@ -43,11 +43,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -151,7 +151,7 @@ public class TestDateTimeFormatter {
         assertEquals(result, "ONE30");
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_print_Calendrical_noSuchField() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.print(LocalTime.of(11, 30));
@@ -179,7 +179,7 @@ public class TestDateTimeFormatter {
         assertEquals(buf.toString(), "ONE30");
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_print_CalendricalAppendable_noSuchField() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
@@ -221,16 +221,16 @@ public class TestDateTimeFormatter {
     //-----------------------------------------------------------------------
     public void test_parse_String() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        CalendricalMerger result = test.parse("ONE30");
-        assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
+        CalendricalNormalizer result = test.parse("ONE30");
+        assertEquals(result.getInput().size(), 1);
+        assertEquals(result.getInput().get(0), DAY_OF_MONTH.field(30L));
     }
 
     public void test_parse_CharSequence() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        CalendricalMerger result = test.parse(new StringBuilder("ONE30"));
-        assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
+        CalendricalNormalizer result = test.parse(new StringBuilder("ONE30"));
+        assertEquals(result.getInput().size(), 1);
+        assertEquals(result.getInput().get(0), DAY_OF_MONTH.field(30L));
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
@@ -293,7 +293,7 @@ public class TestDateTimeFormatter {
         DateTimeParseContext result = test.parse("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(result.getParsed().size(), 1);
         assertEquals(result.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
     }
 
@@ -369,9 +369,9 @@ public class TestDateTimeFormatter {
     public void test_toFormat_parseObject_String() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
-        CalendricalMerger result = (CalendricalMerger) format.parseObject("ONE30");
-        assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
+        CalendricalNormalizer result = (CalendricalNormalizer) format.parseObject("ONE30");
+        assertEquals(result.getInput().size(), 1);
+        assertEquals(result.getInput().get(0), DAY_OF_MONTH.field(30L));
     }
 
     @Test(expectedExceptions=ParseException.class)
@@ -422,11 +422,11 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
-        CalendricalMerger result = (CalendricalMerger) format.parseObject("ONE30XXX", pos);
+        CalendricalNormalizer result = (CalendricalNormalizer) format.parseObject("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.getInputMap().size(), 1);
-        assertEquals(result.getValue(DAY_OF_MONTH), DAY_OF_MONTH.field(30));
+        assertEquals(result.getInput().size(), 1);
+        assertEquals(result.getInput().get(0), DAY_OF_MONTH.field(30));
     }
 
     public void test_toFormat_parseObject_StringParsePosition_parseError() throws Exception {

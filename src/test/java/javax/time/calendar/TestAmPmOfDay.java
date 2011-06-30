@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -39,6 +40,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -62,6 +64,13 @@ public class TestAmPmOfDay {
         assertTrue(Enum.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(AmPmOfDay.class));
+        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_rule() {
+        assertEquals(AmPmOfDay.rule().getName(), "AmPmOfDay");
+        assertEquals(AmPmOfDay.rule().getType(), AmPmOfDay.class);
     }
 
     //-----------------------------------------------------------------------
@@ -89,15 +98,50 @@ public class TestAmPmOfDay {
         }
     }
 
-//    //-----------------------------------------------------------------------
-//    // get()
-//    //-----------------------------------------------------------------------
-//    public void test_get() {
-//        assertEquals(AmPmOfDay.AM.get(ISODateTimeRule.AMPM_OF_DAY), AmPmOfDay.AM);
-//        assertEquals(AmPmOfDay.PM.get(ISODateTimeRule.AMPM_OF_DAY), AmPmOfDay.PM);
-//        
-//        assertEquals(AmPmOfDay.AM.get(ISODateTimeRule.HOUR_OF_AMPM), null);
-//    }
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(AmPmOfDay.from(LocalTime.of(8, 30)), AmPmOfDay.AM);
+        assertEquals(AmPmOfDay.from(LocalTime.of(17, 30)), AmPmOfDay.PM);
+        assertEquals(AmPmOfDay.from(AMPM_OF_DAY.field(1)), AmPmOfDay.PM);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        AmPmOfDay.from(AmPmOfDay.AM, AmPmOfDay.PM.toField());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        AmPmOfDay.from(LocalDate.of(2007, 7, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        AmPmOfDay.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        AmPmOfDay.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        AmPmOfDay.from((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(AmPmOfDay.AM.get(AmPmOfDay.rule()), AmPmOfDay.AM);
+        assertEquals(AmPmOfDay.PM.get(AmPmOfDay.rule()), AmPmOfDay.PM);
+        
+        assertEquals(AmPmOfDay.AM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(0));
+        assertEquals(AmPmOfDay.PM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(1));
+        
+        assertEquals(AmPmOfDay.AM.get(DAY_OF_WEEK), null);
+    }
 
     //-----------------------------------------------------------------------
     // getText()
@@ -114,6 +158,14 @@ public class TestAmPmOfDay {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getText_nullLocale() {
         AmPmOfDay.AM.getText(TextStyle.FULL, null);
+    }
+
+    //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(AmPmOfDay.AM.toField(), AMPM_OF_DAY.field(0));
+        assertEquals(AmPmOfDay.PM.toField(), AMPM_OF_DAY.field(1));
     }
 
     //-----------------------------------------------------------------------

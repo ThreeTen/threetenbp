@@ -328,7 +328,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             case DAYS:
                 return ofNanos(calc.multiply(BI_NANOS_PER_DAY));
             default:
-                throw new InternalError("Unreachable");
+                throw new IllegalStateException("Unreachable");
         }
     }
 
@@ -618,7 +618,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
                 nanos = nanos.divide(BI_NANOS_PER_DAY);
                 break;
             default:
-                throw new InternalError("Unreachable");
+                throw new IllegalStateException("Unreachable");
         }
         return nanos.min(BI_MAX_LONG).max(BI_MIN_LONG).longValue();
     }

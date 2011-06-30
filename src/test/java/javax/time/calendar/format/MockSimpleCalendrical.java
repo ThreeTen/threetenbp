@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -45,31 +45,31 @@ import javax.time.calendar.CalendricalRule;
  */
 public class MockSimpleCalendrical implements Calendrical {
 
-    private Map<CalendricalRule<?>, Object> map = new HashMap<CalendricalRule<?>, Object>();
+    private Map<CalendricalRule<?>, Calendrical> map = new HashMap<CalendricalRule<?>, Calendrical>();
 
     public MockSimpleCalendrical() {
     }
 
     public <T> MockSimpleCalendrical(CalendricalRule<T> rule, T value) {
-        map.put(rule, value);
+        map.put(rule, (Calendrical) value);
     }
 
     public <T, U> MockSimpleCalendrical(CalendricalRule<T> rule1, T value1, CalendricalRule<U> rule2, U value2) {
-        map.put(rule1, value1);
-        map.put(rule2, value2);
+        map.put(rule1, (Calendrical) value1);
+        map.put(rule2, (Calendrical) value2);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
-        Object value = map.get(rule);
-        return value != null ? rule.reify(value) : rule.deriveValueFrom(this);
+        Calendrical value = map.get(rule);
+        return (T) value;
+        // don't derive anything in this mock class
+        
+//        return CalendricalNormalizer.merge(map.values().toArray(new Calendrical[map.size()])).derive(rule);
     }
 
     public <T> void put(CalendricalRule<T> rule, T value) {
-        map.put(rule, value);
-    }
-
-    public void putWeird(CalendricalRule<?> rule, Object value) {
-        map.put(rule, value);
+        map.put(rule, (Calendrical) value);
     }
 
     public Set<CalendricalRule<?>> rules() {

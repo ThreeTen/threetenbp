@@ -33,8 +33,9 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
@@ -42,7 +43,6 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A date in the Historic calendar system.
@@ -107,6 +107,16 @@ public final class HistoricDate
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule for {@code HistoricDate}.
+     *
+     * @return the rule for the date, not null
+     */
+    public static CalendricalRule<HistoricDate> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code LocalDate} from a year, month and day
      * using the standard cutover of 1582-10-15.
      * <p>
@@ -153,7 +163,7 @@ public final class HistoricDate
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the Historic date, not null
-     * @throws UnsupportedRuleException if the day-of-week cannot be obtained
+     * @throws CalendricalException if the day-of-week cannot be obtained
      */
     public static HistoricDate of(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
@@ -236,20 +246,21 @@ public final class HistoricDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendar field.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date then
+     * {@code null} will be returned.
      *
-     * @param rule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedRuleException if no value for the field is found
+     * @param ruleToDerive  the rule to derive, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule.equals(LocalDate.rule())) {  // NPE check
-            return rule.reify(toLocalDate());
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
         }
-        return rule().deriveValueFor(rule, this, this, chrono);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -576,43 +587,26 @@ public final class HistoricDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the field rule for {@code HistoricDate}.
-     *
-     * @return the field rule for the date, not null
-     */
-    public static CalendricalRule<HistoricDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Rule implementation.
      */
     static final class Rule extends CalendricalRule<HistoricDate> implements Serializable {
         private static final CalendricalRule<HistoricDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            // TODO
             super(HistoricDate.class, "HistoricDate");
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected HistoricDate derive(Calendrical calendrical) {
-            LocalDate ld = calendrical.get(LocalDate.rule());
-            if (ld == null) {
+        protected HistoricDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate date = merger.getDate(true);
+            if (date == null) {
                 return null;
             }
 //            long epochDay = ld.toModifiedJulianDay() + MJD_TO_historic;
 //            return historicDateFromEpochDay((int) epochDay);
             return null; // TODO
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            HistoricDate cd = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), cd.toLocalDate());
-            merger.removeProcessed(this);
         }
     }
 

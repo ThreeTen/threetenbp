@@ -31,9 +31,24 @@
  */
 package javax.time;
 
-import javax.time.calendar.CalendricalRule;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Pattern;
+import java.util.zip.ZipInputStream;
+
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.ZoneId;
+import javax.time.calendar.ZonedDateTime;
 
 /**
  * Test Class loading.
@@ -43,21 +58,56 @@ import javax.time.calendar.MonthOfYear;
  */
 public class ClassLoaderTest {
 
+    @SuppressWarnings("rawtypes")
     public static void main(String[] args) {
+        Object a = new ConcurrentHashMap();
+        a.toString();
+        a = new ReentrantLock();
+        a.toString();
+        a = Pattern.compile("hello[a-z][^f]{2}");
+        a.toString();
+        a = new HashMap().entrySet();
+        a.toString();
+        a = new HashMap().values();
+        a.toString();
+        a = new HashMap().keySet();
+        a.toString();
+        a = new TreeMap().entrySet();
+        a.toString();
+        a = new TreeMap().values();
+        a.toString();
+        a = new TreeMap().keySet();
+        a.toString();
+        try {
+            a = new DataInputStream(new ZipInputStream(new FileInputStream("/a.zip")));
+        } catch (FileNotFoundException ex) {
+            // ignore
+        }
+        a.toString();
+        
+        System.out.println("************************************************************");
+        a = Calendrical.class;
+        
         System.out.println("************************************************************");
         MonthOfYear.of(5);
         
         System.out.println("************************************************************");
-        Object a = LocalDate.class;
+        a = LocalDate.class;
         
-//        System.out.println("************************************************************");
-//        LocalDate.of(2011, 12, 20);
+        System.out.println("************************************************************");
+        LocalDate d = LocalDate.of(2011, 12, 20);
         
-//        System.out.println("************************************************************");
-//        new GregorianCalendar();
+        System.out.println("************************************************************");
+        LocalTime t = LocalTime.of(12, 20);
         
-//        System.out.println("************************************************************");
-//        ZonedDateTime.of(2011, 6, 5, 13, 30, 0, 0, ZoneId.of("Europe/Paris"));
+        System.out.println("************************************************************");
+        LocalDateTime.of(d, t);
+        
+        System.out.println("************************************************************");
+        new GregorianCalendar();
+        
+        System.out.println("************************************************************");
+        ZonedDateTime.of(2011, 6, 5, 13, 30, 0, 0, ZoneId.of("Europe/Paris"));
         
         System.out.println("************************************************************");
     }

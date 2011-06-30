@@ -35,9 +35,11 @@ import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -45,7 +47,6 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.Year;
 
 /**
@@ -135,7 +136,7 @@ public final class WeekBasedYear
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the WeekBasedYear instance, never null
-     * @throws UnsupportedRuleException if the week-based-year cannot be obtained
+     * @throws CalendricalException if the week-based-year cannot be obtained
      */
     public static WeekBasedYear weekBasedYear(Calendrical calendrical) {
         return weekBasedYear(rule().getValueChecked(calendrical).getValidIntValue());
@@ -159,11 +160,15 @@ public final class WeekBasedYear
      * If the value cannot be returned for the rule from this instance then
      * <code>null</code> will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(weekyear), this, ISOChronology.INSTANCE);
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
@@ -363,6 +364,40 @@ public class TestZoneOffset {
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_ofTotalSeconds_tooSmall() {
         ZoneOffset.ofTotalSeconds(-18 * 60 * 60 - 1);
+    }
+
+    //-----------------------------------------------------------------------
+    // from()
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(ZoneOffset.from(ZoneOffset.ofHours(6), YearMonth.of(2007, 7), DAY_OF_MONTH.field(15)), ZoneOffset.ofHours(6));
+        assertEquals(ZoneOffset.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneId.of("Europe/Paris"))), ZoneOffset.ofHours(2));
+        assertEquals(ZoneOffset.from(OffsetDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        ZoneOffset.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        ZoneOffset.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        ZoneOffset.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        ZoneOffset.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        ZoneOffset.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

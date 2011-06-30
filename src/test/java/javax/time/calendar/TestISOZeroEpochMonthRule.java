@@ -36,31 +36,31 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
- * Test ISO EpochYear rule.
+ * Test ISO ZeroEpochMonth rule.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class TestISOEpochYearRule extends AbstractTestDateTimeRule {
+public class TestISOZeroEpochMonthRule extends AbstractTestDateTimeRule {
 
-    public TestISOEpochYearRule() {
-        super(LocalDate.of(2009, 12, 26), 39);
+    public TestISOZeroEpochMonthRule() {
+        super(LocalDate.of(2009, 12, 26), 2009 * 12 + 12 - 1);
     }
 
     @Override
     protected DateTimeRule rule() {
-        return ISODateTimeRule.EPOCH_YEAR;
+        return ISODateTimeRule.ZERO_EPOCH_MONTH;
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeRule rule = ISODateTimeRule.EPOCH_YEAR;
+        DateTimeRule rule = ISODateTimeRule.ZERO_EPOCH_MONTH;
         assertEquals(rule.getType(), DateTimeField.class);
-        assertEquals(rule.getName(), "EpochYear");
+        assertEquals(rule.getName(), "ZeroEpochMonth");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(Long.MIN_VALUE, Long.MAX_VALUE));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.YEARS);
+        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MONTHS);
         assertEquals(rule.getPeriodRange(), null);
     }
 
@@ -69,17 +69,17 @@ public class TestISOEpochYearRule extends AbstractTestDateTimeRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.of(2007, 6, 20);
-        assertEquals(rule().getValue(cal), rule().field(37));
+        assertEquals(rule().getValue(cal), rule().field(2007 * 12 + 6 - 1));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValue(cal), rule().field(37));
+        assertEquals(rule().getValue(cal), rule().field(2007 * 12 + 6 - 1));
     }
 
     public void test_getValue_Calendrical_yearMonth() {
-        Calendrical cal = YearMonth.of(1966, 6);
-        assertEquals(rule().getValue(cal), rule().field(-4));
+        Calendrical cal = YearMonth.of(-1, 6);
+        assertEquals(rule().getValue(cal), rule().field(-1 * 12 + 6 - 1));
     }
 
 }

@@ -42,13 +42,16 @@ public final class MockOtherChronologyRule extends DateTimeRule implements Seria
 
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockOtherChronologyRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockOtherChronologyRule() {
         super("Months", MockOtherChronology.OTHER_MONTHS, null, 0, 1000000000, null);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
 }

@@ -31,11 +31,12 @@
  */
 package javax.time.i18n;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Defines the valid eras for the Minguo calendar system.
@@ -103,7 +104,7 @@ public enum MinguoEra implements Calendrical {
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the MinguoEra enum instance, never null
-     * @throws UnsupportedRuleException if the era cannot be obtained
+     * @throws CalendricalException if the era cannot be obtained
      */
     public static MinguoEra from(Calendrical calendrical) {
         return of(rule().getValueChecked(calendrical).getValidIntValue());
@@ -117,11 +118,15 @@ public enum MinguoEra implements Calendrical {
      * If the value cannot be returned for the rule from this instance then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(getValue()), this, MinguoChronology.INSTANCE);
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), MinguoChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

@@ -38,7 +38,8 @@ import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.CalendricalMerger;
+import java.text.ParsePosition;
+
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -168,27 +169,27 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
-        CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
+        DateTimeParseContext cal = f.parse("123", new ParsePosition(0));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
     }
 
     public void test_appendValue_subsequent2_parse4() throws Exception {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)");
-        CalendricalMerger cal = f.parse("0123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
+        DateTimeParseContext cal = f.parse("0123", new ParsePosition(0));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
     }
 
     public void test_appendValue_subsequent2_parse5() throws Exception {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValue(DAY_OF_MONTH, 2).appendLiteral('4');
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)Value(DayOfMonth,2)'4'");
-        CalendricalMerger cal = f.parse("01234");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
+        DateTimeParseContext cal = f.parse("01234", new ParsePosition(0));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(23L));
     }
 
     public void test_appendValue_subsequent3_parse6() throws Exception {
@@ -198,10 +199,10 @@ public class TestDateTimeFormatterBuilder {
             .appendValue(DAY_OF_MONTH, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(Year,4,10,EXCEEDS_PAD)Value(MonthOfYear,2)Value(DayOfMonth,2)");
-        CalendricalMerger cal = f.parse("20090630");
-        assertEquals(cal.getInputMap().get(YEAR), YEAR.field(2009L));
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
-        assertEquals(cal.getInputMap().get(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
+        DateTimeParseContext cal = f.parse("20090630", new ParsePosition(0));
+        assertEquals(cal.getParsed(YEAR), YEAR.field(2009L));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
+        assertEquals(cal.getParsed(DAY_OF_MONTH), DAY_OF_MONTH.field(30L));
     }
 
     //-----------------------------------------------------------------------
@@ -214,17 +215,17 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "ReducedValue(Year,2,2000)");
-        CalendricalMerger cal = f.parse("12");
-        assertEquals(cal.getInputMap().get(YEAR), YEAR.field(2012L));
+        DateTimeParseContext cal = f.parse("12", new ParsePosition(0));
+        assertEquals(cal.getParsed(YEAR), YEAR.field(2012L));
     }
 
     public void test_appendValueReduced_subsequent_parse() throws Exception {
         builder.appendValue(MONTH_OF_YEAR, 1, 2, SignStyle.NORMAL).appendValueReduced(YEAR, 2, 2000);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(MonthOfYear,1,2,NORMAL)ReducedValue(Year,2,2000)");
-        CalendricalMerger cal = f.parse("123");
-        assertEquals(cal.getInputMap().get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
-        assertEquals(cal.getInputMap().get(YEAR), YEAR.field(2023L));
+        DateTimeParseContext cal = f.parse("123", new ParsePosition(0));
+        assertEquals(cal.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(1L));
+        assertEquals(cal.getParsed(YEAR), YEAR.field(2023L));
     }
 
     //-----------------------------------------------------------------------

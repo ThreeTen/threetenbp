@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -54,16 +55,14 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
  * As such, this enum may be used by any calendar system that has the quarter-of-year
- * concept with a 4 quarter year where the names are equivalent to those defined.
- * Note that the implementation of {@link DateTimeRule} for quarter-of-year may
- * vary by calendar system.
+ * concept defined exactly equivalent to the ISO calendar system.
  * <p>
- * QuarterOfYear is an immutable and thread-safe enum.
+ * This is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear {
+public enum QuarterOfYear implements Calendrical {
 
     /**
      * The singleton instance for the first quarter-of-year, from January to March.
@@ -85,6 +84,19 @@ public enum QuarterOfYear {
      * This has the numeric value of {@code 4}.
      */
     Q4;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code QuarterOfYear}.
+     * <p>
+     * This rule is a calendrical rule base on {@code QuarterOfYear}.
+     * The equivalent date-time rule is {@link ISODateTimeRule#QUARTER_OF_YEAR}.
+     *
+     * @return the rule for the quarter-of-year, not null
+     */
+    public static CalendricalRule<QuarterOfYear> rule() {
+        return ExtendedCalendricalRule.QUARTER_OF_YEAR;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -118,6 +130,54 @@ public enum QuarterOfYear {
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code QuarterOfYear} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a quarter-of-year.
+     *
+     * @param calendricals  the calendricals to create a quarter-of-year from, no nulls, not null
+     * @return the quarter-of-year, not null
+     * @throws CalendricalException if unable to merge to a quarter-of-year
+     */
+    public static QuarterOfYear from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code QuarterOfYear} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the QuarterOfYear singleton, null if unable to obtain
+     */
+    static QuarterOfYear deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField field = merger.getFieldDerived(QUARTER_OF_YEAR, true);
+        if (field == null) {
+            return null;
+        }
+        return of(field.getValidIntValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This will only return a value for the {@link ISODateTimeRule#QUARTER_OF_YEAR}
+     * rule, or something derivable from it.
+     *
+     * @param ruleToDerive  the rule to derive, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, toField());
+    }
+
+    /**
      * Gets the quarter-of-year {@code int} value.
      * <p>
      * The values are numbered following the ISO-8601 standard,
@@ -128,22 +188,6 @@ public enum QuarterOfYear {
     public int getValue() {
         return ordinal() + 1;
     }
-
-//    /**
-//     * Gets the value of the specified calendrical rule.
-//     * <p>
-//     * This returns the one of the quarter values if the type of the rule
-//     * is {@code QuarterOfYear}. Other rules will return {@code null}.
-//     *
-//     * @param rule  the rule to use, not null
-//     * @return the value for the rule, null if the value cannot be returned
-//     */
-//    public <T> T get(CalendricalRule<T> rule) {
-//        if (rule.getReifiedType() != QuarterOfYear.class) {
-//            return null;
-//        }
-//        return rule.reify(this);
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -226,9 +270,22 @@ public enum QuarterOfYear {
             case Q3:
                 return MonthOfYear.JULY;
             case Q4:
-            default:
                 return MonthOfYear.OCTOBER;
+            default:
+                throw new IllegalStateException("Unreachable");
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this quarter-of-year to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#QUARTER_OF_YEAR}.
+     *
+     * @return the equivalent quarter-of-year field, not null
+     */
+    public DateTimeField toField() {
+        return QUARTER_OF_YEAR.field(getValue());
     }
 
 }

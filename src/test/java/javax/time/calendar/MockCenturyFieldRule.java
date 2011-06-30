@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 import static javax.time.calendar.ISOPeriodUnit.CENTURIES;
 
 import java.io.Serializable;
@@ -44,31 +44,28 @@ import javax.time.MathUtils;
  * @author Stephen Colebourne
  */
 public final class MockCenturyFieldRule extends DateTimeRule implements Serializable {
+
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockCenturyFieldRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockCenturyFieldRule() {
-        super("Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100, null);
+        super("Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100, ZERO_EPOCH_MONTH);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
     @Override
-    protected DateTimeField derive(Calendrical calendrical) {
-        DateTimeField yearVal = calendrical.get(YEAR);
-        return (yearVal == null ? null : field(yearVal.getValidIntValue() / 100));
-    }
-    @Override
-    protected void merge(CalendricalMerger merger) {
-        DateTimeField yocVal = merger.getValue(MockYearOfCenturyFieldRule.INSTANCE);
-        if (yocVal != null) {
-            DateTimeField cen = merger.getValue(this);
-            int year = MathUtils.safeAdd(MathUtils.safeMultiply(cen.getValidIntValue(), 100), yocVal.getValidIntValue());
-            merger.storeMergedField(YEAR, year);
-            merger.removeProcessed(this);
-            merger.removeProcessed(MockYearOfCenturyFieldRule.INSTANCE);
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        LocalDate date = merger.getDate(false);
+        if (date == null) {
+            return null;
         }
+        return field(MathUtils.floorDiv(date.getYear(), 100));
     }
+
 }

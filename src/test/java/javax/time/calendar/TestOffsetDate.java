@@ -403,6 +403,41 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    // from()
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(OffsetDate.from(OFFSET_PONE, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+        assertEquals(OffsetDate.from(OFFSET_PTWO, MonthDay.of(7, 15), YEAR.field(2007)), OffsetDate.of(2007, 7, 15, OFFSET_PTWO));
+        assertEquals(OffsetDate.from(OFFSET_PONE, LocalDate.of(2007, 7, 15)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+        assertEquals(OffsetDate.from(OffsetDateTime.of(2007, 7, 15, 17, 30, OFFSET_PONE)), OffsetDate.of(2007, 7, 15, OFFSET_PONE));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        OffsetDate.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        OffsetDate.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        OffsetDate.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        OffsetDate.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        OffsetDate.from((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleToString")
@@ -437,17 +472,17 @@ public class TestOffsetDate {
         };
     }
 
-    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class})
+    @Test(dataProvider="sampleBadParse", expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidText(String unparsable) {
         OffsetDate.parse(unparsable);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalValue() {
         OffsetDate.parse("2008-06-32+01:00");
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidValue() {
         OffsetDate.parse("2008-06-31+01:00");
     }
@@ -501,11 +536,6 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    public void test_getChronology() {
-        assertSame(ISOChronology.INSTANCE, TEST_2007_07_15_PONE.getChronology());
-    }
-
-    //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleDates")
@@ -526,13 +556,13 @@ public class TestOffsetDate {
         LocalDate localDate = LocalDate.of(y, m, d);
         OffsetDate a = OffsetDate.of(localDate, offset);
         assertSame(a.getOffset(), offset);
-        assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonthOfYear(), localDate.getMonthOfYear());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
+        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
         
         assertSame(a.toLocalDate(), localDate);
         assertEquals(a.toString(), localDate.toString() + offset.toString());
@@ -612,19 +642,6 @@ public class TestOffsetDate {
                 dow = dow.next();
             }
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // isLeapYear()
-    //-----------------------------------------------------------------------
-    public void test_isLeapYear() {
-        assertEquals(OffsetDate.of(1999, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2000, 1, 1, OFFSET_PONE).isLeapYear(), true);
-        assertEquals(OffsetDate.of(2001, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2002, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2003, 1, 1, OFFSET_PONE).isLeapYear(), false);
-        assertEquals(OffsetDate.of(2004, 1, 1, OFFSET_PONE).isLeapYear(), true);
-        assertEquals(OffsetDate.of(2005, 1, 1, OFFSET_PONE).isLeapYear(), false);
     }
 
     //-----------------------------------------------------------------------

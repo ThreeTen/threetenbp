@@ -38,6 +38,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -223,6 +224,38 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code OffsetTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a time.
+     *
+     * @param calendricals  the calendricals to create a time from, no nulls, not null
+     * @return the offset time, not null
+     * @throws CalendricalException if unable to merge to an offset time
+     */
+    public static OffsetTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetTime} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the offset time, null if unable to obtain the time
+     */
+    static OffsetTime deriveFrom(CalendricalNormalizer normalized) {
+        LocalTime time = normalized.derive(LocalTime.rule());
+        ZoneOffset offset = normalized.getOffset(true);
+        if (time == null || offset == null) {
+            return null;
+        }
+        return new OffsetTime(time, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code OffsetTime} from a text string such as {@code 10:15:30+01:00}.
      * <p>
      * The following formats are accepted in ASCII:
@@ -241,7 +274,7 @@ public final class OffsetTime
      *
      * @param text  the text to parse such as '10:15:30+01:00', not null
      * @return the parsed local time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetTime parse(String text) {
         return DateTimeFormatters.isoOffsetTime().parse(text, rule());
@@ -256,7 +289,7 @@ public final class OffsetTime
      * @param formatter  the formatter to use, not null
      * @return the parsed offset time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -283,40 +316,21 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this time then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(time);
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, time, offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

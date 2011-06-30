@@ -36,9 +36,9 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.DataProvider;
@@ -53,7 +53,7 @@ import org.testng.annotations.Test;
 public class TestTextPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_print_emptyCalendrical() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(DAY_OF_WEEK, TextStyle.FULL);
         pp.print(printEmptyContext, buf);

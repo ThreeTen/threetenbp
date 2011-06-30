@@ -48,20 +48,20 @@ import static org.testng.Assert.fail;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.text.ParsePosition;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.CalendricalRuleException;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.Year;
 import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZoneId;
@@ -149,13 +149,13 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoLocalDate")
     Object[][] provider_sample_isoLocalDate() {
         return new Object[][]{
-                {2008, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
-                {2008, 6, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, 30, null, null, null, UnsupportedRuleException.class},
+                {2008, null, null, null, null, null, CalendricalException.class},
+                {null, 6, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, CalendricalException.class},
+                {null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, "Europe/Paris", null, CalendricalException.class},
+                {2008, 6, null, null, null, null, CalendricalException.class},
+                {null, 6, 30, null, null, null, CalendricalException.class},
                 
                 {2008, 6, 30, null, null,                   "2008-06-30", null},
                 {2008, 6, 30, "+01:00", null,               "2008-06-30", null},
@@ -179,7 +179,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoLocalDate().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -191,24 +191,24 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDate(year, month, day);
             // offset/zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoLocalDate().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalDate().parse(input, new ParsePosition(0)), expected);
         }
     }
 
     @Test
     public void test_parse_isoLocalDate_999999999() {
         MockSimpleCalendrical expected = createDate(999999999, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+999999999-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+999999999-08-06", new ParsePosition(0)), expected);
         assertEquals(LocalDate.parse("+999999999-08-06"), LocalDate.of(999999999, 8, 6));
     }
 
     @Test
     public void test_parse_isoLocalDate_1000000000() {
         MockSimpleCalendrical expected = createDate(1000000000, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+1000000000-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("+1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions = CalendricalException.class)
     public void test_parse_isoLocalDate_1000000000_failedCreate() {
         LocalDate.parse("+1000000000-08-06");
     }
@@ -216,17 +216,17 @@ public class TestDateTimeFormatters {
     @Test
     public void test_parse_isoLocalDate_M999999999() {
         MockSimpleCalendrical expected = createDate(-999999999, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-999999999-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-999999999-08-06", new ParsePosition(0)), expected);
         assertEquals(LocalDate.parse("-999999999-08-06"), LocalDate.of(-999999999, 8, 6));
     }
 
     @Test
     public void test_parse_isoLocalDate_M1000000000() {
         MockSimpleCalendrical expected = createDate(-1000000000, 8, 6);
-        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-1000000000-08-06"), expected);
+        assertParseMatch(DateTimeFormatters.isoLocalDate().parse("-1000000000-08-06", new ParsePosition(0)), expected);
     }
 
-    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions = CalendricalException.class)
     public void test_parse_isoLocalDate_M1000000000_failedCreate() {
         LocalDate.parse("-1000000000-08-06");
     }
@@ -237,18 +237,18 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoOffsetDate")
     Object[][] provider_sample_isoOffsetDate() {
         return new Object[][]{
-                {2008, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
-                {2008, 6, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, 30, null, null, null, UnsupportedRuleException.class},
+                {2008, null, null, null, null, null, CalendricalException.class},
+                {null, 6, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, CalendricalException.class},
+                {null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, "Europe/Paris", null, CalendricalException.class},
+                {2008, 6, null, null, null, null, CalendricalException.class},
+                {null, 6, 30, null, null, null, CalendricalException.class},
                 
-                {2008, 6, 30, null, null,                   null, UnsupportedRuleException.class},
+                {2008, 6, 30, null, null,                   null, CalendricalException.class},
                 {2008, 6, 30, "+01:00", null,               "2008-06-30+01:00", null},
                 {2008, 6, 30, "+01:00", "Europe/Paris",     "2008-06-30+01:00", null},
-                {2008, 6, 30, null, "Europe/Paris",         null, UnsupportedRuleException.class},
+                {2008, 6, 30, null, "Europe/Paris",         null, CalendricalException.class},
                 
                 {123456, 6, 30, "+01:00", null,             "+123456-06-30+01:00", null},
         };
@@ -267,7 +267,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoOffsetDate().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -279,7 +279,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDate(year, month, day);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoOffsetDate().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetDate().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -289,13 +289,13 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoDate")
     Object[][] provider_sample_isoDate() {
         return new Object[][]{
-                {2008, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
-                {2008, 6, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, 30, null, null, null, UnsupportedRuleException.class},
+                {2008, null, null, null, null, null, CalendricalException.class},
+                {null, 6, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, CalendricalException.class},
+                {null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, "Europe/Paris", null, CalendricalException.class},
+                {2008, 6, null, null, null, null, CalendricalException.class},
+                {null, 6, 30, null, null, null, CalendricalException.class},
                 
                 {2008, 6, 30, null, null,                   "2008-06-30", null},
                 {2008, 6, 30, "+01:00", null,               "2008-06-30+01:00", null},
@@ -319,7 +319,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoDate().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -336,7 +336,7 @@ public class TestDateTimeFormatters {
                     expected.put(ZoneId.rule(), ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoDate().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoDate().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -346,12 +346,12 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoLocalTime")
     Object[][] provider_sample_isoLocalTime() {
         return new Object[][]{
-                {11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, 1, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {11, null, null, null, null, null, null, CalendricalException.class},
+                {null, 5, null, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, null, CalendricalException.class},
+                {null, null, null, 1, null, null, null, CalendricalException.class},
+                {null, null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, null, "Europe/Paris", null, CalendricalException.class},
                 
                 {11, 5, null, null, null, null,     "11:05", null},
                 {11, 5, 30, null, null, null,       "11:05:30", null},
@@ -388,7 +388,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoLocalTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -400,7 +400,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createTime(hour, min, sec, nano);
             // offset/zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoLocalTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -410,17 +410,17 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoOffsetTime")
     Object[][] provider_sample_isoOffsetTime() {
         return new Object[][]{
-                {11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, 1, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {11, null, null, null, null, null, null, CalendricalException.class},
+                {null, 5, null, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, null, CalendricalException.class},
+                {null, null, null, 1, null, null, null, CalendricalException.class},
+                {null, null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, null, "Europe/Paris", null, CalendricalException.class},
                 
-                {11, 5, null, null, null, null,     null, UnsupportedRuleException.class},
-                {11, 5, 30, null, null, null,       null, UnsupportedRuleException.class},
-                {11, 5, 30, 500000000, null, null,  null, UnsupportedRuleException.class},
-                {11, 5, 30, 1, null, null,          null, UnsupportedRuleException.class},
+                {11, 5, null, null, null, null,     null, CalendricalException.class},
+                {11, 5, 30, null, null, null,       null, CalendricalException.class},
+                {11, 5, 30, 500000000, null, null,  null, CalendricalException.class},
+                {11, 5, 30, 1, null, null,          null, CalendricalException.class},
                 
                 {11, 5, null, null, "+01:00", null,     "11:05+01:00", null},
                 {11, 5, 30, null, "+01:00", null,       "11:05:30+01:00", null},
@@ -432,10 +432,10 @@ public class TestDateTimeFormatters {
                 {11, 5, 30, 500000000, "+01:00", "Europe/Paris",    "11:05:30.5+01:00", null},
                 {11, 5, 30, 1, "+01:00", "Europe/Paris",            "11:05:30.000000001+01:00", null},
                 
-                {11, 5, null, null, null, "Europe/Paris",       null, UnsupportedRuleException.class},
-                {11, 5, 30, null, null, "Europe/Paris",         null, UnsupportedRuleException.class},
-                {11, 5, 30, 500000000, null, "Europe/Paris",    null, UnsupportedRuleException.class},
-                {11, 5, 30, 1, null, "Europe/Paris",            null, UnsupportedRuleException.class},
+                {11, 5, null, null, null, "Europe/Paris",       null, CalendricalException.class},
+                {11, 5, 30, null, null, "Europe/Paris",         null, CalendricalException.class},
+                {11, 5, 30, 500000000, null, "Europe/Paris",    null, CalendricalException.class},
+                {11, 5, 30, 1, null, "Europe/Paris",            null, CalendricalException.class},
         };
     }
 
@@ -452,7 +452,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoOffsetTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -464,7 +464,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createTime(hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zoneId is not expected from parse
-            assertParseMatch(DateTimeFormatters.isoOffsetTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -474,12 +474,12 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoTime")
     Object[][] provider_sample_isoTime() {
         return new Object[][]{
-                {11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, 1, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
+                {11, null, null, null, null, null, null, CalendricalException.class},
+                {null, 5, null, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, null, CalendricalException.class},
+                {null, null, null, 1, null, null, null, CalendricalException.class},
+                {null, null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, null, "Europe/Paris", null, CalendricalException.class},
                 
                 {11, 5, null, null, null, null,     "11:05", null},
                 {11, 5, 30, null, null, null,       "11:05:30", null},
@@ -516,7 +516,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -533,7 +533,7 @@ public class TestDateTimeFormatters {
                     expected.put(ZoneId.rule(), ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -543,18 +543,18 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoLocalDateTime")
     Object[][] provider_sample_isoLocalDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
                 {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
@@ -594,7 +594,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoLocalDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -606,7 +606,7 @@ public class TestDateTimeFormatters {
             String input, Class<?> invalid) {
         if (input != null) {
             MockSimpleCalendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
-            assertParseMatch(DateTimeFormatters.isoLocalDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoLocalDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -616,23 +616,23 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoOffsetDateTime")
     Object[][] provider_sample_isoOffsetDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
                 
-                {2008, 6, 30, 11, 5, null, null, null, null,                    null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, null, null, null, null,                    null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, CalendricalException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, "+01:00", null,                "2008-06-30T11:05+01:00", null},
                 {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  "2008-06-30T11:05:30+01:00", null},
@@ -644,10 +644,10 @@ public class TestDateTimeFormatters {
                 {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00", null},
                 {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00", null},
                 
-                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, CalendricalException.class},
                 
                 {123456, 6, 30, 11, 5, null, null, "+01:00", null,              "+123456-06-30T11:05+01:00", null},
         };
@@ -667,7 +667,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoOffsetDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -680,7 +680,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
             buildCalendrical(expected, offsetId, null);  // zone not expected to be parsed
-            assertParseMatch(DateTimeFormatters.isoOffsetDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoOffsetDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -690,38 +690,38 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoZonedDateTime")
     Object[][] provider_sample_isoZonedDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
                 
-                {2008, 6, 30, 11, 5, null, null, null, null,                    null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, null, null, null, null,                    null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, CalendricalException.class},
                 
-                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     null, CalendricalException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",      "2008-06-30T11:05+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, null, "+01:00", "Europe/Paris",        "2008-06-30T11:05:30+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00[Europe/Paris]", null},
                 {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00[Europe/Paris]", null},
                 
-                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, UnsupportedRuleException.class},
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, CalendricalException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, CalendricalException.class},
                 
                 {123456, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",    "+123456-06-30T11:05+01:00[Europe/Paris]", null},
         };
@@ -741,7 +741,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoZonedDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -754,7 +754,7 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
             buildCalendrical(expected, offsetId, zoneId);
-            assertParseMatch(DateTimeFormatters.isoZonedDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoZonedDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -764,18 +764,18 @@ public class TestDateTimeFormatters {
     @DataProvider(name="sample_isoDateTime")
     Object[][] provider_sample_isoDateTime() {
         return new Object[][]{
-                {2008, null, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, null, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, 30, null, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, "+01:00", null, null, UnsupportedRuleException.class},
-                {null, null, null, null, null, null, null, null, "Europe/Paris", null, UnsupportedRuleException.class},
-                {2008, 6, 30, 11, null, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, 30, null, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, 6, null, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {2008, null, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
-                {null, 6, 30, 11, 5, null, null, null, null, null, UnsupportedRuleException.class},
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalException.class},
                 
                 {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
                 {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
@@ -815,7 +815,7 @@ public class TestDateTimeFormatters {
                 DateTimeFormatters.isoDateTime().print(test);
                 fail();
             } catch (Exception ex) {
-                assertEquals(ex.getClass(), expectedEx);
+                assertTrue(expectedEx.isInstance(ex));
             }
         }
     }
@@ -833,7 +833,7 @@ public class TestDateTimeFormatters {
                     expected.put(ZoneId.rule(), ZoneId.of(zoneId));
                 }
             }
-            assertParseMatch(DateTimeFormatters.isoDateTime().parse(input), expected);
+            assertParseMatch(DateTimeFormatters.isoDateTime().parse(input, new ParsePosition(0)), expected);
         }
     }
 
@@ -870,7 +870,7 @@ public class TestDateTimeFormatters {
             Calendrical test = Year.of(2008);
             DateTimeFormatters.isoOrdinalDate().print(test);
             fail();
-        } catch (UnsupportedRuleException ex) {
+        } catch (CalendricalRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_YEAR);
         }
     }
@@ -878,12 +878,12 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     public void test_parse_isoOrdinalDate() {
         MockSimpleCalendrical expected = new MockSimpleCalendrical(YEAR, YEAR.field(2008), DAY_OF_YEAR, DAY_OF_YEAR.field(123));
-        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("2008-123"), expected);
+        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("2008-123", new ParsePosition(0)), expected);
     }
 
     public void test_parse_isoOrdinalDate_largeYear() {
         MockSimpleCalendrical expected = new MockSimpleCalendrical(YEAR, YEAR.field(123456), DAY_OF_YEAR, DAY_OF_YEAR.field(123));
-        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("+123456-123"), expected);
+        assertParseMatch(DateTimeFormatters.isoOrdinalDate().parse("+123456-123", new ParsePosition(0)), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -925,7 +925,7 @@ public class TestDateTimeFormatters {
             Calendrical test = YearMonth.of(2008, 6);
             DateTimeFormatters.basicIsoDate().print(test);
             fail();
-        } catch (UnsupportedRuleException ex) {
+        } catch (CalendricalRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_MONTH);
         }
     }
@@ -1006,7 +1006,7 @@ public class TestDateTimeFormatters {
             Calendrical test = DateTimeFields.of(WEEK_BASED_YEAR, 2004, WEEK_OF_WEEK_BASED_YEAR, 1);
             DateTimeFormatters.isoWeekDate().print(test);
             fail();
-        } catch (UnsupportedRuleException ex) {
+        } catch (CalendricalRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_WEEK);
         }
     }
@@ -1017,7 +1017,7 @@ public class TestDateTimeFormatters {
         expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(2004));
         expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(1));
         expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(1));
-        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("2004-W01-1"), expected);
+        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("2004-W01-1", new ParsePosition(0)), expected);
     }
 
     public void test_parse_weekDate_largeYear() {
@@ -1025,7 +1025,7 @@ public class TestDateTimeFormatters {
         expected.put(WEEK_BASED_YEAR, WEEK_BASED_YEAR.field(123456));
         expected.put(WEEK_OF_WEEK_BASED_YEAR, WEEK_OF_WEEK_BASED_YEAR.field(4));
         expected.put(DAY_OF_WEEK, DAY_OF_WEEK.field(5));
-        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("+123456-W04-5"), expected);
+        assertParseMatch(DateTimeFormatters.isoWeekDate().parse("+123456-W04-5", new ParsePosition(0)), expected);
     }
 
     //-----------------------------------------------------------------------
@@ -1041,7 +1041,7 @@ public class TestDateTimeFormatters {
             Calendrical test = YearMonth.of(2008, 6);
             DateTimeFormatters.rfc1123().print(test);
             fail();
-        } catch (UnsupportedRuleException ex) {
+        } catch (CalendricalRuleException ex) {
             assertEquals(ex.getRule(), DAY_OF_WEEK);
         }
     }
@@ -1117,12 +1117,12 @@ public class TestDateTimeFormatters {
         }
     }
 
-    private void assertParseMatch(CalendricalMerger merger, MockSimpleCalendrical expected) {
+    private void assertParseMatch(DateTimeParseContext merger, MockSimpleCalendrical expected) {
         for (CalendricalRule<?> rule : expected.rules()) {
             if (rule instanceof DateTimeRule) {
-                assertEquals(((DateTimeRule) rule).getValue(expected), merger.getInputMap().get(rule), "Failed on rule: " + rule.getName());
+                assertEquals(merger.getParsed((DateTimeRule) rule), ((DateTimeRule) rule).getValue(expected), "Failed on rule: " + rule.getName());
             } else {
-                assertEquals(merger.getInputMap().get(rule), expected.get(rule), "Failed on rule: " + rule.getName());
+                assertEquals(merger.getParsed(rule.getType()), expected.get(rule), "Failed on rule: " + rule.getName());
             }
         }
     }

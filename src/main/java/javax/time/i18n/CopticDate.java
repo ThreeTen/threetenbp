@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalRuleException;
 import javax.time.calendar.DateProvider;
@@ -108,6 +108,16 @@ public final class CopticDate
      * The Coptic day.
      */
     private final transient int day;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code CopticDate}.
+     *
+     * @return the rule for the date, not null
+     */
+    public static CalendricalRule<CopticDate> rule() {
+        return Rule.INSTANCE;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -213,30 +223,20 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date uses, which is the Coptic calendar system.
-     *
-     * @return the Coptic chronology, not null
-     */
-    public CopticChronology getChronology() {
-        return CopticChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule.equals(LocalDate.rule())) {  // NPE check
-            return rule.reify(toLocalDate());
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return ruleToDerive.reify(this);
         }
-        return rule().deriveValueFor(rule, this, this, CopticChronology.INSTANCE);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, CopticChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -562,16 +562,6 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code CopticDate}.
-     *
-     * @return the rule for the date, not null
-     */
-    public static CalendricalRule<CopticDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Rule implementation.
      */
     static final class Rule extends CalendricalRule<CopticDate> implements Serializable {
@@ -584,19 +574,13 @@ public final class CopticDate
             return INSTANCE;
         }
         @Override
-        protected CopticDate derive(Calendrical calendrical) {
-            LocalDate ld = calendrical.get(LocalDate.rule());
-            if (ld == null) {
+        protected CopticDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate date = merger.getDate(true);
+            if (date == null) {
                 return null;
             }
-            long epochDay = ld.toModifiedJulianDay() + MJD_TO_COPTIC;
+            long epochDay = date.toModifiedJulianDay() + MJD_TO_COPTIC;
             return copticDateFromEpochDay((int) epochDay);
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            CopticDate date = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-            merger.removeProcessed(this);
         }
     }
 

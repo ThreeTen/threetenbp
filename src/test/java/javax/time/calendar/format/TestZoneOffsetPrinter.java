@@ -33,7 +33,7 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.UnsupportedRuleException;
+import javax.time.CalendricalException;
 import javax.time.calendar.ZoneOffset;
 
 import org.testng.annotations.DataProvider;
@@ -137,7 +137,7 @@ public class TestZoneOffsetPrinter extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_print_emptyCalendrical() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
         pp.print(printEmptyContext, buf);

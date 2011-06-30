@@ -36,10 +36,12 @@ import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 
@@ -67,7 +69,7 @@ public class TestDateTimeParseContext {
     public void test_constructor() throws Exception {
         assertEquals(context.getSymbols(), symbols);
         assertEquals(context.getLocale(), Locale.GERMANY);
-        assertEquals(context.getParsedRules().size(), 0);
+        assertEquals(context.getParsed().size(), 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -78,111 +80,103 @@ public class TestDateTimeParseContext {
     //-----------------------------------------------------------------------
     public void test_caseSensitive() throws Exception {
         assertEquals(context.isCaseSensitive(), true);
-        
         context.setCaseSensitive(false);
-        
         assertEquals(context.isCaseSensitive(), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_strict() throws Exception {
         assertEquals(context.isStrict(), true);
-        
         context.setStrict(false);
-        
         assertEquals(context.isStrict(), false);
     }
 
     //-----------------------------------------------------------------------
-    public void test_fields_oneField() throws Exception {
-        context.setParsedField(YEAR, 2008);
-        
-        assertEquals(context.getParsedRules().size(), 1);
-        assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
-        Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
-        assertEquals(map.size(), 1);
-        assertEquals(map.get(YEAR), YEAR.field(2008L));
-        //  test cloned and modifiable
-        map.clear();
-        assertEquals(map.size(), 0);
-        assertEquals(context.getParsedRules().size(), 1);
+    public void test_getParsed_DateTimeRule_null() throws Exception {
+        assertEquals(context.getParsed((DateTimeRule) null), null);
     }
 
-    public void test_fields_twoFields() throws Exception {
-        context.setParsedField(YEAR, 2008);
-        context.setParsedField(MONTH_OF_YEAR, 6);
-        
-        assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
-        assertEquals(context.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
-        Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
-        assertEquals(map.size(), 2);
-        assertEquals(map.get(YEAR), YEAR.field(2008L));
-        assertEquals(map.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
-        //  test cloned and modifiable
-        map.clear();
-        assertEquals(map.size(), 0);
-        assertEquals(context.getParsedRules().size(), 2);
-        assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
-        assertEquals(context.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_fields_getNull() throws Exception {
-        context.getParsed(null);
-    }
-
-    public void test_fields_get_notPresent() throws Exception {
+    public void test_getParsed_DateTimeRule_notPresent() throws Exception {
         assertEquals(context.getParsed(DAY_OF_MONTH), null);
     }
 
+    //-------------------------------------------------------------------------
+    public void test_getParsed_Class_null() throws Exception {
+        assertEquals(context.getParsed((Class<?>) null), null);
+    }
+
+    public void test_getParsed_Class_notPresent() throws Exception {
+        assertEquals(context.getParsed(LocalDate.class), null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getParsed_modifyList() throws Exception {
+        assertEquals(context.getParsed().size(), 0);
+        
+        context.setParsedField(DAY_OF_MONTH, 2);
+        assertEquals(context.getParsed().size(), 1);
+        assertEquals(context.getParsed().get(0), DAY_OF_MONTH.field(2));
+        
+        context.getParsed().add(LocalDate.of(2010, 6, 30));
+        assertEquals(context.getParsed().size(), 2);
+        assertEquals(context.getParsed().get(0), DAY_OF_MONTH.field(2));
+        assertEquals(context.getParsed().get(1), LocalDate.of(2010, 6, 30));
+    }
+
+    //-------------------------------------------------------------------------
+    public void test_setParsed() throws Exception {
+        context.setParsed(LocalDate.of(2010, 6, 30));
+        assertEquals(context.getParsed().size(), 1);
+        assertEquals(context.getParsed().get(0), LocalDate.of(2010, 6, 30));
+        
+        context.setParsed(LocalDate.of(2010, 9, 23));
+        assertEquals(context.getParsed().size(), 2);
+        assertEquals(context.getParsed().get(0), LocalDate.of(2010, 6, 30));
+        assertEquals(context.getParsed().get(1), LocalDate.of(2010, 9, 23));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_fields_setNull() throws Exception {
+    public void test_setParsed_null() throws Exception {
+        context.setParsed(null);
+    }
+
+    //-------------------------------------------------------------------------
+    public void test_setParsedField() throws Exception {
+        context.setParsedField(YEAR, 2008);
+        assertEquals(context.getParsed().size(), 1);
+        assertEquals(context.getParsed().get(0), YEAR.field(2008L));
+        
+        context.setParsedField(MONTH_OF_YEAR, 6);
+        assertEquals(context.getParsed().size(), 2);
+        assertEquals(context.getParsed().get(0), YEAR.field(2008L));
+        assertEquals(context.getParsed().get(1), MONTH_OF_YEAR.field(6));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_setParsedField_null() throws Exception {
         context.setParsedField(null, 2008);
     }
 
-    //-----------------------------------------------------------------------
-    public void test_getParsedRules_set() throws Exception {
-        context.setParsedField(DAY_OF_MONTH, 2);
+    //-------------------------------------------------------------------------
+    public void test_toCalendricalMerger() throws Exception {
+        context.setParsedField(YEAR, 2008);
+        context.setParsedField(MONTH_OF_YEAR, 6);
         
-        assertEquals(context.getParsedRules().size(), 1);
-        assertEquals(context.getParsedRules().iterator().next(), DAY_OF_MONTH);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_getParsedRules_noAdd() throws Exception {
-        context.getParsedRules().add(MONTH_OF_YEAR);
-    }
-
-    public void test_getParsedRules_remove() throws Exception {
-        context.setParsedField(DAY_OF_MONTH, 2);
-        context.getParsedRules().remove(DAY_OF_MONTH);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_offset() throws Exception {
-        assertEquals(context.getParsed(ZoneOffset.rule()), null);
-        
-        context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(18));
-        
-        assertEquals(context.getParsed(ZoneOffset.rule()), ZoneOffset.ofHours(18));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_zone() throws Exception {
-        assertEquals(context.getParsed(ZoneId.rule()), null);
-        
-        context.setParsed(ZoneId.rule(), ZoneId.of(ZoneOffset.ofHours(18)));
-        
-        assertEquals(context.getParsed(ZoneId.rule()), ZoneId.of(ZoneOffset.ofHours(18)));
+        assertEquals(context.getParsed().size(), 2);
+        assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
+        assertEquals(context.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
+        List<Calendrical> list = context.toCalendricalMerger().getInput();
+        assertEquals(list.size(), 2);
+        assertEquals(list.get(0), YEAR.field(2008L));
+        assertEquals(list.get(1), MONTH_OF_YEAR.field(6L));
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
         context.setParsedField(YEAR, 2008);
         context.setParsedField(MONTH_OF_YEAR, 6);
-        context.setParsed(ZoneOffset.rule(), ZoneOffset.ofHours(16));
-        context.setParsed(ZoneId.rule(),ZoneId.of(ZoneOffset.ofHours(18)));
+        context.setParsed(ZoneOffset.ofHours(16));
+        context.setParsed(ZoneId.of(ZoneOffset.ofHours(18)));
         
         String str = context.toString();
         assertEquals(str.contains("MonthOfYear 6"), true);

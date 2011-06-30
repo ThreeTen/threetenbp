@@ -46,8 +46,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.time.calendar.format.MockSimpleCalendrical;
-
 import org.testng.annotations.Test;
 
 /**
@@ -69,15 +67,15 @@ public class TestCalendricalRule {
         }
     }
 
-    static class MockBigYearRule extends CalendricalRule<MockBigYear> {
+    static class MockBigYearRule extends CalendricalRule<MockBigYear> implements Serializable {
         static final MockBigYearRule INSTANCE = new MockBigYearRule();
         private static final long serialVersionUID = 1L;
         protected MockBigYearRule() {
             super(MockBigYear.class, "MockBigYearRule");
         }
         @Override
-        protected MockBigYear derive(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(YEAR);
+        protected MockBigYear deriveFrom(CalendricalNormalizer merger) {
+            DateTimeField year = merger.getFieldDerived(YEAR, true);
             return year != null ? new MockBigYear(year.getValidValue()) : null;
         }
     }
@@ -87,7 +85,6 @@ public class TestCalendricalRule {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         assertTrue(Comparator.class.isAssignableFrom(CalendricalRule.class));
-        assertTrue(Serializable.class.isAssignableFrom(CalendricalRule.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -171,13 +168,13 @@ public class TestCalendricalRule {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_comparator_combinations_noValue1() {
         Year year2008 = Year.of(2008);
-        assertEquals(MockBigYearRule.INSTANCE.compare(year2008, new MockSimpleCalendrical()), -1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(year2008, DateTimeFields.EMPTY), -1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_comparator_combinations_noValue2() {
         Year year2008 = Year.of(2008);
-        assertEquals(MockBigYearRule.INSTANCE.compare(new MockSimpleCalendrical(), year2008), 1);
+        assertEquals(MockBigYearRule.INSTANCE.compare(DateTimeFields.EMPTY, year2008), 1);
     }
 
     //-----------------------------------------------------------------------

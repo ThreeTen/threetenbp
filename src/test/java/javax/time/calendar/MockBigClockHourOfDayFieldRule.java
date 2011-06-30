@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 
 import java.io.Serializable;
 
@@ -41,24 +42,39 @@ import java.io.Serializable;
  * @author Stephen Colebourne
  */
 public final class MockBigClockHourOfDayFieldRule extends DateTimeRule implements Serializable {
+
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockBigClockHourOfDayFieldRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockBigClockHourOfDayFieldRule() {
         super("BigClockHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
                 DateTimeRuleRange.of(0, 2300), CLOCK_HOUR_OF_DAY);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
+    @Override
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField hod = merger.derive(HOUR_OF_DAY);
+        if (hod == null) {
+            return null;
+        }
+        return field(convertFromPeriod(hod.getValue()));
+    }
+
     @Override
     public long convertToPeriod(long value) {
         return value / 100;
     }
+
     @Override
     public long convertFromPeriod(long period) {
         return period * 100;
     }
+
 }

@@ -35,7 +35,7 @@ import java.util.Arrays;
 
 import javax.time.calendar.TestAmPmOfDay;
 import javax.time.calendar.TestCalendricalMatchers;
-import javax.time.calendar.TestCalendricalMerger;
+import javax.time.calendar.TestCalendricalNomalizer;
 import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
@@ -46,6 +46,8 @@ import javax.time.calendar.TestDateTimeFields;
 import javax.time.calendar.TestDateTimeRule;
 import javax.time.calendar.TestDateTimeRuleRange;
 import javax.time.calendar.TestDayOfWeek;
+import javax.time.calendar.TestISOAlignedWeekOfMonthRule;
+import javax.time.calendar.TestISOAlignedWeekOfYearRule;
 import javax.time.calendar.TestISOAmPmOfDayRule;
 import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestISOClockHourOfAmPmRule;
@@ -53,20 +55,17 @@ import javax.time.calendar.TestISOClockHourOfDayRule;
 import javax.time.calendar.TestISODayOfMonthRule;
 import javax.time.calendar.TestISODayOfWeekRule;
 import javax.time.calendar.TestISODayOfYearRule;
-import javax.time.calendar.TestISOEpochYearRule;
 import javax.time.calendar.TestISOHourOfAmPmRule;
 import javax.time.calendar.TestISOHourOfDayRule;
-import javax.time.calendar.TestISOMerge;
 import javax.time.calendar.TestISOMinuteOfDayRule;
 import javax.time.calendar.TestISOMonthOfQuarterRule;
 import javax.time.calendar.TestISOMonthOfYearRule;
 import javax.time.calendar.TestISONanoOfDayRule;
 import javax.time.calendar.TestISOQuarterOfYearRule;
 import javax.time.calendar.TestISOWeekBasedYearRule;
-import javax.time.calendar.TestISOAlignedWeekOfMonthRule;
 import javax.time.calendar.TestISOWeekOfWeekBasedYearRule;
-import javax.time.calendar.TestISOAlignedWeekOfYearRule;
 import javax.time.calendar.TestISOYearRule;
+import javax.time.calendar.TestISOZeroEpochMonthRule;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
 import javax.time.calendar.TestLocalTime;
@@ -152,8 +151,8 @@ public class AllTest {
             TestUTCRules.class,
             // calendar classes
             TestAmPmOfDay.class,
-            TestCalendricalMerger.class,
             TestCalendricalMatchers.class,
+            TestCalendricalNomalizer.class,
             TestCalendricalRule.class,
             TestClock.class,
             TestClock_TimeSourceClock.class,
@@ -164,6 +163,8 @@ public class AllTest {
             TestDateTimeRule.class,
             TestDateTimeRuleRange.class,
             TestDayOfWeek.class,
+            TestISOAlignedWeekOfMonthRule.class,
+            TestISOAlignedWeekOfYearRule.class,
             TestISOAmPmOfDayRule.class,
             TestISOChronology.class,
             TestISOClockHourOfAmPmRule.class,
@@ -171,24 +172,21 @@ public class AllTest {
             TestISODayOfMonthRule.class,
             TestISODayOfWeekRule.class,
             TestISODayOfYearRule.class,
-            TestISOEpochYearRule.class,
             TestISOHourOfAmPmRule.class,
             TestISOHourOfDayRule.class,
-            TestISOMerge.class,
             TestISOMinuteOfDayRule.class,
             TestISOMonthOfQuarterRule.class,
             TestISOMonthOfYearRule.class,
             TestISONanoOfDayRule.class,
             TestISOQuarterOfYearRule.class,
             TestISOWeekBasedYearRule.class,
-            TestISOAlignedWeekOfMonthRule.class,
             TestISOWeekOfWeekBasedYearRule.class,
-            TestISOAlignedWeekOfYearRule.class,
             TestISOYearRule.class,
+            TestISOZeroEpochMonthRule.class,
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
-            TestMonthDay.class,  // needs strict to block overflow leftovers
+            TestMonthDay.class,
             TestMonthOfYear.class,
             TestOffsetDate.class,
             TestOffsetDateTime.class,
@@ -202,7 +200,7 @@ public class AllTest {
             TestQuarterOfYear.class,
             TestWeekRules.class,
             TestYear.class,
-            TestYearMonth.class,  // needs strict to block overflow leftovers
+            TestYearMonth.class,
             TestZonedDateTime.class,
             TestZoneId.class,
             TestZoneOffset.class,

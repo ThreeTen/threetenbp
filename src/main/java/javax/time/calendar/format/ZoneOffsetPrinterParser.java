@@ -114,7 +114,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         int utcLen = noOffsetText.length();
         if (utcLen == 0) {
             if (position == length) {
-                context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
+                context.setParsed(ZoneOffset.UTC);
                 return position;
             }
         } else {
@@ -122,7 +122,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
                 return ~position;
             }
             if (parseText.regionMatches(!context.isCaseSensitive(), position, noOffsetText, 0, utcLen)) {
-                context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
+                context.setParsed(ZoneOffset.UTC);
                 return position + utcLen;
             }
         }
@@ -142,11 +142,11 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
                 return ~position;
             }
             offset = ZoneOffset.ofHoursMinutesSeconds(negative * array[1], negative * array[2], negative * array[3]);
-            context.setParsed(ZoneOffset.rule(), offset);
+            context.setParsed(offset);
             return array[0];
         } else {
             if (utcLen == 0) {
-                context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
+                context.setParsed(ZoneOffset.UTC);
                 return position + utcLen;
             }
             return ~position;

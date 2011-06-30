@@ -36,14 +36,15 @@ import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a week of week-based-year in the ISO-8601 calendar system.
@@ -127,7 +128,7 @@ public final class WeekOfWeekBasedYear
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the WeekOfWeekBasedYear instance, never null
-     * @throws UnsupportedRuleException if the week-of-week-based-year cannot be obtained
+     * @throws CalendricalException if the week-of-week-based-year cannot be obtained
      */
     public static WeekOfWeekBasedYear weekOfWeekBasedYear(Calendrical calendrical) {
         return weekOfWeekBasedYear(rule().getValueChecked(calendrical).getValidIntValue());
@@ -160,11 +161,15 @@ public final class WeekOfWeekBasedYear
      * If the value cannot be returned for the rule from this instance then
      * <code>null</code> will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(weekOfWeekyear), this, ISOChronology.INSTANCE);
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

@@ -166,7 +166,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         return data.dates.clone();
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     @Override
     protected UTCInstant convertToUTC(TAIInstant taiInstant) {
         Data data = dataRef.get();
@@ -186,7 +186,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Loads the leap seconds from file.
      * 

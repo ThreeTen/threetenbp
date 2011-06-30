@@ -32,10 +32,8 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.time.CalendricalException;
 
@@ -76,11 +74,9 @@ public final class ZoneOffset
         implements Calendrical, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
-    private static final ReadWriteLock CACHE_LOCK = new ReentrantReadWriteLock();
-    /** Cache of time-zone offset by offset in seconds. */
-    private static final Map<Integer, ZoneOffset> SECONDS_CACHE = new HashMap<Integer, ZoneOffset>();
+    private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
     /** Cache of time-zone offset by id. */
-    private static final Map<String, ZoneOffset> ID_CACHE = new HashMap<String, ZoneOffset>();
+    private static final ConcurrentMap<String, ZoneOffset> ID_CACHE = new ConcurrentHashMap<String, ZoneOffset>(16, 0.75f, 4);
 
     /**
      * The time-zone offset for UTC, with an id of 'Z'.
@@ -155,20 +151,13 @@ public final class ZoneOffset
         if (offsetID == null) {
             throw new NullPointerException("The offset ID must not be null");
         }
-        CACHE_LOCK.readLock().lock();
-        try {
-            ZoneOffset offset = ID_CACHE.get(offsetID);
-            if (offset != null) {
-                return offset;
-            }
-        } finally {
-            CACHE_LOCK.readLock().unlock();
+        // "Z" is always in the cache
+        ZoneOffset offset = ID_CACHE.get(offsetID);
+        if (offset != null) {
+            return offset;
         }
         
-//        // parse - Z, +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
-//        if (offsetID.equals("Z")) {
-//            return UTC;
-//        }
+        // parse - +hh, +hhmm, +hh:mm, +hhmmss, +hh:mm:ss
         final int hours, minutes, seconds;
         int len = offsetID.length();
         switch (len) {
@@ -300,6 +289,21 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code ZoneOffset} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a zone-offset.
+     *
+     * @param calendricals  the calendricals to create a zone-offset from, no nulls, not null
+     * @return the zone-offset, not null
+     * @throws CalendricalException if unable to merge to a zone-offset
+     */
+    public static ZoneOffset from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Validates the offset fields.
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
@@ -364,27 +368,14 @@ public final class ZoneOffset
         }
         if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
             Integer totalSecs = totalSeconds;
-            CACHE_LOCK.readLock().lock();
-            try {
-                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-                if (result != null) {
-                    return result;
-                }
-            } finally {
-                CACHE_LOCK.readLock().unlock();
+            ZoneOffset result = SECONDS_CACHE.get(totalSecs);
+            if (result == null) {
+                result = new ZoneOffset(totalSeconds);
+                SECONDS_CACHE.putIfAbsent(totalSecs, result);
+                result = SECONDS_CACHE.get(totalSecs);
+                ID_CACHE.putIfAbsent(result.getID(), result);
             }
-            CACHE_LOCK.writeLock().lock();
-            try {
-                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-                if (result == null) {
-                    result = new ZoneOffset(totalSeconds);
-                    SECONDS_CACHE.put(totalSecs, result);
-                    ID_CACHE.put(result.getID(), result);
-                }
-                return result;
-            } finally {
-                CACHE_LOCK.writeLock().unlock();
-            }
+            return result;
         } else {
             return new ZoneOffset(totalSeconds);
         }
@@ -434,21 +425,11 @@ public final class ZoneOffset
      * If the value cannot be returned for the rule from this offset then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            if (rule.equals(ISOCalendricalRule.ZONE_OFFSET)) {
-                return (T) this;
-            }
-            return null;
-        }
-        if (rule instanceof ISODateTimeRule) {
-            return null;
-        }
-        return rule.derive(this);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, this, null, null, null);
     }
 
     //-----------------------------------------------------------------------

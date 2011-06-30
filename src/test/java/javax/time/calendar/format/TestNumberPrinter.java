@@ -37,8 +37,8 @@ import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.DataProvider;
@@ -53,7 +53,7 @@ import org.testng.annotations.Test;
 public class TestNumberPrinter extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedRuleException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_print_emptyCalendrical() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(DAY_OF_MONTH, 1, 2, SignStyle.NEVER);
         pp.print(printEmptyContext, buf);

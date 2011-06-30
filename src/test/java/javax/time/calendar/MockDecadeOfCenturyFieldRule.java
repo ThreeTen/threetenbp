@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+
 import java.io.Serializable;
 
 import javax.time.MathUtils;
@@ -44,29 +46,25 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeRule implements 
 
     /** Singleton instance. */
     public static final DateTimeRule INSTANCE = new MockDecadeOfCenturyFieldRule();
-    /** A serialization identifier for this class. */
+    /** Serialization version. */
     private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     private MockDecadeOfCenturyFieldRule() {
-        super("DecadeOfCentury", ISOPeriodUnit.DECADES, ISOPeriodUnit.CENTURIES, 0, 9, null);
+        super("DecadeOfCentury", ISOPeriodUnit.DECADES, ISOPeriodUnit.CENTURIES, 0, 9, ZERO_EPOCH_MONTH);
     }
+
     private Object readResolve() {
         return INSTANCE;
     }
+
     @Override
-    protected DateTimeField derive(Calendrical calendrical) {
-        DateTimeField yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
-        return (yocVal == null ? null : field(yocVal.getValidIntValue() / 10));
-    }
-    @Override
-    protected void merge(CalendricalMerger merger) {
-        DateTimeField yodVal = merger.getValue(MockYearOfDecadeFieldRule.INSTANCE);
-        if (yodVal != null) {
-            DateTimeField doc = merger.getValue(this);
-            int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc.getValidIntValue(), 10), yodVal.getValidIntValue());
-            merger.storeMergedField(MockYearOfCenturyFieldRule.INSTANCE, yoc);
-            merger.removeProcessed(this);
-            merger.removeProcessed(MockYearOfDecadeFieldRule.INSTANCE);
+    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+        LocalDate date = merger.getDate(false);
+        if (date == null) {
+            return null;
         }
+        return field(MathUtils.floorMod(date.getYear(), 100) / 10);
     }
+
 }

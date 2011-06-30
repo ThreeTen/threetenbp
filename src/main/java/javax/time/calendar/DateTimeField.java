@@ -101,6 +101,26 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * an attempt is made to derive the value.
+     * If that fails, {@code null} will be returned.
+     *
+     * @param ruleToDerive  the rule to derive, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (this.rule.equals(ruleToDerive)) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, this.rule, null, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the rule defining this field.
      * <p>
      * For example, in the field 'MonthOfYear 12', the rule is 'MonthOfYear'.
@@ -244,25 +264,6 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * an attempt is made to derive the value.
-     * If that fails, {@code null} will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (this.rule.equals(rule)) {
-            return rule.reify(this);
-        }
-        return rule.deriveValueFrom(this);
-    }
-
-    /**
      * Checks if this field matches the equivalent field in the specified calendrical.
      *
      * @param calendrical  the calendrical to match, not null
@@ -310,8 +311,8 @@ public final class DateTimeField
      *
      * @return the equivalent field, {@code this} if already normalized, not null
      */
-    public DateTimeField normalized() {
-        // TODO: remove?
+    DateTimeField normalized() {
+        // TODO: move to normalizer
         DateTimeRule normalizationRule = rule.getNormalizationRule();
         if (rule.equals(normalizationRule) == false && isNormalizable(rule, normalizationRule)) {
             return normalizationRule.field(normalizationRule.convertFromPeriod(rule.convertToPeriod(value)));
@@ -333,13 +334,17 @@ public final class DateTimeField
      * 'MinuteOfHour' is a subset of 'SecondOfDay', but is not a subset of 'HourOfDay'.
      * If the rule cannot be derived, {@code null} is returned.
      * <p>
-     * The calculation is based on {@link DateTimeRule#getBaseRule()} and
-     * {@link DateTimeRule#convertToPeriod(long)}.
+     * The definition of a subset is controlled by the rule.
+     * Each rule defines a {@link DateTimeRule#getBaseRule() base rule},
+     * {@link DateTimeRule#getPeriodUnit() period unit} and
+     * {@link DateTimeRule#getPeriodRange() period range}.
+     * If rule A has the same base rule as rule B, and the period unit to range
+     * of A fits within that of B, then the rule is a subset.
      *
      * @param ruleToDerive  the rule to derive, not null
      * @return the derived value for the rule, null if the value cannot be derived
      */
-    public DateTimeField derive(DateTimeRule ruleToDerive) {
+    DateTimeField derive(DateTimeRule ruleToDerive) {
         ISOChronology.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
         // check if this is the desired output already
         if (this.rule.equals(ruleToDerive)) {

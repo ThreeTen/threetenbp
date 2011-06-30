@@ -32,7 +32,9 @@
 package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -43,106 +45,57 @@ import org.testng.annotations.Test;
 @Test
 public class TestStringLiteralParser extends AbstractTestPrinterParser {
 
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_parse_negativePosition() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.parse(parseContext, "hello", -1);
+    @DataProvider(name="success")
+    Object[][] data_success() {
+        return new Object[][] {
+            // match
+            {new StringLiteralPrinterParser("hello"), true, "hello", 0, 5},
+            {new StringLiteralPrinterParser("hello"), true, "helloOTHER", 0, 5},
+            {new StringLiteralPrinterParser("hello"), true, "OTHERhelloOTHER", 5, 10},
+            {new StringLiteralPrinterParser("hello"), true, "OTHERhello", 5, 10},
+            
+            // no match
+            {new StringLiteralPrinterParser("hello"), true, "", 0, ~0},
+            {new StringLiteralPrinterParser("hello"), true, "a", 1, ~1},
+            {new StringLiteralPrinterParser("hello"), true, "HELLO", 0, ~0},
+            {new StringLiteralPrinterParser("hello"), true, "hlloo", 0, ~0},
+            {new StringLiteralPrinterParser("hello"), true, "OTHERhllooOTHER", 5, ~5},
+            {new StringLiteralPrinterParser("hello"), true, "OTHERhlloo", 5, ~5},
+            {new StringLiteralPrinterParser("hello"), true, "h", 0, ~0},
+            {new StringLiteralPrinterParser("hello"), true, "OTHERh", 5, ~5},
+            
+            // case insensitive
+            {new StringLiteralPrinterParser("hello"), false, "hello", 0, 5},
+            {new StringLiteralPrinterParser("hello"), false, "HELLO", 0, 5},
+            {new StringLiteralPrinterParser("hello"), false, "HelLo", 0, 5},
+        };
     }
 
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_parse_offEndPosition() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.parse(parseContext, "hello", 6);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_parse_exactMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "hello", 0);
-        assertEquals(result, 5);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_startStringMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "helloOTHER", 0);
-        assertEquals(result, 5);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_midStringMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "OTHERhelloOTHER", 5);
-        assertEquals(result, 10);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_endStringMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "OTHERhello", 5);
-        assertEquals(result, 10);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
+    @Test(dataProvider="success")
+    public void test_parse_success(StringLiteralPrinterParser pp, boolean caseSensitive, String text, int pos, int expectedPos) {
+        parseContext.setCaseSensitive(caseSensitive);
+        int result = pp.parse(parseContext, text, pos);
+        assertEquals(result, expectedPos);
+        assertEquals(parseContext.getParsed().size(), 0);
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_emptyStringNoMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "", 0);
-        assertEquals(result, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
+    @DataProvider(name="error")
+    Object[][] data_error() {
+        return new Object[][] {
+            {new StringLiteralPrinterParser("hello"), "hello", -1, IndexOutOfBoundsException.class},
+            {new StringLiteralPrinterParser("hello"), "hello", 6, IndexOutOfBoundsException.class},
+        };
     }
 
-    public void test_parse_startStringNoMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "hlloo", 0);
-        assertEquals(result, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_midStringNoMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "OTHERhlloOTHER", 5);
-        assertEquals(result, ~5);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_endStringNoMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "hello", 5);
-        assertEquals(result, ~5);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_startStringTooShortNoMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "h", 0);
-        assertEquals(result, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_midStringTooShortNoMatch() throws Exception {
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "OTHERhel", 5);
-        assertEquals(result, ~5);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_parse_caseSensitive() throws Exception {
-        parseContext.setCaseSensitive(true);
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "HELLO", 0);
-        assertEquals(result, ~0);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
-    }
-
-    public void test_parse_caseInsensitive() throws Exception {
-        parseContext.setCaseSensitive(false);
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        int result = pp.parse(parseContext, "HELLO", 0);
-        assertEquals(result, 5);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), 0);
+    @Test(dataProvider="error")
+    public void test_parse_error(StringLiteralPrinterParser pp, String text, int pos, Class<?> expected) {
+        try {
+            pp.parse(parseContext, text, pos);
+        } catch (RuntimeException ex) {
+            assertTrue(expected.isInstance(ex));
+            assertEquals(parseContext.getParsed().size(), 0);
+        }
     }
 
 }

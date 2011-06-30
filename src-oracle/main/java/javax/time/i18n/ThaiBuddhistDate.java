@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
@@ -53,6 +53,16 @@ public final class ThaiBuddhistDate
      * The underlying date.
      */
     private final LocalDate date;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code ThaiBuddhistDate}.
+     *
+     * @return the rule for the date, never null
+     */
+    public static CalendricalRule<ThaiBuddhistDate> rule() {
+        return Rule.INSTANCE;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -167,11 +177,11 @@ public final class ThaiBuddhistDate
      * If the value cannot be returned for the rule from this date then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, ThaiBuddhistChronology.INSTANCE);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), date, null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -583,16 +593,6 @@ public final class ThaiBuddhistDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code ThaiBuddhistDate}.
-     *
-     * @return the rule for the date, never null
-     */
-    public static CalendricalRule<ThaiBuddhistDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Rule implementation.
      */
     static final class Rule extends CalendricalRule<ThaiBuddhistDate> implements Serializable {
@@ -605,15 +605,9 @@ public final class ThaiBuddhistDate
             return INSTANCE;
         }
         @Override
-        protected ThaiBuddhistDate derive(Calendrical calendrical) {
-            LocalDate ld = calendrical.get(LocalDate.rule());
+        protected ThaiBuddhistDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate ld = merger.getDate(true);
             return ld != null ? ThaiBuddhistDate.of(ld) : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            ThaiBuddhistDate td = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), td.toLocalDate());
-            merger.removeProcessed(this);
         }
     }
 

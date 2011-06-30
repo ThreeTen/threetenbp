@@ -40,7 +40,7 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 
 /**
@@ -247,17 +247,18 @@ public final class DateTimeFormatter {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
         String str = text.toString();
-        CalendricalMerger merger = parse(str);
-        T result = merger.merge().get(rule);
-        if (result == null) {
+        try {
+            CalendricalNormalizer merger = parse(str);
+            return merger.deriveChecked(rule);
+        } catch (CalendricalParseException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
             String abbr = str;
             if (abbr.length() > 64) {
                 abbr = abbr.substring(0, 64) + "...";
             }
-            throw new CalendricalParseException("Text '" + abbr + "' could not be parsed into " + rule.getName() +
-                    " but was parsed to " + merger, str, 0);
+            throw new CalendricalParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), str, 0, ex);
         }
-        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -280,7 +281,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
-    public CalendricalMerger parse(CharSequence text) {
+    public CalendricalNormalizer parse(CharSequence text) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         String str = text.toString();
         ParsePosition pos = new ParsePosition(0);
@@ -349,7 +350,7 @@ public final class DateTimeFormatter {
      * Returns this formatter as a {@code java.text.Format} instance.
      * <p>
      * The {@link Format} instance will print any {@link Calendrical}
-     * and parses to a merged {@link CalendricalMerger}.
+     * and parses to a merged {@link CalendricalNormalizer}.
      * <p>
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the
@@ -411,7 +412,7 @@ public final class DateTimeFormatter {
         @Override
         public Object parseObject(String source, ParsePosition pos) {
             DateTimeParseContext context = parse(source, pos);
-            return context != null ? context.toCalendricalMerger().merge() : null;
+            return context != null ? context.toCalendricalMerger() : null;
         }
     }
 

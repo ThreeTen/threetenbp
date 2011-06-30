@@ -32,14 +32,11 @@
 package javax.time.calendar.format;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
-import javax.time.calendar.CalendricalContext;
-import javax.time.calendar.CalendricalMerger;
-import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 
@@ -152,80 +149,6 @@ public final class DateTimeParseContext {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the locale to use for printing and parsing text.
-     *
-     * @return the locale, not null
-     */
-    public Locale getLocale() {
-        return symbols.getLocale();
-    }
-
-    /**
-     * Gets the currently active calendrical.
-     *
-     * @return the current calendrical, not null
-     */
-    private Parsed currentCalendrical() {
-        return calendricals.get(calendricals.size() - 1);
-    }
-
-    /**
-     * Gets the parsed value for the specified rule.
-     * <p>
-     * The value returned is directly obtained from the stored map of values.
-     * It may be of any type and any value.
-     * For example, the day-of-month might be set to 50, or the hour to 1000.
-     *
-     * @param rule  the rule to query from the map, not null
-     * @return the value mapped to the specified rule, null if rule not in the map
-     */
-    public Object getParsed(CalendricalRule<?> rule) {
-        DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
-        return currentCalendrical().values.get(rule);
-    }
-
-    /**
-     * Gets the set of parsed rules.
-     * <p>
-     * The set can be read and have elements removed, but nothing can be added.
-     *
-     * @return the set of rules previously parsed, not null
-     */
-    public Set<CalendricalRule<?>> getParsedRules() {
-        return currentCalendrical().values.keySet();
-    }
-
-    /**
-     * Stores the value associated with the specified rule.
-     * <p>
-     * The value stored may be out of range for the rule and of any type -
-     * no checks are performed.
-     *
-     * @param <T>  the rule type
-     * @param rule  the rule to set in the rule-value map, not null
-     * @param value  the value to set in the rule-value map, not null
-     */
-    public <T> void setParsed(CalendricalRule<T> rule, T value) {
-        DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
-        DateTimeFormatter.checkNotNull(value, "Value must not be null");
-        currentCalendrical().values.put(rule, value);
-    }
-
-    /**
-     * Stores the parsed field.
-     * <p>
-     * The value stored may be out of range for the rule - no checks are performed.
-     *
-     * @param rule  the rule to set in the rule-value map, not null
-     * @param value  the value to set in the rule-value map
-     */
-    public void setParsedField(DateTimeRule rule, long value) {
-        DateTimeField field = DateTimeField.of(rule, value);
-        currentCalendrical().values.put(rule, field);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Starts the parsing of an optional segment of the input.
      */
     public void startOptional() {
@@ -247,6 +170,109 @@ public final class DateTimeParseContext {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the locale to use for printing and parsing text.
+     *
+     * @return the locale, not null
+     */
+    public Locale getLocale() {
+        return symbols.getLocale();
+    }
+
+    /**
+     * Gets the currently active calendrical.
+     *
+     * @return the current calendrical, not null
+     */
+    private Parsed currentCalendrical() {
+        return calendricals.get(calendricals.size() - 1);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the first field matching the specified rule.
+     * <p>
+     * This searches the list of parsed calendricals, returning the first field
+     * that has the specified rule. No attempt is made to derive a value.
+     * The field may have an out of range value.
+     * For example, the day-of-month might be set to 50, or the hour to 1000.
+     *
+     * @param rule  the rule to query from the map, null returns null
+     * @return the value mapped to the specified rule, null if rule not in the map
+     */
+    public DateTimeField getParsed(DateTimeRule rule) {
+        for (Calendrical cal : currentCalendrical().calendricals) {
+            if (cal instanceof DateTimeField) {
+                DateTimeField field = (DateTimeField) cal;
+                if (field.getRule().equals(rule)) {
+                    return field;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the first calendrical of the specified type.
+     * <p>
+     * This searches the list of parsed calendricals, returning the first calendrical
+     * that is of the specified type. No attempt is made to derive a value.
+     * The calendricals are not validated, so a field may have an out of range value.
+     * For example, the day-of-month might be set to 50, or the hour to 1000.
+     *
+     * @param rule  the rule to query from the map, null returns null
+     * @return the value mapped to the specified rule, null if rule not in the map
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getParsed(Class<T> clazz) {
+        for (Calendrical cal : currentCalendrical().calendricals) {
+            if (clazz.isInstance(cal)) {
+                return (T) cal;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the list of parsed calendricals.
+     * <p>
+     * The list is modifiable, but modification is discouraged.
+     * <p>
+     * The calendricals are not validated, so a field may have an out of range value.
+     * For example, the day-of-month might be set to 50, or the hour to 1000.
+     *
+     * @return the list of previously parsed calendricals, not null, no nulls
+     */
+    public List<Calendrical> getParsed() {
+        return currentCalendrical().calendricals;
+    }
+
+    /**
+     * Stores the parsed calendrical.
+     * <p>
+     * No validation is performed on the calendrical other than ensuring it is not null.
+     *
+     * @param calendrical  the parsed calendrical, not null
+     */
+    public <T> void setParsed(Calendrical calendrical) {
+        DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
+        currentCalendrical().calendricals.add(calendrical);
+    }
+
+    /**
+     * Stores the parsed field.
+     * <p>
+     * The value stored may be out of range for the rule - no checks are performed.
+     *
+     * @param rule  the rule to set in the rule-value map, not null
+     * @param value  the value to set in the rule-value map
+     */
+    public void setParsedField(DateTimeRule rule, long value) {
+        DateTimeField field = DateTimeField.of(rule, value);
+        currentCalendrical().calendricals.add(field);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a {@code CalendricalMerger} that can be used to interpret
      * the results of the parse.
      * <p>
@@ -256,10 +282,11 @@ public final class DateTimeParseContext {
      * objects such as {@code LocalDate}, potentially applying complex processing
      * to handle invalid parsed data.
      *
-     * @return a new independent merger with the parsed rule-value map, not null
+     * @return a new independent merger with the parsed calendricals, not null
      */
-    public CalendricalMerger toCalendricalMerger() {
-        return new CalendricalMerger(new CalendricalContext(true, true), currentCalendrical().values);
+    public CalendricalNormalizer toCalendricalMerger() {
+        List<Calendrical> cals = getParsed();
+        return CalendricalNormalizer.merge(cals.toArray(new Calendrical[cals.size()]));
     }
 
     //-----------------------------------------------------------------------
@@ -278,17 +305,17 @@ public final class DateTimeParseContext {
      * Temporary store of parsed data.
      */
     static class Parsed {
-        final Map<CalendricalRule<?>, Object> values = new HashMap<CalendricalRule<?>, Object>();
+        final List<Calendrical> calendricals = new ArrayList<Calendrical>();
         
         @Override
         protected Parsed clone() {
             Parsed cloned = new Parsed();
-            cloned.values.putAll(this.values);
+            cloned.calendricals.addAll(this.calendricals);
             return cloned;
         }
         @Override
         public String toString() {
-            return values.values().toString();
+            return calendricals.toString();
         }
     }
 

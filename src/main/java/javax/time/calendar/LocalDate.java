@@ -40,6 +40,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -194,23 +195,6 @@ public final class LocalDate
         return result;
     }
 
-//    //-----------------------------------------------------------------------
-//    // TODO
-//    /**
-//     * Obtains an instance of {@code LocalDate} from a set of calendricals.
-//     * <p>
-//     * A calendrical represents some form of date and time information.
-//     * This method combines the input calendricals into a date.
-//     * For example, this could be used to convert a date in another calendar
-//     * system, or to merge a {@link Year} and a {@link MonthDay}.
-//     *
-//     * @param calendricals  the calendricals to create a date from, no nulls, not null
-//     * @return the local date, not null
-//     */
-//    public static LocalDate ofMerged(Calendrical... calendricals) {
-//        return new CalendricalSet(calendricals).merge().derive(rule());
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDate} from the epoch day count.
@@ -283,6 +267,21 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code LocalDate} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date.
+     *
+     * @param calendricals  the calendricals to create a date from, no nulls, not null
+     * @return the local date, not null
+     * @throws CalendricalException if unable to merge to a local date
+     */
+    public static LocalDate from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code LocalDate} from a text string such as {@code 2007-12-03}.
      * <p>
      * The following format is accepted in ASCII:
@@ -299,7 +298,7 @@ public final class LocalDate
      *
      * @param text  the text to parse such as '2007-12-03', not null
      * @return the parsed local date, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalDate parse(String text) {
         return DateTimeFormatters.isoLocalDate().parse(text, rule());
@@ -314,7 +313,7 @@ public final class LocalDate
      * @param formatter  the formatter to use, not null
      * @return the parsed local date, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalDate parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -359,38 +358,17 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) this;
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
-        }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(this);
-        }
-        return rule.derive(this);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -478,7 +456,7 @@ public final class LocalDate
      * leap year as it is divisible by 400.
      * <p>
      * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO8601 standard.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
      * @return true if the year is leap, false otherwise
      */

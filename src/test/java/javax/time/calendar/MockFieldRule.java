@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-
 /**
  * Mock rule designed for subclassing.
  *

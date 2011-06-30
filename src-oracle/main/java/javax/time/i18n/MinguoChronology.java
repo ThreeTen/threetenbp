@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -310,8 +310,8 @@ public final class MinguoChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            MinguoDate date = calendrical.get(MinguoDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            MinguoDate date = merger.derive(MinguoDate.rule());
             return date != null ? field(date.getEra().getValue()) : null;
         }
         // TODO: never worked properly, needs to use proper provider
@@ -361,36 +361,36 @@ public final class MinguoChronology extends Chronology implements Serializable {
         }
         // TODO: min/max years based on era
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            MinguoDate date = calendrical.get(MinguoDate.rule());
-            return date != null ? field(date.getYearOfEra()) : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            DateTimeField eraVal = merger.getValue(MinguoChronology.eraRule());
+        protected void normalize(CalendricalNormalizer merger) {
+            DateTimeField eraVal = merger.getFieldDerived(MinguoChronology.eraRule(), false);
             MinguoEra era = (eraVal != null ? MinguoEra.of(eraVal.getValidIntValue()) : MinguoEra.MINGUO);
-            DateTimeField yoeVal = merger.getValue(this);
+            DateTimeField yoeVal = merger.getFieldDerived(this, false);
             // era, year, month, day-of-month
-            DateTimeField moy = merger.getValue(MinguoChronology.monthOfYearRule());
-            DateTimeField domVal = merger.getValue(MinguoChronology.dayOfMonthRule());
+            DateTimeField moy = merger.getFieldDerived(MinguoChronology.monthOfYearRule(), false);
+            DateTimeField domVal = merger.getFieldDerived(MinguoChronology.dayOfMonthRule(), false);
             if (moy != null && domVal != null) {
                 MinguoDate date = MinguoDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.of(moy.getValidIntValue()), domVal.getValidIntValue());
-                merger.storeMerged(MinguoDate.rule(), date);
-                merger.removeProcessed(MinguoChronology.eraRule());
-                merger.removeProcessed(this);
-                merger.removeProcessed(MinguoChronology.monthOfYearRule());
-                merger.removeProcessed(MinguoChronology.dayOfMonthRule());
+                merger.setDate(date.toLocalDate(), true);
+//                merger.removeProcessed(MinguoChronology.eraRule());
+//                merger.removeProcessed(this);
+//                merger.removeProcessed(MinguoChronology.monthOfYearRule());
+//                merger.removeProcessed(MinguoChronology.dayOfMonthRule());
             }
             // era, year, day-of-year
-            DateTimeField doyVal = merger.getValue(MinguoChronology.dayOfYearRule());
+            DateTimeField doyVal = merger.getFieldDerived(MinguoChronology.dayOfYearRule(), false);
             if (doyVal != null) {
                 MinguoDate date = MinguoDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.JANUARY, 1).plusDays(doyVal.getValidIntValue() - 1);
-                merger.storeMerged(MinguoDate.rule(), date);
-                merger.removeProcessed(MinguoChronology.eraRule());
-                merger.removeProcessed(this);
-                merger.removeProcessed(MinguoChronology.yearOfEraRule());
-                merger.removeProcessed(MinguoChronology.dayOfYearRule());
+                merger.setDate(date.toLocalDate(), true);
+//                merger.removeProcessed(MinguoChronology.eraRule());
+//                merger.removeProcessed(this);
+//                merger.removeProcessed(MinguoChronology.yearOfEraRule());
+//                merger.removeProcessed(MinguoChronology.dayOfYearRule());
             }
+        }
+        @Override
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            MinguoDate date = merger.derive(MinguoDate.rule());
+            return date != null ? field(date.getYearOfEra()) : null;
         }
     }
 
@@ -411,8 +411,8 @@ public final class MinguoChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            MinguoDate date = calendrical.get(MinguoDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            MinguoDate date = merger.derive(MinguoDate.rule());
             return date != null ? field(date.getMonthOfYear().getValue()) : null;
         }
     }
@@ -454,8 +454,8 @@ public final class MinguoChronology extends Chronology implements Serializable {
             return getValueRange();
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            MinguoDate date = calendrical.get(MinguoDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            MinguoDate date = merger.derive(MinguoDate.rule());
             return date != null ? field(date.getDayOfMonth()) : null;
         }
     }
@@ -488,8 +488,8 @@ public final class MinguoChronology extends Chronology implements Serializable {
             return getValueRange();
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            MinguoDate date = calendrical.get(MinguoDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            MinguoDate date = merger.derive(MinguoDate.rule());
             return date != null ? field(date.getDayOfYear()) : null;
         }
     }
@@ -511,8 +511,8 @@ public final class MinguoChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            MinguoDate date = calendrical.get(MinguoDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            MinguoDate date = merger.derive(MinguoDate.rule());
             return date != null ? field(date.getDayOfWeek().getValue()) : null;
         }
     }

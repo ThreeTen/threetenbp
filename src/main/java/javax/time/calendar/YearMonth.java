@@ -38,6 +38,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -87,6 +88,16 @@ public final class YearMonth
      * The month-of-year, not null.
      */
     private final MonthOfYear month;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code YearMonth}.
+     *
+     * @return the rule for the year-month, not null
+     */
+    public static CalendricalRule<YearMonth> rule() {
+        return ExtendedCalendricalRule.YEAR_MONTH;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -147,24 +158,39 @@ public final class YearMonth
         return of(year, MonthOfYear.of(monthOfYear));
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code YearMonth} from a Calendrical.
+     * Obtains an instance of {@code YearMonth} from a set of calendricals.
      * <p>
-     * This method will create a year-month from the Calendrical by extracting
-     * the year and month-of-year fields.
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a year-month.
      *
-     * @param calendrical  the calendrical to use, not null
+     * @param calendricals  the calendricals to create a year-month from, no nulls, not null
      * @return the year-month, not null
-     * @throws UnsupportedRuleException if either field cannot be found
-     * @throws InvalidCalendarFieldException if the value for either field is invalid
+     * @throws CalendricalException if unable to merge to a year-month
      */
-    public static YearMonth of(Calendrical calendrical) {
-        DateTimeField year = YEAR.getValueChecked(calendrical);
-        DateTimeField month = MONTH_OF_YEAR.getValueChecked(calendrical);
-        return of(year.getValidIntValue(), month.getValidIntValue());
+    public static YearMonth from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
     }
 
-    //-------------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code YearMonth} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the YearMonth singleton, null if unable to obtain
+     */
+    static YearMonth deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField year = merger.getFieldDerived(YEAR, true);
+        DateTimeField moy = merger.getFieldDerived(MONTH_OF_YEAR, true);
+        if (year == null || moy == null) {
+            return null;
+        }
+        return of(year.getValidIntValue(), moy.getValidIntValue());
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
      * <p>
@@ -180,7 +206,7 @@ public final class YearMonth
      *
      * @param text  the text to parse such as '2007-12', not null
      * @return the parsed year-month, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static YearMonth parse(String text) {
         return PARSER.parse(text, rule());
@@ -195,7 +221,7 @@ public final class YearMonth
      * @param formatter  the formatter to use, not null
      * @return the parsed year-month, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static YearMonth parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -231,35 +257,21 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this year-month uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this year-month then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
-        if (rule.equals(YEAR)) {
-            return (T) YEAR.field(year);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
         }
-        if (rule.equals(MONTH_OF_YEAR)) {
-            return (T) MONTH_OF_YEAR.field(month.getValue());
-        }
-        return rule().deriveValueFor(rule, this, this, ISOChronology.INSTANCE);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
     }
 
     //-----------------------------------------------------------------------
@@ -470,24 +482,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Rolls the month-of-year, adding the specified number of months to a copy
-     * of this {@code YearMonth}.
-     * <p>
-     * This method will add the specified number of months to the month-day,
-     * rolling from December back to January if necessary.
-     * The year is not altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to roll by, positive or negative
-     * @return a {@code YearMonth} based on this year-month with the month rolled, not null
-     */
-    public YearMonth rollMonthOfYear(int months) {
-        return with(month.roll(months));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the year-month extracted from the calendrical matches this.
      * <p>
      * This method implements the {@code CalendricalMatcher} interface.
@@ -591,6 +585,19 @@ public final class YearMonth
      */
     public LocalDate atDay(int dayOfMonth) {
         return LocalDate.of(year, month, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this year-month to an equivalent fields object.
+     * <p>
+     * The fields will contain {@link ISODateTimeRule#YEAR} and
+     * {@link ISODateTimeRule#MONTH_OF_YEAR}.
+     *
+     * @return the equivalent fields, not null
+     */
+    public DateTimeFields toFields() {
+        return DateTimeFields.of(YEAR, year, MONTH_OF_YEAR, month.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -701,37 +708,6 @@ public final class YearMonth
     public String toString(DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the year-month.
-     *
-     * @return the rule for the year-month, not null
-     */
-    public static CalendricalRule<YearMonth> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Rule implementation.
-     */
-    static final class Rule extends CalendricalRule<YearMonth> implements Serializable {
-        private static final CalendricalRule<YearMonth> INSTANCE = new Rule();
-        private static final long serialVersionUID = 1L;
-        private Rule() {
-            super(YearMonth.class, "YearMonth");
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        protected YearMonth derive(Calendrical calendrical) {
-            DateTimeField year = calendrical.get(YEAR);
-            DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
-            return year != null && moy != null ? YearMonth.of(year.getValidIntValue(), moy.getValidIntValue()) : null;
-        }
     }
 
 }

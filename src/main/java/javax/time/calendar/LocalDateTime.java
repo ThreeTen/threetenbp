@@ -38,6 +38,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.MathUtils;
 import javax.time.calendar.LocalTime.Overflow;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -351,23 +352,6 @@ public final class LocalDateTime
         return new LocalDateTime(date, time);
     }
 
-//    //-----------------------------------------------------------------------
-//    // TODO
-//    /**
-//     * Obtains an instance of {@code LocalDateTime} from a set of calendricals.
-//     * <p>
-//     * A calendrical represents some form of date and time information.
-//     * This method combines the input calendricals into a date-time.
-//     * For example, this could be used to convert a date-time in another calendar
-//     * system, or to merge a {@link Year}, {@link MonthDay} and a {@link LocalTime}.
-//     *
-//     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-//     * @return the local date-time, not null
-//     */
-//    public static LocalDateTime ofMerged(Calendrical... calendricals) {
-//        return new CalendricalSet(calendricals).merge().derive(rule());
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDateTime} from a date and time.
@@ -400,25 +384,37 @@ public final class LocalDateTime
         return result;
     }
 
-//    /**
-//     * Obtains an instance of {@code LocalDateTime} from an {@code InstantProvider} using
-//     * an offset to define the correct local time.
-//     * <p>
-//     * In order to calculate the local date-time from an instant the offset is needed.
-//     * This is the same as calling {@code OffsetDateTime.of(instant, offset).toLocalDateTime()}
-//     * but saves an object creation.
-//     *
-//     * @param instantProvider  the instant to convert, not null
-//     * @param offset  the zone offset, not null
-//     * @return the offset date-time, not null
-//     * @throws CalendarConversionException if the instant exceeds the supported date range
-//     */
-//    public static LocalDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
-//        Instant instant = Instant.of(instantProvider);
-//        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-//        long localSeconds = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
-//        return LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code LocalDateTime} from a set of calendricals.
+     * <p>
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a date-time.
+     *
+     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
+     * @return the local date-time, not null
+     * @throws CalendricalException if unable to merge to a local date-time
+     */
+    public static LocalDateTime from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code LocalDateTime} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the local date-time, null if unable to obtain the date-time
+     */
+    static LocalDateTime deriveFrom(CalendricalNormalizer normalized) {
+        LocalDate date = normalized.getDate(true);
+        LocalTime time = normalized.derive(LocalTime.rule());
+        if (date == null || time == null) {
+            return null;
+        }
+        return new LocalDateTime(date, time);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -446,7 +442,7 @@ public final class LocalDateTime
      *
      * @param text  the text to parse such as '2007-12-03T10:15:30', not null
      * @return the parsed local date-time, not null
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(String text) {
         return DateTimeFormatters.isoLocalDateTime().parse(text, rule());
@@ -461,7 +457,7 @@ public final class LocalDateTime
      * @param formatter  the formatter to use, not null
      * @return the parsed local date-time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalException if the text cannot be parsed
+     * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(String text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
@@ -497,40 +493,21 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that this date-time uses, which is the ISO calendar system.
-     *
-     * @return the ISO chronology, not null
-     */
-    public ISOChronology getChronology() {
-        return ISOChronology.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the value of the specified calendrical rule.
      * <p>
      * This method queries the value of the specified calendrical rule.
      * If the value cannot be returned for the rule from this date-time then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) rule).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (T) ISOChronology.INSTANCE;
-            }
-            return null;
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return (T) ((ISODateTimeRule) rule).derive(date, time);
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), date, time, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -655,7 +632,7 @@ public final class LocalDateTime
      * leap year as it is divisible by 400.
      * <p>
      * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO8601 standard.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
      * @return true if the year is leap, false otherwise
      */

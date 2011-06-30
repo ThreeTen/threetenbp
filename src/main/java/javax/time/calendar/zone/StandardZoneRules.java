@@ -96,8 +96,8 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * The map of recent transitions.
      */
-    private final ConcurrentMap<Year, ZoneOffsetTransition[]> lastRulesCache =
-                new ConcurrentHashMap<Year, ZoneOffsetTransition[]>();
+    private final ConcurrentMap<Integer, ZoneOffsetTransition[]> lastRulesCache =
+                new ConcurrentHashMap<Integer, ZoneOffsetTransition[]>();
 
     /**
      * Creates an instance.
@@ -196,7 +196,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         this.savingsLocalTransitions = localTransitionList.toArray(new LocalDateTime[localTransitionList.size()]);
     }
 
-    //-------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Uses a serialization delegate.
      *
@@ -387,7 +387,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * @return the transition array, not null
      */
     private ZoneOffsetTransition[] findTransitionArray(int year) {
-        Year yearObj = Year.of(year);
+        Integer yearObj = year;  // should use Year class, but this saves a class load
         ZoneOffsetTransition[] transArray = lastRulesCache.get(yearObj);
         if (transArray != null) {
             return transArray;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,7 +41,7 @@ package javax.time.calendar;
  * fields which are supported in the vast majority of calendar systems.
  * Subclasses will provide the full set of fields for that calendar system.
  * <p>
- * The default chronology is {@link ISOChronology ISO8601} which is the
+ * The default chronology is {@link ISOChronology ISO-8601} which is the
  * <i>de facto</i> world calendar today.
  * <p>
  * This is an abstract class and must be implemented with care to
@@ -78,21 +78,15 @@ public abstract class Chronology implements Calendrical {
      * If the value cannot be returned for the rule from this offset then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
     @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> rule) {
-        if (rule instanceof ISOCalendricalRule<?>) {
-            if (rule.equals(ISOCalendricalRule.CHRONOLOGY)) {
-                return (T) this;
-            }
-            return null;
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
         }
-        if (rule instanceof ISODateTimeRule) {
-            return null;
-        }
-        return rule.derive(this);
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, null, this, null);
     }
 
     //-----------------------------------------------------------------------

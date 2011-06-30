@@ -60,6 +60,7 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.TimeSource;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
@@ -570,6 +571,40 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // from()
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendricals() {
+        assertEquals(ZonedDateTime.from(ZONE_PARIS, YearMonth.of(2007, 7), DAY_OF_MONTH.field(15), AmPmOfDay.PM, HOUR_OF_AMPM.field(5), MINUTE_OF_HOUR.field(30)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
+        assertEquals(ZonedDateTime.from(ZONE_PARIS, MonthDay.of(7, 15), YEAR.field(2007), LocalTime.of(17, 30)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
+        assertEquals(ZonedDateTime.from(ZONE_PARIS, LocalDate.of(2007, 7, 15), LocalTime.of(17, 30)), ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZONE_PARIS));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        ZonedDateTime.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        ZonedDateTime.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        ZonedDateTime.from();
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_nullArray() {
+        ZonedDateTime.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        ZonedDateTime.from((Calendrical) null);
+    }
+
+    //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleToString")
@@ -585,12 +620,12 @@ public class TestZonedDateTime {
         assertEquals(t.getZone().getID(), zoneId);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_illegalValue() {
         ZonedDateTime.parse("2008-06-32T11:15+01:00[Europe/Paris]");
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_invalidValue() {
         ZonedDateTime.parse("2008-06-31T11:15+01:00[Europe/Paris]");
     }
@@ -640,13 +675,13 @@ public class TestZonedDateTime {
         ZonedDateTime a = ZonedDateTime.of(localDateTime, zone);
         assertSame(a.getOffset(), offset);
         assertSame(a.getZone(), zone);
-        assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
         assertEquals(a.getYear(), localDate.getYear());
         assertEquals(a.getMonthOfYear(), localDate.getMonthOfYear());
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
+        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
         
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
@@ -660,19 +695,6 @@ public class TestZonedDateTime {
         assertEquals(a.toOffsetTime(), OffsetTime.of(localTime, offset));
         assertEquals(a.toOffsetDateTime(), OffsetDateTime.of(localDateTime, offset));
         assertEquals(a.toString(), a.toOffsetDateTime().toString() + "[" + zone.toString() + "]");
-    }
-
-    //-----------------------------------------------------------------------
-    // isLeapYear()
-    //-----------------------------------------------------------------------
-    public void test_isLeapYear() {
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(1999, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), true);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2001, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2002, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2003, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2004, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), true);
-        assertEquals(ZonedDateTime.of(LocalDateTime.of(2005, 1, 1, 0, 0), ZONE_PARIS).isLeapYear(), false);
     }
 
     //-----------------------------------------------------------------------

@@ -90,15 +90,15 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the year field operates.
+     * Gets the rule for {@code Year}.
      * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * This rule is a calendrical rule base on {@code Year}.
+     * The equivalent date-time rule is {@link ISODateTimeRule#YEAR}.
      *
-     * @return the year rule, not null
+     * @return the rule for the year, not null
      */
-    public static DateTimeRule rule() {
-        return YEAR;
+    public static CalendricalRule<Year> rule() {
+        return ExtendedCalendricalRule.YEAR;
     }
 
     //-----------------------------------------------------------------------
@@ -129,7 +129,7 @@ public final class Year
      */
     public static Year now(Clock clock) {
         final LocalDate now = LocalDate.now(clock);  // called once
-        return Year.of(now);
+        return Year.of(now.getYear());
     }
 
     //-----------------------------------------------------------------------
@@ -148,22 +148,39 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year of(int isoYear) {
-        rule().checkValidValue(isoYear);
+        YEAR.checkValidValue(isoYear);
         return new Year(isoYear);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Year} from a calendrical.
+     * Obtains an instance of {@code Year} from a set of calendricals.
      * <p>
-     * This can be used extract the year value directly from any implementation
-     * of {@code Calendrical}, including those in other calendar systems.
+     * A calendrical represents some form of date and time information.
+     * This method combines the input calendricals into a year.
      *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the Year instance, not null
-     * @throws UnsupportedRuleException if the year cannot be obtained
+     * @param calendricals  the calendricals to create a year from, no nulls, not null
+     * @return the year, not null
+     * @throws CalendricalException if unable to merge to a year
      */
-    public static Year of(Calendrical calendrical) {
-        return Year.of(rule().getValueChecked(calendrical).getValidIntValue());
+    public static Year from(Calendrical... calendricals) {
+        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+    }
+
+    /**
+     * Obtains an instance of {@code Year} from the normalized form.
+     * <p>
+     * This internal method is used by the associated rule.
+     *
+     * @param normalized  the normalized calendrical, not null
+     * @return the Year singleton, null if unable to obtain
+     */
+    static Year deriveFrom(CalendricalNormalizer merger) {
+        DateTimeField field = merger.getFieldDerived(YEAR, true);
+        if (field == null) {
+            return null;
+        }
+        return of(field.getValidIntValue());
     }
 
     //-----------------------------------------------------------------------
@@ -194,11 +211,15 @@ public final class Year
      * If the value cannot be returned for the rule from this instance then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, rule().field(year), this, ISOChronology.INSTANCE);
+    @SuppressWarnings("unchecked")
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        if (ruleToDerive == rule()) {
+            return (T) this;
+        }
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, toField());
     }
 
     //-----------------------------------------------------------------------
@@ -216,7 +237,7 @@ public final class Year
      * leap year as it is divisible by 400.
      * <p>
      * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO8601 standard.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
      * @return true if the year is leap, false otherwise
      */
@@ -239,21 +260,6 @@ public final class Year
     }
 
     /**
-     * Returns the next leap year after the current year.
-     * The definition of a leap year is specified in {@link #isLeap()}.
-     *
-     * @return the next leap year after this year, not null
-     * @throws CalendricalException if the maximum year is reached
-     */
-    public Year nextLeap() {
-        Year temp = next();
-        while (!temp.isLeap()) {
-            temp = temp.next();
-        }
-        return temp;
-    }
-
-    /**
      * Returns the previous year.
      *
      * @return the previous year, not null
@@ -264,21 +270,6 @@ public final class Year
             throw new CalendricalRuleException("Year is already at the minimum value", YEAR);
         }
         return of(year - 1);
-    }
-
-    /**
-     * Returns the previous leap year before the current year.
-     * The definition of a leap year is specified in {@link #isLeap()}.
-     *
-     * @return the previous leap year after this year, not null
-     * @throws CalendricalException if the minimum year is reached
-     */
-    public Year previousLeap() {
-        Year temp = previous();
-        while (!temp.isLeap()) {
-            temp = temp.previous();
-        }
-        return temp;
     }
 
     //-----------------------------------------------------------------------
@@ -319,7 +310,7 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        return of(rule().checkValidIntValue(year + years));  // overflow safe
+        return of(YEAR.checkValidIntValue(year + years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
@@ -360,7 +351,7 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        return of(rule().checkValidIntValue(year - years));  // overflow safe
+        return of(YEAR.checkValidIntValue(year - years));  // overflow safe
     }
 
     //-----------------------------------------------------------------------
@@ -374,7 +365,7 @@ public final class Year
      * @return true if the calendrical matches, false otherwise
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
-        DateTimeField calValue = calendrical.get(rule());
+        DateTimeField calValue = calendrical.get(YEAR);
         return calValue != null && calValue.getValue() == getValue();
     }
 
@@ -438,87 +429,6 @@ public final class Year
     public boolean isValidMonthDay(MonthDay monthDay) {
         return monthDay != null && monthDay.isValidYear(year);
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the ISO proleptic year, from MIN_YEAR to MAX_YEAR.
-//     * <p>
-//     * The year 2AD/CE is represented by 2.<br />
-//     * The year 1AD/CE is represented by 1.<br />
-//     * The year 1BC/BCE is represented by 0.<br />
-//     * The year 2BC/BCE is represented by -1.<br />
-//     *
-//     * @return the ISO proleptic year, from MIN_YEAR to MAX_YEAR
-//     */
-//    public int getISOYear() {
-//        return year;
-//    }
-//
-//    /**
-//     * Returns a new {@code Year} instance with a different year.
-//     * <p>
-//     * The year 2AD/CE is represented by 2.<br />
-//     * The year 1AD/CE is represented by 1.<br />
-//     * The year 1BC/BCE is represented by 0.<br />
-//     * The year 2BC/BCE is represented by -1.<br />
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param isoYear  the year to represent, from MIN_YEAR to MAX_YEAR
-//     * @return a new updated Year, not null
-//     */
-//    public Year withISOYear(int isoYear) {
-//        rule().checkValue(isoYear);
-//        return null;
-//    }
-
-//    /**
-//     * Gets the year of era, from 1 to MAX_YEAR, which is used in combination
-//     * with {@link #getEstimatedEra()}.
-//     * <p>
-//     * The year 2, estimated as 2AD/CE is represented by 2.<br />
-//     * The year 1, estimated as 1AD/CE is represented by 1.<br />
-//     * The year 0, estimated as 1BC/BCE is represented by 1.<br />
-//     * The year -1, estimated as 2BC/BCE is represented by 2.<br />
-//     *
-//     * @return the year of era, from 1 to MAX_YEAR
-//     */
-//    public int getYearOfEra() {
-//        // TODO: ISO Year doesn't have an era
-//        return (year > 0 ? year : -(year - 1));
-//    }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the century of era, from 0 to MAX_YEAR / 100.
-//     * <p>
-//     * This method uses a simple definition of century, being the
-//     * ISO year divided by 100, which is the same as the printed ISO year
-//     * without the last two digits.
-//     * <p>
-//     * The value 20 will be returned from 2000 to 2099.<br/>
-//     * The value 19 will be returned from 1900 to 1999.<br/>
-//     * The value 1 will be returned from 100 to 199.<br/>
-//     * The value 0 will be returned from -99 to 99 (199 years in the century).<br/>
-//     * The value -1 will be returned from -100 to 199.<br/>
-//     *
-//     * @return the century of era, from 0 to MAX_YEAR / 100
-//     */
-//    public int getISOCentury() {
-//        return year / 100;
-//    }
-//
-//    /**
-//     * Gets the year of century, from 0 to 99, which is used in combination
-//     * with {@link #getCenturyOfEra()}.
-//     * This is the lower two digits of the ISO year.
-//     *
-//     * @return the year of era, from 0 to 99
-//     */
-//    public int getYearOfISOCentury() {
-//        int yoc = year % 100;
-//        return yoc < 0 ? yoc + 100 : yoc;
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -603,6 +513,18 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this year to an equivalent field.
+     * <p>
+     * The field is based on {@link ISODateTimeRule#YEAR}.
+     *
+     * @return the equivalent year field, not null
+     */
+    public DateTimeField toField() {
+        return YEAR.field(getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this year to another year.
      *
      * @param other  the other year to compare to, not null
@@ -673,7 +595,7 @@ public final class Year
      */
     @Override
     public String toString() {
-        return "Year=" + Integer.toString(year);
+        return Integer.toString(year);
     }
 
 }

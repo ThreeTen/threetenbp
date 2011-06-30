@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.DayOfWeek.TUESDAY;
+import static javax.time.calendar.DayOfWeek.WEDNESDAY;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.ISOPeriodUnit.DECADES;
 import static javax.time.calendar.ISOPeriodUnit.MONTHS;
@@ -72,7 +74,8 @@ public class TestYear {
 
     //-----------------------------------------------------------------------
     public void test_rule() {
-        assertEquals(Year.rule(), YEAR);
+        assertEquals(Year.rule().getName(), "Year");
+        assertEquals(Year.rule().getType(), Year.class);
     }
 
     //-----------------------------------------------------------------------
@@ -126,27 +129,43 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical() {
-        for (int i = -4; i <= 2104; i++) {  // Jan
-            assertEquals(Year.of(LocalDate.of(i, 1, 1)).getValue(), i);
-        }
+    public void test_factory_Calendricals() {
+        assertEquals(Year.from(LocalDate.of(2007, 7, 15)), Year.of(2007));
+        assertEquals(Year.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7)), Year.of(2007));
+        assertEquals(Year.from(YEAR.field(2007)), Year.of(2007));
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_factory_Calendrical_unsupported() {
-        Year.of(DateTimeFields.EMPTY);
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_clash() {
+        Year.from(TUESDAY, WEDNESDAY.toField());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_noDerive() {
+        Year.from(LocalTime.of(12, 30));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_Calendricals_invalid_empty() {
+        Year.from();
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        Year.of((Calendrical) null);
+    public void test_factory_Calendricals_nullArray() {
+        Year.from((Calendrical[]) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_Calendricals_null() {
+        Year.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
-        assertEquals(Year.of(1999).get(YEAR).getValue(), 1999);
+        assertEquals(Year.of(1999).get(Year.rule()), Year.of(1999));
+        assertEquals(Year.of(1999).get(YEAR), YEAR.field(1999));
         assertEquals(Year.of(1999).get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
     }
 
@@ -212,33 +231,6 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // nextLeap()
-    //-----------------------------------------------------------------------
-    public void test_nextLeap() {
-        assertEquals(Year.of(2007).nextLeap(), Year.of(2008));
-        assertEquals(Year.of(2008).nextLeap(), Year.of(2012));
-        assertEquals(Year.of(2009).nextLeap(), Year.of(2012));
-        assertEquals(Year.of(2010).nextLeap(), Year.of(2012));
-        assertEquals(Year.of(2011).nextLeap(), Year.of(2012));
-        assertEquals(Year.of(2012).nextLeap(), Year.of(2016));
-        
-        assertEquals(Year.of(2096).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2097).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2098).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2099).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2100).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2101).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2102).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2103).nextLeap(), Year.of(2104));
-        assertEquals(Year.of(2104).nextLeap(), Year.of(2108));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_nextLeap_max() {
-        Year.of(Year.MAX_YEAR).nextLeap();
-    }
-
-    //-----------------------------------------------------------------------
     // previous()
     //-----------------------------------------------------------------------
     public void test_previous() {
@@ -248,35 +240,6 @@ public class TestYear {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_previous_min() {
         Year.of(Year.MIN_YEAR).previous();
-    }
-
-    //-----------------------------------------------------------------------
-    // previousLeap()
-    //-----------------------------------------------------------------------
-    public void test_previousLeap() {
-        assertEquals(Year.of(2013).previousLeap(), Year.of(2012));
-        assertEquals(Year.of(2012).previousLeap(), Year.of(2008));
-        assertEquals(Year.of(2011).previousLeap(), Year.of(2008));
-        assertEquals(Year.of(2010).previousLeap(), Year.of(2008));
-        assertEquals(Year.of(2009).previousLeap(), Year.of(2008));
-        assertEquals(Year.of(2008).previousLeap(), Year.of(2004));
-        assertEquals(Year.of(2007).previousLeap(), Year.of(2004));
-        
-        assertEquals(Year.of(2105).previousLeap(), Year.of(2104));
-        assertEquals(Year.of(2104).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2103).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2102).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2101).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2100).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2099).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2098).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2097).previousLeap(), Year.of(2096));
-        assertEquals(Year.of(2096).previousLeap(), Year.of(2092));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_previousLeap_min() {
-        Year.of(Year.MIN_YEAR).previousLeap();
     }
 
     //-----------------------------------------------------------------------
@@ -802,6 +765,13 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
+    // toField()
+    //-----------------------------------------------------------------------
+    public void test_toField() {
+        assertEquals(Year.of(2010).toField(), YEAR.field(2010));
+    }
+
+    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo() {
@@ -873,7 +843,7 @@ public class TestYear {
     public void test_toString() {
         for (int i = -4; i <= 2104; i++) {
             Year a = Year.of(i);
-            assertEquals(a.toString(), "Year=" + i);
+            assertEquals(a.toString(), "" + i);
         }
     }
 

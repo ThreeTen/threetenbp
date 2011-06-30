@@ -32,6 +32,7 @@
 package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import javax.time.calendar.ZoneOffset;
 
@@ -47,16 +48,22 @@ import org.testng.annotations.Test;
 public class TestZoneOffsetParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_parse_negativePosition() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        pp.parse(parseContext, "hello", -1);
+    @DataProvider(name="error")
+    Object[][] data_error() {
+        return new Object[][] {
+            {new ZoneOffsetPrinterParser("Z", "+HH:MM:ss"), "hello", -1, IndexOutOfBoundsException.class},
+            {new ZoneOffsetPrinterParser("Z", "+HH:MM:ss"), "hello", 6, IndexOutOfBoundsException.class},
+        };
     }
 
-    @Test(expectedExceptions=IndexOutOfBoundsException.class)
-    public void test_parse_offEndPosition() throws Exception {
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", "+HH:MM:ss");
-        pp.parse(parseContext, "hello", 6);
+    @Test(dataProvider="error")
+    public void test_parse_error(ZoneOffsetPrinterParser pp, String text, int pos, Class<?> expected) {
+        try {
+            pp.parse(parseContext, text, pos);
+        } catch (RuntimeException ex) {
+            assertTrue(expected.isInstance(ex));
+            assertEquals(parseContext.getParsed().size(), 0);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -374,8 +381,8 @@ public class TestZoneOffsetParser extends AbstractTestPrinterParser {
     }
 
     private void assertParsed(ZoneOffset expectedOffset) {
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().size(), expectedOffset == null ? 0 : 1);
-        assertEquals(parseContext.toCalendricalMerger().getInputMap().get(ZoneOffset.rule()), expectedOffset);
+        assertEquals(parseContext.getParsed().size(), expectedOffset == null ? 0 : 1);
+        assertEquals(parseContext.getParsed(ZoneOffset.class), expectedOffset);
     }
 
 }

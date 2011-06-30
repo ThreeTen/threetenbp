@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -314,8 +314,8 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            ThaiBuddhistDate date = merger.derive(ThaiBuddhistDate.rule());
             return date != null ? field(date.getEra().getValue()) : null;
         }
         // TODO: never worked properly, needs to use proper provider
@@ -365,35 +365,35 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         }
         // TODO: min/max years based on era
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            ThaiBuddhistDate date = merger.derive(ThaiBuddhistDate.rule());
             return date != null ? field(date.getYearOfEra()) : null;
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            DateTimeField eraVal = merger.getValue(ThaiBuddhistChronology.eraRule());
+        protected void normalize(CalendricalNormalizer merger) {
+            DateTimeField eraVal = merger.getFieldDerived(ThaiBuddhistChronology.eraRule(), false);
             ThaiBuddhistEra era = (eraVal != null ? ThaiBuddhistEra.of(eraVal.getValidIntValue()) : ThaiBuddhistEra.BUDDHIST);
-            DateTimeField yoeVal = merger.getValue(this);
+            DateTimeField yoeVal = merger.getFieldDerived(this, false);
             // era, year, month, day-of-month
-            DateTimeField moyVal = merger.getValue(ThaiBuddhistChronology.monthOfYearRule());
-            DateTimeField domVal = merger.getValue(ThaiBuddhistChronology.dayOfMonthRule());
+            DateTimeField moyVal = merger.getFieldDerived(ThaiBuddhistChronology.monthOfYearRule(), false);
+            DateTimeField domVal = merger.getFieldDerived(ThaiBuddhistChronology.dayOfMonthRule(), false);
             if (moyVal != null && domVal != null) {
                 ThaiBuddhistDate date = ThaiBuddhistDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.of(moyVal.getValidIntValue()), domVal.getValidIntValue());
-                merger.storeMerged(ThaiBuddhistDate.rule(), date);
-                merger.removeProcessed(ThaiBuddhistChronology.eraRule());
-                merger.removeProcessed(this);
-                merger.removeProcessed(ThaiBuddhistChronology.monthOfYearRule());
-                merger.removeProcessed(ThaiBuddhistChronology.dayOfMonthRule());
+                merger.setDate(date.toLocalDate(), true);
+//                merger.removeProcessed(ThaiBuddhistChronology.eraRule());
+//                merger.removeProcessed(this);
+//                merger.removeProcessed(ThaiBuddhistChronology.monthOfYearRule());
+//                merger.removeProcessed(ThaiBuddhistChronology.dayOfMonthRule());
             }
             // era, year, day-of-year
-            DateTimeField doyVal = merger.getValue(ThaiBuddhistChronology.dayOfYearRule());
+            DateTimeField doyVal = merger.getFieldDerived(ThaiBuddhistChronology.dayOfYearRule(), false);
             if (doyVal != null) {
                 ThaiBuddhistDate date = ThaiBuddhistDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.JANUARY, 1).plusDays(doyVal.getValidIntValue() - 1);
-                merger.storeMerged(ThaiBuddhistDate.rule(), date);
-                merger.removeProcessed(ThaiBuddhistChronology.eraRule());
-                merger.removeProcessed(this);
-                merger.removeProcessed(ThaiBuddhistChronology.yearOfEraRule());
-                merger.removeProcessed(ThaiBuddhistChronology.dayOfYearRule());
+                merger.setDate(date.toLocalDate(), true);
+//                merger.removeProcessed(ThaiBuddhistChronology.eraRule());
+//                merger.removeProcessed(this);
+//                merger.removeProcessed(ThaiBuddhistChronology.yearOfEraRule());
+//                merger.removeProcessed(ThaiBuddhistChronology.dayOfYearRule());
             }
         }
     }
@@ -415,8 +415,8 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            ThaiBuddhistDate date = merger.derive(ThaiBuddhistDate.rule());
             return date != null ? field(date.getMonthOfYear().getValue()) : null;
         }
     }
@@ -458,8 +458,8 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return getValueRange();
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            ThaiBuddhistDate date = merger.derive(ThaiBuddhistDate.rule());
             return date != null ? field(date.getDayOfMonth()) : null;
         }
     }
@@ -492,8 +492,8 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return getValueRange();
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            ThaiBuddhistDate date = merger.derive(ThaiBuddhistDate.rule());
             return date != null ? field(date.getDayOfYear()) : null;
         }
     }
@@ -515,8 +515,8 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        protected DateTimeField derive(Calendrical calendrical) {
-            ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            ThaiBuddhistDate date = merger.derive(ThaiBuddhistDate.rule());
             return date != null ? field(date.getDayOfWeek().getValue()) : null;
         }
     }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
@@ -53,6 +53,16 @@ public final class JapaneseDate
      * The underlying date.
      */
     private final LocalDate date;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for {@code JapaneseDate}.
+     *
+     * @return the rule for the date, never null
+     */
+    public static CalendricalRule<JapaneseDate> rule() {
+        return Rule.INSTANCE;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -164,11 +174,11 @@ public final class JapaneseDate
      * If the value cannot be returned for the rule from this date then
      * {@code null} will be returned.
      *
-     * @param rule  the rule to use, not null
+     * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this, JapaneseChronology.INSTANCE);
+    public <T> T get(CalendricalRule<T> ruleToDerive) {
+        return CalendricalNormalizer.derive(ruleToDerive, rule(), date, null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -584,16 +594,6 @@ public final class JapaneseDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code JapaneseDate}.
-     *
-     * @return the rule for the date, never null
-     */
-    public static CalendricalRule<JapaneseDate> rule() {
-        return Rule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Rule implementation.
      */
     static final class Rule extends CalendricalRule<JapaneseDate> implements Serializable {
@@ -606,15 +606,9 @@ public final class JapaneseDate
             return INSTANCE;
         }
         @Override
-        protected JapaneseDate derive(Calendrical calendrical) {
-            LocalDate ld = calendrical.get(LocalDate.rule());
+        protected JapaneseDate deriveFrom(CalendricalNormalizer merger) {
+            LocalDate ld = merger.getDate(true);
             return ld != null ? JapaneseDate.of(ld) : null;
-        }
-        @Override
-        protected void merge(CalendricalMerger merger) {
-            JapaneseDate date = merger.getValue(this);
-            merger.storeMerged(LocalDate.rule(), date.toLocalDate());
-            merger.removeProcessed(this);
         }
     }
 
