@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -50,7 +51,10 @@ import javax.time.CalendricalException;
  * CalendricalRule is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
- * Subclasses should implement {@code equals}, {@code hashCode} and {@code Serializable}.
+ * Subclasses should implement {@code equals} and {@code hashCode}.
+ * The subclass is also fully responsible for serialization as all fields in this class are
+ * transient. The subclass must use {@code readResolve} to replace the deserialized
+ * class with a valid one created via a constructor.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -59,21 +63,21 @@ import javax.time.CalendricalException;
  *  {@code Number} or {@code Enum}, must be immutable, should be comparable
  */
 public abstract class CalendricalRule<T>
-        implements Comparator<Calendrical> {
-
-    /** The reified class for the generic type. */
-    private final Class<T> type;
-    /** The name of the rule, not null. */
-    private final String name;
+        implements Comparator<Calendrical>, Serializable {
 
     /**
-     * Dummy constructor used in deserialization.
+     * The serialization version.
      */
-    protected CalendricalRule() {
-        // TODO: remove constructor if possible
-        type = null;
-        name = null;
-    }
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The reified class for the generic type.
+     */
+    private final transient Class<T> type;
+    /**
+     * The name of the rule, not null.
+     */
+    private final transient String name;
 
     /**
      * Constructor used to create a rule.

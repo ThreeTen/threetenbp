@@ -47,7 +47,10 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * This class is abstract and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
- * Subclasses should implement {@code equals}, {@code hashCode} and {@code Serializable}.
+ * Subclasses should implement {@code equals} and {@code hashCode}.
+ * The subclass is also fully responsible for serialization as all fields in this class are
+ * transient. The subclass must use {@code readResolve} to replace the deserialized
+ * class with a valid one created via a constructor.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -55,28 +58,31 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         implements Comparable<DateTimeRule> {
 
-    /** The period unit, not null. */
-    private final PeriodUnit periodUnit;
-    /** The period range, not null. */
-    private final PeriodUnit periodRange;
-    /** The outer range of values for the rule. */
-    private final DateTimeRuleRange range;
-    /** The base rule that this rule relates to. */
-    private final DateTimeRule baseRule;
-    /** The normalization rule that this rule relates to. */
-    private final DateTimeRule normalizationRule;
+    /**
+     * The serialization version.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Dummy constructor used in deserialization.
+     * The period unit, not null.
      */
-    protected DateTimeRule() {
-        // TODO: remove constructor if possible
-        periodUnit = null;
-        periodRange = null;
-        range = null;
-        baseRule = null;
-        normalizationRule = null;
-    }
+    private final transient PeriodUnit periodUnit;
+    /**
+     * The period range, not null.
+     */
+    private final transient PeriodUnit periodRange;
+    /**
+     * The outer range of values for the rule.
+     */
+    private final transient DateTimeRuleRange range;
+    /**
+     * The base rule that this rule relates to.
+     */
+    private final transient DateTimeRule baseRule;
+    /**
+     * The normalization rule that this rule relates to.
+     */
+    private final transient DateTimeRule normalizationRule;
 
     /**
      * Creates an instance specifying the minimum and maximum value of the rule.
