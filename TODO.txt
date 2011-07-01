@@ -108,7 +108,6 @@ Periods
 - Between factories
 - rename classes?
 - Formatting/parsing (defer?)
-- PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - Period.toString is not output of state
 
 Matchers/Adjusters
@@ -182,6 +181,9 @@ Document
 -- Exposed long millis
 - Parsing with wrong pattern letter case (month vs minute, doy vs dom) is caught
 - Obtain leap-second rules from TZDB rather than a file
+
+Periods
+- PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory - NO, as doesn't work

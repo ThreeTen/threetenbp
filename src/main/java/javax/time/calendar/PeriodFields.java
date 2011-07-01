@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne, Michael Nascimento Santos
+ * & Jesper Steen Moller
  *
  * All rights reserved.
  *
@@ -159,6 +160,48 @@ public final class PeriodFields
 //        return create(internalMap);
 //    }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains a {@code PeriodFields} from an amount and unit, by extending any
+     * fractional remainder onto smaller units.
+     * <p>
+     * The parameters represent the two parts of a phrase like 'one-and-a-half Hour'.
+     * The fractional parts will be distributed into the smaller units, and rounded down
+     * when no smaller units exist.
+     *
+     * @param fractionalAmount  the amount of create with, positive or negative
+     * @param unit  the period unit, not null
+     * @return the {@code PeriodFields} instance, not null. If the {@code fractionalAmount}
+     * is negative, the amount of the biggest unit will be negative, the rest will be
+     * positive.
+     */
+    public static PeriodFields of(double fractionalAmount, PeriodUnit unit) {
+        checkNotNull(unit, "PeriodUnit must not be null");
+        PeriodUnit currentUnit = unit;
+        double fudge = 0.000000000000001d;
+        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
+        do {
+        	long floor = (long)Math.floor(fractionalAmount + fudge);
+        	if (floor != 0) {
+        		internalMap.put(currentUnit, PeriodField.of(floor, currentUnit));
+        	}
+        	double remainder = fractionalAmount-floor; // will be positive
+        	List<PeriodField> equivalents = currentUnit.getEquivalentPeriods();
+        	if (equivalents.isEmpty()) {
+        		break;
+        	}
+        	PeriodField nextEquivalent = equivalents.get(0);
+			currentUnit = nextEquivalent.getUnit();
+        	fractionalAmount = remainder * nextEquivalent.getAmount();
+        	fudge *= nextEquivalent.getAmount();
+        } while (Math.abs(fractionalAmount) > fudge);
+        if (internalMap.isEmpty()) {
+        	return of(0L, unit);
+        } else {
+        	return create(internalMap);
+        }
+    }
+    
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code PeriodFields} from a {@code PeriodProvider}.

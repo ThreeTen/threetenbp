@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne, Michael Nascimento Santos
+ * & Jesper Steen Moller
  *
  * All rights reserved.
  *
@@ -58,15 +59,19 @@ import org.testng.annotations.Test;
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
+ * @author Jesper Steen Moller
  */
 @Test
 public class TestPeriodFields {
 
+    private static final PeriodUnit MILLENNIA = ISOPeriodUnit.MILLENNIA;
     private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
     private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
+    private static final PeriodUnit QUARTERS = ISOPeriodUnit.QUARTERS;
     private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
     private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
     private static final PeriodUnit HOURS24 = ISOPeriodUnit._24_HOURS;
+    private static final PeriodUnit HOURS12 = ISOPeriodUnit._12_HOURS;
     private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
     private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
     private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
@@ -938,6 +943,57 @@ public class TestPeriodFields {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_remainder_null() {
         fixtureP2Y5D.remainder(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // of(double, PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_of_double_simple() {
+        PeriodFields test = PeriodFields.of(5.0, YEARS);
+        assertEquals(test, PeriodFields.of(5, YEARS));
+    }
+    
+    public void test_of_double_simple_first() {
+        PeriodFields test = PeriodFields.of(5.5, YEARS);
+        assertEquals(test, PeriodFields.of(5, YEARS).with(2, QUARTERS));
+    }
+
+    public void test_of_double_negative() {
+        PeriodFields test = PeriodFields.of(-5.75, YEARS);
+        assertEquals(test, PeriodFields.of(-6, YEARS).with(1, QUARTERS));
+    }
+
+    public void test_of_double_skip_units() {
+        PeriodFields test = PeriodFields.of(5 + 1.0/12, YEARS);
+        assertEquals(test, PeriodFields.of(5, YEARS).with(1, MONTHS));	
+    }
+
+    public void test_of_double_less_than_one() {
+        PeriodFields test = PeriodFields.of(1.0/12, YEARS);
+        assertEquals(test, PeriodFields.of(1, MONTHS));	
+    }
+
+    public void test_of_double_run_out_of_units() {
+        PeriodFields test = PeriodFields.of(0.001, YEARS);
+        assertEquals(test, PeriodFields.of(0, YEARS));	
+    }
+
+    public void test_of_very_small_units() {
+        PeriodFields test = PeriodFields.of(100000.005 + 0.001/12, MILLENNIA);
+        assertEquals(test, PeriodFields.of(100000, MILLENNIA).with(5, YEARS).with(1, MONTHS));
+    }
+
+    public void test_of_24hours_and_smallers() {
+    	double hours24 = 10.0 + ((((23.0 * 60.0) + 59.0) * 60.0) + 59.999999999d) / (60*60*24);
+    	
+        PeriodFields test = PeriodFields.of(hours24, HOURS24);
+        assertEquals(test, PeriodFields.of(10, HOURS24).with(1, HOURS12).with(11, HOURS).with(59, MINUTES).with(59, SECONDS).with(999, MILLIS).with(999, MICROS).with(999, NANOS));
+    }
+
+    public void test_of_double_limits() {
+    	// No, this doesn't test the API, but shows the limits of double precision
+    	double hours24 = 1234.0 + ((((23.0 * 60.0) + 59.0) * 60.0) + 59.999999999d) / (60*60*24);
+    	assertEquals(hours24, 1235.0);
     }
 
     //-----------------------------------------------------------------------
