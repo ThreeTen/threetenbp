@@ -186,22 +186,23 @@ public final class PeriodFields
         		internalMap.put(currentUnit, PeriodField.of(floor, currentUnit));
         	}
         	double remainder = fractionalAmount-floor; // will be positive
-        	List<PeriodField> equivalents = currentUnit.getEquivalentPeriods();
-        	if (equivalents.isEmpty()) {
-        		break;
+        	PeriodField nextEquivalent = currentUnit.getNextEquivalentPeriod();
+        	if (nextEquivalent != null) {
+        		currentUnit = nextEquivalent.getUnit();
+        		fractionalAmount = remainder * nextEquivalent.getAmount();
+        		fudge *= nextEquivalent.getAmount();
+        	} else {
+        		// No smaller units exist, we're done
+        		currentUnit = null;
         	}
-        	PeriodField nextEquivalent = equivalents.get(0);
-			currentUnit = nextEquivalent.getUnit();
-        	fractionalAmount = remainder * nextEquivalent.getAmount();
-        	fudge *= nextEquivalent.getAmount();
-        } while (Math.abs(fractionalAmount) > fudge);
+        } while (currentUnit != null && Math.abs(fractionalAmount) > fudge);
         if (internalMap.isEmpty()) {
         	return of(0L, unit);
         } else {
         	return create(internalMap);
         }
     }
-    
+     
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code PeriodFields} from a {@code PeriodProvider}.

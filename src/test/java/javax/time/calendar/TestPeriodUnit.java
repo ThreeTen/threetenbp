@@ -239,10 +239,20 @@ public class TestPeriodUnit {
         assertEquals(DERIVED2.getEquivalentPeriod(DERIVED1), PeriodField.of(20, DERIVED1));
         assertEquals(DERIVED2.getEquivalentPeriod(DERIVED2), PeriodField.of(1, DERIVED2));
     }
-
+    
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getEquivalentPeriod_null() {
-        BASIC.getEquivalentPeriod((PeriodUnit) null);
+    	BASIC.getEquivalentPeriod((PeriodUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // getNextEquivalentPeriod()
+    //-----------------------------------------------------------------------
+    
+    public void test_getNextEquivalentPeriod() {
+        assertEquals(DERIVED2.getNextEquivalentPeriod(), PeriodField.of(20, DERIVED1));
+        assertEquals(DERIVED1.getNextEquivalentPeriod(), PeriodField.of(30, BASIC));
+        assertEquals(BASIC.getNextEquivalentPeriod(), null);
     }
 
     //-----------------------------------------------------------------------

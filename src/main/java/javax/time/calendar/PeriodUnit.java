@@ -237,6 +237,23 @@ public abstract class PeriodUnit
     }
 
     /**
+     * Returns the period equivalent to this unit in the next largest unit.
+     * <p>
+     * Most units are related to other units.
+     * For example, an hour might be represented as 60 minutes or 3600 seconds.
+     * This method returns the equivalent period in the next largest unit, i.e.
+     * 60 minutes in the given example.
+     *
+     * @return the largest equivalent period, null if no equivalent is known.
+     */
+    public PeriodField getNextEquivalentPeriod() {
+        if (equivalentPeriods.isEmpty()) {
+            return null;
+        }
+        return equivalentPeriods.get(0);
+    }
+
+    /**
      * Checks whether this unit can be converted to the specified unit.
      * <p>
      * Most units are related to other units.
