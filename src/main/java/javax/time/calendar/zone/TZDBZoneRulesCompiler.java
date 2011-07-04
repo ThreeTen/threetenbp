@@ -50,16 +50,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
+import javax.time.MathUtils;
 import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -239,10 +242,15 @@ public final class TZDBZoneRulesCompiler {
             if (srcFiles.isEmpty()) {
                 continue;  // nothing to process
             }
+            File leapSecondsFile = new File(srcDir, "leapseconds");
+            if (! leapSecondsFile.exists()) {
+            	System.out.println("Version " + srcDir.getName() + " does not include leap seconds information.");
+            	leapSecondsFile = null;
+            }
             
             // compile
             String loopVersion = srcDir.getName();
-            TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(loopVersion, srcFiles, verbose);
+            TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(loopVersion, srcFiles, leapSecondsFile, verbose);
             compiler.setDeduplicateMap(deduplicateMap);
             try {
                 // compile
@@ -357,11 +365,15 @@ public final class TZDBZoneRulesCompiler {
     private final SortedMap<String, ZoneRules> builtZones = new TreeMap<String, ZoneRules>();
     /** A map to deduplicate object instances. */
     private Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
+    /** Sorted collection of LeapSecondRules */
+    private final SortedSet<LeapSecondRule> leapSeconds = new TreeSet<LeapSecondRule>();
 
     /** The version to produce. */
     private final String version;
     /** The source files. */
     private final List<File> sourceFiles;
+    /** The leap seconds file. */
+    private final File leapSecondsFile;
     /** The version to produce. */
     private final boolean verbose;
 
@@ -372,9 +384,10 @@ public final class TZDBZoneRulesCompiler {
      * @param sourceFiles  the list of source files, not empty, not null
      * @param verbose  whether to output verbose messages
      */
-    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, boolean verbose) {
+    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, File leapSecondsFile, boolean verbose) {
         this.version = version;
         this.sourceFiles = sourceFiles;
+        this.leapSecondsFile = leapSecondsFile;
         this.verbose = verbose;
     }
 
@@ -387,6 +400,7 @@ public final class TZDBZoneRulesCompiler {
     public SortedMap<String, ZoneRules> compile() throws Exception {
         printVerbose("Compiling TZDB version " + version);
         parseFiles();
+        parseLeapSecondsFile();
         buildZoneRules();
         printVerbose("Compiled TZDB version " + version);
         return builtZones;
@@ -415,6 +429,99 @@ public final class TZDBZoneRulesCompiler {
     }
 
     /**
+     * Parses the leap seconds file.
+     *
+     * @throws Exception if an error occurs
+     */
+    private void parseLeapSecondsFile() throws Exception {
+        printVerbose("Parsing leap second file: " + leapSecondsFile);
+        int lineNumber = 1;
+        String line = null;
+        BufferedReader in = null;
+        
+        try {
+            in = new BufferedReader(new FileReader(leapSecondsFile));
+            for ( ; (line = in.readLine()) != null; lineNumber++) {
+                int index = line.indexOf('#');  // remove comments (doesn't handle # in quotes)
+                if (index >= 0) {
+                    line = line.substring(0, index);
+                }
+                if (line.trim().length() == 0) {  // ignore blank lines
+                    continue;
+                }
+	            leapSeconds.add(parseLeapSecondRule(line));
+            }
+        } catch (Exception ex) {
+            throw new Exception("Failed while processing file '" + leapSecondsFile + "' on line " + lineNumber + " '" + line + "'", ex);
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception ex) {
+                // ignore NPE and IOE
+            }
+        }
+    }
+
+    private LeapSecondRule parseLeapSecondRule(String line) {
+		//    # Leap	YEAR	MONTH	DAY	HH:MM:SS	CORR	R/S
+		//    Leap	1972	Jun	30	23:59:60	+	S
+		//    Leap	1972	Dec	31	23:59:60	+	S
+		//    Leap	1973	Dec	31	23:59:60	+	S
+		//    Leap	1974	Dec	31	23:59:60	+	S
+		//    Leap	1975	Dec	31	23:59:60	+	S
+		//    Leap	1976	Dec	31	23:59:60	+	S
+		//    Leap	1977	Dec	31	23:59:60	+	S
+		//    Leap	1978	Dec	31	23:59:60	+	S
+		//    Leap	1979	Dec	31	23:59:60	+	S
+		//    Leap	1981	Jun	30	23:59:60	+	S
+		//    Leap	1982	Jun	30	23:59:60	+	S
+		//    Leap	1983	Jun	30	23:59:60	+	S
+
+        StringTokenizer st = new StringTokenizer(line, " \t");
+        String first = st.nextToken();
+        if (first.equals("Leap")) {
+            if (st.countTokens() < 6) {
+                printVerbose("Invalid leap second line in file: " + leapSecondsFile + ", line: " + line);
+                throw new IllegalArgumentException("Invalid leap second line");
+            }
+        } else {
+            throw new IllegalArgumentException("Unknown line");
+        }
+
+        int year = Integer.parseInt(st.nextToken());
+        MonthOfYear month = parseMonth(st.nextToken());
+        int dayOfMonth = Integer.parseInt(st.nextToken());
+
+        LeapSecondRule rule = new LeapSecondRule();
+        rule.leapDate = LocalDate.of(year, month, dayOfMonth);
+
+        String timeOfLeapSecond = st.nextToken();
+        if ("23:59:60".equals(timeOfLeapSecond)) { // Special formatting of inserted leap second
+        	rule.leapTime = 86400; // 24 * 60 * 60
+        } else {  // Normal formatting of non-zoned/local time
+        	LocalTime local = LocalTime.parse(timeOfLeapSecond);
+        	rule.leapTime = (int)local.get(ISODateTimeRule.SECOND_OF_DAY).getValidValue();
+        }
+
+        String adjustment = st.nextToken();
+        if (adjustment.equals("+")) {
+        	rule.secondAdjustment = +1;
+        } else if (adjustment.equals("-")) {
+        	rule.secondAdjustment = -1;
+        } else {
+            throw new IllegalArgumentException("Invalid adjustment '"+ adjustment + "' in leap second rule for " + rule.leapDate);
+        }
+        
+        String rollingOrStationary = st.nextToken();
+        if (! "S".equalsIgnoreCase(rollingOrStationary)) {
+        	throw new IllegalArgumentException("Only stationary ('S') leap seconds are supported, not '" + rollingOrStationary + "'");
+        }
+        return rule;
+	}
+
+	/**
      * Parses a source file.
      *
      * @param file  the file being read, not null
@@ -868,6 +975,39 @@ public final class TZDBZoneRulesCompiler {
             }
             return ldt;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Class representing a rule line in the TZDB file.
+     */
+    final class LeapSecondRule implements Comparable<LeapSecondRule> {
+        /** The date of the leap second */
+    	LocalDate leapDate;
+        /** The (UTC) second of the day affected */
+    	int leapTime;
+        /** The adjustment (in seconds), +1 means a second is inserted,
+         * -1 means a second is dropped */
+        int secondAdjustment;
+
+        @Override
+        public boolean equals(Object obj) {
+        	if (! (obj instanceof LeapSecondRule)) return false;
+        	return compareTo((LeapSecondRule)obj) == 0;
+        }
+        
+        public int hashCode() {
+        	return leapTime << 15 + leapDate.hashCode();
+        };
+        
+        @Override
+		public int compareTo(LeapSecondRule other) {
+			int cmp = leapDate.compareTo(other.leapDate);
+	        if (cmp == 0) {
+	            cmp = MathUtils.safeCompare(leapTime, other.leapTime);
+	        }
+			return 0;
+		}
     }
 
 }
