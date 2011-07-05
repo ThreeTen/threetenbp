@@ -403,10 +403,19 @@ public final class TZDBZoneRulesCompiler {
             // file version
             out.writeByte(1);
             // count
-            out.writeInt(leapSeconds.size());
+            out.writeInt(leapSeconds.size() + 1);
+
+            // First line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
+            long initialMjd = LocalDate.of(1972, 1, 1).toModifiedJulianDay();
+            int offset = 10;
+            out.writeLong(initialMjd);
+            out.writeInt(offset);
+
+            // Now treat all the transitions
             for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
                 out.writeLong(rule.getKey().toModifiedJulianDay());
-                out.writeByte(rule.getValue());
+                offset += rule.getValue();
+                out.writeInt(offset);
             }
             out.flush();
             jos.closeEntry();

@@ -42,8 +42,6 @@ import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.time.calendar.LocalDate;
-
 /**
  * System default UTC rules.
  * <p>
@@ -235,22 +233,13 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             }
             int leaps = dis.readInt();
             
-            long[] dates = new long[leaps + 1];
-            int[] offsets = new int[leaps + 1];
-            long[] taiSeconds = new long[leaps + 1];
-            
-            dates[0] = LocalDate.of(1972, 1, 1).toModifiedJulianDay(); // mjd of 1972-01-01
-            int offset = 10;
-            offsets[0] = offset;
-            taiSeconds[0] = tai(dates[0], offset);
+            long[] dates = new long[leaps];
+            int[] offsets = new int[leaps];
+            long[] taiSeconds = new long[leaps];
 
-            for (int i = 1 ; i < leaps + 1; ++i) {
+            for (int i = 0 ; i < leaps; ++i) {
                 long changeMjd = dis.readLong();  // date leap second is added
-                byte adjust = dis.readByte();
-                if (adjust != -1 && adjust != +1) {
-                    throw new CalendricalException("Leap adjustment must be -1 or 1");
-                }
-                offset += adjust; 
+                int offset = dis.readInt();
                 dates[i] = changeMjd;
                 offsets[i] = offset;
                 taiSeconds[i] = tai(changeMjd, offset);
