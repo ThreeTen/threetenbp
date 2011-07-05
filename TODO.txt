@@ -36,7 +36,6 @@ Simple tasks
 - LocalDate constants for MIN_DATE/MAX_DATE (using Year.MIN_VALUE Jan 1/MAX_VALUE Dec 31)
 - LocalTime constants for MIN_TIME/MAX_TIME (using MIN = MIDNIGHT, and MAX = 23:59:59.999999999)
 - LocalDateTime constants for MIN_DATE_TIME/MAX_DATE_TIME (combining min and max from LocalDate/LocalTime)
-- Obtain rules from TZDB rather than a file
 
 
 More complex tasks
@@ -184,6 +183,7 @@ Document
 -- Date holding chronology is complex
 -- Exposed long millis
 - Parsing with wrong pattern letter case (month vs minute, doy vs dom) is caught
+- Obtain leap-second rules from TZDB rather than a file
 
 Not doing
 - Use nanoOfDay rule in LocalTime factory - NO, as doesn't work
