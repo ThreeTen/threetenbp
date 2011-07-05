@@ -418,7 +418,7 @@ public class TestTZDBZoneRulesCompiler {
     static final Method PARSE_LSR;
     static {
         try {
-        	PARSE_LSR = TZDBZoneRulesCompiler.class.getDeclaredMethod("parseLeapSecondRule", String.class);
+            PARSE_LSR = TZDBZoneRulesCompiler.class.getDeclaredMethod("parseLeapSecondRule", String.class);
             PARSE_LSR.setAccessible(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);

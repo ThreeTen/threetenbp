@@ -31,7 +31,6 @@
  */
 package javax.time;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,12 +85,12 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         /** The table of TAI second when the new offset starts. */
         final long[] taiSeconds;
         
-		/**
-		 * @return The modified Julian Date of the newest leap second 
-		 */
-		public long getNewestDate() {
-			return dates[dates.length-1];
-		}
+        /**
+         * @return The modified Julian Date of the newest leap second 
+         */
+        public long getNewestDate() {
+            return dates[dates.length - 1];
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -202,16 +201,16 @@ final class SystemUTCRules extends UTCRules implements Serializable {
      * @throws Exception if an error occurs
      */
     private static Data loadLeapSeconds() {
-    	Data bestData = null;
+        Data bestData = null;
         URL url = null;
         try {
             Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/LeapSecondRules.dat");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
-            	Data candidate = loadLeapSeconds(url);
-            	if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
-            		bestData = candidate;
-            	}
+                Data candidate = loadLeapSeconds(url);
+                if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
+                    bestData = candidate;
+                }
             }
         } catch (Exception ex) {
             throw new RuntimeException("Unable to load time-zone rule data: " + url, ex);
@@ -236,19 +235,19 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             }
             int leaps = dis.readInt();
             
-            long[] dates = new long[leaps+1];
-            int[] offsets = new int[leaps+1];
-            long[] taiSeconds = new long[leaps+1];
+            long[] dates = new long[leaps + 1];
+            int[] offsets = new int[leaps + 1];
+            long[] taiSeconds = new long[leaps + 1];
             
             dates[0] = LocalDate.of(1972, 1, 1).toModifiedJulianDay(); // mjd of 1972-01-01
             int offset = 10;
             offsets[0] = offset;
             taiSeconds[0] = tai(dates[0], offset);
 
-            for (int i = 1 ; i < leaps+1; ++i) {
+            for (int i = 1 ; i < leaps + 1; ++i) {
                 long changeMjd = dis.readLong();  // date leap second is added
                 byte adjust = dis.readByte();
-                if (adjust < -1 || adjust > 1) {
+                if (adjust != -1 && adjust != +1) {
                     throw new CalendricalException("Leap adjustment must be -1 or 1");
                 }
                 offset += adjust; 
