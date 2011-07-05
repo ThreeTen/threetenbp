@@ -181,25 +181,25 @@ public final class PeriodFields
         double fudge = 0.000000000000001d;
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         do {
-        	long floor = (long)Math.floor(fractionalAmount + fudge);
-        	if (floor != 0) {
-        		internalMap.put(currentUnit, PeriodField.of(floor, currentUnit));
-        	}
-        	double remainder = fractionalAmount-floor; // will be positive
-        	PeriodField nextEquivalent = currentUnit.getNextEquivalentPeriod();
-        	if (nextEquivalent != null) {
-        		currentUnit = nextEquivalent.getUnit();
-        		fractionalAmount = remainder * nextEquivalent.getAmount();
-        		fudge *= nextEquivalent.getAmount();
-        	} else {
-        		// No smaller units exist, we're done
-        		currentUnit = null;
-        	}
+            long floor = (long) Math.floor(fractionalAmount + fudge);
+            if (floor != 0) {
+                internalMap.put(currentUnit, PeriodField.of(floor, currentUnit));
+            }
+            double remainder = fractionalAmount - floor; // will be positive
+            PeriodField nextEquivalent = currentUnit.getNextEquivalentPeriod();
+            if (nextEquivalent != null) {
+                currentUnit = nextEquivalent.getUnit();
+                fractionalAmount = remainder * nextEquivalent.getAmount();
+                fudge *= nextEquivalent.getAmount();
+            } else {
+                // No smaller units exist, we're done
+                currentUnit = null;
+            }
         } while (currentUnit != null && Math.abs(fractionalAmount) > fudge);
         if (internalMap.isEmpty()) {
-        	return of(0L, unit);
+            return of(0L, unit);
         } else {
-        	return create(internalMap);
+            return create(internalMap);
         }
     }
      
