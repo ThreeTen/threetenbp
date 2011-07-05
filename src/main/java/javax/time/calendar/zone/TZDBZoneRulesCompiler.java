@@ -50,19 +50,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import javax.time.MathUtils;
 import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -230,6 +227,8 @@ public final class TZDBZoneRulesCompiler {
         Map<String, SortedMap<String, ZoneRules>> allBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
         Set<String> allRegionIds = new TreeSet<String>();
         Set<ZoneRules> allRules = new HashSet<ZoneRules>();
+        SortedMap<LocalDate, Byte> bestLeapSeconds = null;
+
         for (File srcDir : srcDirs) {
             // source files in this directory
             List<File> srcFiles = new ArrayList<File>();
@@ -261,13 +260,22 @@ public final class TZDBZoneRulesCompiler {
                 if (verbose) {
                     System.out.println("Outputting file: " + dstFile);
                 }
-                outputFile(dstFile, loopVersion, builtZones);
+                SortedMap<LocalDate, Byte> parsedLeapSeconds = compiler.getLeapSeconds();
+                outputFile(dstFile, loopVersion, builtZones, parsedLeapSeconds);
                 
                 // create totals
                 allBuiltZones.put(loopVersion, builtZones);
                 allRegionIds.addAll(builtZones.keySet());
                 allRules.addAll(builtZones.values());
                 
+                // Track best possible leap seconds collection
+                if (compiler.getMostRecentLeapSecond() != null) {
+                	// we've got a live one!
+                	if (bestLeapSeconds == null || compiler.getMostRecentLeapSecond().compareTo(bestLeapSeconds.lastKey()) > 0) {
+                		// found the first one, or found a better one
+                		bestLeapSeconds = parsedLeapSeconds;
+                	}
+                }
             } catch (Exception ex) {
                 System.out.println("Failed: " + ex.toString());
                 ex.printStackTrace();
@@ -280,29 +288,57 @@ public final class TZDBZoneRulesCompiler {
         if (verbose) {
             System.out.println("Outputting combined file: " + dstFile);
         }
-        outputFile(dstFile, allBuiltZones, allRegionIds, allRules);
+        outputFile(dstFile, allBuiltZones, allRegionIds, allRules, bestLeapSeconds);
     }
 
     /**
+     * @return The parsed and sorted leap seconds
+     */
+    private SortedMap<LocalDate, Byte> getLeapSeconds() {
+		return leapSeconds;
+	}
+
+    private LocalDate getMostRecentLeapSecond() {
+    	return leapSeconds.isEmpty() ? null : leapSeconds.lastKey();
+    }
+    
+	/**
      * Outputs the file.
      */
-    private static void outputFile(File dstFile, String version, SortedMap<String, ZoneRules> builtZones) {
+    private static void outputFile(File dstFile, String version, SortedMap<String, ZoneRules> builtZones, SortedMap<LocalDate, Byte> leapSeconds) {
         Map<String, SortedMap<String, ZoneRules>> loopAllBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
         loopAllBuiltZones.put(version, builtZones);
         Set<String> loopAllRegionIds = new TreeSet<String>(builtZones.keySet());
         Set<ZoneRules> loopAllRules = new HashSet<ZoneRules>(builtZones.values());
-        outputFile(dstFile, loopAllBuiltZones, loopAllRegionIds, loopAllRules);
+
+        outputFile(dstFile, loopAllBuiltZones, loopAllRegionIds, loopAllRules, leapSeconds);
     }
 
-    /**
+	/**
      * Outputs the file.
      */
-    private static void outputFile(
-            File dstFile, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
+    private static void outputFile(File dstFile, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
+            Set<String> allRegionIds, Set<ZoneRules> allRules, SortedMap<LocalDate, Byte> leapSeconds) {
+        try {
+        	JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
+        	outputTZEntry(jos, allBuiltZones, allRegionIds, allRules);
+        	outputLeapSecondEntry(jos, leapSeconds);
+        	jos.close();
+        } catch (Exception ex) {
+            System.out.println("Failed: " + ex.toString());
+            ex.printStackTrace();
+            System.exit(1);
+        }
+    }
+    
+    /**
+     * Outputs the timezone entry in the JAR file.
+     */
+    private static void outputTZEntry(
+    		JarOutputStream jos, Map<String, SortedMap<String, ZoneRules>> allBuiltZones,
             Set<String> allRegionIds, Set<ZoneRules> allRules) {
         // this format is not publicly specified
         try {
-            JarOutputStream jos = new JarOutputStream(new FileOutputStream(dstFile));
             jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRules.dat"));
             DataOutputStream out = new DataOutputStream(jos);
             
@@ -345,8 +381,35 @@ public final class TZDBZoneRulesCompiler {
                 out.write(bytes);
             }
             
+            out.flush();
             jos.closeEntry();
-            out.close();
+        } catch (Exception ex) {
+            System.out.println("Failed: " + ex.toString());
+            ex.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Outputs the leap second entries in the JAR file.
+     */
+    private static void outputLeapSecondEntry(
+    		JarOutputStream jos, SortedMap<LocalDate, Byte> leapSeconds) {
+        // this format is not publicly specified
+        try {
+            jos.putNextEntry(new ZipEntry("javax/time/LeapSecondRules.dat"));
+            DataOutputStream out = new DataOutputStream(jos);
+            
+            // file version
+            out.writeByte(1);
+            // count
+            out.writeInt(leapSeconds.size());
+            for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
+            	out.writeLong(rule.getKey().toModifiedJulianDay());
+            	out.writeByte(rule.getValue());
+            }
+            out.flush();
+            jos.closeEntry();
         } catch (Exception ex) {
             System.out.println("Failed: " + ex.toString());
             ex.printStackTrace();
@@ -366,7 +429,7 @@ public final class TZDBZoneRulesCompiler {
     /** A map to deduplicate object instances. */
     private Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
     /** Sorted collection of LeapSecondRules */
-    private final SortedSet<LeapSecondRule> leapSeconds = new TreeSet<LeapSecondRule>();
+    private final SortedMap<LocalDate, Byte> leapSeconds = new TreeMap<LocalDate, Byte>();
 
     /** The version to produce. */
     private final String version;
@@ -449,7 +512,8 @@ public final class TZDBZoneRulesCompiler {
                 if (line.trim().length() == 0) {  // ignore blank lines
                     continue;
                 }
-	            leapSeconds.add(parseLeapSecondRule(line));
+	            LeapSecondRule secondRule = parseLeapSecondRule(line);
+				leapSeconds.put(secondRule.leapDate, secondRule.secondAdjustment);
             }
         } catch (Exception ex) {
             throw new Exception("Failed while processing file '" + leapSecondsFile + "' on line " + lineNumber + " '" + line + "'", ex);
@@ -494,31 +558,31 @@ public final class TZDBZoneRulesCompiler {
         MonthOfYear month = parseMonth(st.nextToken());
         int dayOfMonth = Integer.parseInt(st.nextToken());
 
-        LeapSecondRule rule = new LeapSecondRule();
-        rule.leapDate = LocalDate.of(year, month, dayOfMonth);
+        LocalDate leapDate = LocalDate.of(year, month, dayOfMonth);
 
         String timeOfLeapSecond = st.nextToken();
-        if ("23:59:60".equals(timeOfLeapSecond)) { // Special formatting of inserted leap second
-        	rule.leapTime = 86400; // 24 * 60 * 60
-        } else {  // Normal formatting of non-zoned/local time
-        	LocalTime local = LocalTime.parse(timeOfLeapSecond);
-        	rule.leapTime = (int)local.get(ISODateTimeRule.SECOND_OF_DAY).getValidValue();
-        }
 
+        byte adjustmentByte = 0;
         String adjustment = st.nextToken();
         if (adjustment.equals("+")) {
-        	rule.secondAdjustment = +1;
+            if (!("23:59:60".equals(timeOfLeapSecond))) {
+            	new IllegalArgumentException("Leap seconds can only be inserted at 23:59:60 - Date:" + leapDate);
+            }
+            adjustmentByte = +1;
         } else if (adjustment.equals("-")) {
-        	rule.secondAdjustment = -1;
+            if (!("23:59:59".equals(timeOfLeapSecond))) {
+            	new IllegalArgumentException("Leap seconds can only be removed at 23:59:59 - Date:" + leapDate);
+            }
+        	adjustmentByte = -1;
         } else {
-            throw new IllegalArgumentException("Invalid adjustment '"+ adjustment + "' in leap second rule for " + rule.leapDate);
+            throw new IllegalArgumentException("Invalid adjustment '"+ adjustment + "' in leap second rule for " + leapDate);
         }
         
         String rollingOrStationary = st.nextToken();
         if (! "S".equalsIgnoreCase(rollingOrStationary)) {
         	throw new IllegalArgumentException("Only stationary ('S') leap seconds are supported, not '" + rollingOrStationary + "'");
         }
-        return rule;
+        return new LeapSecondRule(leapDate, adjustmentByte);
 	}
 
 	/**
@@ -981,33 +1045,21 @@ public final class TZDBZoneRulesCompiler {
     /**
      * Class representing a rule line in the TZDB file.
      */
-    final class LeapSecondRule implements Comparable<LeapSecondRule> {
-        /** The date of the leap second */
-    	LocalDate leapDate;
-        /** The (UTC) second of the day affected */
-    	int leapTime;
+    final static class LeapSecondRule {
+        /**
+         * Constructor using fields
+         * @param leapDate Date which has gets leap second adjustment (at the end)
+         * @param secondAdjustment +1 or -1 for inserting or dropping a second
+         */
+        public LeapSecondRule(LocalDate leapDate, byte secondAdjustment) {
+			this.leapDate = leapDate;
+			this.secondAdjustment = secondAdjustment;
+		}
+		/** The date of the leap second */
+    	final LocalDate leapDate;
         /** The adjustment (in seconds), +1 means a second is inserted,
          * -1 means a second is dropped */
-        int secondAdjustment;
-
-        @Override
-        public boolean equals(Object obj) {
-        	if (! (obj instanceof LeapSecondRule)) return false;
-        	return compareTo((LeapSecondRule)obj) == 0;
-        }
-        
-        public int hashCode() {
-        	return leapTime << 15 + leapDate.hashCode();
-        };
-        
-        @Override
-		public int compareTo(LeapSecondRule other) {
-			int cmp = leapDate.compareTo(other.leapDate);
-	        if (cmp == 0) {
-	            cmp = MathUtils.safeCompare(leapTime, other.leapTime);
-	        }
-			return 0;
-		}
+        byte secondAdjustment;
     }
 
 }

@@ -32,14 +32,15 @@
 package javax.time;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.time.calendar.LocalDate;
@@ -84,6 +85,13 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         final int[] offsets;
         /** The table of TAI second when the new offset starts. */
         final long[] taiSeconds;
+        
+		/**
+		 * @return The modified Julian Date of the newest leap second 
+		 */
+		public long getNewestDate() {
+			return dates[dates.length-1];
+		}
     }
 
     //-----------------------------------------------------------------------
@@ -186,64 +194,85 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
     }
 
-    //-----------------------------------------------------------------------
+
     /**
-     * Loads the leap seconds from file.
-     * 
-     * @return an array of two arrays - leap seconds dates and amounts
+     * Loads the rules from files in the class loader, often jar files.
+     *
+     * @return the list of loaded rules, not null
+     * @throws Exception if an error occurs
      */
     private static Data loadLeapSeconds() {
-        InputStream in = SystemUTCRules.class.getResourceAsStream("/javax/time/LeapSeconds.txt");
-        if (in == null) {
-            throw new CalendricalException("LeapSeconds.txt resource missing");
-        }
+    	Data bestData = null;
+        URL url = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            Map<Long, Integer> leaps = new TreeMap<Long, Integer>();
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                line = line.trim();
-                if (line.length() > 0 && line.charAt(0) != '#') {
-                    String[] split = line.split(" ");
-                    if (split.length != 2) {
-                        throw new CalendricalException("LeapSeconds.txt has invalid line format");
-                    }
-                    LocalDate date = LocalDate.parse(split[0]);
-                    int offset = Integer.parseInt(split[1]);
-                    leaps.put(date.toModifiedJulianDay(), offset);
-                }
+            Enumeration<URL> en = Thread.currentThread().getContextClassLoader().getResources("javax/time/LeapSecondRules.dat");
+            while (en.hasMoreElements()) {
+                url = en.nextElement();
+            	Data candidate = loadLeapSeconds(url);
+            	if (bestData == null || candidate.getNewestDate() > bestData.getNewestDate()) {
+            		bestData = candidate;
+            	}
             }
-            long[] dates = new long[leaps.size()];
-            int[] offsets = new int[leaps.size()];
-            long[] taiSeconds = new long[leaps.size()];
-            int i = 0;
-            for (Map.Entry<Long, Integer> entry : leaps.entrySet()) {
-                long changeMjd = entry.getKey() - 1;  // subtract one to get date leap second is added
-                int offset = entry.getValue();
-                if (i > 0) {
-                    int adjust = offset - offsets[i - 1];
-                    if (adjust < -1 || adjust > 1) {
-                        throw new CalendricalException("Leap adjustment must be -1 or 1");
-                    }
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to load time-zone rule data: " + url, ex);
+        }
+        return bestData;
+    }
+
+    /**
+     * Loads the leap second rules from a URL, often in a jar file.
+     *
+     * @param url  the jar file to load, not null 
+     * @throws Exception if an error occurs
+     */
+    private static Data loadLeapSeconds(URL url) throws ClassNotFoundException, IOException {
+        boolean throwing = false;
+        InputStream in = null;
+        try {
+            in = url.openStream();
+            DataInputStream dis = new DataInputStream(in);
+            if (dis.readByte() != 1) {
+                throw new StreamCorruptedException("File format not recognised");
+            }
+            int leaps = dis.readInt();
+            
+            long[] dates = new long[leaps+1];
+            int[] offsets = new int[leaps+1];
+            long[] taiSeconds = new long[leaps+1];
+            
+            dates[0] = LocalDate.of(1972, 1, 1).toModifiedJulianDay(); // mjd of 1972-01-01
+            int offset = 10;
+            offsets[0] = offset;
+            taiSeconds[0] = tai(dates[0], offset);
+
+            for (int i = 1 ; i < leaps+1; ++i) {
+                long changeMjd = dis.readLong();  // date leap second is added
+                byte adjust = dis.readByte();
+                if (adjust < -1 || adjust > 1) {
+                    throw new CalendricalException("Leap adjustment must be -1 or 1");
                 }
+                offset += adjust; 
                 dates[i] = changeMjd;
                 offsets[i] = offset;
-                taiSeconds[i++] = tai(changeMjd, offset);
+                taiSeconds[i] = tai(changeMjd, offset);
             }
             return new Data(dates, offsets, taiSeconds);
         } catch (IOException ex) {
-            try {
-                in.close();
-            } catch (IOException ignored) {
-                // ignore
+            throwing = true;
+            throw ex;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    if (throwing == false) {
+                        throw ex;
+                    }
+                }
             }
-            throw new CalendricalException("Exception reading LeapSeconds.txt", ex);
         }
     }
-
+    
     /**
      * Gets the TAI seconds for the start of the day following the day passed in.
      * 

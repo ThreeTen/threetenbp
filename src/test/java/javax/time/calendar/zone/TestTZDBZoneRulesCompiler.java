@@ -387,7 +387,6 @@ public class TestTZDBZoneRulesCompiler {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t1972 Jun\t30   23:59:60 +   S");
         assertEquals(lsr.leapDate, LocalDate.of(1972, MonthOfYear.JUNE, 30));
-        assertEquals(lsr.leapTime, 86400);
         assertEquals(lsr.secondAdjustment, +1);
     }
     
@@ -395,26 +394,25 @@ public class TestTZDBZoneRulesCompiler {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:59 - S");
         assertEquals(lsr.leapDate, LocalDate.of(2009, MonthOfYear.MAY, 1));
-        assertEquals(lsr.leapTime, 86399);
         assertEquals(lsr.secondAdjustment, -1);
     }
     
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseLeapSecondRule_too_short() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t2009 May\t1  23:59:60 S");
+        parseLeapSecondRule(test, "Leap\t2009 May\t1  23:59:60 S");
     }
     
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseLeapSecondRule_bad_adjustment() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 % S");
+        parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 % S");
     }
     
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseLeapSecondRule_rolling() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
-        LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 - R");
+        parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 - R");
     }
     
     static final Method PARSE_LSR;
