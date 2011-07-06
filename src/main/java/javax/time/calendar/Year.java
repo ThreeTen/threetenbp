@@ -229,7 +229,7 @@ public final class Year
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Constructor.
@@ -657,4 +657,5 @@ public final class Year
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
+
 }

@@ -38,10 +38,6 @@
 - OffsetTime.compareTo fixed
 - OffsetDateTime.compareTo doesn't handle nanos
 - Add OffsetDate.atTime(OffsetTime)
-- LocalDate constants for MIN_DATE/MAX_DATE (using Year.MIN_VALUE Jan 1/MAX_VALUE Dec 31)
-- LocalTime constants for MIN_TIME/MAX_TIME (using MIN = MIDNIGHT, and MAX = 23:59:59.999999999)
-- LocalDateTime constants for MIN_DATE_TIME/MAX_DATE_TIME (combining min and max from LocalDate/LocalTime)
-- Year.parse(String), Year.parse(String,DateTimeFormatter) and toString(DateTimeFormatter)
 - Ensure date-time plus/minus uses long not int
 - Fix Period.of(Duration)
 - Add LocalTime/OffsetTime/LocalDateTime/OffsetDateTime/ZonedDateTime.plus/minus(Duration)
@@ -89,6 +85,10 @@
 - Remove getChronology() in most places, Use get(Chronology.rule()) instead
 - Rewrite merging
 - Factories from Calendrical varargs
+- LocalDate constants for MIN_DATE/MAX_DATE (using Year.MIN_VALUE Jan 1/MAX_VALUE Dec 31)
+- LocalTime constants for MIN_TIME/MAX_TIME (using MIN = MIDNIGHT, and MAX = 23:59:59.999999999)
+- LocalDateTime constants for MIN_DATE_TIME/MAX_DATE_TIME (combining min and max from LocalDate/LocalTime)
+- Year.parse(String), Year.parse(String,DateTimeFormatter) and toString(DateTimeFormatter)
 
 0.6.3
 ===============================================================================
