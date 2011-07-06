@@ -54,7 +54,6 @@
         <pathelement location="${extra.test.classes}" />
         <pathelement location="${oracle.test.classes}" />
         <pathelement location="${ojdk.test.classes}" />
-        <pathelement location="src/main/resources"/>
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
         <fileset dir="lib/test">
             <include name="**/*.jar" />
@@ -213,7 +212,6 @@
     <target name="jar-core" depends="compile-core">
         <jar jarfile="${build}/${jarCoreName}">
           <fileset dir="${core.main.classes}"/>
-          <fileset dir="src/main/resources"/>
         </jar>
     </target>
 

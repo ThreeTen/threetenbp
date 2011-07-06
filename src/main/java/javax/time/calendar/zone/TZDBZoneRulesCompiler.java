@@ -92,6 +92,10 @@ public final class TZDBZoneRulesCompiler {
             .optionalStart().appendLiteral(':').appendValue(SECOND_OF_MINUTE, 2)
             .toFormatter();
     }
+    /**
+     * Constant for MJD 1972-01-01.
+     */
+    private static final long MJD_1972_01_01 = 41317L;
 
     /**
      * Reads a set of TZDB files and builds a single combined data file.
@@ -395,9 +399,8 @@ public final class TZDBZoneRulesCompiler {
             out.writeInt(leapSeconds.size() + 1);
             
             // first line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
-            long initialMjd = LocalDate.of(1972, 1, 1).toModifiedJulianDay();
             int offset = 10;
-            out.writeLong(initialMjd);
+            out.writeLong(MJD_1972_01_01);
             out.writeInt(offset);
             
             // now treat all the transitions

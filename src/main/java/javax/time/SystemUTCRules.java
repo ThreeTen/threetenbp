@@ -213,6 +213,11 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         } catch (Exception ex) {
             throw new RuntimeException("Unable to load time-zone rule data: " + url, ex);
         }
+        if (bestData == null) {
+            // no data on classpath, but we allow manual registration of leap seconds
+            // setup basic known data - MJD 1972-01-01 is 41317L, where offset was 10
+            bestData = new Data(new long[] {41317L}, new int[] {10}, new long[] {tai(41317L, 10)});
+        }
         return bestData;
     }
 
