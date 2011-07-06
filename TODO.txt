@@ -32,6 +32,9 @@
 
 Simple tasks
 ------------
+- don't use Local Mean Time - add a flag to the TZDB compiler to determine whether it uses
+  LMT or not. LMT is the estimated time before time-zones were introduced. The JDK removes LMT times,
+  and we should have a flag to do the same. Need to check exact way in which JDK removes LMT!
 
 
 More complex tasks
@@ -83,7 +86,6 @@ Date/Time formatting
 Time zones
 - Use WET/CET/EET as valid short abbreviations?
 - Promote TimeDefinition to top-level type
-- don't use Local Mean Time (or anything before 1900?)
 - SPI for zone names
 # some zones have transitions where only the name changes - America/Resolute
 # "resolvers need to use correct rules" what does this mean?
