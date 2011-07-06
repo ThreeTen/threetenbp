@@ -383,38 +383,39 @@ public class TestTZDBZoneRulesCompiler {
         }
     }
 
+    //-----------------------------------------------------------------------
     public void test_parseLeapSecondRule_at_midnight() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t1972 Jun\t30   23:59:60 +   S");
         assertEquals(lsr.leapDate, LocalDate.of(1972, MonthOfYear.JUNE, 30));
         assertEquals(lsr.secondAdjustment, +1);
     }
-    
+
     public void test_parseLeapSecondRule_just_before_midnight() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         LeapSecondRule lsr = parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:59 - S");
         assertEquals(lsr.leapDate, LocalDate.of(2009, MonthOfYear.MAY, 1));
         assertEquals(lsr.secondAdjustment, -1);
     }
-    
+
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseLeapSecondRule_too_short() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseLeapSecondRule(test, "Leap\t2009 May\t1  23:59:60 S");
     }
-    
+
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseLeapSecondRule_bad_adjustment() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 % S");
     }
-    
+
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_parseLeapSecondRule_rolling() throws Exception {
         TZDBZoneRulesCompiler test = new TZDBZoneRulesCompiler("2010c", new ArrayList<File>(), null, false);
         parseLeapSecondRule(test, "Leap\t2009 May\t1   23:59:60 - R");
     }
-    
+
     static final Method PARSE_LSR;
     static {
         try {

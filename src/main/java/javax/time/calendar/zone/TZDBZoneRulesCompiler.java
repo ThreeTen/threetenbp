@@ -228,7 +228,7 @@ public final class TZDBZoneRulesCompiler {
         Set<String> allRegionIds = new TreeSet<String>();
         Set<ZoneRules> allRules = new HashSet<ZoneRules>();
         SortedMap<LocalDate, Byte> bestLeapSeconds = null;
-
+        
         for (File srcDir : srcDirs) {
             // source files in this directory
             List<File> srcFiles = new ArrayList<File>();
@@ -253,14 +253,15 @@ public final class TZDBZoneRulesCompiler {
             compiler.setDeduplicateMap(deduplicateMap);
             try {
                 // compile
-                SortedMap<String, ZoneRules> builtZones = compiler.compile();
+                compiler.compile();
+                SortedMap<String, ZoneRules> builtZones = compiler.getZones();
+                SortedMap<LocalDate, Byte> parsedLeapSeconds = compiler.getLeapSeconds();
                 
                 // output version-specific file
                 File dstFile = new File(dstDir, "jsr-310-TZDB-" + loopVersion + ".jar");
                 if (verbose) {
                     System.out.println("Outputting file: " + dstFile);
                 }
-                SortedMap<LocalDate, Byte> parsedLeapSeconds = compiler.getLeapSeconds();
                 outputFile(dstFile, loopVersion, builtZones, parsedLeapSeconds);
                 
                 // create totals
@@ -268,7 +269,7 @@ public final class TZDBZoneRulesCompiler {
                 allRegionIds.addAll(builtZones.keySet());
                 allRules.addAll(builtZones.values());
                 
-                // Track best possible leap seconds collection
+                // track best possible leap seconds collection
                 if (compiler.getMostRecentLeapSecond() != null) {
                     // we've got a live one!
                     if (bestLeapSeconds == null || compiler.getMostRecentLeapSecond().compareTo(bestLeapSeconds.lastKey()) > 0) {
@@ -292,17 +293,6 @@ public final class TZDBZoneRulesCompiler {
     }
 
     /**
-     * @return The parsed and sorted leap seconds
-     */
-    private SortedMap<LocalDate, Byte> getLeapSeconds() {
-        return leapSeconds;
-    }
-
-    private LocalDate getMostRecentLeapSecond() {
-        return leapSeconds.isEmpty() ? null : leapSeconds.lastKey();
-    }
-    
-    /**
      * Outputs the file.
      */
     private static void outputFile(File dstFile, String version, SortedMap<String, ZoneRules> builtZones, SortedMap<LocalDate, Byte> leapSeconds) {
@@ -310,7 +300,6 @@ public final class TZDBZoneRulesCompiler {
         loopAllBuiltZones.put(version, builtZones);
         Set<String> loopAllRegionIds = new TreeSet<String>(builtZones.keySet());
         Set<ZoneRules> loopAllRules = new HashSet<ZoneRules>(builtZones.values());
-
         outputFile(dstFile, loopAllBuiltZones, loopAllRegionIds, loopAllRules, leapSeconds);
     }
 
@@ -330,7 +319,7 @@ public final class TZDBZoneRulesCompiler {
             System.exit(1);
         }
     }
-    
+
     /**
      * Outputs the timezone entry in the JAR file.
      */
@@ -404,14 +393,14 @@ public final class TZDBZoneRulesCompiler {
             out.writeByte(1);
             // count
             out.writeInt(leapSeconds.size() + 1);
-
-            // First line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
+            
+            // first line is fixed in UTC-TAI leap second system, always 10 seconds at 1972-01-01
             long initialMjd = LocalDate.of(1972, 1, 1).toModifiedJulianDay();
             int offset = 10;
             out.writeLong(initialMjd);
             out.writeInt(offset);
-
-            // Now treat all the transitions
+            
+            // now treat all the transitions
             for (Map.Entry<LocalDate, Byte> rule : leapSeconds.entrySet()) {
                 out.writeLong(rule.getKey().toModifiedJulianDay());
                 offset += rule.getValue();
@@ -465,17 +454,44 @@ public final class TZDBZoneRulesCompiler {
 
     /**
      * Compile the rules file.
+     * <p>
+     * Use {@link #getZones()} and {@link #getLeapSeconds()} to retrieve the parsed data.
      *
-     * @return the map of region ID to rules, not null
      * @throws Exception if an error occurs
      */
-    public SortedMap<String, ZoneRules> compile() throws Exception {
+    public void compile() throws Exception {
         printVerbose("Compiling TZDB version " + version);
         parseFiles();
         parseLeapSecondsFile();
         buildZoneRules();
         printVerbose("Compiled TZDB version " + version);
+    }
+
+    /**
+     * Gets the parsed zone rules.
+     * 
+     * @return the parsed zone rules, not null
+     */
+    public SortedMap<String, ZoneRules> getZones() {
         return builtZones;
+    }
+
+    /**
+     * Gets the parsed leap seconds.
+     * 
+     * @return the parsed and sorted leap seconds, not null
+     */
+    public SortedMap<LocalDate, Byte> getLeapSeconds() {
+        return leapSeconds;
+    }
+
+    /**
+     * Gets the most recent leap second.
+     * 
+     * @return the most recent leap second, null if none
+     */
+    private LocalDate getMostRecentLeapSecond() {
+        return leapSeconds.isEmpty() ? null : leapSeconds.lastKey();
     }
 
     /**
@@ -551,7 +567,7 @@ public final class TZDBZoneRulesCompiler {
         //    Leap    1981    Jun    30    23:59:60    +    S
         //    Leap    1982    Jun    30    23:59:60    +    S
         //    Leap    1983    Jun    30    23:59:60    +    S
-
+        
         StringTokenizer st = new StringTokenizer(line, " \t");
         String first = st.nextToken();
         if (first.equals("Leap")) {
@@ -562,15 +578,13 @@ public final class TZDBZoneRulesCompiler {
         } else {
             throw new IllegalArgumentException("Unknown line");
         }
-
+        
         int year = Integer.parseInt(st.nextToken());
         MonthOfYear month = parseMonth(st.nextToken());
         int dayOfMonth = Integer.parseInt(st.nextToken());
-
         LocalDate leapDate = LocalDate.of(year, month, dayOfMonth);
-
         String timeOfLeapSecond = st.nextToken();
-
+        
         byte adjustmentByte = 0;
         String adjustment = st.nextToken();
         if (adjustment.equals("+")) {

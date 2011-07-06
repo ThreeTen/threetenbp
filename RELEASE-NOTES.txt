@@ -32,8 +32,6 @@
 
 0.7
 ===============================================================================
-- SystemUTCRules now load leap second data from binary JAR entry
-- TZDBZoneRulesCompiler now also compiles leap second information from TZDB files
 - Add OffsetDate.toInstant()
 - OffsetDate.isAfter/Before takes into account offset
 - OffsetTime.isAfter/isBefore calculation
@@ -91,6 +89,8 @@
 - LocalTime constants for MIN_TIME/MAX_TIME (using MIN = MIDNIGHT, and MAX = 23:59:59.999999999)
 - LocalDateTime constants for MIN_DATE_TIME/MAX_DATE_TIME (combining min and max from LocalDate/LocalTime)
 - Year.parse(String), Year.parse(String,DateTimeFormatter) and toString(DateTimeFormatter)
+- SystemUTCRules now load leap second data from binary JAR entry
+- TZDBZoneRulesCompiler now also compiles leap second information from TZDB files
 
 0.6.3
 ===============================================================================

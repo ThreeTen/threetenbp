@@ -191,7 +191,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
         return UTCInstant.ofModifiedJulianDay(mjd, nod, this);
     }
 
-
+    //-----------------------------------------------------------------------
     /**
      * Loads the rules from files in the class loader, often jar files.
      *
@@ -232,11 +232,9 @@ final class SystemUTCRules extends UTCRules implements Serializable {
                 throw new StreamCorruptedException("File format not recognised");
             }
             int leaps = dis.readInt();
-            
             long[] dates = new long[leaps];
             int[] offsets = new int[leaps];
             long[] taiSeconds = new long[leaps];
-
             for (int i = 0 ; i < leaps; ++i) {
                 long changeMjd = dis.readLong();  // date leap second is added
                 int offset = dis.readInt();
@@ -260,7 +258,7 @@ final class SystemUTCRules extends UTCRules implements Serializable {
             }
         }
     }
-    
+
     /**
      * Gets the TAI seconds for the start of the day following the day passed in.
      * 

@@ -6,7 +6,6 @@
 	<classpathentry kind="src" output="build/test" path="src-openjdk/test/java"/>
 	<classpathentry kind="src" path="src-oracle/main/java"/>
 	<classpathentry kind="src" output="build/test" path="src-oracle/test/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src-extra/main/java"/>
 	<classpathentry kind="src" path="src-extra/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
