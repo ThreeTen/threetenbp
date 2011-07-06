@@ -95,8 +95,8 @@ public class TestLocalDateTime extends AbstractTest {
 
     @BeforeMethod
     public void setUp() {
-        MAX_DATE_TIME = LocalDateTime.of(Year.MAX_YEAR, 12, 31, 0, 0);
-        MIN_DATE_TIME = LocalDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0);
+        MAX_DATE_TIME = LocalDateTime.MAX_DATE_TIME;
+        MIN_DATE_TIME = LocalDateTime.MIN_DATE_TIME;
         MAX_INSTANT = MAX_DATE_TIME.atOffset(ZoneOffset.UTC).toInstant();
         MIN_INSTANT = MIN_DATE_TIME.atOffset(ZoneOffset.UTC).toInstant();
     }
@@ -140,9 +140,22 @@ public class TestLocalDateTime extends AbstractTest {
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
-            assertTrue(Modifier.isPrivate(field.getModifiers()));
-            assertTrue(Modifier.isFinal(field.getModifiers()));
+            if (Modifier.isStatic(field.getModifiers())) {
+                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+            } else {
+                assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
+                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+            }
         }
+    }
+
+    //-----------------------------------------------------------------------
+    public void constant_MIN_DATE_TIME() {
+        check(LocalDateTime.MIN_DATE_TIME, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
+    }
+
+    public void constant_MAX_DATE_TIME() {
+        check(LocalDateTime.MAX_DATE_TIME, Year.MAX_YEAR, 12, 31,  23, 59, 59, 999999999);
     }
 
     //-----------------------------------------------------------------------

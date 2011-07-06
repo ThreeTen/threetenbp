@@ -101,8 +101,8 @@ public class TestLocalDate extends AbstractTest {
     public void setUp() {
         TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
         
-        LocalDate max = LocalDate.of(Year.MAX_YEAR, 12, 31);
-        LocalDate min = LocalDate.of(Year.MIN_YEAR, 1, 1);
+        LocalDate max = LocalDate.MAX_DATE;
+        LocalDate min = LocalDate.MIN_DATE;
         MAX_VALID_EPOCHDAYS = max.toEpochDay();
         MIN_VALID_EPOCHDAYS = min.toEpochDay();
         MAX_VALID_MJDAYS = max.toModifiedJulianDay();
@@ -140,8 +140,12 @@ public class TestLocalDate extends AbstractTest {
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
-            assertTrue(Modifier.isPrivate(field.getModifiers()));
-            assertTrue(Modifier.isFinal(field.getModifiers()));
+            if (Modifier.isStatic(field.getModifiers())) {
+                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+            } else {
+                assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
+                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
+            }
         }
     }
 
@@ -150,6 +154,15 @@ public class TestLocalDate extends AbstractTest {
         assertEquals(test_2008_02_29.getYear(), y);
         assertEquals(test_2008_02_29.getMonthOfYear().getValue(), m);
         assertEquals(test_2008_02_29.getDayOfMonth(), d);
+    }
+
+    //-----------------------------------------------------------------------
+    public void constant_MIN_DATE_TIME() {
+        check(LocalDate.MIN_DATE, Year.MIN_YEAR, 1, 1);
+    }
+
+    public void constant_MAX_DATE_TIME() {
+        check(LocalDate.MAX_DATE, Year.MAX_YEAR, 12, 31);
     }
 
     //-----------------------------------------------------------------------

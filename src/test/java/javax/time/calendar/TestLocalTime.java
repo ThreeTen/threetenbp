@@ -152,6 +152,18 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    public void constant_MIN_TIME() {
+        check(LocalTime.MIN_TIME, 0, 0, 0, 0);
+        assertSame(LocalTime.MIN_TIME, LocalTime.of(0, 0));
+    }
+
+    public void constant_MAX_TIME() {
+        check(LocalTime.MAX_TIME, 23, 59, 59, 999999999);
+        assertSame(LocalTime.MIDDAY, LocalTime.MIDDAY);
+        assertSame(LocalTime.MIDDAY, LocalTime.of(12, 0));
+    }
+
+    //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
     @Test

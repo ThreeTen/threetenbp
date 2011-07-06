@@ -79,6 +79,15 @@ public final class LocalDate
     private static final long serialVersionUID = 1L;
 
     /**
+     * Constant for the minimum date on the proleptic ISO calendar system, January 1st in -999,999,999.
+     */
+    public static final LocalDate MIN_DATE = LocalDate.of(Year.MIN_YEAR, 1, 1);
+    /**
+     * Constant for the maximum date on the proleptic ISO calendar system, December 31st in 999,999,999.
+     */
+    public static final LocalDate MAX_DATE = LocalDate.of(Year.MAX_YEAR, 12, 31);
+    
+    /**
      * The year.
      */
     private final int year;

@@ -64,6 +64,15 @@ public final class LocalDateTime
                     CalendricalMatcher, DateAdjuster, TimeAdjuster, Serializable {
 
     /**
+     * Constant for the local date and time of midnight of the minimum date.
+     */
+    public static final LocalDateTime MIN_DATE_TIME = LocalDateTime.of(LocalDate.MIN_DATE, LocalTime.MIN_TIME);
+    /**
+     * Constant for the local date and time just before midnight, 23:59:59.999999999 in the maximum date.
+     */
+    public static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(LocalDate.MAX_DATE, LocalTime.MAX_TIME);
+
+    /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;

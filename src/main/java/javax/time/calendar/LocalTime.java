@@ -70,6 +70,14 @@ public final class LocalTime
     /**
      * Constant for the local time of midnight, 00:00.
      */
+    public static final LocalTime MIN_TIME;
+    /**
+     * Constant for the local time just before midnight, 23:59:59.999999999.
+     */
+    public static final LocalTime MAX_TIME;
+    /**
+     * Constant for the local time of midnight, 00:00.
+     */
     public static final LocalTime MIDNIGHT;
     /**
      * Constant for the local time of midday, 12:00.
@@ -85,6 +93,8 @@ public final class LocalTime
         }
         MIDNIGHT = HOURS[0];
         MIDDAY = HOURS[12];
+        MIN_TIME = HOURS[0];
+        MAX_TIME = new LocalTime(23, 59, 59, 999999999);
     }
 
     /**
