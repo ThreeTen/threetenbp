@@ -38,6 +38,10 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatter;
+import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
  * A year in the ISO-8601 calendar system, such as {@code 2007}.
@@ -82,6 +86,12 @@ public final class Year
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Parser.
+     */
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+        .toFormatter();
 
     /**
      * The year being represented.
@@ -183,6 +193,43 @@ public final class Year
         return of(field.getValidIntValue());
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code Year} from a text string such as {@code 2007}.
+     * <p>
+     * The following format is accepted in ASCII:
+     * <ul>
+     * <li>{year}
+     * </ul>
+     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
+     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
+     * Negative years are allowed, but not negative zero.
+     * <p>
+     *
+     * @param text  the text to parse such as '2007', not null
+     * @return the parsed year, not null
+     * @throws CalendricalParseException if the text cannot be parsed
+     */
+    public static Year parse(String text) {
+        return PARSER.parse(text, rule());
+    }
+
+    /**
+     * Obtains an instance of {@code Year} from a text string using a specific formatter.
+     * <p>
+     * The text is parsed using the formatter, returning a year.
+     *
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
+     * @return the parsed year, not null
+     * @throws UnsupportedOperationException if the formatter cannot parse
+     * @throws CalendricalParseException if the text cannot be parsed
+     */
+    public static Year parse(String text, DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.parse(text, rule());
+    }
+    
     //-----------------------------------------------------------------------
     /**
      * Constructor.
@@ -598,4 +645,16 @@ public final class Year
         return Integer.toString(year);
     }
 
+    /**
+     * Outputs this year as a {@code String} using the formatter.
+     *
+     * @param formatter  the formatter to use, not null
+     * @return the formatted year string, not null
+     * @throws UnsupportedOperationException if the formatter cannot print
+     * @throws CalendricalException if an error occurs during printing
+     */
+    public String toString(DateTimeFormatter formatter) {
+        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        return formatter.print(this);
+    }
 }

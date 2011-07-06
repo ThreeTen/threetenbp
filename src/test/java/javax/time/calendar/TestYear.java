@@ -40,14 +40,18 @@ import static javax.time.calendar.ISOPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -847,4 +851,105 @@ public class TestYear {
         }
     }
 
+    //-----------------------------------------------------------------------
+    @DataProvider(name="badParseData")
+    Object[][] provider_badParseData() {
+        return new Object[][] {
+                {"", 0},
+                {"-00", 1},
+                {"--01-0", 1},
+                {"A01", 0},
+                {"200", 0},
+                {"2009/12", 4},
+                
+                {"-0000-10", 0},
+                {"-12345678901-10", 11},
+                {"+1-10", 1},
+                {"+12-10", 1},
+                {"+123-10", 1},
+                {"+1234-10", 0},
+                {"12345-10", 0},
+                {"+12345678901-10", 11},
+        };
+    }
+
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+    public void factory_parse_fail(String text, int pos) {
+        try {
+            Year.parse(text);
+            fail(String.format("Parse should have failed for %s at position %d", text, pos));
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getParsedString(), text);
+            assertEquals(ex.getErrorIndex(), pos);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        Year.parse(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void factory_parse_formatter() {
+        Year t = Year.parse("2010 12", DateTimeFormatters.pattern("yyyy MM"));
+        assertEquals(t, Year.of(2010));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullText() {
+        Year.parse((String) null, DateTimeFormatters.basicIsoDate());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_formatter_nullFormatter() {
+        Year.parse("2010", null);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="goodParseData")
+    Object[][] provider_goodParseData() {
+        return new Object[][] {
+                {"0000", Year.of(0)},
+                {"9999", Year.of(9999)},
+                {"2000", Year.of(2000)},
+                
+                {"+12345678", Year.of(12345678)},
+                {"+123456", Year.of(123456)},
+                {"-1234", Year.of(-1234)},
+                {"-12345678", Year.of(-12345678)},
+                
+                {"+" + Year.MAX_YEAR, Year.of(Year.MAX_YEAR)},
+                {"" + Year.MIN_YEAR, Year.of(Year.MIN_YEAR)},
+        };
+    }
+
+    @Test(dataProvider="goodParseData")
+    public void factory_parse_success(String text, Year expected) {
+        Year year = Year.parse(text);
+        assertEquals(year, expected);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString(DateTimeFormatter)
+    //-----------------------------------------------------------------------
+    public void test_toString_formatter() {
+        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyy"));
+        assertEquals(t, "2010");
+    }
+
+    public void test_toString_formatter_non_standard() {
+        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyyyy"));
+        assertEquals(t, "002010");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toString_formatter_null() {
+        Year.of(2010).toString(null);
+    }
+    
 }

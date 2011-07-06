@@ -38,6 +38,7 @@
 - OffsetTime.compareTo fixed
 - OffsetDateTime.compareTo doesn't handle nanos
 - Add OffsetDate.atTime(OffsetTime)
+- Year.parse(String), Year.parse(String,DateTimeFormatter) and toString(DateTimeFormatter)
 - Ensure date-time plus/minus uses long not int
 - Fix Period.of(Duration)
 - Add LocalTime/OffsetTime/LocalDateTime/OffsetDateTime/ZonedDateTime.plus/minus(Duration)

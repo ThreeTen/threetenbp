@@ -32,7 +32,6 @@
 
 Simple tasks
 ------------
-- Year.parse(String), Year.parse(String,DateTimeFormatter) and toString(DateTimeFormatter) (based on similar methods in YearMonth/MonthDay)
 - LocalDate constants for MIN_DATE/MAX_DATE (using Year.MIN_VALUE Jan 1/MAX_VALUE Dec 31)
 - LocalTime constants for MIN_TIME/MAX_TIME (using MIN = MIDNIGHT, and MAX = 23:59:59.999999999)
 - LocalDateTime constants for MIN_DATE_TIME/MAX_DATE_TIME (combining min and max from LocalDate/LocalTime)
