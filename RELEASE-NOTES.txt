@@ -91,6 +91,7 @@
 - Year.parse(String), Year.parse(String,DateTimeFormatter) and toString(DateTimeFormatter)
 - SystemUTCRules now load leap second data from binary JAR entry
 - TZDBZoneRulesCompiler now also compiles leap second information from TZDB files
+- PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 
 0.6.3
 ===============================================================================

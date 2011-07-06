@@ -237,14 +237,14 @@ public abstract class PeriodUnit
     }
 
     /**
-     * Returns the period equivalent to this unit in the next largest unit.
+     * Returns the period equivalent to this unit in the next smallest unit.
      * <p>
      * Most units are related to other units.
      * For example, an hour might be represented as 60 minutes or 3600 seconds.
-     * This method returns the equivalent period in the next largest unit, i.e.
-     * 60 minutes in the given example.
+     * This method returns the equivalent period in the next smallest unit.
+     * For example, the next smallest unit of an hour is 60 minutes.
      *
-     * @return the largest equivalent period, null if no equivalent is known.
+     * @return the largest equivalent period, null if no further equivalent period
      */
     public PeriodField getNextEquivalentPeriod() {
         if (equivalentPeriods.isEmpty()) {

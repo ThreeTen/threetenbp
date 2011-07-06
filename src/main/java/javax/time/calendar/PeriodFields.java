@@ -164,15 +164,14 @@ public final class PeriodFields
      * Obtains a {@code PeriodFields} from an amount and unit, by extending any
      * fractional remainder onto smaller units.
      * <p>
-     * The parameters represent the two parts of a phrase like 'one-and-a-half Hour'.
+     * The parameters represent the two parts of a phrase like 'one-and-a-half Hours'.
      * The fractional parts will be distributed into the smaller units, and rounded down
-     * when no smaller units exist.
+     * when no smaller units exist. If the {@code fractionalAmount} is negative,
+     * the amount of the biggest unit will be negative, the rest will be positive.
      *
      * @param fractionalAmount  the amount of create with, positive or negative
      * @param unit  the period unit, not null
-     * @return the {@code PeriodFields} instance, not null. If the {@code fractionalAmount}
-     * is negative, the amount of the biggest unit will be negative, the rest will be
-     * positive.
+     * @return the {@code PeriodFields} instance, not null
      */
     public static PeriodFields of(double fractionalAmount, PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");

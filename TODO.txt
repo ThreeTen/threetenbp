@@ -182,9 +182,6 @@ Document
 - Parsing with wrong pattern letter case (month vs minute, doy vs dom) is caught
 - Obtain leap-second rules from TZDB rather than a file
 
-Periods
-- PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
-
 Not doing
 - Use nanoOfDay rule in LocalTime factory - NO, as doesn't work
 - toString(pattern)/parse(str, pattern) - NO, due to ease of formatter usage
