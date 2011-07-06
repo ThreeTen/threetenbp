@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne, Michael Nascimento Santos
- * & Jesper Steen Moller
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
