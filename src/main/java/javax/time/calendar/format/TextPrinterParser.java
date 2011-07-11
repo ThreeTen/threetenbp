@@ -87,7 +87,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         int length = parseText.length();
         if (position < 0 || position > length) {
             throw new IndexOutOfBoundsException();
@@ -98,7 +98,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
             while (it.hasNext()) {
                 Entry<String, DateTimeField> entry = it.next();
                 String text = entry.getKey();
-                if (text.regionMatches(!context.isCaseSensitive(), 0, parseText, position, text.length())) {
+                if (FormatUtils.regionMatches(!context.isCaseSensitive(), text, 0, parseText, position, text.length())) {
                     context.setParsed(entry.getValue());
                     return position + text.length();
                 }

@@ -63,13 +63,13 @@ final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParse
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         int length = parseText.length();
         if (position > length || position < 0) {
             throw new IndexOutOfBoundsException();
         }
         boolean ignoreCase = !context.isCaseSensitive();
-        if (parseText.regionMatches(ignoreCase, position, literal, 0, literal.length()) == false) {
+        if (FormatUtils.regionMatches(ignoreCase, parseText, position, literal, 0, literal.length()) == false) {
             return ~position;
         }
         return position + literal.length();

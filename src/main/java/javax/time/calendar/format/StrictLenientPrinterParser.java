@@ -54,7 +54,7 @@ enum StrictLenientPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         context.setStrict(this == STRICT);
         return position;
     }

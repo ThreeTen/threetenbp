@@ -108,7 +108,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         ZoneOffset offset = null;
         int length = parseText.length();
         int utcLen = noOffsetText.length();
@@ -121,7 +121,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             if (position == length) {
                 return ~position;
             }
-            if (parseText.regionMatches(!context.isCaseSensitive(), position, noOffsetText, 0, utcLen)) {
+            if (FormatUtils.regionMatches(!context.isCaseSensitive(), parseText, position, noOffsetText, 0, utcLen)) {
                 context.setParsed(ZoneOffset.UTC);
                 return position + utcLen;
             }
@@ -162,7 +162,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param required  whether this number is required
      * @return true if an error occurred
      */
-    private boolean parseNumber(int[] array, int arrayIndex, String parseText, boolean required) {
+    private boolean parseNumber(int[] array, int arrayIndex, CharSequence parseText, boolean required) {
         if ((type + 3) / 2 < arrayIndex) {
             return false;  // ignore seconds/minutes
         }

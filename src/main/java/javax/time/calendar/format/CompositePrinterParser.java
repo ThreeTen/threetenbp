@@ -120,7 +120,7 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence text, int position) {
         if (parsers == null) {
             throw new UnsupportedOperationException("Formatter does not support parsing");
         }
@@ -128,7 +128,7 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
             context.startOptional();
             int pos = position;
             for (DateTimeParser parser : parsers) {
-                pos = parser.parse(context, parseText, pos);
+                pos = parser.parse(context, text, pos);
                 if (pos < 0) {
                     context.endOptional(false);
                     return position;  // return original position
@@ -138,7 +138,7 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
             return pos;
         } else {
             for (DateTimeParser parser : parsers) {
-                position = parser.parse(context, parseText, position);
+                position = parser.parse(context, text, position);
                 if (position < 0) {
                     break;
                 }

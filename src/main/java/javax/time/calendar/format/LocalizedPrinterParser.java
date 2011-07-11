@@ -80,7 +80,7 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         return formatter(context.getLocale()).toPrinterParser(false).parse(context, parseText, position);
     }
 

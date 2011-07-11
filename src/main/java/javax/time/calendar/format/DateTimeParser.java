@@ -67,13 +67,13 @@ public interface DateTimeParser {
      * It is also used to store the parsed calendrical information.
      *
      * @param context  the context to use and parse into, not null
-     * @param parseText  the input text to parse, not null
+     * @param text  the input text to parse, not null
      * @param position  the position to start parsing at, from 0 to the text length
      * @return the new parse position, where negative means an error with the
      *  error position encoded using the complement ~ operator
      * @throws NullPointerException if the context or text is null
      * @throws IndexOutOfBoundsException if the position is invalid
      */
-    int parse(DateTimeParseContext context, String parseText, int position);
+    int parse(DateTimeParseContext context, CharSequence text, int position);
 
 }

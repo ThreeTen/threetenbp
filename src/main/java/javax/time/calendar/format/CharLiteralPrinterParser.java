@@ -61,7 +61,7 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
     }
 
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         int length = parseText.length();
         if (position == length) {
             return ~position;

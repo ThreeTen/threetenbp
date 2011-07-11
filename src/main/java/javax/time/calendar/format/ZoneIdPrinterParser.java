@@ -107,7 +107,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
      * length of the shortest time-zone as well as the beginning characters of
      * all other time-zones.
      */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
         int length = parseText.length();
         if (position > length) {
             throw new IndexOutOfBoundsException();
@@ -129,7 +129,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         
         // handle fixed time-zone ids
-        if (parseText.substring(position).startsWith("UTC")) {
+        if (parseText.subSequence(position, parseText.length()).toString().startsWith("UTC")) {
             DateTimeParseContext newContext = new DateTimeParseContext(context.getSymbols());
             int startPos = position + 3;
             int endPos = new ZoneOffsetPrinterParser("", "+HH:MM:ss").parse(newContext, parseText, startPos);
@@ -149,7 +149,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             if (position + nodeLength > length) {
                 break;
             }
-            parsedZoneId = parseText.substring(position, position + nodeLength);
+            parsedZoneId = parseText.subSequence(position, position + nodeLength).toString();
             tree = tree.get(parsedZoneId);
         }
         
@@ -160,7 +160,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             if (pos + 1 < length && parseText.charAt(pos) == '#') {
                 Set<String> versions = zone.getGroup().getAvailableVersionIDs();
                 for (String version : versions) {
-                    if (parseText.regionMatches(pos + 1, version, 0, version.length())) {
+                    if (FormatUtils.regionMatches(false, parseText, pos + 1, version, 0, version.length())) {
                         zone = zone.withVersion(version);
                         pos += version.length() + 1;
                         break;
@@ -205,7 +205,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
         /**
          * Map of a substring to a set of substrings that contain the key.
          */
-        private final Map<String, SubstringTree> substringMap = new HashMap<String, SubstringTree>();
+        private final Map<CharSequence, SubstringTree> substringMap = new HashMap<CharSequence, SubstringTree>();
 
         /**
          * Constructor.
@@ -216,7 +216,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             this.length = length;
         }
 
-        private SubstringTree get(String substring2) {
+        private SubstringTree get(CharSequence substring2) {
             return substringMap.get(substring2);
 
         }

@@ -322,11 +322,9 @@ public final class DateTimeFormatter {
     public DateTimeParseContext parse(CharSequence text, ParsePosition position) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(position, "ParsePosition must not be null");
-        // parse a String as its a better API for parser writers
-        String str = text.toString();
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         int pos = position.getIndex();
-        pos = printerParser.parse(context, str, pos);
+        pos = printerParser.parse(context, text, pos);
         if (pos < 0) {
             position.setErrorIndex(~pos);
             return null;
