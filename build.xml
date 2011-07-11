@@ -170,6 +170,8 @@
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
+            <jvmarg value="-Duser.language=en" />
+            <jvmarg value="-Duser.country=UK" />
             <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
@@ -178,6 +180,8 @@
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
+            <jvmarg value="-Duser.language=en" />
+            <jvmarg value="-Duser.country=UK" />
             <classfileset dir="${extra.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
@@ -186,6 +190,8 @@
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
+            <jvmarg value="-Duser.language=en" />
+            <jvmarg value="-Duser.country=UK" />
             <classfileset dir="${core.test.classes}" includes="javax/time/scales/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
