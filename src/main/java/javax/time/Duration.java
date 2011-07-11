@@ -386,7 +386,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
                 (len == 5 && text.charAt(2) == '-' && text.charAt(3) == '0')) {
             throw new CalendricalParseException("Duration could not be parsed: " + text, text, 0);
         }
-        String numberText = text.toString().substring(2, len - 1).replace(',', '.');
+        String numberText = text.subSequence(2, len - 1).toString().replace(',', '.');
         int dot = numberText.indexOf('.');
         try {
             if (dot == -1) {
