@@ -143,11 +143,11 @@ public final class ZoneOffset
      * <p>
      * The maximum supported range is from +18:00 to -18:00 inclusive.
      *
-     * @param offsetID  the offset id, not null
+     * @param offsetID the offset id, not null
      * @return the ZoneOffset, not null
      * @throws IllegalArgumentException if the offset id is invalid
      */
-    public static ZoneOffset of(String offsetID) {
+    public static ZoneOffset of(CharSequence offsetID) {
         if (offsetID == null) {
             throw new NullPointerException("The offset ID must not be null");
         }
@@ -203,12 +203,12 @@ public final class ZoneOffset
     /**
      * Parse a two digit zero-prefixed number.
      *
-     * @param offsetID  the offset id, not null
-     * @param pos  the position to parse, valid
-     * @param precededByColon  should this number be prefixed by a precededByColon
+     * @param offsetID the offset id, not null
+     * @param pos the position to parse, valid
+     * @param precededByColon should this number be prefixed by a precededByColon
      * @return the parsed number, from 0 to 99
      */
-    private static int parseNumber(String offsetID, int pos, boolean precededByColon) {
+    private static int parseNumber(CharSequence offsetID, int pos, boolean precededByColon) {
         if (precededByColon && offsetID.charAt(pos - 1) != ':') {
             throw new IllegalArgumentException("Zone offset id '" + offsetID + "' is invalid: Colon not found when expected");
         }

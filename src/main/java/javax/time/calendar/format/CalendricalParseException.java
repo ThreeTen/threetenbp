@@ -48,9 +48,9 @@ public class CalendricalParseException extends CalendricalException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The text that was being parsed.
+     * The character data that was being parsed.
      */
-    private final String parsedString;
+    private final CharSequence parsedData;
     /**
      * The error index in the text.
      */
@@ -59,38 +59,38 @@ public class CalendricalParseException extends CalendricalException {
     /**
      * Constructs a new exception with the specified message.
      *
-     * @param message  the message to use for this exception, may be null
-     * @param parsedString  the parsed text, should not be null
-     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
+     * @param message the message to use for this exception, may be null
+     * @param parsedData the parsed text, should not be null
+     * @param errorIndex the index in the parsed string that was invalid, should be a valid index
      */
-    public CalendricalParseException(String message, String parsedString, int errorIndex) {
+    public CalendricalParseException(String message, CharSequence parsedData, int errorIndex) {
         super(message);
-        this.parsedString = parsedString;
+        this.parsedData = parsedData;
         this.errorIndex = errorIndex;
     }
 
     /**
      * Constructs a new exception with the specified message and cause.
      *
-     * @param message  the message to use for this exception, may be null
-     * @param parsedString  the parsed text, should not be null
-     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
+     * @param message the message to use for this exception, may be null
+     * @param parsedData the parsed text, should not be null
+     * @param errorIndex the index in the parsed string that was invalid, should be a valid index
      * @param cause  the cause exception, may be null
      */
-    public CalendricalParseException(String message, String parsedString, int errorIndex, Throwable cause) {
+    public CalendricalParseException(String message, CharSequence parsedData, int errorIndex, Throwable cause) {
         super(message, cause);
-        this.parsedString = parsedString;
+        this.parsedData = parsedData;
         this.errorIndex = errorIndex;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the string that was being parsed.
+     * Returns the character data that was being parsed, as string.
      *
-     * @return the string that was being parsed, should not be null
+     * @return the character data that was being parsed, should not be null.
      */
     public String getParsedString() {
-        return parsedString;
+        return parsedData == null ? null : parsedData.toString();
     }
 
     /**

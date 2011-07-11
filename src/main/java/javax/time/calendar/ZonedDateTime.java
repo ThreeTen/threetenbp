@@ -526,11 +526,11 @@ public final class ZonedDateTime
      * <p>
      * The zone ID is the normalized form as defined in {@link ZoneId#getID()}.
      *
-     * @param text  the text to parse such as '2007-12-03T10:15:30+01:00[Europe/Paris]', not null
+     * @param text the text to parse such as "2007-12-03T10:15:30+01:00[Europe/Paris]", not null
      * @return the parsed zoned date-time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static ZonedDateTime parse(String text) {
+    public static ZonedDateTime parse(CharSequence text) {
         return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
     }
 
@@ -539,13 +539,13 @@ public final class ZonedDateTime
      * <p>
      * The text is parsed using the formatter, returning a date-time.
      *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
+     * @param text the text to parse, not null
+     * @param formatter the formatter to use, not null
      * @return the parsed zoned date-time, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static ZonedDateTime parse(String text, DateTimeFormatter formatter) {
+    public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }

@@ -206,11 +206,11 @@ public final class Year
      * Negative years are allowed, but not negative zero.
      * <p>
      *
-     * @param text  the text to parse such as '2007', not null
+     * @param text  the text to parse such as "2007", not null
      * @return the parsed year, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static Year parse(String text) {
+    public static Year parse(CharSequence text) {
         return PARSER.parse(text, rule());
     }
 
@@ -219,13 +219,13 @@ public final class Year
      * <p>
      * The text is parsed using the formatter, returning a year.
      *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
+     * @param text the text to parse, not null
+     * @param formatter the formatter to use, not null
      * @return the parsed year, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static Year parse(String text, DateTimeFormatter formatter) {
+    public static Year parse(CharSequence text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }

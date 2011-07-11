@@ -385,11 +385,11 @@ public final class LocalTime
      * The second has 2 digits with values from 0 to 59.
      * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
      *
-     * @param text  the text to parse such as '10:15:30', not null
+     * @param text the text to parse such as "10:15:30", not null
      * @return the parsed local time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalTime parse(String text) {
+    public static LocalTime parse(CharSequence text) {
         return DateTimeFormatters.isoLocalTime().parse(text, rule());
     }
 
@@ -404,7 +404,7 @@ public final class LocalTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalTime parse(String text, DateTimeFormatter formatter) {
+    public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }

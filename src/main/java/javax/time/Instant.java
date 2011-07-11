@@ -314,11 +314,11 @@ public final class Instant
      * The letters (T and Z) will be accepted in upper or lower case.
      * The decimal point may be either a dot or a comma.
      *
-     * @param text  the text to parse, not null
+     * @param text the text to parse, not null
      * @return an instant, not null
      * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
      */
-    public static Instant parse(final String text) {
+    public static Instant parse(final CharSequence text) {
         Instant.checkNotNull(text, "Text to parse must not be null");
         // TODO: Implement
         throw new UnsupportedOperationException();
