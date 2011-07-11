@@ -48,9 +48,9 @@ public class CalendricalParseException extends CalendricalException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The character data that was being parsed.
+     * The text that was being parsed.
      */
-    private final CharSequence parsedData;
+    private final String parsedString;
     /**
      * The error index in the text.
      */
@@ -65,7 +65,7 @@ public class CalendricalParseException extends CalendricalException {
      */
     public CalendricalParseException(String message, CharSequence parsedData, int errorIndex) {
         super(message);
-        this.parsedData = parsedData;
+        this.parsedString = parsedData.toString();
         this.errorIndex = errorIndex;
     }
 
@@ -79,18 +79,18 @@ public class CalendricalParseException extends CalendricalException {
      */
     public CalendricalParseException(String message, CharSequence parsedData, int errorIndex, Throwable cause) {
         super(message, cause);
-        this.parsedData = parsedData;
+        this.parsedString = parsedData.toString();
         this.errorIndex = errorIndex;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the character data that was being parsed, as string.
+     * Returns the string that was being parsed.
      *
-     * @return the character data that was being parsed, should not be null.
+     * @return the string that was being parsed, should not be null.
      */
     public String getParsedString() {
-        return parsedData == null ? null : parsedData.toString();
+        return parsedString;
     }
 
     /**
