@@ -85,6 +85,20 @@ public class TestDateTimeParseContext {
     }
 
     //-----------------------------------------------------------------------
+    public void test_subSequenceEquals() throws Exception {
+        assertEquals(context.subSequenceEquals("ABBA", 0, "abba", 0, 4), false);
+        assertEquals(context.subSequenceEquals("ABBA", 0, "ABBA", 1, 3), false);
+        assertEquals(context.subSequenceEquals("ABBA", 0, "AB", 0, 4), false);
+        assertEquals(context.subSequenceEquals("AB", 0, "ABBA", 0, 4), false);
+        
+        context.setCaseSensitive(false);
+        assertEquals(context.subSequenceEquals("ABBA", 0, "abba", 0, 4), true);
+        assertEquals(context.subSequenceEquals("ABBA", 0, "abba", 1, 3), false);
+        assertEquals(context.subSequenceEquals("ABBA", 0, "ab", 0, 4), false);
+        assertEquals(context.subSequenceEquals("AB", 0, "abba", 0, 4), false);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_strict() throws Exception {
         assertEquals(context.isStrict(), true);
         context.setStrict(false);

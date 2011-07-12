@@ -98,7 +98,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
             while (it.hasNext()) {
                 Entry<String, DateTimeField> entry = it.next();
                 String text = entry.getKey();
-                if (FormatUtils.regionMatches(!context.isCaseSensitive(), text, 0, parseText, position, text.length())) {
+                if (context.subSequenceEquals(text, 0, parseText, position, text.length())) {
                     context.setParsed(entry.getValue());
                     return position + text.length();
                 }

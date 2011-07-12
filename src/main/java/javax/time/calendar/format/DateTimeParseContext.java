@@ -126,6 +126,42 @@ public final class DateTimeParseContext {
         this.caseSensitive = caseSensitive;
     }
 
+    /**
+     * Helper to compare two {@code CharSequence} instances.
+     * This uses {@link #isCaseSensitive()}.
+     * 
+     * @param cs1  the first character sequence, not null
+     * @param offset1  the offset into the first sequence, valid
+     * @param cs2  the second character sequence, not null
+     * @param offset2  the offset into the second sequence, valid
+     * @param length  the length to check, valid
+     * @return true if equal
+     */
+    public boolean subSequenceEquals(CharSequence cs1, int offset1, CharSequence cs2, int offset2, int length) {
+        if (offset1 + length > cs1.length() || offset2 + length > cs2.length()) {
+            return false;
+        }
+        if (isCaseSensitive()) {
+            for (int i = 0; i < length; i++) {
+                char ch1 = cs1.charAt(offset1 + i);
+                char ch2 = cs2.charAt(offset2 + i);
+                if (ch1 != ch2) {
+                    return false;
+                }
+            }
+        } else {
+            for (int i = 0; i < length; i++) {
+                char ch1 = cs1.charAt(offset1 + i);
+                char ch2 = cs2.charAt(offset2 + i);
+                if (ch1 != ch2 && Character.toUpperCase(ch1) != Character.toUpperCase(ch2) &&
+                        Character.toLowerCase(ch1) != Character.toLowerCase(ch2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if parsing is strict.

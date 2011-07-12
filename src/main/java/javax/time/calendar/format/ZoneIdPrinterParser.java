@@ -137,7 +137,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
                 context.setParsed(ZoneId.UTC);
                 return startPos;
             }
-            ZoneId zone = ZoneId.of((ZoneOffset) newContext.getParsed(ZoneOffset.class));
+            ZoneId zone = ZoneId.of(newContext.getParsed(ZoneOffset.class));
             context.setParsed(zone);
             return endPos;
         }
@@ -160,7 +160,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             if (pos + 1 < length && parseText.charAt(pos) == '#') {
                 Set<String> versions = zone.getGroup().getAvailableVersionIDs();
                 for (String version : versions) {
-                    if (FormatUtils.regionMatches(false, parseText, pos + 1, version, 0, version.length())) {
+                    if (context.subSequenceEquals(parseText, pos + 1, version, 0, version.length())) {
                         zone = zone.withVersion(version);
                         pos += version.length() + 1;
                         break;

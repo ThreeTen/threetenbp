@@ -121,7 +121,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             if (position == length) {
                 return ~position;
             }
-            if (FormatUtils.regionMatches(!context.isCaseSensitive(), parseText, position, noOffsetText, 0, utcLen)) {
+            if (context.subSequenceEquals(parseText, position, noOffsetText, 0, utcLen)) {
                 context.setParsed(ZoneOffset.UTC);
                 return position + utcLen;
             }

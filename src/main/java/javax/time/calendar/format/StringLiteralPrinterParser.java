@@ -68,8 +68,7 @@ final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParse
         if (position > length || position < 0) {
             throw new IndexOutOfBoundsException();
         }
-        boolean ignoreCase = !context.isCaseSensitive();
-        if (FormatUtils.regionMatches(ignoreCase, parseText, position, literal, 0, literal.length()) == false) {
+        if (context.subSequenceEquals(parseText, position, literal, 0, literal.length()) == false) {
             return ~position;
         }
         return position + literal.length();
