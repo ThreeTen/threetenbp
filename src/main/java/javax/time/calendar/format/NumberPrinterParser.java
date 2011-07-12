@@ -182,12 +182,12 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
-        int length = parseText.length();
+    public int parse(DateTimeParseContext context, CharSequence text, int position) {
+        int length = text.length();
         if (position == length) {
             return ~position;
         }
-        char sign = parseText.charAt(position);  // IOOBE if invalid position
+        char sign = text.charAt(position);  // IOOBE if invalid position
         boolean negative = false;
         boolean positive = false;
         if (sign == context.getSymbols().getPositiveSign()) {
@@ -235,7 +235,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         for (int pass = 0; pass < 2; pass++) {
             int maxEndPos = Math.min(pos + effMaxWidth, length);
             while (pos < maxEndPos) {
-                char ch = parseText.charAt(pos++);
+                char ch = text.charAt(pos++);
                 int digit = context.getSymbols().convertToDigit(ch);
                 if (digit < 0) {
                     pos--;

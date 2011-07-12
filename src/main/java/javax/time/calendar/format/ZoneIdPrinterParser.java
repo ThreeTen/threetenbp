@@ -107,8 +107,8 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
      * length of the shortest time-zone as well as the beginning characters of
      * all other time-zones.
      */
-    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
-        int length = parseText.length();
+    public int parse(DateTimeParseContext context, CharSequence text, int position) {
+        int length = text.length();
         if (position > length) {
             throw new IndexOutOfBoundsException();
         }
@@ -129,10 +129,10 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         
         // handle fixed time-zone ids
-        if (parseText.subSequence(position, parseText.length()).toString().startsWith("UTC")) {
+        if (text.subSequence(position, text.length()).toString().startsWith("UTC")) {
             DateTimeParseContext newContext = new DateTimeParseContext(context.getSymbols());
             int startPos = position + 3;
-            int endPos = new ZoneOffsetPrinterParser("", "+HH:MM:ss").parse(newContext, parseText, startPos);
+            int endPos = new ZoneOffsetPrinterParser("", "+HH:MM:ss").parse(newContext, text, startPos);
             if (endPos < 0) {
                 context.setParsed(ZoneId.UTC);
                 return startPos;
@@ -149,7 +149,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             if (position + nodeLength > length) {
                 break;
             }
-            parsedZoneId = parseText.subSequence(position, position + nodeLength).toString();
+            parsedZoneId = text.subSequence(position, position + nodeLength).toString();
             tree = tree.get(parsedZoneId);
         }
         
@@ -157,10 +157,10 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
             // handle zone version
             ZoneId zone = ZoneId.of(parsedZoneId);
             int pos = position + parsedZoneId.length();
-            if (pos + 1 < length && parseText.charAt(pos) == '#') {
+            if (pos + 1 < length && text.charAt(pos) == '#') {
                 Set<String> versions = zone.getGroup().getAvailableVersionIDs();
                 for (String version : versions) {
-                    if (context.subSequenceEquals(parseText, pos + 1, version, 0, version.length())) {
+                    if (context.subSequenceEquals(text, pos + 1, version, 0, version.length())) {
                         zone = zone.withVersion(version);
                         pos += version.length() + 1;
                         break;

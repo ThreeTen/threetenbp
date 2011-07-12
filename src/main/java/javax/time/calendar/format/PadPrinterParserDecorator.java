@@ -91,22 +91,22 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
-        if (position > parseText.length()) {
+    public int parse(DateTimeParseContext context, CharSequence text, int position) {
+        if (position > text.length()) {
             throw new IndexOutOfBoundsException();
         }
         int endPos = position + padWidth;
-        if (endPos > parseText.length()) {
+        if (endPos > text.length()) {
             return ~position;  // not enough characters in the string to meet the parse width
         }
         int pos = position;
-        while (pos < endPos && parseText.charAt(pos) == padChar) {
+        while (pos < endPos && text.charAt(pos) == padChar) {
             pos++;
         }
-        parseText = parseText.subSequence(0, endPos);
+        text = text.subSequence(0, endPos);
         int firstError = 0;
         while (pos >= position) {
-            int resultPos = parser.parse(context, parseText, pos);
+            int resultPos = parser.parse(context, text, pos);
             if (resultPos < 0) {
                 // parse of decorated field had an error
                 if (firstError == 0) {

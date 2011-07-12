@@ -108,9 +108,9 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
+    public int parse(DateTimeParseContext context, CharSequence text, int position) {
         ZoneOffset offset = null;
-        int length = parseText.length();
+        int length = text.length();
         int utcLen = noOffsetText.length();
         if (utcLen == 0) {
             if (position == length) {
@@ -121,20 +121,20 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             if (position == length) {
                 return ~position;
             }
-            if (context.subSequenceEquals(parseText, position, noOffsetText, 0, utcLen)) {
+            if (context.subSequenceEquals(text, position, noOffsetText, 0, utcLen)) {
                 context.setParsed(ZoneOffset.UTC);
                 return position + utcLen;
             }
         }
         
-        char sign = parseText.charAt(position);  // IOOBE if invalid position
+        char sign = text.charAt(position);  // IOOBE if invalid position
         if (sign == '+' || sign == '-') {
             int negative = (sign == '-' ? -1 : 1);
             int[] array = new int[4];
             array[0] = position + 1;
-            if (parseNumber(array, 1, parseText, true) ||
-                    parseNumber(array, 2, parseText, true) ||
-                    parseNumber(array, 3, parseText, false)) {
+            if (parseNumber(array, 1, text, true) ||
+                    parseNumber(array, 2, text, true) ||
+                    parseNumber(array, 3, text, false)) {
                 return ~position;
             }
             int total = (array[1] * 60 * 60) + (array[2] * 60) + array[3];

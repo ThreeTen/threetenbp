@@ -110,10 +110,10 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
-        int length = parseText.length();
+    public int parse(DateTimeParseContext context, CharSequence text, int position) {
+        int length = text.length();
         if (position == length ||
-                parseText.charAt(position) != context.getSymbols().getDecimalSeparator()) {
+                text.charAt(position) != context.getSymbols().getDecimalSeparator()) {
             // valid if whole field is optional, invalid if minimum width
             return (minWidth > 0 ? ~position : position);
         }
@@ -126,7 +126,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
         int total = 0;  // can use int because we are only parsing up to 9 digits
         int pos = position;
         while (pos < maxEndPos) {
-            char ch = parseText.charAt(pos++);
+            char ch = text.charAt(pos++);
             int digit = context.getSymbols().convertToDigit(ch);
             if (digit < 0) {
                 if (pos < minEndPos) {

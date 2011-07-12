@@ -246,7 +246,7 @@ public final class DateTimeFormatter {
     public <T> T parse(CharSequence text, CalendricalRule<T> rule) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
-        String str = text.toString();
+        String str = text.toString();  // parsing whole String, so this makes sense
         try {
             CalendricalNormalizer merger = parse(str);
             return merger.deriveChecked(rule);
@@ -283,11 +283,11 @@ public final class DateTimeFormatter {
      */
     public CalendricalNormalizer parse(CharSequence text) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
-        String str = text.toString();
+        String str = text.toString();  // parsing whole String, so this makes sense
         ParsePosition pos = new ParsePosition(0);
         DateTimeParseContext result = parse(str, pos);
         if (pos.getErrorIndex() >= 0 || pos.getIndex() < str.length()) {
-            String abbr = str;
+            String abbr = str.toString();
             if (abbr.length() > 64) {
                 abbr = abbr.substring(0, 64) + "...";
             }

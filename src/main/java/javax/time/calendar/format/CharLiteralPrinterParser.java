@@ -61,12 +61,12 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
     }
 
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
-        int length = parseText.length();
+    public int parse(DateTimeParseContext context, CharSequence text, int position) {
+        int length = text.length();
         if (position == length) {
             return ~position;
         }
-        char ch = parseText.charAt(position);
+        char ch = text.charAt(position);
         if (ch != literal) {
             if (context.isCaseSensitive() ||
                     (Character.toUpperCase(ch) != Character.toUpperCase(literal) &&
