@@ -225,7 +225,7 @@ public final class MonthDay
      * <p>
      * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
      *
-     * @param text the text to parse such as "--12-03", not null
+     * @param text  the text to parse such as "--12-03", not null
      * @return the parsed month-day, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
@@ -238,8 +238,8 @@ public final class MonthDay
      * <p>
      * The text is parsed using the formatter, returning a month-day.
      *
-     * @param text the text to parse, not null
-     * @param formatter the formatter to use, not null
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
      * @return the parsed month-day, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed

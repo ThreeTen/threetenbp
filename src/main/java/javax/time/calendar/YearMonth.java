@@ -204,7 +204,7 @@ public final class YearMonth
      * <p>
      * The month-of-year has 2 digits and has values from 1 to 12.
      *
-     * @param text the text to parse such as "2007-12", not null
+     * @param text  the text to parse such as "2007-12", not null
      * @return the parsed year-month, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
@@ -217,8 +217,8 @@ public final class YearMonth
      * <p>
      * The text is parsed using the formatter, returning a year-month.
      *
-     * @param text the text to parse, not null
-     * @param formatter the formatter to use, not null
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
      * @return the parsed year-month, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed

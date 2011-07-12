@@ -59,9 +59,9 @@ public class CalendricalParseException extends CalendricalException {
     /**
      * Constructs a new exception with the specified message.
      *
-     * @param message the message to use for this exception, may be null
-     * @param parsedData the parsed text, should not be null
-     * @param errorIndex the index in the parsed string that was invalid, should be a valid index
+     * @param message  the message to use for this exception, may be null
+     * @param parsedData  the parsed text, should not be null
+     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
      */
     public CalendricalParseException(String message, CharSequence parsedData, int errorIndex) {
         super(message);
@@ -72,9 +72,9 @@ public class CalendricalParseException extends CalendricalException {
     /**
      * Constructs a new exception with the specified message and cause.
      *
-     * @param message the message to use for this exception, may be null
-     * @param parsedData the parsed text, should not be null
-     * @param errorIndex the index in the parsed string that was invalid, should be a valid index
+     * @param message  the message to use for this exception, may be null
+     * @param parsedData  the parsed text, should not be null
+     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
      * @param cause  the cause exception, may be null
      */
     public CalendricalParseException(String message, CharSequence parsedData, int errorIndex, Throwable cause) {

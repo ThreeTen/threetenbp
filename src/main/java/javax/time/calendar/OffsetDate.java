@@ -251,7 +251,7 @@ public final class OffsetDate
      * <p>
      * The offset ID is the normalized form as defined in {@link ZoneOffset}.
      *
-     * @param text the text to parse such as "2007-12-03+01:00", not null
+     * @param text  the text to parse such as "2007-12-03+01:00", not null
      * @return the parsed offset date, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
@@ -264,8 +264,8 @@ public final class OffsetDate
      * <p>
      * The text is parsed using the formatter, returning a date.
      *
-     * @param text the text to parse, not null
-     * @param formatter the formatter to use, not null
+     * @param text  the text to parse, not null
+     * @param formatter  the formatter to use, not null
      * @return the parsed offset date, not null
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed

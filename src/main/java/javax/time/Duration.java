@@ -372,7 +372,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * The letters (P, T and S) will be accepted in upper or lower case.
      * The decimal point may be either a dot or a comma.
      *
-     * @param text the text to parse, not null
+     * @param text  the text to parse, not null
      * @return a {@code Duration}, not null
      * @throws CalendricalParseException if the text cannot be parsed to a {@code Duration}
      */

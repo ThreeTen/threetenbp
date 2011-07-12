@@ -307,7 +307,7 @@ public final class LocalDate
      * <p>
      * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
      *
-     * @param text the text to parse such as "2007-12-03", not null
+     * @param text  the text to parse such as "2007-12-03", not null
      * @return the parsed local date, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
