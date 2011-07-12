@@ -90,14 +90,14 @@ final class PeriodParser {
     /**
      * Original text.
      */
-    private String text;
+    private CharSequence text;
 
     /**
      * Constructor.
      * 
      * @param text  the text to parse, not null
      */
-    PeriodParser(String text) {
+    PeriodParser(CharSequence text) {
         this.text = text;
     }
 
@@ -111,8 +111,8 @@ final class PeriodParser {
      */
     Period parse() {
         // force to upper case and coerce the comma to dot
-        String s = text.toUpperCase().replace(',', '.');
         
+        String s = text.toString().toUpperCase().replace(',', '.');
         // check for zero and skip parse
         if (ZERO.equals(s)) {
             return Period.ZERO;
@@ -243,7 +243,7 @@ final class PeriodParser {
         return s.substring(start, index);
     }
 
-    private void validateCharactersAndOrdering(String s, String text) {
+    private void validateCharactersAndOrdering(String s, CharSequence text) {
         char[] chars = s.toCharArray();
         int tokenPos = 0;
         boolean lastLetter = false;

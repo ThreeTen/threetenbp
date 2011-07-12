@@ -453,11 +453,11 @@ public final class LocalDateTime
      * The second has 2 digits with values from 0 to 59.
      * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
      *
-     * @param text  the text to parse such as '2007-12-03T10:15:30', not null
+     * @param text  the text to parse such as "2007-12-03T10:15:30", not null
      * @return the parsed local date-time, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalDateTime parse(String text) {
+    public static LocalDateTime parse(CharSequence text) {
         return DateTimeFormatters.isoLocalDateTime().parse(text, rule());
     }
 
@@ -472,7 +472,7 @@ public final class LocalDateTime
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static LocalDateTime parse(String text, DateTimeFormatter formatter) {
+    public static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }

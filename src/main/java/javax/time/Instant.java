@@ -318,7 +318,7 @@ public final class Instant
      * @return an instant, not null
      * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
      */
-    public static Instant parse(final String text) {
+    public static Instant parse(final CharSequence text) {
         Instant.checkNotNull(text, "Text to parse must not be null");
         // TODO: Implement
         throw new UnsupportedOperationException();

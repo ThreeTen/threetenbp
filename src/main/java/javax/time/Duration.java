@@ -359,7 +359,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Duration} by parsing a string.
+     * Obtains an instance of {@code Duration} by parsing a text string.
      * <p>
      * This will parse the string produced by {@link #toString()} which is
      * the ISO-8601 format {@code PTnS} where {@code n} is
@@ -376,7 +376,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, not null
      * @throws CalendricalParseException if the text cannot be parsed to a {@code Duration}
      */
-    public static Duration parse(final String text) {
+    public static Duration parse(final CharSequence text) {
         Instant.checkNotNull(text, "Text to parse must not be null");
         int len = text.length();
         if (len < 4 ||
@@ -386,7 +386,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
                 (len == 5 && text.charAt(2) == '-' && text.charAt(3) == '0')) {
             throw new CalendricalParseException("Duration could not be parsed: " + text, text, 0);
         }
-        String numberText = text.substring(2, len - 1).replace(',', '.');
+        String numberText = text.subSequence(2, len - 1).toString().replace(',', '.');
         int dot = numberText.indexOf('.');
         try {
             if (dot == -1) {

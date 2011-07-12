@@ -183,11 +183,11 @@ public final class TAIInstant
      * The trailing literal must be exactly specified.
      * This format parses the {@code toString} format.
      *
-     * @param text  the text to parse such as '12345.123456789s(TAI)', not null
+     * @param text  the text to parse such as "12345.123456789s(TAI)", not null
      * @return the parsed instant, not null
      * @throws CalendricalException if the text cannot be parsed
      */
-    public static TAIInstant parse(String text) {
+    public static TAIInstant parse(CharSequence text) {
         Instant.checkNotNull(text, "Text to parse must not be null");
         Matcher matcher = PARSER.matcher(text);
         if (matcher.matches()) {

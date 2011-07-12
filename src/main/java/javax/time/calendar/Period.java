@@ -555,7 +555,7 @@ public final class Period
      * @return the parsed period, not null
      * @throws CalendricalParseException if the text cannot be parsed to a Period
      */
-    public static Period parse(final String text) {
+    public static Period parse(final CharSequence text) {
         PeriodFields.checkNotNull(text, "Text to parse must not be null");
         return new PeriodParser(text).parse();
     }

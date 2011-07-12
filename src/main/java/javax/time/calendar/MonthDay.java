@@ -225,11 +225,11 @@ public final class MonthDay
      * <p>
      * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
      *
-     * @param text  the text to parse such as '--12-03', not null
+     * @param text  the text to parse such as "--12-03", not null
      * @return the parsed month-day, not null
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static MonthDay parse(String text) {
+    public static MonthDay parse(CharSequence text) {
         return PARSER.parse(text, rule());
     }
 
@@ -244,7 +244,7 @@ public final class MonthDay
      * @throws UnsupportedOperationException if the formatter cannot parse
      * @throws CalendricalParseException if the text cannot be parsed
      */
-    public static MonthDay parse(String text, DateTimeFormatter formatter) {
+    public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
