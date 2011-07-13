@@ -32,9 +32,9 @@
 
 Simple tasks
 ------------
-- don't use Local Mean Time - add a flag to the TZDB compiler to determine whether it uses
-  LMT or not. LMT is the estimated time before time-zones were introduced. The JDK removes LMT times,
-  and we should have a flag to do the same. Need to check exact way in which JDK removes LMT!
+- Test min/max year for week-based-year. The max/min year is 999,999,999.
+  But the week-based-year may be 1,000,000,000. This needs testing.
+  The info will vary according to the WeekRules chosen, so will need to be a method on WeekRules.
 
 
 More complex tasks
@@ -60,13 +60,12 @@ Date/Time classes
 ? Calendrical rule for date/time as a period (for between calculations)
 
 Rules
-- test min/max year for week-based-year
 - ensure other calendar systems re-use ISO defined rules
 - Handle case where values have gaps, eg 1,2, 4,5,6, 8
 ? parse()
-? merge -> normalize
 ? deriveInt for fields
 ? ISO era
+? Remove WEEK_BASED_YEAR and WEEK_OF_ -> WeekRules
 
 Date/Time formatting
 - merger - general processing
@@ -131,10 +130,8 @@ General
 - rework Clock - remove instant()
 - TimeSource get to nearest second etc. with caching?
 - cache todays date
-- localized day of week number
+- localized day of week number -> WeekRules
 - get month/weekday text
-- get rule by name
-- get chrono by name
 - serialization formats
 - evaluate hash codes
 - check overflows
@@ -187,4 +184,9 @@ Not doing
 - toString(pattern)/parse(str, pattern) - NO, due to ease of formatter usage
 - Add getAmPm() to time classes - NO, due to low use case
 - Remove TimeSource replace by InstantProvider - NO, due to UTC/TAI
- 
+- don't use Local Mean Time - add a flag to the TZDB compiler to determine whether it uses
+  LMT or not. LMT is the estimated time before time-zones were introduced. The JDK removes LMT times,
+  and we should have a flag to do the same. Need to check exact way in which JDK removes LMT!
+  - NO, see email thread - unclear as to whether change is beneficial
+- get rule by name - NO some rules are based on data
+- get chrono by name - NO some rules are based on data
