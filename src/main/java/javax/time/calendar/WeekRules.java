@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import static javax.time.calendar.DayOfWeek.MONDAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
@@ -239,7 +240,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
      * @return the date that the week-based-year starts, not null
      */
-    public LocalDate createWeekBasedYearDate(int weekBasedYear) {
+    private LocalDate createWeekBasedYearDate(int weekBasedYear) {
         LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDays);
         return inFirstWeek.with(DateAdjusters.previousOrCurrent(firstDayOfWeek));
     }
@@ -307,8 +308,9 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the date equivalent to the input parameters, not null
      */
     public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
+        ISOChronology.checkNotNull(yearMonth, "YearMonth must not be null");
         LocalDate startWeek = yearMonth.atDay(1).with(DateAdjusters.nextOrCurrent(firstDayOfWeek));
-        int weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
+        long weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
         return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));
     }
 
@@ -375,7 +377,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * <p>
      * See {@link #convertDayOfWeek(DayOfWeek)} for more information.
      *
-     * @return the rule for the date, not null
+     * @return the rule for day-of-week using these rules, not null
      */
     public DateTimeRule dayOfWeek() {
         return new DayOfWeekRule(this);
@@ -395,7 +397,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * Note also that the first few days of a calendar year may be in the
      * week-based-year corresponding to the previous calendar year.
      *
-     * @return the rule for the date, not null
+     * @return the rule for week-of-week-based-year using these rules, not null
      */
     public DateTimeRule weekOfWeekBasedYear() {
         return null;  // TODO
@@ -416,10 +418,28 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * Note also that the first few days of a calendar year may be in the
      * week-based-year corresponding to the previous calendar year.
      *
-     * @return the rule for the date, not null
+     * @return the rule for week-based-year using these rules, not null
      */
     public DateTimeRule weekBasedYear() {
         return null;  // TODO
+    }
+
+    /**
+     * Gets a rule that can be used to print, parse and manipulate the
+     * week-of-month value.
+     * <p>
+     * Weeks defined used this rule always align with months.
+     * The month is divided into periods where each period starts on the defined first day-of-week.
+     * The earliest period is referred to as week 0 if it has less than the minimal number of days
+     * and week 1 if it has at least the minimal number of days.
+     * <p>
+     * The rule derives the week-of-month from the whole date.
+     * The rule builds a date from year-month, week-of-month and day-of-week.
+     *
+     * @return the rule for week-of-month using these rules, not null
+     */
+    public DateTimeRule weekOfMonth() {
+        return new WeekOfMonthRule(this);
     }
 
     //-----------------------------------------------------------------------
@@ -511,6 +531,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * Rule implementation.
      */
     static final class DayOfWeekRule extends DateTimeRule implements Serializable {
+        // must support DayOfWeek.of(weekRuleBasedDayOfWeek) and similar
         private static final long serialVersionUID = 1L;
         private final WeekRules weekRules;
 
@@ -519,16 +540,13 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
                     weekRules.getFirstDayOfWeek() == MONDAY ? DAY_OF_WEEK : null);
             this.weekRules = weekRules;
         }
-        private Object readResolve() {
-            return weekRules.dayOfWeek();
-        }
         @Override
         protected void normalize(CalendricalNormalizer merger) {
             super.normalize(merger);
         }
         @Override
         protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            DateTimeField dow = merger.getFieldDerived(DAY_OF_WEEK, true);
+            DateTimeField dow = merger.getFieldDerived(DAY_OF_WEEK, false);
             if (dow != null && dow.isValidValue()) {
                 return field(((dow.getValue() - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1);
             }
@@ -546,6 +564,47 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         @Override
         public long convertFromPeriod(long amount) {
             return MathUtils.safeIncrement(amount);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class WeekOfMonthRule extends DateTimeRule implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final WeekRules weekRules;
+
+        WeekOfMonthRule(WeekRules weekRules) {
+            super("WeekOfMonth-" + weekRules.toString(), ISOPeriodUnit.WEEKS, ISOPeriodUnit.MONTHS,
+                    DateTimeRuleRange.of(0, 1, 4, 6),
+                    null);
+            this.weekRules = weekRules;
+        }
+        @Override
+        protected void normalize(CalendricalNormalizer merger) {
+            DateTimeField epm = merger.getField(ZERO_EPOCH_MONTH, false);
+            if (epm != null) {
+                int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
+                int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
+                DateTimeField wom = merger.getField(this, false);
+                DateTimeField wrdow = merger.getField(weekRules.dayOfWeek(), false);
+                if (wom != null && wrdow != null) {
+                    LocalDate startWeek2 = LocalDate.of(year, moy, weekRules.getMinimalDaysInFirstWeek())
+                        .with(DateAdjusters.next(weekRules.getFirstDayOfWeek()));
+                    LocalDate date = startWeek2.plusDays(wom.getValue() * 7L - 14 + wrdow.getValue() - 1);
+                    merger.setDate(date, true);
+                }
+            }
+        }
+        @Override
+        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
+            LocalDate date = merger.getDate(false);
+            if (date != null) {
+                LocalDate startWeek2 = date.withDayOfMonth(weekRules.getMinimalDaysInFirstWeek()).with(DateAdjusters.next(weekRules.getFirstDayOfWeek()));
+                return field((date.getDayOfMonth() - startWeek2.getDayOfMonth() + 14) / 7);
+            }
+            return null;
         }
     }
 

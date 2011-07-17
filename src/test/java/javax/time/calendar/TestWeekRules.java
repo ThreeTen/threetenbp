@@ -40,6 +40,7 @@ import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.DayOfWeek.WEDNESDAY;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
 import static javax.time.calendar.MonthOfYear.JANUARY;
+import static javax.time.calendar.MonthOfYear.JULY;
 import static javax.time.calendar.MonthOfYear.MARCH;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -49,7 +50,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import javax.time.MathUtils;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -61,6 +66,18 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestWeekRules {
+
+    @DataProvider(name = "allRules")
+    Object[][] data_allRules() {
+        Object[][] result = new Object[49][2];
+        int i = 0;
+        for (DayOfWeek dow : DayOfWeek.values()) {
+            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+                result[i++] = new Object[] {dow, minimalDays};
+            }
+        }
+        return result;
+    }
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
@@ -79,14 +96,11 @@ public class TestWeekRules {
     //-----------------------------------------------------------------------
     // factory of
     //-----------------------------------------------------------------------
-    public void test_factory_of() {
-        for (DayOfWeek dow : DayOfWeek.values()) {
-            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
-                WeekRules rules = WeekRules.of(dow, minimalDays);
-                assertEquals(rules.getFirstDayOfWeek(), dow);
-                assertEquals(rules.getMinimalDaysInFirstWeek(), minimalDays);
-            }
-        }
+    @Test(dataProvider = "allRules")
+    public void test_factory_of(DayOfWeek dow, int minimalDays) {
+        WeekRules rules = WeekRules.of(dow, minimalDays);
+        assertEquals(rules.getFirstDayOfWeek(), dow);
+        assertEquals(rules.getMinimalDaysInFirstWeek(), minimalDays);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -135,97 +149,91 @@ public class TestWeekRules {
         assertEquals(WeekRules.of(MONDAY, 3), ser);
     }
 
-    //-----------------------------------------------------------------------
-    // createWeekBasedYearDate()
-    //-----------------------------------------------------------------------
-    public void test_createDate() {
-        for (DayOfWeek dow : DayOfWeek.values()) {
-            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
-                WeekRules rules = WeekRules.of(dow, minimalDays);
-                for (int year = 1950; year < 2050; year++) {
-                    LocalDate date = rules.createWeekBasedYearDate(year);
-                    assertEquals(date.getDayOfWeek(), dow);
-                    LocalDate weekEnd = date.plusDays(6);
-                    assertEquals(weekEnd.getYear(), year);
-                    assertEquals(weekEnd.getMonthOfYear(), JANUARY);
-                    assertTrue(weekEnd.getDayOfMonth() >= minimalDays);
-                }
-            }
-        }
-    }
-
-    public void test_createDate_weekDay() {
-        for (DayOfWeek dow : DayOfWeek.values()) {
-            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
-                WeekRules rules = WeekRules.of(dow, minimalDays);
-                for (int year = 1950; year < 2050; year++) {
-                    LocalDate start = rules.createWeekBasedYearDate(year);
-                    for (int week = -60; week < 60; week += 20) {
-                        for (int day = -10; day < 10; day += 2) {
-                            LocalDate date = rules.createWeekBasedYearDate(year, week, day);
-                            assertEquals(date, start.plusWeeks(week - 1).plusDays(day - 1));
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void test_createDate_weekDayStandardized() {
-        for (DayOfWeek dow : DayOfWeek.values()) {
-            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
-                WeekRules rules = WeekRules.of(dow, minimalDays);
-                for (int year = 1950; year < 2050; year++) {
-                    LocalDate start = rules.createWeekBasedYearDate(year);
-                    for (int week = -60; week < 60; week += 20) {
-                        for (DayOfWeek day : DayOfWeek.values()) {
-                            LocalDate date = rules.createWeekBasedYearDate(year, week, day);
-                            assertEquals(date, start.plusWeeks(week - 1).with(DateAdjusters.nextOrCurrent(day)));
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    //-----------------------------------------------------------------------
+//    // createWeekBasedYearDate()
+//    //-----------------------------------------------------------------------
+//    public void test_createDate() {
+//        for (DayOfWeek dow : DayOfWeek.values()) {
+//            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+//                WeekRules rules = WeekRules.of(dow, minimalDays);
+//                for (int year = 1950; year < 2050; year++) {
+//                    LocalDate date = rules.createWeekBasedYearDate(year);
+//                    assertEquals(date.getDayOfWeek(), dow);
+//                    LocalDate weekEnd = date.plusDays(6);
+//                    assertEquals(weekEnd.getYear(), year);
+//                    assertEquals(weekEnd.getMonthOfYear(), JANUARY);
+//                    assertTrue(weekEnd.getDayOfMonth() >= minimalDays);
+//                }
+//            }
+//        }
+//    }
+//
+//    public void test_createDate_weekDay() {
+//        for (DayOfWeek dow : DayOfWeek.values()) {
+//            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+//                WeekRules rules = WeekRules.of(dow, minimalDays);
+//                for (int year = 1950; year < 2050; year++) {
+//                    LocalDate start = rules.createWeekBasedYearDate(year);
+//                    for (int week = -60; week < 60; week += 20) {
+//                        for (int day = -10; day < 10; day += 2) {
+//                            LocalDate date = rules.createWeekBasedYearDate(year, week, day);
+//                            assertEquals(date, start.plusWeeks(week - 1).plusDays(day - 1));
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    public void test_createDate_weekDayStandardized() {
+//        for (DayOfWeek dow : DayOfWeek.values()) {
+//            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
+//                WeekRules rules = WeekRules.of(dow, minimalDays);
+//                for (int year = 1950; year < 2050; year++) {
+//                    LocalDate start = rules.createWeekBasedYearDate(year);
+//                    for (int week = -60; week < 60; week += 20) {
+//                        for (DayOfWeek day : DayOfWeek.values()) {
+//                            LocalDate date = rules.createWeekBasedYearDate(year, week, day);
+//                            assertEquals(date, start.plusWeeks(week - 1).with(DateAdjusters.nextOrCurrent(day)));
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     //-----------------------------------------------------------------------
     // createWeekOfMonthDate()
     //-----------------------------------------------------------------------
-    public void test_createWeekOfMonthDate_weekDay() {
-        for (DayOfWeek dow : DayOfWeek.values()) {
-            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
-                WeekRules rules = WeekRules.of(dow, minimalDays);
-                for (int year = 1950; year < 2050; year++) {
-                    LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, 7);
-                    assertEquals(date.getDayOfWeek(), dow.roll(6));
-                    assertEquals(date.getYear(), year);
-                    assertEquals(date.getMonthOfYear(), MARCH);
-                    assertTrue(date.getDayOfMonth() >= minimalDays);
-                    LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, 1);
-                    assertEquals(date.plusDays(1), date2);
-                    LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, 2);
-                    assertEquals(date.plusDays(9), date3);
-                }
-            }
+    @Test(dataProvider = "allRules")
+    public void test_createWeekOfMonthDate_weekDay(DayOfWeek dow, int minimalDays) {
+        WeekRules rules = WeekRules.of(dow, minimalDays);
+        for (int year = 1950; year < 2050; year++) {
+            LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, 7);
+            assertEquals(date.getDayOfWeek(), dow.roll(6));
+            assertEquals(date.getYear(), year);
+            assertEquals(date.getMonthOfYear(), MARCH);
+            assertTrue(date.getDayOfMonth() >= minimalDays);
+            LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, 1);
+            assertEquals(date.plusDays(1), date2);
+            LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, 2);
+            assertEquals(date.plusDays(9), date3);
         }
     }
 
-    public void test_createWeekOfMonthDate_weekDayStandardized() {
-        for (DayOfWeek dow : DayOfWeek.values()) {
-            for (int minimalDays = 1; minimalDays <= 7; minimalDays++) {
-                WeekRules rules = WeekRules.of(dow, minimalDays);
-                for (int year = 1950; year < 2050; year++) {
-                    LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, dow.previous());
-                    assertEquals(date.getDayOfWeek(), dow.roll(6));
-                    assertEquals(date.getYear(), year);
-                    assertEquals(date.getMonthOfYear(), MARCH);
-                    assertTrue(date.getDayOfMonth() >= minimalDays);
-                    LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, dow);
-                    assertEquals(date.plusDays(1), date2);
-                    LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, dow.next());
-                    assertEquals(date.plusDays(9), date3);
-                }
-            }
+    @Test(dataProvider = "allRules")
+    public void test_createWeekOfMonthDate_weekDayStandardized(DayOfWeek dow, int minimalDays) {
+        WeekRules rules = WeekRules.of(dow, minimalDays);
+        for (int year = 1950; year < 2050; year++) {
+            LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, dow.previous());
+            assertEquals(date.getDayOfWeek(), dow.roll(6));
+            assertEquals(date.getYear(), year);
+            assertEquals(date.getMonthOfYear(), MARCH);
+            assertTrue(date.getDayOfMonth() >= minimalDays);
+            LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, dow);
+            assertEquals(date.plusDays(1), date2);
+            LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, dow.next());
+            assertEquals(date.plusDays(9), date3);
         }
     }
 
@@ -255,9 +263,9 @@ public class TestWeekRules {
     }
 
     //-----------------------------------------------------------------------
-    // convertToValue()
+    // convertDayOfWeek()
     //-----------------------------------------------------------------------
-    public void test_convertToValue_MondayBased() {
+    public void test_convertDayOfWeekDOW_MondayBased() {
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(MONDAY), 1);
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(TUESDAY), 2);
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(WEDNESDAY), 3);
@@ -267,7 +275,7 @@ public class TestWeekRules {
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(SUNDAY), 7);
     }
 
-    public void test_convertToValue_SundayBased() {
+    public void test_convertDayOfWeekDOW_SundayBased() {
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(MONDAY), 2);
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(TUESDAY), 3);
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(WEDNESDAY), 4);
@@ -277,7 +285,7 @@ public class TestWeekRules {
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(SUNDAY), 1);
     }
 
-    public void test_convertToValue_FridayBased() {
+    public void test_convertDayOfWeekDOW_FridayBased() {
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(MONDAY), 4);
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(TUESDAY), 5);
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(WEDNESDAY), 6);
@@ -287,10 +295,15 @@ public class TestWeekRules {
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(SUNDAY), 3);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_convertDayOfWeekDOW_null() {
+        WeekRules.of(FRIDAY, 4).convertDayOfWeek(null);
+    }
+
     //-----------------------------------------------------------------------
-    // convertFromValue()
+    // convertDayOfWeek()
     //-----------------------------------------------------------------------
-    public void test_convertFromValue_MondayBased() {
+    public void test_convertDayOfWeek_int_MondayBased() {
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(1), MONDAY);
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(2), TUESDAY);
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(3), WEDNESDAY);
@@ -300,7 +313,7 @@ public class TestWeekRules {
         assertEquals(WeekRules.of(MONDAY, 4).convertDayOfWeek(7), SUNDAY);
     }
 
-    public void test_convertFromValue_SundayBased() {
+    public void test_convertDayOfWeek_int_SundayBased() {
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(2), MONDAY);
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(3), TUESDAY);
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(4), WEDNESDAY);
@@ -310,7 +323,7 @@ public class TestWeekRules {
         assertEquals(WeekRules.of(SUNDAY, 4).convertDayOfWeek(1), SUNDAY);
     }
 
-    public void test_convertFromValue_FridayBased() {
+    public void test_convertDayOfWeek_int_FridayBased() {
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(4), MONDAY);
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(5), TUESDAY);
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(6), WEDNESDAY);
@@ -318,6 +331,16 @@ public class TestWeekRules {
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(1), FRIDAY);
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(2), SATURDAY);
         assertEquals(WeekRules.of(FRIDAY, 4).convertDayOfWeek(3), SUNDAY);
+    }
+
+    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    public void test_convertDayOfWeek_int_0() {
+        WeekRules.of(FRIDAY, 4).convertDayOfWeek(0);
+    }
+
+    @Test(expectedExceptions = IllegalCalendarFieldValueException.class)
+    public void test_convertDayOfWeek_int_8() {
+        WeekRules.of(FRIDAY, 4).convertDayOfWeek(8);
     }
 
     //-----------------------------------------------------------------------
@@ -392,15 +415,28 @@ public class TestWeekRules {
         DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
         assertEquals(rule.toString(), "DayOfWeek-WeekRules[SUNDAY,1]");
         
-        assertEquals(0, rule.convertToPeriod(1));
-        assertEquals(6, rule.convertToPeriod(7));
-        assertEquals(-1, rule.convertToPeriod(0));
-        assertEquals(7, rule.convertToPeriod(8));
+        assertEquals(rule.getBaseRule(), rule);
         
-        assertEquals(1, rule.convertFromPeriod(0));
-        assertEquals(7, rule.convertFromPeriod(6));
-        assertEquals(0, rule.convertFromPeriod(-1));
-        assertEquals(8, rule.convertFromPeriod(7));
+        assertEquals(rule.convertToPeriod(1), 0);
+        assertEquals(rule.convertToPeriod(7), 6);
+        assertEquals(rule.convertToPeriod(0), -1);
+        assertEquals(rule.convertToPeriod(8), 7);
+        
+        assertEquals(rule.convertFromPeriod(0), 1);
+        assertEquals(rule.convertFromPeriod(6), 7);
+        assertEquals(rule.convertFromPeriod(-1), 0);
+        assertEquals(rule.convertFromPeriod(7), 8);
+    }
+
+    public void test_dayOfWeek_getValue_sun1() {
+        // July 2011 starts on a Friday
+        DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
+        for (int i = 1; i <= 31; i++) {
+            int stdDOW = (i + 4 - 1) % 7 + 1;
+            int relDOW = (i + 5 - 1) % 7 + 1;
+            assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), rule.field(relDOW));
+            assertEquals(rule.getValue(DayOfWeek.of(stdDOW)), rule.field(relDOW));
+        }
         
 //        assertEquals(rule.field(-7), rule.derive(DAY_OF_WEEK.field(-8)));  // 2prev Mon
 //        
@@ -434,4 +470,90 @@ public class TestWeekRules {
 //        assertEquals(rule.field(15), rule.derive(DAY_OF_WEEK.field(21)));  // 2next Sun
     }
 
+    //-----------------------------------------------------------------------
+    // dayOfWeek()
+    //-----------------------------------------------------------------------
+    public void test_weekOfMonth_sun1() {
+        DateTimeRule rule = WeekRules.of(SUNDAY, 1).weekOfMonth();
+        assertEquals(rule.toString(), "WeekOfMonth-WeekRules[SUNDAY,1]");
+        
+        assertEquals(rule.getBaseRule(), rule);
+        
+        assertEquals(rule.convertToPeriod(-1), -1);
+        assertEquals(rule.convertToPeriod(0), 0);
+        assertEquals(rule.convertToPeriod(1), 1);
+        assertEquals(rule.convertToPeriod(2), 2);
+        assertEquals(rule.convertToPeriod(5), 5);
+        assertEquals(rule.convertToPeriod(6), 6);
+        
+        assertEquals(rule.convertFromPeriod(-1), -1);
+        assertEquals(rule.convertFromPeriod(0), 0);
+        assertEquals(rule.convertFromPeriod(1), 1);
+        assertEquals(rule.convertFromPeriod(2), 2);
+        assertEquals(rule.convertFromPeriod(5), 5);
+        assertEquals(rule.convertFromPeriod(6), 6);
+    }
+
+    public void test_weekOfMonth_getValue_sun1() {
+        // July 2011 starts on a Friday
+        // Fri/Sat 1st/2nd are week 1
+        DateTimeRule rule = WeekRules.of(SUNDAY, 1).weekOfMonth();
+        for (int i = 1; i <= 31; i++) {
+            int w = MathUtils.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
+            assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), rule.field(w));
+        }
+    }
+
+    public void test_weekOfMonth_buildDate_sun1() {
+        // July 2011 starts on a Friday
+        // Fri/Sat 1st/2nd are week 0
+        WeekRules wr = WeekRules.of(SUNDAY, 1);
+        for (int i = 1; i <= 31; i++) {
+            int w = MathUtils.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
+            int d = MathUtils.floorMod(i - 3, 7) + 1;
+            System.out.println(w + " " + d);
+            CalendricalNormalizer cal = CalendricalNormalizer.merge(
+                YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
+            assertEquals(cal.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
+        }
+    }
+
+    public void test_weekOfMonth_getValue_sun7() {
+        // July 2011 starts on a Friday
+        // Fri/Sat 1st/2nd are week 0
+        DateTimeRule rule = WeekRules.of(SUNDAY, 7).weekOfMonth();
+        for (int i = 1; i <= 31; i++) {
+            int w = MathUtils.floorDiv(i - 3, 7) + 1;  // 3rd is start of week 1
+            assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), rule.field(w));
+        }
+    }
+
+    public void test_weekOfMonth_buildDate_sun7() {
+        // July 2011 starts on a Friday
+        // Fri/Sat 1st/2nd are week 0
+        WeekRules wr = WeekRules.of(SUNDAY, 7);
+        for (int i = 1; i <= 31; i++) {
+            int w = MathUtils.floorDiv(i - 3, 7) + 1;
+            int d = MathUtils.floorMod(i - 3, 7) + 1;
+            System.out.println(w + " " + d);
+            CalendricalNormalizer cal = CalendricalNormalizer.merge(
+                YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
+            assertEquals(cal.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
+        }
+    }
+
+    @Test(dataProvider = "allRules")
+    public void test_weekOfMonth_getValue_crossCheckCalendar(DayOfWeek dow, int minimalDays) {
+        DateTimeRule rule = WeekRules.of(dow, minimalDays).weekOfMonth();
+        GregorianCalendar gcal = new GregorianCalendar();
+        gcal.setFirstDayOfWeek(dow == SUNDAY ? 1 : dow.getValue() + 1);
+        gcal.setMinimalDaysInFirstWeek(minimalDays);
+        gcal.set(2011, Calendar.JANUARY, 1);
+        LocalDate date = LocalDate.of(2011, 1, 1);
+        for (int i = 1; i <= 365; i++) {
+            assertEquals(rule.getValue(date).getValue(), gcal.get(Calendar.WEEK_OF_MONTH));
+            gcal.add(Calendar.DAY_OF_MONTH, 1);
+            date = date.plusDays(1);
+        }
+    }
 }
