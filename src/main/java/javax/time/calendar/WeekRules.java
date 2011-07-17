@@ -229,110 +229,110 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         return minimalDays;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Creates a date at the start of the week-based-year based on these rules.
-     * <p>
-     * These rules define the first day-of-week and the minimal number of days
-     * in the first week. This method uses the rules, as defined in the class
-     * documentation, to calculate the date a given week-based-year starts.
-     *
-     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
-     * @return the date that the week-based-year starts, not null
-     */
-    private LocalDate createWeekBasedYearDate(int weekBasedYear) {
-        LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDays);
-        return inFirstWeek.with(DateAdjusters.previousOrCurrent(firstDayOfWeek));
-    }
-
-    /**
-     * Creates a date from a week-based-year, week and day, all defined based
-     * on these rules.
-     * <p>
-     * These rules define the first day-of-week and the minimal number of days
-     * in the first week. This method uses the rules, as defined in the class
-     * documentation, to calculate a date.
-     * <p>
-     * The week and day-of-week are interpreted leniently.
-     * For example, a week value of -1 is two weeks before week 1, and a
-     * day-of-week value of 10 is three days after the day-of-week with the value 7.
-     *
-     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
-     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
-     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
-     *  the first day-of-week of these rules, any value
-     * @return the date equivalent to the input parameters, not null
-     */
-    public LocalDate createWeekBasedYearDate(int weekBasedYear, int weekOfWeekbasedYear, int ruleRelativeDayOfWeekValue) {
-        LocalDate startFirstWeek = createWeekBasedYearDate(weekBasedYear);
-        return startFirstWeek.plusDays((weekOfWeekbasedYear - 1L) * 7L + (ruleRelativeDayOfWeekValue - 1L));
-    }
-
-    /**
-     * Creates a date from a week-based-year and week based on these rules, combined
-     * with the standardized day-of-week.
-     * <p>
-     * These rules define the first day-of-week and the minimal number of days
-     * in the first week. This method uses the rules, as defined in the class
-     * documentation, to calculate a date.
-     * <p>
-     * The week is interpreted leniently.
-     * For example, a week value of -1 is two weeks before week 1.
-     *
-     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
-     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
-     * @param dayOfWeek  the standardized day-of-week, not null
-     * @return the date equivalent to the input parameters, not null
-     */
-    public LocalDate createWeekBasedYearDate(int weekBasedYear, int weekOfWeekbasedYear, DayOfWeek dayOfWeek) {
-        return createWeekBasedYearDate(weekBasedYear, weekOfWeekbasedYear, convertDayOfWeek(dayOfWeek));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Creates a date from a year-month, combined with a week-of-month and day
-     * based on these rules.
-     * <p>
-     * These rules define the first day-of-week and the minimal number of days
-     * in the first week. This method uses the rules, as defined in the class
-     * documentation, to calculate a date.
-     * <p>
-     * The week-of-month and day-of-week are interpreted leniently.
-     * For example, a week value of -1 is two weeks before week 1, and a
-     * day-of-week value of 10 is three days after the day-of-week with the value 7.
-     *
-     * @param yearMonth  the year-month combination to combine with, not null
-     * @param weekOfMonth  the week-of-month, based on these rules, any value
-     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
-     *  the first day-of-week of these rules, any value
-     * @return the date equivalent to the input parameters, not null
-     */
-    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
-        ISOChronology.checkNotNull(yearMonth, "YearMonth must not be null");
-        LocalDate startWeek = yearMonth.atDay(1).with(DateAdjusters.nextOrCurrent(firstDayOfWeek));
-        long weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
-        return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));
-    }
-
-    /**
-     * Creates a date from a year-month, combined with a week-of-month based
-     * on these rules, and the standardized day-of-week.
-     * <p>
-     * These rules define the first day-of-week and the minimal number of days
-     * in the first week. This method uses the rules, as defined in the class
-     * documentation, to calculate a date.
-     * <p>
-     * The week-of-month is interpreted leniently.
-     * For example, a week value of -1 is two weeks before week 1.
-     *
-     * @param yearMonth  the year-month combination to combine with, not null
-     * @param weekOfMonth  the week-of-month, based on these rules, any value
-     * @param dayOfWeek  the standardized day-of-week, not null
-     * @return the date equivalent to the input parameters, not null
-     */
-    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, DayOfWeek dayOfWeek) {
-        return createWeekOfMonthDate(yearMonth, weekOfMonth, convertDayOfWeek(dayOfWeek));
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Creates a date at the start of the week-based-year based on these rules.
+//     * <p>
+//     * These rules define the first day-of-week and the minimal number of days
+//     * in the first week. This method uses the rules, as defined in the class
+//     * documentation, to calculate the date a given week-based-year starts.
+//     *
+//     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
+//     * @return the date that the week-based-year starts, not null
+//     */
+//    private LocalDate createWeekBasedYearDate(int weekBasedYear) {
+//        LocalDate inFirstWeek = LocalDate.of(weekBasedYear, 1, minimalDays);
+//        return inFirstWeek.with(DateAdjusters.previousOrCurrent(firstDayOfWeek));
+//    }
+//
+//    /**
+//     * Creates a date from a week-based-year, week and day, all defined based
+//     * on these rules.
+//     * <p>
+//     * These rules define the first day-of-week and the minimal number of days
+//     * in the first week. This method uses the rules, as defined in the class
+//     * documentation, to calculate a date.
+//     * <p>
+//     * The week and day-of-week are interpreted leniently.
+//     * For example, a week value of -1 is two weeks before week 1, and a
+//     * day-of-week value of 10 is three days after the day-of-week with the value 7.
+//     *
+//     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
+//     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
+//     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
+//     *  the first day-of-week of these rules, any value
+//     * @return the date equivalent to the input parameters, not null
+//     */
+//    public LocalDate createWeekBasedYearDate(int weekBasedYear, int weekOfWeekbasedYear, int ruleRelativeDayOfWeekValue) {
+//        LocalDate startFirstWeek = createWeekBasedYearDate(weekBasedYear);
+//        return startFirstWeek.plusDays((weekOfWeekbasedYear - 1L) * 7L + (ruleRelativeDayOfWeekValue - 1L));
+//    }
+//
+//    /**
+//     * Creates a date from a week-based-year and week based on these rules, combined
+//     * with the standardized day-of-week.
+//     * <p>
+//     * These rules define the first day-of-week and the minimal number of days
+//     * in the first week. This method uses the rules, as defined in the class
+//     * documentation, to calculate a date.
+//     * <p>
+//     * The week is interpreted leniently.
+//     * For example, a week value of -1 is two weeks before week 1.
+//     *
+//     * @param weekBasedYear  the week-based-year, based on these rules, within the valid range
+//     * @param weekOfWeekbasedYear  the week-of-week-based-year, based on these rules, any value
+//     * @param dayOfWeek  the standardized day-of-week, not null
+//     * @return the date equivalent to the input parameters, not null
+//     */
+//    public LocalDate createWeekBasedYearDate(int weekBasedYear, int weekOfWeekbasedYear, DayOfWeek dayOfWeek) {
+//        return createWeekBasedYearDate(weekBasedYear, weekOfWeekbasedYear, convertDayOfWeek(dayOfWeek));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Creates a date from a year-month, combined with a week-of-month and day
+//     * based on these rules.
+//     * <p>
+//     * These rules define the first day-of-week and the minimal number of days
+//     * in the first week. This method uses the rules, as defined in the class
+//     * documentation, to calculate a date.
+//     * <p>
+//     * The week-of-month and day-of-week are interpreted leniently.
+//     * For example, a week value of -1 is two weeks before week 1, and a
+//     * day-of-week value of 10 is three days after the day-of-week with the value 7.
+//     *
+//     * @param yearMonth  the year-month combination to combine with, not null
+//     * @param weekOfMonth  the week-of-month, based on these rules, any value
+//     * @param ruleRelativeDayOfWeekValue  the day-of-week value, relative to
+//     *  the first day-of-week of these rules, any value
+//     * @return the date equivalent to the input parameters, not null
+//     */
+//    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, int ruleRelativeDayOfWeekValue) {
+//        ISOChronology.checkNotNull(yearMonth, "YearMonth must not be null");
+//        LocalDate startWeek = yearMonth.atDay(1).with(DateAdjusters.nextOrCurrent(firstDayOfWeek));
+//        long weekValue = (startWeek.getDayOfMonth() > minimalDays ? 2 : 1);
+//        return startWeek.plusDays((weekOfMonth - weekValue) * 7L + (ruleRelativeDayOfWeekValue - 1L));
+//    }
+//
+//    /**
+//     * Creates a date from a year-month, combined with a week-of-month based
+//     * on these rules, and the standardized day-of-week.
+//     * <p>
+//     * These rules define the first day-of-week and the minimal number of days
+//     * in the first week. This method uses the rules, as defined in the class
+//     * documentation, to calculate a date.
+//     * <p>
+//     * The week-of-month is interpreted leniently.
+//     * For example, a week value of -1 is two weeks before week 1.
+//     *
+//     * @param yearMonth  the year-month combination to combine with, not null
+//     * @param weekOfMonth  the week-of-month, based on these rules, any value
+//     * @param dayOfWeek  the standardized day-of-week, not null
+//     * @return the date equivalent to the input parameters, not null
+//     */
+//    public LocalDate createWeekOfMonthDate(YearMonth yearMonth, int weekOfMonth, DayOfWeek dayOfWeek) {
+//        return createWeekOfMonthDate(yearMonth, weekOfMonth, convertDayOfWeek(dayOfWeek));
+//    }
 
     //-----------------------------------------------------------------------
     /**

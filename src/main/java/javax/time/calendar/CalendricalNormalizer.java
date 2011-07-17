@@ -216,7 +216,7 @@ public final class CalendricalNormalizer {
      * @param ruleToDerive  the rule to derive, not null
      * @param ruleOfData  the rule of the data to derive from, may be null
      * @param chrono  the chronology to derive from, may be null
-     * @param field  the field to derive from, may be null
+     * @param field  the field to derive from, not null
      * @return the derived value for the rule, null if unable to derive
      */
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, Chronology chrono, DateTimeField field) {

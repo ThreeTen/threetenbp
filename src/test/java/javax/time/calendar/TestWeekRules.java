@@ -38,10 +38,7 @@ import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.DayOfWeek.WEDNESDAY;
-import static javax.time.calendar.MonthOfYear.DECEMBER;
-import static javax.time.calendar.MonthOfYear.JANUARY;
 import static javax.time.calendar.MonthOfYear.JULY;
-import static javax.time.calendar.MonthOfYear.MARCH;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -202,65 +199,65 @@ public class TestWeekRules {
 //        }
 //    }
 
-    //-----------------------------------------------------------------------
-    // createWeekOfMonthDate()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider = "allRules")
-    public void test_createWeekOfMonthDate_weekDay(DayOfWeek dow, int minimalDays) {
-        WeekRules rules = WeekRules.of(dow, minimalDays);
-        for (int year = 1950; year < 2050; year++) {
-            LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, 7);
-            assertEquals(date.getDayOfWeek(), dow.roll(6));
-            assertEquals(date.getYear(), year);
-            assertEquals(date.getMonthOfYear(), MARCH);
-            assertTrue(date.getDayOfMonth() >= minimalDays);
-            LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, 1);
-            assertEquals(date.plusDays(1), date2);
-            LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, 2);
-            assertEquals(date.plusDays(9), date3);
-        }
-    }
-
-    @Test(dataProvider = "allRules")
-    public void test_createWeekOfMonthDate_weekDayStandardized(DayOfWeek dow, int minimalDays) {
-        WeekRules rules = WeekRules.of(dow, minimalDays);
-        for (int year = 1950; year < 2050; year++) {
-            LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, dow.previous());
-            assertEquals(date.getDayOfWeek(), dow.roll(6));
-            assertEquals(date.getYear(), year);
-            assertEquals(date.getMonthOfYear(), MARCH);
-            assertTrue(date.getDayOfMonth() >= minimalDays);
-            LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, dow);
-            assertEquals(date.plusDays(1), date2);
-            LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, dow.next());
-            assertEquals(date.plusDays(9), date3);
-        }
-    }
-
-    public void test_createWeekOfMonthDate_examples1() {
-        WeekRules rules = WeekRules.of(MONDAY, 4);
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2008, DECEMBER), 5, 3), LocalDate.of(2008, 12, 31));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 1, 4), LocalDate.of(2009, 1, 1));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 1, 7), LocalDate.of(2009, 1, 4));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 2, 1), LocalDate.of(2009, 1, 5));
-    }
-
-    public void test_createWeekOfMonthDate_examples2() {
-        WeekRules rules = WeekRules.of(MONDAY, 5);
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2008, DECEMBER), 5, 3), LocalDate.of(2008, 12, 31));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 4), LocalDate.of(2009, 1, 1));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 7), LocalDate.of(2009, 1, 4));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 1, 1), LocalDate.of(2009, 1, 5));
-    }
-
-    public void test_createWeekOfMonthDate_examples2_overflow() {
-        WeekRules rules = WeekRules.of(MONDAY, 5);
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 3), LocalDate.of(2008, 12, 31));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 1), LocalDate.of(2008, 12, 29));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 0), LocalDate.of(2008, 12, 28));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 1), LocalDate.of(2008, 12, 29));
-        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 6, 1), LocalDate.of(2009, 2, 9));
-    }
+//    //-----------------------------------------------------------------------
+//    // createWeekOfMonthDate()
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider = "allRules")
+//    public void test_createWeekOfMonthDate_weekDay(DayOfWeek dow, int minimalDays) {
+//        WeekRules rules = WeekRules.of(dow, minimalDays);
+//        for (int year = 1950; year < 2050; year++) {
+//            LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, 7);
+//            assertEquals(date.getDayOfWeek(), dow.roll(6));
+//            assertEquals(date.getYear(), year);
+//            assertEquals(date.getMonthOfYear(), MARCH);
+//            assertTrue(date.getDayOfMonth() >= minimalDays);
+//            LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, 1);
+//            assertEquals(date.plusDays(1), date2);
+//            LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, 2);
+//            assertEquals(date.plusDays(9), date3);
+//        }
+//    }
+//
+//    @Test(dataProvider = "allRules")
+//    public void test_createWeekOfMonthDate_weekDayStandardized(DayOfWeek dow, int minimalDays) {
+//        WeekRules rules = WeekRules.of(dow, minimalDays);
+//        for (int year = 1950; year < 2050; year++) {
+//            LocalDate date = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 1, dow.previous());
+//            assertEquals(date.getDayOfWeek(), dow.roll(6));
+//            assertEquals(date.getYear(), year);
+//            assertEquals(date.getMonthOfYear(), MARCH);
+//            assertTrue(date.getDayOfMonth() >= minimalDays);
+//            LocalDate date2 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 2, dow);
+//            assertEquals(date.plusDays(1), date2);
+//            LocalDate date3 = rules.createWeekOfMonthDate(YearMonth.of(year, MARCH), 3, dow.next());
+//            assertEquals(date.plusDays(9), date3);
+//        }
+//    }
+//
+//    public void test_createWeekOfMonthDate_examples1() {
+//        WeekRules rules = WeekRules.of(MONDAY, 4);
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2008, DECEMBER), 5, 3), LocalDate.of(2008, 12, 31));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 1, 4), LocalDate.of(2009, 1, 1));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 1, 7), LocalDate.of(2009, 1, 4));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 2, 1), LocalDate.of(2009, 1, 5));
+//    }
+//
+//    public void test_createWeekOfMonthDate_examples2() {
+//        WeekRules rules = WeekRules.of(MONDAY, 5);
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2008, DECEMBER), 5, 3), LocalDate.of(2008, 12, 31));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 4), LocalDate.of(2009, 1, 1));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 7), LocalDate.of(2009, 1, 4));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 1, 1), LocalDate.of(2009, 1, 5));
+//    }
+//
+//    public void test_createWeekOfMonthDate_examples2_overflow() {
+//        WeekRules rules = WeekRules.of(MONDAY, 5);
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 3), LocalDate.of(2008, 12, 31));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 1), LocalDate.of(2008, 12, 29));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 0), LocalDate.of(2008, 12, 28));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 0, 1), LocalDate.of(2008, 12, 29));
+//        assertEquals(rules.createWeekOfMonthDate(YearMonth.of(2009, JANUARY), 6, 1), LocalDate.of(2009, 2, 9));
+//    }
 
     //-----------------------------------------------------------------------
     // convertDayOfWeek()
@@ -511,7 +508,6 @@ public class TestWeekRules {
         for (int i = 1; i <= 31; i++) {
             int w = MathUtils.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
             int d = MathUtils.floorMod(i - 3, 7) + 1;
-            System.out.println(w + " " + d);
             CalendricalNormalizer cal = CalendricalNormalizer.merge(
                 YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
             assertEquals(cal.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
@@ -535,7 +531,6 @@ public class TestWeekRules {
         for (int i = 1; i <= 31; i++) {
             int w = MathUtils.floorDiv(i - 3, 7) + 1;
             int d = MathUtils.floorMod(i - 3, 7) + 1;
-            System.out.println(w + " " + d);
             CalendricalNormalizer cal = CalendricalNormalizer.merge(
                 YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
             assertEquals(cal.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
