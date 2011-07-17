@@ -35,6 +35,8 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 
 import java.text.NumberFormat;
@@ -105,11 +107,10 @@ public class Performance {
         formatListDate(judates);
         sortListDate(judates);
 
-//        List<LocalTime> times = setupTime();
-//        List<LocalDate> dates = setupDate();
-//        sortList(times);
-//        queryList(times);
-//        formatList(dates);
+        List<LocalTime> times = setupTime();
+        sortListTime(times);
+        queryListTime(times);
+        formatListTime(times);
 
         List<GregorianCalendar> gcals = setupGCal();
         queryListGCal(gcals);
@@ -181,6 +182,65 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Derive: " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    //-----------------------------------------------------------------------
+    private static List<LocalTime> setupTime() {
+        Random random = new Random(47658758756875687L);
+        List<LocalTime> list = new ArrayList<LocalTime>(SIZE);
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            LocalTime t = LocalTime.of(random.nextInt(24), random.nextInt(60), random.nextInt(60), random.nextInt(1000000000));
+            list.add(t);
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Setup:  " + NF.format(end - start) + " ns");
+        return list;
+    }
+
+    private static void sortListTime(List<LocalTime> list) {
+        long start = System.nanoTime();
+        Collections.sort(list);
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Sort:   " + NF.format(end - start) + " ns");
+    }
+
+    private static void queryListTime(List<LocalTime> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (LocalTime dt : list) {
+            total += dt.getHourOfDay();
+            total += dt.getMinuteOfHour();
+            total += dt.getSecondOfMinute();
+            total += dt.getNanoOfSecond();
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Query:  " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    private static void formatListTime(List<LocalTime> list) {
+        StringBuilder buf = new StringBuilder();
+        DateTimeFormatter format = DateTimeFormatters.isoTime().withLocale(Locale.ENGLISH);
+        long start = System.nanoTime();
+        for (LocalTime dt : list) {
+            buf.setLength(0);
+            buf.append(format.print(dt));
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT :   Format: " + NF.format(end - start) + " ns" + " " + buf);
+    }
+
+    private static void deriveTime(List<LocalTime> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (LocalTime dt : list) {
+            total += dt.get(HOUR_OF_DAY).getValue();
+            total += dt.get(MINUTE_OF_HOUR).getValue();
+            total += dt.get(SECOND_OF_MINUTE).getValue();
+            total += dt.get(NANO_OF_SECOND).getValue();
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalT:    Derive: " + NF.format(end - start) + " ns" + " " + total);
     }
 
     //-----------------------------------------------------------------------
@@ -411,6 +471,7 @@ public class Performance {
             total += gcal.get(Calendar.DAY_OF_MONTH);
             total += gcal.get(Calendar.HOUR_OF_DAY);
             total += gcal.get(Calendar.MINUTE);
+            total += gcal.get(Calendar.SECOND);
             total += gcal.get(Calendar.SECOND);
         }
         long end = System.nanoTime();
