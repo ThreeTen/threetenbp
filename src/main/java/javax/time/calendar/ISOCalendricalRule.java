@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 
 import java.io.Serializable;
@@ -98,6 +99,10 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
             case LOCAL_TIME_ORDINAL: {
                 LocalTime time = merger.getTime(false);
                 if (time == null) {
+                    DateTimeField nod = merger.getField(NANO_OF_DAY, false);
+                    if (nod != null) {
+                        return (T) LocalTime.ofNanoOfDay(nod.getValue());
+                    }
                     DateTimeField lod = merger.getField(MILLI_OF_DAY, false);
                     if (lod != null) {
                         return (T) LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
