@@ -803,7 +803,7 @@ public final class CalendricalNormalizer {
     //-----------------------------------------------------------------------
     @Override
     public String toString() {
-        return getInput().toString();
+        return getInput().toString() + (errors.size() > 0 ? " " + errors : "");
     }
 
     //-----------------------------------------------------------------------
