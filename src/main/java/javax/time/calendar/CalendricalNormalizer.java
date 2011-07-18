@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -196,8 +198,8 @@ public final class CalendricalNormalizer {
                     case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (R) chrono;
                     // other cases are not so simple, so drop through
                 }
-            } else if (ruleToDerive instanceof ISODateTimeRule) {
-                return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
+//            } else if (ruleToDerive instanceof ISODateTimeRule) {
+//                return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
             }
         }
         CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, date, time, offset, zoneId, chrono, fields);
@@ -362,10 +364,23 @@ public final class CalendricalNormalizer {
      * @return the date, may be null
      */
     public LocalTime getTime(boolean storeErrorIfNull) {
-        if (storeErrorIfNull && time == null) {
+        LocalTime result = time;
+        if (fields != null) {
+            for (DateTimeField field : fields.values()) {
+                long fieldTime = field.getRule().createTime(field.getValue(), this);
+                if (fieldTime >= 0) {
+                    if (result != null && fieldTime != result.toNanoOfDay()) {
+                        addError("Clash: " + field + " and " + fieldTime);
+                        return null;
+                    }
+                    result = LocalTime.ofNanoOfDay(fieldTime);
+                }
+            }
+        }
+        if (storeErrorIfNull && result == null) {
             addError("Missing LocalTime");
         }
-        return time;
+        return result;
     }
 
     /**
@@ -599,6 +614,9 @@ public final class CalendricalNormalizer {
     private void normalize() {
         // do not call from the constructor
         if (fields != null && fields.size() > 0) {
+            if (time != null) {
+                setField(NANO_OF_DAY.field(time.toNanoOfDay()), true);
+            }
             normalizeAuto();
             if (errors.size() == 0) {
                 normalizeManual();
@@ -752,6 +770,9 @@ public final class CalendricalNormalizer {
             return (R) this;
         }
         try {
+            if (time != null) {
+                setField(NANO_OF_DAY.field(time.toNanoOfDay()), true);
+            }
             R result = ruleToDerive.deriveFrom(this);
             if (result == null && ruleToDerive instanceof DateTimeRule) {
                 result = (R) deriveField((DateTimeRule) ruleToDerive);

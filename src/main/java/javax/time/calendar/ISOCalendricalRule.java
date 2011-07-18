@@ -96,28 +96,7 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
     protected T deriveFrom(CalendricalNormalizer merger) {
         switch (ordinal) {
             case LOCAL_DATE_ORDINAL: return (T) merger.getDate(true);
-            case LOCAL_TIME_ORDINAL: {
-                LocalTime time = merger.getTime(false);
-                if (time == null) {
-                    DateTimeField nod = merger.getField(NANO_OF_DAY, false);
-                    if (nod != null) {
-                        return (T) LocalTime.ofNanoOfDay(nod.getValue());
-                    }
-                    DateTimeField lod = merger.getField(MILLI_OF_DAY, false);
-                    if (lod != null) {
-                        return (T) LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
-                    }
-                    DateTimeField sod = merger.getField(SECOND_OF_DAY, false);
-                    if (sod != null) {
-                        return (T) LocalTime.ofSecondOfDay(sod.getValue());
-                    }
-                    DateTimeField mod = merger.getField(MINUTE_OF_DAY, false);
-                    if (mod != null) {
-                        return (T) LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));
-                    }
-                }
-                return (T) time;
-            }
+            case LOCAL_TIME_ORDINAL: return (T) merger.getTime(false);
             case LOCAL_DATE_TIME_ORDINAL: return (T) LocalDateTime.deriveFrom(merger);
             case OFFSET_DATE_ORDINAL: return (T) OffsetDate.deriveFrom(merger);
             case OFFSET_TIME_ORDINAL: return (T) OffsetTime.deriveFrom(merger);

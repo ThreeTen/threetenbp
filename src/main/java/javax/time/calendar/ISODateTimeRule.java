@@ -243,6 +243,29 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
+    protected long createTime(long ruleValue, CalendricalNormalizer merger) {
+        switch (ordinal) {
+            case NANO_OF_DAY_ORDINAL: return ruleValue;
+            case MILLI_OF_DAY_ORDINAL: return MathUtils.safeMultiply(ruleValue, 1000000);
+            case SECOND_OF_DAY_ORDINAL: return MathUtils.safeMultiply(ruleValue, 1000000000);
+            case MINUTE_OF_DAY_ORDINAL: return MathUtils.safeMultiply(ruleValue, 60000000000L);
+        }
+        return -1;
+    }
+
+//    @Override
+//    protected LocalTime createTime(long ruleValue, CalendricalNormalizer merger) {
+//        switch (ordinal) {
+//            case NANO_OF_DAY_ORDINAL: return LocalTime.ofNanoOfDay(ruleValue);
+//            case MILLI_OF_DAY_ORDINAL: return LocalTime.ofNanoOfDay(MathUtils.safeMultiply(ruleValue, 1000000));
+//            case SECOND_OF_DAY_ORDINAL: return LocalTime.ofSecondOfDay(ruleValue);
+//            case MINUTE_OF_DAY_ORDINAL: return LocalTime.ofSecondOfDay(MathUtils.safeMultiply(ruleValue, 60));
+//        }
+//        return null;
+//    }
+
+    //-----------------------------------------------------------------------
+    @Override
     protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
         return deriveFrom(merger.getDate(false), merger.getTime(false), merger.getOffset(false));
     }
@@ -269,36 +292,36 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     case YEAR_ORDINAL: return field(date.getYear());
                 }
             }
-        } else {
-            if (time != null) {
-                switch (ordinal) {
-                    case NANO_OF_MILLI_ORDINAL: return field(time.getNanoOfSecond() % 1000000L);
-                    case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
-                    case NANO_OF_MINUTE_ORDINAL: return field(time.toNanoOfDay() % 60L * 1000000000L);
-                    case NANO_OF_HOUR_ORDINAL: return field(time.toNanoOfDay() % 3600L * 1000000000L);
-                    case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
-                    case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
-                    case MILLI_OF_MINUTE_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 60 * 1000L);
-                    case MILLI_OF_HOUR_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 3600 * 1000L);
-                    case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
-                    case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
-                    case SECOND_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour() * 60 + time.getSecondOfMinute());
-                    case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
-                    case EPOCH_SECOND_ORDINAL: {
-                        if (date != null && offset != null) {
-                            field(OffsetDateTime.of(date, time, offset).toEpochSecond());
-                        }
-                        break;
-                    }
-                    case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
-                    case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
-                    case CLOCK_HOUR_OF_AMPM_ORDINAL: return field(((time.getHourOfDay() + 11) % 12) + 1);
-                    case HOUR_OF_AMPM_ORDINAL: return field(time.getHourOfDay() % 12);
-                    case CLOCK_HOUR_OF_DAY_ORDINAL: return field(((time.getHourOfDay() + 23) % 24) + 1);
-                    case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
-                    case AMPM_OF_DAY_ORDINAL: return field(time.getHourOfDay() / 12);
-                }
-            }
+//        } else {
+//            if (time != null) {
+//                switch (ordinal) {
+//                    case NANO_OF_MILLI_ORDINAL: return field(time.getNanoOfSecond() % 1000000L);
+//                    case NANO_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond());
+//                    case NANO_OF_MINUTE_ORDINAL: return field(time.toNanoOfDay() % 60L * 1000000000L);
+//                    case NANO_OF_HOUR_ORDINAL: return field(time.toNanoOfDay() % 3600L * 1000000000L);
+//                    case NANO_OF_DAY_ORDINAL: return field(time.toNanoOfDay());
+//                    case MILLI_OF_SECOND_ORDINAL: return field(time.getNanoOfSecond() / 1000000);
+//                    case MILLI_OF_MINUTE_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 60 * 1000L);
+//                    case MILLI_OF_HOUR_ORDINAL: return field((time.toNanoOfDay() / 1000000L) % 3600 * 1000L);
+//                    case MILLI_OF_DAY_ORDINAL: return field(time.toNanoOfDay() / 1000000L);
+//                    case SECOND_OF_MINUTE_ORDINAL: return field(time.getSecondOfMinute());
+//                    case SECOND_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour() * 60 + time.getSecondOfMinute());
+//                    case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
+//                    case EPOCH_SECOND_ORDINAL: {
+//                        if (date != null && offset != null) {
+//                            field(OffsetDateTime.of(date, time, offset).toEpochSecond());
+//                        }
+//                        break;
+//                    }
+//                    case MINUTE_OF_HOUR_ORDINAL: return field(time.getMinuteOfHour());
+//                    case MINUTE_OF_DAY_ORDINAL: return field(time.toSecondOfDay() / 60);
+//                    case CLOCK_HOUR_OF_AMPM_ORDINAL: return field(((time.getHourOfDay() + 11) % 12) + 1);
+//                    case HOUR_OF_AMPM_ORDINAL: return field(time.getHourOfDay() % 12);
+//                    case CLOCK_HOUR_OF_DAY_ORDINAL: return field(((time.getHourOfDay() + 23) % 24) + 1);
+//                    case HOUR_OF_DAY_ORDINAL: return field(time.getHourOfDay());
+//                    case AMPM_OF_DAY_ORDINAL: return field(time.getHourOfDay() / 12);
+//                }
+//            }
         }
         return null;
     }

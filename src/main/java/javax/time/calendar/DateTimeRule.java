@@ -324,6 +324,21 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 
     //-----------------------------------------------------------------------
     /**
+     * Override point to allow the rule to create a {@code LocalTime} from the fields in the merger.
+     * <p>
+     * This implementation does nothing.
+     * 
+     * @param ruleValue  the value of this rule to convert to a time, may be out of range
+     * @param merger  the merger to process, not null
+     * @return the nano-of-day time, negative if unable to create
+     */
+    protected long createTime(long ruleValue, CalendricalNormalizer merger) {
+        // override if able to create a LocalTime
+        return -1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the base rule that this rule is related to.
      * <p>
      * Each rule typically has a connection to another rule.

@@ -33,12 +33,19 @@ package javax.time.calendar;
 
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 import static javax.time.calendar.MonthOfYear.FEBRUARY;
@@ -79,6 +86,12 @@ public class TestCalendricalNomalizer {
     private static final DateTimeField FIELD_DOY_181 = DAY_OF_YEAR.field(181);
     private static final DateTimeField FIELD_ZEM_2011_06 = ZERO_EPOCH_MONTH.field(2011 * 12 + 6 - 1);
     private static final DateTimeField FIELD_AWOM_5 = ALIGNED_WEEK_OF_MONTH.field(5);
+    private static final DateTimeField FIELD_AP_0 = AMPM_OF_DAY.field(0);
+    private static final DateTimeField FIELD_HAP_11 = HOUR_OF_AMPM.field(11);
+    private static final DateTimeField FIELD_HOD_11 = HOUR_OF_DAY.field(11);
+    private static final DateTimeField FIELD_MOD_690 = MINUTE_OF_DAY.field(690);
+    private static final DateTimeField FIELD_MOH_30 = MINUTE_OF_HOUR.field(30);
+    private static final DateTimeField FIELD_SOM_0 = SECOND_OF_MINUTE.field(0);
 
     //-----------------------------------------------------------------------
     @DataProvider(name = "merge")
@@ -122,7 +135,13 @@ public class TestCalendricalNomalizer {
             {cals(DATE_TIME_2011_06_30_11_30), DAY_OF_MONTH, FIELD_DOM_30},
             {cals(DATE_TIME_2011_06_30_11_30), DAY_OF_WEEK, FIELD_DOW_4},
             {cals(DATE_TIME_2011_06_30_11_30), ALIGNED_WEEK_OF_MONTH, FIELD_AWOM_5},
-            // TODO time
+            {cals(DATE_TIME_2011_06_30_11_30), AmPmOfDay.rule(), AmPmOfDay.AM},
+            {cals(DATE_TIME_2011_06_30_11_30), AMPM_OF_DAY, FIELD_AP_0},
+            {cals(DATE_TIME_2011_06_30_11_30), HOUR_OF_AMPM, FIELD_HAP_11},
+            {cals(DATE_TIME_2011_06_30_11_30), HOUR_OF_DAY, FIELD_HOD_11},
+            {cals(DATE_TIME_2011_06_30_11_30), MINUTE_OF_DAY, FIELD_MOD_690},
+            {cals(DATE_TIME_2011_06_30_11_30), MINUTE_OF_HOUR, FIELD_MOH_30},
+            {cals(DATE_TIME_2011_06_30_11_30), SECOND_OF_MINUTE, FIELD_SOM_0},
             
             // from LocalDate
             {cals(DATE_2011_06_30), LocalDate.rule(), DATE_2011_06_30},
@@ -150,6 +169,13 @@ public class TestCalendricalNomalizer {
             {cals(DATE_2011_06_30), DAY_OF_MONTH, FIELD_DOM_30},
             {cals(DATE_2011_06_30), DAY_OF_WEEK, FIELD_DOW_4},
             {cals(DATE_2011_06_30), ALIGNED_WEEK_OF_MONTH, FIELD_AWOM_5},
+            {cals(DATE_2011_06_30), AmPmOfDay.rule(), null},
+            {cals(DATE_2011_06_30), AMPM_OF_DAY, null},
+            {cals(DATE_2011_06_30), HOUR_OF_AMPM, null},
+            {cals(DATE_2011_06_30), HOUR_OF_DAY, null},
+            {cals(DATE_2011_06_30), MINUTE_OF_DAY, null},
+            {cals(DATE_2011_06_30), MINUTE_OF_HOUR, null},
+            {cals(DATE_2011_06_30), SECOND_OF_MINUTE, null},
             
             // from Year
             {cals(YEAR_2011), LocalDate.rule(), null},
@@ -313,6 +339,40 @@ public class TestCalendricalNomalizer {
             {cals(THURSDAY), DAY_OF_WEEK, DAY_OF_WEEK.field(4)},
             {cals(THURSDAY), ALIGNED_WEEK_OF_MONTH, null},
             
+            // from LocalTime
+            {cals(TIME_11_30), LocalDate.rule(), null},
+            {cals(TIME_11_30), LocalTime.rule(), TIME_11_30},
+            {cals(TIME_11_30), LocalDateTime.rule(), null},
+            {cals(TIME_11_30), OffsetDate.rule(), null},
+            {cals(TIME_11_30), OffsetTime.rule(), null},
+            {cals(TIME_11_30), OffsetDateTime.rule(), null},
+            {cals(TIME_11_30), ZonedDateTime.rule(), null},
+            {cals(TIME_11_30), ZoneOffset.rule(), null},
+            {cals(TIME_11_30), ZoneId.rule(), null},
+            {cals(TIME_11_30), Chronology.rule(), ISOChronology.INSTANCE},
+            {cals(TIME_11_30), Year.rule(), null},
+            {cals(TIME_11_30), YearMonth.rule(), null},
+            {cals(TIME_11_30), MonthDay.rule(), null},
+            {cals(TIME_11_30), QuarterOfYear.rule(), null},
+            {cals(TIME_11_30), MonthOfYear.rule(), null},
+            {cals(TIME_11_30), DayOfWeek.rule(), null},
+            {cals(TIME_11_30), YEAR, null},
+            {cals(TIME_11_30), QUARTER_OF_YEAR, null},
+            {cals(TIME_11_30), ZERO_EPOCH_MONTH, null},
+            {cals(TIME_11_30), MONTH_OF_YEAR, null},
+            {cals(TIME_11_30), MONTH_OF_QUARTER, null},
+            {cals(TIME_11_30), DAY_OF_YEAR, null},
+            {cals(TIME_11_30), DAY_OF_MONTH, null},
+            {cals(TIME_11_30), DAY_OF_WEEK, null},
+            {cals(TIME_11_30), ALIGNED_WEEK_OF_MONTH, null},
+            {cals(TIME_11_30), AmPmOfDay.rule(), AmPmOfDay.AM},
+            {cals(TIME_11_30), AMPM_OF_DAY, FIELD_AP_0},
+            {cals(TIME_11_30), HOUR_OF_AMPM, FIELD_HAP_11},
+            {cals(TIME_11_30), HOUR_OF_DAY, FIELD_HOD_11},
+            {cals(TIME_11_30), MINUTE_OF_DAY, FIELD_MOD_690},
+            {cals(TIME_11_30), MINUTE_OF_HOUR, FIELD_MOH_30},
+            {cals(TIME_11_30), SECOND_OF_MINUTE, FIELD_SOM_0},
+            
             // create date
             {cals(TIME_11_30), LocalDate.rule(), null},
             {cals(DATE_2011_06_30, TIME_11_30), LocalDate.rule(), DATE_2011_06_30},
@@ -356,33 +416,6 @@ public class TestCalendricalNomalizer {
             
             // create LocalDateTime
             {cals(DATE_2011_06_30, TIME_11_30), LocalDateTime.rule(), DATE_TIME_2011_06_30_11_30},
-            
-            // from LocalTime
-            {cals(TIME_11_30), LocalDate.rule(), null},
-            {cals(TIME_11_30), LocalTime.rule(), TIME_11_30},
-            {cals(TIME_11_30), LocalDateTime.rule(), null},
-            {cals(TIME_11_30), OffsetDate.rule(), null},
-            {cals(TIME_11_30), OffsetTime.rule(), null},
-            {cals(TIME_11_30), OffsetDateTime.rule(), null},
-            {cals(TIME_11_30), ZonedDateTime.rule(), null},
-            {cals(TIME_11_30), ZoneOffset.rule(), null},
-            {cals(TIME_11_30), ZoneId.rule(), null},
-            {cals(TIME_11_30), Chronology.rule(), ISOChronology.INSTANCE},
-            {cals(TIME_11_30), Year.rule(), null},
-            {cals(TIME_11_30), YearMonth.rule(), null},
-            {cals(TIME_11_30), MonthDay.rule(), null},
-            {cals(TIME_11_30), QuarterOfYear.rule(), null},
-            {cals(TIME_11_30), MonthOfYear.rule(), null},
-            {cals(TIME_11_30), DayOfWeek.rule(), null},
-            {cals(TIME_11_30), YEAR, null},
-            {cals(TIME_11_30), QUARTER_OF_YEAR, null},
-            {cals(TIME_11_30), ZERO_EPOCH_MONTH, null},
-            {cals(TIME_11_30), MONTH_OF_YEAR, null},
-            {cals(TIME_11_30), MONTH_OF_QUARTER, null},
-            {cals(TIME_11_30), DAY_OF_YEAR, null},
-            {cals(TIME_11_30), DAY_OF_MONTH, null},
-            {cals(TIME_11_30), DAY_OF_WEEK, null},
-            {cals(TIME_11_30), ALIGNED_WEEK_OF_MONTH, null},
         };
     }
 
