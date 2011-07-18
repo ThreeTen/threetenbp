@@ -884,11 +884,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the hours subtracted, not null
      */
     public LocalTime minusHours(long hours) {
-        if (hours == 0) {
-            return this;
-        }
-        int newHour = ((int) -(hours % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
-        return create(newHour, minute, second, nano);
+        return plusHours(-(hours % HOURS_PER_DAY));
     }
 
     /**
@@ -903,17 +899,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the minutes subtracted, not null
      */
     public LocalTime minusMinutes(long minutes) {
-        if (minutes == 0) {
-            return this;
-        }
-        int mofd = hour * MINUTES_PER_HOUR + minute;
-        int newMofd = ((int) -(minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-        if (mofd == newMofd) {
-            return this;
-        }
-        int newHour = newMofd / MINUTES_PER_HOUR;
-        int newMinute = newMofd % MINUTES_PER_HOUR;
-        return create(newHour, newMinute, second, nano);
+        return plusMinutes(-(minutes % MINUTES_PER_DAY));
     }
 
     /**
@@ -928,19 +914,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the seconds subtracted, not null
      */
     public LocalTime minusSeconds(long seconds) {
-        if (seconds == 0) {
-            return this;
-        }
-        int sofd = hour * SECONDS_PER_HOUR +
-                    minute * SECONDS_PER_MINUTE + second;
-        int newSofd = ((int) -(seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
-        if (sofd == newSofd) {
-            return this;
-        }
-        int newHour = newSofd / SECONDS_PER_HOUR;
-        int newMinute = (newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
-        int newSecond = newSofd % SECONDS_PER_MINUTE;
-        return create(newHour, newMinute, newSecond, nano);
+        return plusSeconds(-(seconds % SECONDS_PER_DAY));
     }
 
     /**
@@ -955,19 +929,7 @@ public final class LocalTime
      * @return a {@code LocalTime} based on this time with the nanoseconds subtracted, not null
      */
     public LocalTime minusNanos(long nanos) {
-        if (nanos == 0) {
-            return this;
-        }
-        long nofd = toNanoOfDay();
-        long newNofd = (-(nanos % NANOS_PER_DAY) + nofd + NANOS_PER_DAY) % NANOS_PER_DAY;
-        if (nofd == newNofd) {
-            return this;
-        }
-        int newHour = (int) (newNofd / NANOS_PER_HOUR);
-        int newMinute = (int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR);
-        int newSecond = (int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_MINUTE);
-        int newNano = (int) (newNofd % NANOS_PER_SECOND);
-        return create(newHour, newMinute, newSecond, newNano);
+        return plusNanos(-(nanos % NANOS_PER_DAY));
     }
 
     //-----------------------------------------------------------------------
