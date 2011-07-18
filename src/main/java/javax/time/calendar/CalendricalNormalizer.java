@@ -205,8 +205,8 @@ public final class CalendricalNormalizer {
                     case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (R) chrono;
                     // other cases are not so simple, so drop through
                 }
-//            } else if (ruleToDerive instanceof ISODateTimeRule) {
-//                return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
+            } else if (ruleToDerive instanceof ISODateTimeRule) {
+                return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
             }
         }
         CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, date, time, offset, zoneId, chrono, fields);
@@ -232,7 +232,7 @@ public final class CalendricalNormalizer {
         ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         ISOChronology.checkNotNull(field, "DateTimeField must not be null");
         CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, null, null, null, null, chrono, Collections.singleton(field));
-        merger.normalize();
+//        merger.normalize();
         return merger.derive(ruleToDerive);
     }
 
