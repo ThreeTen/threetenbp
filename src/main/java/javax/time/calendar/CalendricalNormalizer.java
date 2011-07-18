@@ -39,7 +39,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,15 +69,11 @@ public final class CalendricalNormalizer {
     /**
      * The rule of the calendrical supplying the normalized fields.
      */
-    private final CalendricalRule<?> rule;
+    private final CalendricalRule<?> sourceRule;
     /**
      * The date.
      */
     private LocalDate date;
-    /**
-     * The time.
-     */
-    private LocalTime time;
     /**
      * The offset.
      */
@@ -92,13 +87,25 @@ public final class CalendricalNormalizer {
      */
     private Chronology chronology;
     /**
-     * The map of fields.
+     * The rules (half of a map).
      */
-    private Map<DateTimeRule, DateTimeField> fields;
+    private DateTimeRule[] rules = new DateTimeRule[16];
+    /**
+     * The rule values (half of a map).
+     */
+    private long[] ruleValues = new long[16];
+    /**
+     * The count of rules.
+     */
+    private int ruleCount;
     /**
      * The errors that occur during normalization.
      */
     private final Set<String> errors = new LinkedHashSet<String>();
+    /**
+     * A cached {@code LocalTime} object.
+     */
+    private LocalTime cachedTime;
 
     //-----------------------------------------------------------------------
     /**
@@ -238,13 +245,10 @@ public final class CalendricalNormalizer {
      */
     private CalendricalNormalizer(Calendrical[] calendricals, List<CalendricalNormalizer> mergers) {
         this.input = Collections.unmodifiableList(Arrays.asList(calendricals));
-        this.rule = null;
+        this.sourceRule = null;
         for (CalendricalNormalizer merger : mergers) {
             if (merger.date != null) {
                 setDate(merger.date, true);
-            }
-            if (merger.time != null) {
-                setTime(merger.time, true);
             }
             if (merger.offset != null) {
                 setOffset(merger.offset, true);
@@ -255,10 +259,11 @@ public final class CalendricalNormalizer {
             if (merger.chronology != null) {
                 setChronology(merger.chronology, true);
             }
-            if (merger.fields != null) {
-                for (DateTimeField field : merger.fields.values()) {
-                    setField(field, true);
-                }
+            for (int i = 0; i < merger.ruleCount; i++) {
+                setField(merger.rules[i], merger.ruleValues[i], true);
+            }
+            if (merger.cachedTime != null) {
+                cachedTime = merger.cachedTime;
             }
         }
     }
@@ -277,18 +282,21 @@ public final class CalendricalNormalizer {
     private CalendricalNormalizer(
             CalendricalRule<?> ruleOfData, LocalDate date, LocalTime time, ZoneOffset offset,
             ZoneId zone, Chronology chronology, Iterable<DateTimeField> fields) {
-        this.rule = ruleOfData;
+        this.sourceRule = ruleOfData;
         this.date = date;
-        this.time = time;
         this.offset = offset;
         this.zone = zone;
         this.chronology = chronology;
         if (fields != null) {
             for (DateTimeField field : fields) {
-                setField(field, false);  // can use false here as DateTimeFields ensure no rule clashes
+                setField(field.getRule(), field.getValue(), false);  // can use false here as DateTimeFields ensure no rule clashes
             }
-            getInput();  // field map is modifiable, so lock input now
         }
+        if (time != null) {
+            setField(NANO_OF_DAY, time.toNanoOfDay(), true);
+        }
+        getInput();  // field map is modifiable, so lock input now
+        this.cachedTime = time;
     }
 
     //-----------------------------------------------------------------------
@@ -303,9 +311,6 @@ public final class CalendricalNormalizer {
             if (date != null) {
                 list.add(date);
             }
-            if (time != null) {
-                list.add(time);
-            }
             if (offset != null) {
                 list.add(offset);
             }
@@ -315,9 +320,10 @@ public final class CalendricalNormalizer {
             if (chronology != null) {
                 list.add(chronology);
             }
-            if (fields != null) {
-                list.addAll(fields.values());
-            }
+            // TODO
+//            if (fields != null) {
+//                list.addAll(fields.values());
+//            }
             input = Collections.unmodifiableList(list);
         }
         return input;
@@ -332,7 +338,7 @@ public final class CalendricalNormalizer {
      * @return the rule of the data, may be null
      */
     public CalendricalRule<?> getRule() {
-        return rule;
+        return sourceRule;
     }
 
     //-----------------------------------------------------------------------
@@ -364,23 +370,24 @@ public final class CalendricalNormalizer {
      * @return the date, may be null
      */
     public LocalTime getTime(boolean storeErrorIfNull) {
-        LocalTime result = time;
-        if (fields != null) {
-            for (DateTimeField field : fields.values()) {
-                long fieldTime = field.getRule().createTime(field.getValue(), this);
-                if (fieldTime >= 0) {
-                    if (result != null && fieldTime != result.toNanoOfDay()) {
-                        addError("Clash: " + field + " and " + fieldTime);
-                        return null;
-                    }
-                    result = LocalTime.ofNanoOfDay(fieldTime);
+        long result = -1;
+        for (int i = 0; i < ruleCount; i++) {
+            long fieldTime = rules[i].createTime(ruleValues[i], this);
+            if (fieldTime >= 0) {
+                if (result >= 0 && fieldTime != result) {
+                    addError("Clash creating LocalTime: " + LocalTime.ofNanoOfDay(result) + " and " + LocalTime.ofNanoOfDay(fieldTime));
+                    return null;
                 }
+                result = fieldTime;
             }
         }
-        if (storeErrorIfNull && result == null) {
+        if (result >= 0) {
+            return (cachedTime != null && cachedTime.toNanoOfDay() == result ? cachedTime : LocalTime.ofNanoOfDay(result));
+        }
+        if (storeErrorIfNull) {
             addError("Missing LocalTime");
         }
-        return result;
+        return null;
     }
 
     /**
@@ -445,11 +452,15 @@ public final class CalendricalNormalizer {
      * @return the field, may be null
      */
     public DateTimeField getField(DateTimeRule rule, boolean storeErrorIfNull) {
-        DateTimeField field = (fields == null ? null : fields.get(rule));
-        if (storeErrorIfNull && field == null) {
+        for (int i = 0; i < ruleCount; i++) {
+            if (rules[i].equals(rule)) {
+                return DateTimeField.of(rules[i], ruleValues[i]);
+            }
+        }
+        if (storeErrorIfNull) {
             addError("Missing field " + rule.getName());
         }
-        return field;
+        return null;
     }
 
     /**
@@ -474,18 +485,39 @@ public final class CalendricalNormalizer {
     }
 
     private DateTimeField deriveField(DateTimeRule ruleToDerive) {
-        if (fields != null) {
-            DateTimeRule baseRule = ruleToDerive.getBaseRule();
-            for (DateTimeField field : fields.values()) {
-                if (field.getRule().getBaseRule().equals(baseRule)) {
-                    DateTimeField result = field.derive(ruleToDerive);
-                    if (result != null) {
-                        return result;
-                    }
+        DateTimeRule baseRule = ruleToDerive.getBaseRule();
+        for (int i = 0; i < ruleCount; i++) {
+            DateTimeRule rule = rules[i];
+            long ruleValue = ruleValues[i];
+            if (rule.equals(ruleToDerive)) {
+                return DateTimeField.of(ruleToDerive, ruleValue);
+            }
+            if (rule.getBaseRule().equals(baseRule) &&
+                    rule.comparePeriodUnit(ruleToDerive) <= 0 &&
+                    rule.comparePeriodRange(ruleToDerive) >= 0) {
+                DateTimeField result = derive(rule, ruleValue, ruleToDerive);
+                if (result != null) {
+                    return result;
                 }
             }
         }
         return null;
+    }
+
+    private static DateTimeField derive(DateTimeRule rule, long ruleValue, DateTimeRule ruleToDerive) {
+        // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
+        long period = rule.convertToPeriod(ruleValue);
+        PeriodField bottomConversion = ruleToDerive.getPeriodUnit().getEquivalentPeriod(rule.getPeriodUnit());
+        period = MathUtils.floorDiv(period, bottomConversion.getAmount());
+        PeriodUnit rangeToDerive = ruleToDerive.getPeriodRange();
+        if (rangeToDerive != null && rule.comparePeriodRange(ruleToDerive) != 0) {
+//                if (periodRange.equals(DAYS)) {  // TODO: hack
+//                    periodRange = _24_HOURS;
+//                }
+            PeriodField topConversion = rangeToDerive.getEquivalentPeriod(ruleToDerive.getPeriodUnit());
+            period = MathUtils.floorMod(period, topConversion.getAmount());
+        }
+        return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
     }
 
     //-----------------------------------------------------------------------
@@ -514,7 +546,8 @@ public final class CalendricalNormalizer {
      * @param storeErrorIfClash  true to store an error if the time clashes with the stored value
      */
     public void setTime(LocalTime time, boolean storeErrorIfClash) {
-        this.time = set(this.time, time, storeErrorIfClash);
+        setField(NANO_OF_DAY, time.toNanoOfDay(), storeErrorIfClash);
+        this.cachedTime = time;
     }
 
     /**
@@ -573,15 +606,17 @@ public final class CalendricalNormalizer {
      * @param field  the field to store, null ignored
      * @param storeErrorIfClash  true to store an error if the field clashes with an existing field
      */
-    public void setField(DateTimeField field, boolean storeErrorIfClash) {
-        if (field != null) {
-            if (fields == null) {
-                fields = new HashMap<DateTimeRule, DateTimeField>();
+    public void setField(DateTimeRule rule, long ruleValue, boolean storeErrorIfClash) {
+        for (int j = 0; j < ruleCount; j++) {
+            if (rules[j].equals(rule)) {
+                if (ruleValues[j] != ruleValue) {
+                    addError("Clash: " + rule + " " + ruleValues[j] + " and " + ruleValue);
+                }
+                break;
             }
-            DateTimeField curField = fields.get(field.getRule());
-            DateTimeField newField = set(curField, field, storeErrorIfClash);
-            fields.put(newField.getRule(), newField);
         }
+        rules[ruleCount] = rule;
+        ruleValues[ruleCount++] = ruleValue;
     }
 
     private <T> T set(T curObj, T newObj, boolean storeErrorIfClash) {
@@ -597,11 +632,9 @@ public final class CalendricalNormalizer {
     // phase 1
     //-----------------------------------------------------------------------
     private void validate() {
-        if (fields != null) {
-            for (DateTimeField field : fields.values()) {
-                if (field.isValidValue() == false) {
-                    addError("Value out of range: " + field);
-                }
+        for (int i = 0; i < ruleCount; i++) {
+            if (rules[i].getValueRange().isValidValue(ruleValues[i]) == false) {
+                addError("Value out of range: " + rules[i] + " " + ruleValues[i]);
             }
         }
     }
@@ -613,58 +646,53 @@ public final class CalendricalNormalizer {
      */
     private void normalize() {
         // do not call from the constructor
-        if (fields != null && fields.size() > 0) {
-            if (time != null) {
-                setField(NANO_OF_DAY.field(time.toNanoOfDay()), true);
-            }
-            normalizeAuto();
+        normalizeAuto();
+        if (errors.size() == 0) {
+            normalizeManual();
             if (errors.size() == 0) {
-                normalizeManual();
-                if (errors.size() == 0) {
-                    normalizeCrossCheck();
-                }
-            }
-            if (fields.size() == 0) {
-                fields = null;
+                normalizeCrossCheck();
             }
         }
     }
 
     private void normalizeAuto() {
         // normalize each individual field in isolation
-        for (DateTimeField field : new ArrayList<DateTimeField>(fields.values())) {
-            DateTimeField normalized = field.normalized();
-            if (normalized != field) {
-                setField(normalized, true);
-                fields.remove(field.getRule());
+        for (int i = 0; i < ruleCount; i++) {
+            DateTimeRule rule = rules[i];
+            DateTimeRule normalizationRule = rule.getNormalizationRule();
+            if (rule.equals(normalizationRule) == false) {
+                long newValue = normalizationRule.convertFromPeriod(rule.convertToPeriod(ruleValues[i]));
+                setField(normalizationRule, newValue, true);
+                removeRule(i--);
             }
         }
-        if (fields.size() < 2 || errors.size() > 0) {
+        if (ruleCount < 2 || errors.size() > 0) {
             return;
         }
         
         // group according to base rule
         Map<DateTimeRule, List<DateTimeField>> grouped = new HashMap<DateTimeRule, List<DateTimeField>>();
-        for (DateTimeField field : fields.values()) {
-            DateTimeRule baseRule = field.getRule().getBaseRule();
+        for (int i = 0; i < ruleCount; i++) {
+            DateTimeRule baseRule = rules[i].getBaseRule();
             List<DateTimeField> groupedList = grouped.get(baseRule);
             if (groupedList == null) {
                 groupedList = new ArrayList<DateTimeField>();
                 grouped.put(baseRule, groupedList);
             }
-            groupedList.add(field);
+            groupedList.add(DateTimeField.of(rules[i], ruleValues[i]));
         }
         
         // normalize groups
         // TODO: loop again (group again) if register on group is public
-        fields.clear();
+        ruleCount = 0;
         for (Map.Entry<DateTimeRule, List<DateTimeField>> entry : grouped.entrySet()) {
             List<DateTimeField> group = entry.getValue();
             if (group.size() >= 2) {
                 mergeGroup(entry.getKey(), group);
             }
             for (DateTimeField field : group) {
-                fields.put(field.getRule(), field);  // should be no clashes here
+                rules[ruleCount] = field.getRule();
+                ruleValues[ruleCount++] = field.getValue();  // should be no clashes here
             }
         }
     }
@@ -740,22 +768,29 @@ public final class CalendricalNormalizer {
     }
 
     private void normalizeManual() {
-        for (DateTimeField field : fields.values()) {
-            field.getRule().normalize(this);
+        for (int i = 0; i < ruleCount; i++) {
+            rules[i].normalize(this);
         }
     }
 
     private void normalizeCrossCheck() {
-        for (Iterator<DateTimeField> it = fields.values().iterator(); it.hasNext(); ) {
-            DateTimeField field = it.next();
-            DateTimeField derived = field.getRule().deriveFrom(this);
+        for (int i = 0; i < ruleCount; i++) {
+            DateTimeField derived = rules[i].deriveFrom(this);
             if (derived != null) {
-                if (derived.equals(field) == false) {
-                    addError("Cross-check clash: " + field + " and " + derived);
+                if (derived.getValue() != ruleValues[i]) {
+                    addError("Cross-check clash: " + derived + " and " + ruleValues[i]);
                 } else {
-                    it.remove();
+                    removeRule(i--);
                 }
             }
+        }
+    }
+
+    private void removeRule(int i) {
+        ruleCount--;
+        if (i < ruleCount) {
+            rules[i] = rules[ruleCount];
+            ruleValues[i] = ruleValues[ruleCount];
         }
     }
 
@@ -770,9 +805,6 @@ public final class CalendricalNormalizer {
             return (R) this;
         }
         try {
-            if (time != null) {
-                setField(NANO_OF_DAY.field(time.toNanoOfDay()), true);
-            }
             R result = ruleToDerive.deriveFrom(this);
             if (result == null && ruleToDerive instanceof DateTimeRule) {
                 result = (R) deriveField((DateTimeRule) ruleToDerive);
