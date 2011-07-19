@@ -599,32 +599,25 @@ public final class CalendricalNormalizer {
     private void normalize() {
         // do not call from the constructor
         if (fields != null && fields.size() > 0) {
-            normalizeAuto();
+            normalizeSeparately();
             if (errors.size() == 0) {
-                normalizeManual();
-                if (errors.size() == 0) {
-                    normalizeCrossCheck();
+                if (fields.size() > 1) {
+                    normalizeAuto();
                 }
-            }
-            if (fields.size() == 0) {
-                fields = null;
+                if (errors.size() == 0) {
+                    normalizeManual();
+                    if (errors.size() == 0) {
+                        normalizeCrossCheck();
+                    }
+                }
+                if (fields.size() == 0) {
+                    fields = null;
+                }
             }
         }
     }
 
     private void normalizeAuto() {
-        // normalize each individual field in isolation
-        for (DateTimeField field : new ArrayList<DateTimeField>(fields.values())) {
-            DateTimeField normalized = field.normalized();
-            if (normalized != field) {
-                setField(normalized, true);
-                fields.remove(field.getRule());
-            }
-        }
-        if (fields.size() < 2 || errors.size() > 0) {
-            return;
-        }
-        
         // group according to base rule
         Map<DateTimeRule, List<DateTimeField>> grouped = new HashMap<DateTimeRule, List<DateTimeField>>();
         for (DateTimeField field : fields.values()) {
@@ -647,6 +640,18 @@ public final class CalendricalNormalizer {
             }
             for (DateTimeField field : group) {
                 fields.put(field.getRule(), field);  // should be no clashes here
+            }
+        }
+    }
+
+    private void normalizeSeparately() {
+        for (DateTimeField field : new ArrayList<DateTimeField>(fields.values())) {
+            DateTimeRule fieldRule = field.getRule();
+            DateTimeRule normalizationRule = fieldRule.getNormalizationRule();
+            if (fieldRule.equals(normalizationRule) == false) {
+                long newValue = normalizationRule.convertFromPeriod(fieldRule.convertToPeriod(field.getValue()));
+                setField(normalizationRule.field(newValue), true);
+                fields.remove(fieldRule);
             }
         }
     }

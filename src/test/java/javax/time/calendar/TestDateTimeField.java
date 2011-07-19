@@ -51,7 +51,6 @@ import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 import static javax.time.calendar.MonthOfYear.SEPTEMBER;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -276,50 +275,6 @@ public class TestDateTimeField {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matchesCalendrical_null() {
         DateTimeField.of(DAY_OF_WEEK, 2).matchesCalendrical(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // normalized()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="normalized")
-    Object[][] data_normalized() {
-        return new Object[][] {
-            {DateTimeField.of(YEAR, 2008), null},
-            {DateTimeField.of(MONTH_OF_YEAR, 6), null},
-            {DateTimeField.of(HOUR_OF_DAY, 2), null},
-            {DateTimeField.of(HOUR_OF_AMPM, 6), null},
-            {DateTimeField.of(DAY_OF_WEEK, 3), null},
-            
-            {DateTimeField.of(CLOCK_HOUR_OF_DAY, -1), DateTimeField.of(HOUR_OF_DAY, -1)},
-            {DateTimeField.of(CLOCK_HOUR_OF_DAY, 0), DateTimeField.of(HOUR_OF_DAY, 0)},
-            {DateTimeField.of(CLOCK_HOUR_OF_DAY, 1), DateTimeField.of(HOUR_OF_DAY, 1)},
-            {DateTimeField.of(CLOCK_HOUR_OF_DAY, 23), DateTimeField.of(HOUR_OF_DAY, 23)},
-            {DateTimeField.of(CLOCK_HOUR_OF_DAY, 24), DateTimeField.of(HOUR_OF_DAY, 0)},
-            {DateTimeField.of(CLOCK_HOUR_OF_DAY, 25), DateTimeField.of(HOUR_OF_DAY, 25)},
-            
-            {DateTimeField.of(CLOCK_HOUR_OF_AMPM, -1), DateTimeField.of(HOUR_OF_AMPM, -1)},
-            {DateTimeField.of(CLOCK_HOUR_OF_AMPM, 0), DateTimeField.of(HOUR_OF_AMPM, 0)},
-            {DateTimeField.of(CLOCK_HOUR_OF_AMPM, 1), DateTimeField.of(HOUR_OF_AMPM, 1)},
-            {DateTimeField.of(CLOCK_HOUR_OF_AMPM, 11), DateTimeField.of(HOUR_OF_AMPM, 11)},
-            {DateTimeField.of(CLOCK_HOUR_OF_AMPM, 12), DateTimeField.of(HOUR_OF_AMPM, 0)},
-            {DateTimeField.of(CLOCK_HOUR_OF_AMPM, 13), DateTimeField.of(HOUR_OF_AMPM, 13)},
-            
-            {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 0), DateTimeField.of(HOUR_OF_DAY, 24)},
-            {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 1), DateTimeField.of(HOUR_OF_DAY, 23)},
-            {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 24), DateTimeField.of(HOUR_OF_DAY, 0)},
-            {DateTimeField.of(MockReversedHourOfDayFieldRule.INSTANCE, 25), DateTimeField.of(HOUR_OF_DAY, -1)},
-            
-            {DateTimeField.of(MockBigClockHourOfDayFieldRule.INSTANCE, 300), DateTimeField.of(HOUR_OF_DAY, 3)},
-        };
-    }
-
-    @Test(dataProvider = "normalized")
-    public void test_normalized(DateTimeField input, DateTimeField output) {
-        if (output == null) {
-            assertSame(input.normalized(), input);
-        } else {
-            assertEquals(input.normalized(), output);
-        }
     }
 
     //-----------------------------------------------------------------------
