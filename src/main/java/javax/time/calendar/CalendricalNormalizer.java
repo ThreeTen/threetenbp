@@ -232,7 +232,7 @@ public final class CalendricalNormalizer {
         ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         ISOChronology.checkNotNull(field, "DateTimeField must not be null");
         CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, null, null, null, null, chrono, Collections.singleton(field));
-//        merger.normalize();
+        merger.normalize();
         return merger.derive(ruleToDerive);
     }
 
@@ -277,7 +277,7 @@ public final class CalendricalNormalizer {
      * @param offset  the zone offset, may be null
      * @param zoneId  the zone ID, may be null
      * @param chrono  the chronology, may be null
-     * @param fields  the fields, may be null
+     * @param fields  the fields, all rules unique, may be null
      */
     private CalendricalNormalizer(
             CalendricalRule<?> ruleOfData, LocalDate date, LocalTime time, ZoneOffset offset,
@@ -615,6 +615,10 @@ public final class CalendricalNormalizer {
                 break;
             }
         }
+        if (ruleCount == rules.length) {
+            rules = Arrays.copyOf(rules, rules.length * 2);
+            ruleValues = Arrays.copyOf(ruleValues, ruleValues.length * 2);
+        }
         rules[ruleCount] = rule;
         ruleValues[ruleCount++] = ruleValue;
     }
@@ -646,7 +650,10 @@ public final class CalendricalNormalizer {
      */
     private void normalize() {
         // do not call from the constructor
-        normalizeAuto();
+        normalizeSingleField();
+        if (errors.size() == 0 && ruleCount > 1) {
+            normalizeAuto();
+        }
         if (errors.size() == 0) {
             normalizeManual();
             if (errors.size() == 0) {
@@ -655,8 +662,7 @@ public final class CalendricalNormalizer {
         }
     }
 
-    private void normalizeAuto() {
-        // normalize each individual field in isolation
+    private void normalizeSingleField() {
         for (int i = 0; i < ruleCount; i++) {
             DateTimeRule rule = rules[i];
             DateTimeRule normalizationRule = rule.getNormalizationRule();
@@ -666,10 +672,9 @@ public final class CalendricalNormalizer {
                 removeRule(i--);
             }
         }
-        if (ruleCount < 2 || errors.size() > 0) {
-            return;
-        }
-        
+    }
+
+    private void normalizeAuto() {
         // group according to base rule
         Map<DateTimeRule, List<DateTimeField>> grouped = new HashMap<DateTimeRule, List<DateTimeField>>();
         for (int i = 0; i < ruleCount; i++) {
