@@ -617,6 +617,18 @@ public final class CalendricalNormalizer {
         }
     }
 
+    private void normalizeSeparately() {
+        for (DateTimeField field : new ArrayList<DateTimeField>(fields.values())) {
+            DateTimeRule fieldRule = field.getRule();
+            DateTimeRule normalizationRule = fieldRule.getNormalizationRule();
+            if (fieldRule.equals(normalizationRule) == false) {
+                long newValue = normalizationRule.convertFromPeriod(fieldRule.convertToPeriod(field.getValue()));
+                setField(normalizationRule.field(newValue), true);
+                fields.remove(fieldRule);
+            }
+        }
+    }
+
     private void normalizeAuto() {
         // group according to base rule
         Map<DateTimeRule, List<DateTimeField>> grouped = new HashMap<DateTimeRule, List<DateTimeField>>();
@@ -640,18 +652,6 @@ public final class CalendricalNormalizer {
             }
             for (DateTimeField field : group) {
                 fields.put(field.getRule(), field);  // should be no clashes here
-            }
-        }
-    }
-
-    private void normalizeSeparately() {
-        for (DateTimeField field : new ArrayList<DateTimeField>(fields.values())) {
-            DateTimeRule fieldRule = field.getRule();
-            DateTimeRule normalizationRule = fieldRule.getNormalizationRule();
-            if (fieldRule.equals(normalizationRule) == false) {
-                long newValue = normalizationRule.convertFromPeriod(fieldRule.convertToPeriod(field.getValue()));
-                setField(normalizationRule.field(newValue), true);
-                fields.remove(fieldRule);
             }
         }
     }
