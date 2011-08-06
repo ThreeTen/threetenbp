@@ -272,7 +272,7 @@ public final class PeriodFields
      *
      * @return ordered representation of internal map
      */
-    private static TreeMap<PeriodUnit, PeriodField> createMap() {
+    static TreeMap<PeriodUnit, PeriodField> createMap() {
         return new TreeMap<PeriodUnit, PeriodField>(Collections.reverseOrder());
     }
 
@@ -1045,7 +1045,7 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this set of period fields is equal to another set of period fields .
+     * Checks if this set of period fields is equal to another set of period fields.
      * <p>
      * The comparison is based on the complete set of fields.
      *

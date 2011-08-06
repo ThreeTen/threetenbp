@@ -2107,6 +2107,10 @@ public class TestPeriod {
         assertEquals(fields.getAmount(HOURS), 4);
         assertEquals(fields.getAmount(MINUTES), 5);
         assertEquals(fields.getAmount(SECONDS), 6);
+        PeriodFields expected = PeriodFields.of(
+                PeriodField.of(1, YEARS), PeriodField.of(2, MONTHS), PeriodField.of(3, DAYS),
+                PeriodField.of(4, HOURS), PeriodField.of(5, MINUTES), PeriodField.of(6, SECONDS));
+        assertEquals(fields.toString(), expected.toString());
     }
 
     public void test_toPeriodFields_zeroRemoved() {

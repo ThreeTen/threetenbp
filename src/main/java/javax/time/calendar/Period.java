@@ -1549,7 +1549,7 @@ public final class Period
     public PeriodFields toPeriodFields() {
         PeriodFields fields = periodFields;
         if (fields == null) {
-            TreeMap<PeriodUnit, PeriodField> map = new TreeMap<PeriodUnit, PeriodField>();
+            TreeMap<PeriodUnit, PeriodField> map = PeriodFields.createMap();
             if (years != 0) {
                 map.put(YEARS, PeriodField.of(years, YEARS));
             }
