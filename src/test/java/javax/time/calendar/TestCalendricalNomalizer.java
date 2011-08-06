@@ -393,6 +393,7 @@ public class TestCalendricalNomalizer {
             {cals(DATE_2011_06_30, TIME_11_30), LocalDate.rule(), DATE_2011_06_30},
             {cals(FIELD_ZEM_2011_06, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
             {cals(FIELD_YEAR_2011, FIELD_MOY_06, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
+            {cals(FIELD_YEAR_2011, FIELD_MOY_06, FIELD_DOY_181), LocalDate.rule(), DATE_2011_06_30},
             {cals(FIELD_YEAR_2011, JUNE, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
             {cals(FIELD_YEAR_2011, FIELD_MOY_06, FIELD_QOY_2, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},
             {cals(FIELD_YEAR_2011, JUNE, FIELD_QOY_2, FIELD_DOM_30), LocalDate.rule(), DATE_2011_06_30},

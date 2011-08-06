@@ -176,46 +176,52 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     @Override
     protected void normalize(CalendricalNormalizer merger) {
         switch (ordinal) {
-            case ZERO_EPOCH_MONTH_ORDINAL: {
+            case DAY_OF_MONTH_ORDINAL: {
+                // year-month-day
+                DateTimeField dom = merger.getField(DAY_OF_MONTH, false);
                 DateTimeField epm = merger.getField(ZERO_EPOCH_MONTH, false);
-                if (epm != null) {
+                if (dom != null && epm != null) {
                     int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
                     int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
-                    // year-month-day
-                    DateTimeField dom = merger.getField(DAY_OF_MONTH, false);
-                    if (dom != null) {
-                        LocalDate date = LocalDate.of(year, moy, 1).plusDays(MathUtils.safeDecrement(dom.getValue()));
-                        merger.setDate(date, true);
-                    }
-                    // year-month-alignedWeek-day
-                    DateTimeField wom = merger.getField(ALIGNED_WEEK_OF_MONTH, false);
-                    DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
-                    if (wom != null && dow != null) {
-                        LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(MathUtils.safeDecrement(wom.getValidIntValue()));
-                        date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
-                        merger.setDate(date, true);
-                    }
+                    LocalDate date = LocalDate.of(year, moy, 1).plusDays(MathUtils.safeDecrement(dom.getValue()));
+                    merger.setDate(date, true);
                 }
                 break;
             }
-            case YEAR_ORDINAL: {
-                DateTimeField year = merger.getField(YEAR, false);
-                if (year != null) {
-                    // year-day
-                    DateTimeField doy = merger.getField(DAY_OF_YEAR, false);
-                    if (doy != null) {
-                        LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
-                                .plusDays(doy.getValue()).minusDays(1);
-                        merger.setDate(date, true);
-                    }
-                    // year-alignedWeek-day
-                    DateTimeField woy = merger.getField(ALIGNED_WEEK_OF_YEAR, false);
-                    DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
-                    if (woy != null && dow != null) {
-                        LocalDate date = LocalDate.of(year.getValidIntValue(), 1, 1).plusWeeks(woy.getValidIntValue() - 1);
-                        date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
-                        merger.setDate(date, true);
-                    }
+            case DAY_OF_YEAR_ORDINAL: {
+                // year-day
+                DateTimeField doy = merger.getField(DAY_OF_YEAR, false);
+                DateTimeField year = merger.derive(YEAR);
+                if (doy != null && year != null) {
+                    LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
+                            .plusDays(doy.getValue()).minusDays(1);
+                    merger.setDate(date, true);
+                }
+                break;
+            }
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
+                // year-month-alignedWeek-day
+                DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
+                DateTimeField wom = merger.getField(ALIGNED_WEEK_OF_MONTH, false);
+                DateTimeField epm = merger.getField(ZERO_EPOCH_MONTH, false);
+                if (dow != null && wom != null && epm != null) {
+                    int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
+                    int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
+                    LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(MathUtils.safeDecrement(wom.getValidIntValue()));
+                    date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
+                    merger.setDate(date, true);
+                }
+                break;
+            }
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: {
+                // year-alignedWeek-day
+                DateTimeField woy = merger.getField(ALIGNED_WEEK_OF_YEAR, false);
+                DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
+                DateTimeField year = merger.derive(YEAR);
+                if (woy != null && dow != null && year != null) {
+                    LocalDate date = LocalDate.of(year.getValidIntValue(), 1, 1).plusWeeks(woy.getValidIntValue() - 1);
+                    date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
+                    merger.setDate(date, true);
                 }
                 break;
             }
