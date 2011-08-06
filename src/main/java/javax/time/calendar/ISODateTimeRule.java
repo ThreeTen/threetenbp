@@ -370,7 +370,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         if (obj instanceof ISODateTimeRule) {
             return ordinal == ((ISODateTimeRule) obj).ordinal;
         }
-        return super.equals(obj);
+        return false;
     }
 
     @Override
