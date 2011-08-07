@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,6 @@
  */
 
 /**
- * Provides classes to format dates and times as strings.
+ * Provides classes to print and parse dates and times.
  */
 package javax.time.calendar.format;

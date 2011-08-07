@@ -38,8 +38,8 @@ package javax.time.calendar;
  * Examples might be a matcher that checks if the date is a weekend or holiday,
  * or Friday the Thirteenth.
  * <p>
- * CalendricalMatcher is an interface and must be implemented with care
- * to ensure other classes in the framework operate correctly.
+ * This interface must be implemented with care to ensure other classes in
+ * the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne

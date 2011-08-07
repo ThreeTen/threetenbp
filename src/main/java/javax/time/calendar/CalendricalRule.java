@@ -48,7 +48,7 @@ import javax.time.CalendricalException;
  * The underlying type is reified and made available via {@link #getType()}.
  * It is expected, but not enforced, that the underlying type is {@link Comparable}.
  * <p>
- * CalendricalRule is an abstract class and must be implemented with care to
+ * This is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  * Subclasses should implement {@code equals} and {@code hashCode}.

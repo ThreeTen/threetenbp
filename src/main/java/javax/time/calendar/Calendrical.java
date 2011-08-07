@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,8 +39,7 @@ package javax.time.calendar;
  * A calendrical might be a single field, such as month-of-year or hour-of-day, or a
  * whole object, such as {@code LocalDate} or {@code ZoneOffset}.
  * <p>
- * Calendrical makes no guarantees about the thread-safety or immutability
- * of implementations.
+ * This interface makes no guarantees about the thread-safety or immutability of implementations.
  * 
  * @author Stephen Colebourne
  */
@@ -56,6 +55,9 @@ public interface Calendrical {
      * The values should be within the range of the field wherever possible.
      * For example, minute-of-hour should be from 0 to 59 inclusive.
      * The calling code must validate the value however and not trust it to be valid.
+     * <p>
+     * The standard implementation of this method calls one of the static {@code derive}
+     * methods on {@link CalendricalEngine}.
      *
      * @param rule  the rule to query, not null
      * @return the value for the rule, null if no value for the rule

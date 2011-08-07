@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,8 +49,7 @@ package javax.time.calendar;
  * The recommended way to convert a DateProvider to a LocalDate is using
  * {@link PeriodFields#of(PeriodProvider)} as this method provides additional null checking.
  * <p>
- * PeriodProvider makes no guarantees about the thread-safety or
- * immutability of implementations.
+ * This interface makes no guarantees about the thread-safety or immutability of implementations.
  *
  * @author Stephen Colebourne
  */

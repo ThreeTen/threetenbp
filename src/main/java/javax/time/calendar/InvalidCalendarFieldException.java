@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,8 +34,8 @@ package javax.time.calendar;
 /**
  * An exception used when a calendrical field is invalid.
  * <p>
- * Some combinations of calendrical fields are not allowed, such as a month-of-year
- * of April and a day-of-month of 31. This exception is used when an attempt is
+ * Some combinations of calendrical fields are not allowed, such as 'MonthOfYear 4'
+ * and 'DayOfMonth 31' (April 31st). This exception is used when an attempt is
  * made to create such an invalid combination.
  *
  * @author Stephen Colebourne

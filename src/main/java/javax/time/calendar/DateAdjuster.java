@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,8 +38,8 @@ package javax.time.calendar;
  * adjustments. Examples might be an adjuster that sets the date avoiding
  * weekends, or one that sets the date to the last day of the month.
  * <p>
- * DateAdjuster is an interface and must be implemented with care
- * to ensure other classes in the framework operate correctly.
+ * This interface must be implemented with care to ensure other classes in
+ * the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne

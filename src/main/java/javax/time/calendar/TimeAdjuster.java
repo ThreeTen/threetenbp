@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,8 +38,8 @@ package javax.time.calendar;
  * adjustments. These could be simple, such as simply setting the hour field,
  * or complex, such as adjusting the time to the end of the working day.
  * <p>
- * TimeAdjuster is an interface and must be implemented with care
- * to ensure other classes in the framework operate correctly.
+ * This interface must be implemented with care to ensure other classes in
+ * the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne

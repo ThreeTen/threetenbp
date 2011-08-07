@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 
 /**
- * Provides classes to manage the continuous time scale including a wrapper
+ * Provides classes to manage the continuous time-scale including a wrapper
  * for the system clock.
  */
 package javax.time;

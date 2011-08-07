@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,9 +34,12 @@ package javax.time.calendar;
 /**
  * Strategy for resolving an invalid year-month-day to a valid one.
  * <p>
- * DateResolver is an interface and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All implementations must be final, immutable and thread-safe.
+ * This interface defines the strategy used to resolve invalid dates like
+ * February 30th or November 31st.
+ * <p>
+ * This interface must be implemented with care to ensure other classes in
+ * the framework operate correctly.
+ * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

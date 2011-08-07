@@ -47,7 +47,7 @@ import java.io.Serializable;
  * or the last day of the month, or one of the American continent time-zones.
  * All the implemented matchers depend on the ISO calendar system.
  * <p>
- * CalendricalMatchers is a utility class.
+ * This is a thread-safe utility class.
  * All matchers returned are immutable and thread-safe.
  *
  * @author Michael Nascimento Santos

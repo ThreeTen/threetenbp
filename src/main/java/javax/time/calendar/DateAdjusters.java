@@ -36,7 +36,7 @@ import java.io.Serializable;
 /**
  * Provides common implementations of {@code DateAdjuster}.
  * <p>
- * DateAdjusters is a utility class.
+ * This is a thread-safe utility class.
  * All adjusters returned are immutable and thread-safe.
  *
  * @author Michael Nascimento Santos

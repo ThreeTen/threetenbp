@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,7 +36,7 @@ import java.io.Serializable;
 /**
  * Provides common implementations of {@code DateResolver}.
  * <p>
- * DateResolvers is a utility class.
+ * This is a thread-safe utility class.
  * All resolvers returned are immutable and thread-safe.
  *
  * @author Michael Nascimento Santos

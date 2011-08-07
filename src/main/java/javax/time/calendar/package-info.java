@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 
 /**
- * Provides classes to manage the human time scale including date, time,
+ * Provides classes to manage the human time-scale including date, time,
  * date-time and time-zone representations.
  */
 package javax.time.calendar;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * the current time rather than a static method. This simplifies testing.
  * 
  * <h4>Best practice</h4>
- * The recommended best practice for most applications is to <i>avoid using the static methods</i>.
+ * The recommended best practice for applications is to <i>avoid using the static methods</i>.
  * Instead, the main application should obtain the current time from a {@code TimeSource}
  * instance that is passed to the object or method.
  * This approach is typically implemented using a dependency injection framework.
