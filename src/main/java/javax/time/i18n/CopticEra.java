@@ -94,7 +94,7 @@ public enum CopticEra implements Era {
     /**
      * Gets the numeric era {@code int} value.
      * <p>
-     * The era BAM has the value 0, whle the era AM has the value 1.
+     * The era BAM has the value 0, while the era AM has the value 1.
      *
      * @return the era value, from 0 (BAM) to 1 (AM)
      */
