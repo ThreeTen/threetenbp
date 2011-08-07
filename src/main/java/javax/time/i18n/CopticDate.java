@@ -39,7 +39,6 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalRuleException;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -60,7 +59,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class CopticDate
-        implements DateProvider, Calendrical, Comparable<CopticDate>, Serializable {
+        implements Calendrical, Comparable<CopticDate>, Serializable {
 
     /**
      * A serialization identifier for this class.

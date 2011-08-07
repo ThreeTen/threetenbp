@@ -253,147 +253,125 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     // of(DateProvider, TimeProvider, TimeZone)
     //-----------------------------------------------------------------------
-    public void factory_of_DateProviderTimeProvider() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS);
+    public void factory_of_LocalDateLocalTime() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        ZonedDateTime test = ZonedDateTime.of(date, time, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProviderTimeProvider_nullDate() {
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of((DateProvider) null, timeProvider, ZONE_PARIS);
+    public void factory_of_LocalDateLocalTime_nullDate() {
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        ZonedDateTime.of((LocalDate) null, time, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProviderTimeProvider_nullTime() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.of(dateProvider, (TimeProvider) null, ZONE_PARIS);
+    public void factory_of_LocalDateLocalTime_nullTime() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        ZonedDateTime.of(date, (LocalTime) null, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProviderTimeProvider_nullZone() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
+    public void factory_of_LocalDateLocalTime_nullZone() {
+        LocalDate dateProvider = LocalDate.of(2008, 6, 30);
+        LocalTime timeProvider = LocalTime.of(11, 30, 10, 500);
         ZonedDateTime.of(dateProvider, timeProvider, null);
     }
 
     //-----------------------------------------------------------------------
-    // of(DateProvider, TimeProvider, TimeZone, ZoneResolver)
+    // of(DateProvider, LocalTime, TimeZone, ZoneResolver)
     //-----------------------------------------------------------------------
-    public void factory_of_DateProviderTimeProviderResolver() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
+    public void factory_of_LocalDateLocalTimeResolver() {
+        LocalDate dateProvider = LocalDate.of(2008, 6, 30);
+        LocalTime timeProvider = LocalTime.of(11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
-    public void factory_of_DateProviderTimeProviderResolver_resolverUsed() {
-        DateProvider dateProvider = LocalDate.of(2008, 3, 30);
-        TimeProvider timeProvider = LocalTime.of(2, 30, 10, 500);
-        ZonedDateTime test = ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
+    public void factory_of_LocalDateLocalTimeResolver_resolverUsed() {
+        LocalDate date = LocalDate.of(2008, 3, 30);
+        LocalTime time = LocalTime.of(2, 30, 10, 500);
+        ZonedDateTime test = ZonedDateTime.of(date, time, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProviderTimeProviderResolver_nullDate() {
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of((DateProvider) null, timeProvider, ZONE_PARIS, ZoneResolvers.strict());
+    public void factory_of_LocalDateLocalTimeResolver_nullDate() {
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        ZonedDateTime.of((LocalDate) null, time, ZONE_PARIS, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProviderTimeProviderResolver_nullTime() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.of(dateProvider, (TimeProvider) null, ZONE_PARIS, ZoneResolvers.strict());
+    public void factory_of_LocalDateLocalTimeResolver_nullTime() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        ZonedDateTime.of(date, (LocalTime) null, ZONE_PARIS, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProviderTimeProviderResolver_nullZone() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of(dateProvider, timeProvider, null, ZoneResolvers.strict());
+    public void factory_of_LocalDateLocalTimeResolver_nullZone() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        ZonedDateTime.of(date, time, null, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProviderTimeProviderResolver_nullResolver() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of(dateProvider, timeProvider, ZONE_PARIS, (ZoneResolver) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProviderResolver_badDateProvider() {
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        ZonedDateTime.of(new MockDateProviderReturnsNull(), timeProvider, ZONE_PARIS, ZoneResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProviderResolver_badTimeProvider() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        ZonedDateTime.of(dateProvider, new MockTimeProviderReturnsNull(), ZONE_PARIS, ZoneResolvers.strict());
+    public void factory_of_LocalDateLocalTimeResolver_nullResolver() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        ZonedDateTime.of(date, time, ZONE_PARIS, (ZoneResolver) null);
     }
 
     //-----------------------------------------------------------------------
-    // of(DateTimeProvider, TimeZone)
+    // of(DateLocalTime, TimeZone)
     //-----------------------------------------------------------------------
-    public void factory_of_DateTimeProvider() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+    public void factory_of_DateLocalTime() {
+        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProvider_nullDateTime() {
-        ZonedDateTime.of((DateTimeProvider) null, ZONE_PARIS);
+    public void factory_of_LocalDateTime_nullDateTime() {
+        ZonedDateTime.of((LocalDateTime) null, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProvider_nullZone() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+    public void factory_of_LocalDateTime_nullZone() {
+        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime.of(provider, null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProvider_badProvider() {
-        ZonedDateTime.of(new MockDateTimeProviderReturnsNull(), ZONE_PARIS);
-    }
-
     //-----------------------------------------------------------------------
-    // of(DateTimeProvider, TimeZone, ZoneResolver)
+    // of(LocalDateTime, TimeZone, ZoneResolver)
     //-----------------------------------------------------------------------
-    public void factory_of_DateTimeProviderResolver() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+    public void factory_of_LocalDateTimeResolver() {
+        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
-    public void factory_of_DateTimeProviderResolver_resolverUsed() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 3, 30, 2, 30, 10, 500);
+    public void factory_of_LocalDateTimeResolver_resolverUsed() {
+        LocalDateTime provider = LocalDateTime.of(2008, 3, 30, 2, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.of(provider, ZONE_PARIS, ZoneResolvers.postTransition());
         check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProviderResolver_nullDateTime() {
-        ZonedDateTime.of((DateTimeProvider) null, ZONE_PARIS, ZoneResolvers.strict());
+    public void factory_of_LocalDateTimeResolver_nullDateTime() {
+        ZonedDateTime.of((LocalDateTime) null, ZONE_PARIS, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProviderResolver_nullZone() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+    public void factory_of_LocalDateTimeResolver_nullZone() {
+        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime.of(provider, null, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProviderResolver_nullResolver() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+    public void factory_of_LocalDateTimeResolver_nullResolver() {
+        LocalDateTime provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime.of(provider, null, (ZoneResolver) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateTimeProviderResolver_badProvider() {
-        ZonedDateTime.of(new MockDateTimeProviderReturnsNull(), ZONE_PARIS, ZoneResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -447,13 +425,6 @@ public class TestZonedDateTime {
     public void factory_of_OffsetDateTime_nullZone() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
         ZonedDateTime.of(odt, null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_of_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.of(mmp, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     //-----------------------------------------------------------------------
@@ -790,13 +761,6 @@ public class TestZonedDateTime {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         base.withDateTime(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_withDateTime_badProvider() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.withDateTime(new MockDateTimeProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -1733,13 +1697,13 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_true() {
         ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
-        ZonedDateTime cal = ZonedDateTime.of(test, ZONE_0100);
+        ZonedDateTime cal = ZonedDateTime.of(test.toLocalDateTime(), ZONE_0100);
         assertEquals(test.matchesCalendrical(cal), true);
     }
 
     public void test_matchesCalendrical_false() {
         ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
-        ZonedDateTime cal = ZonedDateTime.of(test.plusHours(1), ZONE_0100);
+        ZonedDateTime cal = test.plusHours(1);
         assertEquals(test.matchesCalendrical(cal), false);
     }
 

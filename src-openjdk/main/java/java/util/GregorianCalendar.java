@@ -51,15 +51,12 @@ import javax.time.Instant;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeProvider;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
-import javax.time.calendar.TimeProvider;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
@@ -344,7 +341,7 @@ import sun.util.calendar.ZoneInfo;
  */
 public class GregorianCalendar
         extends Calendar
-        implements Calendrical, DateTimeProvider, DateProvider, TimeProvider {
+        implements Calendrical {
     /*
      * Implementation Notes
      *

@@ -109,7 +109,6 @@ public class TestLocalTime {
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof TimeAdjuster);
         assertTrue(obj instanceof CalendricalMatcher);
-        assertTrue(obj instanceof TimeProvider);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -369,41 +368,6 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_nanoTooHigh() {
         LocalTime.of(0, 0, 0, 1000000000);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_time_TimeProvider() {
-        LocalTime localTime = LocalTime.of(TEST_12_30_40_987654321);
-        check(localTime, 12, 30, 40, 987654321);
-    }
-
-    public void factory_time_TimeProvider_singletons() {
-        for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.of(LocalTime.of(i, 0));
-            LocalTime test2 = LocalTime.of(i, 0);
-            assertSame(test1, test2);
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_TimeProvider_null() {
-        LocalTime.of(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_TimeProvider_null_toLocalTime() {
-        LocalTime.of(new TimeProvider() {
-            public LocalTime toLocalTime() {
-                return null;
-            }
-        });
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_time_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalTime test = LocalTime.of(mmp);
-        check(test, 11, 30, 10, 500);
     }
 
     //-----------------------------------------------------------------------

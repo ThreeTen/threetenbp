@@ -532,14 +532,12 @@ public class TestPeriod {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_between_nullFirst() {
-        DateProvider provider = null;
-        Period.between(provider, LocalDate.of(2010, 1, 1));
+        Period.between((LocalDate) null, LocalDate.of(2010, 1, 1));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_between_nullSecond() {
-        DateProvider provider = null;
-        Period.between(LocalDate.of(2010, 1, 1), provider);
+        Period.between(LocalDate.of(2010, 1, 1), (LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
@@ -600,14 +598,12 @@ public class TestPeriod {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_yearsBetween_nullFirst() {
-        DateProvider provider = null;
-        Period.yearsBetween(provider, LocalDate.of(2010, 1, 1));
+        Period.yearsBetween((LocalDate) null, LocalDate.of(2010, 1, 1));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_yearsBetween_nullSecond() {
-        DateProvider provider = null;
-        Period.yearsBetween(LocalDate.of(2010, 1, 1), provider);
+        Period.yearsBetween(LocalDate.of(2010, 1, 1), (LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
@@ -673,14 +669,12 @@ public class TestPeriod {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_monthsBetween_nullFirst() {
-        DateProvider provider = null;
-        Period.monthsBetween(provider, LocalDate.of(2010, 1, 1));
+        Period.monthsBetween((LocalDate) null, LocalDate.of(2010, 1, 1));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_monthsBetween_nullSecond() {
-        DateProvider provider = null;
-        Period.monthsBetween(LocalDate.of(2010, 1, 1), provider);
+        Period.monthsBetween(LocalDate.of(2010, 1, 1), (LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
@@ -715,14 +709,12 @@ public class TestPeriod {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_daysBetween_nullFirst() {
-        DateProvider provider = null;
-        Period.daysBetween(provider, LocalDate.of(2010, 1, 1));
+        Period.daysBetween((LocalDate) null, LocalDate.of(2010, 1, 1));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_daysBetween_nullSecond() {
-        DateProvider provider = null;
-        Period.daysBetween(LocalDate.of(2010, 1, 1), provider);
+        Period.daysBetween(LocalDate.of(2010, 1, 1), (LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

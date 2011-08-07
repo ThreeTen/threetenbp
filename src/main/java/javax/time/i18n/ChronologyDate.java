@@ -39,13 +39,10 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.OffsetDate;
-import javax.time.calendar.ZonedDateTime;
 
 /**
  * A date based on standard chronology rules.
@@ -72,7 +69,7 @@ import javax.time.calendar.ZonedDateTime;
  * @author Stephen Colebourne
  */
 public final class ChronologyDate
-        implements DateProvider, Calendrical, Comparable<ChronologyDate>, Serializable {
+        implements Calendrical, Comparable<ChronologyDate>, Serializable {
 
     /**
      * A serialization identifier for this class.

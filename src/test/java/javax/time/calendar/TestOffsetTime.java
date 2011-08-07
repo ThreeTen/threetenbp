@@ -101,7 +101,6 @@ public class TestOffsetTime {
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof CalendricalMatcher);
         assertTrue(obj instanceof TimeAdjuster);
-        assertTrue(obj instanceof TimeProvider);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -218,17 +217,21 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_TimeProvider() {
-        TimeProvider localTime = LocalTime.of(11, 30, 10, 500);
+    public void factory_LocalTimeZoneOffset() {
+        LocalTime localTime = LocalTime.of(11, 30, 10, 500);
         OffsetTime test = OffsetTime.of(localTime, OFFSET_PONE);
         check(test, 11, 30, 10, 500, OFFSET_PONE);
     }
 
-    //-----------------------------------------------------------------------
-    public void factory_time_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetTime test = OffsetTime.of(mmp, OFFSET_PTWO);
-        check(test, 11, 30, 10, 500, OFFSET_PTWO);
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_LocalTimeZoneOffset_nullTime() {
+        OffsetTime.of((LocalTime) null, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_LocalTimeZoneOffset_nullOffset() {
+        LocalTime localTime = LocalTime.of(11, 30, 10, 500);
+        OffsetTime.of(localTime, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
@@ -535,12 +538,6 @@ public class TestOffsetTime {
     public void test_withTime_null() {
         OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
         base.withTime(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_withTime_badProvider() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        base.withTime(new MockTimeProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------

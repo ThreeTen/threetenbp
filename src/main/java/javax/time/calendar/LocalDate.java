@@ -71,7 +71,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -185,25 +185,6 @@ public final class LocalDate
         MONTH_OF_YEAR.checkValidValue(monthOfYear);
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         return create(year, MonthOfYear.of(monthOfYear), dayOfMonth);
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDate} from a date provider.
-     * <p>
-     * The purpose of this method is to convert a {@code DateProvider}
-     * to a {@code LocalDate} in the safest possible way. Specifically,
-     * the means checking whether the input parameter is null and
-     * whether the result of the provider is null.
-     *
-     * @param dateProvider  the date provider to use, not null
-     * @return the local date, not null
-     * @throws NullPointerException if the provider is null or returns null
-     */
-    public static LocalDate of(DateProvider dateProvider) {
-        ISOChronology.checkNotNull(dateProvider, "DateProvider must not be null");
-        LocalDate result = dateProvider.toLocalDate();
-        ISOChronology.checkNotNull(result, "DateProvider implementation must not return null");
-        return result;
     }
 
     //-----------------------------------------------------------------------

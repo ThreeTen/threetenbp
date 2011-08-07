@@ -37,7 +37,6 @@ import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -63,7 +62,7 @@ import javax.time.calendar.MonthOfYear;
  * @author Stephen Colebourne
  */
 public final class HistoricDate
-        implements DateProvider, Calendrical, Comparable<HistoricDate>, Serializable {
+        implements Calendrical, Comparable<HistoricDate>, Serializable {
 
     /**
      * The standard cutover date between the Julian and Gregorian calendar system of 1582-10-15.

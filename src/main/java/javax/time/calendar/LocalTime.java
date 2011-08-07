@@ -65,7 +65,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements Calendrical, TimeProvider, CalendricalMatcher, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements Calendrical, CalendricalMatcher, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -272,26 +272,6 @@ public final class LocalTime
         SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         return create(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-    }
-
-    /**
-     * Obtains an instance of {@code LocalTime} from a time provider.
-     * <p>
-     * The purpose of this method is to convert a {@code TimeProvider}
-     * to a {@code LocalTime} in the safest possible way. Specifically,
-     * the means checking whether the input parameter is null and
-     * whether the result of the provider is null.
-     * <p>
-     * This factory may return a cached value, but applications must not rely on this.
-     *
-     * @param timeProvider  the time provider to use, not null
-     * @return the local time, not null
-     */
-    public static LocalTime of(TimeProvider timeProvider) {
-        ISOChronology.checkNotNull(timeProvider, "TimeProvider must not be null");
-        LocalTime result = timeProvider.toLocalTime();
-        ISOChronology.checkNotNull(result, "TimeProvider implementation must not return null");
-        return result;
     }
 
     //-----------------------------------------------------------------------

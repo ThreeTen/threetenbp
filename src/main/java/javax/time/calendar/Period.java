@@ -429,14 +429,12 @@ public final class Period
      * <p>
      * Adding the result of this method to the start date will always yield the end date.
      *
-     * @param startDateProvider  the start date, inclusive, not null
-     * @param endDateProvider  the end date, exclusive, not null
+     * @param startDate  the start date, inclusive, not null
+     * @param endDate  the end date, exclusive, not null
      * @return the period in days, not null
      * @throws ArithmeticException if the period exceeds the supported range
      */
-    public static Period between(DateProvider startDateProvider, DateProvider endDateProvider) {
-        LocalDate startDate = LocalDate.of(startDateProvider);
-        LocalDate endDate = LocalDate.of(endDateProvider);
+    public static Period between(LocalDate startDate, LocalDate endDate) {
         long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
         long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
         long totalMonths = endMonth - startMonth;  // safe
@@ -463,14 +461,12 @@ public final class Period
      * <p>
      * The result of this method can be a negative period if the end is before the start.
      *
-     * @param startDateProvider  the start date, inclusive, not null
-     * @param endDateProvider  the end date, exclusive, not null
+     * @param startDate  the start date, inclusive, not null
+     * @param endDate  the end date, exclusive, not null
      * @return the period in days, not null
      * @throws ArithmeticException if the period exceeds the supported range
      */
-    public static Period yearsBetween(DateProvider startDateProvider, DateProvider endDateProvider) {
-        LocalDate startDate = LocalDate.of(startDateProvider);
-        LocalDate endDate = LocalDate.of(endDateProvider);
+    public static Period yearsBetween(LocalDate startDate, LocalDate endDate) {
         long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
         long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
         long years = (endMonth - startMonth) / 12;  // safe
@@ -493,14 +489,12 @@ public final class Period
      * <p>
      * The result of this method can be a negative period if the end is before the start.
      *
-     * @param startDateProvider  the start date, inclusive, not null
-     * @param endDateProvider  the end date, exclusive, not null
+     * @param startDate  the start date, inclusive, not null
+     * @param endDate  the end date, exclusive, not null
      * @return the period in days, not null
      * @throws ArithmeticException if the period exceeds the supported range
      */
-    public static Period monthsBetween(DateProvider startDateProvider, DateProvider endDateProvider) {
-        LocalDate startDate = LocalDate.of(startDateProvider);
-        LocalDate endDate = LocalDate.of(endDateProvider);
+    public static Period monthsBetween(LocalDate startDate, LocalDate endDate) {
         long startMonth = startDate.getYear() * 12L + startDate.getMonthOfYear().ordinal();  // safe
         long endMonth = endDate.getYear() * 12L + endDate.getMonthOfYear().ordinal();  // safe
         long months = endMonth - startMonth;  // safe
@@ -520,14 +514,12 @@ public final class Period
      * <p>
      * The result of this method can be a negative period if the end is before the start.
      *
-     * @param startDateProvider  the start date, inclusive, not null
-     * @param endDateProvider  the end date, exclusive, not null
+     * @param startDate  the start date, inclusive, not null
+     * @param endDate  the end date, exclusive, not null
      * @return the period in days, not null
      * @throws ArithmeticException if the period exceeds the supported range
      */
-    public static Period daysBetween(DateProvider startDateProvider, DateProvider endDateProvider) {
-        LocalDate startDate = LocalDate.of(startDateProvider);
-        LocalDate endDate = LocalDate.of(endDateProvider);
+    public static Period daysBetween(LocalDate startDate, LocalDate endDate) {
         long days = MathUtils.safeSubtract(endDate.toModifiedJulianDay(), startDate.toModifiedJulianDay());
         return ofDays(MathUtils.safeToInt(days));
     }

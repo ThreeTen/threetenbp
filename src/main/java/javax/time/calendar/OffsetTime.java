@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements TimeProvider, Calendrical, Comparable<OffsetTime>, Serializable, CalendricalMatcher, TimeAdjuster {
+        implements Calendrical, CalendricalMatcher, TimeAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -171,14 +171,13 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of {@code OffsetTime} from a time provider.
+     * Obtains an instance of {@code OffsetTime} from a local time and an offset.
      *
-     * @param timeProvider  the time provider to use, not null
+     * @param time  the local time, not null
      * @param offset  the zone offset, not null
      * @return the offset time, not null
      */
-    public static OffsetTime of(TimeProvider timeProvider, ZoneOffset offset) {
-        LocalTime time = LocalTime.of(timeProvider);
+    public static OffsetTime of(LocalTime time, ZoneOffset offset) {
         return new OffsetTime(time, offset);
     }
 
@@ -305,10 +304,10 @@ public final class OffsetTime
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
         if (time == null) {
-            throw new NullPointerException("The time must not be null");
+            throw new NullPointerException("LocalTime must not be null");
         }
         if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
+            throw new NullPointerException("ZoneOffset must not be null");
         }
         this.time = time;
         this.offset = offset;
@@ -340,12 +339,11 @@ public final class OffsetTime
      * This method returns an object with the same {@code ZoneOffset} and the specified {@code LocalTime}.
      * No calculation is needed or performed.
      *
-     * @param timeProvider  the local time to change to, not null
+     * @param time  the local time to change to, not null
      * @return an {@code OffsetTime} based on this time with the requested time, not null
      */
-    public OffsetTime withTime(TimeProvider timeProvider) {
-        LocalTime localTime = LocalTime.of(timeProvider);
-        return localTime.equals(this.time) ? this : new OffsetTime(localTime, offset);
+    public OffsetTime withTime(LocalTime time) {
+        return this.time.equals(time) ? this : new OffsetTime(time, offset);
     }
 
     //-----------------------------------------------------------------------

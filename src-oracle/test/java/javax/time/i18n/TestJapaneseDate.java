@@ -15,7 +15,6 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -46,7 +45,6 @@ public class TestJapaneseDate {
     public void test_interfaces() {
         Object obj = testDate;
         assertTrue(obj instanceof Calendrical);
-        assertTrue(obj instanceof DateProvider);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }

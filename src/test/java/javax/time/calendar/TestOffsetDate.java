@@ -110,7 +110,6 @@ public class TestOffsetDate {
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof DateProvider);
         assertTrue(obj instanceof CalendricalMatcher);
     }
 
@@ -208,105 +207,99 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_intMonthInt() {
+    public void factory_of_intMonthInt() {
         OffsetDate test = OffsetDate.of(2007, MonthOfYear.JULY, 15, OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_ints() {
+    public void factory_of_ints() {
         OffsetDate test = OffsetDate.of(2007, 7, 15, OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_intsMonthOffset() {
+    public void factory_of_intsMonthOffset() {
         assertEquals(TEST_2007_07_15_PONE, OffsetDate.of(2007, MonthOfYear.JULY, 15, OFFSET_PONE));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_intsMonthOffset_dayTooLow() {
+    public void factory_of_intsMonthOffset_dayTooLow() {
         OffsetDate.of(2007, MonthOfYear.JANUARY, 0, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_intsMonthOffset_dayTooHigh() {
+    public void factory_of_intsMonthOffset_dayTooHigh() {
         OffsetDate.of(2007, MonthOfYear.JANUARY, 32, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_intsMonthOffset_nullMonth() {
+    public void factory_of_intsMonthOffset_nullMonth() {
         OffsetDate.of(2007, null, 30, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_intsMonthOffset_yearTooLow() {
+    public void factory_of_intsMonthOffset_yearTooLow() {
         OffsetDate.of(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_intsMonthOffset_nullOffset() {
+    public void factory_of_intsMonthOffset_nullOffset() {
         OffsetDate.of(2007, MonthOfYear.JANUARY, 30, null);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_intsOffset() {
+    public void factory_of_intsOffset() {
         OffsetDate test = OffsetDate.of(2007, 7, 15, OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_dayTooLow() {
+    public void factory_of_ints_dayTooLow() {
         OffsetDate.of(2007, 1, 0, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_dayTooHigh() {
+    public void factory_of_ints_dayTooHigh() {
         OffsetDate.of(2007, 1, 32, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_monthTooLow() {
+    public void factory_of_ints_monthTooLow() {
         OffsetDate.of(2007, 0, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_monthTooHigh() {
+    public void factory_of_ints_monthTooHigh() {
         OffsetDate.of(2007, 13, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_yearTooLow() {
+    public void factory_of_ints_yearTooLow() {
         OffsetDate.of(Integer.MIN_VALUE, 1, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_ints_nullOffset() {
+    public void factory_of_ints_nullOffset() {
         OffsetDate.of(2007, 1, 1, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_DateProvider() {
-        DateProvider localDate = LocalDate.of(2008, 6, 30);
+    public void factory_of_LocalDateZoneOffset() {
+        LocalDate localDate = LocalDate.of(2008, 6, 30);
         OffsetDate test = OffsetDate.of(localDate, OFFSET_PONE);
         check(test, 2008, 6, 30, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateProvider_null() {
-        OffsetDate.of(null, OFFSET_PONE);
+    public void factory_of_LocalDateZoneOffset_nullDate() {
+        OffsetDate.of((LocalDate) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateProvider_null_toLocalDate() {
-        OffsetDate.of(new MockDateProviderReturnsNull(), OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_date_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDate test = OffsetDate.of(mmp, OFFSET_PTWO);
-        check(test, 2008, 6, 30, OFFSET_PTWO);
+    public void factory_of_LocalDateZoneOffset_nullOffset() {
+        LocalDate localDate = LocalDate.of(2008, 6, 30);
+        OffsetDate.of(localDate, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
@@ -666,12 +659,6 @@ public class TestOffsetDate {
     public void test_withDate_null() {
         OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
         base.withDate(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_withDate_badProvider() {
-        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        base.withDate(new MockDateProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------

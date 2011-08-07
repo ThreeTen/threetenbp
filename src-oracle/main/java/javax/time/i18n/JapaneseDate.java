@@ -9,7 +9,6 @@ import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -31,7 +30,7 @@ import javax.time.calendar.MonthOfYear;
  * @author Stephen Colebourne
  */
 public final class JapaneseDate
-        implements DateProvider, Calendrical, Comparable<JapaneseDate>, Serializable {
+        implements Calendrical, Comparable<JapaneseDate>, Serializable {
 
     /**
      * A serialization identifier for this class.

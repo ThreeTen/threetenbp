@@ -49,7 +49,6 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalRuleException;
 import javax.time.calendar.Chronology;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -83,7 +82,6 @@ public class TestCopticDate {
     public void test_interfaces() {
         Object obj = TEST_1234_7_15;
         assertTrue(obj instanceof Calendrical);
-        assertTrue(obj instanceof DateProvider);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
     }

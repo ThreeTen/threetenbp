@@ -57,9 +57,9 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements Calendrical, InstantProvider, DateTimeProvider,
-        CalendricalMatcher, DateAdjuster, TimeAdjuster,
-        Comparable<OffsetDateTime>, Serializable {
+        implements InstantProvider, Calendrical,
+                    CalendricalMatcher, DateAdjuster, TimeAdjuster,
+                    Comparable<OffsetDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -167,13 +167,12 @@ public final class OffsetDateTime
      * <p>
      * The time fields will be set to zero by this factory method.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param date  the local date, not null
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      */
-    public static OffsetDateTime ofMidnight(DateProvider dateProvider, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.ofMidnight(dateProvider);
-        return new OffsetDateTime(dt, offset);
+    public static OffsetDateTime ofMidnight(LocalDate date, ZoneOffset offset) {
+        return of(date, LocalTime.MIDNIGHT, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -336,41 +335,39 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a date, time and zone offset.
+     * Obtains an instance of {@code OffsetDateTime} from a date, time and offset.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @param timeProvider  the time provider to use, not null
+     * @param date  the local date, not null
+     * @param time  the local time, not null
      * @param offset  the zone offset, not null
      * @return the offset date-time, not null
      */
-    public static OffsetDateTime of(DateProvider dateProvider, TimeProvider timeProvider, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(dateProvider, timeProvider);
+    public static OffsetDateTime of(LocalDate date, LocalTime time, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.of(date, time);
         return new OffsetDateTime(dt, offset);
     }
 
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a date-time provider.
+     * Obtains an instance of {@code OffsetDateTime} from a local date and offset time.
      *
-     * @param dateTimeProvider  the date-time provider to use, not null
-     * @param offset  the zone offset, not null
-     * @return the offset date-time, not null
-     */
-    public static OffsetDateTime of(DateTimeProvider dateTimeProvider, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.of(dateTimeProvider);
-        return new OffsetDateTime(dt, offset);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a {@code DateProvider}
-     * and {@code OffsetTime}.
-     *
-     * @param dateProvider  the date provider to use, not null
+     * @param date  the local date, not null
      * @param offsetTime  the offset time to use, not null
      * @return the offset date-time, not null
      */
-    public static OffsetDateTime of(DateProvider dateProvider, OffsetTime offsetTime) {
-        LocalDateTime dt = LocalDateTime.of(dateProvider, offsetTime);
+    public static OffsetDateTime of(LocalDate date, OffsetTime offsetTime) {
+        LocalDateTime dt = LocalDateTime.of(date, offsetTime.toLocalTime());
         return new OffsetDateTime(dt, offsetTime.getOffset());
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from a date-time and offset.
+     *
+     * @param dateTime  the local date-time, not null
+     * @param offset  the zone offset, not null
+     * @return the offset date-time, not null
+     */
+    public static OffsetDateTime of(LocalDateTime dateTime, ZoneOffset offset) {
+        return new OffsetDateTime(dateTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -511,10 +508,10 @@ public final class OffsetDateTime
      */
     private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
         if (dateTime == null) {
-            throw new NullPointerException("The date-time must not be null");
+            throw new NullPointerException("LocalDateTime must not be null");
         }
         if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
+            throw new NullPointerException("ZoneOffset must not be null");
         }
         this.dateTime = dateTime;
         this.offset = offset;
@@ -565,17 +562,18 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the time altered and the offset retained.
+     * Returns a copy of this {@code OffsetDateTime} with the date-time altered
+     * and the offset retained.
      * <p>
-     * This method returns an object with the same {@code ZoneOffset} and the specified {@code LocalDateTime}.
+     * This method returns an object with the same {@code ZoneOffset} and the
+     * specified {@code LocalDateTime}.
      * No calculation is needed or performed.
      *
-     * @param dateTimeProvider  the local date-time to change to, not null
+     * @param dateTime  the local date-time to change to, not null
      * @return an {@code OffsetDateTime} based on this time with the requested time, not null
      */
-    public OffsetDateTime withDateTime(DateTimeProvider dateTimeProvider) {
-        LocalDateTime localDateTime = LocalDateTime.of(dateTimeProvider);
-        return localDateTime.equals(this.dateTime) ? this : new OffsetDateTime(localDateTime, offset);
+    public OffsetDateTime withDateTime(LocalDateTime dateTime) {
+        return this.dateTime.equals(dateTime) ? this : new OffsetDateTime(dateTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1693,7 +1691,7 @@ public final class OffsetDateTime
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone) {
-        return ZonedDateTime.of(this, zone, ZoneResolvers.postTransition());
+        return ZonedDateTime.of(dateTime, zone, ZoneResolvers.postTransition());
     }
 
     /**
@@ -1717,7 +1715,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        return ZonedDateTime.of(this, zone, resolver);
+        return ZonedDateTime.of(dateTime, zone, resolver);
     }
 
     //-----------------------------------------------------------------------
@@ -1763,7 +1761,7 @@ public final class OffsetDateTime
      * @return an OffsetDate representing the date and offset, not null
      */
     public OffsetDate toOffsetDate() {
-        return OffsetDate.of(dateTime, offset);
+        return OffsetDate.of(dateTime.toLocalDate(), offset);
     }
 
     /**
@@ -1772,7 +1770,7 @@ public final class OffsetDateTime
      * @return an OffsetTime representing the time and offset, not null
      */
     public OffsetTime toOffsetTime() {
-        return OffsetTime.of(dateTime, offset);
+        return OffsetTime.of(dateTime.toLocalTime(), offset);
     }
 
     //-----------------------------------------------------------------------

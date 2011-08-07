@@ -21,7 +21,6 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalNormalizer;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -71,7 +70,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class HijrahDate
-        implements DateProvider, Calendrical, Comparable<HijrahDate>, Serializable {
+        implements Calendrical, Comparable<HijrahDate>, Serializable {
 
     /**
      * A serialization identifier for this class.

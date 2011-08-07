@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
+        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -154,14 +154,13 @@ public final class OffsetDate
     }
 
     /**
-     * Obtains an instance of {@code OffsetDate} from a date provider.
+     * Obtains an instance of {@code OffsetDate} from a local date and an offset.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param date  the local date, not null
      * @param offset  the zone offset, not null
      * @return the offset date, not null
      */
-    public static OffsetDate of(DateProvider dateProvider, ZoneOffset offset) {
-        LocalDate date = LocalDate.of(dateProvider);
+    public static OffsetDate of(LocalDate date, ZoneOffset offset) {
         return new OffsetDate(date, offset);
     }
 
@@ -284,10 +283,10 @@ public final class OffsetDate
      */
     private OffsetDate(LocalDate date, ZoneOffset offset) {
         if (date == null) {
-            throw new NullPointerException("The date must not be null");
+            throw new NullPointerException("LocalDate must not be null");
         }
         if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
+            throw new NullPointerException("ZoneOffset must not be null");
         }
         this.date = date;
         this.offset = offset;
@@ -477,12 +476,8 @@ public final class OffsetDate
      * @param dateProvider  the local date to change to, not null
      * @return an {@code OffsetDate} based on this date with the requested date, not null
      */
-    public OffsetDate withDate(DateProvider dateProvider) {
-        LocalDate newDate = LocalDate.of(dateProvider);
-        if (newDate.equals(date)) {  // need .equals() for this case
-            return this;
-        }
-        return with(newDate, offset);
+    public OffsetDate withDate(LocalDate date) {
+        return this.date.equals(date) ? this : new OffsetDate(date, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1007,7 +1002,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the specified time, not null
      */
     public OffsetDateTime atTime(OffsetTime time) {
-        return OffsetDateTime.of(this, time.withOffsetSameInstant(offset), offset);
+        return date.atTime(time.withOffsetSameInstant(offset));
     }
 
     /**
@@ -1022,7 +1017,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the specified time, not null
      */
     public OffsetDateTime atTime(LocalTime time) {
-        return OffsetDateTime.of(this, time, offset);
+        return OffsetDateTime.of(date, time, offset);
     }
 
     /**
@@ -1090,7 +1085,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the time of midnight, not null
      */
     public OffsetDateTime atMidnight() {
-        return OffsetDateTime.of(this, LocalTime.MIDNIGHT, offset);
+        return OffsetDateTime.ofMidnight(date, offset);
     }
 
     /**
@@ -1117,7 +1112,7 @@ public final class OffsetDate
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
     public ZonedDateTime atStartOfDayInZone(ZoneId zone) {
-        return ZonedDateTime.of(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
+        return ZonedDateTime.of(date, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
     }
 
     //-----------------------------------------------------------------------

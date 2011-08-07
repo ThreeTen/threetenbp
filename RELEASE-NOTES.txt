@@ -93,6 +93,7 @@
 - TZDBZoneRulesCompiler now also compiles leap second information from TZDB files
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - Parse methods use CharSequence
+- Remove DateProvider, TimeProvider, DateTimeProvider, as they created unreliable APIs
 
 0.6.3
 ===============================================================================

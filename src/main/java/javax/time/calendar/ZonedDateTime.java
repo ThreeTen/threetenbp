@@ -69,7 +69,7 @@ import javax.time.calendar.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, DateTimeProvider, Calendrical, CalendricalMatcher, Comparable<ZonedDateTime>, Serializable {
+        implements InstantProvider, Calendrical, CalendricalMatcher, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -269,14 +269,14 @@ public final class ZonedDateTime
      * If the time is invalid for the zone, due to either being a gap or an overlap,
      * then an exception will be thrown.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @param timeProvider  the time provider to use, not null
+     * @param date  the local date, not null
+     * @param time  the local time, not null
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, ZoneId zone) {
-        return of(dateProvider, timeProvider, zone, ZoneResolvers.strict());
+    public static ZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone) {
+        return of(date, time, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -288,16 +288,15 @@ public final class ZonedDateTime
      * then the resolver will determine what action to take.
      * See {@link ZoneResolvers} for common resolver implementations.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @param timeProvider  the time provider to use, not null
+     * @param date  the local date, not null
+     * @param time  the local time, not null
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return the zoned date-time, not null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime of(DateProvider dateProvider, TimeProvider timeProvider, ZoneId zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.of(dateProvider, timeProvider);
-        return resolve(dt, null, zone, resolver);
+    public static ZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone, ZoneResolver resolver) {
+        return resolve(LocalDateTime.of(date, time), null, zone, resolver);
     }
 
     /**
@@ -308,13 +307,13 @@ public final class ZonedDateTime
      * If the time is invalid for the zone, due to either being a gap or an overlap,
      * then an exception will be thrown.
      *
-     * @param dateTimeProvider  the date-time provider to use, not null
+     * @param dateTime  the local date-time, not null
      * @param zone  the time-zone, not null
      * @return the zoned date-time, not null
      * @throws CalendricalException if the local date-time is invalid for the time-zone
      */
-    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, ZoneId zone) {
-        return of(dateTimeProvider, zone, ZoneResolvers.strict());
+    public static ZonedDateTime of(LocalDateTime dateTime, ZoneId zone) {
+        return of(dateTime, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -326,15 +325,14 @@ public final class ZonedDateTime
      * then the resolver will determine what action to take.
      * See {@link ZoneResolvers} for common resolver implementations.
      *
-     * @param dateTimeProvider  the date-time provider to use, not null
+     * @param dateTime  the local date-time, not null
      * @param zone  the time-zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return the zoned date-time, not null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime of(DateTimeProvider dateTimeProvider, ZoneId zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.of(dateTimeProvider);
-        return resolve(dt, null, zone, resolver);
+    public static ZonedDateTime of(LocalDateTime dateTime, ZoneId zone, ZoneResolver resolver) {
+        return resolve(dateTime, null, zone, resolver);
     }
 
     /**
@@ -621,13 +619,12 @@ public final class ZonedDateTime
      * The local date-time is checked against the zone rules, and the retain
      * offset resolver used if necessary.
      *
-     * @param dateTimeProvider  the local date-time to change to, not null
+     * @param dateTime  the local date-time to change to, not null
      * @return a {@code ZonedDateTime} based on this date-time with the requested date-time, not null
      */
-    public ZonedDateTime withDateTime(DateTimeProvider dateTimeProvider) {
-        LocalDateTime localDateTime = LocalDateTime.of(dateTimeProvider);
-        return localDateTime.equals(this.dateTime.toLocalDateTime()) ?
-                this : ZonedDateTime.resolve(localDateTime, this, zone, ZoneResolvers.retainOffset());
+    public ZonedDateTime withDateTime(LocalDateTime dateTime) {
+        return this.toLocalDateTime().equals(dateTime) ?
+                this : ZonedDateTime.resolve(dateTime, this, zone, ZoneResolvers.retainOffset());
     }
 
     //-----------------------------------------------------------------------

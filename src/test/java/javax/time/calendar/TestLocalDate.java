@@ -119,7 +119,6 @@ public class TestLocalDate extends AbstractTest {
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof DateProvider);
         assertTrue(obj instanceof CalendricalMatcher);
     }
 
@@ -313,66 +312,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_ints_yearTooLow() {
         LocalDate.of(Integer.MIN_VALUE, 1, 1);
-    }
-
-    // TODO
-//    //-----------------------------------------------------------------------
-//    // of(Calendrical...)
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name = "factoryCalendricals")
-//    public Object[][] data_factoryCalendricals() {
-//        return new Object[][] {
-//            {cals((Calendrical) null), null},
-//            {cals(LocalDate.of(2008, 6, 30)), LocalDate.of(2008, 6, 30)},
-//            {cals(Year.of(2008), MonthDay.of(6, 30)), LocalDate.of(2008, 6, 30)},
-//            {cals(MonthDay.of(6, 30), Year.of(2008)), LocalDate.of(2008, 6, 30)},
-//            {cals(YearMonth.of(2008, 6), DAY_OF_MONTH.field(30)), LocalDate.of(2008, 6, 30)},
-//        };
-//    }
-//
-//    @Test(dataProvider = "factoryCalendricals")
-//    public void test_factoryCalendricals(List<Calendrical> inputList, LocalDate expected) {
-//        Calendrical[] input = inputList.toArray(new Calendrical[0]);
-//        if (expected != null) {
-//            assertEquals(LocalDate.ofMerged(input), expected);
-//        } else if (Arrays.asList(input).contains(null)) {
-//            try {
-//                LocalDate.ofMerged(input);
-//                fail("Input should throw NPE: " + Arrays.toString(input));
-//            } catch (NullPointerException ex) {
-//            }
-//        } else {
-//            try {
-//                LocalDate.ofMerged(input);
-//                fail("Input should not have merged: " + Arrays.toString(input));
-//            } catch (CalendricalException ex) {
-//                System.out.println(ex.getMessage());
-//            }
-//        }
-//    }
-
-    //-----------------------------------------------------------------------
-    // of(DateProvider)
-    //-----------------------------------------------------------------------
-    public void factory_of_DateProvider() {
-        assertSame(LocalDate.of(TEST_2007_07_15), TEST_2007_07_15);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProvider_null() {
-        LocalDate.of(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProvider_null_toLocalDate() {
-        LocalDate.of(new MockDateProviderReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_date_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDate test = LocalDate.of(mmp);
-        check(test, 2008, 6, 30);
     }
 
     //-----------------------------------------------------------------------

@@ -119,7 +119,6 @@ public class TestLocalDateTime extends AbstractTest {
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof DateTimeProvider);
         assertTrue(obj instanceof CalendricalMatcher);
     }
 
@@ -322,30 +321,14 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_ofMidnight_DateProvider() {
+    public void factory_ofMidnight_LocalDate() {
         LocalDateTime dateTime = LocalDateTime.ofMidnight(LocalDate.of(2008, 2, 29));
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofMidnight_DateProvider_null() {
-        LocalDateTime.ofMidnight(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofMidnight_DateProvider_null_toLocalDate() {
-        LocalDateTime.ofMidnight(new DateProvider() {
-            public LocalDate toLocalDate() {
-                return null;
-            }
-        });
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_ofMidnight_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDateTime test = LocalDateTime.ofMidnight(mmp);
-        check(test, 2008, 6, 30, 0, 0, 0, 0);
+    public void factory_ofMidnight_LocalDate_null() {
+        LocalDateTime.ofMidnight((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
@@ -699,97 +682,20 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime.of(2007, 7, 15, 12, 30, 40, 1000000000);
     }
 
-    // TODO
-//    //-----------------------------------------------------------------------
-//    // of(Calendrical...)
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name = "factoryCalendricals")
-//    public Object[][] data_factoryCalendricals() {
-//        return new Object[][] {
-//            {cals((Calendrical) null), null},
-//            {cals(LocalDate.of(2008, 6, 30)), null},
-//            {cals(LocalTime.of(12, 30, 40, 987654321)), null},
-//            {cals(LocalDate.of(2008, 6, 30), LocalTime.of(12, 30, 40, 987654321)), LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321)},
-//            {cals(Year.of(2008), MonthDay.of(6, 30), LocalTime.of(12, 30, 40, 987654321)), LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321)},
-//            {cals(YearMonth.of(2008, 6), DAY_OF_MONTH.field(30), LocalTime.of(12, 30, 40, 987654321)), LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321)},
-//        };
-//    }
-//
-//    @Test(dataProvider = "factoryCalendricals")
-//    public void test_factoryCalendricals(List<Calendrical> inputList, LocalDateTime expected) {
-//        Calendrical[] input = inputList.toArray(new Calendrical[0]);
-//        if (expected != null) {
-//            assertEquals(LocalDateTime.ofMerged(input), expected);
-//        } else if (Arrays.asList(input).contains(null)) {
-//            try {
-//                LocalDateTime.ofMerged(input);
-//                fail("Input should throw NPE: " + Arrays.toString(input));
-//            } catch (NullPointerException ex) {
-//            }
-//        } else {
-//            try {
-//                LocalDateTime.ofMerged(input);
-//                fail("Input should not have merged: " + Arrays.toString(input));
-//            } catch (CalendricalException ex) {
-//                System.out.println(ex.getMessage());
-//            }
-//        }
-//    }
-
     //-----------------------------------------------------------------------
-    public void factory_of_DateProvider_TimeProvider() {
+    public void factory_of_LocalDate_LocalTime() {
         LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2007, 7, 15), LocalTime.of(12, 30, 40, 987654321));
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProvider_TimeProvider_nullDateProvider() {
+    public void factory_of_LocalDate_LocalTime_nullLocalDate() {
         LocalDateTime.of(null, LocalTime.of(12, 30, 40, 987654321));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProvider_TimeProvider_null_toLocalDate() {
-        LocalDateTime.of(new DateProvider() {
-            public LocalDate toLocalDate() {
-                return null;
-            }
-        }, LocalTime.of(12, 30, 40, 987654321));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProvider_TimeProvider_nullTimeProvider() {
+    public void factory_of_LocalDate_LocalTime_nullLocalTime() {
         LocalDateTime.of(LocalDate.of(2007, 7, 15), null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_of_DateProvider_TimeProvider_null_toLocalTime() {
-        LocalDateTime.of(LocalDate.of(2007, 7, 15), new TimeProvider() {
-            public LocalTime toLocalTime() {
-                return null;
-            }
-        });
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_date_DateTimeProvider() {
-        assertSame(LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321), TEST_2007_07_15_12_30_40_987654321);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateTimeProvider_null() {
-        LocalDateTime.of(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateTimeProvider_null_toLocalDateTime() {
-        LocalDateTime.of(new MockDateTimeProviderReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_of_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDateTime test = LocalDateTime.of(mmp);
-        check(test, 2008, 6, 30, 11, 30, 10, 500);
     }
 
     //-----------------------------------------------------------------------
@@ -978,7 +884,7 @@ public class TestLocalDateTime extends AbstractTest {
 
     @Test(dataProvider="sampleTimes")
     public void test_get(int h, int m, int s, int ns) {
-        LocalDateTime a = LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321, LocalTime.of(h, m, s, ns));
+        LocalDateTime a = LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), LocalTime.of(h, m, s, ns));
         assertEquals(a.getHourOfDay(), h);
         assertEquals(a.getMinuteOfHour(), m);
         assertEquals(a.getSecondOfMinute(), s);
@@ -994,7 +900,7 @@ public class TestLocalDateTime extends AbstractTest {
             int length = month.lengthInDays(false);
             for (int i = 1; i <= length; i++) {
                 LocalDateTime d = LocalDateTime.of(LocalDate.of(2007, month, i),
-                        TEST_2007_07_15_12_30_40_987654321);
+                        TEST_2007_07_15_12_30_40_987654321.toLocalTime());
                 assertSame(d.getDayOfWeek(), dow);
                 dow = dow.next();
             }
@@ -3625,7 +3531,7 @@ public class TestLocalDateTime extends AbstractTest {
     @Test(dataProvider="sampleTimes")
     public void test_toLocalTime(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.of(h, m, s, ns);
-        LocalDateTime dt = LocalDateTime.of(TEST_2007_07_15_12_30_40_987654321, t);
+        LocalDateTime dt = LocalDateTime.of(LocalDate.of(2011, 7, 30), t);
         assertSame(dt.toLocalTime(), t);
     }
 

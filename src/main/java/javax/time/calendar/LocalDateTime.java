@@ -60,8 +60,8 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, DateTimeProvider, Comparable<LocalDateTime>,
-                    CalendricalMatcher, DateAdjuster, TimeAdjuster, Serializable {
+        implements Calendrical, CalendricalMatcher, DateAdjuster, TimeAdjuster,
+                    Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -203,11 +203,11 @@ public final class LocalDateTime
      * <p>
      * The time fields will be set to zero by this factory method.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param date  the local date, not null
      * @return the local date-time, not null
      */
-    public static LocalDateTime ofMidnight(DateProvider dateProvider) {
-        LocalDate date = LocalDate.of(dateProvider);
+    public static LocalDateTime ofMidnight(LocalDate date) {
+        ISOChronology.checkNotNull(date, "LocalDate must not be null");
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -365,36 +365,17 @@ public final class LocalDateTime
         return new LocalDateTime(date, time);
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code LocalDateTime} from a date and time.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @param timeProvider  the time provider to use, not null
+     * @param date  the local date, not null
+     * @param time  the local time, not null
      * @return the local date-time, not null
      */
-    public static LocalDateTime of(DateProvider dateProvider, TimeProvider timeProvider) {
-        LocalDate date = LocalDate.of(dateProvider);
-        LocalTime time = LocalTime.of(timeProvider);
+    public static LocalDateTime of(LocalDate date, LocalTime time) {
+        ISOChronology.checkNotNull(date, "LocalDate must not be null");
+        ISOChronology.checkNotNull(time, "LocalTime must not be null");
         return new LocalDateTime(date, time);
-    }
-
-    /**
-     * Obtains an instance of {@code LocalTime} from a date-time provider.
-     * <p>
-     * The purpose of this method is to convert a {@code DateTimeProvider}
-     * to a {@code LocalDateTime} in the safest possible way. Specifically,
-     * the means checking whether the input parameter is null and
-     * whether the result of the provider is null.
-     *
-     * @param dateTimeProvider  the date-time provider to use, not null
-     * @return the local date-time, not null
-     */
-    public static LocalDateTime of(DateTimeProvider dateTimeProvider) {
-        ISOChronology.checkNotNull(dateTimeProvider, "DateTimeProvider must not be null");
-        LocalDateTime result = dateTimeProvider.toLocalDateTime();
-        ISOChronology.checkNotNull(result, "DateTimeProvider implementation must not return null");
-        return result;
     }
 
     //-----------------------------------------------------------------------

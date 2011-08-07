@@ -103,7 +103,6 @@ public class TestOffsetDateTime {
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof DateTimeProvider);
         assertTrue(obj instanceof CalendricalMatcher);
         assertTrue(obj instanceof DateAdjuster);
         assertTrue(obj instanceof TimeAdjuster);
@@ -232,138 +231,136 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_intMonthInt() {
+    public void factory_ofMidnight_intMonthInt() {
         OffsetDateTime test = OffsetDateTime.ofMidnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_ints() {
+    public void factory_ofMidnight_ints() {
         OffsetDateTime test = OffsetDateTime.ofMidnight(2008, 6, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_DateProvider() {
-        DateProvider provider = LocalDate.of(2008, 6, 30);
+    public void factory_ofMidnight_LocalDateZoneOffset() {
+        LocalDate provider = LocalDate.of(2008, 6, 30);
         OffsetDateTime test = OffsetDateTime.ofMidnight(provider, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
-    //-----------------------------------------------------------------------
-    public void factory_dateMidnight_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.ofMidnight(mmp, OFFSET_PTWO);
-        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PTWO);
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofMidnight_LocalDateZoneOffset_nullDate() {
+        OffsetDateTime.ofMidnight((LocalDate) null, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofMidnight_LocalDateZoneOffset_nullOffset() {
+        LocalDate provider = LocalDate.of(2008, 6, 30);
+        OffsetDateTime.ofMidnight(provider, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
     // dateTime factories
     //-----------------------------------------------------------------------
-    public void factory_dateTime_intMonthIntHM() {
+    public void factory_of_intMonthIntHM() {
         OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_intMonthIntHMS() {
+    public void factory_of_intMonthIntHMS() {
         OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_intMonthIntHMSN() {
+    public void factory_of_intMonthIntHMSN() {
         OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_intsHM() {
+    public void factory_of_intsHM() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_intsHMS() {
+    public void factory_of_intsHMS() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_intsHMSN() {
+    public void factory_of_intsHMSN() {
         OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_DateProviderTimeProvider() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.of(dateProvider, timeProvider, OFFSET_PONE);
+    public void factory_of_LocalDateLocalTimeZoneOffset() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        OffsetDateTime test = OffsetDateTime.of(date, time, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProviderTimeProvider_nullDateProvider() {
-        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
-        OffsetDateTime.of((DateProvider) null, timeProvider, OFFSET_PONE);
+    public void factory_of_LocalDateLocalTimeZoneOffset_nullLocalDate() {
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        OffsetDateTime.of((LocalDate) null, time, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProviderTimeProvider_nullTimeProvider() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        OffsetDateTime.of(dateProvider, (TimeProvider) null, OFFSET_PONE);
+    public void factory_of_LocalDateLocalTimeZoneOffset_nullLocalTime() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        OffsetDateTime.of(date, (LocalTime) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProviderTimeProvider_nullOffset() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime.of(provider, (ZoneOffset) null);
+    public void factory_of_LocalDateLocalTimeZoneOffset_nullOffset() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        LocalTime time = LocalTime.of(11, 30, 10, 500);
+        OffsetDateTime.of(date, time, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_DateTimeProvider() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.of(provider, OFFSET_PONE);
+    public void factory_of_LocalDateTimeZoneOffset() {
+        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime test = OffsetDateTime.of(dt, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateTimeProvider_nullProvider() {
-        OffsetDateTime.of((DateTimeProvider) null, OFFSET_PONE);
+    public void factory_of_LocalDateTimeZoneOffset_nullProvider() {
+        OffsetDateTime.of((LocalDateTime) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateTimeProvider_nullOffset() {
-        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime.of(provider, (ZoneOffset) null);
+    public void factory_of_LocalDateTimeZoneOffset_nullOffset() {
+        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime.of(dt, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_DateProviderOffsetTime() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
+    public void factory_of_LocalDateOffsetTime() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
         OffsetTime time = OffsetTime.of(11, 30, 10, 500, OFFSET_PONE);
-        OffsetDateTime test = OffsetDateTime.of(dateProvider, time);
+        OffsetDateTime test = OffsetDateTime.of(date, time);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProviderOffsetTime_nullDateProvider() {
+    public void factory_of_LocalDateOffsetTime_nullLocalDate() {
         OffsetTime time = OffsetTime.of(11, 30, 10, 500, OFFSET_PONE);
-        OffsetDateTime.of((DateProvider) null, time);
+        OffsetDateTime.of((LocalDate) null, time);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_DateProviderOffsetTime_nullOffsetTime() {
-        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
-        OffsetDateTime.of(dateProvider, (OffsetTime) null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_dateTime_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.of(mmp, OFFSET_PTWO);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PTWO);
+    public void factory_of_LocalDateOffsetTime_nullOffsetTime() {
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        OffsetDateTime.of(date, (OffsetTime) null);
     }
 
     //-----------------------------------------------------------------------
@@ -614,12 +611,6 @@ public class TestOffsetDateTime {
     public void test_withDateTime_null() {
         OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.withDateTime(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_withDateTime_badProvider() {
-        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.withDateTime(new MockDateTimeProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
