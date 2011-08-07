@@ -213,26 +213,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the rule defines values that fit in an {@code int}, throwing an exception if not.
-     * <p>
-     * This checks that all valid values are within the bounds of an {@code int}.
-     * <p>
-     * For example, the 'MonthOfYear' rule has values from 1 to 12, which fits in an {@code int}.
-     * By comparison, 'NanoOfDay' runs from 1 to 86,400,000,000,000 which does not fit in an {@code int}.
-     * <p>
-     * This implementation uses {@link DateTimeRuleRange#isIntValue()}.
-     * Subclasses should not normally override this method.
-     *
-     * @throws CalendricalException if the value does not fit in an {@code int}
-     */
-    public void checkIntValue() {
-        DateTimeRuleRange range = getValueRange();
-        if (range.isIntValue() == false) {
-            throw new CalendricalRuleException("Rule does not specify an int value: " + getName(), this);
-        }
-    }
-
-    /**
      * Checks if the value is valid for the rule, throwing an exception if invalid.
      * <p>
      * This checks that the value is within the valid range of the rule.
@@ -240,7 +220,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * outer minimum and maximum range for the field is validated.
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      * <p>
-     * This implementation uses {@link DateTimeRuleRange#isValidValue(long)}.
+     * This implementation uses {@link #getValueRange()} and
+     * {@link DateTimeRuleRange#isValidValue(long)}.
      * Subclasses should not normally override this method..
      *
      * @param value  the value to check
@@ -261,11 +242,16 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * <p>
      * This checks that the value is within the valid range of the rule and
      * that all valid values are within the bounds of an {@code int}.
+     * For example, the 'MonthOfYear' rule has values from 1 to 12, which
+     * fits in an {@code int}. By comparison, 'NanoOfDay' runs from
+     * 1 to 86,400,000,000,000 which does not fit in an {@code int}.
+     * <p>
      * This method considers the rule in isolation, thus only the
      * outer minimum and maximum range for the field is validated.
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
      * <p>
-     * This implementation uses {@link #checkIntValue()} and {@link #checkValidValue(long)}.
+     * This implementation uses {@link #getValueRange()} and
+     * {@link DateTimeRuleRange#isValidValue(long)}.
      * Subclasses should not normally override this method.
      *
      * @param value  the value to check
@@ -274,8 +260,14 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public int checkValidIntValue(long value) {
-        checkIntValue();
-        return (int) checkValidValue(value);
+        DateTimeRuleRange range = getValueRange();
+        if (range.isIntValue() == false) {
+            throw new CalendricalRuleException("Rule does not specify an int value: " + getName(), this);
+        }
+        if (range.isValidValue(value) == false) {
+            throw new IllegalCalendarFieldValueException(this, value);
+        }
+        return (int) value;
     }
 
     //-----------------------------------------------------------------------

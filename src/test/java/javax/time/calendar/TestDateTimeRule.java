@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.HOURS;
 import static javax.time.calendar.ISOPeriodUnit.MINUTES;
+import static javax.time.calendar.ISOPeriodUnit.NANOS;
 import static javax.time.calendar.ISOPeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -63,26 +64,6 @@ public class TestDateTimeRule {
     }
 
     //-----------------------------------------------------------------------
-    // checkIntValue()
-    //-----------------------------------------------------------------------
-    public void test_checkIntValue() {
-        new Mock(HOURS, DAYS, 0, 23).checkIntValue();
-        new Mock(HOURS, DAYS, -1, 23).checkIntValue();
-        new Mock(HOURS, DAYS, Integer.MIN_VALUE, Integer.MAX_VALUE).checkIntValue();
-    }
-
-    @Test(expectedExceptions=CalendricalRuleException.class)
-    public void test_checkIntValue_bad() {
-        Mock rule = new Mock(HOURS, DAYS, 0, Long.MAX_VALUE);
-        try {
-            rule.checkIntValue();
-        } catch (CalendricalRuleException ex) {
-            assertEquals(ex.getRule(), rule);
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
     // checkValidValue()
     //-----------------------------------------------------------------------
     public void test_checkValidValue() {
@@ -90,11 +71,41 @@ public class TestDateTimeRule {
         new Mock(HOURS, DAYS, 0, 23).checkValidValue(23);
     }
 
-    @Test(expectedExceptions=CalendricalRuleException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_checkValidValue_bad() {
         Mock rule = new Mock(HOURS, DAYS, 0, 23);
         try {
             rule.checkValidValue(24);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getRule(), rule);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // checkValidIntValue()
+    //-----------------------------------------------------------------------
+    public void test_checkValidIntValue() {
+        new Mock(HOURS, DAYS, 0, 23).checkValidIntValue(0);
+        new Mock(HOURS, DAYS, 0, 23).checkValidIntValue(23);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_checkValidIntValue_bad() {
+        Mock rule = new Mock(HOURS, DAYS, 0, 23);
+        try {
+            rule.checkValidIntValue(24);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getRule(), rule);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalRuleException.class)
+    public void test_checkValidIntValue_badNotInt() {
+        Mock rule = new Mock(DAYS, NANOS, 0, 24L * 60L * 60L * 1000000000L - 1);
+        try {
+            rule.checkValidIntValue(24);
         } catch (CalendricalRuleException ex) {
             assertEquals(ex.getRule(), rule);
             throw ex;
@@ -285,6 +296,7 @@ public class TestDateTimeRule {
 
     //-----------------------------------------------------------------------
     static class Mock extends DateTimeRule {
+        private static final long serialVersionUID = 1L;
         protected Mock(PeriodUnit unit, PeriodUnit range, long min, long max) {
             this(unit, range, min, max, max);
         }

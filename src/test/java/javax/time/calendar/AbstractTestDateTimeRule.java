@@ -119,19 +119,6 @@ public abstract class AbstractTestDateTimeRule {
     }
 
     //-----------------------------------------------------------------------
-    // checkIntValue()
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalRuleException.class)
-    public void test_checkIntValue_valid() {
-        if (rule().getValueRange().isIntValue()) {
-            rule().checkIntValue();
-            throw new CalendricalRuleException("Dummy", rule());
-        } else {
-            rule().checkIntValue();
-        }
-    }
-
-    //-----------------------------------------------------------------------
     // checkValidValue(long)
     //-----------------------------------------------------------------------
     public void test_checkValue_long_valid() {
