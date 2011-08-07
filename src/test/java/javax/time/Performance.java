@@ -108,9 +108,9 @@ public class Performance {
         sortListDate(judates);
 
         List<LocalTime> times = setupTime();
-        sortListTime(times);
         queryListTime(times);
         formatListTime(times);
+        sortListTime(times);
 
         List<GregorianCalendar> gcals = setupGCal();
         queryListGCal(gcals);
@@ -140,7 +140,7 @@ public class Performance {
         long start = System.nanoTime();
         Collections.sort(list);
         long end = System.nanoTime();
-        System.out.println("LocalDT:   Sort:   " + NF.format(end - start) + " ns");
+        System.out.println("LocalDT:   Sort:   " + NF.format(end - start) + " ns " + list.get(0));
     }
 
     private static void queryListDateTime(List<LocalDateTime> list) {
@@ -202,7 +202,7 @@ public class Performance {
         long start = System.nanoTime();
         Collections.sort(list);
         long end = System.nanoTime();
-        System.out.println("LocalT:    Sort:   " + NF.format(end - start) + " ns");
+        System.out.println("LocalT:    Sort:   " + NF.format(end - start) + " ns " + list.get(0));
     }
 
     private static void queryListTime(List<LocalTime> list) {
@@ -356,7 +356,7 @@ public class Performance {
         long start = System.nanoTime();
         Collections.sort(list);
         long end = System.nanoTime();
-        System.out.println("Date:      Sort:   " + NF.format(end - start) + " ns");
+        System.out.println("Date:      Sort:   " + NF.format(end - start) + " ns " + list.get(0));
     }
 
     private static void queryListDate(List<Date> list) {
