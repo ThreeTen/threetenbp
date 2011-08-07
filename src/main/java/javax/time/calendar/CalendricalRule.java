@@ -208,7 +208,7 @@ public abstract class CalendricalRule<T>
      * <p>
      * This is part of the merge process, which exists to extract the maximum
      * information possible from a set calendrical data. Before this method is
-     * called, the merger will be normalized, which ensures that any fields that can be
+     * called, the engine will be normalized, which ensures that any fields that can be
      * converted to objects will have been. Thus this method is primarily used
      * to create objects from the normalized form.
      * <p>
@@ -216,10 +216,10 @@ public abstract class CalendricalRule<T>
      * derived from them. For example, a {@code LocalDateTime} can be derived from a
      * {@code LocalDate} and a {@code LocalTime}.
      * In general, only the objects should be used for derivation, as derivation from any
-     * remaining fields is handled directly by the merger.
+     * remaining fields is handled directly by the engine.
      * <p>
      * Implementations should avoid throwing exceptions and use the merger error mechanism instead.
-     * It is strongly recommended to treat the data in the merger as immutable.
+     * It is strongly recommended to treat the data in the engine as immutable.
      * <p>
      * This implementation uses {@link CalendricalEngine#getFieldDerived}
      * 

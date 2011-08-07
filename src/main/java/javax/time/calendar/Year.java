@@ -154,7 +154,7 @@ public final class Year
      * The year 2BC/BCE is represented by -1.<br />
      *
      * @param isoYear  the ISO proleptic year to represent, from MIN_YEAR to MAX_YEAR
-     * @return the created Year, not null
+     * @return the year, not null
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year of(int isoYear) {
@@ -183,7 +183,7 @@ public final class Year
      * This internal method is used by the associated rule.
      *
      * @param engine  the engine to derive from, not null
-     * @return the Year singleton, null if unable to obtain
+     * @return the year, null if unable to obtain
      */
     static Year deriveFrom(CalendricalEngine engine) {
         DateTimeField field = engine.getFieldDerived(YEAR, true);
