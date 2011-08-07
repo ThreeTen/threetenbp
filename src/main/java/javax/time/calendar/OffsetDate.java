@@ -473,7 +473,7 @@ public final class OffsetDate
      * No calculation is performed. The result simply represents the same
      * offset and the new date.
      *
-     * @param dateProvider  the local date to change to, not null
+     * @param date  the local date to change to, not null
      * @return an {@code OffsetDate} based on this date with the requested date, not null
      */
     public OffsetDate withDate(LocalDate date) {

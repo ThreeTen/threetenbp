@@ -51,12 +51,7 @@ import javax.time.calendar.MonthOfYear;
  * The date has a precision of one day and a range within the era from
  * year 1 to year 999,999,999 (inclusive).
  * <p>
- * Instances of this class may be created from any other object that implements
- * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
- * this class may be passed into the factory method of any other implementation
- * of {@code DateProvider}.
- * <p>
- * HistoricDate is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

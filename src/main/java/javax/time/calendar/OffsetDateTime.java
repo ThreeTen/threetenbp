@@ -949,21 +949,7 @@ public final class OffsetDateTime
         return with(dateTime.withDayOfYear(dayOfYear), offset);
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this OffsetDateTime with a different local date.
-//     * <p>
-//     * This method changes the date stored to a different date.
-//     * No calculation is performed. The result simply represents the same
-//     * offset and the new date.
-//     *
-//     * @param dateProvider  the local date to change to, not null
-//     * @return a new updated OffsetDateTime, not null
-//     */
-//    public OffsetDateTime withDate(DateProvider dateProvider) {
-//        return with(dateTime.with(dateProvider), offset);
-//    }
-
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code OffsetDateTime} with the date values altered.
      * <p>
