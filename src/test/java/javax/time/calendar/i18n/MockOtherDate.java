@@ -34,7 +34,7 @@ package javax.time.calendar.i18n;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
@@ -65,7 +65,7 @@ public final class MockOtherDate
         if (rule == rule()) {
             return rule.reify(this);
         }
-        return CalendricalNormalizer.derive(rule, rule(), toLocalDate(), null, null, null, ISOChronology.INSTANCE, null);
+        return CalendricalEngine.derive(rule, rule(), toLocalDate(), null, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -130,8 +130,8 @@ public final class MockOtherDate
             return INSTANCE;
         }
         @Override
-        protected MockOtherDate deriveFrom(CalendricalNormalizer merger) {
-            LocalDate date = merger.getDate(true);
+        protected MockOtherDate deriveFrom(CalendricalEngine engine) {
+            LocalDate date = engine.getDate(true);
             return date != null ? new MockOtherDate(date) : null;
         }
     }

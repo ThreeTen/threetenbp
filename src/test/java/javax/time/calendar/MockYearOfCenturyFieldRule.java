@@ -61,8 +61,8 @@ public final class MockYearOfCenturyFieldRule extends DateTimeRule implements Se
     }
 
     @Override
-    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-        LocalDate date = merger.getDate(false);
+    protected DateTimeField deriveFrom(CalendricalEngine engine) {
+        LocalDate date = engine.getDate(false);
         if (date == null) {
             return null;
         }

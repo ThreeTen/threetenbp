@@ -74,8 +74,8 @@ public class TestCalendricalRule {
             super(MockBigYear.class, "MockBigYearRule");
         }
         @Override
-        protected MockBigYear deriveFrom(CalendricalNormalizer merger) {
-            DateTimeField year = merger.getFieldDerived(YEAR, true);
+        protected MockBigYear deriveFrom(CalendricalEngine engine) {
+            DateTimeField year = engine.getFieldDerived(YEAR, true);
             return year != null ? new MockBigYear(year.getValidValue()) : null;
         }
     }

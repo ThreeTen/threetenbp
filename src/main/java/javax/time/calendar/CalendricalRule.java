@@ -196,10 +196,10 @@ public abstract class CalendricalRule<T>
      * any conflicts. For example, the {@code OffsetTime} rule could check to see if there
      * is an {@code OffsetDate} with a conflicting offset, and adjust the time accordingly.
      * 
-     * @param merger  the merger that was created from an instance of the object associated with this rule, not null
-     * @param mergers  all the mergers being processed, unmodifiable, but containing modifiable mergers, not null
+     * @param engine  the engine that was created from an instance of the object associated with this rule, not null
+     * @param engines  all the engines being processed, unmodifiable, but containing modifiable mergers, not null
      */
-    protected void merge(CalendricalNormalizer merger, List<CalendricalNormalizer> mergers) {
+    protected void merge(CalendricalEngine engine, List<CalendricalEngine> engines) {
         // override to alter the merge process
     }
 
@@ -221,12 +221,12 @@ public abstract class CalendricalRule<T>
      * Implementations should avoid throwing exceptions and use the merger error mechanism instead.
      * It is strongly recommended to treat the data in the merger as immutable.
      * <p>
-     * This implementation uses {@link CalendricalNormalizer#getFieldDerived}
+     * This implementation uses {@link CalendricalEngine#getFieldDerived}
      * 
-     * @param merger  the merger to process, not null
+     * @param engine  the engine to derive from, not null
      * @return the derived field, null if unable to derive
      */
-    protected T deriveFrom(CalendricalNormalizer merger) {
+    protected T deriveFrom(CalendricalEngine engine) {
         return null;  // override to derive the value from the normalized form
     }
 

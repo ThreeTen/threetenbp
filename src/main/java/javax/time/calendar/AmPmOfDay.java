@@ -126,19 +126,19 @@ public enum AmPmOfDay implements Calendrical {
      * @throws CalendricalException if unable to merge to AM/PM
      */
     public static AmPmOfDay from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code AmPmOfDay} from the normalized form.
+     * Obtains an instance of {@code AmPmOfDay} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the calendrical engine, not null
      * @return the AmPmOfDay singleton, null if unable to obtain
      */
-    static AmPmOfDay deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getFieldDerived(AMPM_OF_DAY, true);
+    static AmPmOfDay deriveFrom(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(AMPM_OF_DAY, true);
         if (field == null) {
             return null;
         }
@@ -160,7 +160,7 @@ public enum AmPmOfDay implements Calendrical {
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, toField());
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
     }
 
     /**

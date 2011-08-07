@@ -541,12 +541,12 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             this.weekRules = weekRules;
         }
         @Override
-        protected void normalize(CalendricalNormalizer merger) {
-            super.normalize(merger);
+        protected void normalize(CalendricalEngine engine) {
+            super.normalize(engine);
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            DateTimeField dow = merger.getFieldDerived(DAY_OF_WEEK, false);
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            DateTimeField dow = engine.getFieldDerived(DAY_OF_WEEK, false);
             if (dow != null && dow.isValidValue()) {
                 return field(((dow.getValue() - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1);
             }
@@ -582,24 +582,24 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             this.weekRules = weekRules;
         }
         @Override
-        protected void normalize(CalendricalNormalizer merger) {
-            DateTimeField epm = merger.getField(ZERO_EPOCH_MONTH, false);
+        protected void normalize(CalendricalEngine engine) {
+            DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
             if (epm != null) {
                 int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
                 int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
-                DateTimeField wom = merger.getField(this, false);
-                DateTimeField wrdow = merger.getField(weekRules.dayOfWeek(), false);
+                DateTimeField wom = engine.getField(this, false);
+                DateTimeField wrdow = engine.getField(weekRules.dayOfWeek(), false);
                 if (wom != null && wrdow != null) {
                     LocalDate startWeek2 = LocalDate.of(year, moy, weekRules.getMinimalDaysInFirstWeek())
                         .with(DateAdjusters.next(weekRules.getFirstDayOfWeek()));
                     LocalDate date = startWeek2.plusDays(wom.getValue() * 7L - 14 + wrdow.getValue() - 1);
-                    merger.setDate(date, true);
+                    engine.setDate(date, true);
                 }
             }
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            LocalDate date = merger.getDate(false);
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            LocalDate date = engine.getDate(false);
             if (date != null) {
                 LocalDate startWeek2 = date.withDayOfMonth(weekRules.getMinimalDaysInFirstWeek()).with(DateAdjusters.next(weekRules.getFirstDayOfWeek()));
                 return field((date.getDayOfMonth() - startWeek2.getDayOfMonth() + 14) / 7);

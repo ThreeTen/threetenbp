@@ -179,7 +179,7 @@ public class TestDateTimeParseContext {
         assertEquals(context.getParsed().size(), 2);
         assertEquals(context.getParsed(YEAR), YEAR.field(2008L));
         assertEquals(context.getParsed(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6L));
-        List<Calendrical> list = context.toCalendricalMerger().getInput();
+        List<Calendrical> list = context.toCalendricalEngine().getInput();
         assertEquals(list.size(), 2);
         assertEquals(list.get(0), YEAR.field(2008L));
         assertEquals(list.get(1), MONTH_OF_YEAR.field(6L));

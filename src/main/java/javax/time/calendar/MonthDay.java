@@ -193,20 +193,20 @@ public final class MonthDay
      * @throws CalendricalException if unable to merge to a month-day
      */
     public static MonthDay from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code MonthDay} from the normalized form.
+     * Obtains an instance of {@code MonthDay} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the engine to derive from, not null
      * @return the MonthDay singleton, null if unable to obtain
      */
-    static MonthDay deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField moy = merger.getFieldDerived(MONTH_OF_YEAR, true);
-        DateTimeField dom = merger.getFieldDerived(DAY_OF_MONTH, true);
+    static MonthDay deriveFrom(CalendricalEngine engine) {
+        DateTimeField moy = engine.getFieldDerived(MONTH_OF_YEAR, true);
+        DateTimeField dom = engine.getFieldDerived(DAY_OF_MONTH, true);
         if (moy == null || dom == null) {
             return null;
         }
@@ -292,7 +292,7 @@ public final class MonthDay
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
     }
 
     //-----------------------------------------------------------------------

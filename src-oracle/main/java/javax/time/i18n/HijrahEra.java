@@ -5,7 +5,7 @@ package javax.time.i18n;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -99,7 +99,7 @@ public enum HijrahEra implements Calendrical {
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), HijrahChronology.INSTANCE, rule().field(getValue()));
+        return CalendricalEngine.derive(ruleToDerive, rule(), HijrahChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

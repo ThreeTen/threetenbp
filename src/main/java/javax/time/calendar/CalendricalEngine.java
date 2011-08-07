@@ -47,19 +47,19 @@ import javax.time.CalendricalException;
 import javax.time.MathUtils;
 
 /**
- * Stateful class used to merge calendrical information.
+ * Main processing engine to merge and interpret calendrical information.
  * <p>
- * This class is a tool for merging any set of calendrical information into the
- * most meaningful set of information. For example, separate year, month and day
- * fields will be merged into a date. And if both date and time are present, then
- * they will be merged into a date-time.
+ * This stateful class is a tool for manipulating a set of calendrical information.
+ * The engine typically takes some calendrical information as input and derives
+ * other information from it.
+ * For example, a date can be derived from separate year, month and day fields.
  * <p>
  * This class is mutable and not thread-safe.
  * It must only be used from a single thread and must not be passed between threads.
  *
  * @author Stephen Colebourne
  */
-public final class CalendricalNormalizer {
+public final class CalendricalEngine {
 
     /**
      * The original input.
@@ -100,11 +100,11 @@ public final class CalendricalNormalizer {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code CalendricalNormalizer}.
+     * Gets the rule for {@code CalendricalEngine}.
      *
-     * @return the rule for the merger, not null
+     * @return the rule for the engine, not null
      */
-    public static CalendricalRule<CalendricalNormalizer> rule() {
+    public static CalendricalRule<CalendricalEngine> rule() {
         return Rule.INSTANCE;
     }
 
@@ -128,24 +128,24 @@ public final class CalendricalNormalizer {
      * @return the normalized merger to query, not null
      * @throws CalendricalException if the calendricals cannot be successfully merged
      */
-    public static CalendricalNormalizer merge(Calendrical... calendricals) {
+    public static CalendricalEngine merge(Calendrical... calendricals) {
         ISOChronology.checkNotNull(calendricals, "Calendricals must not be null");
-        CalendricalNormalizer target;
+        CalendricalEngine target;
         try {
-            List<CalendricalNormalizer> semiNormalized = new ArrayList<CalendricalNormalizer>(calendricals.length);
+            List<CalendricalEngine> semiNormalized = new ArrayList<CalendricalEngine>(calendricals.length);
             for (Calendrical calendrical : calendricals) {
-                CalendricalNormalizer merger = rule().getValue(calendrical);
-                if (merger != null) {  // ignore anything with no normalized form
-                    semiNormalized.add(merger);
+                CalendricalEngine engine = rule().getValue(calendrical);
+                if (engine != null) {  // ignore anything with no normalized form
+                    semiNormalized.add(engine);
                 }
             }
             semiNormalized = Collections.unmodifiableList(semiNormalized);  // make list safe for external use
-            for (CalendricalNormalizer merger : semiNormalized) {
-                if (merger.getRule() != null) {
-                    merger.getRule().merge(merger, semiNormalized);
+            for (CalendricalEngine engine : semiNormalized) {
+                if (engine.getRule() != null) {
+                    engine.getRule().merge(engine, semiNormalized);
                 }
             }
-            target = new CalendricalNormalizer(calendricals, semiNormalized);
+            target = new CalendricalEngine(calendricals, semiNormalized);
             target.validate();
             target.normalize();
         } catch (NullPointerException ex) {
@@ -200,9 +200,9 @@ public final class CalendricalNormalizer {
                 return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
             }
         }
-        CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, date, time, offset, zoneId, chrono, fields);
-        merger.normalize();
-        return merger.derive(ruleToDerive);
+        CalendricalEngine engine = new CalendricalEngine(ruleOfData, date, time, offset, zoneId, chrono, fields);
+        engine.normalize();
+        return engine.derive(ruleToDerive);
     }
 
     /**
@@ -222,9 +222,9 @@ public final class CalendricalNormalizer {
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, Chronology chrono, DateTimeField field) {
         ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         ISOChronology.checkNotNull(field, "DateTimeField must not be null");
-        CalendricalNormalizer merger = new CalendricalNormalizer(ruleOfData, null, null, null, null, chrono, Collections.singleton(field));
-        merger.normalize();
-        return merger.derive(ruleToDerive);
+        CalendricalEngine engine = new CalendricalEngine(ruleOfData, null, null, null, null, chrono, Collections.singleton(field));
+        engine.normalize();
+        return engine.derive(ruleToDerive);
     }
 
     //-----------------------------------------------------------------------
@@ -232,29 +232,29 @@ public final class CalendricalNormalizer {
      * Creates an instance from a normalized list of mergers.
      * 
      * @param calendricals  the original calendricals prior to merging, not null
-     * @param mergers  the merged form of the calendricals, not null
+     * @param engines  the engine form of the calendricals, not null
      */
-    private CalendricalNormalizer(Calendrical[] calendricals, List<CalendricalNormalizer> mergers) {
+    private CalendricalEngine(Calendrical[] calendricals, List<CalendricalEngine> engines) {
         this.input = Collections.unmodifiableList(Arrays.asList(calendricals));
         this.rule = null;
-        for (CalendricalNormalizer merger : mergers) {
-            if (merger.date != null) {
-                setDate(merger.date, true);
+        for (CalendricalEngine engine : engines) {
+            if (engine.date != null) {
+                setDate(engine.date, true);
             }
-            if (merger.time != null) {
-                setTime(merger.time, true);
+            if (engine.time != null) {
+                setTime(engine.time, true);
             }
-            if (merger.offset != null) {
-                setOffset(merger.offset, true);
+            if (engine.offset != null) {
+                setOffset(engine.offset, true);
             }
-            if (merger.zone != null) {
-                setZone(merger.zone, true);
+            if (engine.zone != null) {
+                setZone(engine.zone, true);
             }
-            if (merger.chronology != null) {
-                setChronology(merger.chronology, true);
+            if (engine.chronology != null) {
+                setChronology(engine.chronology, true);
             }
-            if (merger.fields != null) {
-                for (DateTimeField field : merger.fields.values()) {
+            if (engine.fields != null) {
+                for (DateTimeField field : engine.fields.values()) {
                     setField(field, true);
                 }
             }
@@ -272,7 +272,7 @@ public final class CalendricalNormalizer {
      * @param chrono  the chronology, may be null
      * @param fields  the fields, may be null
      */
-    private CalendricalNormalizer(
+    private CalendricalEngine(
             CalendricalRule<?> ruleOfData, LocalDate date, LocalTime time, ZoneOffset offset,
             ZoneId zone, Chronology chronology, Iterable<DateTimeField> fields) {
         this.rule = ruleOfData;
@@ -815,14 +815,14 @@ public final class CalendricalNormalizer {
     /**
      * Rule class.
      */
-    static final class Rule extends CalendricalRule<CalendricalNormalizer> implements Serializable {
+    static final class Rule extends CalendricalRule<CalendricalEngine> implements Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Serialization version. */
         static final Rule INSTANCE = new Rule();
 
         private Rule() {
-            super(CalendricalNormalizer.class, "CalendricalNormalizer");  // TODO
+            super(CalendricalEngine.class, "CalendricalEngine");  // TODO
         }
 
         private Object readResolve() {

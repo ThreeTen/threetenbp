@@ -174,81 +174,81 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected void normalize(CalendricalNormalizer merger) {
+    protected void normalize(CalendricalEngine engine) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
                 // year-month-day
-                DateTimeField dom = merger.getField(DAY_OF_MONTH, false);
-                DateTimeField epm = merger.getField(ZERO_EPOCH_MONTH, false);
+                DateTimeField dom = engine.getField(DAY_OF_MONTH, false);
+                DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
                 if (dom != null && epm != null) {
                     int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
                     int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
                     LocalDate date = LocalDate.of(year, moy, 1).plusDays(MathUtils.safeDecrement(dom.getValue()));
-                    merger.setDate(date, true);
+                    engine.setDate(date, true);
                 }
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
                 // year-day
-                DateTimeField doy = merger.getField(DAY_OF_YEAR, false);
-                DateTimeField year = merger.derive(YEAR);
+                DateTimeField doy = engine.getField(DAY_OF_YEAR, false);
+                DateTimeField year = engine.derive(YEAR);
                 if (doy != null && year != null) {
                     LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
                             .plusDays(doy.getValue()).minusDays(1);
-                    merger.setDate(date, true);
+                    engine.setDate(date, true);
                 }
                 break;
             }
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
                 // year-month-alignedWeek-day
-                DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
-                DateTimeField wom = merger.getField(ALIGNED_WEEK_OF_MONTH, false);
-                DateTimeField epm = merger.getField(ZERO_EPOCH_MONTH, false);
+                DateTimeField dow = engine.getField(DAY_OF_WEEK, false);
+                DateTimeField wom = engine.getField(ALIGNED_WEEK_OF_MONTH, false);
+                DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
                 if (dow != null && wom != null && epm != null) {
                     int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
                     int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
                     LocalDate date = LocalDate.of(year, moy, 1).plusWeeks(MathUtils.safeDecrement(wom.getValidIntValue()));
                     date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
-                    merger.setDate(date, true);
+                    engine.setDate(date, true);
                 }
                 break;
             }
             case ALIGNED_WEEK_OF_YEAR_ORDINAL: {
                 // year-alignedWeek-day
-                DateTimeField woy = merger.getField(ALIGNED_WEEK_OF_YEAR, false);
-                DateTimeField dow = merger.getField(DAY_OF_WEEK, false);
-                DateTimeField year = merger.derive(YEAR);
+                DateTimeField woy = engine.getField(ALIGNED_WEEK_OF_YEAR, false);
+                DateTimeField dow = engine.getField(DAY_OF_WEEK, false);
+                DateTimeField year = engine.derive(YEAR);
                 if (woy != null && dow != null && year != null) {
                     LocalDate date = LocalDate.of(year.getValidIntValue(), 1, 1).plusWeeks(woy.getValidIntValue() - 1);
                     date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.of(dow.getValidIntValue())));
-                    merger.setDate(date, true);
+                    engine.setDate(date, true);
                 }
                 break;
             }
             case EPOCH_DAY_ORDINAL: {
-                DateTimeField epd = merger.getField(EPOCH_DAY, false);
+                DateTimeField epd = engine.getField(EPOCH_DAY, false);
                 if (epd != null) {
-                    merger.setDate(LocalDate.ofEpochDay(epd.getValue()), true);
+                    engine.setDate(LocalDate.ofEpochDay(epd.getValue()), true);
                 }
                 break;
             }
             case NANO_OF_DAY_ORDINAL: {
-                DateTimeField nod = merger.getField(NANO_OF_DAY, false);
+                DateTimeField nod = engine.getField(NANO_OF_DAY, false);
                 if (nod != null) {
                     LocalTime time = LocalTime.ofNanoOfDay(nod.getValue());  // TODO: lenient overflow
-                    merger.setTime(time, true);
+                    engine.setTime(time, true);
                 }
                 break;
             }
             case EPOCH_SECOND_ORDINAL: {
-                DateTimeField eps = merger.getField(EPOCH_SECOND, false);
-                DateTimeField nos = merger.getField(NANO_OF_SECOND, false);  // TODO: handle other nano fields
+                DateTimeField eps = engine.getField(EPOCH_SECOND, false);
+                DateTimeField nos = engine.getField(NANO_OF_SECOND, false);  // TODO: handle other nano fields
                 if (eps != null && nos != null) {
                     OffsetDateTime odt = OffsetDateTime.ofEpochSecond(eps.getValue(), ZoneOffset.UTC);
                     odt = odt.plusNanos(nos.getValue());
-                    merger.setDate(odt.toLocalDate(), true);
-                    merger.setTime(odt.toLocalTime(), true);
-                    merger.setOffset(odt.getOffset(), true);
+                    engine.setDate(odt.toLocalDate(), true);
+                    engine.setTime(odt.toLocalTime(), true);
+                    engine.setOffset(odt.getOffset(), true);
                 }
                 break;
             }
@@ -257,8 +257,8 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-        return deriveFrom(merger.getDate(false), merger.getTime(false), merger.getOffset(false));
+    protected DateTimeField deriveFrom(CalendricalEngine engine) {
+        return deriveFrom(engine.getDate(false), engine.getTime(false), engine.getOffset(false));
     }
 
     /**

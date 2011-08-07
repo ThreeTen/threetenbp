@@ -176,19 +176,19 @@ public enum MonthOfYear implements Calendrical {
      * @throws CalendricalException if unable to merge to a month-of-year
      */
     public static MonthOfYear from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code MonthOfYear} from the normalized form.
+     * Obtains an instance of {@code MonthOfYear} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the engine to derive from, not null
      * @return the MonthOfYear singleton, null if unable to obtain
      */
-    static MonthOfYear deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getFieldDerived(MONTH_OF_YEAR, true);
+    static MonthOfYear deriveFrom(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(MONTH_OF_YEAR, true);
         if (field == null) {
             return null;
         }
@@ -210,7 +210,7 @@ public enum MonthOfYear implements Calendrical {
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, toField());
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
     }
 
     /**

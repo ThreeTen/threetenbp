@@ -92,35 +92,35 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    protected T deriveFrom(CalendricalNormalizer merger) {
+    protected T deriveFrom(CalendricalEngine engine) {
         switch (ordinal) {
-            case LOCAL_DATE_ORDINAL: return (T) merger.getDate(true);
+            case LOCAL_DATE_ORDINAL: return (T) engine.getDate(true);
             case LOCAL_TIME_ORDINAL: {
-                LocalTime time = merger.getTime(false);
+                LocalTime time = engine.getTime(false);
                 if (time == null) {
-                    DateTimeField lod = merger.getField(MILLI_OF_DAY, false);
+                    DateTimeField lod = engine.getField(MILLI_OF_DAY, false);
                     if (lod != null) {
                         return (T) LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
                     }
-                    DateTimeField sod = merger.getField(SECOND_OF_DAY, false);
+                    DateTimeField sod = engine.getField(SECOND_OF_DAY, false);
                     if (sod != null) {
                         return (T) LocalTime.ofSecondOfDay(sod.getValue());
                     }
-                    DateTimeField mod = merger.getField(MINUTE_OF_DAY, false);
+                    DateTimeField mod = engine.getField(MINUTE_OF_DAY, false);
                     if (mod != null) {
                         return (T) LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));
                     }
                 }
                 return (T) time;
             }
-            case LOCAL_DATE_TIME_ORDINAL: return (T) LocalDateTime.deriveFrom(merger);
-            case OFFSET_DATE_ORDINAL: return (T) OffsetDate.deriveFrom(merger);
-            case OFFSET_TIME_ORDINAL: return (T) OffsetTime.deriveFrom(merger);
-            case OFFSET_DATE_TIME_ORDINAL: return (T) OffsetDateTime.deriveFrom(merger);
-            case ZONED_DATE_TIME_ORDINAL: return (T) ZonedDateTime.deriveFrom(merger);
-            case ZONE_OFFSET_ORDINAL: return (T) merger.getOffset(true);
-            case ZONE_ID_ORDINAL: return (T) merger.getZone(true);
-            case CHRONOLOGY_ORDINAL: return (T) merger.getChronology(true);
+            case LOCAL_DATE_TIME_ORDINAL: return (T) LocalDateTime.deriveFrom(engine);
+            case OFFSET_DATE_ORDINAL: return (T) OffsetDate.deriveFrom(engine);
+            case OFFSET_TIME_ORDINAL: return (T) OffsetTime.deriveFrom(engine);
+            case OFFSET_DATE_TIME_ORDINAL: return (T) OffsetDateTime.deriveFrom(engine);
+            case ZONED_DATE_TIME_ORDINAL: return (T) ZonedDateTime.deriveFrom(engine);
+            case ZONE_OFFSET_ORDINAL: return (T) engine.getOffset(true);
+            case ZONE_ID_ORDINAL: return (T) engine.getZone(true);
+            case CHRONOLOGY_ORDINAL: return (T) engine.getChronology(true);
         }
         return null;
     }

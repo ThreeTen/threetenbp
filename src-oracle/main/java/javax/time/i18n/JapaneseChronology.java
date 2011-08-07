@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import javax.time.Duration;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -319,35 +319,35 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        protected void normalize(CalendricalNormalizer merger) {
-            DateTimeField yoeVal = merger.getFieldDerived(JapaneseChronology.yearOfEraRule(), false);
+        protected void normalize(CalendricalEngine engine) {
+            DateTimeField yoeVal = engine.getFieldDerived(JapaneseChronology.yearOfEraRule(), false);
             if (yoeVal != null) {
                 // era, year, month, day-of-month
-                JapaneseEra era = JapaneseEra.of(merger.getFieldDerived(this, false).getValidIntValue());
-                DateTimeField moyVal = merger.getFieldDerived(JapaneseChronology.monthOfYearRule(), false);
-                DateTimeField domVal = merger.getFieldDerived(JapaneseChronology.dayOfMonthRule(), false);
+                JapaneseEra era = JapaneseEra.of(engine.getFieldDerived(this, false).getValidIntValue());
+                DateTimeField moyVal = engine.getFieldDerived(JapaneseChronology.monthOfYearRule(), false);
+                DateTimeField domVal = engine.getFieldDerived(JapaneseChronology.dayOfMonthRule(), false);
                 if (moyVal != null && domVal != null) {
                     JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.of(moyVal.getValidIntValue()), domVal.getValidIntValue());
-                    merger.setDate(date.toLocalDate(), true);
-//                    merger.removeProcessed(this);
-//                    merger.removeProcessed(JapaneseChronology.yearOfEraRule());
-//                    merger.removeProcessed(JapaneseChronology.monthOfYearRule());
-//                    merger.removeProcessed(JapaneseChronology.dayOfMonthRule());
+                    engine.setDate(date.toLocalDate(), true);
+//                    engine.removeProcessed(this);
+//                    engine.removeProcessed(JapaneseChronology.yearOfEraRule());
+//                    engine.removeProcessed(JapaneseChronology.monthOfYearRule());
+//                    engine.removeProcessed(JapaneseChronology.dayOfMonthRule());
                 }
                 // era, year, day-of-year
-                DateTimeField doyVal = merger.getFieldDerived(JapaneseChronology.dayOfYearRule(), false);
+                DateTimeField doyVal = engine.getFieldDerived(JapaneseChronology.dayOfYearRule(), false);
                 if (doyVal != null) {
                     JapaneseDate date = JapaneseDate.of(era, yoeVal.getValidIntValue(), MonthOfYear.JANUARY, 1).plusDays(doyVal.getValidIntValue() - 1);
-                    merger.setDate(date.toLocalDate(), true);
-//                    merger.removeProcessed(this);
-//                    merger.removeProcessed(JapaneseChronology.yearOfEraRule());
-//                    merger.removeProcessed(JapaneseChronology.dayOfYearRule());
+                    engine.setDate(date.toLocalDate(), true);
+//                    engine.removeProcessed(this);
+//                    engine.removeProcessed(JapaneseChronology.yearOfEraRule());
+//                    engine.removeProcessed(JapaneseChronology.dayOfYearRule());
                 }
             }
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            JapaneseDate date = merger.derive(JapaneseDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            JapaneseDate date = engine.derive(JapaneseDate.rule());
             return date != null ? field(date.getEra().getValue()) : null;
         }
         // TODO: never worked properly, needs to use proper provider
@@ -398,8 +398,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
         }
         // TODO: min/max years based on era
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            JapaneseDate date = merger.derive(JapaneseDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            JapaneseDate date = engine.derive(JapaneseDate.rule());
             return date != null ? field(date.getYearOfEra()) : null;
         }
     }
@@ -421,8 +421,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            JapaneseDate date = merger.derive(JapaneseDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            JapaneseDate date = engine.derive(JapaneseDate.rule());
             return date != null ? field(date.getMonthOfYear().getValue()) : null;
         }
     }
@@ -464,8 +464,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return getValueRange();
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            JapaneseDate date = merger.derive(JapaneseDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            JapaneseDate date = engine.derive(JapaneseDate.rule());
             return date != null ? field(date.getDayOfMonth()) : null;
         }
     }
@@ -498,8 +498,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return getValueRange();
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            JapaneseDate date = merger.derive(JapaneseDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            JapaneseDate date = engine.derive(JapaneseDate.rule());
             return date != null ? field(date.getDayOfYear()) : null;
         }
     }
@@ -521,8 +521,8 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            JapaneseDate date = merger.derive(JapaneseDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            JapaneseDate date = engine.derive(JapaneseDate.rule());
             return date != null ? field(date.getDayOfWeek().getValue()) : null;
         }
     }

@@ -116,7 +116,7 @@ public final class DateTimeField
         if (this.rule.equals(ruleToDerive)) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, this.rule, null, this);
+        return CalendricalEngine.derive(ruleToDerive, this.rule, null, this);
     }
 
     //-----------------------------------------------------------------------

@@ -299,7 +299,7 @@ public final class ZoneOffset
      * @throws CalendricalException if unable to merge to a zone-offset
      */
     public static ZoneOffset from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     //-----------------------------------------------------------------------
@@ -429,7 +429,7 @@ public final class ZoneOffset
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, this, null, null, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, this, null, null, null);
     }
 
     //-----------------------------------------------------------------------

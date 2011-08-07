@@ -49,7 +49,7 @@ import java.io.ObjectInputStream;
 
 import javax.time.Instant;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
@@ -3136,7 +3136,7 @@ public class GregorianCalendar
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         ZonedDateTime zdt = toZonedDateTime();
-        return CalendricalNormalizer.derive(ruleToDerive, null, zdt.toLocalDate(), zdt.toLocalTime(), zdt.getOffset(), zdt.getZone(), null, null);
+        return CalendricalEngine.derive(ruleToDerive, null, zdt.toLocalDate(), zdt.toLocalTime(), zdt.getOffset(), zdt.getZone(), null, null);
     }
 
 }

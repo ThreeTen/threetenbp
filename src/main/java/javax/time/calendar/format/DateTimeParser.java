@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 
 /**
  * Strategy for parsing text to calendrical information.
@@ -40,7 +40,7 @@ import javax.time.calendar.CalendricalNormalizer;
  * in the context. Typically, each individual parser will just parse one
  * field, such as the day-of-month, storing the value in the context.
  * Once the parse is complete, the caller will then convert the context
- * to a {@link CalendricalNormalizer} to merge the parsed values to create the
+ * to a {@link CalendricalEngine} to merge the parsed values to create the
  * desired object, such as a {@code LocalDate}.
  * <p>
  * The parse position will be updated during the parse. Parsing will start at

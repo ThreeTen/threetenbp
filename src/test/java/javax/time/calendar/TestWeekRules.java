@@ -508,9 +508,9 @@ public class TestWeekRules {
         for (int i = 1; i <= 31; i++) {
             int w = MathUtils.floorDiv(i - 3, 7) + 2;  // 3rd is start of week 2
             int d = MathUtils.floorMod(i - 3, 7) + 1;
-            CalendricalNormalizer cal = CalendricalNormalizer.merge(
+            CalendricalEngine engine = CalendricalEngine.merge(
                 YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
-            assertEquals(cal.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
+            assertEquals(engine.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
         }
     }
 
@@ -531,9 +531,9 @@ public class TestWeekRules {
         for (int i = 1; i <= 31; i++) {
             int w = MathUtils.floorDiv(i - 3, 7) + 1;
             int d = MathUtils.floorMod(i - 3, 7) + 1;
-            CalendricalNormalizer cal = CalendricalNormalizer.merge(
+            CalendricalEngine engine = CalendricalEngine.merge(
                 YearMonth.of(2011, JULY), wr.weekOfMonth().field(w), wr.dayOfWeek().field(d));
-            assertEquals(cal.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
+            assertEquals(engine.derive(LocalDate.rule()), LocalDate.of(2011, JULY, i));
         }
     }
 

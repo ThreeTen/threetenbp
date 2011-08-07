@@ -424,7 +424,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @throws CalendricalException if unable to merge to a time-zone
      */
     public static ZoneId from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     //-----------------------------------------------------------------------
@@ -446,7 +446,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, this, null, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, this, null, null);
     }
 
     //-----------------------------------------------------------------------

@@ -233,20 +233,20 @@ public final class OffsetTime
      * @throws CalendricalException if unable to merge to an offset time
      */
     public static OffsetTime from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code OffsetTime} from the normalized form.
+     * Obtains an instance of {@code OffsetTime} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the engine to derive from, not null
      * @return the offset time, null if unable to obtain the time
      */
-    static OffsetTime deriveFrom(CalendricalNormalizer normalized) {
-        LocalTime time = normalized.derive(LocalTime.rule());
-        ZoneOffset offset = normalized.getOffset(true);
+    static OffsetTime deriveFrom(CalendricalEngine engine) {
+        LocalTime time = engine.derive(LocalTime.rule());
+        ZoneOffset offset = engine.getOffset(true);
         if (time == null || offset == null) {
             return null;
         }
@@ -329,7 +329,7 @@ public final class OffsetTime
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, time, offset, null, ISOChronology.INSTANCE, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, time, offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

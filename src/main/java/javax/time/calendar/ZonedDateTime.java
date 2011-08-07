@@ -457,23 +457,23 @@ public final class ZonedDateTime
      * @throws CalendricalException if unable to merge to a zoned date-time
      */
     public static ZonedDateTime from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code ZonedDateTime} from the normalized form.
+     * Obtains an instance of {@code ZonedDateTime} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the engine to derive from, not null
      * @return the zoned date-time, null if unable to obtain the date-time
      */
-    static ZonedDateTime deriveFrom(CalendricalNormalizer normalized) {
-        ZoneOffset offset = normalized.getOffset(false);
+    static ZonedDateTime deriveFrom(CalendricalEngine engine) {
+        ZoneOffset offset = engine.getOffset(false);
         if (offset != null) {
-            OffsetDateTime odt = OffsetDateTime.deriveFrom(normalized);
+            OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
             if (odt != null) {
-                ZoneId zone = normalized.getZone(false);
+                ZoneId zone = engine.getZone(false);
                 if (zone == null) {
                     zone = ZoneId.of(offset);  // smart use of offset as zone
                 } else {
@@ -485,8 +485,8 @@ public final class ZonedDateTime
                 return new ZonedDateTime(odt, zone);
             }
         } else {
-            LocalDateTime ldt = LocalDateTime.deriveFrom(normalized);
-            ZoneId zone = normalized.getZone(true);
+            LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
+            ZoneId zone = engine.getZone(true);
             if (ldt != null && zone != null) {
                 OffsetDateTime odt = ZoneResolvers.postGapPreOverlap().resolve(zone, ldt, null);  // smart use of resolver
                 return new ZonedDateTime(odt, zone);
@@ -608,7 +608,7 @@ public final class ZonedDateTime
             }
             return null;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

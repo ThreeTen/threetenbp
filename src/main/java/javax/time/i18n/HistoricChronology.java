@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -353,29 +353,29 @@ public final class HistoricChronology extends Chronology implements Serializable
     /**
      * Merges the fields.
      * 
-     * @param merger  the merge context
+     * @param engine  the merge context
      */
-    void merge(CalendricalNormalizer merger) {
+    void merge(CalendricalEngine engine) {
         // TODO: era
-        DateTimeField year = merger.getFieldDerived(yearRule(), false);
+        DateTimeField year = engine.getFieldDerived(yearRule(), false);
         if (year != null) {
             // year-month-day
-            DateTimeField moy = merger.getFieldDerived(monthOfYearRule(), false);
-            DateTimeField dom = merger.getFieldDerived(dayOfMonthRule(), false);
+            DateTimeField moy = engine.getFieldDerived(monthOfYearRule(), false);
+            DateTimeField dom = engine.getFieldDerived(dayOfMonthRule(), false);
             if (moy != null && dom != null) {
                 HistoricDate date = HistoricDate.of(year.getValidIntValue(), MonthOfYear.of(moy.getValidIntValue()), dom.getValidIntValue());
-                merger.setDate(date.toLocalDate(), true);
-//                merger.removeProcessed(yearRule());
-//                merger.removeProcessed(monthOfYearRule());
-//                merger.removeProcessed(dayOfMonthRule());
+                engine.setDate(date.toLocalDate(), true);
+//                engine.removeProcessed(yearRule());
+//                engine.removeProcessed(monthOfYearRule());
+//                engine.removeProcessed(dayOfMonthRule());
             }
             // year-day
-            DateTimeField doy = merger.getFieldDerived(dayOfYearRule(), false);
+            DateTimeField doy = engine.getFieldDerived(dayOfYearRule(), false);
             if (doy != null) {
                 HistoricDate date = HistoricDate.of(year.getValidIntValue(), MonthOfYear.JANUARY, 1).withDayOfYear(doy.getValidIntValue());
-                merger.setDate(date.toLocalDate(), true);
-//                merger.removeProcessed(yearRule());
-//                merger.removeProcessed(dayOfYearRule());
+                engine.setDate(date.toLocalDate(), true);
+//                engine.removeProcessed(yearRule());
+//                engine.removeProcessed(dayOfYearRule());
             }
         }
     }
@@ -392,8 +392,8 @@ public final class HistoricChronology extends Chronology implements Serializable
             super("HistoricEra", periodEras(), null, 0, 1, null);
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            HistoricDate date = merger.derive(HistoricDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            HistoricDate date = engine.derive(HistoricDate.rule());
             return date != null ? field(date.getEra().getValue()) : null;
         }
     }
@@ -413,12 +413,12 @@ public final class HistoricChronology extends Chronology implements Serializable
             this.chrono = chrono;
         }
         @Override
-        protected void normalize(CalendricalNormalizer merger) {
-            chrono.merge(merger);
+        protected void normalize(CalendricalEngine engine) {
+            chrono.merge(engine);
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            HistoricDate date = merger.derive(HistoricDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            HistoricDate date = engine.derive(HistoricDate.rule());
             return date != null ? field(date.getYear()) : null;
         }
     }
@@ -435,8 +435,8 @@ public final class HistoricChronology extends Chronology implements Serializable
             super("HistoricMonthOfYear", MONTHS, YEARS, 1, 12, null);
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            HistoricDate date = merger.derive(HistoricDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            HistoricDate date = engine.derive(HistoricDate.rule());
             return date != null ? field(date.getMonthOfYear().getValue()) : null;
         }
     }
@@ -473,8 +473,8 @@ public final class HistoricChronology extends Chronology implements Serializable
             return getValueRange();
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            HistoricDate date = merger.derive(HistoricDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            HistoricDate date = engine.derive(HistoricDate.rule());
             return date != null ? field(date.getDayOfMonth()) : null;
         }
     }
@@ -502,8 +502,8 @@ public final class HistoricChronology extends Chronology implements Serializable
             return getValueRange();
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            HistoricDate date = merger.derive(HistoricDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            HistoricDate date = engine.derive(HistoricDate.rule());
             return date != null ? field(date.getDayOfYear()) : null;
         }
     }
@@ -520,8 +520,8 @@ public final class HistoricChronology extends Chronology implements Serializable
             super("HistoricDayOfWeek", periodDays(), periodWeeks(), 1, 7, null);
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            HistoricDate date = merger.derive(HistoricDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            HistoricDate date = engine.derive(HistoricDate.rule());
             return date != null ? field(date.getDayOfWeek().getValue()) : null;
         }
     }

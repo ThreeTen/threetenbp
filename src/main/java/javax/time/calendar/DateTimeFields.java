@@ -211,7 +211,7 @@ public final class DateTimeFields
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         // no optimization here
         // using the local fields would leave conflicts unresolved
-        return CalendricalNormalizer.derive(ruleToDerive, null, null, null, null, null, null, this);
+        return CalendricalEngine.derive(ruleToDerive, null, null, null, null, null, null, this);
     }
 
     //-----------------------------------------------------------------------

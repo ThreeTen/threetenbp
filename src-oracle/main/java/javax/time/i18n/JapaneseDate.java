@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -177,7 +177,7 @@ public final class JapaneseDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), date, null, null, null, getChronology(), null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), date, null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -605,8 +605,8 @@ public final class JapaneseDate
             return INSTANCE;
         }
         @Override
-        protected JapaneseDate deriveFrom(CalendricalNormalizer merger) {
-            LocalDate ld = merger.getDate(true);
+        protected JapaneseDate deriveFrom(CalendricalEngine engine) {
+            LocalDate ld = engine.getDate(true);
             return ld != null ? JapaneseDate.of(ld) : null;
         }
     }

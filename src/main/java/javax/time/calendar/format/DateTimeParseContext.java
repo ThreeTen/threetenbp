@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 
@@ -47,7 +47,7 @@ import javax.time.calendar.DateTimeRule;
  * It has the ability to store and retrieve the parsed values and manage optional segments.
  * It also provides key information to the parsing methods.
  * <p>
- * Once parsing is complete, the {@link #toCalendricalMerger()} is typically used
+ * Once parsing is complete, the {@link #toCalendricalEngine()} is typically used
  * to obtain a merger that will merge the separate parsed fields into meaningful values.
  * <p>
  * This class is mutable and thus not thread-safe.
@@ -314,15 +314,15 @@ public final class DateTimeParseContext {
      * <p>
      * This method is typically used once parsing is complete to obtain the parsed data.
      * Parsing will typically result in separate fields, such as year, month and day.
-     * The returned merger can be used to combine the parsed data into meaningful
+     * The returned engine can be used to combine the parsed data into meaningful
      * objects such as {@code LocalDate}, potentially applying complex processing
      * to handle invalid parsed data.
      *
-     * @return a new independent merger with the parsed calendricals, not null
+     * @return a new independent engine with the parsed calendricals, not null
      */
-    public CalendricalNormalizer toCalendricalMerger() {
+    public CalendricalEngine toCalendricalEngine() {
         List<Calendrical> cals = getParsed();
-        return CalendricalNormalizer.merge(cals.toArray(new Calendrical[cals.size()]));
+        return CalendricalEngine.merge(cals.toArray(new Calendrical[cals.size()]));
     }
 
     //-----------------------------------------------------------------------

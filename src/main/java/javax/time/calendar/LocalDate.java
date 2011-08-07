@@ -269,7 +269,7 @@ public final class LocalDate
      * @throws CalendricalException if unable to merge to a local date
      */
     public static LocalDate from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     //-----------------------------------------------------------------------
@@ -360,7 +360,7 @@ public final class LocalDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------

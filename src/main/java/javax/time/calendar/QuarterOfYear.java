@@ -140,19 +140,19 @@ public enum QuarterOfYear implements Calendrical {
      * @throws CalendricalException if unable to merge to a quarter-of-year
      */
     public static QuarterOfYear from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code QuarterOfYear} from the normalized form.
+     * Obtains an instance of {@code QuarterOfYear} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the engine to derive from, not null
      * @return the QuarterOfYear singleton, null if unable to obtain
      */
-    static QuarterOfYear deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getFieldDerived(QUARTER_OF_YEAR, true);
+    static QuarterOfYear deriveFrom(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(QUARTER_OF_YEAR, true);
         if (field == null) {
             return null;
         }
@@ -174,7 +174,7 @@ public enum QuarterOfYear implements Calendrical {
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, toField());
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
     }
 
     /**

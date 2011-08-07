@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalRuleException;
 import javax.time.calendar.DayOfWeek;
@@ -235,7 +235,7 @@ public final class CopticDate
         if (ruleToDerive == rule()) {
             return ruleToDerive.reify(this);
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, CopticChronology.INSTANCE, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, CopticChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -573,8 +573,8 @@ public final class CopticDate
             return INSTANCE;
         }
         @Override
-        protected CopticDate deriveFrom(CalendricalNormalizer merger) {
-            LocalDate date = merger.getDate(true);
+        protected CopticDate deriveFrom(CalendricalEngine engine) {
+            LocalDate date = engine.getDate(true);
             if (date == null) {
                 return null;
             }

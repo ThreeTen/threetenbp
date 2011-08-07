@@ -170,20 +170,20 @@ public final class YearMonth
      * @throws CalendricalException if unable to merge to a year-month
      */
     public static YearMonth from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code YearMonth} from the normalized form.
+     * Obtains an instance of {@code YearMonth} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the engine to derive from, not null
      * @return the YearMonth singleton, null if unable to obtain
      */
-    static YearMonth deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField year = merger.getFieldDerived(YEAR, true);
-        DateTimeField moy = merger.getFieldDerived(MONTH_OF_YEAR, true);
+    static YearMonth deriveFrom(CalendricalEngine engine) {
+        DateTimeField year = engine.getFieldDerived(YEAR, true);
+        DateTimeField moy = engine.getFieldDerived(MONTH_OF_YEAR, true);
         if (year == null || moy == null) {
             return null;
         }
@@ -271,7 +271,7 @@ public final class YearMonth
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
     }
 
     //-----------------------------------------------------------------------

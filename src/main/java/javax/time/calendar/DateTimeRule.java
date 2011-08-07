@@ -308,9 +308,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * <p>
      * This implementation does nothing.
      * 
-     * @param merger  the merger to process, not null
+     * @param engine  the engine to process, not null
      */
-    protected void normalize(CalendricalNormalizer merger) {
+    protected void normalize(CalendricalEngine engine) {
         // override to normalize fields to objects
     }
 

@@ -149,19 +149,19 @@ public enum DayOfWeek implements Calendrical {
      * @throws CalendricalException if unable to merge to a day-of-week
      */
     public static DayOfWeek from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     /**
-     * Obtains an instance of {@code DayOfWeek} from the normalized form.
+     * Obtains an instance of {@code DayOfWeek} from the engine.
      * <p>
      * This internal method is used by the associated rule.
      *
-     * @param normalized  the normalized calendrical, not null
+     * @param engine  the engine to derive from, not null
      * @return the DayOfWeek singleton, null if unable to obtain
      */
-    static DayOfWeek deriveFrom(CalendricalNormalizer merger) {
-        DateTimeField field = merger.getFieldDerived(DAY_OF_WEEK, true);
+    static DayOfWeek deriveFrom(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(DAY_OF_WEEK, true);
         if (field == null) {
             return null;
         }
@@ -183,7 +183,7 @@ public enum DayOfWeek implements Calendrical {
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, toField());
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
     }
 
     /**

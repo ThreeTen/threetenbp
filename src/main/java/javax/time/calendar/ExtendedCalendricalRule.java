@@ -86,15 +86,15 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    protected T deriveFrom(CalendricalNormalizer merger) {
+    protected T deriveFrom(CalendricalEngine engine) {
         switch (ordinal) {
-            case YEAR_ORDINAL: return (T) Year.deriveFrom(merger);
-            case YEAR_MONTH_ORDINAL: return (T) YearMonth.deriveFrom(merger);
-            case MONTH_DAY_ORDINAL: return (T) MonthDay.deriveFrom(merger);
-            case MONTH_OF_YEAR_ORDINAL: return (T) MonthOfYear.deriveFrom(merger);
-            case QUARTER_OF_YEAR_ORDINAL: return (T) QuarterOfYear.deriveFrom(merger);
-            case DAY_OF_WEEK_ORDINAL: return (T) DayOfWeek.deriveFrom(merger);
-            case AM_PM_OF_DAY_ORDINAL: return (T) AmPmOfDay.deriveFrom(merger);
+            case YEAR_ORDINAL: return (T) Year.deriveFrom(engine);
+            case YEAR_MONTH_ORDINAL: return (T) YearMonth.deriveFrom(engine);
+            case MONTH_DAY_ORDINAL: return (T) MonthDay.deriveFrom(engine);
+            case MONTH_OF_YEAR_ORDINAL: return (T) MonthOfYear.deriveFrom(engine);
+            case QUARTER_OF_YEAR_ORDINAL: return (T) QuarterOfYear.deriveFrom(engine);
+            case DAY_OF_WEEK_ORDINAL: return (T) DayOfWeek.deriveFrom(engine);
+            case AM_PM_OF_DAY_ORDINAL: return (T) AmPmOfDay.deriveFrom(engine);
         }
         return null;
     }

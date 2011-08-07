@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
@@ -201,27 +201,27 @@ public final class CopticChronology extends Chronology implements Serializable {
 
         //-----------------------------------------------------------------------
         @Override
-        protected void normalize(CalendricalNormalizer merger) {
-            DateTimeField year = merger.getField(CopticChronology.YEAR, false);
+        protected void normalize(CalendricalEngine engine) {
+            DateTimeField year = engine.getField(CopticChronology.YEAR, false);
             if (year != null) {
                 // year-month-day
-                DateTimeField moy = merger.getField(CopticChronology.MONTH_OF_YEAR, false);
-                DateTimeField dom = merger.getField(CopticChronology.DAY_OF_MONTH, false);
+                DateTimeField moy = engine.getField(CopticChronology.MONTH_OF_YEAR, false);
+                DateTimeField dom = engine.getField(CopticChronology.DAY_OF_MONTH, false);
                 if (moy != null && dom != null) {
                     CopticDate date = CopticDate.of(year.getValidIntValue(), moy.getValidIntValue(), dom.getValidIntValue());
-                    merger.setDate(date.toLocalDate(), true);
+                    engine.setDate(date.toLocalDate(), true);
                 }
                 // year-day
-                DateTimeField doy = merger.getField(CopticChronology.DAY_OF_YEAR, false);
+                DateTimeField doy = engine.getField(CopticChronology.DAY_OF_YEAR, false);
                 if (doy != null) {
                     CopticDate date = CopticDate.of(year.getValidIntValue(), 1, 1).withDayOfYear(doy.getValidIntValue());
-                    merger.setDate(date.toLocalDate(), true);
+                    engine.setDate(date.toLocalDate(), true);
                 }
             }
         }
         @Override
-        protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-            CopticDate date = merger.derive(CopticDate.rule());
+        protected DateTimeField deriveFrom(CalendricalEngine engine) {
+            CopticDate date = engine.derive(CopticDate.rule());
             if (date != null) {
                 switch (ordinal) {
                     case DAY_OF_WEEK_ORDINAL: return field(date.getDayOfWeek().getValue());

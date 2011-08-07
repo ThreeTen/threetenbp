@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -254,7 +254,7 @@ public final class HistoricDate
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, getChronology(), null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -593,8 +593,8 @@ public final class HistoricDate
             return INSTANCE;
         }
         @Override
-        protected HistoricDate deriveFrom(CalendricalNormalizer merger) {
-            LocalDate date = merger.getDate(true);
+        protected HistoricDate deriveFrom(CalendricalEngine engine) {
+            LocalDate date = engine.getDate(true);
             if (date == null) {
                 return null;
             }

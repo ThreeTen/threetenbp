@@ -33,7 +33,7 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeRuleRange;
@@ -277,8 +277,8 @@ public abstract class StandardChronology extends Chronology {
             super(ChronologyDate.class, "ChronologyDate<" + StandardChronology.this.getName() + ">");
         }
         @Override
-        protected ChronologyDate deriveFrom(CalendricalNormalizer merger) {
-            LocalDate date = merger.getDate(true);
+        protected ChronologyDate deriveFrom(CalendricalEngine engine) {
+            LocalDate date = engine.getDate(true);
             if (date == null) {
                 return null;
             }

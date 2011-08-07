@@ -60,8 +60,8 @@ public final class MockCenturyFieldRule extends DateTimeRule implements Serializ
     }
 
     @Override
-    protected DateTimeField deriveFrom(CalendricalNormalizer merger) {
-        LocalDate date = merger.getDate(false);
+    protected DateTimeField deriveFrom(CalendricalEngine engine) {
+        LocalDate date = engine.getDate(false);
         if (date == null) {
             return null;
         }

@@ -440,13 +440,13 @@ public class TestCalendricalNomalizer {
         Calendrical[] array = calendicals.toArray(new Calendrical[calendicals.size()]);
         if (expectedVal instanceof Class) {
             try {
-                CalendricalNormalizer.merge(array);
+                CalendricalEngine.merge(array);
                 fail();
             } catch (CalendricalException ex) {
                 System.out.println(ex);
             }
         } else {
-            CalendricalNormalizer m = CalendricalNormalizer.merge(array);
+            CalendricalEngine m = CalendricalEngine.merge(array);
             Object derived = m.derive(ruleToDerive);
 //            if (expectedVal != null && derived == null) {
 //                try {
@@ -463,7 +463,7 @@ public class TestCalendricalNomalizer {
     public void test_mergeError(List<Calendrical> calendicals, CalendricalRule<?> ruleToDerive, Object expectedVal) {
         if (expectedVal == null) {
             Calendrical[] array = calendicals.toArray(new Calendrical[calendicals.size()]);
-            CalendricalNormalizer m = CalendricalNormalizer.merge(array);
+            CalendricalEngine m = CalendricalEngine.merge(array);
             try {
                 Object d = m.deriveChecked(ruleToDerive);
                 fail("Failed to throw error: " + calendicals + " -> " + ruleToDerive + " = " + d);
@@ -483,14 +483,14 @@ public class TestCalendricalNomalizer {
         if (calendicals.size() == 1 && expectedVal instanceof Class == false) {
             Calendrical calendrical = calendicals.get(0);
             if (calendrical instanceof LocalDate) {
-                Object test = CalendricalNormalizer.derive(ruleToDerive, null, (LocalDate) calendrical, null, null, null, ISOChronology.INSTANCE, null);
+                Object test = CalendricalEngine.derive(ruleToDerive, null, (LocalDate) calendrical, null, null, null, ISOChronology.INSTANCE, null);
                 assertEquals(test, expectedVal);
             } else if (calendrical instanceof LocalTime) {
-                Object test = CalendricalNormalizer.derive(ruleToDerive, null, null, (LocalTime) calendrical, null, null, ISOChronology.INSTANCE, null);
+                Object test = CalendricalEngine.derive(ruleToDerive, null, null, (LocalTime) calendrical, null, null, ISOChronology.INSTANCE, null);
                 assertEquals(test, expectedVal);
             } else if (calendrical instanceof LocalDateTime) {
                 LocalDateTime ldt = (LocalDateTime) calendrical;
-                Object test = CalendricalNormalizer.derive(ruleToDerive, null, ldt.toLocalDate(), ldt.toLocalTime(), null, null, ISOChronology.INSTANCE, null);
+                Object test = CalendricalEngine.derive(ruleToDerive, null, ldt.toLocalDate(), ldt.toLocalTime(), null, null, ISOChronology.INSTANCE, null);
                 assertEquals(test, expectedVal);
             }
         }
@@ -531,7 +531,7 @@ public class TestCalendricalNomalizer {
 
     @Test(dataProvider = "normalized")
     public void test_normalized(DateTimeField input, DateTimeField output) {
-        DateTimeField test = CalendricalNormalizer.derive(output.getRule(), input.getRule(), null, input);
+        DateTimeField test = CalendricalEngine.derive(output.getRule(), input.getRule(), null, input);
         assertEquals(test, output);
     }
 

@@ -19,7 +19,7 @@ import java.util.zip.ZipFile;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -507,7 +507,7 @@ public final class HijrahDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, getChronology(), null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, getChronology(), null);
     }
 
     //-----------------------------------------------------------------------
@@ -1925,8 +1925,8 @@ public final class HijrahDate
             return INSTANCE;
         }
         @Override
-        protected HijrahDate deriveFrom(CalendricalNormalizer merger) {
-            LocalDate ld = merger.getDate(true);
+        protected HijrahDate deriveFrom(CalendricalEngine engine) {
+            LocalDate ld = engine.getDate(true);
             return ld != null ? HijrahDate.of(ld) : null;
         }
     }

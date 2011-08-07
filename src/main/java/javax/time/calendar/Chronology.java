@@ -86,7 +86,7 @@ public abstract class Chronology implements Calendrical {
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, null, null, null, this, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, null, this, null);
     }
 
     //-----------------------------------------------------------------------

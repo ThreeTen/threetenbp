@@ -41,7 +41,7 @@ import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalNormalizer;
+import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateTimeField;
@@ -170,7 +170,7 @@ public final class DayOfYear
         if (ruleToDerive == rule()) {
             return (T) this;
         }
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
+        return CalendricalEngine.derive(ruleToDerive, rule(), ISOChronology.INSTANCE, rule().field(getValue()));
     }
 
     //-----------------------------------------------------------------------

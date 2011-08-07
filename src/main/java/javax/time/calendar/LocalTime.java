@@ -346,7 +346,7 @@ public final class LocalTime
      * @throws CalendricalException if unable to merge to a local time
      */
     public static LocalTime from(Calendrical... calendricals) {
-        return CalendricalNormalizer.merge(calendricals).deriveChecked(rule());
+        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
     //-----------------------------------------------------------------------
@@ -446,7 +446,7 @@ public final class LocalTime
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalNormalizer.derive(ruleToDerive, rule(), null, this, null, null, ISOChronology.INSTANCE, null);
+        return CalendricalEngine.derive(ruleToDerive, rule(), null, this, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
