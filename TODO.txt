@@ -139,7 +139,6 @@ General
 
 ===============================================================================
 Possible items
-- Rename DateProvider to LocalDateProvider?
 - roll()
 - round() - truncateToSeconds() feels weird
 - iteration
@@ -190,3 +189,4 @@ Not doing
   - NO, see email thread - unclear as to whether change is beneficial
 - get rule by name - NO some rules are based on data
 - get chrono by name - NO some rules are based on data
+- Rename DateProvider to LocalDateProvider - NO, interface was removed
