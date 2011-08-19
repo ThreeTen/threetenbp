@@ -94,6 +94,8 @@
 - PeriodFields.of(3.25, Hours) -> [3 Hours, 15 Minutes]
 - Parse methods use CharSequence
 - Remove DateProvider, TimeProvider, DateTimeProvider, as they created unreliable APIs
+- Refactor PeriodUnit
+- Rename getEstimatedDuration() to getDurationEstimate()
 
 0.6.3
 ===============================================================================

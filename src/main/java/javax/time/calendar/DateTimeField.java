@@ -334,15 +334,21 @@ public final class DateTimeField
         // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
         DateTimeRule fieldRule = field.getRule();
         long period = fieldRule.convertToPeriod(field.getValue());
-        PeriodField bottomConversion = ruleToDerive.getPeriodUnit().getEquivalentPeriod(fieldRule.getPeriodUnit());
-        period = MathUtils.floorDiv(period, bottomConversion.getAmount());
+        long bottomConversion = ruleToDerive.getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
+        if (bottomConversion < 0) {
+            return null;
+        }
+        period = MathUtils.floorDiv(period, bottomConversion);
         PeriodUnit rangeToDerive = ruleToDerive.getPeriodRange();
         if (rangeToDerive != null && fieldRule.comparePeriodRange(ruleToDerive) != 0) {
 //                if (periodRange.equals(DAYS)) {  // TODO: hack
 //                    periodRange = _24_HOURS;
 //                }
-            PeriodField topConversion = rangeToDerive.getEquivalentPeriod(ruleToDerive.getPeriodUnit());
-            period = MathUtils.floorMod(period, topConversion.getAmount());
+            long topConversion = rangeToDerive.toEquivalent(ruleToDerive.getPeriodUnit());
+            if (topConversion < 0) {
+                return null;
+            }
+            period = MathUtils.floorMod(period, topConversion);
         }
         return ruleToDerive.field(ruleToDerive.convertFromPeriod(period));
     }

@@ -95,7 +95,7 @@ public final class PeriodFields
      * <p>
      * The parameters represent the two parts of a phrase like '6 Days'.
      *
-     * @param amount  the amount of create with, positive or negative
+     * @param amount  the amount to create with, positive or negative
      * @param unit  the period unit, not null
      * @return the {@code PeriodFields} instance, not null
      */
@@ -161,46 +161,33 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code PeriodFields} from an amount and unit, by extending any
-     * fractional remainder onto smaller units.
+     * Obtains a {@code PeriodFields} from a {@code double} amount and unit.
      * <p>
      * The parameters represent the two parts of a phrase like 'one-and-a-half Hours'.
-     * The fractional parts will be distributed into the smaller units, and rounded down
-     * when no smaller units exist. If the {@code fractionalAmount} is negative,
-     * the amount of the biggest unit will be negative, the rest will be positive.
+     * The result will contain two units, the specified unit and the base unit,
+     * unless the specified unit is the base unit.
+     * The fractional part will be converted into a suitable amount of the base unit
+     * using {@code double} arithmetic.
+     * If the amount is negative then all resultant units will be negative.
      *
-     * @param fractionalAmount  the amount of create with, positive or negative
+     * @param amount  the amount to create with, positive or negative
      * @param unit  the period unit, not null
      * @return the {@code PeriodFields} instance, not null
      */
-    public static PeriodFields of(double fractionalAmount, PeriodUnit unit) {
+    public static PeriodFields ofFraction(double amount, PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
-        PeriodUnit currentUnit = unit;
-        double fudge = 0.000000000000001d;
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
-        do {
-            long floor = (long) Math.floor(fractionalAmount + fudge);
-            if (floor != 0) {
-                internalMap.put(currentUnit, PeriodField.of(floor, currentUnit));
-            }
-            double remainder = fractionalAmount - floor; // will be positive
-            PeriodField nextEquivalent = currentUnit.getNextEquivalentPeriod();
-            if (nextEquivalent != null) {
-                currentUnit = nextEquivalent.getUnit();
-                fractionalAmount = remainder * nextEquivalent.getAmount();
-                fudge *= nextEquivalent.getAmount();
-            } else {
-                // No smaller units exist, we're done
-                currentUnit = null;
-            }
-        } while (currentUnit != null && Math.abs(fractionalAmount) > fudge);
-        if (internalMap.isEmpty()) {
-            return of(0L, unit);
-        } else {
-            return create(internalMap);
+        long whole = (long) (amount / 1);
+        internalMap.put(unit, PeriodField.of(whole, unit));
+        long conversion = unit.getBaseEquivalentAmount();
+        if (conversion > 1) {
+            double fraction = amount % 1;
+            long base = (long) (fraction * conversion);
+            internalMap.put(unit.getBaseUnit(), unit.getBaseUnit().field(base));
         }
+        return create(internalMap);
     }
-     
+
     //-----------------------------------------------------------------------
     /**
      * Obtains a {@code PeriodFields} from a {@code PeriodProvider}.
@@ -567,12 +554,12 @@ public final class PeriodFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to add, not null
+     * @param periodToAdd  the period to add, not null
      * @return a {@code PeriodFields} based on this period with the specified period added, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields plus(PeriodProvider periodProvider) {
-        PeriodFields periods = of(periodProvider);
+    public PeriodFields plus(PeriodProvider periodToAdd) {
+        PeriodFields periods = of(periodToAdd);
         if (this == ZERO) {
             return periods;
         }
@@ -594,19 +581,19 @@ public final class PeriodFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount to add, measured in the specified unit, positive or negative
+     * @param amountToAdd  the amount to add, measured in the specified unit, positive or negative
      * @param unit  the unit defining the amount, not null
      * @return a {@code PeriodFields} based on this period with the specified period added, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields plus(long amount, PeriodUnit unit) {
-        checkNotNull(unit, "PeiodRule must not be null");
-        if (amount == 0 && contains(unit)) {
+    public PeriodFields plus(long amountToAdd, PeriodUnit unit) {
+        checkNotNull(unit, "PeriodUnit must not be null");
+        if (amountToAdd == 0 && contains(unit)) {
             return this;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
         PeriodField old = copy.get(unit);
-        PeriodField field = (old != null ? old.plus(amount) : PeriodField.of(amount, unit));
+        PeriodField field = (old != null ? old.plus(amountToAdd) : PeriodField.of(amountToAdd, unit));
         copy.put(unit, field);
         return create(copy);
     }
@@ -623,12 +610,12 @@ public final class PeriodFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to subtract, not null
+     * @param periodToSubtract  the period to subtract, not null
      * @return a {@code PeriodFields} based on this period with the specified period subtracted, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields minus(PeriodProvider periodProvider) {
-        PeriodFields periods = of(periodProvider);
+    public PeriodFields minus(PeriodProvider periodToSubtract) {
+        PeriodFields periods = of(periodToSubtract);
         if (this == ZERO) {
             return periods;
         }
@@ -650,19 +637,19 @@ public final class PeriodFields
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount to subtract, measured in the specified unit, positive or negative
+     * @param amountToSubtract  the amount to subtract, measured in the specified unit, positive or negative
      * @param unit  the unit defining the amount, not null
      * @return a {@code PeriodFields} based on this period with the specified period subtracted, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodFields minus(long amount, PeriodUnit unit) {
-        checkNotNull(unit, "PeiodRule must not be null");
-        if (amount == 0 && contains(unit)) {
+    public PeriodFields minus(long amountToSubtract, PeriodUnit unit) {
+        checkNotNull(unit, "PeriodUnit must not be null");
+        if (amountToSubtract == 0 && contains(unit)) {
             return this;
         }
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
         PeriodField old = copy.get(unit);
-        copy.put(unit, old != null ? old.minus(amount) : PeriodField.of(amount, unit).negated());
+        copy.put(unit, old != null ? old.minus(amountToSubtract) : PeriodField.of(amountToSubtract, unit).negated());
         return create(copy);
     }
 
@@ -767,7 +754,7 @@ public final class PeriodFields
             PeriodUnit loopUnit = it.next();
             for (PeriodUnit unit : units) {
                 checkNotNull(unit, "PeriodUnit array must not contain null");
-                if (loopUnit.isConvertibleTo(unit)) {
+                if (loopUnit.toEquivalent(unit) >= 0) {
                     continue outer;
                 }
             }
@@ -801,18 +788,8 @@ public final class PeriodFields
         checkNotNull(period, "PeriodField must not be null");
         TreeMap<PeriodUnit, PeriodField> copy = createMap();
         for (PeriodField loopField : unitFieldMap.values()) {
-            if (loopField.getUnit().equals(period.getUnit())) {
-                copy.put(loopField.getUnit(), loopField.remainder(period.getAmount()));
-            } else {
-                for (PeriodField equivalent : period.getUnit().getEquivalentPeriods()) {
-                    if (loopField.getUnit().equals(equivalent.getUnit())) {
-                        copy.put(loopField.getUnit(), loopField.remainder(equivalent.getAmount()));
-                    }
-                }
-            }
-        }
-        if (copy.size() < size()) {
-            throw new CalendricalException("Unable to calculate remainder as some fields cannot be converted");
+            PeriodField converted = period.toEquivalent(loopField.getUnit());
+            copy.put(loopField.getUnit(), loopField.remainder(converted.getAmount()));
         }
         return create(copy);
     }
@@ -825,8 +802,8 @@ public final class PeriodFields
      * Each pair is adjusted so that the amount in the smaller unit does not exceed
      * the amount of the fixed conversion factor.
      * <p>
-     * For example, a period of '2 Decades, 2 Years, 17 Months' normalized using
-     * 'Years' and 'Months' will return '23 Years, 5 Months'.
+     * For example, a period of '2 Years, 17 Months, 3 Hours, 61 Minutes' will normalized
+     * based on two pairs, 'Years'/'Months' and 'Hours'/'Minutes'.
      * <p>
      * The result will always contain all the units present in this period, even if they are zero.
      * The result will be equivalent to this period.
@@ -871,10 +848,9 @@ public final class PeriodFields
         for (PeriodUnit loopUnit : unitFieldMap.keySet()) {
             for (PeriodUnit targetUnit : targetUnits) {
                 if (targetUnits.contains(loopUnit) == false) {
-                    PeriodField conversion = loopUnit.getEquivalentPeriod(targetUnit);
-                    if (conversion != null) {
-                        long amount = result.getAmount(loopUnit);
-                        result = result.plus(conversion.multipliedBy(amount)).without(loopUnit);
+                    PeriodField converted = targetUnit.convertEquivalent(result.get(loopUnit));
+                    if (converted != null) {
+                        result = result.plus(converted).without(loopUnit);
                         break;
                     }
                 }
@@ -893,12 +869,11 @@ public final class PeriodFields
             for (PeriodUnit targetUnit : targetUnits) {
                 for (PeriodUnit loopUnit : result.unitFieldMap.keySet()) {
                     if (targetUnit.equals(loopUnit) == false) {
-                        PeriodField conversion = targetUnit.getEquivalentPeriod(loopUnit);
-                        if (conversion != null) {
-                            long convertAmount = conversion.getAmount();
+                        long conversion = targetUnit.toEquivalent(loopUnit);
+                        if (conversion >= 0) {
                             long amount = result.getAmount(loopUnit);
-                            if (amount >= convertAmount || amount <= -convertAmount) {
-                                result = result.with(amount % convertAmount, loopUnit).plus(amount / convertAmount, targetUnit);
+                            if (amount >= conversion || amount <= -conversion) {
+                                result = result.with(amount % conversion, loopUnit).plus(amount / conversion, targetUnit);
                                 process = (units.length > 2);  // need to re-check from start
                             }
                         }
@@ -995,10 +970,10 @@ public final class PeriodFields
      * @return the estimated duration of this period, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public Duration toEstimatedDuration() {
+    public Duration toDurationEstimate() {
         Duration dur = Duration.ZERO;
         for (PeriodField field : this) {
-            dur = dur.plus(field.toEstimatedDuration());
+            dur = dur.plus(field.toDurationEstimate());
         }
         return dur;
     }

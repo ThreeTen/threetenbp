@@ -426,6 +426,16 @@ public class TestPeriodField {
     }
 
     @Test(expectedExceptions=CalendricalException.class)
+    public void test_toEquivalent_unit_noConversionAllowed() {
+        try {
+            PeriodField.of(4, QUARTERS).toEquivalent(YEARS);
+        } catch (CalendricalException ex) {
+            assertEquals("Unable to convert Quarters to Years", ex.getMessage());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_toEquivalent_unit_noConversion() {
         try {
             PeriodField.of(5, YEARS).toEquivalent(DAYS);
@@ -524,12 +534,17 @@ public class TestPeriodField {
     }
 
     //-----------------------------------------------------------------------
-    // toEstimatedDuration()
+    // toDurationEstimate()
     //-----------------------------------------------------------------------
-    public void test_toEstimatedDuration() {
-        Duration test = PeriodField.of(5, DAYS).toEstimatedDuration();
-        Duration fiveDays = ISOPeriodUnit.DAYS.getEstimatedDuration().multipliedBy(5);
+    public void test_toDurationEstimate() {
+        Duration test = PeriodField.of(5, DAYS).toDurationEstimate();
+        Duration fiveDays = ISOPeriodUnit.DAYS.getDurationEstimate().multipliedBy(5);
         assertEquals(test, fiveDays);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_toDurationEstimate_tooBig() {
+        PeriodField.of(Long.MAX_VALUE, MINUTES).toDurationEstimate();
     }
 
     //-----------------------------------------------------------------------

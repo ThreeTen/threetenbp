@@ -40,7 +40,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.List;
 
 import javax.time.Duration;
 
@@ -54,13 +53,16 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodUnit {
 
+    private static final int EQUIV1 = 30;
+    private static final int EQUIV2 = 20;
     private static final PeriodUnit BASIC = basic("TestBasic", Duration.ofSeconds(1));
-    private static final PeriodUnit DERIVED1 = new PeriodUnit("TestDerived", PeriodField.of(30, BASIC)) {
+    private static final PeriodUnit DERIVED1 = new PeriodUnit("TestDerived", EQUIV1, BASIC) {
         private static final long serialVersionUID = 1L;
     };
-    private static final PeriodUnit DERIVED2 = new PeriodUnit("TestDerivedDerived", PeriodField.of(20, DERIVED1)) {
+    private static final PeriodUnit DERIVED2 = new PeriodUnit("TestDerivedDerived", EQUIV1 * EQUIV2, BASIC) {
         private static final long serialVersionUID = 1L;
     };
+    private static final PeriodUnit UNRELATED = basic("Unrelated", Duration.ofSeconds(4));
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
@@ -72,17 +74,18 @@ public class TestPeriodUnit {
     // basic()
     //-----------------------------------------------------------------------
     public void test_factory_basic() {
-        Duration dur = Duration.ofSeconds(30);
+        Duration dur = Duration.ofSeconds(EQUIV1);
         PeriodUnit test = basic("TestFactoryBasic1", dur);
-        assertEquals(test.getEquivalentPeriods().size(), 0);
-        assertSame(test.getEstimatedDuration(), dur);
+        assertSame(test.getBaseUnit(), test);
+        assertEquals(test.getBaseEquivalent(), test.field(1));
+        assertSame(test.getDurationEstimate(), dur);
         assertEquals(test.getName(), "TestFactoryBasic1");
         assertEquals(test.toString(), "TestFactoryBasic1");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_basic_nullName() {
-        basic(null, Duration.ofSeconds(30));
+        basic(null, Duration.ofSeconds(EQUIV1));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -104,18 +107,18 @@ public class TestPeriodUnit {
     // derived()
     //-----------------------------------------------------------------------
     public void test_factory_derived() {
-        PeriodField pf = PeriodField.of(30, BASIC);
+        PeriodField pf = PeriodField.of(EQUIV1, BASIC);
         PeriodUnit test = derived("TestFactoryDerived1", pf);
-        assertEquals(test.getEquivalentPeriods().size(), 1);
-        assertSame(test.getEquivalentPeriods().get(0), pf);
-        assertEquals(test.getEstimatedDuration(), Duration.ofSeconds(30));
+        assertSame(test.getBaseUnit(), BASIC);
+        assertEquals(test.getBaseEquivalent(), pf);
+        assertEquals(test.getDurationEstimate(), Duration.ofSeconds(EQUIV1));
         assertEquals(test.getName(), "TestFactoryDerived1");
         assertEquals(test.toString(), "TestFactoryDerived1");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_derived_nullName() {
-        derived(null, PeriodField.of(30, BASIC));
+        derived(null, PeriodField.of(EQUIV1, BASIC));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -140,7 +143,7 @@ public class TestPeriodUnit {
         static final Basic INSTANCE = new Basic();
         private static final long serialVersionUID = 1L;
          Basic() {
-             super("TestSerializationBasic", Duration.ofSeconds(30));
+             super("TestSerializationBasic", Duration.ofSeconds(EQUIV1));
          }
          private Object readResolve() {
              return INSTANCE;
@@ -162,7 +165,7 @@ public class TestPeriodUnit {
         static final Derived INSTANCE = new Derived();
         private static final long serialVersionUID = 1L;
         Derived() {
-             super("TestSerializationDerived", PeriodField.of(40, DERIVED1));
+             super("TestSerializationDerived", 40 * EQUIV1, BASIC);
          }
          private Object readResolve() {
              return INSTANCE;
@@ -181,113 +184,103 @@ public class TestPeriodUnit {
     }
 
     //-----------------------------------------------------------------------
-    // getEquivalentPeriods()
+    // getBaseEquivalent()
     //-----------------------------------------------------------------------
-    public void test_getEquivalentPeriods_basic() {
-        List<PeriodField> test = BASIC.getEquivalentPeriods();
-        assertEquals(test.size(), 0);
-    }
-
-    public void test_getEquivalentPeriods_derived1() {
-        List<PeriodField> test = DERIVED1.getEquivalentPeriods();
-        assertEquals(test.size(), 1);
-        assertEquals(test.get(0), PeriodField.of(30, BASIC));
-    }
-
-    public void test_getEquivalentPeriods_derived2() {
-        List<PeriodField> test = DERIVED2.getEquivalentPeriods();
-        assertEquals(test.size(), 2);
-        assertEquals(test.get(0), PeriodField.of(20, DERIVED1));
-        assertEquals(test.get(1), PeriodField.of(20 * 30, BASIC));
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_getEquivalentPeriods_basic_unmodifiable_add() {
-        List<PeriodField> test = BASIC.getEquivalentPeriods();
-        test.add(null);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_getEquivalentPeriods_derived_unmodifiable_add() {
-        List<PeriodField> test = DERIVED1.getEquivalentPeriods();
-        test.add(null);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_getEquivalentPeriods_derived_unmodifiable_clear() {
-        List<PeriodField> test = DERIVED1.getEquivalentPeriods();
-        test.clear();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_getEquivalentPeriods_derived_unmodifiable_set() {
-        List<PeriodField> test = DERIVED1.getEquivalentPeriods();
-        test.set(0, null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getEquivalentPeriod(PeriodUnit)
-    //-----------------------------------------------------------------------
-    public void test_getEquivalentPeriod_unit_basic() {
-        assertEquals(BASIC.getEquivalentPeriod(BASIC), PeriodField.of(1, BASIC));
-        assertEquals(BASIC.getEquivalentPeriod(DERIVED1), null);
-        assertEquals(BASIC.getEquivalentPeriod(DERIVED2), null);
-    }
-
-    public void test_getEquivalentPeriod_unit_derived() {
-        assertEquals(DERIVED2.getEquivalentPeriod(BASIC), PeriodField.of(20 * 30, BASIC));
-        assertEquals(DERIVED2.getEquivalentPeriod(DERIVED1), PeriodField.of(20, DERIVED1));
-        assertEquals(DERIVED2.getEquivalentPeriod(DERIVED2), PeriodField.of(1, DERIVED2));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_getEquivalentPeriod_null() {
-    	BASIC.getEquivalentPeriod((PeriodUnit) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getNextEquivalentPeriod()
-    //-----------------------------------------------------------------------
-    public void test_getNextEquivalentPeriod() {
-        assertEquals(DERIVED2.getNextEquivalentPeriod(), PeriodField.of(20, DERIVED1));
-        assertEquals(DERIVED1.getNextEquivalentPeriod(), PeriodField.of(30, BASIC));
-        assertEquals(BASIC.getNextEquivalentPeriod(), null);
-    }
-
-    //-----------------------------------------------------------------------
-    // isConvertibleTo(PeriodUnit)
-    //-----------------------------------------------------------------------
-    public void test_isConvertibleTo_unit_basic() {
-        assertEquals(BASIC.isConvertibleTo(BASIC), true);
-        assertEquals(BASIC.isConvertibleTo(DERIVED1), false);
-        assertEquals(BASIC.isConvertibleTo(DERIVED2), false);
-    }
-
-    public void test_isConvertibleTo_unit_derived() {
-        assertEquals(DERIVED2.isConvertibleTo(BASIC), true);
-        assertEquals(DERIVED2.isConvertibleTo(DERIVED1), true);
-        assertEquals(DERIVED2.isConvertibleTo(DERIVED2), true);
-    }
-
-    public void test_isConvertibleTo_null() {
-        assertEquals(BASIC.isConvertibleTo((PeriodUnit) null), false);
+    public void test_getBaseEquivalent() {
+        assertEquals(BASIC.getBaseEquivalent(), BASIC.field(1));
+        assertEquals(DERIVED1.getBaseEquivalent(), BASIC.field(EQUIV1));
+        assertEquals(DERIVED2.getBaseEquivalent(), BASIC.field(EQUIV2 * EQUIV1));
     }
 
     //-----------------------------------------------------------------------
     // getBaseUnit()
     //-----------------------------------------------------------------------
-    public void test_getBaseUnit_unit_basic() {
+    public void test_getBaseUnit() {
         assertEquals(BASIC.getBaseUnit(), BASIC);
         assertEquals(DERIVED1.getBaseUnit(), BASIC);
         assertEquals(DERIVED2.getBaseUnit(), BASIC);
     }
 
     //-----------------------------------------------------------------------
-    // getEstimatedDuration()
+    // getDurationEstimate()
     //-----------------------------------------------------------------------
-    public void test_getEstimatedDuration() {
-        assertEquals(BASIC.getEstimatedDuration(), Duration.ofSeconds(1));
-        assertEquals(DERIVED1.getEstimatedDuration(), Duration.ofSeconds(30));
+    public void test_getDurationEstimate() {
+        assertEquals(BASIC.getDurationEstimate(), Duration.ofSeconds(1));
+        assertEquals(DERIVED1.getDurationEstimate(), Duration.ofSeconds(EQUIV1));
+    }
+
+    //-----------------------------------------------------------------------
+    // toEquivalent(PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_getEquivalentPeriod_unit_basic() {
+        assertEquals(BASIC.toEquivalent(BASIC), 1);
+        assertEquals(BASIC.toEquivalent(DERIVED1), -1);
+        assertEquals(BASIC.toEquivalent(DERIVED2), -1);
+    }
+
+    public void test_getEquivalentPeriod_unit_derived() {
+        assertEquals(DERIVED2.toEquivalent(BASIC), EQUIV2 * EQUIV1);
+        assertEquals(DERIVED2.toEquivalent(DERIVED1), EQUIV2);
+        assertEquals(DERIVED2.toEquivalent(DERIVED2), 1);
+        assertEquals(DERIVED1.toEquivalent(DERIVED2), -1);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getEquivalentPeriod_null() {
+    	BASIC.toEquivalent((PeriodUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // convertEquivalent(PeriodField)
+    //-----------------------------------------------------------------------
+    public void test_convertEquivalent_PeriodField_same() {
+        PeriodField field = BASIC.field(3);
+        assertSame(BASIC.convertEquivalent(field), field);
+        field = DERIVED1.field(-5);
+        assertSame(DERIVED1.convertEquivalent(field), field);
+    }
+
+    public void test_convertEquivalent_PeriodField_convertible() {
+        assertEquals(BASIC.convertEquivalent(DERIVED1.field(4)), BASIC.field(4 * EQUIV1));
+        assertEquals(BASIC.convertEquivalent(DERIVED2.field(-5)), BASIC.field(-5 * EQUIV2 * EQUIV1));
+    }
+
+    public void test_convertEquivalent_PeriodField_notConvertible() {
+        assertEquals(DERIVED1.convertEquivalent(BASIC.field(EQUIV1)), null);
+        assertEquals(DERIVED2.convertEquivalent(BASIC.field(4)), null);
+        assertEquals(UNRELATED.convertEquivalent(BASIC.field(4)), null);
+        assertEquals(BASIC.convertEquivalent(UNRELATED.field(4)), null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_convertEquivalent_PeriodField_null() {
+        BASIC.convertEquivalent((PeriodField) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // convertEquivalent(long,PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_convertEquivalent_PeriodUnit_same() {
+        assertEquals(BASIC.convertEquivalent(3, BASIC), BASIC.field(3));
+        assertEquals(DERIVED1.convertEquivalent(-5, DERIVED1), DERIVED1.field(-5));
+        assertEquals(DERIVED2.convertEquivalent(12, DERIVED2), DERIVED2.field(12));
+    }
+
+    public void test_convertEquivalent_PeriodUnit_convertible() {
+        assertEquals(BASIC.convertEquivalent(4, DERIVED1), BASIC.field(4 * EQUIV1));
+        assertEquals(BASIC.convertEquivalent(-5, DERIVED2), BASIC.field(-5 * EQUIV2 * EQUIV1));
+    }
+
+    public void test_convertEquivalent_PeriodUnit_notConvertible() {
+        assertEquals(DERIVED1.convertEquivalent(EQUIV1, BASIC), null);
+        assertEquals(DERIVED2.convertEquivalent(4, BASIC), null);
+        assertEquals(UNRELATED.convertEquivalent(4, BASIC), null);
+        assertEquals(BASIC.convertEquivalent(4, UNRELATED), null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_convertEquivalent_PeriodUnit_null() {
+        BASIC.convertEquivalent(1, (PeriodUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -302,7 +295,7 @@ public class TestPeriodUnit {
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_basic() {
-        PeriodUnit test1 = basic("TestCompareTo1", Duration.ofSeconds(30));
+        PeriodUnit test1 = basic("TestCompareTo1", Duration.ofSeconds(EQUIV1));
         PeriodUnit test2 = basic("TestCompareTo2", Duration.ofSeconds(40));
         assertEquals(test1.compareTo(test1), 0);
         assertEquals(test1.compareTo(test2), -1);
@@ -310,8 +303,8 @@ public class TestPeriodUnit {
     }
 
     public void test_compareTo_durationThenName() {
-        PeriodUnit test1 = basic("TestCompareTo1", Duration.ofSeconds(30));
-        PeriodUnit test2 = basic("TestCompareTo2", Duration.ofSeconds(30));
+        PeriodUnit test1 = basic("TestCompareTo1", Duration.ofSeconds(EQUIV1));
+        PeriodUnit test2 = basic("TestCompareTo2", Duration.ofSeconds(EQUIV1));
         PeriodUnit test3 = basic("TestCompareTo0", Duration.ofSeconds(40));
         assertEquals(test1.compareTo(test1), 0);
         assertTrue(test1.compareTo(test2) < 0);
@@ -331,7 +324,7 @@ public class TestPeriodUnit {
     }
 
     public void test_compareTo_basicDerived() {
-        PeriodUnit test1 = basic(DERIVED1.getName(), DERIVED1.getEstimatedDuration());
+        PeriodUnit test1 = basic(DERIVED1.getName(), DERIVED1.getDurationEstimate());
         PeriodUnit test2 = DERIVED1;
         assertEquals(test1.compareTo(test1), 0);
         assertTrue(test1.compareTo(test2) < 0);
@@ -340,7 +333,7 @@ public class TestPeriodUnit {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_compareTo_null() {
-        PeriodUnit test5 = basic("TestCompareToNull", Duration.ofSeconds(30));
+        PeriodUnit test5 = basic("TestCompareToNull", Duration.ofSeconds(EQUIV1));
         test5.compareTo(null);
     }
 
@@ -349,7 +342,7 @@ public class TestPeriodUnit {
         PeriodUnit test1 = BASIC;
         PeriodUnit test2 = DERIVED1;
         PeriodUnit test3 = DERIVED2;
-        PeriodUnit test4 = basic(DERIVED1.getName(), DERIVED1.getEstimatedDuration());
+        PeriodUnit test4 = basic(DERIVED1.getName(), DERIVED1.getDurationEstimate());
         assertEquals(test1.equals(test1), true);
         assertEquals(test1.equals(test2), false);
         assertEquals(test1.equals(test3), false);
@@ -369,8 +362,8 @@ public class TestPeriodUnit {
     }
 
     public void test_equals_nameDuration() {
-        PeriodUnit test1 = basic("TestEquals1", Duration.ofSeconds(30));
-        PeriodUnit test2 = basic("TestEquals2", Duration.ofSeconds(30));
+        PeriodUnit test1 = basic("TestEquals1", Duration.ofSeconds(EQUIV1));
+        PeriodUnit test2 = basic("TestEquals2", Duration.ofSeconds(EQUIV1));
         PeriodUnit test3 = basic("TestEquals2", Duration.ofSeconds(40));
         assertEquals(test1.equals(test1), true);
         assertEquals(test1.equals(test2), false);
@@ -384,18 +377,18 @@ public class TestPeriodUnit {
     }
 
     public void test_equals_null() {
-        PeriodUnit test = basic("TestEqualsNull", Duration.ofSeconds(30));
+        PeriodUnit test = basic("TestEqualsNull", Duration.ofSeconds(EQUIV1));
         assertEquals(false, test.equals(null));
     }
 
     public void test_equals_otherClass() {
-        PeriodUnit test = basic("TestEqualsOther", Duration.ofSeconds(30));
+        PeriodUnit test = basic("TestEqualsOther", Duration.ofSeconds(EQUIV1));
         assertEquals(false, test.equals(""));
     }
 
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        PeriodUnit test1 = basic("TestHashCode", Duration.ofSeconds(30));
+        PeriodUnit test1 = basic("TestHashCode", Duration.ofSeconds(EQUIV1));
         PeriodUnit test2 = basic("TestHashCode", Duration.ofSeconds(40));
         assertEquals(test1.hashCode() == test1.hashCode(), true);
         assertEquals(test1.hashCode() == test2.hashCode(), false);
@@ -403,7 +396,7 @@ public class TestPeriodUnit {
 
     //-----------------------------------------------------------------------
     public void test_toString() {
-        PeriodUnit test = basic("TestToString", Duration.ofSeconds(30));
+        PeriodUnit test = basic("TestToString", Duration.ofSeconds(EQUIV1));
         assertEquals(test.toString(), "TestToString");
     }
 
@@ -415,7 +408,7 @@ public class TestPeriodUnit {
     }
 
     private static PeriodUnit derived(String name, PeriodField period) {
-        return new PeriodUnit(name, period) {
+        return new PeriodUnit(name, period.getAmount(), period.getUnit()) {
             private static final long serialVersionUID = 1L;
         };
     }

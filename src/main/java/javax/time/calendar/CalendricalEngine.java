@@ -682,32 +682,38 @@ public final class CalendricalEngine {
                         DateTimeRule.comparePeriodUnits(ruleSml.getPeriodUnit(), ruleLge.getPeriodUnit()) < 0) {
                     final long periodLge = ruleLge.convertToPeriod(fieldLge.getValue());
                     final long periodSml = ruleSml.convertToPeriod(fieldSml.getValue());
-                    final PeriodField conversion1 = ruleSml.getPeriodRange().getEquivalentPeriod(ruleLge.getPeriodUnit());
-                    // if was an overlap, then check it is valid
-                    // this must be done before the combined rule check to ensure that the final derivation is OK
-                    if (DateTimeRule.comparePeriodUnits(ruleSml.getPeriodRange(), ruleLge.getPeriodUnit()) > 0) {
-                        long periodMidLge = MathUtils.floorMod(periodLge, conversion1.getAmount());
-                        final PeriodField conversion2 = ruleSml.getPeriodRange().getEquivalentPeriod(ruleSml.getPeriodUnit());
-                        final PeriodField conversion3 = ruleLge.getPeriodUnit().getEquivalentPeriod(ruleSml.getPeriodUnit());
-                        long periodMidSml = MathUtils.floorMod(periodSml, conversion2.getAmount());
-                        periodMidSml = MathUtils.floorDiv(periodMidSml, conversion3.getAmount());
-                        if (periodMidLge != periodMidSml) {
-                            addError("Clash: " + fieldLge + " and " + fieldSml);
-                            return;
+                    final long conversion1 = ruleSml.getPeriodRange().toEquivalent(ruleLge.getPeriodUnit());
+                    if (conversion1 >= 0) {
+                        // if was an overlap, then check it is valid
+                        // this must be done before the combined rule check to ensure that the final derivation is OK
+                        if (DateTimeRule.comparePeriodUnits(ruleSml.getPeriodRange(), ruleLge.getPeriodUnit()) > 0) {
+                            long periodMidLge = MathUtils.floorMod(periodLge, conversion1);
+                            final long conversion2 = ruleSml.getPeriodRange().toEquivalent(ruleSml.getPeriodUnit());
+                            final long conversion3 = ruleLge.getPeriodUnit().toEquivalent(ruleSml.getPeriodUnit());
+                            if (conversion2 >= 0 && conversion3 >= 0) {
+                                long periodMidSml = MathUtils.floorMod(periodSml, conversion2);
+                                periodMidSml = MathUtils.floorDiv(periodMidSml, conversion3);
+                                if (periodMidLge != periodMidSml) {
+                                    addError("Clash: " + fieldLge + " and " + fieldSml);
+                                    return;
+                                }
+                            }
                         }
-                    }
-                    // merge if possible
-                    DateTimeRule ruleCombined = ruleGroup.getRelatedRule(ruleSml.getPeriodUnit(), ruleLge.getPeriodRange());
-                    if (ruleCombined != null) {
-                        long period = MathUtils.floorDiv(periodLge, conversion1.getAmount());
-                        final PeriodField conversion2 = ruleSml.getPeriodRange().getEquivalentPeriod(ruleSml.getPeriodUnit());
-                        period = MathUtils.safeMultiply(period, conversion2.getAmount());
-                        period = MathUtils.safeAdd(period, periodSml);
-                        DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(period));
-                        group.set(i, fieldCombined);
-                        group.remove(j);
-                        i = -1;
-                        break;
+                        // merge if possible
+                        DateTimeRule ruleCombined = ruleGroup.getRelatedRule(ruleSml.getPeriodUnit(), ruleLge.getPeriodRange());
+                        if (ruleCombined != null) {
+                            long period = MathUtils.floorDiv(periodLge, conversion1);
+                            final long conversion2 = ruleSml.getPeriodRange().toEquivalent(ruleSml.getPeriodUnit());
+                            if (conversion2 >= 0) {
+                                period = MathUtils.safeMultiply(period, conversion2);
+                                period = MathUtils.safeAdd(period, periodSml);
+                                DateTimeField fieldCombined = ruleCombined.field(ruleCombined.convertFromPeriod(period));
+                                group.set(i, fieldCombined);
+                                group.remove(j);
+                                i = -1;
+                                break;
+                            }
+                        }
                     }
                 }
             }

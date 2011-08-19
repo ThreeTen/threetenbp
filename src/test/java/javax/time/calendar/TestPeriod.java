@@ -2132,8 +2132,8 @@ public class TestPeriod {
 
     public void test_toEstimatedDuration_Days() {
         assertEquals(Period.ZERO.toEstimatedDuration(), Duration.ofSeconds(0));
-        assertEquals(Period.ofDays(2).toEstimatedDuration(), ISOPeriodUnit.DAYS.getEstimatedDuration().multipliedBy(2));
-        assertEquals(Period.ofMonths(2).toEstimatedDuration(), ISOPeriodUnit.MONTHS.getEstimatedDuration().multipliedBy(2));
+        assertEquals(Period.ofDays(2).toEstimatedDuration(), ISOPeriodUnit.DAYS.getDurationEstimate().multipliedBy(2));
+        assertEquals(Period.ofMonths(2).toEstimatedDuration(), ISOPeriodUnit.MONTHS.getDurationEstimate().multipliedBy(2));
     }
 
     //-----------------------------------------------------------------------

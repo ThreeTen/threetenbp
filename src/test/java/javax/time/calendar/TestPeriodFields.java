@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.SortedMap;
 
@@ -66,11 +67,9 @@ public class TestPeriodFields {
     private static final PeriodUnit MILLENNIA = ISOPeriodUnit.MILLENNIA;
     private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
     private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
-    private static final PeriodUnit QUARTERS = ISOPeriodUnit.QUARTERS;
     private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
     private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
     private static final PeriodUnit HOURS24 = ISOPeriodUnit._24_HOURS;
-    private static final PeriodUnit HOURS12 = ISOPeriodUnit._12_HOURS;
     private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
     private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
     private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
@@ -201,6 +200,46 @@ public class TestPeriodFields {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_multiField_PeriodField_nullItem() {
         PeriodFields.of(new PeriodField[] {null});
+    }
+
+    //-----------------------------------------------------------------------
+    // of(double, PeriodUnit)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="test_of_double")
+    Object[][] provider_test_of_double() {
+        return new Object[][] {
+            {5.0d, YEARS, 5, YEARS, 0, MONTHS},
+            {5.5d, YEARS, 5, YEARS, 6, MONTHS},
+            {0.25d, YEARS, 0, YEARS, 3, MONTHS},
+            {4.0d / 12, YEARS, 0, YEARS, 4, MONTHS},
+            {-2.0d, YEARS, -2, YEARS, 0, MONTHS},
+            {-2.75, YEARS, -2, YEARS, -9, MONTHS},
+            {-0.95, YEARS, 0, YEARS, -11, MONTHS},
+            {0.001d, YEARS, 0, YEARS, 0, MONTHS},
+            {5.0, MONTHS, 5, MONTHS, 0, null},
+            {0.5, MONTHS, 0, MONTHS, 0, null},
+            {100000.005d + 0.001d/12, MILLENNIA, 100000, MILLENNIA, 61, MONTHS},
+            {10.0d + (1 - (1d / (60d * 60d * 1000000000d))), HOURS, 10, HOURS, 3599999999999L, NANOS},
+            {10.0d + (2d / (60d * 60d * 1000000000d)), HOURS, 10, HOURS, 2, NANOS},
+            // {10.0d + (1d / (60d * 60d * 1000000000d)), HOURS, 10, HOURS, 1, NANOS},  // fails due to double weirdness
+            {10.0000000000001d, HOURS, 10, HOURS, 0, NANOS},
+        };
+    }
+
+    @Test(dataProvider = "test_of_double")
+    public void test_ofFraction_double_noFraction(double inputAmount, PeriodUnit inputUnit, long amount1, PeriodUnit unit1, long amount2, PeriodUnit unit2) {
+        System.out.println(BigDecimal.valueOf(inputAmount).toPlainString());
+        PeriodFields test = PeriodFields.ofFraction(inputAmount, inputUnit);
+        PeriodFields expected = PeriodFields.of(amount1, unit1);
+        if (unit2 != null) {
+            expected = expected.with(amount2, unit2);
+        }
+        assertEquals(test, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_ofFraction_null() {
+        PeriodFields.ofFraction(1.0, (PeriodUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -945,57 +984,6 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // of(double, PeriodUnit)
-    //-----------------------------------------------------------------------
-    public void test_of_double_simple() {
-        PeriodFields test = PeriodFields.of(5.0, YEARS);
-        assertEquals(test, PeriodFields.of(5, YEARS));
-    }
-    
-    public void test_of_double_simple_first() {
-        PeriodFields test = PeriodFields.of(5.5, YEARS);
-        assertEquals(test, PeriodFields.of(5, YEARS).with(2, QUARTERS));
-    }
-
-    public void test_of_double_negative() {
-        PeriodFields test = PeriodFields.of(-5.75, YEARS);
-        assertEquals(test, PeriodFields.of(-6, YEARS).with(1, QUARTERS));
-    }
-
-    public void test_of_double_skip_units() {
-        PeriodFields test = PeriodFields.of(5 + 1.0/12, YEARS);
-        assertEquals(test, PeriodFields.of(5, YEARS).with(1, MONTHS));	
-    }
-
-    public void test_of_double_less_than_one() {
-        PeriodFields test = PeriodFields.of(1.0/12, YEARS);
-        assertEquals(test, PeriodFields.of(1, MONTHS));	
-    }
-
-    public void test_of_double_run_out_of_units() {
-        PeriodFields test = PeriodFields.of(0.001, YEARS);
-        assertEquals(test, PeriodFields.of(0, YEARS));	
-    }
-
-    public void test_of_very_small_units() {
-        PeriodFields test = PeriodFields.of(100000.005 + 0.001/12, MILLENNIA);
-        assertEquals(test, PeriodFields.of(100000, MILLENNIA).with(5, YEARS).with(1, MONTHS));
-    }
-
-    public void test_of_24hours_and_smallers() {
-    	double hours24 = 10.0 + ((((23.0 * 60.0) + 59.0) * 60.0) + 59.999999999d) / (60*60*24);
-    	
-        PeriodFields test = PeriodFields.of(hours24, HOURS24);
-        assertEquals(test, PeriodFields.of(10, HOURS24).with(1, HOURS12).with(11, HOURS).with(59, MINUTES).with(59, SECONDS).with(999, MILLIS).with(999, MICROS).with(999, NANOS));
-    }
-
-    public void test_of_double_limits() {
-    	// No, this doesn't test the API, but shows the limits of double precision
-    	double hours24 = 1234.0 + ((((23.0 * 60.0) + 59.0) * 60.0) + 59.999999999d) / (60*60*24);
-    	assertEquals(hours24, 1235.0);
-    }
-
-    //-----------------------------------------------------------------------
     // normalized()
     //-----------------------------------------------------------------------
     public void test_normalized() {
@@ -1311,12 +1299,12 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // toEstimatedDuration()
+    // toDurationEstimate()
     //-----------------------------------------------------------------------
-    public void test_toEstimatedDuration() {
-        Duration test = fixtureP2Y5D.toEstimatedDuration();
-        Duration twoYears = ISOPeriodUnit.YEARS.getEstimatedDuration().multipliedBy(2);
-        Duration fiveDays = ISOPeriodUnit.DAYS.getEstimatedDuration().multipliedBy(5);
+    public void test_toDurationEstimate() {
+        Duration test = fixtureP2Y5D.toDurationEstimate();
+        Duration twoYears = ISOPeriodUnit.YEARS.getDurationEstimate().multipliedBy(2);
+        Duration fiveDays = ISOPeriodUnit.DAYS.getDurationEstimate().multipliedBy(5);
         assertEquals(test, twoYears.plus(fiveDays));
     }
 

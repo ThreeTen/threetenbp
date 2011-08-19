@@ -1580,7 +1580,7 @@ public final class Period
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toEstimatedDuration() {
-        return toPeriodFields().toEstimatedDuration();
+        return toPeriodFields().toDurationEstimate();
     }
 
     /**

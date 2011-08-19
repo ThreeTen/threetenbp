@@ -106,12 +106,12 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this period is zero length.
+     * Checks if this period has an amount of zero.
      * <p>
      * A {@code PeriodField} can be positive, zero or negative.
-     * This method checks whether the length is zero.
+     * This method checks whether the amount is zero.
      *
-     * @return true if this period is zero length
+     * @return true if this period has an amount of zero
      */
     public boolean isZero() {
         return amount == 0;
@@ -158,6 +158,8 @@ public final class PeriodField
      * <p>
      * Calling this method returns a new period with the same unit but different amount.
      * For example, it could be used to change '3 Days' to '5 Days'.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param amount  the amount of time to set in the returned period, positive or negative
      * @return a {@code PeriodField} based on this period with the specified amount, not null
@@ -174,6 +176,9 @@ public final class PeriodField
      * <p>
      * Calling this method returns a new period with the same amount but different unit.
      * For example, it could be used to change '3 Days' to '3 Months'.
+     * This is rarely a useful operation but is included for completeness.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param unit  the unit to set in the returned period, positive or negative
      * @return a {@code PeriodField} based on this period with the specified unit, not null
@@ -192,17 +197,17 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to add, positive or negative
+     * @param periodToAdd  the period to add, positive or negative
      * @return a {@code PeriodField} based on this period with the specified period added, not null
      * @throws IllegalArgumetException if the specified period has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField plus(PeriodField period) {
-        PeriodFields.checkNotNull(period, "PeriodField must not be null");
-        if (period.getUnit().equals(unit) == false) {
-            throw new IllegalArgumentException("Cannot add '" + period + "' to '" + this + "' as the units differ");
+    public PeriodField plus(PeriodField periodToAdd) {
+        PeriodFields.checkNotNull(periodToAdd, "PeriodField must not be null");
+        if (periodToAdd.getUnit().equals(unit) == false) {
+            throw new IllegalArgumentException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
         }
-        return plus(period.getAmount());
+        return plus(periodToAdd.getAmount());
     }
 
     /**
@@ -210,12 +215,12 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the period to add, measured in the unit of the period, positive or negative
+     * @param amountToAdd  the period to add, measured in the unit of the period, positive or negative
      * @return a {@code PeriodField} based on this period with the specified amount added, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField plus(long amount) {
-        return withAmount(MathUtils.safeAdd(this.amount, amount));
+    public PeriodField plus(long amountToAdd) {
+        return withAmount(MathUtils.safeAdd(this.amount, amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -224,17 +229,17 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to subtract, positive or negative
+     * @param periodToSubtract  the period to subtract, positive or negative
      * @return a {@code PeriodField} based on this period with the specified period subtracted, not null
      * @throws IllegalArgumetException if the specified has a different unit
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField minus(PeriodField period) {
-        PeriodFields.checkNotNull(period, "PeriodField must not be null");
-        if (period.getUnit().equals(unit) == false) {
-            throw new IllegalArgumentException("Cannot subtract '" + period + "' from '" + this + "' as the units differ");
+    public PeriodField minus(PeriodField periodToSubtract) {
+        PeriodFields.checkNotNull(periodToSubtract, "PeriodField must not be null");
+        if (periodToSubtract.getUnit().equals(unit) == false) {
+            throw new IllegalArgumentException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
         }
-        return minus(period.getAmount());
+        return minus(periodToSubtract.getAmount());
     }
 
     /**
@@ -242,12 +247,12 @@ public final class PeriodField
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the period to subtract, measured in the unit of the period, positive or negative
+     * @param amountToSubtract  the period to subtract, measured in the unit of the period, positive or negative
      * @return a {@code PeriodField} based on this period with the specified amount subtracted, not null
      * @throws ArithmeticException if the calculation overflows
      */
-    public PeriodField minus(long amount) {
-        return withAmount(MathUtils.safeSubtract(this.amount, amount));
+    public PeriodField minus(long amountToSubtract) {
+        return withAmount(MathUtils.safeSubtract(this.amount, amountToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -327,8 +332,6 @@ public final class PeriodField
      * Converts this period to an equivalent in the specified unit.
      * <p>
      * This converts this period to one measured in the specified unit.
-     * This uses {@link PeriodUnit#getEquivalentPeriod(PeriodUnit)} to lookup
-     * the equivalent period for the unit.
      * <p>
      * For example, '3 Hours' could be converted to '180 Minutes'.
      * <p>
@@ -340,11 +343,11 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField toEquivalent(PeriodUnit requiredUnit) {
-        PeriodField equivalent = unit.getEquivalentPeriod(requiredUnit);
-        if (equivalent != null) {
-            return equivalent.multipliedBy(amount);
+        PeriodField converted = requiredUnit.convertEquivalent(this);
+        if (converted == null) {
+            throw new CalendricalException("Unable to convert " + getUnit() + " to " + requiredUnit);
         }
-        throw new CalendricalException("Unable to convert " + getUnit() + " to " + requiredUnit);
+        return converted;
     }
 
     /**
@@ -364,10 +367,11 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField toEquivalent(PeriodUnit... requiredUnits) {
+        PeriodFields.checkNotNull(requiredUnits, "PeriodUnit array must not be null");
         for (PeriodUnit requiredUnit : requiredUnits) {
-            PeriodField equivalent = unit.getEquivalentPeriod(requiredUnit);
-            if (equivalent != null) {
-                return equivalent.multipliedBy(amount);
+            PeriodField converted = requiredUnit.convertEquivalent(this);
+            if (converted != null) {
+                return converted;
             }
         }
         throw new CalendricalException("Unable to convert " + getUnit() + " to any requested unit: " + Arrays.toString(requiredUnits));
@@ -380,35 +384,35 @@ public final class PeriodField
      * The {@link PeriodUnit} contains an estimated duration for that unit.
      * The value allows an estimate to be calculated for this period irrespective
      * of whether the unit is of fixed or variable duration. The estimate will equal the
-     * {@link #toDuration accurate} calculation if the unit is based on the second.
+     * {@link #toDuration accurate} calculation if the unit is based on the nanosecond.
      *
      * @return the estimated duration of this period, positive or negative
      * @throws ArithmeticException if the calculation overflows
      */
-    public Duration toEstimatedDuration() {
-        return unit.getEstimatedDuration().multipliedBy(amount);
+    public Duration toDurationEstimate() {
+        return unit.getDurationEstimate().multipliedBy(amount);
     }
 
     /**
-     * Calculates the accurate duration of this period.
+     * Calculates the accurate duration of this period, failing if unable to calculate.
      * <p>
      * The conversion is based on the {@code ISOChronology} definition of the seconds and
      * nanoseconds units. If the unit of this period can be converted to either seconds
      * or nanoseconds then the conversion will succeed, subject to calculation overflow.
      * If the unit cannot be converted then an exception is thrown.
      *
-     * @return the duration of this period based on {@code ISOChronology} fields, not null
+     * @return the accurate duration of this period, not null
      * @throws CalendricalException if this period cannot be converted to an exact duration
      * @throws ArithmeticException if the calculation overflows
      */
     public Duration toDuration() {
-        PeriodField equivalent = unit.getEquivalentPeriod(SECONDS);
-        if (equivalent != null) {
-            return equivalent.multipliedBy(amount).toEstimatedDuration();
+        PeriodField converted = SECONDS.convertEquivalent(this);
+        if (converted != null) {
+            return Duration.ofSeconds(converted.getAmount());
         }
-        equivalent = unit.getEquivalentPeriod(NANOS);
-        if (equivalent != null) {
-            return equivalent.multipliedBy(amount).toEstimatedDuration();
+        converted = NANOS.convertEquivalent(this);
+        if (converted != null) {
+            return Duration.ofNanos(converted.getAmount());
         }
         throw new CalendricalException("Unable to convert " + getUnit() + " to a Duration");
     }

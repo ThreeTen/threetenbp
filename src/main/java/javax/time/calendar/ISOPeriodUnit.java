@@ -70,9 +70,9 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
     /**
      * Restricted constructor.
      */
-    private ISOPeriodUnit(int ordinal, String name, PeriodField equivalentPeriod, Duration estimatedDuration) {
-        super(name, equivalentPeriod, estimatedDuration);
-        this.ordinal = ordinal;  // 16 multiplier allows space for new units
+    private ISOPeriodUnit(int ordinal, String name, long baseEquivalentPeriod, PeriodUnit baseUnit, Duration estimatedDuration) {
+        super(name, baseEquivalentPeriod, baseUnit, estimatedDuration);
+        this.ordinal = ordinal;
     }
 
     /**
@@ -80,7 +80,7 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
      * @return the singleton, not null
      */
     private Object readResolve() {
-        return UNIT_CACHE[ordinal / 16];
+        return UNIT_CACHE[ordinal];
     }
 
     //-----------------------------------------------------------------------
@@ -113,49 +113,49 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
      * The estimated duration is 1 nanosecond.
      * This unit does not depends on any other unit.
      */
-    public static final PeriodUnit NANOS = new ISOPeriodUnit(0 * 16, "Nanos", null, Duration.ofNanos(1));
+    public static final PeriodUnit NANOS = new ISOPeriodUnit(0, "Nanos", 1, null, Duration.ofNanos(1));
     /**
      * The period unit for microseconds.
      * <p>
      * The equivalent period and estimated duration is based on 1000 nanoseconds.
      * This unit depends on the Nanos unit and all units that depends on.
      */
-    public static final PeriodUnit MICROS = new ISOPeriodUnit(1 * 16, "Micros", PeriodField.of(1000, NANOS), Duration.ofNanos(1000));
+    public static final PeriodUnit MICROS = new ISOPeriodUnit(1, "Micros", 1000L, NANOS, Duration.ofNanos(1000));
     /**
      * The period unit for milliseconds.
      * <p>
      * The equivalent period and estimated duration is based on 1,000,000 nanoseconds.
      * This unit depends on the Micros unit and all units that depends on.
      */
-    public static final PeriodUnit MILLIS = new ISOPeriodUnit(2 * 16, "Millis", PeriodField.of(1000, MICROS), Duration.ofMillis(1));
+    public static final PeriodUnit MILLIS = new ISOPeriodUnit(2, "Millis", 1000000L, NANOS, Duration.ofMillis(1));
     /**
      * The period unit for seconds.
      * <p>
      * The equivalent period and estimated duration is based on 1,000,000,000 nanoseconds.
      * This unit depends on the Millis unit and all units that depends on.
      */
-    public static final PeriodUnit SECONDS = new ISOPeriodUnit(3 * 16, "Seconds", PeriodField.of(1000, MILLIS), Duration.ofSeconds(1));
+    public static final PeriodUnit SECONDS = new ISOPeriodUnit(3, "Seconds", 1000000000L, NANOS, Duration.ofSeconds(1));
     /**
      * The period unit for minutes.
      * <p>
      * The equivalent period and estimated duration is based on 60 seconds.
      * This unit depends on the Seconds unit and all units that depends on.
      */
-    public static final PeriodUnit MINUTES = new ISOPeriodUnit(4 * 16, "Minutes", PeriodField.of(60, SECONDS), Duration.ofSeconds(60));
+    public static final PeriodUnit MINUTES = new ISOPeriodUnit(4, "Minutes", 60L * 1000000000L, NANOS, Duration.ofSeconds(60));
     /**
      * The period unit for hours.
      * <p>
      * The equivalent period and estimated duration is based on 60 minutes.
      * This unit depends on the Minutes unit and all units that depends on.
      */
-    public static final PeriodUnit HOURS = new ISOPeriodUnit(5 * 16, "Hours", PeriodField.of(60, MINUTES), Duration.ofSeconds(60 * 60));
+    public static final PeriodUnit HOURS = new ISOPeriodUnit(5, "Hours", 60L * 60L * 1000000000L, NANOS, Duration.ofSeconds(60 * 60));
     /**
      * The period unit for twelve hours, as used by AM/PM.
      * <p>
      * The equivalent period and estimated duration is based on 12 hours.
      * This unit depends on the Hours unit and all units that depends on.
      */
-    public static final PeriodUnit _12_HOURS = new ISOPeriodUnit(6 * 16, "12Hours", PeriodField.of(12, HOURS), Duration.ofSeconds(12 * 60 * 60));
+    public static final PeriodUnit _12_HOURS = new ISOPeriodUnit(6, "12Hours", 12L * 60L * 60L * 1000000000L, NANOS, Duration.ofSeconds(12 * 60 * 60));
     /**
      * The period unit for twenty-four hours, that is often treated as a day.
      * <p>
@@ -174,7 +174,7 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
      * The equivalent period and estimated duration is based on 24 hours.
      * This unit depends on the 12Hours unit and all units that depends on.
      */
-    public static final PeriodUnit _24_HOURS = new ISOPeriodUnit(7 * 16, "24Hours", PeriodField.of(2, _12_HOURS), Duration.ofSeconds(24 * 60 * 60));
+    public static final PeriodUnit _24_HOURS = new ISOPeriodUnit(7, "24Hours", 24L * 60L * 60L * 1000000000L, NANOS, Duration.ofSeconds(24 * 60 * 60));
 
     /**
      * The period unit for days.
@@ -193,14 +193,14 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
      * The estimated duration is equal to 24 hours.
      * This unit does not depends on any other unit.
      */
-    public static final PeriodUnit DAYS = new ISOPeriodUnit(8 * 16, "Days", null, Duration.ofSeconds(86400));
+    public static final PeriodUnit DAYS = new ISOPeriodUnit(8, "Days", 1, null, Duration.ofSeconds(86400));
     /**
      * The period unit for weeks.
      * <p>
      * The equivalent period and estimated duration is based on 7 days.
      * This unit depends on the Days unit and all units that depends on.
      */
-    public static final PeriodUnit WEEKS = new ISOPeriodUnit(9 * 16, "Weeks", PeriodField.of(7, DAYS), Duration.ofSeconds(7L * 86400L));
+    public static final PeriodUnit WEEKS = new ISOPeriodUnit(9, "Weeks", 7, DAYS, Duration.ofSeconds(7L * 86400L));
     /**
      * The period unit for months.
      * This is typically 28 to 31 days.
@@ -209,14 +209,14 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
      * The estimated duration is equal to one-twelfth of a year based on 365.2425 days.
      * This unit does not depend on any other unit.
      */
-    public static final PeriodUnit MONTHS = new ISOPeriodUnit(10 * 16, "Months", null, Duration.ofSeconds(31556952L / 12L));
+    public static final PeriodUnit MONTHS = new ISOPeriodUnit(10, "Months", 1, null, Duration.ofSeconds(31556952L / 12L));
     /**
      * The period unit for quarters of years.
      * <p>
      * The equivalent period and estimated duration is based on 3 months.
      * This unit depends on the Months unit and all units that depends on.
      */
-    public static final PeriodUnit QUARTERS = new ISOPeriodUnit(11 * 16, "Quarters", PeriodField.of(3, MONTHS), Duration.ofSeconds(31556952L / 4));
+    public static final PeriodUnit QUARTERS = new ISOPeriodUnit(11, "Quarters", 3, MONTHS, Duration.ofSeconds(31556952L / 4));
     /**
      * The period unit for week-based-years as defined by ISO-8601.
      * This is typically 52 weeks, and occasionally 53 weeks.
@@ -225,35 +225,35 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
      * The estimated duration is equal to 364.5 days, which is just over 52 weeks.
      * This unit does not depend on any other unit.
      */
-    public static final PeriodUnit WEEK_BASED_YEARS = new ISOPeriodUnit(12 * 16, "WeekBasedYears", null, Duration.ofSeconds(364L * 86400L + 43200L));  // 364.5 days
+    public static final PeriodUnit WEEK_BASED_YEARS = new ISOPeriodUnit(12, "WeekBasedYears", 1, null, Duration.ofSeconds(364L * 86400L + 43200L));  // 364.5 days
     /**
      * The period unit for years.
      * <p>
      * The equivalent period and estimated duration is based on 12 months based on 365.2425 days.
      * This unit depends on the Quarters unit and all units that depends on.
      */
-    public static final PeriodUnit YEARS = new ISOPeriodUnit(13 * 16, "Years", PeriodField.of(4, QUARTERS), Duration.ofSeconds(31556952L));  // 365.2425 days
+    public static final PeriodUnit YEARS = new ISOPeriodUnit(13, "Years", 12, MONTHS, Duration.ofSeconds(31556952L));  // 365.2425 days
     /**
      * The period unit for decades.
      * <p>
      * The equivalent period and estimated duration is based on 10 years.
      * This unit depends on the Years unit and all units that depends on.
      */
-    public static final PeriodUnit DECADES = new ISOPeriodUnit(14 * 16, "Decades", PeriodField.of(10, YEARS), Duration.ofSeconds(10L * 31556952L));
+    public static final PeriodUnit DECADES = new ISOPeriodUnit(14, "Decades", 120, MONTHS, Duration.ofSeconds(10L * 31556952L));
     /**
      * The period unit for centuries.
      * <p>
      * The equivalent period and estimated duration is based on 100 years.
      * This unit depends on the Decades unit and all units that depends on.
      */
-    public static final PeriodUnit CENTURIES = new ISOPeriodUnit(15 * 16, "Centuries", PeriodField.of(10, DECADES), Duration.ofSeconds(100L * 31556952L));
+    public static final PeriodUnit CENTURIES = new ISOPeriodUnit(15, "Centuries", 1200, MONTHS, Duration.ofSeconds(100L * 31556952L));
     /**
      * The period unit for millennia.
      * <p>
      * The equivalent period and estimated duration is based on 1000 years.
      * This unit depends on the Centuries unit and all units that depends on.
      */
-    public static final PeriodUnit MILLENNIA = new ISOPeriodUnit(16 * 16, "Millennia", PeriodField.of(10, CENTURIES), Duration.ofSeconds(1000L * 31556952L));
+    public static final PeriodUnit MILLENNIA = new ISOPeriodUnit(16, "Millennia", 12000, MONTHS, Duration.ofSeconds(1000L * 31556952L));
     /**
      * The period unit for eras.
      * <p>
@@ -265,7 +265,7 @@ public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
      * The estimated duration is equal to 2,000,000,000 years.
      * This unit does not depend on any other unit.
      */
-    public static final PeriodUnit ERAS = new ISOPeriodUnit(17 * 16, "Eras", null, Duration.ofSeconds(31556952L * 2000000000L));
+    public static final PeriodUnit ERAS = new ISOPeriodUnit(17, "Eras", 1, null, Duration.ofSeconds(31556952L * 2000000000L));
 
     /**
      * Cache of units for deserialization.
