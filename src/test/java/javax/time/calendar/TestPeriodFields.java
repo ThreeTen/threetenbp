@@ -44,6 +44,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.SortedMap;
 
@@ -200,6 +201,33 @@ public class TestPeriodFields {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_multiField_PeriodField_nullItem() {
         PeriodFields.of(new PeriodField[] {null});
+    }
+
+    //-----------------------------------------------------------------------
+    // of(Iterable<PeriodField>)
+    //-----------------------------------------------------------------------
+    public void factory_multiField_IterablePeriodField() {
+        assertPeriodFields(PeriodFields.of(Arrays.asList(PeriodField.of(1, YEARS))), 1, YEARS);
+        assertPeriodFields(PeriodFields.of(Arrays.asList(PeriodField.of(-1, YEARS))), -1, YEARS);
+        assertPeriodFields(PeriodFields.of(Arrays.asList(PeriodField.of(Long.MAX_VALUE, YEARS))), Long.MAX_VALUE, YEARS);
+        assertPeriodFields(PeriodFields.of(Arrays.asList(PeriodField.of(Long.MIN_VALUE, YEARS))), Long.MIN_VALUE, YEARS);
+        assertPeriodFields(PeriodFields.of(Arrays.asList(PeriodField.of(1, YEARS), PeriodField.of(2, MONTHS))), 1, YEARS, 2, MONTHS);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void factory_multiField_IterablePeriodField_sameUnit() {
+        Iterable<PeriodField> iterable = Arrays.asList(PeriodField.of(1, YEARS), PeriodField.of(2, MONTHS), PeriodField.of(3, YEARS));
+        PeriodFields.of(iterable);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_multiField_IterablePeriodField_null() {
+        PeriodFields.of((Iterable<PeriodField>) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_multiField_IterablePeriodField_nullItem() {
+        PeriodFields.of(Arrays.asList((PeriodField) null));
     }
 
     //-----------------------------------------------------------------------
@@ -471,18 +499,18 @@ public class TestPeriodFields {
     // get(PeriodUnit)
     //-----------------------------------------------------------------------
     public void test_get() {
-        assertEquals(fixtureP2Y5D.get(YEARS), PeriodField.of(2L, YEARS));
-        assertEquals(fixtureP2Y5D.get(DAYS), PeriodField.of(5L, DAYS));
-        assertEquals(fixtureZeroYears.get(YEARS), PeriodField.of(0L, YEARS));
+        assertEquals(fixtureP2Y5D.getField(YEARS), PeriodField.of(2L, YEARS));
+        assertEquals(fixtureP2Y5D.getField(DAYS), PeriodField.of(5L, DAYS));
+        assertEquals(fixtureZeroYears.getField(YEARS), PeriodField.of(0L, YEARS));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_get_null() {
-        fixtureP2Y5D.get((PeriodUnit) null);
+        fixtureP2Y5D.getField((PeriodUnit) null);
     }
 
     public void test_get_notPresent() {
-        assertEquals(fixtureP2Y5D.get(MONTHS), null);
+        assertEquals(fixtureP2Y5D.getField(MONTHS), null);
     }
 
     //-----------------------------------------------------------------------
@@ -1413,7 +1441,7 @@ public class TestPeriodFields {
     private void assertPeriodFields(PeriodFields test, long amount1, PeriodUnit unit1) {
         assertEquals(test.size(), 1);
         assertEquals(test.contains(unit1), true);
-        assertEquals(test.get(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(test.getField(unit1), PeriodField.of(amount1, unit1));
         assertEquals(test.getAmount(unit1), amount1);
         assertEquals(test.isZero(), amount1 == 0);
         assertEquals(test.isPositive(), amount1 > 0);
@@ -1427,8 +1455,8 @@ public class TestPeriodFields {
         assertEquals(test.size(), 2);
         assertEquals(test.contains(unit1), true);
         assertEquals(test.contains(unit2), true);
-        assertEquals(test.get(unit1), PeriodField.of(amount1, unit1));
-        assertEquals(test.get(unit2), PeriodField.of(amount2, unit2));
+        assertEquals(test.getField(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(test.getField(unit2), PeriodField.of(amount2, unit2));
         assertEquals(test.getAmount(unit1), amount1);
         assertEquals(test.getAmount(unit2), amount2);
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0);
@@ -1445,9 +1473,9 @@ public class TestPeriodFields {
         assertEquals(test.contains(unit1), true);
         assertEquals(test.contains(unit2), true);
         assertEquals(test.contains(unit3), true);
-        assertEquals(test.get(unit1), PeriodField.of(amount1, unit1));
-        assertEquals(test.get(unit2), PeriodField.of(amount2, unit2));
-        assertEquals(test.get(unit3), PeriodField.of(amount3, unit3));
+        assertEquals(test.getField(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(test.getField(unit2), PeriodField.of(amount2, unit2));
+        assertEquals(test.getField(unit3), PeriodField.of(amount3, unit3));
         assertEquals(test.getAmount(unit1), amount1);
         assertEquals(test.getAmount(unit2), amount2);
         assertEquals(test.getAmount(unit3), amount3);

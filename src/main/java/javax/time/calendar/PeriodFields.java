@@ -140,24 +140,24 @@ public final class PeriodFields
         return create(internalMap);
     }
 
-//    /**
-//     * Obtains a {@code PeriodFields} from an array of single-unit periods.
-//     *
-//     * @param periods  the array of single-unit periods, not null
-//     * @return the {@code PeriodFields} instance, not null
-//     * @throws IllegalArgumentException if the same period unit occurs twice
-//     */
-//    public static PeriodFields of(Iterable<PeriodField> periods) {
-//        checkNotNull(periods, "Iterable must not be null");
-//        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
-//        for (PeriodField period : periods) {
-//            checkNotNull(period, "Iterable must not contain null");
-//            if (internalMap.put(period.getUnit(), period) != null) {
-//                throw new IllegalArgumentException("Iterable contains the same unit twice");
-//            }
-//        }
-//        return create(internalMap);
-//    }
+    /**
+     * Obtains a {@code PeriodFields} from an array of single-unit periods.
+     *
+     * @param periods  the array of single-unit periods, not null
+     * @return the {@code PeriodFields} instance, not null
+     * @throws IllegalArgumentException if the same period unit occurs twice
+     */
+    public static PeriodFields of(Iterable<PeriodField> periods) {
+        checkNotNull(periods, "Iterable must not be null");
+        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
+        for (PeriodField period : periods) {
+            checkNotNull(period, "Iterable must not contain null");
+            if (internalMap.put(period.getUnit(), period) != null) {
+                throw new IllegalArgumentException("Iterable contains the same unit twice");
+            }
+        }
+        return create(internalMap);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -366,33 +366,36 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the size of the set of units in this period.
+     * Gets the number of fields.
      * <p>
-     * This returns the number of different units that are stored.
+     * This method returns the number of stored {@code PeriodField} instances.
      *
-     * @return number of unit-amount pairs
+     * @return number of unit-amount pairs, zero or greater
      */
     public int size() {
         return unitFieldMap.size();
     }
 
     /**
-     * Iterates through all the single-unit periods in this period.
+     * Iterates through all the fields.
      * <p>
      * This method fulfills the {@link Iterable} interface and allows looping
-     * around the contained single-unit periods using the for-each loop.
+     * around the fields using the for-each loop.
+     * The fields are returned {@link PeriodField#compareTo(PeriodField) sorted} in reverse order.
      *
-     * @return an iterator over the single-unit periods in this period, not null
+     * @return an iterator over the fields, not null
      */
     public Iterator<PeriodField> iterator() {
         return Collections.unmodifiableCollection(unitFieldMap.values()).iterator();
     }
 
     /**
-     * Checks whether this period contains an amount for the unit.
+     * Checks if this set of fields contains a field with the specified unit.
+     * <p>
+     * This method returns true one of the stored {@code PeriodField} instances has the specified unit.
      *
      * @param unit  the unit to query, null returns false
-     * @return true if the map contains an amount for the unit
+     * @return true if this contains a field with the specified unit
      */
     public boolean contains(PeriodUnit unit) {
         return unitFieldMap.containsKey(unit);
@@ -400,30 +403,30 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the period for the specified unit.
+     * Gets the stored field for the specified unit.
      * <p>
-     * This method allows the period to be queried by unit, like a map.
-     * If the unit is not found then {@code null} is returned.
+     * This method queries the stored {@code PeriodField} instances by unit.
+     * If no field is found with the specified unit then null is returned.
      *
      * @param unit  the unit to query, not null
-     * @return the period, null if no period stored for the unit
+     * @return the field with the specified unit, null if not found
      */
-    public PeriodField get(PeriodUnit unit) {
+    public PeriodField getField(PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
         return unitFieldMap.get(unit);
     }
 
     /**
-     * Gets the amount of this period for the specified unit.
+     * Gets the amount for the specified unit.
      * <p>
-     * This method allows the amount to be queried by unit, like a map.
-     * If the unit is not found then zero is returned.
+     * This method queries the stored {@code PeriodField} instances by unit returning the amount.
+     * If no field is found with the specified unit then zero is returned.
      *
      * @param unit  the unit to query, not null
-     * @return the period amount, 0 if no period stored for the unit
+     * @return the amount from the field with the specified unit, zero if not found
      */
     public long getAmount(PeriodUnit unit) {
-        PeriodField field = get(unit);
+        PeriodField field = getField(unit);
         if (field == null) {
             return 0;
         }
@@ -431,18 +434,17 @@ public final class PeriodFields
     }
 
     /**
-     * Gets the amount of this period for the specified unit converted
-     * to an {@code int}.
+     * Gets the amount for the specified unit converted to an {@code int}.
      * <p>
-     * This method allows the amount to be queried by unit, like a map.
-     * If the unit is not found then zero is returned.
+     * This method queries the stored {@code PeriodField} instances by unit returning the amount.
+     * If no field is found with the specified unit then zero is returned.
      *
      * @param unit  the unit to query, not null
-     * @return the period amount, 0 if no period stored for the unit
+     * @return the amount from the field with the specified unit, zero if not found
      * @throws ArithmeticException if the amount is too large to be returned in an int
      */
     public int getAmountInt(PeriodUnit unit) {
-        PeriodField field = get(unit);
+        PeriodField field = getField(unit);
         if (field == null) {
             return 0;
         }
@@ -472,19 +474,19 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this period with the specified amount for the unit.
+     * Returns a copy of these fields with the specified unit and amount.
      * <p>
-     * If this period already contains an amount for the unit then the amount
-     * is replaced. Otherwise, the unit-amount pair is added.
+     * The result is the set of fields in this instance with the specified field
+     * merged as though using {@code Map.put} with the unit and amount.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount to store in terms of the unit, positive or negative
-     * @param unit  the unit to store not null
-     * @return a {@code PeriodFields} based on this period with the specified period overlaid, not null
+     * @param amount  the amount to set in the result, positive or negative
+     * @param unit  the unit to set in the result, not null
+     * @return a {@code PeriodFields} based on this fields with the specified field set, not null
      */
     public PeriodFields with(long amount, PeriodUnit unit) {
-        PeriodField existing = get(unit);
+        PeriodField existing = getField(unit);
         if (existing != null && existing.getAmount() == amount) {
             return this;
         }
@@ -522,15 +524,15 @@ public final class PeriodFields
     }
 
     /**
-     * Returns a copy of this period with the specified unit removed.
+     * Returns a copy of these fields with the specified unit removed.
      * <p>
-     * If this period already contains an amount for the unit then the amount
-     * is removed. Otherwise, no action occurs.
+     * The result is the set of fields in this instance with the specified unit removed.
+     * No error occurs if the unit is not present.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param unit  the unit to remove, not null
-     * @return a {@code PeriodFields} based on this period with the specified unit removed, not null
+     * @param unit  the unit to remove from the result, not null
+     * @return a {@code PeriodFields} based on this fields with the specified unit removed, not null
      */
     public PeriodFields without(PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
@@ -848,7 +850,7 @@ public final class PeriodFields
         for (PeriodUnit loopUnit : unitFieldMap.keySet()) {
             for (PeriodUnit targetUnit : targetUnits) {
                 if (targetUnits.contains(loopUnit) == false) {
-                    PeriodField converted = targetUnit.convertEquivalent(result.get(loopUnit));
+                    PeriodField converted = targetUnit.convertEquivalent(result.getField(loopUnit));
                     if (converted != null) {
                         result = result.plus(converted).without(loopUnit);
                         break;
