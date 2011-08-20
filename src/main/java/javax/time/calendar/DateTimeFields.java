@@ -218,7 +218,7 @@ public final class DateTimeFields
     /**
      * Gets the number of fields.
      * <p>
-     * This method returns the number of rule-value pairs stored.
+     * This method returns the number of stored {@code DateTimeField} instances.
      *
      * @return number of rule-value pairs, zero or greater
      */
@@ -239,14 +239,13 @@ public final class DateTimeFields
         return Collections.unmodifiableCollection(fields).iterator();
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Checks if one of the stored fields is for the specified rule.
+     * Checks if this set of fields contains a field with the specified rule.
      * <p>
-     * This method returns true if a value can be obtained for the specified rule.
+     * This method returns true one of the stored {@code DateTimeField} instances has the specified rule.
      *
      * @param rule  the rule to query, null returns false
-     * @return true if these fields contain the rule
+     * @return true if this contains a field with the specified rule
      */
     public boolean contains(DateTimeRule rule) {
         for (DateTimeField field : fields) {
@@ -257,11 +256,13 @@ public final class DateTimeFields
         return false;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Gets one of the stored fields given a rule.
+     * Gets the stored field for the specified rule.
      * <p>
+     * This method queries the stored {@code DateTimeField} instances by rule.
+     * If no field is found with the specified rule then null is returned.
      * No attempt is made to derive values.
-     * The result will be one of the stored fields or null if the rule is not present.
      *
      * @param rule  the rule to query, not null
      * @return the field with the specified rule, null if not found
@@ -279,15 +280,16 @@ public final class DateTimeFields
     /**
      * Gets the value for the specified rule.
      * <p>
-     * This class permits the value of each field to be invalid.
+     * This method queries the stored {@code DateTimeField} instances by rule returning the value.
+     * If no field is found with the specified unit then an exception is thrown.
+     * No attempt is made to derive values.
+     * <p>
+     * This method does not check that the value is within the valid range of the rule.
      * For example, it is possible to store '[MonthOfYear 13]' or '[DayOfMonth -121]'.
      * Care must therefore be taken when interpreting the values.
-     * <p>
-     * No attempt is made to derive values.
-     * The result is simply based on the content of the stored field.
-     * If there is no field for the rule then an exception is thrown.
      *
-     * @return the value of the rule, may be outside the valid range for the rule
+     * @param rule  the rule to query, not null
+     * @return the value from the field with the specified rule, may be outside the valid range for the rule
      * @throws CalendricalException if the field is not present
      */
     public long getValue(DateTimeRule rule) {
@@ -301,16 +303,17 @@ public final class DateTimeFields
     /**
      * Gets the value for the specified rule ensuring it is valid.
      * <p>
-     * This checks that the value is within the valid range of the rule.
+     * This method queries the stored {@code DateTimeField} instances by rule returning the value.
+     * If no field is found with the specified unit then an exception is thrown.
+     * No attempt is made to derive values.
+     * <p>
+     * This method checks that the value is within the valid range of the rule.
      * This method considers the rule in isolation, thus only the
      * outer minimum and maximum range for the field is validated.
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
-     * <p>
-     * No attempt is made to derive values.
-     * The result is simply based on the content of the stored field.
-     * If there is no field for the rule then an exception is thrown.
      *
-     * @return the value of the rule, checked to ensure it is valid
+     * @param rule  the rule to query, not null
+     * @return the value from the field with the specified rule, checked to ensure it is valid
      * @throws CalendricalException if the field is not present or is invalid
      */
     public long getValidValue(DateTimeRule rule) {
@@ -322,17 +325,17 @@ public final class DateTimeFields
     /**
      * Gets the value for the specified rule as an {@code int} ensuring it is valid for the rule.
      * <p>
+     * This method queries the stored {@code DateTimeField} instances by rule returning the value.
+     * If no field is found with the specified unit then an exception is thrown.
+     * No attempt is made to derive values.
+     * <p>
      * This checks that the value is within the valid range of the rule and
      * that all valid values are within the bounds of an {@code int}.
      * This method considers the rule in isolation, thus only the
      * outer minimum and maximum range for the field is validated.
      * For example, 'DayOfMonth' has the outer value-range of 1 to 31.
-     * <p>
-     * No attempt is made to derive values.
-     * The result is simply based on the content of the stored field.
-     * If there is no field for the rule then an exception is thrown.
      *
-     * @return the value of the rule, checked to ensure it is valid and fits in an {@code int}
+     * @return the value from the field with the specified rule, checked to ensure it is valid and fits in an {@code int}
      * @throws CalendricalException if the field is not present, invalid or does not fit in an {@code int}
      */
     public int getValidIntValue(DateTimeRule rule) {
@@ -343,16 +346,16 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of these fields with the specified field set.
+     * Returns a copy of these fields with the specified rule and value.
      * <p>
-     * This replaces the value of the rule if the rule is present,
-     * or adds the field if the rule is not present.
+     * The result is the set of fields in this instance with the specified field
+     * merged as though using {@code Map.put} with the rule and value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param rule  the rule to alter, not null
-     * @param value  the value to use, may be outside the valid range for the rule
-     * @return a {@code DateTimeFields} based on this fields with the specified field updated, not null
+     * @param rule  the rule to set in the result, not null
+     * @param value  the value to set in the result, may be outside the valid range for the rule
+     * @return a {@code DateTimeFields} based on this fields with the specified field set, not null
      */
     public DateTimeFields with(DateTimeRule rule, long value) {
         return with(DateTimeField.of(rule, value));
@@ -361,13 +364,13 @@ public final class DateTimeFields
     /**
      * Returns a copy of these fields with the specified field set.
      * <p>
-     * This replaces the value of the rule if the rule is present,
-     * or adds the field if the rule is not present.
+     * The result is the set of fields in this instance with the specified field
+     * merged as though using {@code Map.put} with the rule and value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to update in the returned object, not null
-     * @return a {@code DateTimeFields} based on this fields with the specified field updated, not null
+     * @param field  the field to set in the result, not null
+     * @return a {@code DateTimeFields} based on this fields with the specified field set, not null
      */
     public DateTimeFields with(DateTimeField field) {
         ISOChronology.checkNotNull(fields, "DateTimeField must not be null");
@@ -389,14 +392,14 @@ public final class DateTimeFields
     }
 
     /**
-     * Returns a copy of these fields with the specified field removed.
+     * Returns a copy of these fields with the specified rule removed.
      * <p>
-     * This removes the specified rule from those in the returned fields.
+     * The result is the set of fields in this instance with the specified rule removed.
      * No error occurs if the rule is not present.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param rule  the field to remove from the returned fields, not null
+     * @param rule  the rule to remove from the result, not null
      * @return a {@code DateTimeFields} based on this fields with the specified rule removed, not null
      */
     public DateTimeFields without(DateTimeRule rule) {
