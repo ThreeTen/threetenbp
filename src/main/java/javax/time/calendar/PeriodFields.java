@@ -999,7 +999,7 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a {@code Map} equivalent to this period.
+     * Returns a {@code Map} equivalent to this set of fields.
      * <p>
      * The map will connect the unit to the single field period.
      * The sort order is from largest unit to smallest unit.
@@ -1022,12 +1022,12 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this set of period fields is equal to another set of period fields.
+     * Checks if this set of fields is equal to another set of fields.
      * <p>
      * The comparison is based on the complete set of fields.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other set of period fields 
+     * @return true if this is equal to the other set of fields
      */
     @Override
     public boolean equals(Object obj) {
@@ -1042,7 +1042,7 @@ public final class PeriodFields
     }
 
     /**
-     * A hash code for this period.
+     * A hash code for this set of fields.
      *
      * @return a suitable hash code
      */
@@ -1053,7 +1053,7 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs this set of period fields as a {@code String}, such as {@code [6 Days, 13 Hours]}.
+     * Outputs this set of fields as a {@code String}, such as {@code [6 Days, 13 Hours]}.
      * <p>
      * The output will include of the complete set of fields.
      *

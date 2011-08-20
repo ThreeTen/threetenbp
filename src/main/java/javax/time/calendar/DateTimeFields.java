@@ -471,7 +471,7 @@ public final class DateTimeFields
      * The comparison is based on the complete set of fields.
      *
      * @param obj  the object to check, null returns false
-     * @return true if this is equal to the other fields
+     * @return true if this is equal to the other set of fields
      */
     @Override
     public boolean equals(Object obj) {
