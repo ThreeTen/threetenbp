@@ -49,8 +49,8 @@ enum CaseSensitivePrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
-        // do nothing
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
+        return true;  // nothing to do here
     }
 
     /** {@inheritDoc} */

@@ -59,6 +59,10 @@ public final class DateTimePrintContext {
      * The date time format symbols, not null.
      */
     private DateTimeFormatSymbols symbols;
+    /**
+     * Whether the current formatter is optional.
+     */
+    private int optional;
 
     /**
      * Constructor.
@@ -92,6 +96,7 @@ public final class DateTimePrintContext {
         this.calendrical = calendrical;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the formatting symbols.
      *
@@ -111,18 +116,6 @@ public final class DateTimePrintContext {
         this.symbols = symbols;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified rule checking it is non-null.
-     *
-     * @param rule  the rue to find, not null
-     * @return the value, not null
-     * @throws CalendricalException if the rule is not available
-     */
-    public <T> T getValueChecked(CalendricalRule<T> rule) {
-        return rule.getValueChecked(calendrical);
-    }
-
     /**
      * Gets the locale to use for printing and parsing text.
      *
@@ -130,6 +123,38 @@ public final class DateTimePrintContext {
      */
     public Locale getLocale() {
         return symbols.getLocale();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Starts the printing of an optional segment of the input.
+     */
+    void startOptional() {
+        this.optional++;
+    }
+
+    /**
+     * Ends the printing of an optional segment of the input.
+     */
+    void endOptional() {
+        this.optional--;
+    }
+
+    /**
+     * Gets the value of the specified rule.
+     * <p>
+     * This will return the value for the specified rule.
+     *
+     * @param rule  the rue to find, not null
+     * @return the value, null if not found and optional is true
+     * @throws CalendricalException if the rule is not available and optional is false
+     */
+    public <T> T getValue(CalendricalRule<T> rule) {
+        if (optional > 0) {
+            return rule.getValue(calendrical);
+        } else {
+            return rule.getValueChecked(calendrical);
+        }
     }
 
     //-----------------------------------------------------------------------

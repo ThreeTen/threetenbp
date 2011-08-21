@@ -82,8 +82,11 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
-        ZoneOffset offset = context.getValueChecked(ZoneOffset.rule());
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
+        ZoneOffset offset = context.getValue(ZoneOffset.rule());
+        if (offset == null) {
+            return false;
+        }
         int totalSecs = offset.getAmountSeconds();
         if (totalSecs == 0) {
             buf.append(noOffsetText);
@@ -104,6 +107,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
                 }
             }
         }
+        return true;
     }
 
     //-----------------------------------------------------------------------

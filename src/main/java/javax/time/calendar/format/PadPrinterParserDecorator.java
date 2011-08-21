@@ -31,7 +31,6 @@
  */
 package javax.time.calendar.format;
 
-
 /**
  * Pads the output to a fixed width.
  * <p>
@@ -76,9 +75,11 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
         int preLen = buf.length();
-        printer.print(context, buf);
+        if (printer.print(context, buf) == false) {
+            return false;
+        }
         int len = buf.length() - preLen;
         if (len > padWidth) {
             throw new CalendricalPrintException(
@@ -87,6 +88,7 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
         for (int i = 0; i < padWidth - len; i++) {
             buf.insert(preLen, padChar);
         }
+        return true;
     }
 
     //-----------------------------------------------------------------------

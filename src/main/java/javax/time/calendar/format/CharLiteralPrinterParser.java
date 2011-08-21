@@ -56,8 +56,9 @@ final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser 
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
         buf.append(literal);
+        return true;
     }
 
     /** {@inheritDoc} */

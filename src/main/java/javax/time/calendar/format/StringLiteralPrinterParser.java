@@ -57,8 +57,9 @@ final class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParse
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
         buf.append(literal);
+        return true;
     }
 
     //-----------------------------------------------------------------------

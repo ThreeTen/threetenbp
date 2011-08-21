@@ -58,8 +58,9 @@ public interface DateTimePrinter {
      *
      * @param context  the context to print using, not null
      * @param buf  the buffer to append to, not null
+     * @return false if unable to query the value from the calendrical, true otherwise
      * @throws CalendricalException if the calendrical cannot be printed successfully
      */
-    void print(DateTimePrintContext context, StringBuilder buf);
+    boolean print(DateTimePrintContext context, StringBuilder buf);
 
 }

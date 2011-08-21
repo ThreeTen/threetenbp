@@ -34,8 +34,6 @@ package javax.time.calendar.format;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.time.CalendricalException;
-
 /**
  * Composite printer and parser.
  * <p>
@@ -92,25 +90,27 @@ final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
         if (printers == null) {
             throw new UnsupportedOperationException("Formatter does not support printing");
         }
+        int length = buf.length();
         if (optional) {
-            int length = buf.length();
-            try {
-                for (DateTimePrinter printer : printers) {
-                    printer.print(context, buf);
-                }
-            } catch (CalendricalException ex) {
-                buf.setLength(length);  // reset buffer
-                return;
-            }
-        } else {
+            context.startOptional();
+        }
+        try {
             for (DateTimePrinter printer : printers) {
-                printer.print(context, buf);
+                if (printer.print(context, buf) == false) {
+                    buf.setLength(length);  // reset buffer
+                    return true;
+                }
+            }
+        } finally {
+            if (optional) {
+                context.endOptional();
             }
         }
+        return true;
     }
 
     //-----------------------------------------------------------------------

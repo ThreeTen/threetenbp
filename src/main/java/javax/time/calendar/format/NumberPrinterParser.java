@@ -33,6 +33,7 @@ package javax.time.calendar.format;
 
 import java.math.BigInteger;
 
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
@@ -129,8 +130,12 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
-        long value = getValue(context);
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
+        DateTimeField field = context.getValue(rule);
+        if (field == null) {
+            return false;
+        }
+        long value = getValue(field);
         DateTimeFormatSymbols symbols = context.getSymbols();
         String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
@@ -168,16 +173,17 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             buf.append(symbols.getZeroDigit());
         }
         buf.append(str);
+        return true;
     }
 
     /**
      * Gets the value to output.
      * 
-     * @param context  the context, not null
+     * @param field  the field, not null
      * @return the value
      */
-    long getValue(DateTimePrintContext context) {
-        return context.getValueChecked(rule).getValue();
+    long getValue(DateTimeField field) {
+        return field.getValue();
     }
 
     //-----------------------------------------------------------------------

@@ -78,13 +78,17 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
-        ZoneId zone = context.getValueChecked(ZoneId.rule());
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
+        ZoneId zone = context.getValue(ZoneId.rule());
+        if (zone == null) {
+            return false;
+        }
         if (textStyle == null) {
             buf.append(zone.getID());
         } else {
             buf.append(zone.getText(textStyle, context.getLocale()));  // TODO: Use symbols
         }
+        return true;
     }
 
     //-----------------------------------------------------------------------

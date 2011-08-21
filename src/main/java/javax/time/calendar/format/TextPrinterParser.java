@@ -76,14 +76,17 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(DateTimePrintContext context, StringBuilder buf) {
-        DateTimeField field = context.getValueChecked(rule);
-        String text = new SimpleDateTimeTextProvider().getText(field, textStyle, context.getLocale());
-        if (text != null) {
-            buf.append(text);
-        } else {
-            numberPrinterParser().print(context, buf);
+    public boolean print(DateTimePrintContext context, StringBuilder buf) {
+        DateTimeField field = context.getValue(rule);
+        if (field == null) {
+            return false;
         }
+        String text = new SimpleDateTimeTextProvider().getText(field, textStyle, context.getLocale());
+        if (text == null) {
+            return numberPrinterParser().print(context, buf);
+        }
+        buf.append(text);
+        return true;
     }
 
     /** {@inheritDoc} */
