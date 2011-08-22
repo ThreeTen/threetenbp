@@ -187,7 +187,7 @@ public final class DateTimeParseContext {
     /**
      * Starts the parsing of an optional segment of the input.
      */
-    public void startOptional() {
+    void startOptional() {
         calendricals.add(currentCalendrical().clone());
     }
 
@@ -196,7 +196,7 @@ public final class DateTimeParseContext {
      *
      * @param successful  whether the optional segment was successfully parsed
      */
-    public void endOptional(boolean successful) {
+    void endOptional(boolean successful) {
         if (successful) {
             calendricals.remove(calendricals.size() - 2);
         } else {
