@@ -191,7 +191,7 @@ public abstract class PeriodUnit
      * <p>
      * One key use for the estimated duration is to implement {@link Comparable}.
      *
-     * @return the estimate of the duration in seconds, not null
+     * @return the estimate of the duration, not null
      */
     public Duration getDurationEstimate() {
         return durationEstimate;
