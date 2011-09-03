@@ -1193,14 +1193,13 @@ public final class Period
      * Days are not normalized, as a day may vary in length at daylight savings cutover.
      * For example, a period of {@code P1Y15M1DT28H61M} will be normalized to {@code P2Y3M1DT29H1M}.
      * <p>
-     * Note that this method normalizes using assumptions:
+     * Note that this method normalizes using ISO-8601:
      * <ul>
      * <li>12 months in a year</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1239,7 +1238,7 @@ public final class Period
      * days, hours, minutes, seconds and nanoseconds.
      * For example, a period of {@code P1Y15M1DT28H} will be normalized to {@code P2Y3M2DT4H}.
      * <p>
-     * Note that this method normalizes using assumptions:
+     * Note that this method normalizes using ISO-8601:
      * <ul>
      * <li>12 months in a year</li>
      * <li>24 hours in a day</li>
@@ -1247,7 +1246,6 @@ public final class Period
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1285,11 +1283,10 @@ public final class Period
      * assumptions for the meaning of month.
      * <p>
      * This method ignores days, hours, minutes, seconds and nanos.
-     * It calculates using the assumption:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>12 months in a year</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of years
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
@@ -1303,11 +1300,10 @@ public final class Period
      * assumptions for the meaning of month.
      * <p>
      * This method ignores days, hours, minutes, seconds and nanos.
-     * It calculates using the assumption:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>12 months in a year</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of years
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
@@ -1322,14 +1318,13 @@ public final class Period
      * assumptions for the meaning of day, hour, minute and second.
      * <p>
      * This method ignores years and months.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of days
      */
@@ -1346,13 +1341,12 @@ public final class Period
      * assumptions for the meaning of hour, minute and second.
      * <p>
      * This method ignores years, months and days.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of hours
      */
@@ -1368,14 +1362,13 @@ public final class Period
      * assumptions for the meaning of day, hour, minute and second.
      * <p>
      * This method ignores years and months.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of hours
      */
@@ -1392,13 +1385,12 @@ public final class Period
      * assumptions for the meaning of hour, minute and second.
      * <p>
      * This method ignores years, months and days.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of minutes
      */
@@ -1414,14 +1406,13 @@ public final class Period
      * assumptions for the meaning of day, hour, minute and second.
      * <p>
      * This method ignores years and months.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of minutes
      */
@@ -1438,13 +1429,12 @@ public final class Period
      * assumptions for the meaning of hour, minute and second.
      * <p>
      * This method ignores years, months and days.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of seconds
      */
@@ -1460,14 +1450,13 @@ public final class Period
      * assumptions for the meaning of day, hour, minute and second.
      * <p>
      * This method ignores years and months.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of seconds
      */
@@ -1484,13 +1473,12 @@ public final class Period
      * assumptions for the meaning of hour, minute and second.
      * <p>
      * This method ignores years, months and days.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of nanoseconds
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
@@ -1509,14 +1497,13 @@ public final class Period
      * assumptions for the meaning of day, hour, minute and second.
      * <p>
      * This method ignores years and months.
-     * It calculates using assumptions:
+     * It calculates using ISO-8601:
      * <ul>
      * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return the total number of nanoseconds
      * @throws ArithmeticException if the capacity of a {@code long} is exceeded
@@ -1589,13 +1576,12 @@ public final class Period
      * The calculation uses the hours, minutes, seconds and nanoseconds fields.
      * If years, months or days are present an exception is thrown.
      * <p>
-     * The duration is calculated using assumptions:
+     * The duration is calculated using ISO-8601:
      * <ul>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return a {@code Duration} equivalent to this period, not null
      * @throws CalendricalException if the period cannot be converted as it contains years/months/days
@@ -1614,14 +1600,13 @@ public final class Period
      * The calculation uses the days, hours, minutes, seconds and nanoseconds fields.
      * If years or months are present an exception is thrown.
      * <p>
-     * The duration is calculated using assumptions:
+     * The duration is calculated using ISO-8601:
      * <ul>
      * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
-     * This method is only appropriate to call if these assumptions are met.
      *
      * @return a {@code Duration} equivalent to this period, not null
      * @throws CalendricalException if the period cannot be converted as it contains years/months/days
