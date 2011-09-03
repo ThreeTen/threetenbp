@@ -1599,6 +1599,22 @@ public class TestPeriod {
         assertSame(Period.ZERO.normalized(), Period.ZERO);
     }
 
+    public void test_normalized_bigNanos() {
+        Period big = Period.of(1, 2, 3, 4, 5, 6, Long.MAX_VALUE);
+        long total = Long.MAX_VALUE;
+        long nanos = total % 1000000000L;
+        total = total / 1000000000L + 6;
+        int secs = (int) (total % 60);
+        total = total / 60 + 5;
+        int mins = (int) (total % 60);
+        total = total / 60 + 4;
+        if (total > Integer.MAX_VALUE) {
+            throw new AssertionError("Bad test");
+        }
+        int hours = (int) total;
+        assertPeriod(big.normalized(), 1, 2, 3, hours, mins, secs, nanos);
+    }
+
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_normalized_max() {
         Period base = Period.of(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE,
@@ -1680,6 +1696,24 @@ public class TestPeriod {
 
     public void test_normalizedWith24HourDays_zero() {
         assertSame(Period.ZERO.normalizedWith24HourDays(), Period.ZERO);
+    }
+
+    public void test_normalizedWith24HourDays_bigNanos() {
+        Period big = Period.of(1, 2, 3, 4, 5, 6, Long.MAX_VALUE);
+        long total = Long.MAX_VALUE;
+        long nanos = total % 1000000000L;
+        total = total / 1000000000L + 6;
+        int secs = (int) (total % 60);
+        total = total / 60 + 5;
+        int mins = (int) (total % 60);
+        total = total / 60 + 4;
+        int hours = (int) (total % 24);
+        total = total / 24 + 3;
+        if (total > Integer.MAX_VALUE) {
+            throw new AssertionError("Bad test");
+        }
+        int days = (int) total;
+        assertPeriod(big.normalizedWith24HourDays(), 1, 2, days, hours, mins, secs, nanos);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
@@ -2445,13 +2479,13 @@ public class TestPeriod {
 
     //-----------------------------------------------------------------------
     private void assertPeriod(Period test, int y, int mo, int d, int h, int mn, int s, long n) {
-        assertEquals(test.getYears(), y);
-        assertEquals(test.getMonths(), mo);
-        assertEquals(test.getDays(), d);
-        assertEquals(test.getHours(), h);
-        assertEquals(test.getMinutes(), mn);
-        assertEquals(test.getSeconds(), s);
-        assertEquals(test.getNanos(), n);
+        assertEquals(test.getYears(), y, "years");
+        assertEquals(test.getMonths(), mo, "months");
+        assertEquals(test.getDays(), d, "days");
+        assertEquals(test.getHours(), h, "hours");
+        assertEquals(test.getMinutes(), mn, "mins");
+        assertEquals(test.getSeconds(), s, "secs");
+        assertEquals(test.getNanos(), n, "nanos");
     }
 
 }

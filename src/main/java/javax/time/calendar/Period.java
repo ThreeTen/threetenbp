@@ -1212,11 +1212,9 @@ public final class Period
         }
         int years = MathUtils.safeAdd(this.years, MathUtils.floorDiv(this.months, 12));
         int months = MathUtils.floorMod(this.months, 12);
-        long total = (hours * 60L * 60L) + (minutes * 60L) + seconds;  // safe from overflow
-        total = MathUtils.safeMultiply(total, 1000000000);
-        total = MathUtils.safeAdd(total, nanos);
-        long nanos = MathUtils.floorMod(total, 1000000000L);
-        total  = MathUtils.floorDiv(total, 1000000000L);
+        long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
+        long nanos = MathUtils.floorMod(this.nanos, 1000000000L);
+        total += MathUtils.floorDiv(this.nanos, 1000000000L);  // safe from overflow
         int seconds = MathUtils.floorMod(total, 60);
         total  = MathUtils.floorDiv(total, 60);
         int minutes = MathUtils.floorMod(total, 60);
@@ -1254,11 +1252,9 @@ public final class Period
         }
         int years = MathUtils.safeAdd(this.years, MathUtils.floorDiv(this.months, 12));
         int months = MathUtils.floorMod(this.months, 12);
-        long total = (hours * 60L * 60L) + (minutes * 60L) + seconds;  // safe from overflow
-        total = MathUtils.safeMultiply(total, 1000000000);
-        total = MathUtils.safeAdd(total, nanos);
-        long nanos = MathUtils.floorMod(total, 1000000000L);
-        total  = MathUtils.floorDiv(total, 1000000000L);
+        long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
+        long nanos = MathUtils.floorMod(this.nanos, 1000000000L);
+        total += MathUtils.floorDiv(this.nanos, 1000000000L);  // safe from overflow
         int seconds = MathUtils.floorMod(total, 60);
         total  = MathUtils.floorDiv(total, 60);
         int minutes = MathUtils.floorMod(total, 60);
