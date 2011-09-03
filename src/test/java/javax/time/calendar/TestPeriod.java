@@ -1533,7 +1533,6 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     // normalized()
     //-----------------------------------------------------------------------
-    // TODO: Test negatives
     public void test_normalized() {
         assertPeriod(Period.of(1, 2, 3, 4, 5, 6, 7).normalized(), 1, 2, 3, 4, 5, 6, 7);
     }
@@ -1543,6 +1542,8 @@ public class TestPeriod {
         assertPeriod(Period.of(1, 12, 3, 4, 5, 6).normalized(), 2, 0, 3, 4, 5, 6, 0);
         assertPeriod(Period.of(1, 23, 3, 4, 5, 6).normalized(), 2, 11, 3, 4, 5, 6, 0);
         assertPeriod(Period.of(1, 24, 3, 4, 5, 6).normalized(), 3, 0, 3, 4, 5, 6, 0);
+        
+        assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalized(), 2, 10, 3, 4, 5, 6, 0);
     }
 
     public void test_normalized_nanos() {
@@ -1557,6 +1558,8 @@ public class TestPeriod {
         
         assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 999999999).normalized(), 1, 2, 3, 23, 59, 59, 999999999);
         assertPeriod(Period.of(1, 2, 3, 23, 59, 59, 1000000000).normalized(), 1, 2, 3, 24, 0, 0, 0);
+        
+        assertPeriod(Period.of(1, 2, 3, 0, 1, 0, -1).normalized(), 1, 2, 3, 0, 0, 59, 999999999);
     }
 
     public void test_normalized_seconds() {
@@ -1570,6 +1573,8 @@ public class TestPeriod {
         
         assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalized(), 1, 2, 3, 23, 59, 59, 0);
         assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalized(), 1, 2, 3, 24, 0, 0, 0);
+        
+        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalized(), 1, 2, 3, -1, 59, 59, 0);
     }
 
     public void test_normalized_minutes() {
@@ -1580,6 +1585,9 @@ public class TestPeriod {
         
         assertPeriod(Period.of(1, 2, 3, 23, 59, 6).normalized(), 1, 2, 3, 23, 59, 6, 0);
         assertPeriod(Period.of(1, 2, 3, 23, 60, 6).normalized(), 1, 2, 3, 24, 0, 6, 0);
+        
+        assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalized(), 1, 2, 3, 22, 59, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalized(), 1, 2, 3, 23, 0, 0, 0);
     }
 
     public void test_normalized_hours() {
@@ -1610,6 +1618,8 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     public void test_normalizedWith24HourDays() {
         assertPeriod(Period.of(1, 2, 3, 4, 5, 6).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 6, 0);
+        
+        assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 10, 3, 4, 5, 6, 0);
     }
 
     public void test_normalizedWith24HourDays_months() {
@@ -1644,6 +1654,8 @@ public class TestPeriod {
         
         assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 59, 0);
         assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 0, 0);
+        
+        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalizedWith24HourDays(), 1, 2, 2, 23, 59, 59, 0);
     }
 
     public void test_normalizedWith24HourDays_minutes() {
@@ -1654,6 +1666,9 @@ public class TestPeriod {
         
         assertPeriod(Period.of(1, 2, 3, 23, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 6, 0);
         assertPeriod(Period.of(1, 2, 3, 23, 60, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 6, 0);
+        
+        assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalizedWith24HourDays(), 1, 2, 3, 22, 59, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalizedWith24HourDays(), 1, 2, 3, 23, 0, 0, 0);
     }
 
     public void test_normalizedWith24HourDays_hours() {
