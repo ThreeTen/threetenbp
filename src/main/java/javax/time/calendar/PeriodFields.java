@@ -45,6 +45,7 @@ import java.util.TreeSet;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
+import javax.time.MathUtils;
 
 /**
  * A period of time measured using a number of different units,
@@ -800,15 +801,10 @@ public final class PeriodFields
     /**
      * Returns a copy of this period with the amounts normalized.
      * <p>
-     * The calculation examines each pair of units in this period that have a fixed conversion factor.
-     * Each pair is adjusted so that the amount in the smaller unit does not exceed
-     * the amount of the fixed conversion factor.
-     * <p>
-     * For example, a period of '2 Years, 17 Months, 3 Hours, 61 Minutes' will normalized
-     * based on two pairs, 'Years'/'Months' and 'Hours'/'Minutes'.
-     * <p>
-     * The result will always contain all the units present in this period, even if they are zero.
-     * The result will be equivalent to this period.
+     * This will normalize the period around the units in this period.
+     * For example, a period of '2 Years, 14 Months, 6 Hours, -7 Minutes' will
+     * be normalized to '3 Years, 2 Months, 5 Hours, 53 Minutes'.
+     * See {@link #normalizedTo} for details of the algorithm.
      *
      * @return a period equivalent to this period with the amounts normalized, not null
      * @throws ArithmeticException if the calculation overflows
@@ -821,17 +817,24 @@ public final class PeriodFields
      * Returns a copy of this period with the amounts normalized to the specified units.
      * <p>
      * This will normalize the period around the specified units.
-     * The calculation examines each pair of units that have a fixed conversion factor.
-     * Each pair is adjusted so that the amount in the smaller unit does not exceed
-     * the amount of the fixed conversion factor.
-     * At least one unit must be specified for this method to have any effect.
+     * The calculation normalizes amounts within groups of units that share a common base unit.
+     * For example, hours, minutes and seconds share a base unit or nanoseconds, while
+     * years and months share a base unit of months. Thus, normalization will occur between
+     * hours and minutes, but not between hours and months.
      * <p>
+     * Normalization ensures that within any group of units with a common base, the smaller
+     * units will all have values between zero and that of the next larger unit.
      * For example, a period of '2 Decades, 2 Years, 17 Months' normalized using
-     * 'Years' and 'Months' will return '23 Years, 5 Months'.
+     * 'Years' and 'Months' will return '23 Years, 5 Months', because months must be between
+     * 0 and 11 (inclusive).
      * <p>
+     * After this method completes, negative values will have been moved to the largest
+     * unit in the group. For example, a period of '6 Hours, -7 Minutes' normalized using
+     * 'Hours' and 'Minutes' will return '5 Hours, 53 Minutes'.
+     * <p>
+     * At least one unit must be specified for this method to make any changes.
      * Any part of this period that cannot be converted to one of the specified units
      * will be unaffected in the result.
-     * <p>
      * The result will always contain all the specified units, even if they are zero.
      * The result will be equivalent to this period.
      *
@@ -874,8 +877,10 @@ public final class PeriodFields
                         long conversion = targetUnit.toEquivalent(loopUnit);
                         if (conversion >= 0) {
                             long amount = result.getAmount(loopUnit);
-                            if (amount >= conversion || amount <= -conversion) {
-                                result = result.with(amount % conversion, loopUnit).plus(amount / conversion, targetUnit);
+                            if (amount >= conversion || amount < 0) {
+                                result = result
+                                    .with(MathUtils.floorMod(amount, conversion), loopUnit)
+                                    .plus(MathUtils.floorDiv(amount, conversion), targetUnit);
                                 process = (units.length > 2);  // need to re-check from start
                             }
                         }
