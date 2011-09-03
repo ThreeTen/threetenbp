@@ -95,6 +95,10 @@ public final class ZoneOffset
      */
     private static final int MINUTES_PER_HOUR = 60;
     /**
+     * The abs maximum seconds.
+     */
+    private static final int MAX_SECONDS = 18 * SECONDS_PER_HOUR;
+    /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
@@ -271,11 +275,10 @@ public final class ZoneOffset
     /**
      * Obtains an instance of {@code ZoneOffset} from a period.
      * <p>
-     * This creates an offset from the specified period, converting using
-     * {@link Period#of(PeriodProvider)}.
-     * Only the hour, minute and second fields from the period are used - other fields are ignored.
-     * The sign of the hours, minutes and seconds components must match.
-     * Thus, if the hours is negative, the minutes and seconds must be negative or zero.
+     * This creates an offset from the specified period.
+     * The calculation is equivalent to using {@link Period#of(PeriodProvider)} and
+     * {@link Period#totalSeconds()} to obtain the total seconds of the offset.
+     * Fields such as years, months and days are ignored.
      *
      * @param periodProvider  the period to use, not null
      * @return the ZoneOffset, not null
@@ -284,7 +287,11 @@ public final class ZoneOffset
      */
     public static ZoneOffset of(PeriodProvider periodProvider) {
         Period period = Period.of(periodProvider);
-        return ofHoursMinutesSeconds(period.getHours(), period.getMinutes(), period.getSeconds());
+        long totalSeconds = period.totalSeconds();
+        if (Math.abs(totalSeconds) > MAX_SECONDS) {
+            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
+        }
+        return ofTotalSeconds((int) totalSeconds);
     }
 
     //-----------------------------------------------------------------------
@@ -328,11 +335,11 @@ public final class ZoneOffset
             throw new IllegalArgumentException("Zone offset minutes and seconds must have the same sign");
         }
         if (Math.abs(minutes) > 59) {
-            throw new IllegalArgumentException("Zone offset minutes not in valid range: value " +
+            throw new IllegalArgumentException("Zone offset minutes not in valid range: abs(value) " +
                     Math.abs(minutes) + " is not in the range 0 to 59");
         }
         if (Math.abs(seconds) > 59) {
-            throw new IllegalArgumentException("Zone offset seconds not in valid range: value " +
+            throw new IllegalArgumentException("Zone offset seconds not in valid range: abs(value) " +
                     Math.abs(seconds) + " is not in the range 0 to 59");
         }
         if (Math.abs(hours) == 18 && (Math.abs(minutes) > 0 || Math.abs(seconds) > 0)) {
@@ -363,7 +370,7 @@ public final class ZoneOffset
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset ofTotalSeconds(int totalSeconds) {
-        if (Math.abs(totalSeconds) > (18 * SECONDS_PER_HOUR)) {
+        if (Math.abs(totalSeconds) > MAX_SECONDS) {
             throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
         }
         if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
@@ -538,8 +545,8 @@ public final class ZoneOffset
     public ZoneOffset plus(PeriodProvider periodProvider) {
         Period otherPeriod = Period.of(periodProvider).withTimeFieldsOnly().withNanos(0);
         Period thisPeriod = toPeriod();
-        Period combined = thisPeriod.plus(otherPeriod).normalized();
-        return of(combined);
+        Period combined = thisPeriod.plus(otherPeriod);
+        return ZoneOffset.of(combined);
     }
 
     //-----------------------------------------------------------------------

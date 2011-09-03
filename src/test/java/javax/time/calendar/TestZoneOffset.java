@@ -335,7 +335,14 @@ public class TestZoneOffset {
     public void test_factory_of_PeriodProvider() {
         assertSame(ZoneOffset.of(PeriodFields.ZERO), ZoneOffset.UTC);
         assertEquals(ZoneOffset.of(Period.ofTimeFields(2, 30, 45)), ZoneOffset.ofHoursMinutesSeconds(2, 30, 45));
+        
         assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, 30, 45, 99)), ZoneOffset.ofHoursMinutesSeconds(2, 30, 45));
+        assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, -30, 45, 99)), ZoneOffset.ofHoursMinutesSeconds(1, 30, 45));
+        assertEquals(ZoneOffset.of(Period.of(1, 2, 3, -2, -30, 45, 99)), ZoneOffset.ofHoursMinutesSeconds(-2, -29, -15));
+        assertEquals(ZoneOffset.of(Period.of(1, 2, 3, -2, 30, 45, 99)), ZoneOffset.ofHoursMinutesSeconds(-1, -29, -15));
+        
+        assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, 64, 75, 1000000004)), ZoneOffset.ofHoursMinutesSeconds(3, 5, 16));
+        assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, -64, 75, 1000000004)), ZoneOffset.ofHoursMinutesSeconds(0, 57, 16));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
