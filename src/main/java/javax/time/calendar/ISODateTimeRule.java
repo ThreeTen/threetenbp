@@ -300,7 +300,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     case SECOND_OF_DAY_ORDINAL: return field(time.toSecondOfDay());
                     case EPOCH_SECOND_ORDINAL: {
                         if (date != null && offset != null) {
-                            field(OffsetDateTime.of(date, time, offset).toEpochSecond());
+                            return field(OffsetDateTime.of(date, time, offset).toEpochSecond());
                         }
                         break;
                     }
