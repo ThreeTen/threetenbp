@@ -59,7 +59,7 @@ import javax.time.calendar.Year;
  * ISO-8601 week based date calculation. In this system, the week-based-year
  * may begin up to three days early or three days late.
  * <p>
- * For example, 2007-01-01 is Monday, thus the the week-based-year of 2007
+ * For example, 2007-01-01 is Monday, thus the week-based-year of 2007
  * also begins on 2007-01-01. In 2008, the first day of the year is Tuesday,
  * with the Monday being in year 2007. However, the week-based-year for both
  * Monday and Tuesday is 2008.

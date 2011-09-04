@@ -611,7 +611,7 @@ public final class OffsetDateTime
      * Returns a copy of this {@code OffsetDateTime} with the specified offset ensuring
      * that the result is at the same instant.
      * <p>
-     * This method returns an object with the the specified {@code ZoneOffset} and a {@code LocalDateTime}
+     * This method returns an object with the specified {@code ZoneOffset} and a {@code LocalDateTime}
      * adjusted by the difference between the two offsets.
      * This will result in the old and new objects representing the same instant.
      * This is useful for finding the local time in a different offset.

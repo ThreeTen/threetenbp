@@ -189,7 +189,7 @@ public final class SecondOfMinute
     }
 
     /**
-     * Adjusts a time to have the the second-of-minute represented by this object,
+     * Adjusts a time to have the second-of-minute represented by this object,
      * returning a new time.
      * <p>
      * Only the second-of-minute field is adjusted in the result. The other time

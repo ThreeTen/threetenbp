@@ -189,7 +189,7 @@ public final class MinuteOfHour
     }
 
     /**
-     * Adjusts a time to have the the minute-of-hour represented by this object,
+     * Adjusts a time to have the minute-of-hour represented by this object,
      * returning a new time.
      * <p>
      * Only the minute-of-hour field is adjusted in the result. The other time

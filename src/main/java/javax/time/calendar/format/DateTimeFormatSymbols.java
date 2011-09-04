@@ -330,7 +330,7 @@ public final class DateTimeFormatSymbols {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the the minimum days in the first week.
+     * Gets the minimum days in the first week.
      * <p>
      * The minimum days in the first week may vary by culture.
      * For example, a value of one means that the first day of the new year is in the first week.

@@ -184,7 +184,7 @@ public final class NanoOfSecond
     }
 
     /**
-     * Adjusts a time to have the the nano-of-second represented by this object,
+     * Adjusts a time to have the nano-of-second represented by this object,
      * returning a new time.
      * <p>
      * Only the nano-of-second field is adjusted in the result. The other time

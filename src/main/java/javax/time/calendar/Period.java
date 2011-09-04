@@ -699,7 +699,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of years.
      * <p>
-     * This method will only affect the the years field.
+     * This method will only affect the years field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -717,7 +717,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of months.
      * <p>
-     * This method will only affect the the months field.
+     * This method will only affect the months field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -735,7 +735,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of days.
      * <p>
-     * This method will only affect the the days field.
+     * This method will only affect the days field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -753,7 +753,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of hours.
      * <p>
-     * This method will only affect the the hours field.
+     * This method will only affect the hours field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -771,7 +771,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of minutes.
      * <p>
-     * This method will only affect the the minutes field.
+     * This method will only affect the minutes field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -789,7 +789,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of seconds.
      * <p>
-     * This method will only affect the the seconds field.
+     * This method will only affect the seconds field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -807,7 +807,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of nanoseconds.
      * <p>
-     * This method will only affect the the nanoseconds field.
+     * This method will only affect the nanoseconds field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -883,7 +883,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of years added.
      * <p>
-     * This method will only affect the the years field.
+     * This method will only affect the years field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -899,7 +899,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of months added.
      * <p>
-     * This method will only affect the the months field.
+     * This method will only affect the months field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -915,7 +915,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of days added.
      * <p>
-     * This method will only affect the the days field.
+     * This method will only affect the days field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -931,7 +931,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of hours added.
      * <p>
-     * This method will only affect the the hours field.
+     * This method will only affect the hours field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -947,7 +947,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of minutes added.
      * <p>
-     * This method will only affect the the minutes field.
+     * This method will only affect the minutes field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -963,7 +963,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of seconds added.
      * <p>
-     * This method will only affect the the seconds field.
+     * This method will only affect the seconds field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -979,7 +979,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of nanoseconds added.
      * <p>
-     * This method will only affect the the nanoseconds field.
+     * This method will only affect the nanoseconds field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1018,7 +1018,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of years subtracted.
      * <p>
-     * This method will only affect the the years field.
+     * This method will only affect the years field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1034,7 +1034,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of months subtracted.
      * <p>
-     * This method will only affect the the months field.
+     * This method will only affect the months field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1050,7 +1050,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of days subtracted.
      * <p>
-     * This method will only affect the the days field.
+     * This method will only affect the days field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1066,7 +1066,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of hours subtracted.
      * <p>
-     * This method will only affect the the hours field.
+     * This method will only affect the hours field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1082,7 +1082,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of minutes subtracted.
      * <p>
-     * This method will only affect the the minutes field.
+     * This method will only affect the minutes field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1098,7 +1098,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of seconds subtracted.
      * <p>
-     * This method will only affect the the seconds field.
+     * This method will only affect the seconds field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1114,7 +1114,7 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of nanoseconds subtracted.
      * <p>
-     * This method will only affect the the nanoseconds field.
+     * This method will only affect the nanoseconds field.
      * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.

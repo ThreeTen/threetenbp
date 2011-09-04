@@ -205,7 +205,7 @@ public final class HourOfDay
     }
 
     /**
-     * Adjusts a time to have the the hour-of-day represented by this object,
+     * Adjusts a time to have the hour-of-day represented by this object,
      * returning a new time.
      * <p>
      * Only the hour-of-day field is adjusted in the result. The other time
