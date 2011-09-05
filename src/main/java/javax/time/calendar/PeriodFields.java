@@ -828,9 +828,9 @@ public final class PeriodFields
      * 'Years' and 'Months' will return '23 Years, 5 Months', because months must be between
      * 0 and 11 (inclusive).
      * <p>
-     * After this method completes, negative values will have been moved to the largest
-     * unit in the group. For example, a period of '6 Hours, -7 Minutes' normalized using
-     * 'Hours' and 'Minutes' will return '5 Hours, 53 Minutes'.
+     * Negative values will be moved to the largest non-zero unit in each group.
+     * All smaller units in the group will be zero or positive.
+     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes'.
      * <p>
      * At least one unit must be specified for this method to make any changes.
      * Any part of this period that cannot be converted to one of the specified units

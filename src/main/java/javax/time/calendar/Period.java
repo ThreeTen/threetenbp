@@ -49,12 +49,16 @@ import javax.time.calendar.format.CalendricalParseException;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
- * minute, second and nanosecond units, such as '3 Months, 4 Days and 7 Hours'.
+ * minute, second and nanosecond units, such as 'P3M4DT7H' (3 Months, 4 Days and 7 Hours).
  * <p>
  * A period is a human-scale description of an amount of time.
  * This class represents the 7 standard definitions from {@link ISOChronology}.
  * The period units used are 'Years', 'Months', 'Days', 'Hours', 'Minutes',
- * 'Seconds' and 'Nanoseconds'.
+ * 'Seconds' and 'Nanos'.
+ * <p>
+ * Each unit is treated independently from all other units.
+ * Thus 'PT90M' (90 minutes) is not equal to 'PT1H30M' (1 hours and 30 minutes).
+ * The {@code normalized} and {@code total} methods combine the fields as necessary.
  * <p>
  * The {@code ISOChronology} defines a relationship between some of the units:
  * <ul>
@@ -73,6 +77,17 @@ import javax.time.calendar.format.CalendricalParseException;
  */
 public final class Period
         implements PeriodProvider, Serializable {
+    // Design notes:
+    // This is a simplified version of PeriodFields designed for mainstream use.
+    // By focusing only on principal ISO-8601 fields there is a better API.
+    // Could store data as always normalized amongst years/months and hours/mins/secs/nanos
+    // But, this makes a method like withMinutes(90) hard to write/explain.
+    // Could store only secs/nanos as normalized, but that is then an anomaly
+    // better to treat secs and nanos as separate fields.
+    // Problem is in the toString format, which has to represent the state to avoid confusion.
+    // Separate fields means that 90 mins != 1 hour 30 mins, but that seems reasonable.
+    // Provide separate methods to support 'broken' 24 hour day algorithms.
+    // Note, if Java had a 'primitive' decimal (fast, operators and literals) then that would be used.
 
     /**
      * A constant for a period of zero.
@@ -1188,10 +1203,14 @@ public final class Period
      * Returns a copy of this period with all amounts normalized to the
      * standard ranges for date-time fields.
      * <p>
-     * Two normalizations occur, one for years and months, and one for
-     * hours, minutes, seconds and nanoseconds.
+     * Normalization occurs for two groups of units, one for years and months,
+     * and one for hours, minutes, seconds and nanoseconds.
      * Days are not normalized, as a day may vary in length at daylight savings cutover.
      * For example, a period of {@code P1Y15M1DT28H61M} will be normalized to {@code P2Y3M1DT29H1M}.
+     * <p>
+     * Negative values will be moved to the largest non-zero unit in the group.
+     * All smaller units in the group will be zero or positive.
+     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes'.
      * <p>
      * Note that this method normalizes using ISO-8601:
      * <ul>
@@ -1231,6 +1250,10 @@ public final class Period
      * Two normalizations occur, one for years and months, and one for
      * days, hours, minutes, seconds and nanoseconds.
      * For example, a period of {@code P1Y15M1DT28H} will be normalized to {@code P2Y3M2DT4H}.
+     * <p>
+     * Negative values will be moved to the largest non-zero unit in the group.
+     * All smaller units in the group will be zero or positive.
+     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes'.
      * <p>
      * Note that this method normalizes using ISO-8601:
      * <ul>
