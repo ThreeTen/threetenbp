@@ -823,14 +823,14 @@ public final class PeriodFields
      * hours and minutes, but not between hours and months.
      * <p>
      * Normalization ensures that within any group of units with a common base, the smaller
-     * units will all have values between zero and that of the next larger unit.
+     * units will all have absolute values between zero and that of the next larger unit.
      * For example, a period of '2 Decades, 2 Years, 17 Months' normalized using
      * 'Years' and 'Months' will return '23 Years, 5 Months', because months must be between
      * 0 and 11 (inclusive).
      * <p>
-     * Negative values will be moved to the largest non-zero unit in each group.
-     * All smaller units in the group will be zero or positive.
-     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes'.
+     * Within each group, the positive/negative sign will be consistent.
+     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes',
+     * and a period of '-2 Hours, 4 Minutes' will normalize to '-1 Hours, -56 Minutes'.
      * <p>
      * At least one unit must be specified for this method to make any changes.
      * Any part of this period that cannot be converted to one of the specified units
@@ -847,6 +847,13 @@ public final class PeriodFields
         PeriodFields result = this;
         TreeSet<PeriodUnit> targetUnits = new TreeSet<PeriodUnit>(Collections.reverseOrder());
         targetUnits.addAll(Arrays.asList(units));
+        
+        // total in smallest target unit, toEquivalent in all target units
+        
+        
+        
+        
+        
         // normalize any fields in this period that have a unit greater than the
         // largest unit in the target set that can be normalized
         // eg. normalize Years-Months when the target set only contains Months
@@ -877,10 +884,10 @@ public final class PeriodFields
                         long conversion = targetUnit.toEquivalent(loopUnit);
                         if (conversion >= 0) {
                             long amount = result.getAmount(loopUnit);
-                            if (amount >= conversion || amount < 0) {
+                            if (amount >= conversion || amount <= -conversion) {
                                 result = result
-                                    .with(MathUtils.floorMod(amount, conversion), loopUnit)
-                                    .plus(MathUtils.floorDiv(amount, conversion), targetUnit);
+                                    .with(amount % conversion, loopUnit)
+                                    .plus(amount / conversion, targetUnit);
                                 process = (units.length > 2);  // need to re-check from start
                             }
                         }

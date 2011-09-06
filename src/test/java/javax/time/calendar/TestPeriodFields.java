@@ -1048,13 +1048,13 @@ public class TestPeriodFields {
     public void test_normalizedTo_units_yearsMonths_negativeMonthsZeroYears() {
         PeriodFields base = PeriodFields.of(0, YEARS).with(-2, MONTHS);
         PeriodFields test = base.normalizedTo(YEARS, MONTHS);
-        assertEquals(test, PeriodFields.of(-1, YEARS).with(10, MONTHS));
+        assertEquals(test, PeriodFields.of(0, YEARS).with(-2, MONTHS));
     }
 
     public void test_normalizedTo_units_yearsMonths_negativeYears() {
         PeriodFields base = PeriodFields.of(-2, YEARS).with(5, MONTHS);
         PeriodFields test = base.normalizedTo(YEARS, MONTHS);
-        assertEquals(test, PeriodFields.of(-2, YEARS).with(5, MONTHS));
+        assertEquals(test, PeriodFields.of(-1, YEARS).with(-7, MONTHS));
     }
 
     public void test_normalizedTo_units_yearsMonths_exactOverflow() {
@@ -1176,7 +1176,7 @@ public class TestPeriodFields {
     public void test_normalizedTo_units_hoursMinutesSeconds_negative() {
         PeriodFields base = PeriodFields.of(-5, HOURS).with(74, MINUTES).with(-7267, SECONDS);
         PeriodFields test = base.normalizedTo(HOURS, MINUTES, SECONDS);
-        assertEquals(test, PeriodFields.of(-6, HOURS).with(12, MINUTES).with(53, SECONDS));
+        assertEquals(test, PeriodFields.of(-5, HOURS).with(-47, MINUTES).with(-7, SECONDS));
     }
 
     public void test_normalizedTo_units_hoursMinutesSeconds_bigSeconds() {

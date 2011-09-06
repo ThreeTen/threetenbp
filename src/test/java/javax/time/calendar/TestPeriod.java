@@ -1544,6 +1544,9 @@ public class TestPeriod {
         assertPeriod(Period.of(1, 24, 3, 4, 5, 6).normalized(), 3, 0, 3, 4, 5, 6, 0);
         
         assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalized(), 2, 10, 3, 4, 5, 6, 0);
+        assertPeriod(Period.of(1, -20, 3, 4, 5, 6).normalized(), 0, -8, 3, 4, 5, 6, 0);
+        assertPeriod(Period.of(1, -26, 3, 4, 5, 6).normalized(), -1, -2, 3, 4, 5, 6, 0);
+        assertPeriod(Period.of(-2, 4, 3, 4, 5, 6).normalized(), -1, -8, 3, 4, 5, 6, 0);
     }
 
     public void test_normalized_nanos() {
@@ -1574,7 +1577,7 @@ public class TestPeriod {
         assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalized(), 1, 2, 3, 23, 59, 59, 0);
         assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalized(), 1, 2, 3, 24, 0, 0, 0);
         
-        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalized(), 1, 2, 3, -1, 59, 59, 0);
+        assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalized(), 1, 2, 3, 0, 0, -1, 0);
     }
 
     public void test_normalized_minutes() {
@@ -1588,6 +1591,11 @@ public class TestPeriod {
         
         assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalized(), 1, 2, 3, 22, 59, 0, 0);
         assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalized(), 1, 2, 3, 23, 0, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, 1, -62, 0).normalized(), 1, 2, 3, 0, -2, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, -1, 62, 0).normalized(), 1, 2, 3, 0, 2, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, -1, 4, 0).normalized(), 1, 2, 3, 0, -56, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, -2, 4, 0).normalized(), 1, 2, 3, -1, -56, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, -2, -4, 0).normalized(), 1, 2, 3, -2, -4, 0, 0);
     }
 
     public void test_normalized_hours() {
@@ -1643,6 +1651,11 @@ public class TestPeriod {
         assertPeriod(Period.of(1, 12, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 0, 3, 4, 5, 6, 0);
         assertPeriod(Period.of(1, 23, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 11, 3, 4, 5, 6, 0);
         assertPeriod(Period.of(1, 24, 3, 4, 5, 6).normalizedWith24HourDays(), 3, 0, 3, 4, 5, 6, 0);
+        
+        assertPeriod(Period.of(3, -2, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 10, 3, 4, 5, 6, 0);
+        assertPeriod(Period.of(1, -20, 3, 4, 5, 6).normalizedWith24HourDays(), 0, -8, 3, 4, 5, 6, 0);
+        assertPeriod(Period.of(1, -26, 3, 4, 5, 6).normalizedWith24HourDays(), -1, -2, 3, 4, 5, 6, 0);
+        assertPeriod(Period.of(-2, 4, 3, 4, 5, 6).normalizedWith24HourDays(), -1, -8, 3, 4, 5, 6, 0);
     }
 
     public void test_normalizedWith24HourDays_nanos() {
@@ -1671,6 +1684,7 @@ public class TestPeriod {
         assertPeriod(Period.of(1, 2, 3, 23, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 59, 0);
         assertPeriod(Period.of(1, 2, 3, 23, 59, 60).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 0, 0);
         
+        assertPeriod(Period.of(1, 2, 0, 0, 0, -1).normalizedWith24HourDays(), 1, 2, 0, 0, 0, -1, 0);
         assertPeriod(Period.of(1, 2, 3, 0, 0, -1).normalizedWith24HourDays(), 1, 2, 2, 23, 59, 59, 0);
     }
 
@@ -1683,8 +1697,18 @@ public class TestPeriod {
         assertPeriod(Period.of(1, 2, 3, 23, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 6, 0);
         assertPeriod(Period.of(1, 2, 3, 23, 60, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 6, 0);
         
-        assertPeriod(Period.of(1, 2, 3, 23, -1, 0).normalizedWith24HourDays(), 1, 2, 3, 22, 59, 0, 0);
-        assertPeriod(Period.of(1, 2, 3, 23, -1, 60).normalizedWith24HourDays(), 1, 2, 3, 23, 0, 0, 0);
+        assertPeriod(Period.of(1, 2, 0, 23, -1, 0).normalizedWith24HourDays(), 1, 2, 0, 22, 59, 0, 0);
+        assertPeriod(Period.of(1, 2, 0, 23, -1, 60).normalizedWith24HourDays(), 1, 2, 0, 23, 0, 0, 0);
+        assertPeriod(Period.of(1, 2, 0, 1, -62, 0).normalizedWith24HourDays(), 1, 2, 0, 0, -2, 0, 0);
+        assertPeriod(Period.of(1, 2, 0, -1, 62, 0).normalizedWith24HourDays(), 1, 2, 0, 0, 2, 0, 0);
+        assertPeriod(Period.of(1, 2, 0, -1, 4, 0).normalizedWith24HourDays(), 1, 2, 0, 0, -56, 0, 0);
+        assertPeriod(Period.of(1, 2, 0, -2, 4, 0).normalizedWith24HourDays(), 1, 2, 0, -1, -56, 0, 0);
+        assertPeriod(Period.of(1, 2, 0, -2, -4, 0).normalizedWith24HourDays(), 1, 2, 0, -2, -4, 0, 0);
+        
+        assertPeriod(Period.of(1, 2, 3, 1, -62, 0).normalizedWith24HourDays(), 1, 2, 2, 23, 58, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, -1, 4, 0).normalizedWith24HourDays(), 1, 2, 2, 23, 4, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, -2, 4, 0).normalizedWith24HourDays(), 1, 2, 2, 22, 4, 0, 0);
+        assertPeriod(Period.of(1, 2, 3, -2, -4, 0).normalizedWith24HourDays(), 1, 2, 2, 21, 56, 0, 0);
     }
 
     public void test_normalizedWith24HourDays_hours() {
@@ -1739,10 +1763,14 @@ public class TestPeriod {
         assertEquals(Period.ofDateFields(3, 0, 1000).totalYears(), 3);
         assertEquals(Period.ofDateFields(3, 11, 0).totalYears(), 3);
         assertEquals(Period.ofDateFields(3, 12, 0).totalYears(), 4);
-        assertEquals(Period.ofDateFields(3, -11, 0).totalYears(), 3);
+        assertEquals(Period.ofDateFields(3, 1, 0).totalYears(), 3);
+        assertEquals(Period.ofDateFields(3, 0, 0).totalYears(), 3);
+        assertEquals(Period.ofDateFields(3, -11, 0).totalYears(), 2);
         assertEquals(Period.ofDateFields(3, -12, 0).totalYears(), 2);
-        assertEquals(Period.ofDateFields(-3, 11, 0).totalYears(), -3);
+        assertEquals(Period.ofDateFields(3, -13, 0).totalYears(), 1);
+        assertEquals(Period.ofDateFields(-3, 11, 0).totalYears(), -2);
         assertEquals(Period.ofDateFields(-3, 12, 0).totalYears(), -2);
+        assertEquals(Period.ofDateFields(-3, 13, 0).totalYears(), -1);
         assertEquals(Period.ofDateFields(-3, -11, 0).totalYears(), -3);
         assertEquals(Period.ofDateFields(-3, -12, 0).totalYears(), -4);
     }

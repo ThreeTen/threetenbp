@@ -1208,9 +1208,9 @@ public final class Period
      * Days are not normalized, as a day may vary in length at daylight savings cutover.
      * For example, a period of {@code P1Y15M1DT28H61M} will be normalized to {@code P2Y3M1DT29H1M}.
      * <p>
-     * Negative values will be moved to the largest non-zero unit in the group.
-     * All smaller units in the group will be zero or positive.
-     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes'.
+     * Within each group, the positive/negative sign will be consistent.
+     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes',
+     * and a period of '-2 Hours, 4 Minutes' will normalize to '-1 Hours, -56 Minutes'.
      * <p>
      * Note that this method normalizes using ISO-8601:
      * <ul>
@@ -1229,15 +1229,22 @@ public final class Period
         if (this == ZERO) {
             return ZERO;
         }
-        int years = MathUtils.safeAdd(this.years, MathUtils.floorDiv(this.months, 12));
-        int months = MathUtils.floorMod(this.months, 12);
-        long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = MathUtils.floorMod(this.nanos, 1000000000L);
-        total += MathUtils.floorDiv(this.nanos, 1000000000L);  // safe from overflow
-        int seconds = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
-        int minutes = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
+        long totMonths = totalMonths();
+        int years = MathUtils.safeToInt(totMonths / 12);
+        int months = (int) (totMonths % 12);
+        long total = totalSeconds();
+        long nanos = this.nanos % 1000000000L;
+        if (total < 0 && nanos > 0) {
+            nanos -= 1000000000L;
+            total++;
+        } else if (total > 0 && nanos < 0) {
+            nanos += 1000000000L;
+            total--;
+        }
+        int seconds = (int) (total % 60);
+        total  = total / 60;
+        int minutes = (int) (total % 60);
+        total  = total / 60;
         int hours = MathUtils.safeToInt(total);
         return of(years, months, days, hours, minutes, seconds, nanos);
     }
@@ -1251,9 +1258,9 @@ public final class Period
      * days, hours, minutes, seconds and nanoseconds.
      * For example, a period of {@code P1Y15M1DT28H} will be normalized to {@code P2Y3M2DT4H}.
      * <p>
-     * Negative values will be moved to the largest non-zero unit in the group.
-     * All smaller units in the group will be zero or positive.
-     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes'.
+     * Within each group, the positive/negative sign will be consistent.
+     * For example, a period of '6 Hours, -7 Minutes' will normalize to '5 Hours, 53 Minutes',
+     * and a period of '-2 Hours, 4 Minutes' will normalize to '-1 Hours, -56 Minutes'.
      * <p>
      * Note that this method normalizes using ISO-8601:
      * <ul>
@@ -1273,18 +1280,25 @@ public final class Period
         if (this == ZERO) {
             return ZERO;
         }
-        int years = MathUtils.safeAdd(this.years, MathUtils.floorDiv(this.months, 12));
-        int months = MathUtils.floorMod(this.months, 12);
-        long total = (this.hours * 60L * 60L) + (this.minutes * 60L) + this.seconds;  // safe from overflow
-        long nanos = MathUtils.floorMod(this.nanos, 1000000000L);
-        total += MathUtils.floorDiv(this.nanos, 1000000000L);  // safe from overflow
-        int seconds = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
-        int minutes = MathUtils.floorMod(total, 60);
-        total  = MathUtils.floorDiv(total, 60);
-        int hours = MathUtils.floorMod(total, 24);
-        total  = MathUtils.floorDiv(total, 24);
-        int days = MathUtils.safeToInt(this.days + total);  // safe from overflow
+        long totMonths = totalMonths();
+        int years = MathUtils.safeToInt(totMonths / 12);
+        int months = (int) (totMonths % 12);
+        long total = totalSecondsWith24HourDays();
+        long nanos = this.nanos % 1000000000L;
+        if (total < 0 && nanos > 0) {
+            nanos -= 1000000000L;
+            total++;
+        } else if (total > 0 && nanos < 0) {
+            nanos += 1000000000L;
+            total--;
+        }
+        int seconds = (int) (total % 60);
+        total  = total / 60;
+        int minutes = (int) (total % 60);
+        total  = total / 60;
+        int hours = (int) (total % 24);
+        total  = total / 24;
+        int days = MathUtils.safeToInt(total);
         return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
@@ -1300,10 +1314,9 @@ public final class Period
      * </ul>
      *
      * @return the total number of years
-     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalYears() {
-        return MathUtils.safeAdd((long) years, (long) (months / 12));
+        return totalMonths() / 12;
     }
 
     /**
@@ -1317,10 +1330,9 @@ public final class Period
      * </ul>
      *
      * @return the total number of years
-     * @throws ArithmeticException if the capacity of a {@code long} is exceeded
      */
     public long totalMonths() {
-        return MathUtils.safeAdd(MathUtils.safeMultiply((long) years, 12), months);
+        return years * 12L + months;
     }
 
     //-----------------------------------------------------------------------
