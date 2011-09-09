@@ -75,16 +75,18 @@ public abstract class ZoneResolver {
      * @param zone  the time-zone, not null
      * @param newDateTime  the new date-time, not null
      * @param oldDateTime  the old date-time before the adjustment, may be null
-     * @return the resolved values, returned as a (year,month,day) tuple, not null
+     * @param applicableRules  the old date-time applicable rules, may be null
+     * @return the resolved offset date-time, not null
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public final OffsetDateTime resolve(
             ZoneId zone,
             LocalDateTime newDateTime,
-            ZonedDateTime oldDateTime) {
+            OffsetDateTime oldDateTime,
+            ZoneRules applicableRules) {
         
         // ensure rules used are appropriate if zone has a floating version
-        ZoneRules rules = (oldDateTime != null ? oldDateTime.getApplicableRules() : zone.getRules());
+        ZoneRules rules = (applicableRules != null ? applicableRules : zone.getRules());
         
         ZoneOffsetInfo info = rules.getOffsetInfo(newDateTime);
         if (info.isTransition() == false) {
@@ -92,8 +94,8 @@ public abstract class ZoneResolver {
         }
         ZoneOffsetTransition discontinuity = info.getTransition();
         OffsetDateTime result = discontinuity.isGap() ?
-            handleGap(zone, rules, discontinuity, newDateTime, oldDateTime != null ? oldDateTime.toOffsetDateTime() : null) :
-            handleOverlap(zone, rules, discontinuity, newDateTime, oldDateTime != null ? oldDateTime.toOffsetDateTime() : null);
+            handleGap(zone, rules, discontinuity, newDateTime, oldDateTime) :
+            handleOverlap(zone, rules, discontinuity, newDateTime, oldDateTime);
         
         // validate the result
         if (result == null) {

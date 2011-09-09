@@ -1656,16 +1656,15 @@ public final class OffsetDateTime
      * Returns a zoned date-time formed from this date-time and the specified time-zone.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. As a result, this method can only convert the date-time
-     * to the same time if the time-zone rules permit it. If not then a similar time is returned.
-     * <p>
-     * This method uses the {@link ZoneResolvers#postTransition() post transition} rules
-     * to determine what to do when a gap or overlap occurs. These rules select the
-     * date-time immediately after a gap and the later offset in overlaps.
+     * local time-line exists. If the local date-time is in a gap or overlap according to
+     * the rules then a resolver is used to determine the resultant local time and offset.
+     * This method uses the {@link ZoneResolvers#retainOffset() retain-offset} resolver.
+     * This selects the date-time immediately after a gap and retains the offset in
+     * overlaps where possible, selecting the later offset if not possible.
      * <p>
      * Finer control over gaps and overlaps is available in two ways.
-     * If you simply want to use the earlier offset at overlaps then call
-     * {@link ZonedDateTime#withEarlierOffsetAtOverlap()} immediately after this method.
+     * If you simply want to use the later offset at overlaps then call
+     * {@link ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
      * Alternately, pass a specific resolver to {@link #atZoneSimilarLocal(ZoneId, ZoneResolver)}.
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
@@ -1677,7 +1676,7 @@ public final class OffsetDateTime
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, not null
      */
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone) {
-        return ZonedDateTime.of(dateTime, zone, ZoneResolvers.postTransition());
+        return atZoneSimilarLocal(zone, ZoneResolvers.retainOffset());
     }
 
     /**
@@ -1685,10 +1684,8 @@ public final class OffsetDateTime
      * taking control of what occurs in time-line gaps and overlaps.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. As a result, this method can only convert the date-time
-     * to the same time if the time-zone rules permit it. If not then a similar time is returned.
-     * <p>
-     * This method uses the specified resolver to determine what to do when a gap or overlap occurs.
+     * local time-line exists. If the local date-time is in a gap or overlap according to
+     * the rules then the resolver is used to determine the resultant local time and offset.
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
      * use {@link #atZoneSameInstant(ZoneId)}.
@@ -1701,7 +1698,8 @@ public final class OffsetDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        return ZonedDateTime.of(dateTime, zone, resolver);
+        OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, this, null);
+        return ZonedDateTime.of(offsetDT, zone);
     }
 
     //-----------------------------------------------------------------------

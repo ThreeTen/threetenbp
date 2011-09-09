@@ -488,7 +488,7 @@ public final class ZonedDateTime
             LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
             ZoneId zone = engine.getZone(true);
             if (ldt != null && zone != null) {
-                OffsetDateTime odt = ZoneResolvers.postGapPreOverlap().resolve(zone, ldt, null);  // smart use of resolver
+                OffsetDateTime odt = ZoneResolvers.postGapPreOverlap().resolve(zone, ldt, null, null);  // smart use of resolver
                 return new ZonedDateTime(odt, zone);
             }
         }
@@ -563,7 +563,8 @@ public final class ZonedDateTime
         ISOChronology.checkNotNull(dateTime, "LocalDateTime must not be null");
         ISOChronology.checkNotNull(zone, "ZoneId must not be null");
         ISOChronology.checkNotNull(resolver, "ZoneResolver must not be null");
-        OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, oldDateTime);
+        OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, 
+                (oldDateTime != null ? oldDateTime.toOffsetDateTime() : null), (oldDateTime != null ? oldDateTime.getApplicableRules() : null));
         return new ZonedDateTime(offsetDT, zone);
     }
 

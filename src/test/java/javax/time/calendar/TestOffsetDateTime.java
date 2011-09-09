@@ -1333,6 +1333,18 @@ public class TestOffsetDateTime {
                 ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
+    public void test_atZone_dstOverlapSummer() {
+        OffsetDateTime t = OffsetDateTime.of(2007, 10, 28, 2, 30, OFFSET_PTWO);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toOffsetDateTime(), t);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
+    }
+
+    public void test_atZone_dstOverlapWinter() {
+        OffsetDateTime t = OffsetDateTime.of(2007, 10, 28, 2, 30, OFFSET_PONE);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).toOffsetDateTime(), t);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS).getZone(), ZONE_PARIS);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZoneSimilarLocal_nullTimeZone() {
         OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
