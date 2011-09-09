@@ -64,7 +64,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodFields {
 
-    private static final PeriodUnit MILLENNIA = ISOPeriodUnit.MILLENNIA;
     private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
     private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
     private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
@@ -227,45 +226,6 @@ public class TestPeriodFields {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_multiField_IterablePeriodField_nullItem() {
         PeriodFields.of(Arrays.asList((PeriodField) null));
-    }
-
-    //-----------------------------------------------------------------------
-    // of(double, PeriodUnit)
-    //-----------------------------------------------------------------------
-    @DataProvider(name="test_of_double")
-    Object[][] provider_test_of_double() {
-        return new Object[][] {
-            {5.0d, YEARS, 5, YEARS, 0, MONTHS},
-            {5.5d, YEARS, 5, YEARS, 6, MONTHS},
-            {0.25d, YEARS, 0, YEARS, 3, MONTHS},
-            {4.0d / 12, YEARS, 0, YEARS, 4, MONTHS},
-            {-2.0d, YEARS, -2, YEARS, 0, MONTHS},
-            {-2.75, YEARS, -2, YEARS, -9, MONTHS},
-            {-0.95, YEARS, 0, YEARS, -11, MONTHS},
-            {0.001d, YEARS, 0, YEARS, 0, MONTHS},
-            {5.0, MONTHS, 5, MONTHS, 0, null},
-            {0.5, MONTHS, 0, MONTHS, 0, null},
-            {100000.005d + 0.001d/12, MILLENNIA, 100000, MILLENNIA, 61, MONTHS},
-            {10.0d + (1 - (1d / (60d * 60d * 1000000000d))), HOURS, 10, HOURS, 3599999999999L, NANOS},
-            {10.0d + (2d / (60d * 60d * 1000000000d)), HOURS, 10, HOURS, 2, NANOS},
-            // {10.0d + (1d / (60d * 60d * 1000000000d)), HOURS, 10, HOURS, 1, NANOS},  // fails due to double weirdness
-            {10.0000000000001d, HOURS, 10, HOURS, 0, NANOS},
-        };
-    }
-
-    @Test(dataProvider = "test_of_double")
-    public void test_ofFraction_double_noFraction(double inputAmount, PeriodUnit inputUnit, long amount1, PeriodUnit unit1, long amount2, PeriodUnit unit2) {
-        PeriodFields test = PeriodFields.ofFraction(inputAmount, inputUnit);
-        PeriodFields expected = PeriodFields.of(amount1, unit1);
-        if (unit2 != null) {
-            expected = expected.with(amount2, unit2);
-        }
-        assertEquals(test, expected);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_ofFraction_null() {
-        PeriodFields.ofFraction(1.0, (PeriodUnit) null);
     }
 
     //-----------------------------------------------------------------------

@@ -162,35 +162,6 @@ public final class PeriodFields
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains a {@code PeriodFields} from a {@code double} amount and unit.
-     * <p>
-     * The parameters represent the two parts of a phrase like 'one-and-a-half Hours'.
-     * The result will contain two units, the specified unit and the base unit,
-     * unless the specified unit is the base unit.
-     * The fractional part will be converted into a suitable amount of the base unit
-     * using {@code double} arithmetic.
-     * If the amount is negative then all resultant units will be negative.
-     *
-     * @param amount  the amount to create with, positive or negative
-     * @param unit  the period unit, not null
-     * @return the {@code PeriodFields} instance, not null
-     */
-    public static PeriodFields ofFraction(double amount, PeriodUnit unit) {
-        checkNotNull(unit, "PeriodUnit must not be null");
-        TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
-        long whole = (long) (amount / 1);
-        internalMap.put(unit, PeriodField.of(whole, unit));
-        long conversion = unit.getBaseEquivalentAmount();
-        if (conversion > 1) {
-            double fraction = amount % 1;
-            long base = (long) (fraction * conversion);
-            internalMap.put(unit.getBaseUnit(), unit.getBaseUnit().field(base));
-        }
-        return create(internalMap);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains a {@code PeriodFields} from a {@code PeriodProvider}.
      * <p>
      * This method provides null-checking around {@link PeriodProvider#toPeriodFields()}.
