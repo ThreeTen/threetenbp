@@ -1093,15 +1093,14 @@ public final class OffsetDate
      * to the rules in the time-zone ignoring the current offset.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. When this method converts the date to a date-time it
-     * adjusts the time and offset as necessary to ensure that the time is as early
-     * as possible on the date, which is typically midnight. Internally this is
-     * achieved using the {@link ZoneResolvers#postGapPreOverlap() zone resolver}.
+     * local time-line exists. If the local date is in a gap or overlap according to
+     * the rules then a resolver is used to determine the resultant local time and offset.
+     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
+     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
+     * This combination chooses the earliest valid local time on the date, typically midnight.
      * <p>
      * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
-     * followed by {@link OffsetDateTime#atZoneSimilarLocal(ZoneId)}. Note that the resolver
-     * used by {@code atZoneSimilarLocal()} is different to that used here (it chooses
-     * the later offset in an overlap, whereas this method chooses the earlier offset).
+     * followed by {@link OffsetDateTime#atZoneSimilarLocal(ZoneId)}.
      * <p>
      * The offset from this date is ignored during the conversion.
      * This ensures that the resultant date-time has the same date as this.
