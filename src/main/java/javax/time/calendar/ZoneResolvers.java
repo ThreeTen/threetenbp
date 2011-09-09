@@ -32,7 +32,7 @@
 package javax.time.calendar;
 
 import javax.time.CalendricalException;
-import javax.time.Instant;
+import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendar.zone.ZoneRules;
 
@@ -43,7 +43,7 @@ import javax.time.calendar.zone.ZoneRules;
  * on the time-line that occur due to changes in the offset from UTC, usually
  * caused by Daylight Savings Time.
  * <p>
- * ZoneResolvers is a utility class.
+ * This is a utility class.
  * All resolvers returned are immutable and thread-safe.
  *
  * @author Stephen Colebourne
@@ -58,148 +58,63 @@ public final class ZoneResolvers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the strict zone resolver which rejects all gaps and overlaps
+     * Obtains the strict zone resolver which rejects all gaps and overlaps
      * as invalid, resulting in an exception.
+     * <p>
+     * Gap - throws an exception.<br />
+     * Overlap - throws an exception.<br />
+     * Other - applies the appropriate offset.<br />
      *
      * @return the strict resolver, not null
      */
     public static ZoneResolver strict() {
-        return Strict.INSTANCE;
+        return Impl.STRICT;
     }
 
     /**
-     * Class implementing strict resolver.
-     */
-    private static final class Strict extends ZoneResolver {
-        /** The singleton instance. */
-        private static final Strict INSTANCE = new Strict();
-        
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            throw new CalendricalException("Local time " + newDateTime + " does not exist in time-zone " +
-                    zone + " due to a gap in the local time-line");
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            throw new CalendricalException("Local time " + newDateTime +
-                    " has two matching offsets, " + transition.getOffsetBefore() +
-                    " and " + transition.getOffsetAfter() + ", in time-zone " + zone);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the pre-transition zone resolver, which returns the instant
-     * one nanosecond before the transition for gaps, and the earlier offset
-     * for overlaps.
+     * Obtains the pre-transition zone resolver, which returns the instant one nanosecond
+     * before the transition for gaps, and the earlier offset for overlaps.
+     * <p>
+     * Gap - changes the local date-time to one nanosecond before the transition using the "before" offset.<br />
+     * Overlap - chooses the earlier of the two offsets, which is the "before" offset.<br />
+     * Other - applies the appropriate offset.<br />
      *
      * @return the pre-transition resolver, not null
      */
     public static ZoneResolver preTransition() {
-        return PreTransition.INSTANCE;
+        return Impl.PRE_TRANSITION;
     }
 
     /**
-     * Class implementing preTransition resolver.
-     */
-    private static final class PreTransition extends ZoneResolver {
-        /** The singleton instance. */
-        private static final ZoneResolver INSTANCE = new PreTransition();
-        
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            Instant instantBefore = transition.getInstant().minusNanos(1);
-            return OffsetDateTime.ofInstant(instantBefore, transition.getOffsetBefore());
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, transition.getOffsetBefore());
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the post-transition zone resolver, which returns the instant
-     * after the transition for gaps, and the later offset for overlaps.
+     * Obtains the post-transition zone resolver, which returns the instant after the
+     * transition for gaps, and the later offset for overlaps.
+     * <p>
+     * Gap - changes the local date-time to the instant of the transition using the "after" offset.<br />
+     * Overlap - chooses the later of the two offsets, which is the "after" offset.<br />
+     * Other - applies the appropriate offset.<br />
      *
      * @return the post-transition resolver, not null
      */
     public static ZoneResolver postTransition() {
-        return PostTransition.INSTANCE;
+        return Impl.POST_TRANSITION;
     }
 
     /**
-     * Class implementing postTransition resolver.
-     */
-    private static final class PostTransition extends ZoneResolver {
-        /** The singleton instance. */
-        private static final ZoneResolver INSTANCE = new PostTransition();
-        
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return transition.getDateTimeAfter();
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, transition.getOffsetAfter());
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the post-gap-pre-overlap zone resolver, which returns the instant
+     * Obtains the post-gap-pre-overlap zone resolver, which returns the instant
      * after the transition for gaps, and the earlier offset for overlaps.
+     * <p>
+     * Gap - changes the local date-time to the instant of the transition using the "after" offset.<br />
+     * Overlap - chooses the earlier of the two offsets, which is the "before" offset.<br />
+     * Other - applies the appropriate offset.<br />
      *
      * @return the post-transition resolver, not null
      */
     public static ZoneResolver postGapPreOverlap() {
-        return PostGapPreOverlap.INSTANCE;
+        return Impl.POST_GAP_PRE_OVERLAP;
     }
 
     /**
-     * Class implementing postGapPreOverlap resolver.
-     */
-    private static final class PostGapPreOverlap extends ZoneResolver {
-        /** The singleton instance. */
-        private static final ZoneResolver INSTANCE = new PostGapPreOverlap();
-        
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return transition.getDateTimeAfter();
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, transition.getOffsetBefore());
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the retain offset resolver, which returns the instant after the
+     * Obtains the retain offset resolver, which returns the instant after the
      * transition for gaps, and the same offset for overlaps.
      * <p>
      * This resolver is the same as the {@link #postGapPreOverlap()} resolver with
@@ -209,42 +124,20 @@ public final class ZoneResolvers {
      * <p>
      * This resolver is most especially useful when adding or subtracting time
      * from a {@code ZonedDateTime}.
+     * <p>
+     * Gap - changes the local date-time to the instant of the transition using the "after" offset.<br />
+     * Overlap - chooses the same offset as the old date-time specified, unless that is invalid when
+     * it chooses the earlier of the two offsets.<br />
+     * Other - applies the appropriate offset.<br />
      *
      * @return the retain offset resolver, not null
      */
     public static ZoneResolver retainOffset() {
-        return RetainOffset.INSTANCE;
+        return Impl.RETAIN_OFFSET;
     }
 
     /**
-     * Class implementing retain offset resolver.
-     */
-    private static final class RetainOffset extends ZoneResolver {
-        /** The singleton instance. */
-        private static final ZoneResolver INSTANCE = new RetainOffset();
-        
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return transition.getDateTimeAfter();
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            if (oldDateTime != null && transition.isValidOffset(oldDateTime.getOffset())) {
-                return OffsetDateTime.of(newDateTime, oldDateTime.getOffset());
-            }
-            return OffsetDateTime.of(newDateTime, transition.getOffsetBefore());
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the push forward resolver, which changes the time of the result
+     * Obtains the push forward resolver, which changes the time of the result
      * in a gap by adding the length of the gap.
      * <p>
      * If the transition is a gap, then the resolver will add the length of
@@ -254,49 +147,30 @@ public final class ZoneResolvers {
      * <p>
      * If the transition is an overlap, then the resolver will choose the
      * later of the two offsets.
+     * <p>
+     * Gap - changes the local date-time to be later by the length of the gap, using the "after" offset.<br />
+     * Overlap - chooses the later of the two offsets, which is the "after" offset.<br />
+     * Other - applies the appropriate offset.<br />
      *
      * @return the push forward resolver, not null
      */
     public static ZoneResolver pushForward() {
-        return PushForward.INSTANCE;
+        return Impl.PUSH_FORWARD;
     }
 
-    /**
-     * Class implementing push forward resolver.
-     */
-    private static final class PushForward extends ZoneResolver {
-        /** The singleton instance. */
-        private static final ZoneResolver INSTANCE = new PushForward();
-        
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            LocalDateTime result = newDateTime.plus(transition.getTransitionSize());
-            return OffsetDateTime.of(result, transition.getOffsetAfter());
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, transition.getOffsetAfter());
-        }
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Creates a combined resolver, using two different strategies for gap and overlap.
      * <p>
-     * If either argument is {@code null} then the {@link #strict()} resolver is used.
+     * If the local date-time is neither a gap nor an overlap, the appropriate offset
+     * is simply added.
      *
-     * @param gapResolver  the resolver to use for a gap, null means strict
-     * @param overlapResolver  the resolver to use for an overlap, null means strict
+     * @param gapResolver  the resolver to use for a gap, not null
+     * @param overlapResolver  the resolver to use for an overlap, not null
      * @return the combination resolver, not null
      */
     public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
-        gapResolver = (gapResolver == null ? strict() : gapResolver);
+        ISOChronology.checkNotNull(gapResolver, "ZoneResolver must not be null");
+        ISOChronology.checkNotNull(overlapResolver, "ZoneResolver must not be null");
         overlapResolver = (overlapResolver == null ? strict() : overlapResolver);
         if (gapResolver == overlapResolver) {
             return gapResolver;
@@ -304,15 +178,16 @@ public final class ZoneResolvers {
         return new Combination(gapResolver, overlapResolver);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Class implementing combination resolver.
      */
-    private static final class Combination extends ZoneResolver {
+    private static final class Combination implements ZoneResolver {
         /** The gap resolver. */
         private final ZoneResolver gapResolver;
         /** The overlap resolver. */
         private final ZoneResolver overlapResolver;
-        
+
         /**
          * Constructor.
          * @param gapResolver  the resolver to use for a gap, not null
@@ -322,20 +197,128 @@ public final class ZoneResolvers {
             this.gapResolver = gapResolver;
             this.overlapResolver = overlapResolver;
         }
-        /** {@inheritDoc} */
         @Override
-        protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return gapResolver.handleGap(zone, rules, transition, newDateTime, oldDateTime);
+        public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+            if (info.isTransition()) {
+                ZoneOffsetTransition transition = info.getTransition();
+                if (transition.isGap()) {
+                    return gapResolver.resolve(desiredLocalDateTime, info, rules, zone, oldDateTime);
+                } else {  // overlap
+                    return overlapResolver.resolve(desiredLocalDateTime, info, rules, zone, oldDateTime);
+                }
+            }
+            return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
         }
-        /** {@inheritDoc} */
-        @Override
-        protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
-                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return overlapResolver.handleOverlap(zone, rules, transition, newDateTime, oldDateTime);
-        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Enum implementing the resolvers.
+     */
+    private static enum Impl implements ZoneResolver {
+        /** Strict. */
+        STRICT {
+            /** {@inheritDoc} */
+            @Override
+            public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+                if (info.isTransition()) {
+                    ZoneOffsetTransition transition = info.getTransition();
+                    if (transition.isGap()) {
+                        throw new CalendricalException("Local date-time " + desiredLocalDateTime + " does not exist in time-zone " +
+                                zone + " due to a gap in the local time-line");
+                    } else {  // overlap
+                        throw new CalendricalException("Local date-time " + desiredLocalDateTime +
+                                " has two matching offsets, " + transition.getOffsetBefore() +
+                                " and " + transition.getOffsetAfter() + ", in time-zone " + zone);
+                    }
+                }
+                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+            }
+        },
+        /** Pre-transition. */
+        PRE_TRANSITION {
+            /** {@inheritDoc} */
+            @Override
+            public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+                if (info.isTransition()) {
+                    ZoneOffsetTransition transition = info.getTransition();
+                    if (transition.isGap()) {
+                        return transition.getDateTimeBefore().minusNanos(1);
+                    } else {  // overlap
+                        return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
+                    }
+                }
+                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+            }
+        },
+        /** Post-transition. */
+        POST_TRANSITION {
+            /** {@inheritDoc} */
+            @Override
+            public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+                if (info.isTransition()) {
+                    ZoneOffsetTransition transition = info.getTransition();
+                    if (transition.isGap()) {
+                        return transition.getDateTimeAfter();
+                    } else {  // overlap
+                        return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetAfter());
+                    }
+                }
+                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+            }
+        },
+        /** Post-gap pre-overlap. */
+        POST_GAP_PRE_OVERLAP {
+            /** {@inheritDoc} */
+            @Override
+            public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+                if (info.isTransition()) {
+                    ZoneOffsetTransition transition = info.getTransition();
+                    if (transition.isGap()) {
+                        return transition.getDateTimeAfter();
+                    } else {  // overlap
+                        return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
+                    }
+                }
+                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+            }
+        },
+        /** Retain offset. */
+        RETAIN_OFFSET {
+            /** {@inheritDoc} */
+            @Override
+            public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+                if (info.isTransition()) {
+                    ZoneOffsetTransition transition = info.getTransition();
+                    if (transition.isGap()) {
+                        return transition.getDateTimeAfter();
+                    } else {  // overlap
+                        if (oldDateTime != null && transition.isValidOffset(oldDateTime.getOffset())) {
+                            return OffsetDateTime.of(desiredLocalDateTime, oldDateTime.getOffset());
+                        }
+                        return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetBefore());
+                    }
+                }
+                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+            }
+        },
+        /** Push forward. */
+        PUSH_FORWARD {
+            /** {@inheritDoc} */
+            @Override
+            public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
+                if (info.isTransition()) {
+                    ZoneOffsetTransition transition = info.getTransition();
+                    if (transition.isGap()) {
+                        LocalDateTime result = desiredLocalDateTime.plus(transition.getTransitionSize());
+                        return OffsetDateTime.of(result, transition.getOffsetAfter());
+                    } else {  // overlap
+                        return OffsetDateTime.of(desiredLocalDateTime, transition.getOffsetAfter());
+                    }
+                }
+                return OffsetDateTime.of(desiredLocalDateTime, info.getOffset());
+            }
+        },
     }
 
 }

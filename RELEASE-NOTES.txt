@@ -96,6 +96,7 @@
 - Remove DateProvider, TimeProvider, DateTimeProvider, as they created unreliable APIs
 - Refactor PeriodUnit
 - Rename getEstimatedDuration() to getDurationEstimate()
+- ZoneResolver refactored
 
 0.6.3
 ===============================================================================

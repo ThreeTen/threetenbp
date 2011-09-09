@@ -1382,7 +1382,7 @@ public class TestOffsetDateTime {
         t.atZoneSimilarLocal(ZONE_PARIS, (ZoneResolver) null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=RuntimeException.class)
     public void test_atZoneSimilarLocal_resolver_badResolver() {
         OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_PTWO);
         t.atZoneSimilarLocal(ZONE_GAZA, new MockZoneResolverReturnsNull());

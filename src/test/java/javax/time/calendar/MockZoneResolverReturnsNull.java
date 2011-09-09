@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.zone.ZoneOffsetTransition;
+import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneRules;
 
 /**
@@ -39,19 +39,11 @@ import javax.time.calendar.zone.ZoneRules;
  *
  * @author Stephen Colebourne
  */
-public class MockZoneResolverReturnsNull extends ZoneResolver {
+public class MockZoneResolverReturnsNull implements ZoneResolver {
 
     /** {@inheritDoc} */
     @Override
-    protected OffsetDateTime handleGap(ZoneId zone, ZoneRules rules,
-            ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected OffsetDateTime handleOverlap(ZoneId zone, ZoneRules rules,
-            ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
+    public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
         return null;
     }
 

@@ -41,6 +41,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendar.zone.ZoneRules;
 
 /**
  * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -1698,7 +1699,8 @@ public final class OffsetDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime atZoneSimilarLocal(ZoneId zone, ZoneResolver resolver) {
-        OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, this, null);
+        ZoneRules rules = zone.getRules();
+        OffsetDateTime offsetDT = resolver.resolve(dateTime, rules.getOffsetInfo(dateTime), rules, zone, this);
         return ZonedDateTime.of(offsetDT, zone);
     }
 

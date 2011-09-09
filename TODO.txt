@@ -53,7 +53,6 @@ Date/Time classes
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - factories taking double for seconds (LocalTime...)
 - OffsetDateTime.toEpochSecs() could be private
-? ZoneResolver code moved to ZDT
 ? InstantProvider implementations toEpochMillis()
 ? getMonthOfYear() -> getMonth(), etc
 ? with(rule, value)

@@ -837,6 +837,7 @@ public class TestZonedDateTime {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200);
         assertEquals(test.toLocalTime(), base.toLocalTime());
+        assertSame(test.getOffset(), OFFSET_0200);
         assertSame(test.getZone(), ZONE_0200);
     }
 
@@ -878,6 +879,7 @@ public class TestZonedDateTime {
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withZoneSameLocal(ZONE_0200, ZoneResolvers.retainOffset());
         assertEquals(test.toLocalTime(), base.toLocalTime());
+        assertSame(test.getOffset(), OFFSET_0200);
         assertSame(test.getZone(), ZONE_0200);
     }
 
