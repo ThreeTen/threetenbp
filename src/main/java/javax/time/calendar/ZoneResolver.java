@@ -92,10 +92,10 @@ public abstract class ZoneResolver {
         if (info.isTransition() == false) {
             return OffsetDateTime.of(newDateTime, info.getOffset());
         }
-        ZoneOffsetTransition discontinuity = info.getTransition();
-        OffsetDateTime result = discontinuity.isGap() ?
-            handleGap(zone, rules, discontinuity, newDateTime, oldDateTime) :
-            handleOverlap(zone, rules, discontinuity, newDateTime, oldDateTime);
+        ZoneOffsetTransition transition = info.getTransition();
+        OffsetDateTime result = transition.isGap() ?
+            handleGap(zone, rules, transition, newDateTime, oldDateTime) :
+            handleOverlap(zone, rules, transition, newDateTime, oldDateTime);
         
         // validate the result
         if (result == null) {
@@ -156,7 +156,7 @@ public abstract class ZoneResolver {
      * exception, selecting the appropriate offset or changing the local date-time.
      * Two additional parameters are available to help with the logic.
      * <p>
-     * Firstly, the discontinuity, which represents the discontinuity in the local
+     * Firstly, the transition, which represents the discontinuity in the local
      * time-line that needs to be resolved. This is the result from
      * {@code zone.getOffsetInfo(newDateTime)} and is provided to improve
      * performance.
@@ -170,10 +170,10 @@ public abstract class ZoneResolver {
      * <p>
      * A typical implementation might be:
      * <pre>
-     *  if (oldDateTime != null && discontinuity.containsOffset(oldDateTime.getOffset())) {
+     *  if (oldDateTime != null && overlapInfo.containsOffset(oldDateTime.getOffset())) {
      *    return OffsetDateTime.dateTime(newDateTime, oldDateTime.getOffset());
      *  }
-     *  return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetBefore());
+     *  return OffsetDateTime.dateTime(newDateTime, overlapInfo.getOffsetBefore());
      * </pre>
      * This implementation handles the overlap by attempting to keep the result
      * offset in the same offset as the old date-time. Otherwise, it returns the

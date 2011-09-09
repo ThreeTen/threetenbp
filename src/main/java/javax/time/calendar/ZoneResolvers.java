@@ -77,7 +77,7 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
             throw new CalendricalException("Local time " + newDateTime + " does not exist in time-zone " +
                     zone + " due to a gap in the local time-line");
@@ -85,11 +85,11 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
             throw new CalendricalException("Local time " + newDateTime +
-                    " has two matching offsets, " + discontinuity.getOffsetBefore() +
-                    " and " + discontinuity.getOffsetAfter() + ", in time-zone " + zone);
+                    " has two matching offsets, " + transition.getOffsetBefore() +
+                    " and " + transition.getOffsetAfter() + ", in time-zone " + zone);
         }
     }
 
@@ -115,17 +115,17 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            Instant instantBefore = discontinuity.getInstant().minusNanos(1);
-            return OffsetDateTime.ofInstant(instantBefore, discontinuity.getOffsetBefore());
+            Instant instantBefore = transition.getInstant().minusNanos(1);
+            return OffsetDateTime.ofInstant(instantBefore, transition.getOffsetBefore());
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, discontinuity.getOffsetBefore());
+            return OffsetDateTime.of(newDateTime, transition.getOffsetBefore());
         }
     }
 
@@ -150,16 +150,16 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return discontinuity.getDateTimeAfter();
+            return transition.getDateTimeAfter();
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, discontinuity.getOffsetAfter());
+            return OffsetDateTime.of(newDateTime, transition.getOffsetAfter());
         }
     }
 
@@ -184,16 +184,16 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return discontinuity.getDateTimeAfter();
+            return transition.getDateTimeAfter();
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, discontinuity.getOffsetBefore());
+            return OffsetDateTime.of(newDateTime, transition.getOffsetBefore());
         }
     }
 
@@ -202,12 +202,12 @@ public final class ZoneResolvers {
      * Returns the retain offset resolver, which returns the instant after the
      * transition for gaps, and the same offset for overlaps.
      * <p>
-     * This resolver is the same as the {{@link #postTransition()} resolver with
+     * This resolver is the same as the {@link #postTransition()} resolver with
      * one additional rule. When processing an overlap, this resolver attempts
      * to use the same offset as the offset specified in the old date-time.
      * If that offset is invalid then the later offset is chosen.
      * <p>
-     * This resolver is most commonly useful when adding or subtracting time
+     * This resolver is most especially useful when adding or subtracting time
      * from a {@code ZonedDateTime}.
      *
      * @return the retain offset resolver, not null
@@ -226,19 +226,19 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return discontinuity.getDateTimeAfter();
+            return transition.getDateTimeAfter();
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            if (oldDateTime != null && discontinuity.isValidOffset(oldDateTime.getOffset())) {
+            if (oldDateTime != null && transition.isValidOffset(oldDateTime.getOffset())) {
                 return OffsetDateTime.of(newDateTime, oldDateTime.getOffset());
             }
-            return OffsetDateTime.of(newDateTime, discontinuity.getOffsetAfter());
+            return OffsetDateTime.of(newDateTime, transition.getOffsetAfter());
         }
     }
 
@@ -247,12 +247,12 @@ public final class ZoneResolvers {
      * Returns the push forward resolver, which changes the time of the result
      * in a gap by adding the length of the gap.
      * <p>
-     * If the discontinuity is a gap, then the resolver will add the length of
+     * If the transition is a gap, then the resolver will add the length of
      * the gap in seconds to the local time.
      * For example, given a gap from 01:00 to 02:00 and a time of 01:20, this
      * will add one hour to result in 02:20.
      * <p>
-     * If the discontinuity is an overlap, then the resolver will choose the
+     * If the transition is an overlap, then the resolver will choose the
      * later of the two offsets.
      *
      * @return the push forward resolver, not null
@@ -271,17 +271,17 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            LocalDateTime result = newDateTime.plus(discontinuity.getTransitionSize());
-            return OffsetDateTime.of(result, discontinuity.getOffsetAfter());
+            LocalDateTime result = newDateTime.plus(transition.getTransitionSize());
+            return OffsetDateTime.of(result, transition.getOffsetAfter());
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.of(newDateTime, discontinuity.getOffsetAfter());
+            return OffsetDateTime.of(newDateTime, transition.getOffsetAfter());
         }
     }
 
@@ -325,16 +325,16 @@ public final class ZoneResolvers {
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleGap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return gapResolver.handleGap(zone, rules, discontinuity, newDateTime, oldDateTime);
+            return gapResolver.handleGap(zone, rules, transition, newDateTime, oldDateTime);
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
-                ZoneId zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
+                ZoneId zone, ZoneRules rules, ZoneOffsetTransition transition,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return overlapResolver.handleOverlap(zone, rules, discontinuity, newDateTime, oldDateTime);
+            return overlapResolver.handleOverlap(zone, rules, transition, newDateTime, oldDateTime);
         }
     }
 
