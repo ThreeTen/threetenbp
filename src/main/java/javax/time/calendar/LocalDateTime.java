@@ -1642,13 +1642,14 @@ public final class LocalDateTime
      * Returns a zoned date-time formed from this date-time and the specified time-zone.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. When this method converts the date to a date-time it adjusts
-     * the time and offset according to the {@link ZoneResolvers#postTransition()} rules.
-     * This selects the date-time immediately after a gap and the later offset in overlaps.
+     * local time-line exists. If the local date-time is in a gap or overlap according to
+     * the rules then a resolver is used to determine the resultant local time and offset.
+     * This method uses the {@link ZoneResolvers#postGapPreOverlap() post-gap pre-overlap} resolver.
+     * This selects the date-time immediately after a gap and the earlier offset in overlaps.
      * <p>
      * Finer control over gaps and overlaps is available in two ways.
-     * If you simply want to use the earlier offset at overlaps then call
-     * {@link ZonedDateTime#withEarlierOffsetAtOverlap()} immediately after this method.
+     * If you simply want to use the later offset at overlaps then call
+     * {@link ZonedDateTime#withLaterOffsetAtOverlap()} immediately after this method.
      * Alternately, pass a specific resolver to {@link #atZone(ZoneId, ZoneResolver)}.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1657,7 +1658,7 @@ public final class LocalDateTime
      * @return the zoned date-time formed from this date-time, not null
      */
     public ZonedDateTime atZone(ZoneId zone) {
-        return ZonedDateTime.of(this, zone, ZoneResolvers.postTransition());
+        return ZonedDateTime.of(this, zone, ZoneResolvers.postGapPreOverlap());
     }
 
     /**
@@ -1665,8 +1666,8 @@ public final class LocalDateTime
      * taking control of what occurs in time-line gaps and overlaps.
      * <p>
      * Time-zone rules, such as daylight savings, mean that not every time on the
-     * local time-line exists. When this method converts the date to a date-time it adjusts
-     * the time and offset according to the specified zone resolver.
+     * local time-line exists. If the local date-time is in a gap or overlap according to
+     * the rules then the resolver is used to determine the resultant local time and offset.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

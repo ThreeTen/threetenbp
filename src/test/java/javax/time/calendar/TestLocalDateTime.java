@@ -3472,6 +3472,12 @@ public class TestLocalDateTime extends AbstractTest {
                 ZonedDateTime.of(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
+    public void test_atZone_dstOverlap() {
+        LocalDateTime t = LocalDateTime.of(2007, 10, 28, 2, 30);
+        assertEquals(t.atZone(ZONE_PARIS),
+                ZonedDateTime.of(OffsetDateTime.of(2007, 10, 28, 2, 30, OFFSET_PTWO), ZONE_PARIS));
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZone_nullTimeZone() {
         LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
