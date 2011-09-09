@@ -53,7 +53,7 @@ import org.testng.annotations.Test;
 public class TestZoneResolvers {
 
     private static final ZoneId ZONE_PARIS = ZoneId.of("Europe/Paris");
-//    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
+    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.ofHours(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.ofHours(2);
     private static final LocalDateTime DT_PARIS_OVERLAP = dateTime(2008, 10, 26, 2, 30, 0, 0);
@@ -250,17 +250,17 @@ public class TestZoneResolvers {
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
     }
 
-//    public void retainOffset_gap_oldNotValidOffset() {
-//        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_GAP, OFFSET_UTC);
-//        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old);
-//        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
-//        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
-//    }
+    public void retainOffset_gap_oldNotValidOffset() {
+        OffsetDateTime old = OffsetDateTime.of(DT_PARIS_GAP, OFFSET_UTC);
+        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old, null);
+        assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post gap
+    }
 
     public void retainOffset_overlap_noOld() {
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, null, null);
         assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
-        assertEquals(resolved.getOffset(), OFFSET_0100);
+        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses pre overlap
     }
 
     public void retainOffset_overlap_oldEarlierOffset() {
@@ -277,12 +277,12 @@ public class TestZoneResolvers {
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses same as input
     }
 
-//    public void retainOffset_overlap_oldNotValidOffset() {
-//        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_OVERLAP, OFFSET_UTC);
-//        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old);
-//        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
-//        assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later
-//    }
+    public void retainOffset_overlap_oldNotValidOffset() {
+        OffsetDateTime old = OffsetDateTime.of(DT_PARIS_OVERLAP, OFFSET_UTC);
+        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old, null);
+        assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses pre overlap
+    }
 
     //-----------------------------------------------------------------------
     // pushForward()

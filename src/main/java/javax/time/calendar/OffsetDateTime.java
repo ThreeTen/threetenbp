@@ -1660,7 +1660,7 @@ public final class OffsetDateTime
      * the rules then a resolver is used to determine the resultant local time and offset.
      * This method uses the {@link ZoneResolvers#retainOffset() retain-offset} resolver.
      * This selects the date-time immediately after a gap and retains the offset in
-     * overlaps where possible, selecting the later offset if not possible.
+     * overlaps where possible, selecting the earlier offset if not possible.
      * <p>
      * Finer control over gaps and overlaps is available in two ways.
      * If you simply want to use the later offset at overlaps then call

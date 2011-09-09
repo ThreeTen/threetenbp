@@ -202,7 +202,7 @@ public final class ZoneResolvers {
      * Returns the retain offset resolver, which returns the instant after the
      * transition for gaps, and the same offset for overlaps.
      * <p>
-     * This resolver is the same as the {@link #postTransition()} resolver with
+     * This resolver is the same as the {@link #postGapPreOverlap()} resolver with
      * one additional rule. When processing an overlap, this resolver attempts
      * to use the same offset as the offset specified in the old date-time.
      * If that offset is invalid then the later offset is chosen.
@@ -238,7 +238,7 @@ public final class ZoneResolvers {
             if (oldDateTime != null && transition.isValidOffset(oldDateTime.getOffset())) {
                 return OffsetDateTime.of(newDateTime, oldDateTime.getOffset());
             }
-            return OffsetDateTime.of(newDateTime, transition.getOffsetAfter());
+            return OffsetDateTime.of(newDateTime, transition.getOffsetBefore());
         }
     }
 
