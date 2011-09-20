@@ -65,9 +65,7 @@ public final class DateResolvers {
      * Class implementing strict resolver.
      */
     private static class Strict implements DateResolver, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
         /** The singleton instance. */
@@ -98,9 +96,7 @@ public final class DateResolvers {
      * Class implementing previousValid resolver.
      */
     private static class PreviousValid implements DateResolver, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
         /** The singleton instance. */
@@ -135,9 +131,7 @@ public final class DateResolvers {
      * Class implementing nextValid resolver.
      */
     private static class NextValid implements DateResolver, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
         /** The singleton instance. */
@@ -173,9 +167,7 @@ public final class DateResolvers {
      * Class implementing partLenient resolver.
      */
     private static class PartLenient implements DateResolver, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
         /** The singleton instance. */

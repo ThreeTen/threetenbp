@@ -77,7 +77,7 @@ public final class LocalDateTime
     public static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(LocalDate.MAX_DATE, LocalTime.MAX_TIME);
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

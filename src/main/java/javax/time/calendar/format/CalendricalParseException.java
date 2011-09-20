@@ -43,7 +43,7 @@ import javax.time.CalendricalException;
 public class CalendricalParseException extends CalendricalException {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

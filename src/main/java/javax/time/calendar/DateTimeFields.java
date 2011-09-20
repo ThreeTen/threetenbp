@@ -79,7 +79,7 @@ public final class DateTimeFields
     public static final DateTimeFields EMPTY = new DateTimeFields(Collections.<DateTimeField>emptyList());
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

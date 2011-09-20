@@ -43,7 +43,7 @@ package javax.time.calendar;
 public class InvalidCalendarFieldException extends CalendricalRuleException {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

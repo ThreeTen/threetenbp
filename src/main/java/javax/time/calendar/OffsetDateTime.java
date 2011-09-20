@@ -63,7 +63,7 @@ public final class OffsetDateTime
                     Comparable<OffsetDateTime>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = -456761901L;
 

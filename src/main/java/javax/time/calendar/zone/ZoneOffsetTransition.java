@@ -64,7 +64,7 @@ import javax.time.calendar.ZoneOffset;
 public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransition>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

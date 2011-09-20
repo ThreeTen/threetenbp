@@ -71,7 +71,7 @@ public final class MonthDay
         implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = -254395108L;
     /**

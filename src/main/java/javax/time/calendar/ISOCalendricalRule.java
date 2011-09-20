@@ -60,7 +60,7 @@ import javax.time.MathUtils;
 final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializable {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

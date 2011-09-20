@@ -65,7 +65,7 @@ import javax.time.calendar.PeriodUnit;
 public final class HistoricChronology extends Chronology implements Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**
@@ -385,7 +385,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * Rule implementation.
      */
     private static final class EraRule extends DateTimeRule implements Serializable {
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule(HistoricChronology chrono) {
@@ -405,7 +405,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     private static final class YearRule extends DateTimeRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule(HistoricChronology chrono) {
@@ -428,7 +428,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * Rule implementation.
      */
     private static final class MonthOfYearRule extends DateTimeRule implements Serializable {
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule(HistoricChronology chrono) {
@@ -448,7 +448,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     private static final class DayOfMonthRule extends DateTimeRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule(HistoricChronology chrono) {
@@ -486,7 +486,7 @@ public final class HistoricChronology extends Chronology implements Serializable
     private static final class DayOfYearRule extends DateTimeRule implements Serializable {
         /** The chronology. */
         private final HistoricChronology chrono;
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule(HistoricChronology chrono) {
@@ -513,7 +513,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * Rule implementation.
      */
     private static final class DayOfWeekRule extends DateTimeRule implements Serializable {
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule(HistoricChronology chrono) {

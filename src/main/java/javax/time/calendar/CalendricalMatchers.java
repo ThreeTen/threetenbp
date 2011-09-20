@@ -186,7 +186,7 @@ public final class CalendricalMatchers {
      * Class implementing day-of-week in month matcher.
      */
     private static final class DayOfWeekInMonth implements CalendricalMatcher, Serializable {
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** The ordinal, from 1 to 5. */
         private final int ordinal;

@@ -73,10 +73,6 @@ import javax.time.calendar.ZoneOffset;
 public class ZoneRulesBuilder {
 
     /**
-     * A serialization identifier for this class.
-     */
-    private static final long serialVersionUID = 1L;
-    /**
      * The maximum date-time.
      */
     private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);

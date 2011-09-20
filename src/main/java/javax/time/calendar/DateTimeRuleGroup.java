@@ -43,8 +43,6 @@ import java.util.concurrent.ConcurrentMap;
 public final class DateTimeRuleGroup {
     // TODO: tidy up, or delete, or merge into DTRule
 
-    /** A serialization identifier for this class. */
-    private static final long serialVersionUID = 1L;
     /** The rule groups. */
     private static final ConcurrentMap<DateTimeRule, DateTimeRuleGroup> GROUPS =
         new ConcurrentHashMap<DateTimeRule, DateTimeRuleGroup>(16, 0.75f, 2);

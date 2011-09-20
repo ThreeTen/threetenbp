@@ -99,7 +99,7 @@ public final class ZoneOffset
      */
     private static final int MAX_SECONDS = 18 * SECONDS_PER_HOUR;
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

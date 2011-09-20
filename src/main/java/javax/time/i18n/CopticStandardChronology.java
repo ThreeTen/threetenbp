@@ -58,7 +58,7 @@ public final class CopticStandardChronology extends StandardChronology implement
      */
     public static final CopticStandardChronology INSTANCE = new CopticStandardChronology();
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

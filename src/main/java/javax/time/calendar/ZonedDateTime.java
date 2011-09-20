@@ -72,7 +72,7 @@ public final class ZonedDateTime
         implements InstantProvider, Calendrical, CalendricalMatcher, Comparable<ZonedDateTime>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = -456761901L;
 

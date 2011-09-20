@@ -62,7 +62,7 @@ public final class CopticDate
         implements Calendrical, Comparable<CopticDate>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

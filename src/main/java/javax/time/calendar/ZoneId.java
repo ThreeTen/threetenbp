@@ -119,7 +119,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      */
     private static final Pattern PATTERN = Pattern.compile("(([A-Za-z0-9._-]+)[:])?([A-Za-z0-9%@~/+._-]+)([#]([A-Za-z0-9._-]+))?");
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

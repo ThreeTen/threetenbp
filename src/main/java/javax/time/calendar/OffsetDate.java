@@ -62,7 +62,7 @@ public final class OffsetDate
         implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = -3618963189L;
 

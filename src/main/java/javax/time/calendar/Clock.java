@@ -565,7 +565,7 @@ public abstract class Clock {
      * Implementation of a clock based on a time-source.
      */
     private static final class TimeSourceClock extends Clock implements Serializable {
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** The time-source being used. */
         private final TimeSource timeSource;

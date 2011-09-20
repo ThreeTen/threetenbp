@@ -54,7 +54,7 @@ import java.io.Serializable;
 final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Serializable {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

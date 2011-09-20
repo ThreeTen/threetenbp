@@ -70,7 +70,7 @@ public final class HistoricDate
      */
     public static final int MAX_YEAR = 999999999;
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

@@ -122,7 +122,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
     public static final WeekRules ISO = new WeekRules(DayOfWeek.MONDAY, 4);
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

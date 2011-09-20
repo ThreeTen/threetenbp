@@ -67,7 +67,7 @@ import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 public final class ZoneOffsetTransitionRule implements Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = -32352886665458L;
 

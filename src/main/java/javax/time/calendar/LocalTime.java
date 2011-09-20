@@ -98,7 +98,7 @@ public final class LocalTime
     }
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /** Hours per minute. */

@@ -258,7 +258,7 @@ public abstract class TimeSource {
     static final class SystemTimeSource extends TimeSource implements Serializable {
         /** Singleton instance. */
         static final SystemTimeSource INSTANCE = new SystemTimeSource();
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
         /** Restricted constructor. */
@@ -291,7 +291,7 @@ public abstract class TimeSource {
      * This is typically used for testing.
      */
     static final class FixedTimeSource extends TimeSource implements Serializable {
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** The fixed instant to return. */
         private final Instant instant;
@@ -331,7 +331,7 @@ public abstract class TimeSource {
      * {@link System#currentTimeMillis()} plus an offset.
      */
     static final class OffsetSystemTimeSource extends TimeSource implements Serializable {
-        /** A serialization identifier for this class. */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** The fixed offset to add. */
         private final Duration offset;

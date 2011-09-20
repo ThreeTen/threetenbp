@@ -49,7 +49,7 @@ import java.io.Serializable;
 public final class DateTimeRuleRange implements Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

@@ -55,7 +55,7 @@ import javax.time.calendar.ZoneOffset;
 final class FixedZoneRules extends ZoneRules implements Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

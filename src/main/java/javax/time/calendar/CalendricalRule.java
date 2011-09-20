@@ -66,7 +66,7 @@ public abstract class CalendricalRule<T>
         implements Comparator<Calendrical>, Serializable {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

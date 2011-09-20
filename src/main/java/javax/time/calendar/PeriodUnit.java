@@ -63,7 +63,7 @@ public abstract class PeriodUnit
         implements Comparable<PeriodUnit>, Serializable {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

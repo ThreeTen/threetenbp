@@ -46,7 +46,7 @@ import javax.time.calendar.CalendricalRuleException;
 public class CalendricalPrintException extends CalendricalRuleException {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

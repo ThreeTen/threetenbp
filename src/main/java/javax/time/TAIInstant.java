@@ -94,7 +94,7 @@ public final class TAIInstant
      */
     private static final Pattern PARSER = Pattern.compile("([-]?[0-9]+)\\.([0-9]{9})s[(]TAI[)]");
     /**
-     * Serialization version id.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

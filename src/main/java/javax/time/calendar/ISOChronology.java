@@ -57,7 +57,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     public static final ISOChronology INSTANCE = new ISOChronology();
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

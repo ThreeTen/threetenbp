@@ -79,7 +79,7 @@ public final class Period
      */
     public static final Period ZERO = new Period(0, 0, 0, 0, 0, 0, 0);
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

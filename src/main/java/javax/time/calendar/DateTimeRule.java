@@ -59,7 +59,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         implements Comparable<DateTimeRule> {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

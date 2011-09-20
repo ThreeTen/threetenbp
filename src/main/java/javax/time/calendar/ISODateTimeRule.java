@@ -70,7 +70,7 @@ import javax.time.MathUtils;
 public final class ISODateTimeRule extends DateTimeRule implements Serializable {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

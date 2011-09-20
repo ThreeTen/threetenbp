@@ -62,7 +62,7 @@ public final class OffsetTime
         implements Calendrical, CalendricalMatcher, TimeAdjuster, Comparable<OffsetTime>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * Serialization version.
      */
     private static final long serialVersionUID = -1751032571L;
 

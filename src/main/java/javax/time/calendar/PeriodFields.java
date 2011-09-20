@@ -81,7 +81,7 @@ public final class PeriodFields
      */
     public static final PeriodFields ZERO = new PeriodFields(new TreeMap<PeriodUnit, PeriodField>());
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

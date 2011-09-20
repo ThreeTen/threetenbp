@@ -824,7 +824,7 @@ public final class CalendricalEngine {
     static final class Rule extends CalendricalRule<CalendricalEngine> implements Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
-        /** Serialization version. */
+        /** Singleton instance. */
         static final Rule INSTANCE = new Rule();
 
         private Rule() {

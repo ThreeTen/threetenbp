@@ -195,9 +195,7 @@ public final class DateAdjusters {
      * Class implementing day-of-week in month adjuster.
      */
     private static final class DayOfWeekInMonth implements DateAdjuster, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
 
         /** The ordinal, from 1 to 5. */
@@ -318,9 +316,7 @@ public final class DateAdjusters {
      * Implementation of next, previous or current day-of-week.
      */
     private static final class RelativeDayOfWeek implements DateAdjuster, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
+        /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Whether the current date is a valid answer. */
         private final int relative;

@@ -59,7 +59,7 @@ import javax.time.Duration;
 public final class ISOPeriodUnit extends PeriodUnit implements Serializable {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
     /**

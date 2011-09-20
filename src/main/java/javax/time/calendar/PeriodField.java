@@ -64,7 +64,7 @@ public final class PeriodField
         implements PeriodProvider, Comparable<PeriodField>, Serializable {
 
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

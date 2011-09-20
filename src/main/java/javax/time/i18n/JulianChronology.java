@@ -60,7 +60,7 @@ public final class JulianChronology extends Chronology implements Serializable {
      */
     public static final JulianChronology INSTANCE = new JulianChronology();
     /**
-     * The serialization version.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 

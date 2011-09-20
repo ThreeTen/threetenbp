@@ -113,7 +113,7 @@ public final class UTCInstant
      */
     private static final long NANOS_PER_SECOND = 1000000000;
     /**
-     * Serialization version id.
+     * Serialization version.
      */
     private static final long serialVersionUID = 1L;
 
