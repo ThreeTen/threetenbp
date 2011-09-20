@@ -728,7 +728,7 @@ public class TestOffsetTime {
     }
 
     public void test_plus_Duration_wrap() {
-        Duration dur = Duration.ofStandardHours(1);
+        Duration dur = Duration.ofHours(1);
         OffsetTime t = OffsetTime.of(23, 30, OFFSET_PONE).plus(dur);
         assertEquals(t, OffsetTime.of(0, 30, OFFSET_PONE));
     }
@@ -849,7 +849,7 @@ public class TestOffsetTime {
     }
 
     public void test_minus_Duration_wrap() {
-        Duration dur = Duration.ofStandardHours(1);
+        Duration dur = Duration.ofHours(1);
         OffsetTime t = OffsetTime.of(0, 30, OFFSET_PONE).minus(dur);
         assertEquals(t, OffsetTime.of(23, 30, OFFSET_PONE));
     }

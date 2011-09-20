@@ -292,96 +292,96 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
-    // ofStandardMinutes()
+    // ofMinutes()
     //-----------------------------------------------------------------------
-    public void factory_standardMinutes() {
-        Duration test = Duration.ofStandardMinutes(2);
+    public void factory_minutes() {
+        Duration test = Duration.ofMinutes(2);
         assertEquals(test.getSeconds(), 120);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_standardMinutes_max() {
-        Duration test = Duration.ofStandardMinutes(Long.MAX_VALUE / 60);
+    public void factory_minutes_max() {
+        Duration test = Duration.ofMinutes(Long.MAX_VALUE / 60);
         assertEquals(test.getSeconds(), (Long.MAX_VALUE / 60) * 60);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_standardMinutes_min() {
-        Duration test = Duration.ofStandardMinutes(Long.MIN_VALUE / 60);
+    public void factory_minutes_min() {
+        Duration test = Duration.ofMinutes(Long.MIN_VALUE / 60);
         assertEquals(test.getSeconds(), (Long.MIN_VALUE / 60) * 60);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_standardMinutes_tooBig() {
-        Duration.ofStandardMinutes(Long.MAX_VALUE / 60 + 1);
+    public void factory_minutes_tooBig() {
+        Duration.ofMinutes(Long.MAX_VALUE / 60 + 1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_standardMinutes_tooSmall() {
-        Duration.ofStandardMinutes(Long.MIN_VALUE / 60 - 1);
+    public void factory_minutes_tooSmall() {
+        Duration.ofMinutes(Long.MIN_VALUE / 60 - 1);
     }
 
     //-----------------------------------------------------------------------
-    // ofStandardHours()
+    // ofHours()
     //-----------------------------------------------------------------------
-    public void factory_standardHours() {
-        Duration test = Duration.ofStandardHours(2);
+    public void factory_hours() {
+        Duration test = Duration.ofHours(2);
         assertEquals(test.getSeconds(), 2 * 3600);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_standardHours_max() {
-        Duration test = Duration.ofStandardHours(Long.MAX_VALUE / 3600);
+    public void factory_hours_max() {
+        Duration test = Duration.ofHours(Long.MAX_VALUE / 3600);
         assertEquals(test.getSeconds(), (Long.MAX_VALUE / 3600) * 3600);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_standardHours_min() {
-        Duration test = Duration.ofStandardHours(Long.MIN_VALUE / 3600);
+    public void factory_hours_min() {
+        Duration test = Duration.ofHours(Long.MIN_VALUE / 3600);
         assertEquals(test.getSeconds(), (Long.MIN_VALUE / 3600) * 3600);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_standardHours_tooBig() {
-        Duration.ofStandardHours(Long.MAX_VALUE / 3600 + 1);
+    public void factory_hours_tooBig() {
+        Duration.ofHours(Long.MAX_VALUE / 3600 + 1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_standardHours_tooSmall() {
-        Duration.ofStandardHours(Long.MIN_VALUE / 3600 - 1);
+    public void factory_hours_tooSmall() {
+        Duration.ofHours(Long.MIN_VALUE / 3600 - 1);
     }
 
     //-----------------------------------------------------------------------
-    // ofStandardDays()
+    // ofDays()
     //-----------------------------------------------------------------------
-    public void factory_standardDays() {
-        Duration test = Duration.ofStandardDays(2);
+    public void factory_days() {
+        Duration test = Duration.ofDays(2);
         assertEquals(test.getSeconds(), 2 * 86400);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_standardDays_max() {
-        Duration test = Duration.ofStandardDays(Long.MAX_VALUE / 86400);
+    public void factory_days_max() {
+        Duration test = Duration.ofDays(Long.MAX_VALUE / 86400);
         assertEquals(test.getSeconds(), (Long.MAX_VALUE / 86400) * 86400);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
-    public void factory_standardDays_min() {
-        Duration test = Duration.ofStandardDays(Long.MIN_VALUE / 86400);
+    public void factory_days_min() {
+        Duration test = Duration.ofDays(Long.MIN_VALUE / 86400);
         assertEquals(test.getSeconds(), (Long.MIN_VALUE / 86400) * 86400);
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_standardDays_tooBig() {
-        Duration.ofStandardDays(Long.MAX_VALUE / 86400 + 1);
+    public void factory_days_tooBig() {
+        Duration.ofDays(Long.MAX_VALUE / 86400 + 1);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void factory_standardDays_tooSmall() {
-        Duration.ofStandardDays(Long.MIN_VALUE / 86400 - 1);
+    public void factory_days_tooSmall() {
+        Duration.ofDays(Long.MIN_VALUE / 86400 - 1);
     }
 
     //-----------------------------------------------------------------------

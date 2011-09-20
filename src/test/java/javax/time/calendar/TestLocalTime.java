@@ -918,7 +918,7 @@ public class TestLocalTime {
     }
 
     public void test_plus_Duration_wrap() {
-        Duration dur = Duration.ofStandardHours(1);
+        Duration dur = Duration.ofHours(1);
         LocalTime t = LocalTime.of(23, 30).plus(dur);
         assertEquals(t, LocalTime.of(0, 30));
     }
@@ -1476,7 +1476,7 @@ public class TestLocalTime {
     }
 
     public void test_minus_Duration_wrap() {
-        Duration dur = Duration.ofStandardHours(1);
+        Duration dur = Duration.ofHours(1);
         LocalTime t = LocalTime.of(0, 30).minus(dur);
         assertEquals(t, LocalTime.of(23, 30));
     }

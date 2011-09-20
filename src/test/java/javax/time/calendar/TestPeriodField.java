@@ -552,7 +552,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     public void test_toDuration_hours() {
         Duration test = PeriodField.of(5, HOURS).toDuration();
-        Duration fiveHours = Duration.ofStandardHours(5);
+        Duration fiveHours = Duration.ofHours(5);
         assertEquals(test, fiveHours);
     }
 

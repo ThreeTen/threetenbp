@@ -434,7 +434,7 @@ public final class JulianChronology extends Chronology implements Serializable {
     private static final class Months extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         private Months() {
-            super("JulianMonths", Duration.ofStandardHours(31557600L / 12L));  // 365.25 days / 12
+            super("JulianMonths", Duration.ofHours(31557600L / 12L));  // 365.25 days / 12
         }
         private Object readResolve() {
             return MONTHS;

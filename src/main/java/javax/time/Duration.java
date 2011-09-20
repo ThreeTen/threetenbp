@@ -256,7 +256,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input minutes exceeds the capacity of {@code Duration}
      */
-    public static Duration ofStandardMinutes(long minutes) {
+    public static Duration ofMinutes(long minutes) {
         return create(MathUtils.safeMultiply(minutes, 60), 0);
     }
 
@@ -271,12 +271,12 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input hours exceeds the capacity of {@code Duration}
      */
-    public static Duration ofStandardHours(long hours) {
+    public static Duration ofHours(long hours) {
         return create(MathUtils.safeMultiply(hours, 3600), 0);
     }
 
     /**
-     * Obtains an instance of {@code Duration} from a number of standard length days.
+     * Obtains an instance of {@code Duration} from a number of standard 24 hour days.
      * <p>
      * The seconds are calculated based on the standard definition of a day,
      * where each day is 86400 seconds which implies a 24 hour day.
@@ -286,7 +286,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a {@code Duration}, not null
      * @throws ArithmeticException if the input days exceeds the capacity of {@code Duration}
      */
-    public static Duration ofStandardDays(long days) {
+    public static Duration ofDays(long days) {
         return create(MathUtils.safeMultiply(days, 86400), 0);
     }
 

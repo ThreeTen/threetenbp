@@ -348,7 +348,7 @@ public class TestPeriodFields {
     // from(Duration)
     //-----------------------------------------------------------------------
     public void factory_of_Duration() {
-        Duration dur = Duration.ofStandardHours(2).plusSeconds(32).plusNanos(345);
+        Duration dur = Duration.ofHours(2).plusSeconds(32).plusNanos(345);
         PeriodFields test = PeriodFields.of(dur);
         assertEquals(test.size(), 2);
         assertEquals(test.getAmount(SECONDS), 2 * 3600 + 32);
@@ -1336,7 +1336,7 @@ public class TestPeriodFields {
     //-----------------------------------------------------------------------
     public void test_toDuration_hours() {
         Duration test = PeriodFields.of(5, HOURS).toDuration();
-        Duration fiveHours = Duration.ofStandardHours(5);
+        Duration fiveHours = Duration.ofHours(5);
         assertEquals(test, fiveHours);
     }
 

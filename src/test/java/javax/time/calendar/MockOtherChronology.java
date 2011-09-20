@@ -58,7 +58,7 @@ public final class MockOtherChronology extends Chronology {
     private static class Unit extends PeriodUnit {
         private static final long serialVersionUID = 1L;
         Unit() {
-            super("OtherMonths", Duration.ofStandardDays(29));
+            super("OtherMonths", Duration.ofDays(29));
         }
     };
 }
