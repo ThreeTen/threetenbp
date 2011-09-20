@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.time.calendar.Clock;
 import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.CalendricalParseException;
 
 /**
@@ -725,7 +724,7 @@ public final class Instant
     public String toString() {
         // TODO: optimize and handle big instants
         // TODO: Consider epoch plus offset format instead
-        return OffsetDateTime.ofInstant(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
+        return OffsetDateTime.ofInstantUTC(this).toLocalDateTime().toString() + 'Z';
     }
 
 }
