@@ -38,6 +38,7 @@ import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.DayOfWeek.WEDNESDAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.MonthOfYear.JULY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -414,13 +415,18 @@ public class TestWeekRules {
         
         assertEquals(rule.getBaseRule(), rule);
         
-        assertEquals(rule.convertToPeriod(1), 0);
-        assertEquals(rule.convertToPeriod(7), 6);
-        assertEquals(rule.convertToPeriod(0), -1);
+        assertEquals(rule.convertToPeriod(1), 0);  // Sun
+        assertEquals(rule.convertToPeriod(2), 1);  // Mon
+        assertEquals(rule.convertToPeriod(3), 2);  // Tue
+        assertEquals(rule.convertToPeriod(4), 3);  // Wed
+        assertEquals(rule.convertToPeriod(5), 4);  // Thu
+        assertEquals(rule.convertToPeriod(6), 5);  // Fri
+        assertEquals(rule.convertToPeriod(7), 6);  // Sat
         assertEquals(rule.convertToPeriod(8), 7);
+        assertEquals(rule.convertToPeriod(0), -1);
         
-        assertEquals(rule.convertFromPeriod(0), 1);
-        assertEquals(rule.convertFromPeriod(6), 7);
+        assertEquals(rule.convertFromPeriod(0), 1);  // Sun
+        assertEquals(rule.convertFromPeriod(6), 7);  // Sat
         assertEquals(rule.convertFromPeriod(-1), 0);
         assertEquals(rule.convertFromPeriod(7), 8);
     }
@@ -430,9 +436,12 @@ public class TestWeekRules {
         DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
         for (int i = 1; i <= 31; i++) {
             int stdDOW = (i + 4 - 1) % 7 + 1;
+            DayOfWeek stdObj = DayOfWeek.of(stdDOW);
             int relDOW = (i + 5 - 1) % 7 + 1;
-            assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), rule.field(relDOW));
-            assertEquals(rule.getValue(DayOfWeek.of(stdDOW)), rule.field(relDOW));
+            DateTimeField relField = rule.field(relDOW);
+            assertEquals(rule.getValue(LocalDate.of(2011, 7, i)), relField);
+            assertEquals(rule.getValue(stdObj), relField);
+//            assertEquals(DayOfWeek.from(relField), stdObj);  // TODO: engine change needed
         }
         
 //        assertEquals(rule.field(-7), rule.derive(DAY_OF_WEEK.field(-8)));  // 2prev Mon
@@ -468,7 +477,7 @@ public class TestWeekRules {
     }
 
     //-----------------------------------------------------------------------
-    // dayOfWeek()
+    // weekOfMonth()
     //-----------------------------------------------------------------------
     public void test_weekOfMonth_sun1() {
         DateTimeRule rule = WeekRules.of(SUNDAY, 1).weekOfMonth();

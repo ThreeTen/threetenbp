@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.DayOfWeek.MONDAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
@@ -531,30 +530,29 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * Rule implementation.
      */
     static final class DayOfWeekRule extends DateTimeRule implements Serializable {
-        // must support DayOfWeek.of(weekRuleBasedDayOfWeek) and similar
+        // does not make sense to allow conversion between day-of-week based on different WeekRules
+        // cannot provide easy conversion to DayOfWeek, as period is then non-sequential
         private static final long serialVersionUID = 1L;
         private final WeekRules weekRules;
 
         DayOfWeekRule(WeekRules weekRules) {
-            super("DayOfWeek-" + weekRules.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7,
-                    weekRules.getFirstDayOfWeek() == MONDAY ? DAY_OF_WEEK : null);
+            super("DayOfWeek-" + weekRules.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7, null);
             this.weekRules = weekRules;
         }
-        @Override
-        protected void normalize(CalendricalEngine engine) {
-            super.normalize(engine);
-        }
+//        @Override
+//        protected void normalize(CalendricalEngine engine) {
+//            DateTimeField rdow = engine.getField(this, false);
+//            if (rdow != null && rdow.isValidValue()) {
+//                engine.setField(weekRules.convertDayOfWeek(rdow.getValidIntValue()).toField(), true);
+//                // need to delete this rule here
+//            }
+//        }
         @Override
         protected DateTimeField deriveFrom(CalendricalEngine engine) {
             DateTimeField dow = engine.getFieldDerived(DAY_OF_WEEK, false);
             if (dow != null && dow.isValidValue()) {
                 return field(((dow.getValue() - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1);
             }
-//                long dow0 = MathUtils.safeDecrement(dow.getValue());
-//                long weeks = MathUtils.floorDiv(dow0, 7);
-//                dow0 = MathUtils.floorMod(dow0, 7);
-//                long adjustedDow = ((dow0 - firstDayOfWeek.ordinal() + 7) % 7) + 1;
-//                return field(MathUtils.safeAdd(adjustedDow, MathUtils.safeMultiply(weeks, 7)));
             return null;
         }
         @Override
