@@ -79,7 +79,7 @@ public enum AmPmOfDay implements Calendrical {
     /**
      * Gets the rule for {@code AmPmOfDay}.
      * <p>
-     * This rule is a calendrical rule base on {@code AmPmOfDay}.
+     * This rule is a calendrical rule based on {@code AmPmOfDay}.
      * The equivalent date-time rule is {@link ISODateTimeRule#AMPM_OF_DAY}.
      *
      * @return the rule for the am-pm-of-day, not null

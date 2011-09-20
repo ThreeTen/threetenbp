@@ -133,7 +133,7 @@ public enum MonthOfYear implements Calendrical {
     /**
      * Gets the rule for {@code MonthOfYear}.
      * <p>
-     * This rule is a calendrical rule base on {@code MonthOfYear}.
+     * This rule is a calendrical rule based on {@code MonthOfYear}.
      * The equivalent date-time rule is {@link ISODateTimeRule#MONTH_OF_YEAR}.
      *
      * @return the rule for the month-of-year, not null

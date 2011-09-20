@@ -111,7 +111,7 @@ public enum DayOfWeek implements Calendrical {
     /**
      * Gets the rule for {@code DayOfWeek}.
      * <p>
-     * This rule is a calendrical rule base on {@code DayOfWeek}.
+     * This rule is a calendrical rule based on {@code DayOfWeek}.
      * The equivalent date-time rule is {@link ISODateTimeRule#DAY_OF_WEEK}.
      *
      * @return the rule for the day-of-week, not null

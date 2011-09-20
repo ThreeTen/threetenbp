@@ -89,7 +89,7 @@ public enum QuarterOfYear implements Calendrical {
     /**
      * Gets the rule for {@code QuarterOfYear}.
      * <p>
-     * This rule is a calendrical rule base on {@code QuarterOfYear}.
+     * This rule is a calendrical rule based on {@code QuarterOfYear}.
      * The equivalent date-time rule is {@link ISODateTimeRule#QUARTER_OF_YEAR}.
      *
      * @return the rule for the quarter-of-year, not null
