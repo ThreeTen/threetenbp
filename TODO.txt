@@ -46,8 +46,9 @@ Duration
 
 Instant
 - toString/parse
+- implement Calendrical?
 
-Time scales
+Time scales (UTC/TAI)
 
 Date/Time classes
 - DateResolver rework - takes int or MonthOfDay or calendricals
@@ -57,8 +58,10 @@ Date/Time classes
 ? getMonthOfYear() -> getMonth(), etc
 ? with(rule, value)
 ? Calendrical rule for date/time as a period (for between calculations)
+? MonthOfYear methods taking year, as well as boolean
 
 Rules
+- DateTimeField.from(Cal...)
 - ensure other calendar systems re-use ISO defined rules
 - Handle case where values have gaps, eg 1,2, 4,5,6, 8
 ? parse()
@@ -103,8 +106,8 @@ Time zones
 # Exception on bad zone - http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4412864
 
 Periods
+- WIP branch, decide on normalization
 - Between factories
-- rename classes?
 - Formatting/parsing (defer?)
 - Period.toString is not output of state
 
@@ -189,3 +192,4 @@ Not doing
 - get rule by name - NO some rules are based on data
 - get chrono by name - NO some rules are based on data
 - Rename DateProvider to LocalDateProvider - NO, interface was removed
+- Rename period classes - NO, current names seem fine
