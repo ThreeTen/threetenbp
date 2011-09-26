@@ -90,8 +90,8 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * The purpose of capturing all this information is to handle issues when
  * manipulating and persisting time-zones. For example, consider what happens if the
  * government of a country changed the start or end of daylight savings time.
- * If you created and stored a date using one version of the rules, and then load it
- * up when a new version of the rules are in force, what should happen?
+ * If a date-time is created and stored using one version of the rules, and then loaded
+ * when a new version of the rules are in force, what should happen?
  * The date might now be invalid, for example due to a gap in the local time-line.
  * By storing the version of the time-zone rules data together with the date, it is
  * possible to tell that the rules have changed and to process accordingly.
