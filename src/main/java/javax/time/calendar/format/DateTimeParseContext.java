@@ -255,7 +255,7 @@ public final class DateTimeParseContext {
      * The calendricals are not validated, so a field may have an out of range value.
      * For example, the day-of-month might be set to 50, or the hour to 1000.
      *
-     * @param rule  the rule to query from the map, null returns null
+     * @param clazz  the type to query from the map, not null
      * @return the value mapped to the specified rule, null if rule not in the map
      */
     @SuppressWarnings("unchecked")

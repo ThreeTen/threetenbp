@@ -126,10 +126,6 @@ public final class DateTimeRuleGroup {
         }
     }
 
-    /**
-     * @param rule
-     * @return
-     */
     private AbstractMap.SimpleImmutableEntry<PeriodUnit, PeriodUnit> createEntry(PeriodUnit unit, PeriodUnit range) {
         return new AbstractMap.SimpleImmutableEntry<PeriodUnit, PeriodUnit>(unit, range);
     }

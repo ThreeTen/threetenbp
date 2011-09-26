@@ -308,7 +308,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * <p>
      * The alternate format is for fixed time-zones, where the offset never changes over time.
      * A fixed time-zone is returned if the first three characters are 'UTC' or 'GMT' and
-     * the remainder of the ID is a valid format for {@link ZoneOffset#of(String)}.
+     * the remainder of the ID is a valid format for {@link ZoneOffset#of(CharSequence)}.
      * The result will have a normalized time-zone ID of 'UTC{offset}', or just 'UTC' if the offset is zero.
      * <p>
      * Note that it is intended that fixed offset time-zones are rarely used. Applications should use

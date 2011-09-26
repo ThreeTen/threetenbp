@@ -254,9 +254,9 @@ public final class UTCInstant
      * @param nanoOfDay  the nanoseconds within the day, including leap seconds
      * @param rules  the leap second rules, not null
      */
-    private UTCInstant(long myDay, long nanoOfDay, UTCRules rules) {
+    private UTCInstant(long mjDay, long nanoOfDay, UTCRules rules) {
         super();
-        this.mjDay = myDay;
+        this.mjDay = mjDay;
         this.nanoOfDay = nanoOfDay;
         this.rules = rules;
     }

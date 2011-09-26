@@ -126,7 +126,6 @@ public abstract class PeriodUnit
      * @param name  the name of the type, not null
      * @param baseEquivalentAmount  the equivalent amount that this is derived from, 1 or greater
      * @param baseUnit  the base unit that this is derived from, not null
-     * @param equivalentPeriod  the period this is derived from, not null
      * @throws IllegalArgumentException if the period is zero or negative
      * @throws ArithmeticException if the equivalent period calculation overflows
      */

@@ -112,7 +112,6 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
     /**
      * Loads the rules from a URL, often in a jar file.
      *
-     * @param providers  the list to add to, not null
      * @param url  the jar file to load, not null 
      * @throws Exception if an error occurs
      */

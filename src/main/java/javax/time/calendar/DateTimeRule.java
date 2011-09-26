@@ -544,7 +544,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     /**
      * Compares the period unit of this rule to another.
      * 
-     * @param other the other rule, not null
+     * @param other  the other rule, not null
      * @return the comparator result
      */
     final int comparePeriodUnit(DateTimeRule other) {
@@ -554,7 +554,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     /**
      * Compares the period range of this rule to another handling null as forever.
      * 
-     * @param other the other rule, not null
+     * @param other  the other rule, not null
      * @return the comparator result
      */
     final int comparePeriodRange(DateTimeRule other) {
@@ -564,7 +564,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     /**
      * Compares the period range of this rule to another handling null as forever.
      * 
-     * @param other the other rule, not null
+     * @param unit1  the first unit, null means forever
+     * @param unit2  the second unit, null means forever
      * @return the comparator result
      */
     static final int comparePeriodUnits(PeriodUnit unit1, PeriodUnit unit2) {

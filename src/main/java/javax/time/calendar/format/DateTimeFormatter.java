@@ -93,7 +93,6 @@ public final class DateTimeFormatter {
      * Constructor used by immutable copying.
      *
      * @param symbols  the symbols to use for text formatting, not null
-     * @param asciiNumerics  whether to use ASCII numerics (true) or locale numerics (false)
      * @param printerParser  the printer/parser to use, not null
      */
     private DateTimeFormatter(

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -187,7 +187,7 @@ public final class HistoricDate
     /**
      * Constructs an instance with the specified date.
      *
-     * @param chono  the chronology, not null
+     * @param chrono  the chronology, not null
      * @param year  the year to represent, valid
      * @param month  the month-of-year to represent, not null
      * @param day  the day-of-month to represent, valid

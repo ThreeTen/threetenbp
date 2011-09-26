@@ -161,16 +161,16 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
      * <p>
      * The entire state of the object is compared.
      *
-     * @param other  the other object to compare to, null returns false
+     * @param obj  the object to check, null returns false
      * @return true if equal
      */
     @Override
-    public boolean equals(Object otherRules) {
-        if (this == otherRules) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
            return true;
         }
-        if (otherRules instanceof FixedZoneRules) {
-            return offset.equals(((FixedZoneRules) otherRules).offset);
+        if (obj instanceof FixedZoneRules) {
+            return offset.equals(((FixedZoneRules) obj).offset);
         }
         return false;
     }

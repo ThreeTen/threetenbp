@@ -160,7 +160,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      *
      * @param standardTransitions  the standard transitions, not null
      * @param standardOffsets  the standard offsets, not null
-     * @param savingsLocalTransitions  the standard transitions, not null
+     * @param savingsInstantTransitions  the standard transitions, not null
      * @param wallOffsets  the wall offsets, not null
      * @param lastRules  the recurring last rules, size 15 or less, not null
      */
@@ -544,16 +544,16 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
      * <p>
      * The entire state of the object is compared.
      *
-     * @param other  the other object to compare to, null returns false
+     * @param obj  the object to check, null returns false
      * @return true if equal
      */
     @Override
-    public boolean equals(Object otherRules) {
-        if (this == otherRules) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
            return true;
         }
-        if (otherRules instanceof StandardZoneRules) {
-            StandardZoneRules other = (StandardZoneRules) otherRules;
+        if (obj instanceof StandardZoneRules) {
+            StandardZoneRules other = (StandardZoneRules) obj;
             return Arrays.equals(standardTransitions, other.standardTransitions) &&
                     Arrays.equals(standardOffsets, other.standardOffsets) &&
                     Arrays.equals(savingsInstantTransitions, other.savingsInstantTransitions) &&
