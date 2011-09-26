@@ -176,14 +176,14 @@ public final class CalendricalEngine {
      * @param date  the date to derive from, may be null
      * @param time  the time to derive from, may be null
      * @param offset  the zone offset to derive from, may be null
-     * @param zoneId  the zone ID to derive from, may be null
-     * @param chrono  the chronology to derive from, may be null
+     * @param zone  the zone ID to derive from, may be null
+     * @param chronology  the chronology to derive from, may be null
      * @param fields  the fields to derive from, may be null
      * @return the derived value for the rule, null if unable to derive
      */
     @SuppressWarnings("unchecked")
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData,
-            LocalDate date, LocalTime time, ZoneOffset offset, ZoneId zoneId, Chronology chrono, DateTimeFields fields) {
+            LocalDate date, LocalTime time, ZoneOffset offset, ZoneId zone, Chronology chronology, DateTimeFields fields) {
         ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         if (fields == null) {
             // optimize simple cases
@@ -192,15 +192,15 @@ public final class CalendricalEngine {
                     case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (R) date;
                     case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (R) time;
                     case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (R) offset;
-                    case ISOCalendricalRule.ZONE_ID_ORDINAL: return (R) zoneId;
-                    case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (R) chrono;
+                    case ISOCalendricalRule.ZONE_ID_ORDINAL: return (R) zone;
+                    case ISOCalendricalRule.CHRONOLOGY_ORDINAL: return (R) chronology;
                     // other cases are not so simple, so drop through
                 }
             } else if (ruleToDerive instanceof ISODateTimeRule) {
                 return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
             }
         }
-        CalendricalEngine engine = new CalendricalEngine(ruleOfData, date, time, offset, zoneId, chrono, fields);
+        CalendricalEngine engine = new CalendricalEngine(ruleOfData, date, time, offset, zone, chronology, fields);
         engine.normalize();
         return engine.derive(ruleToDerive);
     }
@@ -215,14 +215,14 @@ public final class CalendricalEngine {
      * @param <R>  the type of the desired rule
      * @param ruleToDerive  the rule to derive, not null
      * @param ruleOfData  the rule of the data to derive from, may be null
-     * @param chrono  the chronology to derive from, may be null
+     * @param chronology  the chronology to derive from, may be null
      * @param field  the field to derive from, not null
      * @return the derived value for the rule, null if unable to derive
      */
-    public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, Chronology chrono, DateTimeField field) {
+    public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, Chronology chronology, DateTimeField field) {
         ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         ISOChronology.checkNotNull(field, "DateTimeField must not be null");
-        CalendricalEngine engine = new CalendricalEngine(ruleOfData, null, null, null, null, chrono, Collections.singleton(field));
+        CalendricalEngine engine = new CalendricalEngine(ruleOfData, null, null, null, null, chronology, Collections.singleton(field));
         engine.normalize();
         return engine.derive(ruleToDerive);
     }
@@ -268,8 +268,8 @@ public final class CalendricalEngine {
      * @param date  the date, may be null
      * @param time  the time, may be null
      * @param offset  the zone offset, may be null
-     * @param zoneId  the zone ID, may be null
-     * @param chrono  the chronology, may be null
+     * @param zone  the zone ID, may be null
+     * @param chronology  the chronology, may be null
      * @param fields  the fields, may be null
      */
     private CalendricalEngine(
