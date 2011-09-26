@@ -192,7 +192,7 @@ public final class LocalDate
      * Obtains an instance of {@code LocalDate} from the epoch day count.
      * <p>
      * The Epoch Day count is a simple incrementing count of days
-     * where day 0 is 1970-01-01.
+     * where day 0 is 1970-01-01. Negative numbers represent earlier days.
      *
      * @param epochDay  the Epoch Day to convert, based on the epoch 1970-01-01
      * @return the local date, not null
@@ -206,7 +206,7 @@ public final class LocalDate
      * Obtains an instance of {@code LocalDate} from the Modified Julian Day (MJD).
      * <p>
      * The Modified Julian Day count is a simple incrementing count of days
-     * where day 0 is 1858-11-17.
+     * where day 0 is 1858-11-17. Negative numbers represent earlier days.
      *
      * @param mjDay  the Modified Julian Day to convert, based on the epoch 1858-11-17
      * @return the local date, not null
@@ -220,7 +220,7 @@ public final class LocalDate
      * Converts a year zero day count to a date.
      * <p>
      * The year zero day count is a simple incrementing count of days
-     * where day 0 is 0000-01-01.
+     * where day 0 is 0000-01-01. Negative numbers represent earlier days.
      *
      * @param zeroDay  the Year zero Day to convert, based on the epoch 0000-01-01
      * @return the local date, not null
@@ -276,17 +276,10 @@ public final class LocalDate
     /**
      * Obtains an instance of {@code LocalDate} from a text string such as {@code 2007-12-03}.
      * <p>
-     * The following format is accepted in ASCII:
-     * <ul>
-     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}}
-     * </ul>
-     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
-     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
-     * Negative years are allowed, but not negative zero.
-     * <p>
-     * The month-of-year has 2 digits with values from 1 to 12.
-     * <p>
-     * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
+     * The string must represent a valid date and is parsed using
+     * {@link DateTimeFormatters#isoLocalDate()}.
+     * Year, month and day-of-month are required.
+     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12-03", not null
      * @return the parsed local date, not null

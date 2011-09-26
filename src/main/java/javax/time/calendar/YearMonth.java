@@ -194,15 +194,9 @@ public final class YearMonth
     /**
      * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
      * <p>
-     * The following formats are accepted in ASCII:
-     * <ul>
-     * <li>{year}-{monthOfYear}
-     * </ul>
-     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
-     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
-     * Negative years are allowed, but not negative zero.
-     * <p>
-     * The month-of-year has 2 digits and has values from 1 to 12.
+     * The string must represent a valid year-month.
+     * The format must be {@code yyyy-MM}.
+     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12", not null
      * @return the parsed year-month, not null

@@ -173,7 +173,7 @@ public final class TAIInstant
     /**
      * Obtains an instance of {@code TAIInstant} from a text string.
      * <p>
-     * The following format is accepted in ASCII:
+     * The following format is accepted:
      * <ul>
      * <li>{@code {seconds}.{nanosOfSecond}s(TAI)}
      * </ul>

@@ -257,19 +257,10 @@ public final class OffsetTime
     /**
      * Obtains an instance of {@code OffsetTime} from a text string such as {@code 10:15:30+01:00}.
      * <p>
-     * The following formats are accepted in ASCII:
-     * <ul>
-     * <li>{@code {Hour}:{Minute}{OffsetID}}
-     * <li>{@code {Hour}:{Minute}:{Second}{OffsetID}}
-     * <li>{@code {Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}}
-     * </ul>
-     * <p>
-     * The hour has 2 digits with values from 0 to 23.
-     * The minute has 2 digits with values from 0 to 59.
-     * The second has 2 digits with values from 0 to 59.
-     * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
-     * <p>
-     * The offset ID is the normalized form as defined in {@link ZoneOffset}.
+     * The string must represent a valid time and is parsed using
+     * {@link DateTimeFormatters#isoOffsetTime()}.
+     * Hour, minute and offset are required.
+     * Seconds and fractional seconds are optional.
      *
      * @param text  the text to parse such as "10:15:30+01:00", not null
      * @return the parsed local time, not null

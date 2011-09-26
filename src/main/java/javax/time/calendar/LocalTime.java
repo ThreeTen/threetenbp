@@ -353,17 +353,10 @@ public final class LocalTime
     /**
      * Obtains an instance of {@code LocalTime} from a text string such as {@code 10:15}.
      * <p>
-     * The following formats are accepted in ASCII:
-     * <ul>
-     * <li>{@code {Hour}:{Minute}}
-     * <li>{@code {Hour}:{Minute}:{Second}}
-     * <li>{@code {Hour}:{Minute}:{Second}.{NanosecondFraction}}
-     * </ul>
-     * <p>
-     * The hour has 2 digits with values from 0 to 23.
-     * The minute has 2 digits with values from 0 to 59.
-     * The second has 2 digits with values from 0 to 59.
-     * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
+     * The string must represent a valid time and is parsed using
+     * {@link DateTimeFormatters#isoLocalTime()}.
+     * Hour and minute are required.
+     * Seconds and fractional seconds are optional.
      *
      * @param text the text to parse such as "10:15:30", not null
      * @return the parsed local time, not null

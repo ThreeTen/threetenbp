@@ -197,14 +197,8 @@ public final class Year
     /**
      * Obtains an instance of {@code Year} from a text string such as {@code 2007}.
      * <p>
-     * The following format is accepted in ASCII:
-     * <ul>
-     * <li>{year}
-     * </ul>
-     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
-     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
-     * Negative years are allowed, but not negative zero.
-     * <p>
+     * The string must represent a valid year.
+     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007", not null
      * @return the parsed year, not null

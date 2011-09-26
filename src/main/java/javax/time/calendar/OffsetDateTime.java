@@ -454,27 +454,11 @@ public final class OffsetDateTime
     /**
      * Obtains an instance of {@code OffsetDateTime} from a text string such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
-     * The following formats are accepted in ASCII:
-     * <ul>
-     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}{OffsetID}}
-     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}{OffsetID}}
-     * <li>{@code {Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}}
-     * </ul>
-     * <p>
-     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
-     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
-     * Negative years are allowed, but not negative zero.
-     * <p>
-     * The month-of-year has 2 digits with values from 1 to 12.
-     * <p>
-     * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
-     * <p>
-     * The hour has 2 digits with values from 0 to 23.
-     * The minute has 2 digits with values from 0 to 59.
-     * The second has 2 digits with values from 0 to 59.
-     * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
-     * <p>
-     * The offset ID is the normalized form as defined in {@link ZoneOffset}.
+     * The string must represent a valid date-time and is parsed using
+     * {@link DateTimeFormatters#isoOffsetDateTime()}.
+     * Year, month, day-of-month, hour, minute and offset are required.
+     * Seconds and fractional seconds are optional.
+     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12-03T10:15:30+01:00", not null
      * @return the parsed offset date-time, not null

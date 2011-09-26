@@ -217,13 +217,8 @@ public final class MonthDay
     /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
      * <p>
-     * The following formats are accepted in ASCII:
-     * <ul>
-     * <li>--{monthOfYear}-{dayOfMonth}
-     * </ul>
-     * The month-of-year has 2 digits and has values from 1 to 12.
-     * <p>
-     * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
+     * The string must represent a valid month-day.
+     * The format is {@code --MM-dd}.
      *
      * @param text  the text to parse such as "--12-03", not null
      * @return the parsed month-day, not null
