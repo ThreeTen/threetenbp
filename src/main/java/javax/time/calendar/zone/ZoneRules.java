@@ -56,9 +56,9 @@ import javax.time.calendar.ZonedDateTime;
  * of rules. It does not store the group, region or version as they are not
  * part of the state of this object.
  * <p>
- * This class is an abstract base and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
+ * This abstract class must be implemented with care to ensure other classes in
+ * the framework operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
  * It is only intended that the abstract methods are overridden.
  * Subclasses should be Serializable wherever possible.
  *

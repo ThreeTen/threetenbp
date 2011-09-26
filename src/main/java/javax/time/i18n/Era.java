@@ -50,9 +50,10 @@ package javax.time.i18n;
  * Instances of this class may be created from other date objects that implement {@code Calendrical}.
  * Notably this includes {@code LocalDate} and all other date classes from other calendar systems.
  * <p>
- * This interface must be implemented with care to ensure other classes in the
- * framework operate correctly. All instantiable implementations must be final,
- * immutable, thread-safe and singleton. It is strongly recommended to use an enum.
+ * This interface must be implemented with care to ensure other classes in
+ * the framework operate correctly.
+ * All implementations that can be instantiated must be final, immutable, thread-safe and singleton.
+ * It is strongly recommended to use an enum.
  *
  * @author Stephen Colebourne
  */

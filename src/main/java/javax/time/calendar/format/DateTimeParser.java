@@ -48,9 +48,9 @@ import javax.time.calendar.CalendricalEngine;
  * for the next parser. If an error occurs, the returned index will be negative
  * and will have the error position encoded using the complement operator.
  * <p>
- * DateTimeParser is an interface and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
+ * This interface must be implemented with care to ensure other classes in
+ * the framework operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
  * <p>
  * The context is not a thread-safe object and a new instance will be created
  * for each parse that occurs. The context must not be stored in an instance

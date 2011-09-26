@@ -49,9 +49,9 @@ import javax.time.MathUtils;
  * For example years are a derived unit consisting of 12 months, where a month is a basic unit.
  * The equivalent period in the base unit can be obtained from this unit.
  * <p>
- * This class is abstract and must be implemented with care to ensure other classes
- * in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
+ * This abstract class must be implemented with care to ensure other classes in
+ * the framework operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
  * <p>
  * The subclass is fully responsible for serialization as all fields in this class are
  * transient. The subclass must use {@code readResolve} to replace the deserialized

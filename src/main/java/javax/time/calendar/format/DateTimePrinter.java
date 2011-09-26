@@ -40,9 +40,9 @@ import javax.time.CalendricalException;
  * Typically, a complete print is constructed from a number of smaller
  * units, each outputting a single field.
  * <p>
- * DateTimePrinter is an interface and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
+ * This interface must be implemented with care to ensure other classes in
+ * the framework operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

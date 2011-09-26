@@ -70,9 +70,9 @@ import javax.time.TimeSource;
  * {@link TimeSource#fixed} to be used during testing.
  *
  * <h4>Implementation notes</h4>
- * {@code Clock} is an abstract class and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
+ * This abstract class must be implemented with care to ensure other classes in
+ * the framework operate correctly.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
  * <p>
  * The class is designed to be subclassed, however this will rarely be necessary.
  * In most cases, you should subclass {@code TimeSource} instead.

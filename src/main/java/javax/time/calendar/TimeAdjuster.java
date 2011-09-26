@@ -40,7 +40,7 @@ package javax.time.calendar;
  * <p>
  * This interface must be implemented with care to ensure other classes in
  * the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
+ * All implementations that can be instantiated must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
