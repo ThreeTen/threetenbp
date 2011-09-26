@@ -49,7 +49,7 @@ import javax.time.calendar.zone.ZoneRules;
  * <p>
  * {@code ZonedDateTime} is an immutable representation of a date-time with a time-zone.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as a time-zone and zone offset. Thus, for example, the value
+ * as well as a time-zone and zone offset. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00 in the Europe/Paris time-zone"
  * can be stored in a {@code ZonedDateTime}.
  * <p>

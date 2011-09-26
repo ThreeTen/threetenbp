@@ -56,8 +56,8 @@ import javax.time.calendar.format.DateTimeFormatters;
  * viewed as hour-minute-second.
  * <p>
  * This class stores all time fields, to a precision of nanoseconds.
- * It does not store or represent a date or time-zone. Thus, for example, the
- * value "13:45.30.123456789" can be stored in a {@code LocalTime}.
+ * It does not store or represent a date or time-zone.
+ * For example, the value "13:45.30.123456789" can be stored in a {@code LocalTime}.
  * <p>
  * LocalTime is immutable and thread-safe.
  *

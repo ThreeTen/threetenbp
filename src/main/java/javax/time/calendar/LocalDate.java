@@ -53,7 +53,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * day-of-year, day-of-week and week-of-year.
  * <p>
  * This class does not store or represent a time or time-zone.
- * Thus, for example, the value "2nd October 2007" can be stored in a {@code LocalDate}.
+ * For example, the value "2nd October 2007" can be stored in a {@code LocalDate}.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar

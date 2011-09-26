@@ -51,7 +51,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
  * quarter-of-year, can be obtained.
  * <p>
  * This class does not store or represent a day, time or time-zone.
- * Thus, for example, the value "October 2007" can be stored in a {@code YearMonth}.
+ * For example, the value "October 2007" can be stored in a {@code YearMonth}.
  * <p>
  * The ISO-8601 calendar system is the modern civil calendar system used today
  * in most of the world. It is equivalent to the proleptic Gregorian calendar

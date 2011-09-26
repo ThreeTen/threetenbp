@@ -51,7 +51,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * fields such as day-of-year, day-of-week and week-of-year.
  * <p>
  * This class stores all date and time fields, to a precision of nanoseconds.
- * It does not store or represent a time-zone. Thus, for example, the value
+ * It does not store or represent a time-zone. For example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code LocalDateTime}.
  * <p>
  * LocalDateTime is immutable and thread-safe.

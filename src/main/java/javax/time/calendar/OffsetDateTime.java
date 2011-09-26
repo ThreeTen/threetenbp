@@ -49,7 +49,7 @@ import javax.time.calendar.zone.ZoneRules;
  * <p>
  * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as the offset from UTC. Thus, for example, the value
+ * as well as the offset from UTC. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
  * OffsetDateTime is immutable and thread-safe.

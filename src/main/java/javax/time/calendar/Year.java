@@ -55,7 +55,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
  * As such, historical years must be treated with caution.</b>
  * <p>
  * This class does not store or represent a month, day, time or time-zone.
- * Thus, for example, the value "2007" can be stored in a {@code Year}.
+ * For example, the value "2007" can be stored in a {@code Year}.
  * <p>
  * Years represented by this class follow the ISO-8601 standard and use
  * the proleptic numbering system. Year 1 is preceded by year 0, then by year -1.

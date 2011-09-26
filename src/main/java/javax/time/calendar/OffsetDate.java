@@ -50,7 +50,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * day-of-year, day-of-week and week-of-year.
  * <p>
  * This class does not store or represent a time.
- * Thus, for example, the value "2nd October 2007 +02:00" can be stored
+ * For example, the value "2nd October 2007 +02:00" can be stored
  * in a {@code OffsetDate}.
  * <p>
  * OffsetDate is immutable and thread-safe.

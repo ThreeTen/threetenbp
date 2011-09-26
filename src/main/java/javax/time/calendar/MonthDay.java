@@ -51,7 +51,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
  * quarter-of-year, can be obtained.
  * <p>
  * This class does not store or represent a year, time or time-zone.
- * Thus, for example, the value "3rd December" can be stored in a {@code MonthDay}.
+ * For example, the value "3rd December" can be stored in a {@code MonthDay}.
  * <p>
  * Since a {@code MonthDay} does not possess a year, the leap day of
  * 29th of February is considered valid.
