@@ -96,6 +96,7 @@
 - Refactor PeriodUnit
 - Rename getEstimatedDuration() to getDurationEstimate()
 - ZoneResolver refactored
+- Remove LocalTime.Overflow, embedding code in LocalDateTime
 
 0.6.3
 ===============================================================================
