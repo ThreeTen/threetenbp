@@ -54,19 +54,19 @@ public abstract class UTCRules {
     /**
      * Constant for the offset from MJD day 0 to the Java Epoch of 1970-01-01: 40587.
      */
-    protected static final int OFFSET_MJD_EPOCH = 40587;
+    static final int OFFSET_MJD_EPOCH = 40587;
     /**
      * Constant for the offset from MJD day 0 to TAI day 0 of 1958-01-01: 36204.
      */
-    protected static final int OFFSET_MJD_TAI = 36204;
+    static final int OFFSET_MJD_TAI = 36204;
     /**
      * Constant for number of seconds per standard day: 86,400.
      */
-    protected static final long SECS_PER_DAY = 24L * 60L * 60L;
+    static final long SECS_PER_DAY = 24L * 60L * 60L;
     /**
      * Constant for nanos per standard second: 1,000,000,000.
      */
-    protected static final long NANOS_PER_SECOND = 1000000000L;
+    static final long NANOS_PER_SECOND = 1000000000L;
 
     /**
      * Gets the system default leap second rules.
