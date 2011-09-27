@@ -376,6 +376,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         YearMonth test = YearMonth.of(2008, 6);
+        assertSame(test.get(YearMonth.rule()), test);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(YEAR).getValue(), 2008);
         assertEquals(test.get(MONTH_OF_YEAR).getValue(), 6);

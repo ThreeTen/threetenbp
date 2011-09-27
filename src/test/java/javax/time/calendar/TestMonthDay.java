@@ -363,6 +363,7 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
         MonthDay test = MonthDay.of(6, 12);
+        assertSame(test.get(MonthDay.rule()), test);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
         assertEquals(test.get(MONTH_OF_QUARTER), MONTH_OF_QUARTER.field(3));

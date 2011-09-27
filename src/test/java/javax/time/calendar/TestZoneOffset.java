@@ -345,6 +345,11 @@ public class TestZoneOffset {
         assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, -64, 75, 1000000004)), ZoneOffset.ofHoursMinutesSeconds(0, 57, 16));
     }
 
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_of_PeriodProvider_overflow() {
+        ZoneOffset.of(Period.ofHours(23));
+    }
+
     @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_of_PeriodProvider_invalidPeriod() {
         ZoneOffset.of(PeriodField.of(2, MockOtherChronology.OTHER_MONTHS));

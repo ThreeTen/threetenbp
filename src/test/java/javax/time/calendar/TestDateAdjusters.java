@@ -47,6 +47,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
@@ -68,6 +70,16 @@ public class TestDateAdjusters {
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
         }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test(expectedExceptions = InvocationTargetException.class)
+    public void test_forceCoverage() throws Exception {
+        Enum en = (Enum) DateAdjusters.lastDayOfYear();
+        Class cls = en.getClass();
+        Method m = cls.getMethod("valueOf", String.class);
+        m.invoke(null, en.name());
+        m.invoke(null, "NOTREAL");
     }
 
     //-----------------------------------------------------------------------

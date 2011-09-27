@@ -769,6 +769,32 @@ public class TestLocalDate extends AbstractTest {
         LocalDate.of(2007, 11, 30).withDayOfMonth(31);
     }
 
+    public void test_withDayOfMonth_Resolver_normal() {
+        LocalDate t = TEST_2007_07_15.withDayOfMonth(1, DateResolvers.strict());
+        assertEquals(t, LocalDate.of(2007, 7, 1));
+    }
+
+    public void test_withDayOfMonth_Resolver_noChange() {
+        LocalDate t = TEST_2007_07_15.withDayOfMonth(15, DateResolvers.strict());
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDayOfMonth_int_DateResolver_invalid() {
+        TEST_2007_07_15.withDayOfMonth(32, DateResolvers.nextValid());
+    }
+
+    public void test_withDayOfMonth_int_DateResolver_adjustDay() {
+        LocalDate t = LocalDate.of(2007, 6, 3).withDayOfMonth(31, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2007, 7, 1);
+        assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withDayOfMonth_int_DateResolver_null_adjustDay() {
+        LocalDate.of(2007, 6, 3).withDayOfMonth(31, new MockDateResolverReturnsNull());
+    }
+
     //-----------------------------------------------------------------------
     // withDayOfYear(int)
     //-----------------------------------------------------------------------

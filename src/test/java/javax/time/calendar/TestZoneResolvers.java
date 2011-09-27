@@ -37,6 +37,8 @@ import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
@@ -69,6 +71,18 @@ public class TestZoneResolvers {
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
         }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test(expectedExceptions = InvocationTargetException.class)
+    public void test_forceCoverage() throws Exception {
+        Enum en = (Enum) ZoneResolvers.strict();
+        Class cls = en.getClass();
+        Method m1 = cls.getMethod("values");
+        m1.invoke(null);
+        Method m2 = cls.getMethod("valueOf", String.class);
+        m2.invoke(null, en.name());
+        m2.invoke(null, "NOTREAL");
     }
 
     //-----------------------------------------------------------------------

@@ -489,6 +489,12 @@ public class TestDateTimeFields {
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 1);
     }
 
+    public void test_with_sameFieldNoChange() {
+        DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
+        DateTimeFields test = base.with(MONTH_OF_YEAR, 6);
+        assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);

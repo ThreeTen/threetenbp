@@ -168,9 +168,10 @@ public class TestYear {
     // get()
     //-----------------------------------------------------------------------
     public void test_get() {
-        assertEquals(Year.of(1999).get(Year.rule()), Year.of(1999));
-        assertEquals(Year.of(1999).get(YEAR), YEAR.field(1999));
-        assertEquals(Year.of(1999).get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
+        Year test = Year.of(1999);
+        assertSame(test.get(Year.rule()), test);
+        assertEquals(test.get(YEAR), YEAR.field(1999));
+        assertEquals(test.get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
     }
 
     public void test_get_unsupportedField() {
@@ -828,6 +829,11 @@ public class TestYear {
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
             }
         }
+    }
+
+    public void test_equals_same() {
+        Year test = Year.of(2011);
+        assertEquals(test.equals(test), true);
     }
 
     public void test_equals_nullYear() {
