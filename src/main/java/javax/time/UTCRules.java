@@ -62,11 +62,11 @@ public abstract class UTCRules {
     /**
      * Constant for number of seconds per standard day: 86,400.
      */
-    protected static final long SECS_PER_DAY = 24 * 60 * 60;
+    protected static final long SECS_PER_DAY = 24L * 60L * 60L;
     /**
      * Constant for nanos per standard second: 1,000,000,000.
      */
-    protected static final long NANOS_PER_SECOND = 1000000000;
+    protected static final long NANOS_PER_SECOND = 1000000000L;
 
     /**
      * Gets the system default leap second rules.
