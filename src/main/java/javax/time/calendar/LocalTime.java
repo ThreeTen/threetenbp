@@ -31,6 +31,16 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOChronology.HOURS_PER_DAY;
+import static javax.time.calendar.ISOChronology.MINUTES_PER_DAY;
+import static javax.time.calendar.ISOChronology.MINUTES_PER_HOUR;
+import static javax.time.calendar.ISOChronology.NANOS_PER_DAY;
+import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
+import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
+import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_HOUR;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
@@ -101,26 +111,6 @@ public final class LocalTime
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
-    /** Hours per minute. */
-    static final int HOURS_PER_DAY = 24;
-    /** Minutes per hour. */
-    static final int MINUTES_PER_HOUR = 60;
-    /** Minutes per day. */
-    static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
-    /** Seconds per minute. */
-    static final int SECONDS_PER_MINUTE = 60;
-    /** Seconds per hour. */
-    static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
-    /** Seconds per day. */
-    static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
-    /** Nanos per second. */
-    static final long NANOS_PER_SECOND = 1000000000L;
-    /** Nanos per minute. */
-    static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
-    /** Nanos per hour. */
-    static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
-    /** Nanos per day. */
-    static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
 
     /**
      * The hour.

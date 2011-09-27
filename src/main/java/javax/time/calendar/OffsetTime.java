@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -780,7 +782,7 @@ public final class OffsetTime
      */
     private long toEpochNano() {
         long nod = time.toNanoOfDay();
-        long offsetNanos = offset.getAmountSeconds() * 1000000000L;
+        long offsetNanos = offset.getAmountSeconds() * NANOS_PER_SECOND;
         return nod - offsetNanos;
     }
 

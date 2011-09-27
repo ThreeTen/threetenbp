@@ -31,13 +31,13 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalTime.HOURS_PER_DAY;
-import static javax.time.calendar.LocalTime.MINUTES_PER_DAY;
-import static javax.time.calendar.LocalTime.NANOS_PER_DAY;
-import static javax.time.calendar.LocalTime.NANOS_PER_HOUR;
-import static javax.time.calendar.LocalTime.NANOS_PER_MINUTE;
-import static javax.time.calendar.LocalTime.NANOS_PER_SECOND;
-import static javax.time.calendar.LocalTime.SECONDS_PER_DAY;
+import static javax.time.calendar.ISOChronology.HOURS_PER_DAY;
+import static javax.time.calendar.ISOChronology.MINUTES_PER_DAY;
+import static javax.time.calendar.ISOChronology.NANOS_PER_DAY;
+import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
+import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
+import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
 
 import java.io.Serializable;
 

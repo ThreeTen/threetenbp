@@ -61,9 +61,45 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     /**
-     * The number of seconds in one day.
+     * Hours per minute.
      */
-    static final int SECONDS_PER_DAY = 60 * 60 * 24;
+    static final int HOURS_PER_DAY = 24;
+    /**
+     * Minutes per hour.
+     */
+    static final int MINUTES_PER_HOUR = 60;
+    /**
+     * Minutes per day.
+     */
+    static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Seconds per minute.
+     */
+    static final int SECONDS_PER_MINUTE = 60;
+    /**
+     * Seconds per hour.
+     */
+    static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Seconds per day.
+     */
+    static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Nanos per second.
+     */
+    static final long NANOS_PER_SECOND = 1000000000L;
+    /**
+     * Nanos per minute.
+     */
+    static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
+    /**
+     * Nanos per hour.
+     */
+    static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Nanos per day.
+     */
+    static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
     /**
      * The number of days in a 400 year cycle.
      */

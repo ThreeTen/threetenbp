@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOChronology.SECONDS_PER_HOUR;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_MINUTE;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -1593,7 +1596,7 @@ public final class ZonedDateTime
         if ((hours | minutes | seconds | nanos) == 0) {
             return this;
         }
-        Instant instant = toInstant().plusSeconds(hours * 3600L + minutes * 60L + seconds).plusNanos(nanos);
+        Instant instant = toInstant().plusSeconds(hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds).plusNanos(nanos);
         return ofInstant(instant, zone);
     }
 
@@ -1915,7 +1918,7 @@ public final class ZonedDateTime
         if ((hours | minutes | seconds | nanos) == 0) {
             return this;
         }
-        Instant instant = toInstant().minusSeconds(hours * 3600L + minutes * 60L + seconds).minusNanos(nanos);
+        Instant instant = toInstant().minusSeconds(hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds).minusNanos(nanos);
         return ofInstant(instant, zone);
     }
 
