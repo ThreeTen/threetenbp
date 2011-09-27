@@ -33,7 +33,7 @@
         <attribute name="dest" />
         <sequential>
             <get
-                src="${maven.ibiblio.url}/@{group}/@{artifact}/@{version}/@{artifact}-@{version}@{variant}.jar"
+                src="${maven.repo.url}/@{group}/@{artifact}/@{version}/@{artifact}-@{version}@{variant}.jar"
                 dest="@{dest}/@{artifact}-@{version}@{variant}.jar"
                 verbose="true"
                 usetimestamp="true" ignoreerrors="true"/>
@@ -58,6 +58,15 @@
         <fileset dir="lib/test">
             <include name="**/*.jar" />
         </fileset>
+    </path>
+
+    <path id="coverage.path">
+        <path refid="main.path" />
+        <pathelement location="${core.test.classes}" />
+        <pathelement location="${lib.main}/${tzdb.outputjar}"/>
+        <fileset dir="lib/test">
+            <include name="**/*.jar" />
+       </fileset>
     </path>
 
     <path id="emma.lib" >
@@ -186,31 +195,21 @@
         </testng>
     </target>
 
-    <target name="test-scales" depends="compile-core-tests,compile-tzdb" description="run the scales tests">
-        <taskdef resource="testngtasks" classpathref="test.path" />
-        <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
-            <jvmarg value="-Xmx512M" />
-            <jvmarg value="-Duser.language=en" />
-            <jvmarg value="-Duser.country=UK" />
-            <classfileset dir="${core.test.classes}" includes="javax/time/scales/Test*.class" excludes="java/util/*" />
-        </testng>
-    </target>
-
     <target name="test" depends="test-core,test-extra" description="run tests" />
 
     <!-- ==================================================================== -->
     <target name="coverage" depends="compile-core-tests" description="test coverage">
         <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
-        <mkdir dir="${coverage}" />
+        <mkdir dir="${build.coverage}" />
            <emmajava libclasspathref="emma.lib"
                    fullmetadata="yes"
                    sourcepath="${core.main}"
                    classname="javax.time.AllTest"
-                classpathref="test.path">
+                classpathref="coverage.path">
                <jvmarg value="-Xmx512M" />
                <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
-              <txt outfile="${coverage}/coverage.txt" />
-               <html outfile="${coverage}/coverage.html" metrics="method:90,block:90,line:90,class:95" />
+               <txt outfile="${build.coverage}/coverage.txt" />
+               <html outfile="${build.coverage}/coverage.html" metrics="method:90,block:90,line:90,class:95" />
         </emmajava>
     </target>
 
