@@ -309,8 +309,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
     public static Duration of(long amount, TimeUnit unit) {
         Instant.checkNotNull(unit, "TimeUnit must not be null");
         long nanos = unit.toNanos(amount);
-        if (unit == TimeUnit.NANOSECONDS ||
-                (nanos > Long.MAX_VALUE && nanos < Long.MIN_VALUE)) {
+        if (unit == TimeUnit.NANOSECONDS || (nanos != Long.MAX_VALUE && nanos != Long.MIN_VALUE)) {
             return ofNanos(nanos);
         }
         BigInteger calc = BigInteger.valueOf(amount);
