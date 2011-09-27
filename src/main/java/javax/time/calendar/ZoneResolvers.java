@@ -171,7 +171,6 @@ public final class ZoneResolvers {
     public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
         ISOChronology.checkNotNull(gapResolver, "ZoneResolver must not be null");
         ISOChronology.checkNotNull(overlapResolver, "ZoneResolver must not be null");
-        overlapResolver = (overlapResolver == null ? strict() : overlapResolver);
         if (gapResolver == overlapResolver) {
             return gapResolver;
         }
