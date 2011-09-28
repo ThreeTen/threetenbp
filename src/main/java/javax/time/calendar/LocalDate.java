@@ -461,8 +461,8 @@ public final class LocalDate
      * @throws NullPointerException if the resolver returned null
      */
     private LocalDate resolveDate(DateResolver dateResolver, int year, MonthOfYear month, int day) {
-        YEAR.checkValidValue(year);  // TODO: make resolver handle this
-        DAY_OF_MONTH.checkValidValue(day);  // TODO: make resolver handle this
+        YEAR.checkValidValue(year);
+        DAY_OF_MONTH.checkValidValue(day);
         LocalDate date = dateResolver.resolveDate(year, month, day);
         ISOChronology.checkNotNull(date, "DateResolver implementation must not return null");
         return date;
