@@ -52,7 +52,6 @@ Time scales (UTC/TAI)
 
 Date/Time classes
 - DateResolver rework - takes int or MonthOfDay or calendricals
-- factories taking double for seconds (LocalTime...)
 - OffsetDateTime.toEpochSecs() could be private
 ? InstantProvider implementations toEpochMillis()
 ? getMonthOfYear() -> getMonth(), etc
@@ -137,7 +136,7 @@ General
 - serialization formats
 - evaluate hash codes
 - check overflows
-- factories/methods taking double
+? factories/methods taking double - double is very unreliable
 
 ===============================================================================
 Possible items
