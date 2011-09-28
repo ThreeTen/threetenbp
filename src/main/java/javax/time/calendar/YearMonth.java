@@ -581,6 +581,32 @@ public final class YearMonth
         return LocalDate.of(year, month, dayOfMonth);
     }
 
+    /**
+     * Returns a date formed from this year-month at the specified day-of-month using
+     * the resolver to handle invalid day-of-month.
+     * <p>
+     * This method merges {@code this} and the specified day to form an
+     * instance of {@code LocalDate}.
+     * This method can be used as part of a chain to produce a date:
+     * <pre>
+     * LocalDate date = year.atMonth(month).atDay(day, resolver);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day-of-month to use, from 1 to 31
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return the date formed from this year-month and the specified day, not null
+     * @throws InvalidCalendarFieldException when the day is invalid for the year-month
+     * @see #isValidDay(int)
+     */
+    public LocalDate atDay(int dayOfMonth, DateResolver dateResolver) {
+        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate date = dateResolver.resolveDate(year, month, dayOfMonth);
+        ISOChronology.checkNotNull(date, "DateResolver implementation must not return null");
+        return date;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this year-month to an equivalent fields object.

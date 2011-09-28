@@ -1032,6 +1032,30 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
+    // atDay(int,DateResolver)
+    //-----------------------------------------------------------------------
+    public void test_atDay_intDateResolver() {
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.atDay(30, DateResolvers.strict()), LocalDate.of(2008, 6, 30));
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_atDay_intDateResolver_invalidDay() {
+        YearMonth test = YearMonth.of(2008, 6);
+        try {
+            test.atDay(31, DateResolvers.strict());
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), DAY_OF_MONTH);
+            throw ex;
+        }
+    }
+
+    public void test_atDay_intDateResolver_resolved() {
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.atDay(31, DateResolvers.previousValid()), LocalDate.of(2008, 6, 30));
+    }
+
+    //-----------------------------------------------------------------------
     // toFields()
     //-----------------------------------------------------------------------
     public void test_toFields() {
