@@ -58,6 +58,9 @@ public interface Calendrical {
      * <p>
      * The standard implementation of this method calls one of the static {@code derive}
      * methods on {@link CalendricalEngine}.
+     * <p>
+     * Implementations must ensure that calls to this method are thread-safe.
+     * An immutable implementation will naturally provide this guarantee.
      *
      * @param rule  the rule to query, not null
      * @return the value for the rule, null if no value for the rule

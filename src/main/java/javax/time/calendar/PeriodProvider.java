@@ -64,8 +64,8 @@ public interface PeriodProvider {
      * The amount stored for a unit in the result may be zero.
      * If this object is already a {@code PeriodFields} then it is simply returned.
      * <p>
-     * Implementations must ensure that this method provides a thread-safe consistent
-     * result. An immutable implementation will naturally provide this guarantee.
+     * Implementations must ensure that calls to this method are thread-safe.
+     * An immutable implementation will naturally provide this guarantee.
      *
      * @return the period equivalent to this one, not null
      */

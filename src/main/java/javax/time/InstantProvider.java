@@ -78,11 +78,8 @@ public interface InstantProvider {
      * It is recommended that this interface should only be implemented by classes
      * that provide time information to at least minute precision.
      * <p>
-     * {@code InstantProvider} makes no overall guarantees about the thread-safety.
-     * However, this method must return a fully consistent result.
-     * For example, if the implementation is mutable and contains two fields,
-     * then the result of this method must refer to a valid snapshot of both fields,
-     * and not a snapshot where one field has been updated and not the other.
+     * Implementations must ensure that calls to this method are thread-safe.
+     * An immutable implementation will naturally provide this guarantee.
      *
      * @return the {@code Instant} equivalent to this object, not null
      * @throws CalendricalException if the time cannot be converted
