@@ -63,7 +63,7 @@ import javax.time.calendar.ZoneOffset;
  * <li>Rules - A set of one or more rules describe how daylight savings changes during the window.</li>
  * </ul>
  * <p>
- * This class is a mutable builder used to create instances of TimeZone.
+ * This class is a mutable builder used to create zone instances.
  * It must only be used from a single thread.
  * The created instances are immutable and thread-safe.
  *

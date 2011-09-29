@@ -73,7 +73,7 @@ import javax.time.calendar.format.DateTimeParseContext;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 
 /**
- * A builder that can read the TZDB TimeZone files and build ZoneRules instances.
+ * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.
  * <p>
  * This class is a mutable builder. A new instance must be created for each compile.
  *
