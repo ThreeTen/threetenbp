@@ -151,7 +151,7 @@ public final class ZoneOffset
      * @return the ZoneOffset, not null
      * @throws IllegalArgumentException if the offset id is invalid
      */
-    public static ZoneOffset of(CharSequence offsetID) {
+    public static ZoneOffset of(String offsetID) {
         if (offsetID == null) {
             throw new NullPointerException("The offset ID must not be null");
         }
