@@ -281,7 +281,7 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Mid-level parser, performing the first two steps of parsing.
+     * Mid-level parser, performing the first two phases of parsing.
      * <p>
      * Parsing is implemented in three phases - low-level parse, engine creation
      * and extraction. This method implements the low-level parse and engine creation.
@@ -320,7 +320,7 @@ public final class DateTimeFormatter {
     }
 
     /**
-     * Low-level parser, performing the first step of parsing.
+     * Low-level parser, performing the first phase of parsing.
      * <p>
      * Parsing is implemented in three phases - low-level parse, engine creation
      * and extraction. This method implements the low-level parse.
