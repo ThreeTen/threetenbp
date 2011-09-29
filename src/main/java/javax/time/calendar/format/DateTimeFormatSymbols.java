@@ -41,6 +41,8 @@ import java.util.concurrent.ConcurrentMap;
  * <p>
  * A significant part of dealing with dates and times is the localization.
  * This class acts as a central point for accessing the information.
+ * <p>
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -132,7 +134,7 @@ public final class DateTimeFormatSymbols {
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor.
+     * Restricted constructor.
      * 
      * @param locale  the locale of the culture, not null
      * @param zeroChar  the character to use for the digit of zero
@@ -140,7 +142,7 @@ public final class DateTimeFormatSymbols {
      * @param negativeSignChar  the character to use for the negative sign
      * @param decimalPointChar  the character to use for the decimal point
      */
-    public DateTimeFormatSymbols(
+    private DateTimeFormatSymbols(
             Locale locale, char zeroChar, char positiveSignChar, char negativeSignChar, char decimalPointChar) {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
