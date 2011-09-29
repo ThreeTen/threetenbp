@@ -50,11 +50,11 @@ import javax.time.calendar.ZoneOffset;
  * {@code ZoneOffsetTransition} models the transition between the two offsets.
  * <p>
  * Gaps occur where there are local date-times that simply do not not exist.
- * An example would be when the offset changes from {@code +01:00} to {@code +02:00}.
+ * An example would be when the offset changes from {@code +03:00} to {@code +04:00}.
  * This might be described as 'the clocks will move forward one hour tonight at 1am'.
  * <p>
  * Overlaps occur where there are local date-times that exist twice.
- * An example would be when the offset changes from {@code +02:00} to {@code +01:00}.
+ * An example would be when the offset changes from {@code +04:00} to {@code +03:00}.
  * This might be described as 'the clocks will move back one hour tonight at 2am'.
  * <p>
  * This class is immutable and thread-safe.
