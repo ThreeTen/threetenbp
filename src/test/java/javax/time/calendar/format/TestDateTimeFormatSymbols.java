@@ -134,6 +134,36 @@ public class TestDateTimeFormatSymbols {
     }
 
     //-----------------------------------------------------------------------
+    public void test_equalsHashCode1() {
+        DateTimeFormatSymbols a = DateTimeFormatSymbols.STANDARD;
+        DateTimeFormatSymbols b = DateTimeFormatSymbols.STANDARD;
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    public void test_equalsHashCode2() {
+        DateTimeFormatSymbols a = DateTimeFormatSymbols.STANDARD.withZeroDigit('A');
+        DateTimeFormatSymbols b = DateTimeFormatSymbols.STANDARD.withZeroDigit('A');
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    public void test_equalsHashCode3() {
+        DateTimeFormatSymbols a = DateTimeFormatSymbols.STANDARD.withZeroDigit('A');
+        DateTimeFormatSymbols b = DateTimeFormatSymbols.STANDARD.withDecimalSeparator('A');
+        assertEquals(a.equals(b), false);
+        assertEquals(b.equals(a), false);
+    }
+
+    public void test_equalsHashCode_bad() {
+        DateTimeFormatSymbols a = DateTimeFormatSymbols.STANDARD;
+        assertEquals(a.equals(""), false);
+        assertEquals(a.equals(null), false);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_toString_base() {
         DateTimeFormatSymbols base = DateTimeFormatSymbols.STANDARD;
         assertEquals(base.toString(), "Symbols[0+-.]");

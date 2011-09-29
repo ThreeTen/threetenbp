@@ -125,6 +125,9 @@ public final class DateTimeFormatSymbols {
         char positiveSign = '+';
         char negativeSign = oldSymbols.getMinusSign();
         char decimalSeparator = oldSymbols.getDecimalSeparator();
+        if (zeroDigit == '0' && negativeSign == '-' && decimalSeparator == '.') {
+            return STANDARD;
+        }
         return new DateTimeFormatSymbols(zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
@@ -284,6 +287,36 @@ public final class DateTimeFormatSymbols {
             array[i] = (char) (array[i] + diff);
         }
         return new String(array);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if these symbols equal another set of symbols.
+     *
+     * @param obj  the object to check, null returns false
+     * @return true if this is equal to the other date
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof DateTimeFormatSymbols) {
+            DateTimeFormatSymbols other = (DateTimeFormatSymbols) obj;
+            return (zeroDigit == other.zeroDigit && positiveSign == other.positiveSign &&
+                    negativeSign == other.negativeSign && decimalSeparator == other.decimalSeparator);
+        }
+        return false;
+    }
+
+    /**
+     * A hash code for these symbols.
+     *
+     * @return a suitable hash code
+     */
+    @Override
+    public int hashCode() {
+        return zeroDigit + positiveSign + negativeSign + decimalSeparator;
     }
 
     //-----------------------------------------------------------------------
