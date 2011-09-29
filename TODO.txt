@@ -76,7 +76,6 @@ Date/Time formatting
 - SPI for date-time text
 - strict/lenient parse
 ? upper/lower case
-- only ASCII numbers
 - Arabic numbers have negative sign after number
 - parseInto(Calendrical)
 - default calendrical to pre-define era for example
