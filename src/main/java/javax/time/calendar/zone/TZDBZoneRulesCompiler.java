@@ -838,7 +838,7 @@ public final class TZDBZoneRulesCompiler {
             pos = 1;
         }
         ParsePosition pp = new ParsePosition(pos);
-        DateTimeParseContext cal = TIME_PARSER.parse(str, pp);
+        DateTimeParseContext cal = TIME_PARSER.parseToContext(str, pp);
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }

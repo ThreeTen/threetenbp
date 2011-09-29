@@ -170,7 +170,7 @@ public final class DateTimeFormatter {
      */
     public String print(Calendrical calendrical) {
         StringBuilder buf = new StringBuilder(32);
-        print(calendrical, buf);
+        printTo(calendrical, buf);
         return buf.toString();
     }
 
@@ -193,7 +193,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public void print(Calendrical calendrical, Appendable appendable) {
+    public void printTo(Calendrical calendrical, Appendable appendable) {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimeFormatter.checkNotNull(appendable, "Appendable must not be null");
         try {
@@ -250,7 +250,7 @@ public final class DateTimeFormatter {
         DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         try {
-            CalendricalEngine engine = parse(str);
+            CalendricalEngine engine = parseToEngine(str);
             return engine.deriveChecked(rule);
         } catch (CalendricalParseException ex) {
             throw ex;
@@ -270,7 +270,7 @@ public final class DateTimeFormatter {
      * Parsing is implemented in three phases - low-level parse, engine creation
      * and extraction. This method implements the low-level parse and engine creation.
      * <p>
-     * This uses {@link #parse(CharSequence, ParsePosition)} for low-level parsing.
+     * This uses {@link #parseToContext(CharSequence, ParsePosition)} for low-level parsing.
      * It then checks the entire text was parsed and creates the engine.
      * See {@link CalendricalEngine} for details on extracting information.
      * <p>
@@ -282,11 +282,11 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
-    public CalendricalEngine parse(CharSequence text) {
+    public CalendricalEngine parseToEngine(CharSequence text) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         ParsePosition pos = new ParsePosition(0);
-        DateTimeParseContext result = parse(str, pos);
+        DateTimeParseContext result = parseToContext(str, pos);
         if (pos.getErrorIndex() >= 0 || pos.getIndex() < str.length()) {
             String abbr = str.toString();
             if (abbr.length() > 64) {
@@ -319,8 +319,8 @@ public final class DateTimeFormatter {
      * Most applications should use {@link #parse(CharSequence, CalendricalRule)}.
      * <p>
      * This method does not throw {@link CalendricalParseException}.
-     * Instead, errors are returned within the state of the resulting context.
-     * Callers must check the result for errors before using the context.
+     * Instead, errors are returned within the state of the specified parse position.
+     * Callers must check for errors before using the context.
      *
      * @param text  the text to parse, not null
      * @param position  the position to parse from, updated with length parsed
@@ -329,7 +329,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws IndexOutOfBoundsException if the position is invalid
      */
-    public DateTimeParseContext parse(CharSequence text, ParsePosition position) {
+    public DateTimeParseContext parseToContext(CharSequence text, ParsePosition position) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(position, "ParsePosition must not be null");
         DateTimeParseContext context = new DateTimeParseContext(symbols);
@@ -362,8 +362,8 @@ public final class DateTimeFormatter {
      * <p>
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the
-     * {@link #print(Calendrical, Appendable) print} and
-     * {@link #parse(CharSequence, ParsePosition) parse} methods.
+     * {@link #printTo(Calendrical, Appendable) print} and
+     * {@link #parseToContext(CharSequence, ParsePosition) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
      *
@@ -402,7 +402,7 @@ public final class DateTimeFormatter {
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
-            print((Calendrical) obj, toAppendTo);
+            printTo((Calendrical) obj, toAppendTo);
             return toAppendTo;
         }
 
@@ -410,7 +410,7 @@ public final class DateTimeFormatter {
         @Override
         public Object parseObject(String source) throws ParseException {
             try {
-                return parse(source);
+                return parseToEngine(source);
             } catch (CalendricalParseException ex) {
                 throw new ParseException(ex.getMessage(), ex.getErrorIndex());
             }
@@ -419,7 +419,7 @@ public final class DateTimeFormatter {
         /** {@inheritDoc} */
         @Override
         public Object parseObject(String source, ParsePosition pos) {
-            DateTimeParseContext context = parse(source, pos);
+            DateTimeParseContext context = parseToContext(source, pos);
             return context != null ? context.toCalendricalEngine() : null;
         }
     }

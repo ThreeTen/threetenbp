@@ -97,6 +97,7 @@
 - Rename getEstimatedDuration() to getDurationEstimate()
 - ZoneResolver refactored
 - Remove LocalTime.Overflow, embedding code in LocalDateTime
+- Rename DateTimeFormatter methods for clarity
 
 0.6.3
 ===============================================================================
