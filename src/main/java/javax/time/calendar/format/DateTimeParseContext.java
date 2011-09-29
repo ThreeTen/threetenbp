@@ -60,6 +60,10 @@ import javax.time.calendar.DateTimeRule;
 public final class DateTimeParseContext {
 
     /**
+     * The locale, not null.
+     */
+    private Locale locale;
+    /**
      * The date time format symbols, not null.
      */
     private DateTimeFormatSymbols symbols;
@@ -81,17 +85,47 @@ public final class DateTimeParseContext {
      * <p>
      * This should normally only be created by the parser.
      *
+     * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    public DateTimeParseContext(DateTimeFormatSymbols symbols) {
+    DateTimeParseContext(Locale locale, DateTimeFormatSymbols symbols) {
         super();
+        setLocale(locale);
         setSymbols(symbols);
         calendricals.add(new Parsed());
     }
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the locale.
+     * <p>
+     * This locale is used to control localization in the parse except
+     * where localization is controlled by the symbols.
+     *
+     * @return the locale, not null
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Sets the locale.
+     * <p>
+     * This locale is used to control localization in the parse except
+     * where localization is controlled by the symbols.
+     *
+     * @param symbols  the locale, not null
+     */
+    public void setLocale(Locale locale) {
+        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
+        this.locale = locale;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the formatting symbols.
+     * <p>
+     * The symbols control the localization of numeric parsing.
      *
      * @return the formatting symbols, not null
      */
@@ -101,6 +135,8 @@ public final class DateTimeParseContext {
 
     /**
      * Sets the formatting symbols.
+     * <p>
+     * The symbols control the localization of numeric parsing.
      *
      * @param symbols  the formatting symbols, not null
      */
@@ -207,15 +243,6 @@ public final class DateTimeParseContext {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the locale to use for printing and parsing text.
-     *
-     * @return the locale, not null
-     */
-    public Locale getLocale() {
-        return symbols.getLocale();
-    }
-
     /**
      * Gets the currently active calendrical.
      *

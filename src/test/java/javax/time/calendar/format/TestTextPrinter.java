@@ -36,9 +36,12 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
+import java.util.Locale;
+
 import javax.time.CalendricalException;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.DataProvider;
@@ -117,6 +120,23 @@ public class TestTextPrinter extends AbstractTestPrinterParser {
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(printContext, buf);
         assertEquals(buf.toString(), expected);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_print_french_long() throws Exception {
+        printContext.setLocale(Locale.FRENCH);
+        printContext.setCalendrical(MonthOfYear.JANUARY);
+        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.FULL);
+        pp.print(printContext, buf);
+        assertEquals(buf.toString(), "janvier");
+    }
+
+    public void test_print_french_short() throws Exception {
+        printContext.setLocale(Locale.FRENCH);
+        printContext.setCalendrical(MonthOfYear.JANUARY);
+        TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
+        pp.print(printContext, buf);
+        assertEquals(buf.toString(), "janv.");
     }
 
     //-----------------------------------------------------------------------

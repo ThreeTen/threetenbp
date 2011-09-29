@@ -68,6 +68,10 @@ import javax.time.calendar.CalendricalRule;
 public final class DateTimeFormatter {
 
     /**
+     * The locale to use for formatting, not null.
+     */
+    private final Locale locale;
+    /**
      * The symbols to use for formatting, not null.
      */
     private final DateTimeFormatSymbols symbols;
@@ -76,28 +80,15 @@ public final class DateTimeFormatter {
      */
     private final CompositePrinterParser printerParser;
 
-    //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param locale  the locale to use for text formatting, not null
+     * @param locale  the locale to use, not null
+     * @param symbols  the symbols to use, not null
      * @param printerParser  the printer/parser to use, not null
      */
-    DateTimeFormatter(Locale locale, CompositePrinterParser printerParser) {
-        // validated by caller
-        this.symbols = DateTimeFormatSymbols.of(locale);
-        this.printerParser = printerParser;
-    }
-
-    /**
-     * Constructor used by immutable copying.
-     *
-     * @param symbols  the symbols to use for text formatting, not null
-     * @param printerParser  the printer/parser to use, not null
-     */
-    private DateTimeFormatter(
-            DateTimeFormatSymbols symbols,
-            CompositePrinterParser printerParser) {
+    DateTimeFormatter(Locale locale, DateTimeFormatSymbols symbols, CompositePrinterParser printerParser) {
+        this.locale = locale;
         this.symbols = symbols;
         this.printerParser = printerParser;
     }
@@ -123,7 +114,7 @@ public final class DateTimeFormatter {
      * @return the locale of this formatter, not null
      */
     public Locale getLocale() {
-        return symbols.getLocale();
+        return locale;
     }
 
     /**
@@ -136,11 +127,36 @@ public final class DateTimeFormatter {
      */
     public DateTimeFormatter withLocale(Locale locale) {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
-        if (locale.equals(this.getLocale())) {
+        if (locale.equals(this.locale)) {
             return this;
         }
-        DateTimeFormatSymbols newSymbols = DateTimeFormatSymbols.of(locale);
-        return new DateTimeFormatter(newSymbols, printerParser);
+        return new DateTimeFormatter(locale, symbols, printerParser);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the set of symbols to be used during formatting.
+     *
+     * @return the locale of this formatter, not null
+     */
+    public DateTimeFormatSymbols getSymbols() {
+        return symbols;
+    }
+
+    /**
+     * Returns a copy of this formatter with a new set of symbols.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param locale  the new locale, not null
+     * @return a {@code DateTimeFormatter} based on this one with the requested locale, not null
+     */
+    public DateTimeFormatter withSymbols(DateTimeFormatSymbols symbols) {
+        DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
+        if (symbols.equals(this.symbols)) {
+            return this;
+        }
+        return new DateTimeFormatter(locale, symbols, printerParser);
     }
 
     //-----------------------------------------------------------------------
@@ -197,7 +213,7 @@ public final class DateTimeFormatter {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimeFormatter.checkNotNull(appendable, "Appendable must not be null");
         try {
-            DateTimePrintContext context = new DateTimePrintContext(calendrical, symbols);
+            DateTimePrintContext context = new DateTimePrintContext(calendrical, locale, symbols);
             if (appendable instanceof StringBuilder) {
                 printerParser.print(context, (StringBuilder) appendable);
             } else {
@@ -332,7 +348,7 @@ public final class DateTimeFormatter {
     public DateTimeParseContext parseToContext(CharSequence text, ParsePosition position) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(position, "ParsePosition must not be null");
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        DateTimeParseContext context = new DateTimeParseContext(locale, symbols);
         int pos = position.getIndex();
         pos = printerParser.parse(context, text, pos);
         if (pos < 0) {

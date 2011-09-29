@@ -69,7 +69,7 @@
 - Rename DateTimeFormatterProvider to DateTimeFormatStyleProvider
 - Obtain text from DateTimeTextProvider (remove code from DateTimeRule)
 - Alter/simplify getText() methods in enums
-- Refactor DateTimeFormatSymbols
+- Refactor DateTimeFormatSymbols and integrate
 - Add DateTimeRuleRange to replace DateTimeRule min/max methods
 - Add WeekRules
 - Add PeriodUnit.field(long)

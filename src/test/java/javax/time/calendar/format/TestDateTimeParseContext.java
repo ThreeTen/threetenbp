@@ -62,7 +62,7 @@ public class TestDateTimeParseContext {
     @BeforeMethod
     public void setUp() {
         symbols = DateTimeFormatSymbols.of(Locale.GERMANY);
-        context = new DateTimeParseContext(symbols);
+        context = new DateTimeParseContext(Locale.GERMANY, symbols);
     }
 
     //-----------------------------------------------------------------------
@@ -73,8 +73,13 @@ public class TestDateTimeParseContext {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_constructor_null() throws Exception {
-        new DateTimeParseContext(null);
+    public void test_constructor_nullLocale() throws Exception {
+        new DateTimeParseContext(null, DateTimeFormatSymbols.STANDARD);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_constructor_nullSymbols() throws Exception {
+        new DateTimeParseContext(Locale.GERMANY, null);
     }
 
     //-----------------------------------------------------------------------

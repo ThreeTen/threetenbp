@@ -56,6 +56,10 @@ public final class DateTimePrintContext {
      */
     private Calendrical calendrical;
     /**
+     * The locale, not null.
+     */
+    private Locale locale;
+    /**
      * The date time format symbols, not null.
      */
     private DateTimeFormatSymbols symbols;
@@ -70,11 +74,13 @@ public final class DateTimePrintContext {
      * This should normally only be created by the printer.
      *
      * @param calendrical  the calendrical being output, not null
+     * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    public DateTimePrintContext(Calendrical calendrical, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(Calendrical calendrical, Locale locale, DateTimeFormatSymbols symbols) {
         super();
         setCalendrical(calendrical);
+        setLocale(locale);
         setSymbols(symbols);
     }
 
@@ -100,7 +106,35 @@ public final class DateTimePrintContext {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the locale.
+     * <p>
+     * This locale is used to control localization in the print output except
+     * where localization is controlled by the symbols.
+     *
+     * @return the locale, not null
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Sets the locale.
+     * <p>
+     * This locale is used to control localization in the print output except
+     * where localization is controlled by the symbols.
+     *
+     * @param symbols  the locale, not null
+     */
+    public void setLocale(Locale locale) {
+        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
+        this.locale = locale;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the formatting symbols.
+     * <p>
+     * The symbols control the localization of numeric output.
      *
      * @return the formatting symbols, not null
      */
@@ -110,21 +144,14 @@ public final class DateTimePrintContext {
 
     /**
      * Sets the formatting symbols.
+     * <p>
+     * The symbols control the localization of numeric output.
      *
      * @param symbols  the formatting symbols, not null
      */
     public void setSymbols(DateTimeFormatSymbols symbols) {
         DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
         this.symbols = symbols;
-    }
-
-    /**
-     * Gets the locale to use for printing and parsing text.
-     *
-     * @return the locale, not null
-     */
-    public Locale getLocale() {
-        return symbols.getLocale();
     }
 
     //-----------------------------------------------------------------------

@@ -1190,6 +1190,9 @@ public final class DateTimeFormatterBuilder {
     /**
      * Completes this builder by creating the DateTimeFormatter using the default locale.
      * <p>
+     * This will create a formatter with the default locale.
+     * Numbers will be printed and parsed using the standard non-localized set of symbols.
+     * <p>
      * Calling this method will end any open optional sections by repeatedly
      * calling {@link #optionalEnd()} before creating the formatter.
      * <p>
@@ -1205,6 +1208,9 @@ public final class DateTimeFormatterBuilder {
     /**
      * Completes this builder by creating the DateTimeFormatter using the specified locale.
      * <p>
+     * This will create a formatter with the specified locale.
+     * Numbers will be printed and parsed using the standard non-localized set of symbols.
+     * <p>
      * Calling this method will end any open optional sections by repeatedly
      * calling {@link #optionalEnd()} before creating the formatter.
      * <p>
@@ -1216,11 +1222,10 @@ public final class DateTimeFormatterBuilder {
      */
     public DateTimeFormatter toFormatter(Locale locale) {
         DateTimeFormatterBuilder.checkNotNull(locale, "Locale must not be null");
-        
         while (active.parent != null) {
             optionalEnd();
         }
-        return new DateTimeFormatter(locale, new CompositePrinterParser(printers, parsers, false));
+        return new DateTimeFormatter(locale, DateTimeFormatSymbols.STANDARD, new CompositePrinterParser(printers, parsers, false));
     }
 
     //-----------------------------------------------------------------------

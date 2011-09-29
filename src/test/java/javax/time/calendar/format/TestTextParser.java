@@ -261,7 +261,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
     public void test_parse_french_short_strict_full_noMatch() throws Exception {
-        parseContext.setSymbols(DateTimeFormatSymbols.of(Locale.FRENCH));
+        parseContext.setLocale(Locale.FRENCH);
         parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "janvier", 0);  // correct short form is 'janv.'
@@ -270,7 +270,7 @@ public class TestTextParser extends AbstractTestPrinterParser {
     }
 
     public void test_parse_french_short_strict_short_match() throws Exception {
-        parseContext.setSymbols(DateTimeFormatSymbols.of(Locale.FRENCH));
+        parseContext.setLocale(Locale.FRENCH);
         parseContext.setStrict(true);
         TextPrinterParser pp = new TextPrinterParser(MONTH_OF_YEAR, TextStyle.SHORT);
         int newPos = pp.parse(parseContext, "janv.", 0);

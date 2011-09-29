@@ -49,20 +49,16 @@ import java.util.concurrent.ConcurrentMap;
 public final class DateTimeFormatSymbols {
 
     /**
-     * The default non-localized info.
+     * The standard set of non-localized symbols.
      * <p>
      * This uses standard ASCII characters for zero, positive, negative and a dot for the decimal point.
      */
-    public static final DateTimeFormatSymbols DEFAULT = new DateTimeFormatSymbols(Locale.ROOT, '0', '+', '-', '.');
+    public static final DateTimeFormatSymbols STANDARD = new DateTimeFormatSymbols('0', '+', '-', '.');
     /**
-     * The cache of info instances.
+     * The cache of symbols instances.
      */
     public static final ConcurrentMap<Locale, DateTimeFormatSymbols> CACHE = new ConcurrentHashMap<Locale, DateTimeFormatSymbols>(16, 0.75f, 2);
 
-    /**
-     * The locale for printing and parsing text.
-     */
-    private final Locale locale;
     /**
      * The zero digit.
      */
@@ -93,9 +89,9 @@ public final class DateTimeFormatSymbols {
     }
 
     /**
-     * Obtains an info for the default locale.
+     * Obtains symbols for the default locale.
      * <p>
-     * This method provides access to locale sensitive information.
+     * This method provides access to locale sensitive symbols.
      *
      * @return the info, not null
      */
@@ -104,9 +100,9 @@ public final class DateTimeFormatSymbols {
     }
 
     /**
-     * Obtains an info for the specified locale.
+     * Obtains symbols for the specified locale.
      * <p>
-     * This method provides access to locale sensitive information.
+     * This method provides access to locale sensitive symbols.
      *
      * @param locale  the locale, not null
      * @return the info, not null
@@ -129,40 +125,23 @@ public final class DateTimeFormatSymbols {
         char positiveSign = '+';
         char negativeSign = oldSymbols.getMinusSign();
         char decimalSeparator = oldSymbols.getDecimalSeparator();
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
+        return new DateTimeFormatSymbols(zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Restricted constructor.
      * 
-     * @param locale  the locale of the culture, not null
      * @param zeroChar  the character to use for the digit of zero
      * @param positiveSignChar  the character to use for the positive sign
      * @param negativeSignChar  the character to use for the negative sign
      * @param decimalPointChar  the character to use for the decimal point
      */
-    private DateTimeFormatSymbols(
-            Locale locale, char zeroChar, char positiveSignChar, char negativeSignChar, char decimalPointChar) {
-        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
-        this.locale = locale;
+    private DateTimeFormatSymbols(char zeroChar, char positiveSignChar, char negativeSignChar, char decimalPointChar) {
         this.zeroDigit = zeroChar;
         this.positiveSign = positiveSignChar;
         this.negativeSign = negativeSignChar;
         this.decimalSeparator = decimalPointChar;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the locale to use for printing and parsing text.
-     * <p>
-     * The locale information for printing and parsing numbers is defined in
-     * the zero, negative and positive characters.
-     *
-     * @return the character for zero
-     */
-    public Locale getLocale() {
-        return locale;
     }
 
     //-----------------------------------------------------------------------
@@ -190,7 +169,7 @@ public final class DateTimeFormatSymbols {
         if (zeroDigit == this.zeroDigit) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
+        return new DateTimeFormatSymbols(zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -218,7 +197,7 @@ public final class DateTimeFormatSymbols {
         if (positiveSign == this.positiveSign) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
+        return new DateTimeFormatSymbols(zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -246,7 +225,7 @@ public final class DateTimeFormatSymbols {
         if (negativeSign == this.negativeSign) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
+        return new DateTimeFormatSymbols(zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -274,7 +253,7 @@ public final class DateTimeFormatSymbols {
         if (decimalSeparator == this.decimalSeparator) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
+        return new DateTimeFormatSymbols(zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -315,7 +294,7 @@ public final class DateTimeFormatSymbols {
      */
     @Override
     public String toString() {
-        return "Symbols[" + (locale.equals(Locale.ROOT) ? "" : locale + ", ") + zeroDigit + positiveSign + negativeSign + decimalSeparator + "]";
+        return "Symbols[" + zeroDigit + positiveSign + negativeSign + decimalSeparator + "]";
     }
 
 }

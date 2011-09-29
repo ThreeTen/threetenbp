@@ -55,10 +55,9 @@ public class AbstractTestPrinterParser {
 
     @BeforeMethod
     public void setUp() {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.of(Locale.ENGLISH);
-        printEmptyContext = new DateTimePrintContext(DateTimeFields.EMPTY, symbols);
-        printContext = new DateTimePrintContext(ZonedDateTime.of(2011, 6, 30, 12, 30, 40, 0, ZoneId.of("Europe/Paris")), symbols);
-        parseContext = new DateTimeParseContext(symbols);
+        printEmptyContext = new DateTimePrintContext(DateTimeFields.EMPTY, Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        printContext = new DateTimePrintContext(ZonedDateTime.of(2011, 6, 30, 12, 30, 40, 0, ZoneId.of("Europe/Paris")), Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
+        parseContext = new DateTimeParseContext(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD);
         buf = new StringBuilder();
     }
 
