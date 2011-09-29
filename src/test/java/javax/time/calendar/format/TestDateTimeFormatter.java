@@ -46,6 +46,7 @@ import java.util.Locale;
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalEngine;
+import javax.time.calendar.DateTimeField;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -469,6 +470,27 @@ public class TestDateTimeFormatter {
         ParsePosition pos = new ParsePosition(6);
         Format format = test.toFormat();
         format.parseObject("ONE30", pos);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toFormat_Rule_format() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
+        Format format = test.toFormat();
+        String result = format.format(LocalDate.of(2008, 6, 30));
+        assertEquals(result, "ONE30");
+    }
+
+    public void test_toFormat_Rule_parseObject_String() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
+        Format format = test.toFormat(DAY_OF_MONTH);
+        DateTimeField result = (DateTimeField) format.parseObject("ONE30");
+        assertEquals(result, DAY_OF_MONTH.field(30L));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toFormat_Rule() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, DateTimeFormatSymbols.STANDARD, compPP);
+        test.toFormat(null);
     }
 
 }

@@ -379,14 +379,35 @@ public final class DateTimeFormatter {
      * The format will throw {@code UnsupportedOperationException} and
      * {@code IndexOutOfBoundsException} in line with those thrown by the
      * {@link #printTo(Calendrical, Appendable) print} and
-     * {@link #parseToContext(CharSequence, ParsePosition) parse} methods.
+     * {@link #parseToEngine(CharSequence) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
      *
      * @return this formatter as a classic format instance, not null
      */
     public Format toFormat() {
-        return new ClassicFormat();
+        return new ClassicFormat(this, null);
+    }
+
+    /**
+     * Returns this formatter as a {@code java.text.Format} instance that will
+     * parse to the specified rule.
+     * <p>
+     * The {@link Format} instance will print any {@link Calendrical}
+     * and parses to a the rule specified.
+     * <p>
+     * The format will throw {@code UnsupportedOperationException} and
+     * {@code IndexOutOfBoundsException} in line with those thrown by the
+     * {@link #printTo(Calendrical, Appendable) print} and
+     * {@link #parse(CharSequence, CalendricalRule) parse} methods.
+     * <p>
+     * The format does not support attributing of the returned format string.
+     *
+     * @return this formatter as a classic format instance, not null
+     */
+    public Format toFormat(CalendricalRule<?> parseRule) {
+        DateTimeFormatter.checkNotNull(parseRule, "CalendricalRule must not be null");
+        return new ClassicFormat(this, parseRule);
     }
 
     /**
@@ -405,7 +426,16 @@ public final class DateTimeFormatter {
      * Implements the classic Java Format API.
      */
     @SuppressWarnings("serial")  // not actually serializable
-    class ClassicFormat extends Format {
+    static class ClassicFormat extends Format {
+        /** The formatter. */
+        private final DateTimeFormatter formatter;
+        /** The rule to be parsed. */
+        private final CalendricalRule<?> parseRule;
+        /** Constructor. */
+        public ClassicFormat(DateTimeFormatter formatter, CalendricalRule<?> parseRule) {
+            this.formatter = formatter;
+            this.parseRule = parseRule;
+        }
 
         /** {@inheritDoc} */
         @Override
@@ -414,11 +444,11 @@ public final class DateTimeFormatter {
             DateTimeFormatter.checkNotNull(toAppendTo, "StringBuffer must not be null");
             DateTimeFormatter.checkNotNull(pos, "FieldPosition must not be null");
             if (obj instanceof Calendrical == false) {
-                throw new IllegalArgumentException("DateTimeFormatter can format Calendrical instances");
+                throw new IllegalArgumentException("Format target must implement Calendrical");
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
-            printTo((Calendrical) obj, toAppendTo);
+            formatter.printTo((Calendrical) obj, toAppendTo);
             return toAppendTo;
         }
 
@@ -426,7 +456,10 @@ public final class DateTimeFormatter {
         @Override
         public Object parseObject(String source) throws ParseException {
             try {
-                return parseToEngine(source);
+                if (parseRule != null) {
+                    return formatter.parse(source, parseRule);
+                }
+                return formatter.parseToEngine(source);
             } catch (CalendricalParseException ex) {
                 throw new ParseException(ex.getMessage(), ex.getErrorIndex());
             }
@@ -435,7 +468,7 @@ public final class DateTimeFormatter {
         /** {@inheritDoc} */
         @Override
         public Object parseObject(String source, ParsePosition pos) {
-            DateTimeParseContext context = parseToContext(source, pos);
+            DateTimeParseContext context = formatter.parseToContext(source, pos);
             return context != null ? context.toCalendricalEngine() : null;
         }
     }
