@@ -36,8 +36,6 @@ import java.util.Map.Entry;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * Prints or parses field text.

@@ -36,7 +36,7 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 
 /**
  * A day-of-week, such as 'Tuesday'.

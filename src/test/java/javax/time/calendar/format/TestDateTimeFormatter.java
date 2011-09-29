@@ -49,7 +49,6 @@ import javax.time.calendar.CalendricalEngine;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

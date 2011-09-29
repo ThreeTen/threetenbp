@@ -39,7 +39,6 @@ import java.util.spi.LocaleServiceProvider;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing

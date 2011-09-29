@@ -36,7 +36,7 @@ import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 
 /**
  * A month-of-year, such as 'July'.

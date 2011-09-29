@@ -47,9 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.

@@ -43,7 +43,7 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

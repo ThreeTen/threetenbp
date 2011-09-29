@@ -15,9 +15,8 @@ import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOPeriodUnit;
-import javax.time.calendar.PeriodField;
 import javax.time.calendar.PeriodUnit;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 
 /**
  * The Hijrah calendar system.

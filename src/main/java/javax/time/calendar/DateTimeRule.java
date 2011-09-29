@@ -36,7 +36,7 @@ import java.math.RoundingMode;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 
 /**
  * The rule defining how a measurable field of time operates.

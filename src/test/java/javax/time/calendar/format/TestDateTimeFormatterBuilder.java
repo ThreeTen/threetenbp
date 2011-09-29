@@ -40,9 +40,6 @@ import static org.testng.Assert.assertEquals;
 
 import java.text.ParsePosition;
 
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

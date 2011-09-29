@@ -34,7 +34,6 @@ package javax.time.calendar.format;
 import java.util.Locale;
 
 import javax.time.calendar.Chronology;
-import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 
 /**
  * Prints or parses a localized pattern.

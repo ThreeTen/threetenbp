@@ -37,7 +37,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.

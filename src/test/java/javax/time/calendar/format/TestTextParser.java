@@ -41,7 +41,6 @@ import java.util.Locale;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

@@ -35,7 +35,6 @@ import java.util.Locale;
 import java.util.spi.LocaleServiceProvider;
 
 import javax.time.calendar.Chronology;
-import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing

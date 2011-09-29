@@ -36,7 +36,6 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.Test;
 

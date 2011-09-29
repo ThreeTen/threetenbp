@@ -63,7 +63,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
 
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

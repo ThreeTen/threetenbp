@@ -56,8 +56,8 @@ import javax.time.calendar.ZoneResolvers;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendar.format.SignStyle;
 
 /**
  * Examples for this project.

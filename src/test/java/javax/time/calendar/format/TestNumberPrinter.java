@@ -39,7 +39,6 @@ import static org.testng.Assert.fail;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.DateTimeField;
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

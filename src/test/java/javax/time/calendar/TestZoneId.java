@@ -54,7 +54,7 @@ import java.util.Map;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.calendar.format.TextStyle;
 import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneOffsetTransition;
 

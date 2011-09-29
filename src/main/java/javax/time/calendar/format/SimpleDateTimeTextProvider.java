@@ -52,7 +52,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * The Service Provider Implementation to obtain date-time text for a rule.

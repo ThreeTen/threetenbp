@@ -41,7 +41,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
-import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
+import javax.time.calendar.format.SignStyle;
 
 /**
  * A year-month in the ISO-8601 calendar system, such as {@code 2007-12}.

@@ -40,7 +40,6 @@ import static org.testng.Assert.assertEquals;
 import java.util.Locale;
 
 import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

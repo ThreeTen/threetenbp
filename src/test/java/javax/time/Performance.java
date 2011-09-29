@@ -35,8 +35,6 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 
 import java.text.NumberFormat;

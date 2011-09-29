@@ -38,7 +38,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendar.Chronology;
-import javax.time.calendar.format.DateTimeFormatterBuilder.FormatStyle;
 
 /**
  * The Service Provider Implementation to obtain date-time formatters for a style.
