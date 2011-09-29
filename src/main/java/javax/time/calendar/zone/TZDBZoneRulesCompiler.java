@@ -70,7 +70,7 @@ import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeParseContext;
-import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
+import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 /**
  * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.

@@ -98,6 +98,7 @@
 - ZoneResolver refactored
 - Remove LocalTime.Overflow, embedding code in LocalDateTime
 - Rename DateTimeFormatter methods for clarity
+- Move TimeDefinition to rule class from builder
 
 0.6.3
 ===============================================================================

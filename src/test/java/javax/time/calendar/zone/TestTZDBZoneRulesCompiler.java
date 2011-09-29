@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,7 +47,7 @@ import javax.time.calendar.Year;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.LeapSecondRule;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.TZDBMonthDayTime;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.TZDBRule;
-import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
+import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;
 

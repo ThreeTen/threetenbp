@@ -45,7 +45,6 @@ import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 
 /**
  * A rule expressing how to create a transition.
@@ -485,6 +484,52 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             .append(", standard offset ").append(standardOffset)
             .append(']');
         return buf.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * A definition of the way a local time can be converted to an offset time.
+     * <p>
+     * Time zone rules are expressed in one of three ways:
+     * <ul>
+     * <li>Relative to UTC</li>
+     * <li>Relative to the standard offset in force</li>
+     * <li>Relative to the wall offset (what you would see on a clock on the wall)</li>
+     * </ul>
+     */
+    public static enum TimeDefinition {
+        /** The local date-time is expressed in terms of the UTC offset. */
+        UTC,
+        /** The local date-time is expressed in terms of the wall offset. */
+        WALL,
+        /** The local date-time is expressed in terms of the standard offset. */
+        STANDARD;
+
+        /**
+         * Creates the offset date-time from the specified local date-time.
+         * <p>
+         * This method converts a local date-time to an offset date-time using an
+         * algorithm based on the definition type.
+         * The UTC type builds the offset date-time using the UTC offset.
+         * The STANDARD type builds the offset date-time using the standard offset.
+         * The WALL type builds the offset date-time using the wall offset.
+         * The result always uses the wall-offset, thus a conversion may occur.
+         *
+         * @param dateTime  the local date-time, not null
+         * @param standardOffset  the standard offset, not null
+         * @param wallOffset  the wall offset, not null
+         * @return the created offset date-time in the wall offset, not null
+         */
+        public OffsetDateTime createDateTime(LocalDateTime dateTime, ZoneOffset standardOffset, ZoneOffset wallOffset) {
+            switch (this) {
+                case UTC:
+                    return OffsetDateTime.of(dateTime, ZoneOffset.UTC).withOffsetSameInstant(wallOffset);
+                case STANDARD:
+                    return OffsetDateTime.of(dateTime, standardOffset).withOffsetSameInstant(wallOffset);
+                default:  // WALL
+                    return OffsetDateTime.of(dateTime, wallOffset);
+            }
+        }
     }
 
 }

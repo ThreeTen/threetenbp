@@ -55,7 +55,7 @@ import javax.time.calendar.Period;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
+import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;
 
