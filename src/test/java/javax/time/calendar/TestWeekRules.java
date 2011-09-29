@@ -38,7 +38,6 @@ import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.DayOfWeek.WEDNESDAY;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.MonthOfYear.JULY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
