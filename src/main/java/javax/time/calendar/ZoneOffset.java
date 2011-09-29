@@ -572,7 +572,7 @@ public final class ZoneOffset
      *
      * @return the time-zone, not null
      */
-    public ZoneId toTimeZone() {
+    public ZoneId toZoneId() {
         return ZoneId.of(this);
     }
 

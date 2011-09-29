@@ -540,11 +540,11 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
-    // toTimeZone()
+    // toZoneId()
     //-----------------------------------------------------------------------
-    public void test_toTimeZone() {
+    public void test_toZoneId() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
-        assertEquals(offset.toTimeZone(), ZoneId.of(offset));
+        assertEquals(offset.toZoneId(), ZoneId.of(offset));
     }
 
     //-----------------------------------------------------------------------
@@ -648,7 +648,7 @@ public class TestZoneOffset {
             }
         }
         assertEquals(ZoneOffset.of(id), offset);
-        assertEquals(offset.toTimeZone(), ZoneId.of(offset));
+        assertEquals(offset.toZoneId(), ZoneId.of(offset));
         assertEquals(offset.toString(), id);
     }
 
