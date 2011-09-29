@@ -50,9 +50,9 @@ import javax.time.calendar.DateTimeRule;
  * Once parsing is complete, the {@link #toCalendricalEngine()} is typically used
  * to obtain a merger that will merge the separate parsed fields into meaningful values.
  * <p>
- * This class is mutable and thus not thread-safe.
- * Usage of the class is thread-safe within the Time Framework for Java as the
- * framework creates a new instance of the class for each parse.
+ * This class is a mutable context intended for use from a single thread.
+ * Usage of the class is thread-safe within standard parsing as the framework creates
+ * a new instance of the class for each parse and parsing is single-threaded
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -77,7 +77,9 @@ public final class DateTimeParseContext {
     private final ArrayList<Parsed> calendricals = new ArrayList<Parsed>();
 
     /**
-     * Constructor.
+     * Creates a new instance of the context.
+     * <p>
+     * This should normally only be created by the parser.
      *
      * @param symbols  the symbols to use during parsing, not null
      */

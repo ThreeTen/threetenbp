@@ -43,6 +43,10 @@ import javax.time.CalendricalException;
  * This interface must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
+ * <p>
+ * The context is not a thread-safe object and a new instance will be created
+ * for each print that occurs. The context must not be stored in an instance
+ * variable or shared with any other threads.
  *
  * @author Stephen Colebourne
  */

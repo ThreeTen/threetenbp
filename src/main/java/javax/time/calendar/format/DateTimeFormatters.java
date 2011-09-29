@@ -54,7 +54,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * Provides common implementations of {@code DateTimeFormatter}.
  * <p>
- * DateTimeFormatters is a utility class.
+ * This is a thread-safe utility class.
  * All formatters returned are immutable and thread-safe.
  *
  * @author Stephen Colebourne

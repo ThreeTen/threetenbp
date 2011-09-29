@@ -61,7 +61,7 @@ import javax.time.calendar.CalendricalRule;
  * Some applications may need to use the older {@link Format} class for formatting.
  * The {@link #toFormat()} method returns an implementation of the old API.
  * <p>
- * DateTimeFormatter is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -120,19 +120,19 @@ public final class DateTimeFormatter {
     /**
      * Gets the locale to be used during formatting.
      *
-     * @return the locale of this DateTimeFormatter, not null
+     * @return the locale of this formatter, not null
      */
     public Locale getLocale() {
         return symbols.getLocale();
     }
 
     /**
-     * Returns a copy of this DateTimeFormatter with a new locale.
+     * Returns a copy of this formatter with a new locale.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param locale  the new locale, not null
-     * @return a new DateTimeFormatter with the same format and the new locale, not null
+     * @return a {@code DateTimeFormatter} based on this one with the requested locale, not null
      */
     public DateTimeFormatter withLocale(Locale locale) {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
@@ -149,7 +149,7 @@ public final class DateTimeFormatter {
      * <p>
      * Depending on how this formatter is initialized, it may not be possible
      * for it to print at all. This method allows the caller to check whether
-     * the print methods will throw UnsupportedOperationException or not.
+     * the print methods will throw {@code UnsupportedOperationException} or not.
      *
      * @return true if the formatter supports printing
      */
@@ -161,7 +161,7 @@ public final class DateTimeFormatter {
     /**
      * Prints the calendrical using this formatter.
      * <p>
-     * This method prints the calendrical to a String.
+     * This prints the calendrical to a String using the rules of the formatter.
      *
      * @param calendrical  the calendrical to print, not null
      * @return the printed string, not null
@@ -176,17 +176,17 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Prints the calendrical to an Appendable using this formatter.
+     * Prints the calendrical to an {@code Appendable} using this formatter.
      * <p>
-     * This method prints the calendrical to the specified Appendable.
-     * Appendable is a general purpose interface that is implemented by all
-     * key character output classes including StringBuffer, StringBuilder,
-     * PrintStream and Writer.
+     * This prints the calendrical to the specified destination.
+     * {@link Appendable} is a general purpose interface that is implemented by all
+     * key character output classes including {@code StringBuffer}, {@code StringBuilder},
+     * {@code PrintStream} and {@code Writer}.
      * <p>
-     * Although Appendable methods throw an IOException, this method does not.
-     * Instead, any IOException is wrapped in a runtime exception.
+     * Although {@code Appendable} methods throw an {@code IOException}, this method does not.
+     * Instead, any {@code IOException} is wrapped in a runtime exception.
      * See {@link CalendricalPrintException#rethrowIOException()} for a means
-     * to extract the IOException.
+     * to extract the {@code IOException}.
      *
      * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to print to, not null

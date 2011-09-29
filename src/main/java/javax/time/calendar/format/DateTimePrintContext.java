@@ -42,9 +42,9 @@ import javax.time.calendar.CalendricalRule;
  * <p>
  * This class provides a single wrapper to items used in the print.
  * <p>
- * This class is mutable and thus not thread-safe.
- * Usage of the class is thread-safe within the Time Framework for Java as the
- * framework creates a new instance of the class for each parse.
+ * This class is a mutable context intended for use from a single thread.
+ * Usage of the class is thread-safe within standard printing as the framework creates
+ * a new instance of the class for each print and printing is single-threaded.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -65,7 +65,9 @@ public final class DateTimePrintContext {
     private int optional;
 
     /**
-     * Constructor.
+     * Creates a new instance of the context.
+     * <p>
+     * This should normally only be created by the printer.
      *
      * @param calendrical  the calendrical being output, not null
      * @param symbols  the symbols to use during parsing, not null

@@ -71,6 +71,8 @@ import javax.time.calendar.ZoneOffset;
  * Finally, a shorthand pattern, mostly compatible with {@code SimpleDateFormat}
  * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
+ * <p>
+ * This class is a mutable builder intended for use from a single thread.
  *
  * @author Stephen Colebourne
  */
@@ -1224,6 +1226,9 @@ public final class DateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     /**
      * Enumeration of ways to handle the positive/negative sign.
+     * <p>
+     * The formatting engine allows the positive and negative signs of numbers
+     * to be controlled using this enum.
      *
      * @author Stephen Colebourne
      */
@@ -1264,6 +1269,8 @@ public final class DateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     /**
      * Enumeration of the style of text output to use.
+     * <p>
+     * This defines the "size" of the text to be output.
      *
      * @author Stephen Colebourne
      */
@@ -1271,14 +1278,17 @@ public final class DateTimeFormatterBuilder {
         // ordered from large to small
         /**
          * Full text, typically the full description.
+         * For example, day-of-week Monday might output "Monday".
          */
         FULL,
         /**
          * Short text, typically an abbreviation.
+         * For example, day-of-week Monday might output "Mon".
          */
         SHORT,
         /**
          * Narrow text, typically a single letter.
+         * For example, day-of-week Monday might output "M".
          */
         NARROW;
     }
@@ -1293,22 +1303,22 @@ public final class DateTimeFormatterBuilder {
         // ordered from large to small
         /**
          * Full text style, with the most detail.
-         * An example might be 'Tuesday, April 12, 1952 AD' or '3:30:42pm PST'.
+         * For example, the format might be 'Tuesday, April 12, 1952 AD' or '3:30:42pm PST'.
          */
         FULL,
         /**
          * Long text style, with lots of detail.
-         * An example might be 'January 12, 1952'.
+         * For example, the format might be 'January 12, 1952'.
          */
         LONG,
         /**
          * Medium text style, with some detail.
-         * An example might be 'Jan 12, 1952'.
+         * For example, the format might be 'Jan 12, 1952'.
          */
         MEDIUM,
         /**
          * Short text style, typically numeric.
-         * An example might be '12.13.52' or '3:30pm'.
+         * For example, the format might be '12.13.52' or '3:30pm'.
          */
         SHORT;
     }

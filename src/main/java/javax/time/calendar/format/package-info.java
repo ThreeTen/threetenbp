@@ -32,5 +32,19 @@
 
 /**
  * Provides classes to print and parse dates and times.
+ * <p>
+ * Printing and parsing is based around the {@link javax.time.calendar.format.DateTimeFormatter DateTimeFormatter} class.
+ * Instances are generally obtained from {@link javax.time.calendar.format.DateTimeFormatters DateTimeFormatters},
+ * however {@link javax.time.calendar.format.DateTimeFormatterBuilder DateTimeFormatterBuilder} can be used
+ * if more power is needed.
+ * <p>
+ * Localization occurs by calling {@link javax.time.calendar.format.DateTimeFormatter#withLocale(java.util.Locale) withLocale(Locale)}
+ * on the formatter. Further customization is possible using
+ * {@link javax.time.calendar.format.DateTimeFormatSymbols DateTimeFormatSymbols}.
+ * <p>
+ * Access is also provided to the low-level {@link javax.time.calendar.format.DateTimePrinter DateTimePrinter}
+ * and {@link javax.time.calendar.format.DateTimeParser DateTimeParser} interfaces.
+ * If necessary, these can be implemented and plugged into a formatter using the builder.
+ * The context classes are used by the low-level printer/parser interfaces.
  */
 package javax.time.calendar.format;
