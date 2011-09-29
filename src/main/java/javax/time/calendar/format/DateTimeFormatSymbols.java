@@ -32,15 +32,12 @@
 package javax.time.calendar.format;
 
 import java.text.DecimalFormatSymbols;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendar.DayOfWeek;
-
 /**
- * Localized date and time information.
+ * Localized symbols used in date and time formatting.
  * <p>
  * A significant part of dealing with dates and times is the localization.
  * This class acts as a central point for accessing the information.
@@ -53,10 +50,8 @@ public final class DateTimeFormatSymbols {
      * The default non-localized info.
      * <p>
      * This uses standard ASCII characters for zero, positive, negative and a dot for the decimal point.
-     * The week values are based on ISO-8601, with Monday as the first day of the week and
-     * a minimum of 4 days in the first week.
      */
-    public static final DateTimeFormatSymbols DEFAULT = new DateTimeFormatSymbols(Locale.ROOT, '0', '+', '-', '.', DayOfWeek.MONDAY, 4);
+    public static final DateTimeFormatSymbols DEFAULT = new DateTimeFormatSymbols(Locale.ROOT, '0', '+', '-', '.');
     /**
      * The cache of info instances.
      */
@@ -82,14 +77,6 @@ public final class DateTimeFormatSymbols {
      * The decimal separator.
      */
     private final char decimalSeparator;
-    /**
-     * The first day of the week.
-     */
-    private final DayOfWeek firstDayOfWeek;
-    /**
-     * The minimum number of days in the first week.
-     */
-    private final int minDaysInFirstWeek;
 
     //-----------------------------------------------------------------------
     /**
@@ -126,27 +113,21 @@ public final class DateTimeFormatSymbols {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
         DateTimeFormatSymbols info = CACHE.get(locale);
         if (info == null) {
-            info = createInfo(locale);
+            info = create(locale);
             CACHE.putIfAbsent(locale, info);
             info = CACHE.get(locale);
         }
         return info;
     }
 
-    private static DateTimeFormatSymbols createInfo(Locale locale) {
+    private static DateTimeFormatSymbols create(Locale locale) {
         DecimalFormatSymbols oldSymbols = DecimalFormatSymbols.getInstance(locale);
         DateTimeFormatter.checkNotNull(oldSymbols, "Symbols to convert must not be null");
         char zeroDigit = oldSymbols.getZeroDigit();
         char positiveSign = '+';
         char negativeSign = oldSymbols.getMinusSign();
         char decimalSeparator = oldSymbols.getDecimalSeparator();
-        
-        Calendar cal = Calendar.getInstance(locale);
-        int calFDoW = cal.getFirstDayOfWeek();
-        DayOfWeek firstDayOfWeek = (calFDoW == 1 ? DayOfWeek.SUNDAY : DayOfWeek.of(calFDoW - 1));
-        int minDaysInFirstWeek = cal.getMinimalDaysInFirstWeek();
-        
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator, firstDayOfWeek, minDaysInFirstWeek);
+        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -158,21 +139,15 @@ public final class DateTimeFormatSymbols {
      * @param positiveSignChar  the character to use for the positive sign
      * @param negativeSignChar  the character to use for the negative sign
      * @param decimalPointChar  the character to use for the decimal point
-     * @param firstDayOfWeek  the first day of the week
-     * @param minDaysInFirstWeek  the minimum number of days in the first week, 1 to 7
      */
     public DateTimeFormatSymbols(
-            Locale locale, char zeroChar, char positiveSignChar, char negativeSignChar,
-            char decimalPointChar, DayOfWeek firstDayOfWeek, int minDaysInFirstWeek) {
+            Locale locale, char zeroChar, char positiveSignChar, char negativeSignChar, char decimalPointChar) {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
-        DateTimeFormatter.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
         this.locale = locale;
         this.zeroDigit = zeroChar;
         this.positiveSign = positiveSignChar;
         this.negativeSign = negativeSignChar;
         this.decimalSeparator = decimalPointChar;
-        this.firstDayOfWeek = firstDayOfWeek;
-        this.minDaysInFirstWeek = minDaysInFirstWeek;
     }
 
     //-----------------------------------------------------------------------
@@ -213,7 +188,7 @@ public final class DateTimeFormatSymbols {
         if (zeroDigit == this.zeroDigit) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator, firstDayOfWeek, minDaysInFirstWeek);
+        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -241,7 +216,7 @@ public final class DateTimeFormatSymbols {
         if (positiveSign == this.positiveSign) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator, firstDayOfWeek, minDaysInFirstWeek);
+        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -269,7 +244,7 @@ public final class DateTimeFormatSymbols {
         if (negativeSign == this.negativeSign) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator, firstDayOfWeek, minDaysInFirstWeek);
+        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
@@ -297,67 +272,7 @@ public final class DateTimeFormatSymbols {
         if (decimalSeparator == this.decimalSeparator) {
             return this;
         }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator, firstDayOfWeek, minDaysInFirstWeek);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the first day of the week.
-     * <p>
-     * The first day of the week may vary by culture.
-     * This method specifies the day to use.
-     *
-     * @return the first day of the week, not null
-     */
-    public DayOfWeek getFirstDayOfWeek() {
-        return firstDayOfWeek;
-    }
-
-    /**
-     * Returns a copy of the info with a new first day of the week.
-     * <p>
-     * The first day of the week may vary by culture.
-     * This method specifies the day to use.
-     *
-     * @param firstDayOfWeek  the first day of the week, not null
-     */
-    public DateTimeFormatSymbols withFirstDayOfWeek(DayOfWeek firstDayOfWeek) {
-        if (firstDayOfWeek == this.firstDayOfWeek) {
-            return this;
-        }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator, firstDayOfWeek, minDaysInFirstWeek);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the minimum days in the first week.
-     * <p>
-     * The minimum days in the first week may vary by culture.
-     * For example, a value of one means that the first day of the new year is in the first week.
-     * Whereas a value of seven means that the first first week of the year must contain
-     * seven days within the year.
-     *
-     * @return the minimum days in the first week, not null
-     */
-    public int getMinDaysInFirstWeek() {
-        return minDaysInFirstWeek;
-    }
-
-    /**
-     * Returns a copy of the info with a new minimum days in the first week.
-     * <p>
-     * The minimum days in the first week may vary by culture.
-     * For example, a value of one means that the first day of the new year is in the first week.
-     * Whereas a value of seven means that the first first week of the year must contain
-     * seven days within the year.
-     *
-     * @param minDaysInFirstWeek  the minimum days in the first week, not null
-     */
-    public DateTimeFormatSymbols withMinDaysInFirstWeek(int minDaysInFirstWeek) {
-        if (minDaysInFirstWeek == this.minDaysInFirstWeek) {
-            return this;
-        }
-        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator, firstDayOfWeek, minDaysInFirstWeek);
+        return new DateTimeFormatSymbols(locale, zeroDigit, positiveSign, negativeSign, decimalSeparator);
     }
 
     //-----------------------------------------------------------------------
