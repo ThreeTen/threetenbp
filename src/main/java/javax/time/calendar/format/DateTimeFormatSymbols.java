@@ -307,4 +307,15 @@ public final class DateTimeFormatSymbols {
         return new String(array);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a string describing these symbols.
+     *
+     * @return a string description, not null
+     */
+    @Override
+    public String toString() {
+        return "Symbols[" + (locale.equals(Locale.ROOT) ? "" : locale + ", ") + zeroDigit + positiveSign + negativeSign + decimalSeparator + "]";
+    }
+
 }

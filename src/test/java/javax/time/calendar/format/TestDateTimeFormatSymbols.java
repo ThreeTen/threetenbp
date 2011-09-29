@@ -140,4 +140,15 @@ public class TestDateTimeFormatSymbols {
         assertEquals(base.convertNumberToI18N("134"), "BDE");
     }
 
+    //-----------------------------------------------------------------------
+    public void test_toString_base() {
+        DateTimeFormatSymbols base = DateTimeFormatSymbols.DEFAULT;
+        assertEquals(base.toString(), "Symbols[0+-.]");
+    }
+
+    public void test_toString_altered() {
+        DateTimeFormatSymbols base = DateTimeFormatSymbols.of(Locale.US).withZeroDigit('A').withDecimalSeparator('@');
+        assertEquals(base.toString(), "Symbols[en_US, A+-@]");
+    }
+
 }
