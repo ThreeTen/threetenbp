@@ -57,7 +57,7 @@ public final class DateTimeFormatSymbols {
     /**
      * The cache of symbols instances.
      */
-    public static final ConcurrentMap<Locale, DateTimeFormatSymbols> CACHE = new ConcurrentHashMap<Locale, DateTimeFormatSymbols>(16, 0.75f, 2);
+    private static final ConcurrentMap<Locale, DateTimeFormatSymbols> CACHE = new ConcurrentHashMap<Locale, DateTimeFormatSymbols>(16, 0.75f, 2);
 
     /**
      * The zero digit.
