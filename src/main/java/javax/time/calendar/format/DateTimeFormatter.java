@@ -229,13 +229,16 @@ public final class DateTimeFormatter {
     /**
      * Fully parses the text producing an object of the type defined by the rule.
      * <p>
-     * This parses the entire text to produce the required calendrical value.
+     * Most applications should use this method for parsing.
+     * It parses the entire text to produce the required calendrical value.
      * For example:
      * <pre>
      * LocalDateTime dt = parser.parse(str, LocalDateTime.rule());
      * </pre>
      * If the parse completes without reading the entire length of the text,
      * or a problem occurs during parsing or merging, then an exception is thrown.
+     * <p>
+     * Internally, this uses the mid and low level parsing methods.
      *
      * @param text  the text to parse, not null
      * @return the parsed date, not null
@@ -262,21 +265,20 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Fully parses the text returning an engine that can be used to manage the
-     * merging of separate parsed fields to a meaningful calendrical.
+     * Mid-level parser, performing the first two steps of parsing.
      * <p>
-     * If the parse completes without reading the entire length of the text,
-     * or a problem occurs during parsing, then an exception is thrown.
+     * Parsing is implemented in three phases - low-level parse, engine creation
+     * and extraction. This method implements the low-level parse and engine creation.
      * <p>
-     * The result may be invalid including out of range values such as a month of 65.
-     * The methods on the calendrical allow you to handle the invalid input.
-     * For example:
-     * <pre>
-     * LocalDateTime dt = parser.parse(str).merge().get(LocalDateTime.rule());
-     * </pre>
+     * This uses {@link #parse(CharSequence, ParsePosition)} for low-level parsing.
+     * It then checks the entire text was parsed and creates the engine.
+     * See {@link CalendricalEngine} for details on extracting information.
+     * <p>
+     * This method throws {@link CalendricalParseException} if unable to parse.
+     * The whole text must be parsed to be successful
      *
      * @param text  the text to parse, not null
-     * @return the engine repesenting the result of the parse, not null
+     * @return the engine representing the result of the parse, not null
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
@@ -302,14 +304,23 @@ public final class DateTimeFormatter {
     }
 
     /**
-     * Parses the text into a Calendrical.
+     * Low-level parser, performing the first step of parsing.
      * <p>
-     * The result may be invalid including out of range values such as a month of 65.
-     * The methods on the calendrical allow you to handle the invalid input.
-     * For example:
-     * <pre>
-     * LocalDateTime dt = parser.parse(str).mergeStrict().toLocalDateTime();
-     * </pre>
+     * Parsing is implemented in three phases - low-level parse, engine creation
+     * and extraction. This method implements the low-level parse.
+     * <p>
+     * Low-level parsing uses the instructions in the formatter to parse the text.
+     * The result is held in the parsing context as a list of {@link Calendrical}.
+     * Once low-level parsing is complete, the next step is usually to use
+     * {@code CalendricalEngine} to interpret the data into a date-time class.
+     * <p>
+     * Applications needing low-level access the data between the two steps of the
+     * parsing process and before it is interpreted will use this method.
+     * Most applications should use {@link #parse(CharSequence, CalendricalRule)}.
+     * <p>
+     * This method does not throw {@link CalendricalParseException}.
+     * Instead, errors are returned within the state of the resulting context.
+     * Callers must check the result for errors before using the context.
      *
      * @param text  the text to parse, not null
      * @param position  the position to parse from, updated with length parsed
