@@ -38,6 +38,11 @@ package javax.time.calendar;
  * adjustments. Examples might be an adjuster that sets the date avoiding
  * weekends, or one that sets the date to the last day of the month.
  * <p>
+ * An adjuster is not normally used directly. Instead it should be used as follows:
+ * <pre>
+ *   date = date.with(adjuster);
+ * </pre>
+ * <p>
  * This interface must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.

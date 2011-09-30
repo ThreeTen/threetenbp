@@ -38,6 +38,11 @@ package javax.time.calendar;
  * Examples might be a matcher that checks if the date is a weekend or holiday,
  * or Friday the Thirteenth.
  * <p>
+ * A matcher is not normally used directly. Instead it should normally be used as follows:
+ * <pre>
+ *   if (date.matches(matcher)) ...
+ * </pre>
+ * <p>
  * This interface must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.

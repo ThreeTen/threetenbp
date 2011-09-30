@@ -38,6 +38,11 @@ package javax.time.calendar;
  * adjustments. These could be simple, such as simply setting the hour field,
  * or complex, such as adjusting the time to the end of the working day.
  * <p>
+ * An adjuster is not normally used directly. Instead it should be used as follows:
+ * <pre>
+ *   time = time.with(adjuster);
+ * </pre>
+ * <p>
  * This interface must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
