@@ -65,6 +65,9 @@ public final class CalendricalMatchers {
     /**
      * Returns the leap year matcher, which returns true if the date
      * is in a leap year.
+     * <p>
+     * The input 2011-01-15 will return false.<br />
+     * The input 2012-01-15 will return true (leap year).
      *
      * @return the leap year matcher, not null
      */
@@ -75,6 +78,11 @@ public final class CalendricalMatchers {
     /**
      * Returns the leap day matcher, which returns true if the date
      * is February 29th in a leap year.
+     * <p>
+     * The input 2011-02-27 will return false.<br />
+     * The input 2011-02-28 will return false.<br />
+     * The input 2012-02-28 will return false (leap year).<br />
+     * The input 2012-02-29 will return true (leap year).
      *
      * @return the leap day matcher, not null
      */
@@ -85,6 +93,11 @@ public final class CalendricalMatchers {
     /**
      * Returns the last day-of-month matcher, which returns true if the date
      * is the last valid day of the month.
+     * <p>
+     * The input 2011-02-27 will return false.<br />
+     * The input 2011-02-28 will return true.<br />
+     * The input 2012-02-28 will return false (leap year).<br />
+     * The input 2012-02-29 will return true (leap year).
      *
      * @return the last day-of-month matcher, not null
      */
@@ -95,6 +108,9 @@ public final class CalendricalMatchers {
     /**
      * Returns the last day-of-year matcher, which returns true if the date is
      * the last valid day of the year.
+     * <p>
+     * The input 2011-12-30 will return false.<br />
+     * The input 2011-12-31 will return true.
      *
      * @return the last day-of-year matcher, not null
      */

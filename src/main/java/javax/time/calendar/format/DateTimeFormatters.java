@@ -69,7 +69,7 @@ public final class DateTimeFormatters {
      * Creates a formatter using the specified pattern.
      * <p>
      * This method will create a formatter based on a simple pattern of letters and symbols.
-     * For example, {@code d MMM yyyy} will format 2008-12-03 as '3 Dec 2008'.
+     * For example, {@code d MMM yyyy} will format 2011-12-03 as '3 Dec 2011'.
      * <p>
      * The returned formatter will use the default locale, but this can be changed
      * using {@link DateTimeFormatter#withLocale(Locale)}.
@@ -206,7 +206,7 @@ public final class DateTimeFormatters {
      * Creates a formatter using the specified pattern.
      * <p>
      * This method will create a formatter based on a simple pattern of letters and symbols.
-     * For example, {@code d MMM yyyy} will format 2008-12-03 as '3 Dec 2008'.
+     * For example, {@code d MMM yyyy} will format 2011-12-03 as '3 Dec 2011'.
      * <p>
      * See {@link #pattern(String)} for details of the pattern.
      * <p>
@@ -226,7 +226,7 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO date formatter that prints/parses a local date without an offset,
-     * such as '2007-12-03'.
+     * such as '2011-12-03'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd}
@@ -255,7 +255,7 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO date formatter that prints/parses an offset date with an offset,
-     * such as '2007-12-03+01:00'.
+     * such as '2011-12-03+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-ddZZ}
@@ -285,8 +285,8 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO date formatter that prints/parses a date, with the
-     * offset and zone if available, such as '2007-12-03', '2007-12-03+01:00'
-     * or '2007-12-03+01:00[Europe/Paris]'.
+     * offset and zone if available, such as '2011-12-03', '2011-12-03+01:00'
+     * or '2011-12-03+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd[ZZ['['{ZoneId}']']]}
@@ -425,7 +425,7 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO date formatter that prints/parses a local date without an offset,
-     * such as '2007-12-03T10:15:30'.
+     * such as '2011-12-03T10:15:30'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]}
@@ -458,7 +458,7 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO date formatter that prints/parses an offset date with an offset,
-     * such as '2007-12-03T10:15:30+01:00'.
+     * such as '2011-12-03T10:15:30+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ}
@@ -492,7 +492,7 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO date formatter that prints/parses an offset date with a zone,
-     * such as '2007-12-03T10:15:30+01:00[Europe/Paris]'.
+     * such as '2011-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ[{ZoneId}]}
@@ -529,8 +529,8 @@ public final class DateTimeFormatters {
     //-----------------------------------------------------------------------
     /**
      * Returns the ISO date formatter that prints/parses a date, with the
-     * offset and zone if available, such as '2007-12-03T10:15:30',
-     * '2007-12-03T10:15:30+01:00' or '2007-12-03T10:15:30+01:00[Europe/Paris]'.
+     * offset and zone if available, such as '2011-12-03T10:15:30',
+     * '2011-12-03T10:15:30+01:00' or '2011-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
      * {@code yyyy-MM-dd'T'HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]}

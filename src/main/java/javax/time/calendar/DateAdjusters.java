@@ -55,8 +55,8 @@ public final class DateAdjusters {
      * Returns the first day-of-month adjuster, which returns a new date with
      * the day-of-month changed to be the first day of the month.
      * <p>
-     * The input 2007-01-15 will return 2007-01-01.<br />
-     * The input 2008-02-15 will return 2008-02-01.
+     * The input 2011-01-15 will return 2011-01-01.<br />
+     * The input 2011-02-15 will return 2011-02-01.
      *
      * @return the first day-of-month adjuster, not null
      */
@@ -68,11 +68,10 @@ public final class DateAdjusters {
      * Returns the last day-of-month adjuster, which returns a new date with
      * the day-of-month changed to be the last valid day of the month.
      * <p>
-     * The input 2007-01-15 will return 2007-01-31.<br />
-     * The input 2007-02-15 will return 2007-02-28.<br />
-     * The input 2007-03-15 will return 2007-03-31.<br />
-     * The input 2007-04-15 will return 2007-04-30.<br />
-     * The input 2008-02-15 will return 2008-02-29.
+     * The input 2011-01-15 will return 2011-01-31.<br />
+     * The input 2011-02-15 will return 2011-02-28.<br />
+     * The input 2012-02-15 will return 2012-02-29 (leap year).<br />
+     * The input 2011-04-15 will return 2011-04-30.
      *
      * @return the last day-of-month adjuster, not null
      */
@@ -84,8 +83,8 @@ public final class DateAdjusters {
      * Returns the first day-of-year adjuster, which returns a new date with
      * the day-of-year changed to be the first day of the year - January 1.
      * <p>
-     * The input 2007-01-15 will return 2007-01-01.<br />
-     * The input 2008-02-15 will return 2008-01-01.<br />
+     * The input 2011-01-15 will return 2011-01-01.<br />
+     * The input 2011-02-15 will return 2011-01-01.<br />
      *
      * @return the first day-of-year adjuster, not null
      */
@@ -97,8 +96,8 @@ public final class DateAdjusters {
      * Returns the last day-of-year adjuster, which returns a new date with
      * the day-of-year changed to be the last day of the year - December 31.
      * <p>
-     * The input 2007-01-15 will return 2007-12-31.<br />
-     * The input 2008-02-15 will return 2008-12-31.<br />
+     * The input 2011-01-15 will return 2011-12-31.<br />
+     * The input 2011-02-15 will return 2011-12-31.<br />
      *
      * @return the last day-of-year adjuster, not null
      */
@@ -148,8 +147,8 @@ public final class DateAdjusters {
      * in the same month with the first matching day-of-week. This is used for
      * expressions like 'first Tuesday in March'.
      * <p>
-     * The input 2007-12-15 for (MONDAY) will return 2007-12-03.<br />
-     * The input 2007-12-15 for (TUESDAY) will return 2007-12-04.<br />
+     * The input 2011-12-15 for (MONDAY) will return 2011-12-03.<br />
+     * The input 2011-12-15 for (TUESDAY) will return 2011-12-04.<br />
      *
      * @param dayOfWeek  the day-of-week, not null
      * @return the first in month adjuster, not null
@@ -166,11 +165,11 @@ public final class DateAdjusters {
      * in the same month with the ordinal day-of-week.
      * This is used for expressions like the 'second Tuesday in March'.
      * <p>
-     * The input 2007-12-15 for (1,MONDAY) will return 2007-12-03.<br />
-     * The input 2007-12-15 for (2,TUESDAY) will return 2007-12-11.<br />
-     * The input 2007-12-15 for (3,TUESDAY) will return 2007-12-18.<br />
-     * The input 2007-12-15 for (4,TUESDAY) will return 2007-12-25.<br />
-     * The input 2007-12-15 for (5,TUESDAY) will return 2008-01-01.<br />
+     * The input 2011-12-15 for (1,MONDAY) will return 2011-12-03.<br />
+     * The input 2011-12-15 for (2,TUESDAY) will return 2011-12-11.<br />
+     * The input 2011-12-15 for (3,TUESDAY) will return 2011-12-18.<br />
+     * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-25.<br />
+     * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-01.<br />
      * <p>
      * If the ordinal is 5 and there is no 5th of the requested day-of-week,
      * then the first of the next month is returned.
@@ -242,21 +241,12 @@ public final class DateAdjusters {
     }
 
     //-----------------------------------------------------------------------
-    // TODO: This set of adjusters is incomplete, for example what about
-    // June this year vs next June vs nextOrCurrent June vs previous...
-//    /**
-//     * Returns the next Monday adjuster, which adjusts the date to be the
-//     * next Monday after the specified date.
-//     *
-//     * @return the next Monday adjuster, not null
-//     */
-//    public static DateAdjuster nextMonday() {
-//        return new RelativeDayOfWeek(0, DayOfWeek.MONDAY);
-//    }
-
     /**
      * Returns the next day-of-week adjuster, which adjusts the date to be
      * the next of the specified day-of-week after the specified date.
+     * <p>
+     * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-17 (two days later).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-22 (one week later).
      *
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
@@ -272,6 +262,9 @@ public final class DateAdjusters {
      * Returns the next or current day-of-week adjuster, which adjusts the
      * date to be be the next of the specified day-of-week, returning the
      * input date if the day-of-week matched.
+     * <p>
+     * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-17 (two days later).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-15 (same as input).
      *
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
@@ -286,6 +279,9 @@ public final class DateAdjusters {
     /**
      * Returns the previous day-of-week adjuster, which adjusts the date to be
      * the previous of the specified day-of-week after the specified date.
+     * <p>
+     * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-10 (five days earlier).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-08 (one week earlier).
      *
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null
@@ -301,6 +297,9 @@ public final class DateAdjusters {
      * Returns the previous or current day-of-week adjuster, which adjusts the
      * date to be be the previous of the specified day-of-week, returning the
      * input date if the day-of-week matched.
+     * <p>
+     * The input 2011-01-15 (a Saturday) for parameter (MONDAY) will return 2011-01-10 (five days earlier).<br />
+     * The input 2011-01-15 (a Saturday) for parameter (SATURDAY) will return 2011-01-15 (same as input).
      *
      * @param dow  the day-of-week to move the date to, not null
      * @return the next day-of-week adjuster, not null

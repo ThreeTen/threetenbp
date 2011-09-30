@@ -273,7 +273,7 @@ public final class DateTimeFormatterBuilder {
      * The month is a fixed width parse of 2 digits.
      * Because these were appended to the same builder immediately after one another,
      * the year parser will reserve two digits for the month to parse.
-     * Thus, the text '200906' will correctly parse to a year of 2009 and a month of 6.
+     * Thus, the text '201106' will correctly parse to a year of 2011 and a month of 6.
      * Without adjacent value parsing, the year would greedily parse all six digits and leave
      * nothing for the month.
      * <p>
