@@ -1073,8 +1073,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the year value altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the resulting day for the year is invalid, it will be resolved using
+     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
+     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1091,8 +1092,27 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
      * <p>
-     * If the adjustment results in a date-time that is invalid, then the
-     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * If the resulting day for the month is invalid, it will be resolved using
+     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
+     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month-of-year to represent, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
+     */
+    public ZonedDateTime with(MonthOfYear monthOfYear) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().with(monthOfYear);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, zone, this, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the month-of-year value altered.
+     * <p>
+     * If the resulting day for the month is invalid, it will be resolved using
+     * {@link DateResolvers#previousValid()}. If the adjustment results in a date-time that is
+     * invalid for the zone, then the {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

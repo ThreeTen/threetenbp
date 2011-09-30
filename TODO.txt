@@ -55,7 +55,6 @@ Date/Time classes
 - OffsetDateTime.toEpochSecs() could be private
 - with(Calendrical) - need to figure out how
 - remove ISO chronology from LocalDate etc classes
-- ZDT has a subset of with methods, notably with(MonthOfYear)
 - try to remove DateTimeRuleGroup
 - DateTimeFields.roll
 ? InstantProvider implementations toEpochMillis()

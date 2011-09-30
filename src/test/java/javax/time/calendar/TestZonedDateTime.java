@@ -46,6 +46,8 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.MonthOfYear.JANUARY;
+import static javax.time.calendar.MonthOfYear.JUNE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -1183,9 +1185,33 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // with(MonthOfYear)
+    //-----------------------------------------------------------------------
+    public void test_withMonthOfYear_MonthOfYear_normal() {
+        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime test = base.with(JANUARY);
+        assertEquals(test, ZonedDateTime.of(ldt.withMonthOfYear(1), ZONE_0100));
+    }
+
+    public void test_withMonthOfYear_MonthOfYear_noChange() {
+        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        ZonedDateTime test = base.with(JUNE);
+        assertSame(test, base);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withMonthOfYear_MonthOfYear_null() {
+        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
+        base.with((MonthOfYear) null);
+    }
+
+    //-----------------------------------------------------------------------
     // withMonthOfYear()
     //-----------------------------------------------------------------------
-    public void test_withMonthOfYearr_normal() {
+    public void test_withMonthOfYear_normal() {
         LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
         ZonedDateTime test = base.withMonthOfYear(1);
