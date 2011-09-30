@@ -67,7 +67,8 @@ public class TestDayOfWeek {
         assertTrue(Enum.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
-        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
+        assertTrue(Calendrical.class.isAssignableFrom(DayOfWeek.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(DayOfWeek.class));
     }
 
     //-----------------------------------------------------------------------
@@ -220,6 +221,23 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.THURSDAY.roll(5), DayOfWeek.TUESDAY);
         assertEquals(DayOfWeek.THURSDAY.roll(6), DayOfWeek.WEDNESDAY);
         assertEquals(DayOfWeek.THURSDAY.roll(7), DayOfWeek.THURSDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // matcher
+    //-----------------------------------------------------------------------
+    public void test_matcher() {
+        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(DAY_OF_WEEK.field(1)), true);
+        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(MONDAY), true);
+        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(TUESDAY), false);
+        
+        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalDate.of(1970, 1, 5)), true);
+        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalDate.of(1970, 1, 1)), false);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_matcher_null() {
+        DayOfWeek.MONDAY.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

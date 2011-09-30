@@ -62,7 +62,7 @@ import javax.time.calendar.format.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum AmPmOfDay implements Calendrical {
+public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -190,6 +190,21 @@ public enum AmPmOfDay implements Calendrical {
      */
     public String getText(TextStyle style, Locale locale) {
         return AMPM_OF_DAY.getText(getValue(), style, locale);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the AM/PM extracted from the calendrical matches this.
+     * <p>
+     * This method implements the {@code CalendricalMatcher} interface.
+     * It is intended that applications use {@link LocalDate#matches} rather than this method.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    @Override
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
     }
 
     //-----------------------------------------------------------------------

@@ -62,7 +62,7 @@ import javax.time.calendar.format.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear implements Calendrical {
+public enum MonthOfYear implements Calendrical, CalendricalMatcher {
 
     /**
      * The singleton instance for the month of January with 31 days.
@@ -455,6 +455,21 @@ public enum MonthOfYear implements Calendrical {
      */
     public int getMonthOfQuarter() {
         return (ordinal() % 3) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the month-of-year extracted from the calendrical matches this.
+     * <p>
+     * This method implements the {@code CalendricalMatcher} interface.
+     * It is intended that applications use {@link LocalDate#matches} rather than this method.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    @Override
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
     }
 
     //-----------------------------------------------------------------------

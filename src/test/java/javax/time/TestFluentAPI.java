@@ -53,6 +53,7 @@ import static javax.time.calendar.Period.ofMonths;
 import static javax.time.calendar.Period.ofSeconds;
 import static javax.time.calendar.Period.ofYears;
 
+import javax.time.calendar.AmPmOfDay;
 import javax.time.calendar.Clock;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFields;
@@ -85,14 +86,14 @@ public class TestFluentAPI {
         LocalTime tod = clock.time();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(ofHours(6)).plus(ofMinutes(2));
-//        if (tod.toHourOfDay().getAmPm().isAm()) {
-//            tod = tod.withHourOfDay(9);
-//        }
+        if (tod.matches(AmPmOfDay.AM)) {
+            tod = tod.withHourOfDay(9);
+        }
         
         LocalDate date = null;
         date = clock.today().plusDays(3);
         date = clock.today().plus(ofDays(3));
-//        date = Clock.system().today().plus(Days.days(3));
+        date = Clock.systemDefaultZone().today().plus(Period.ofDays(3));
         
         date = LocalDate.of(2007, 3, 20);
         date = LocalDate.of(2007, MARCH, 20);
