@@ -35,8 +35,6 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 
-import java.io.Serializable;
-
 /**
  * Provides common implementations of {@code CalendricalMatcher}.
  * <p>
@@ -159,56 +157,6 @@ public final class CalendricalMatchers {
                 return domVal != null && moyVal != null && domVal.getValue() == 31 && moyVal.getValue() == 12;
             }
         },
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Creates a matcher that wraps a {@code DateAdjuster}.
-     * <p>
-     * This wraps a date adjuster as a matcher.
-     * This extracts a date from the input calendrical, adjusts it, and then
-     * checks if the adjusted date equals the original.
-     * <p>
-     * Note all adjusters make sense to be used here. For example, any adjuster
-     * that always changes the date will never return true.
-     * <p>
-     * This is typically used as follows:
-     * <pre>
-     *   if (date.matches(dateAt(adjuster))) ...
-     *   // for example
-     *   if (date.matches(dateMatching(firstInMonth(TUESDAY)))) ...
-     * </pre>
-     *
-     * @param adjuster  the adjuster to wrap, not null
-     */
-    public static CalendricalMatcher dateMatching(DateAdjuster adjuster) {
-        if (adjuster == null) {
-            throw new NullPointerException("DateAdjuster must not be null");
-        }
-        return new DateAt(adjuster);
-    }
-
-    /**
-     * Class implementing conversion of adjuster to matcher.
-     */
-    private static final class DateAt implements CalendricalMatcher, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-        /** The day-of-week. */
-        private final DateAdjuster adjuster;
-
-        /**
-         * Constructor.
-         * @param adjuster  the adjuster to wrap, not null
-         */
-        private DateAt(DateAdjuster adjuster) {
-            this.adjuster = adjuster;
-        }
-        /** {@inheritDoc} */
-        public boolean matchesCalendrical(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return (date != null && date.with(adjuster).equals(date));
-        }
     }
 
 }
