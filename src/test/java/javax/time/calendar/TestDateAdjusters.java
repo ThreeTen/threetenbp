@@ -35,6 +35,7 @@ import static javax.time.calendar.DayOfWeek.MONDAY;
 import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
+import static javax.time.calendar.MonthOfYear.JANUARY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -174,6 +175,51 @@ public class TestDateAdjusters {
     }
 
     //-----------------------------------------------------------------------
+    // firstDayOfNextMonth()
+    //-----------------------------------------------------------------------
+    public void test_firstDayOfNextMonth_serialization() throws IOException, ClassNotFoundException {
+        DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfNextMonth();
+        assertTrue(firstDayOfMonth instanceof Serializable);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(firstDayOfMonth);
+        oos.close();
+        
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        assertSame(ois.readObject(), firstDayOfMonth);
+    }
+
+    public void factory_firstDayOfNextMonth() {
+        assertNotNull(DateAdjusters.firstDayOfNextMonth());
+        assertSame(DateAdjusters.firstDayOfNextMonth(), DateAdjusters.firstDayOfNextMonth());
+    }
+
+    public void test_firstDayOfNextMonth_nonLeap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
+                LocalDate date = date(2007, month, i);
+                LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
+                assertEquals(test.getYear(), month == DECEMBER ? 2008 : 2007);
+                assertEquals(test.getMonthOfYear(), month.next());
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    public void test_firstDayOfNextMonth_leap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(true); i++) {
+                LocalDate date = date(2008, month, i);
+                LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
+                assertEquals(test.getYear(), month == DECEMBER ? 2009 : 2008);
+                assertEquals(test.getMonthOfYear(), month.next());
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // firstDayOfYear()
     //-----------------------------------------------------------------------
     public void test_firstDayOfYear_serialization() throws IOException, ClassNotFoundException {
@@ -264,10 +310,10 @@ public class TestDateAdjusters {
     }
 
     //-----------------------------------------------------------------------
-    // firstDayOfNextMonth()
+    // firstDayOfNextYear()
     //-----------------------------------------------------------------------
-    public void test_firstDayOfNextMonth_serialization() throws IOException, ClassNotFoundException {
-        DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfNextMonth();
+    public void test_firstDayOfNextYear_serialization() throws IOException, ClassNotFoundException {
+        DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfNextYear();
         assertTrue(firstDayOfMonth instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -279,30 +325,30 @@ public class TestDateAdjusters {
         assertSame(ois.readObject(), firstDayOfMonth);
     }
 
-    public void factory_firstDayOfNextMonth() {
-        assertNotNull(DateAdjusters.firstDayOfNextMonth());
-        assertSame(DateAdjusters.firstDayOfNextMonth(), DateAdjusters.firstDayOfNextMonth());
+    public void factory_firstDayOfNextYear() {
+        assertNotNull(DateAdjusters.firstDayOfNextYear());
+        assertSame(DateAdjusters.firstDayOfNextYear(), DateAdjusters.firstDayOfNextYear());
     }
 
-    public void test_firstDayOfNextMonth_nonLeap() {
+    public void test_firstDayOfNextYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
-                LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
-                assertEquals(test.getYear(), month == DECEMBER ? 2008 : 2007);
-                assertEquals(test.getMonthOfYear(), month.next());
+                LocalDate test = DateAdjusters.firstDayOfNextYear().adjustDate(date);
+                assertEquals(test.getYear(), 2008);
+                assertEquals(test.getMonthOfYear(), JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
             }
         }
     }
 
-    public void test_firstDayOfNextMonth_leap() {
+    public void test_firstDayOfNextYear_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
-                LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
-                assertEquals(test.getYear(), month == DECEMBER ? 2009 : 2008);
-                assertEquals(test.getMonthOfYear(), month.next());
+                LocalDate test = DateAdjusters.firstDayOfNextYear().adjustDate(date);
+                assertEquals(test.getYear(), 2009);
+                assertEquals(test.getMonthOfYear(), JANUARY);
                 assertEquals(test.getDayOfMonth(), 1);
             }
         }

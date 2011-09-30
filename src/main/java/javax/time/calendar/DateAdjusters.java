@@ -52,8 +52,8 @@ public final class DateAdjusters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the first day-of-month adjuster, which returns a new date with
-     * the day-of-month changed to be the first day of the month.
+     * Returns the "first day of month" adjuster, which returns a new date set to
+     * the first day of the current month.
      * <p>
      * The input 2011-01-15 will return 2011-01-01.<br />
      * The input 2011-02-15 will return 2011-02-01.
@@ -65,8 +65,8 @@ public final class DateAdjusters {
     }
 
     /**
-     * Returns the last day-of-month adjuster, which returns a new date with
-     * the day-of-month changed to be the last valid day of the month.
+     * Returns the "last day of month" adjuster, which returns a new date set to
+     * the last day of the current month.
      * <p>
      * The input 2011-01-15 will return 2011-01-31.<br />
      * The input 2011-02-15 will return 2011-02-28.<br />
@@ -80,34 +80,8 @@ public final class DateAdjusters {
     }
 
     /**
-     * Returns the first day-of-year adjuster, which returns a new date with
-     * the day-of-year changed to be the first day of the year - January 1.
-     * <p>
-     * The input 2011-01-15 will return 2011-01-01.<br />
-     * The input 2011-02-15 will return 2011-01-01.<br />
-     *
-     * @return the first day-of-year adjuster, not null
-     */
-    public static DateAdjuster firstDayOfYear() {
-        return Impl.FIRST_DAY_OF_YEAR;
-    }
-
-    /**
-     * Returns the last day-of-year adjuster, which returns a new date with
-     * the day-of-year changed to be the last day of the year - December 31.
-     * <p>
-     * The input 2011-01-15 will return 2011-12-31.<br />
-     * The input 2011-02-15 will return 2011-12-31.<br />
-     *
-     * @return the last day-of-year adjuster, not null
-     */
-    public static DateAdjuster lastDayOfYear() {
-        return Impl.LAST_DAY_OF_YEAR;
-    }
-
-    /**
-     * Returns the first day of next month adjuster, which returns a new date with
-     * the day-of-month changed to be the first day of the next month.
+     * Returns the "first day of next month" adjuster, which returns a new date set to
+     * the first day of the next month.
      * <p>
      * The input 2011-01-15 will return 2011-02-01.<br />
      * The input 2011-02-15 will return 2011-03-01.
@@ -120,17 +94,56 @@ public final class DateAdjusters {
 
     //-----------------------------------------------------------------------
     /**
+     * Returns the "first day of year" adjuster, which returns a new date set to
+     * the first day of the current year - January 1.
+     * <p>
+     * The input 2011-01-15 will return 2011-01-01.<br />
+     * The input 2011-02-15 will return 2011-01-01.<br />
+     *
+     * @return the first day-of-year adjuster, not null
+     */
+    public static DateAdjuster firstDayOfYear() {
+        return Impl.FIRST_DAY_OF_YEAR;
+    }
+
+    /**
+     * Returns the "last day of year" adjuster, which returns a new date set to
+     * the last day of the current year - December 31.
+     * <p>
+     * The input 2011-01-15 will return 2011-12-31.<br />
+     * The input 2011-02-15 will return 2011-12-31.<br />
+     *
+     * @return the last day-of-year adjuster, not null
+     */
+    public static DateAdjuster lastDayOfYear() {
+        return Impl.LAST_DAY_OF_YEAR;
+    }
+
+    /**
+     * Returns the "first day of next year" adjuster, which returns a new date set to
+     * the first day of the next year - January 1.
+     * <p>
+     * The input 2011-01-15 will return 2012-01-01.
+     *
+     * @return the first day of next month adjuster, not null
+     */
+    public static DateAdjuster firstDayOfNextYear() {
+        return Impl.FIRST_DAY_OF_NEXT_YEAR;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Enum implementing the adjusters.
      */
     private static enum Impl implements DateAdjuster {
-        /** First day-of-month adjuster. */
+        /** First day of month adjuster. */
         FIRST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
                 return date.withDayOfMonth(1);
             }
         },
-        /** Last day-of-month adjuster. */
+        /** Last day of month adjuster. */
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
@@ -138,14 +151,21 @@ public final class DateAdjusters {
                 return date.withDayOfMonth(dom);
             }
         },
-        /** First day-of-year adjuster. */
+        /** First day of next month adjuster. */
+        FIRST_DAY_OF_NEXT_MONTH {
+            /** {@inheritDoc} */
+            public LocalDate adjustDate(LocalDate date) {
+                return date.withDayOfMonth(1).plusMonths(1);
+            }
+        },
+        /** First day of year adjuster. */
         FIRST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
                 return LocalDate.of(date.getYear(), MonthOfYear.JANUARY, 1);
             }
         },
-        /** Last day-of-year adjuster. */
+        /** Last day of year adjuster. */
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
@@ -153,10 +173,10 @@ public final class DateAdjusters {
             }
         },
         /** First day of next month adjuster. */
-        FIRST_DAY_OF_NEXT_MONTH {
+        FIRST_DAY_OF_NEXT_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                return date.withDayOfMonth(1).plusMonths(1);
+                return date.withDayOfYear(1).plusYears(1);
             }
         },
     }
