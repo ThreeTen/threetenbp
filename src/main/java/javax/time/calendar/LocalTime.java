@@ -223,27 +223,6 @@ public final class LocalTime
         return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
     }
 
-//    /**
-//     * Obtains an instance of {@code LocalTime}.
-//     *
-//     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
-//     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
-//     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59.999,999,999
-//     * @return a LocalTime object, not null
-//     * @throws IllegalCalendarFieldValueException if any field is invalid
-//     */
-//    public static LocalTime time(int hourOfDay, int minuteOfHour, double secondOfMinute) {
-//        // TODO: check maths and overflow
-//        long nanos = Math.round(secondOfMinute * 1000000000);
-//        long sec = nanos / 1000000000;
-//        int nos = (int) (nanos % 1000000000);
-//        if (nos < 0) {
-//           nos += 1000000000;
-//           sec--;
-//        }
-//        return time(hourOfDay, minuteOfHour, (int) sec, nos);
-//    }
-
     /**
      * Obtains an instance of {@code LocalTime} from an hour, minute, second and nanosecond.
      * <p>
@@ -468,26 +447,6 @@ public final class LocalTime
     public int getNanoOfSecond() {
         return nano;
     }
-
-//    /**
-//     * Gets the second and nanosecond, expressed as a double in seconds.
-//     *
-//     * @return the nano-of-second, from 0 to 59.999,999,999
-//     */
-//    public double getFractionalSecondOfMinute() {
-//        // TODO: check maths and write tests
-//        return (((double) nano.getValue()) / 1000000000d) + second.getValue();
-//    }
-//
-//    /**
-//     * Gets the time as a fraction of a day, expressed as a double in days.
-//     *
-//     * @return the nano-of-second, from 0 to &lt; 1
-//     */
-//    public double getFractionalDay() {
-//        // TODO: check maths and write tests
-//        return (((double) toNanoOfDay()) / ((double) NANOS_PER_DAY));
-//    }
 
     //-----------------------------------------------------------------------
     /**

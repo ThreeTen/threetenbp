@@ -1300,10 +1300,6 @@ public final class LocalDate
      * @return the year zero days count equal to this date
      */
     long toYearZeroDay() {
-//        int a = (14 - month) / 12;
-//        long y = year + 4800 - a;
-//        long m = month + 12 * a - 3;
-//        return day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 2432046;
         long y = year;
         long m = month.getValue();
         long total = 0;
