@@ -100,7 +100,6 @@ public class TestOffsetTime {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof CalendricalMatcher);
-        assertTrue(obj instanceof TimeAdjuster);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -514,30 +513,6 @@ public class TestOffsetTime {
     public void test_get_unsupported() {
         OffsetTime test = OffsetTime.of(11, 30, 59, OFFSET_PONE);
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
-    }
-
-    //-----------------------------------------------------------------------
-    // withTime()
-    //-----------------------------------------------------------------------
-    public void test_withTime() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        LocalTime time = LocalTime.of(11, 31, 0);
-        OffsetTime test = base.withTime(time);
-        assertSame(test.toLocalTime(), time);
-        assertSame(test.getOffset(), base.getOffset());
-    }
-
-    public void test_withTime_noChange() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        LocalTime time = LocalTime.of(11, 30, 59);
-        OffsetTime test = base.withTime(time);
-        assertSame(test, base);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_withTime_null() {
-        OffsetTime base = OffsetTime.of(11, 30, 59, OFFSET_PONE);
-        base.withTime(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1231,13 +1206,13 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_true_date() {
         OffsetTime test = TEST_11_30_59_500_PONE;
-        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_11_30_59_500_PONE);
+        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_11_30_59_500_PONE.toLocalTime());
         assertEquals(test.matchesCalendrical(cal), true);
     }
 
     public void test_matchesCalendrical_false_date() {
         OffsetTime test = TEST_11_30_59_500_PONE;
-        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_11_30_59_500_PONE.plusHours(1));
+        OffsetDateTime cal = OffsetDateTime.of(2008, 6, 30, 12, 30, test.getOffset()).with(TEST_11_30_59_500_PONE.toLocalTime().plusHours(1));
         assertEquals(test.matchesCalendrical(cal), false);
     }
 
@@ -1250,22 +1225,4 @@ public class TestOffsetTime {
         TEST_11_30_59_500_PONE.matchesCalendrical(null);
     }
 
-    //-----------------------------------------------------------------------
-    // adjustTime()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_adjustTime(int h, int m, int s, int n, ZoneOffset ignored) {
-        LocalTime a = LocalTime.of(h, m, s, n);
-        assertSame(a.adjustTime(TEST_11_30_59_500_PONE.toLocalTime()), a);
-        assertSame(TEST_11_30_59_500_PONE.adjustTime(a), TEST_11_30_59_500_PONE.toLocalTime());
-    }
-
-    public void test_adjustTime_same() {
-        assertSame(OffsetTime.of(11, 30, 59, 500, OFFSET_PTWO).adjustTime(TEST_11_30_59_500_PONE.toLocalTime()), TEST_11_30_59_500_PONE.toLocalTime());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustTime_null() {
-        TEST_11_30_59_500_PONE.adjustTime(null);
-    }
 }

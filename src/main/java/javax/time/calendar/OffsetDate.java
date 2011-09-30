@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
+        implements Calendrical, CalendricalMatcher, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -440,35 +440,18 @@ public final class OffsetDate
     /**
      * Returns a copy of this {@code OffsetDate} with the date altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the date in various ways.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date to the last day of the month.
-     * <p>
-     * The offset does not affect the calculation and will be the same in the result.
+     * This adjusts the date according to the rules of the specified adjuster.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
+     * can be used to change the entire date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
      * @return an {@code OffsetDate} based on this date adjusted as necessary, not null
-     * @throws NullPointerException if the adjuster returned null
      */
     public OffsetDate with(DateAdjuster adjuster) {
         return with(date.with(adjuster), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDate} with a different local date.
-     * <p>
-     * This method changes the date stored to a different date.
-     * No calculation is performed. The result simply represents the same
-     * offset and the new date.
-     *
-     * @param date  the local date to change to, not null
-     * @return an {@code OffsetDate} based on this date with the requested date, not null
-     */
-    public OffsetDate withDate(LocalDate date) {
-        return this.date.equals(date) ? this : new OffsetDate(date, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -963,19 +946,6 @@ public final class OffsetDate
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
         return this.equals(calendrical.get(rule()));
-    }
-
-    /**
-     * Adjusts a date to have the value of the date part of this object.
-     * <p>
-     * This method implements the {@code DateAdjuster} interface.
-     * It is intended that applications use {@link #with(DateAdjuster)} rather than this method.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, not null
-     */
-    public LocalDate adjustDate(LocalDate date) {
-        return this.date.adjustDate(date);
     }
 
     //-----------------------------------------------------------------------

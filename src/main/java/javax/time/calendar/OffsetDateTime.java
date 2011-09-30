@@ -59,8 +59,7 @@ import javax.time.calendar.zone.ZoneRules;
  */
 public final class OffsetDateTime
         implements InstantProvider, Calendrical,
-                    CalendricalMatcher, DateAdjuster, TimeAdjuster,
-                    Comparable<OffsetDateTime>, Serializable {
+                    CalendricalMatcher, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -744,45 +743,41 @@ public final class OffsetDateTime
      * No calculation is needed or performed.
      *
      * @param dateTime  the local date-time to change to, not null
-     * @return an {@code OffsetDateTime} based on this time with the requested time, not null
+     * @return an {@code OffsetDateTime} based on this time with the requested date-time, not null
      */
     public OffsetDateTime withDateTime(LocalDateTime dateTime) {
         return this.dateTime.equals(dateTime) ? this : new OffsetDateTime(dateTime, offset);
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the date altered using the adjuster.
+     * Returns a copy of this {@code OffsetDateTime} with the date altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the date in various ways.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date to the last day of the month.
-     * <p>
-     * The offset and time do not affect the calculation and will be the same in the result.
+     * This adjusts the date according to the rules of the specified adjuster.
+     * The time and offset are not part of the calculation and will be unchanged in the result.
+     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
+     * can be used to change the entire date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
      * @return an {@code OffsetDateTime} based on this date-time with the date adjusted, not null
-     * @throws NullPointerException if the adjuster returned null
      */
     public OffsetDateTime with(DateAdjuster adjuster) {
         return with(dateTime.with(adjuster), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the time altered using the adjuster.
+     * Returns a copy of this {@code OffsetDateTime} with the time altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the time in various ways.
-     * A simple adjuster might simply set the one of the fields, such as the hour field.
-     * A more complex adjuster might set the time to end of the working day.
-     * <p>
-     * The offset and date do not affect the calculation and will be the same in the result.
+     * This adjusts the time according to the rules of the specified adjuster.
+     * The date and offset are not part of the calculation and will be unchanged in the result.
+     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
+     * can be used to change the entire time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
      * @return an {@code OffsetDateTime} based on this date-time with the time adjusted, not null
-     * @throws IllegalArgumentException if the adjuster returned null
      */
     public OffsetDateTime with(TimeAdjuster adjuster) {
         return with(dateTime.with(adjuster), offset);
@@ -1588,32 +1583,6 @@ public final class OffsetDateTime
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
         return this.equals(calendrical.get(rule()));
-    }
-
-    /**
-     * Adjusts a date to have the value of the date part of this object.
-     * <p>
-     * This method implements the {@code DateAdjuster} interface.
-     * It is intended that applications use {@link #with(DateAdjuster)} rather than this method.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, not null
-     */
-    public LocalDate adjustDate(LocalDate date) {
-        return dateTime.adjustDate(date);
-    }
-
-    /**
-     * Adjusts a time to have the value of the time part of this object.
-     * <p>
-     * This method implements the {@code TimeAdjuster} interface.
-     * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, not null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        return dateTime.adjustTime(time);
     }
 
     //-----------------------------------------------------------------------

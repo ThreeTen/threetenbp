@@ -53,14 +53,16 @@ Time scales (UTC/TAI)
 Date/Time classes
 - DateResolver rework - takes int or MonthOfDay or calendricals
 - OffsetDateTime.toEpochSecs() could be private
+- with(Calendrical) - need to figure out how
+- remove ISO chronology from LocalDate etc classes
 ? InstantProvider implementations toEpochMillis()
 ? getMonthOfYear() -> getMonth(), etc
-? with(rule, value)
 ? Calendrical rule for date/time as a period (for between calculations)
 ? MonthOfYear methods taking year, as well as boolean
 
 Rules
 - DateTimeField.from(Cal...)
+- Change DAY_OF_MONTH.field(6) to DAY_OF_MONTH.of(6) - to act like factories, also period units
 - ensure other calendar systems re-use ISO defined rules
 - Handle case where values have gaps, eg 1,2, 4,5,6, 8
 ? parse()
@@ -85,9 +87,9 @@ Date/Time formatting
 Time zones
 - Use WET/CET/EET as valid short abbreviations?
 - SPI for zone names
-# some zones have transitions where only the name changes - America/Resolute
-# "resolvers need to use correct rules" what does this mean?
 - parse/format names
+# some zones have transitions where only the name changes - America/Resolute
+- aliases resolved at runtime not compile time
 - test against TZDB binary data
 ? get region ids by offset (JDK method)
 ? Drop Etc (signs reversed), Older country based IDs
@@ -104,12 +106,11 @@ Time zones
 
 Periods
 - WIP branch, decide on normalization
-- Between factories
+- Between factories -> ? DAYS.between(date1, date2)
 - Formatting/parsing (defer?)
 - Period.toString is not output of state
 
 Matchers/Adjusters
-- DateTimeAdjuster
 - more general next/previous
 ? recurrences
 
@@ -191,3 +192,5 @@ Not doing
 - Rename DateProvider to LocalDateProvider - NO, interface was removed
 - Rename period classes - NO, current names seem fine
 - Promote TimeDefinition to top-level type - NO, moved it to rule class instead
+- date.with(RULE, value) / date.plus(amount, UNIT) - NO, because date.plus(UNIT.of(amount)) works well enough
+- DateTimeAdjuster - NO, it adds more complexity

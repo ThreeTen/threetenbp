@@ -638,30 +638,6 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // withDate()
-    //-----------------------------------------------------------------------
-    public void test_withDate() {
-        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        LocalDate date = LocalDate.of(2008, 7, 1);
-        OffsetDate test = base.withDate(date);
-        assertSame(test.toLocalDate(), date);
-        assertSame(test.getOffset(), base.getOffset());
-    }
-
-    public void test_withDate_noChange() {
-        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        LocalDate date = LocalDate.of(2008, 6, 30);
-        OffsetDate test = base.withDate(date);
-        assertSame(test, base);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_withDate_null() {
-        OffsetDate base = OffsetDate.of(2008, 6, 30, OFFSET_PONE);
-        base.withDate(null);
-    }
-
-    //-----------------------------------------------------------------------
     // withOffset()
     //-----------------------------------------------------------------------
     public void test_withOffset() {
@@ -2356,23 +2332,4 @@ public class TestOffsetDate {
         TEST_2007_07_15_PONE.matchesCalendrical(null);
     }
 
-    //-----------------------------------------------------------------------
-    // adjustDate()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_adjustDate(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.of(y, m, d, offset);
-        assertSame(a.adjustDate(TEST_2007_07_15_PONE.toLocalDate()), a.toLocalDate());
-        assertSame(TEST_2007_07_15_PONE.adjustDate(a.toLocalDate()), TEST_2007_07_15_PONE.toLocalDate());
-    }
-
-    public void test_adjustDate_same() {
-        assertSame(OffsetDate.of(2007, 7, 15, OFFSET_PONE).adjustDate(TEST_2007_07_15_PONE.toLocalDate()),
-              TEST_2007_07_15_PONE.toLocalDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_null() {
-        TEST_2007_07_15_PONE.adjustDate(null);
-    }
 }

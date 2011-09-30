@@ -104,8 +104,6 @@ public class TestOffsetDateTime {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof CalendricalMatcher);
-        assertTrue(obj instanceof DateAdjuster);
-        assertTrue(obj instanceof TimeAdjuster);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -1727,43 +1725,4 @@ public class TestOffsetDateTime {
         TEST_2008_6_30_11_30_59_000000500.matchesCalendrical(null);
     }
 
-    //-----------------------------------------------------------------------
-    // adjustDate()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_adjustDate(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_2008_6_30_11_30_59_000000500.withDate(y, m, d);
-        assertSame(a.adjustDate(TEST_2008_6_30_11_30_59_000000500.toLocalDate()), a.toLocalDate());
-        assertSame(TEST_2008_6_30_11_30_59_000000500.adjustDate(a.toLocalDate()), TEST_2008_6_30_11_30_59_000000500.toLocalDate());
-    }
-
-    public void test_adjustDate_same() {
-        assertSame(OffsetDateTime.ofMidnight(2008, 6, 30, OFFSET_PONE).adjustDate(TEST_2008_6_30_11_30_59_000000500.toLocalDate()), 
-                TEST_2008_6_30_11_30_59_000000500.toLocalDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_null() {
-        TEST_2008_6_30_11_30_59_000000500.adjustDate(null);
-    }
-    
-    //-----------------------------------------------------------------------
-    // adjustTime()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_adjustTime(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_2008_6_30_11_30_59_000000500.withTime(h, mi, s, n);
-        assertSame(a.adjustTime(TEST_2008_6_30_11_30_59_000000500.toLocalTime()), a.toLocalTime());
-        assertSame(TEST_2008_6_30_11_30_59_000000500.adjustTime(a.toLocalTime()), TEST_2008_6_30_11_30_59_000000500.toLocalTime());
-    }
-
-    public void test_adjustTime_same() {
-        assertSame(OffsetDateTime.of(1, 1, 1, 11, 30, 59, 500, OFFSET_PONE).adjustTime(TEST_2008_6_30_11_30_59_000000500.toLocalTime()), 
-                TEST_2008_6_30_11_30_59_000000500.toLocalTime());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustTime_null() {
-        TEST_2008_6_30_11_30_59_000000500.adjustTime(null);
-    }
 }

@@ -61,7 +61,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements Calendrical, CalendricalMatcher, TimeAdjuster, Comparable<OffsetTime>, Serializable {
+        implements Calendrical, CalendricalMatcher, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -327,20 +327,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetTime} with the time altered and the offset retained.
-     * <p>
-     * This method returns an object with the same {@code ZoneOffset} and the specified {@code LocalTime}.
-     * No calculation is needed or performed.
-     *
-     * @param time  the local time to change to, not null
-     * @return an {@code OffsetTime} based on this time with the requested time, not null
-     */
-    public OffsetTime withTime(LocalTime time) {
-        return this.time.equals(time) ? this : new OffsetTime(time, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the zone offset representing how far ahead or behind UTC the time is.
      *
      * @return the zone offset, not null
@@ -438,9 +424,10 @@ public final class OffsetTime
     /**
      * Returns a copy of this {@code OffsetTime} with the time altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the time in various ways.
-     * A simple adjuster might simply set the one of the fields, such as the hour field.
-     * A more complex adjuster might set the time to end of the working day.
+     * This adjusts the time according to the rules of the specified adjuster.
+     * The offset is not part of the calculation and will be unchanged in the result.
+     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
+     * can be used to change the entire time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -449,7 +436,7 @@ public final class OffsetTime
      */
     public OffsetTime with(TimeAdjuster adjuster) {
         LocalTime newTime = time.with(adjuster);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+        return newTime.equals(this.time) ? this : new OffsetTime(newTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -750,19 +737,6 @@ public final class OffsetTime
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
         return this.equals(calendrical.get(rule()));
-    }
-
-    /**
-     * Adjusts a time to have the value of the time part of this object.
-     * <p>
-     * This method implements the {@code TimeAdjuster} interface.
-     * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, not null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        return this.time.adjustTime(time);
     }
 
     //-----------------------------------------------------------------------
