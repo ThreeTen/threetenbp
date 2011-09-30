@@ -631,17 +631,15 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the date altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the date in various ways.
-     * A simple adjuster might simply set the one of the fields, such as the year field.
-     * A more complex adjuster might set the date to the last day of the month.
-     * <p>
-     * The time does not affect the calculation and will be the same in the result.
+     * This adjusts the date according to the rules of the specified adjuster.
+     * The time is not part of the calculation and will be unchanged in the result.
+     * Note that {@link LocalDate} implements {@code DateAdjuster}, thus this method
+     * can be used to change the entire date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
      * @return a {@code LocalDateTime} based on this date-time with the date adjusted, not null
-     * @throws NullPointerException if the adjuster returned null
      */
     public LocalDateTime with(DateAdjuster adjuster) {
         return with(date.with(adjuster), time);
@@ -650,17 +648,15 @@ public final class LocalDateTime
     /**
      * Returns a copy of this {@code LocalDateTime} with the time altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the time in various ways.
-     * A simple adjuster might simply set the one of the fields, such as the hour field.
-     * A more complex adjuster might set the time to end of the working day.
-     * <p>
-     * The date does not affect the calculation and will be the same in the result.
+     * This adjusts the time according to the rules of the specified adjuster.
+     * The date is not part of the calculation and will be unchanged in the result.
+     * Note that {@link LocalTime} implements {@code TimeAdjuster}, thus this method
+     * can be used to change the entire time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
      * @return a {@code LocalDateTime} based on this date-time with the time adjusted, not null
-     * @throws IllegalArgumentException if the adjuster returned null
      */
     public LocalDateTime with(TimeAdjuster adjuster) {
         return with(date, time.with(adjuster));

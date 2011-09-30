@@ -471,7 +471,7 @@ public final class LocalDate
     /**
      * Returns a copy of this {@code LocalDate} with the date altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the date in various ways.
+     * This adjusts the date according to the rules of the specified adjuster.
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date to the last day of the month.
      * <p>
@@ -479,7 +479,6 @@ public final class LocalDate
      *
      * @param adjuster  the adjuster to use, not null
      * @return a {@code LocalDate} based on this date adjusted as necessary, not null
-     * @throws NullPointerException if the adjuster returned null
      */
     public LocalDate with(DateAdjuster adjuster) {
         ISOChronology.checkNotNull(adjuster, "DateAdjuster must not be null");

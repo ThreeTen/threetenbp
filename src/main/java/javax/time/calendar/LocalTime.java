@@ -493,7 +493,7 @@ public final class LocalTime
     /**
      * Returns a copy of this {@code LocalTime} with the time altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the time in various ways.
+     * This adjusts the time according to the rules of the specified adjuster.
      * A simple adjuster might simply set the one of the fields, such as the hour field.
      * A more complex adjuster might set the time to end of the working day.
      * <p>
@@ -505,7 +505,7 @@ public final class LocalTime
     public LocalTime with(TimeAdjuster adjuster) {
         LocalTime time = adjuster.adjustTime(this);
         if (time == null) {
-            throw new NullPointerException("The implementation of TimeAdjuster must not return null");
+            throw new NullPointerException("TimeAdjuster implementation must not return null");
         }
         return time;
     }
