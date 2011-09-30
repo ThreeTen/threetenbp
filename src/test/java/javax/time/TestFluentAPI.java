@@ -100,16 +100,6 @@ public class TestFluentAPI {
         date = Year.of(2007).atMonth(3).atDay(20);
         date = Year.of(2007).atMonth(MARCH).atDay(20);
         
-//        date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
-//        date = calendar().year(1972).december().dayOfMonth(3).build();
-//        date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
-//        date = calendar().zoneID("Europe/London").year(2007).august().dayOfMonth(2).build();
-//        
-//        date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
-//        date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
-        
-        // date = LocalDate.date(clock().currentMonth(), dayOfMonth(6));
-        
         date = date.with(lastDayOfMonth());
         date = date.with(next(MONDAY));
         date = date.with(nextOrCurrent(MONDAY));
@@ -126,35 +116,18 @@ public class TestFluentAPI {
             System.out.println("Spooky");
         }
         
-        
-//        date = date.with(MONDAY.adjustToNext());
-        
         // different ways to build/use periods
         date = date.plus(ofDateFields(2, 3, 1));
-//        date = date.plus(3, YEARS).plus(2, MONTHS).plus(1, DAYS);
         date = date.plus(ofYears(3)).plus(ofMonths(2)).plus(ofDays(1));
-//        PeriodFields d1 = periodBuilder().hours(2).seconds(3).build();
+        
         Period d2 = ofHours(2).withSeconds(3);
         Period d3 = ofHours(2).plus(ofSeconds(3));
         System.out.println(d2);
         System.out.println(d3);
         
-//        tod.with(hourOfDay(12)).with(minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
         
-//        CORBADate c = null;
-//        c.year = date.year().getValue();
-//        c.month = date.month().getText(symbols);
-//        c.day = date.day().getValue();
-        
         QuarterOfYear q = date.getMonthOfYear().getQuarterOfYear();
-        //int hourOfDay = HourOfDay.of(tod).get();
-        
-//        CalendarDateTime dt = CalendarDateTime.calendarDateTime(2007, february(), 21, 12, 30);
-//        int sec = dt.withPrecisionAtLeastSeconds().getSecondOfMinute();
-//        
-//        CalendarDT<LocalTime> dtime = CalendarDT.calendarDateTime(2007, february(), 21, 12, 30);
-//        int min = dtime.time().getMinuteOfHour();
         
         MonthDay md = MonthDay.of(FEBRUARY, 4);
         md = md.with(MARCH);
@@ -164,43 +137,17 @@ public class TestFluentAPI {
         date.getMonthOfYear().maxLengthInDays();
         DAY_OF_MONTH.getValueRange(date).getMaximum();
         FEBRUARY.maxLengthInDays();
-//        DayOfMonth.RULE.getMaximumValue(february());
+        DAY_OF_MONTH.getValueRange(FEBRUARY);
         
         DayOfWeek dow = MONDAY;
         dow = dow.next();
         dow = dow.roll(3);
-//        dow = dow.plusDaysSkipping(3, SATURDAY, SUNDAY);
-        
-//        day = day.plusSkipping(days(3), WEDNESDAY_PM, SATURDAY, SUNDAY, FOURTH_JULY, XMAS_BREAK);
 //        
 //        int dayIndex = day.value();
 //        int dayIndex = day.value(Territory.US);
 //        int dayIndex = day.valueIndexedFrom(SUNDAY);
 ////        SundayBasedDayOfWeek.MONDAY != DayOfWeek.MONDAY;
 //        Territory.US.dayOfWeekComparator();
-//        
-//        date.dayOfMonth().value();
-        
-//        {
-//            Days days = days(3);
-//            Seconds secs = days.convertTo(Seconds.class);
-//            int amount = secs.getAmount();
-//        }
-//        {
-//            Duration days = days(3);
-//            int amount = days.getTotalAmount(SECOND);
-//        }
-//        {
-//            Measure<Integer, Duration> days = days(3);
-//            Measure<Integer, Duration> secs = days.to(SECOND);
-//            int secs = days.intValue(SECOND);
-//            secs.toString();
-//        }
-//        d1 = d2;
-//        d2 = d1;
-//        d1 = d3;
-//        secondOfMinute(sec);
-//        minuteOfHour(min);
         
         ZoneOffset offset = ZoneOffset.ofHours(1);
         ZoneId paris = ZoneId.of("Europe/Paris");
