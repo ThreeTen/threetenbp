@@ -105,12 +105,25 @@ public final class DateAdjusters {
         return Impl.LAST_DAY_OF_YEAR;
     }
 
+    /**
+     * Returns the first day of next month adjuster, which returns a new date with
+     * the day-of-month changed to be the first day of the next month.
+     * <p>
+     * The input 2011-01-15 will return 2011-02-01.<br />
+     * The input 2011-02-15 will return 2011-03-01.
+     *
+     * @return the first day of next month adjuster, not null
+     */
+    public static DateAdjuster firstDayOfNextMonth() {
+        return Impl.FIRST_DAY_OF_NEXT_MONTH;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Enum implementing the adjusters.
      */
     private static enum Impl implements DateAdjuster {
-        /** First day-of-year adjuster. */
+        /** First day-of-month adjuster. */
         FIRST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
@@ -137,6 +150,13 @@ public final class DateAdjusters {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
                 return LocalDate.of(date.getYear(), MonthOfYear.DECEMBER, 31);
+            }
+        },
+        /** First day of next month adjuster. */
+        FIRST_DAY_OF_NEXT_MONTH {
+            /** {@inheritDoc} */
+            public LocalDate adjustDate(LocalDate date) {
+                return date.withDayOfMonth(1).plusMonths(1);
             }
         },
     }

@@ -34,6 +34,7 @@ package javax.time.calendar;
 import static javax.time.calendar.DayOfWeek.MONDAY;
 import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
+import static javax.time.calendar.MonthOfYear.DECEMBER;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -263,6 +264,51 @@ public class TestDateAdjusters {
     }
 
     //-----------------------------------------------------------------------
+    // firstDayOfNextMonth()
+    //-----------------------------------------------------------------------
+    public void test_firstDayOfNextMonth_serialization() throws IOException, ClassNotFoundException {
+        DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfNextMonth();
+        assertTrue(firstDayOfMonth instanceof Serializable);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(firstDayOfMonth);
+        oos.close();
+        
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        assertSame(ois.readObject(), firstDayOfMonth);
+    }
+
+    public void factory_firstDayOfNextMonth() {
+        assertNotNull(DateAdjusters.firstDayOfNextMonth());
+        assertSame(DateAdjusters.firstDayOfNextMonth(), DateAdjusters.firstDayOfNextMonth());
+    }
+
+    public void test_firstDayOfNextMonth_nonLeap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
+                LocalDate date = date(2007, month, i);
+                LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
+                assertEquals(test.getYear(), month == DECEMBER ? 2008 : 2007);
+                assertEquals(test.getMonthOfYear(), month.next());
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    public void test_firstDayOfNextMonth_leap() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(true); i++) {
+                LocalDate date = date(2008, month, i);
+                LocalDate test = DateAdjusters.firstDayOfNextMonth().adjustDate(date);
+                assertEquals(test.getYear(), month == DECEMBER ? 2009 : 2008);
+                assertEquals(test.getMonthOfYear(), month.next());
+                assertEquals(test.getDayOfMonth(), 1);
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // dayOfWeekInMonth()
     //-----------------------------------------------------------------------
     public void test_dayOfWeekInMonth_serialization() throws IOException, ClassNotFoundException {
@@ -430,63 +476,6 @@ public class TestDateAdjusters {
             }
         }
     }
-
-//    //-----------------------------------------------------------------------
-//    // nextMonday()
-//    //-----------------------------------------------------------------------
-//    public void test_nextMonday_serialization() throws IOException, ClassNotFoundException {
-//        DateAdjuster nextMonday = DateAdjusters.nextMonday();
-//        assertTrue(nextMonday instanceof Serializable);
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        ObjectOutputStream oos = new ObjectOutputStream(baos);
-//        oos.writeObject(nextMonday);
-//        oos.close();
-//
-//        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-//                baos.toByteArray()));
-//        assertEquals(ois.readObject(), nextMonday);
-//    }
-//
-//    public void factory_nextMonday() {
-//        assertNotNull(DateAdjusters.nextMonday());
-//        assertEquals(DateAdjusters.nextMonday(), DateAdjusters.nextMonday());
-//    }
-//
-//    public void test_nextMonday_equals() {
-//        final DateAdjuster mondayInFirstWeek = DateAdjusters.nextMonday();
-//        assertFalse(mondayInFirstWeek.equals(null));
-//        assertFalse(mondayInFirstWeek.equals(new Object()));
-//        assertFalse(mondayInFirstWeek.equals(DateAdjusters.lastDayOfMonth()));
-//        assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-//        assertTrue(mondayInFirstWeek.equals(DateAdjusters.nextMonday()));
-//    }
-//
-//    public void test_nextMonday_hashCode() {
-//        assertEquals(DateAdjusters.nextMonday().hashCode(), DateAdjusters.nextMonday().hashCode());
-//    }
-//
-//    public void test_nextMonday() {
-//        for (MonthOfYear month : MonthOfYear.values()) {
-//            for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
-//                LocalDate date = date(2007, month, i);
-//                LocalDate test = DateAdjusters.nextMonday().adjustDate(date);
-//
-//                assertSame(test.getDayOfWeek(), MONDAY);
-//
-//                if (test.getYear().equals(YEAR_2007)) {
-//                    int dayDiff = test.getDayOfYear() - date.getDayOfYear();
-//                    assertTrue(dayDiff > 0 && dayDiff < 8);
-//                } else {
-//                    assertSame(month, MonthOfYear.DECEMBER);
-//                    assertEquals(date.getDayOfMonth(), 31);
-//                    assertEquals(test.getYear(), YEAR_2008);
-//                    assertSame(test.getMonthOfYear(), MonthOfYear.JANUARY);
-//                    assertEquals(test.getDayOfMonth(), 7);
-//                }
-//            }
-//        }
-//    }
 
     //-----------------------------------------------------------------------
     // next()
