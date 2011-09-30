@@ -547,22 +547,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this {@code OffsetDateTime} with the date-time altered
-     * and the offset retained.
-     * <p>
-     * This method returns an object with the same {@code ZoneOffset} and the
-     * specified {@code LocalDateTime}.
-     * No calculation is needed or performed.
-     *
-     * @param dateTime  the local date-time to change to, not null
-     * @return an {@code OffsetDateTime} based on this time with the requested time, not null
-     */
-    public OffsetDateTime withDateTime(LocalDateTime dateTime) {
-        return this.dateTime.equals(dateTime) ? this : new OffsetDateTime(dateTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the zone offset.
      *
      * @return the zone offset, not null
@@ -751,6 +735,21 @@ public final class OffsetDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this {@code OffsetDateTime} with the date-time altered
+     * and the offset retained.
+     * <p>
+     * This method returns an object with the same {@code ZoneOffset} and the
+     * specified {@code LocalDateTime}.
+     * No calculation is needed or performed.
+     *
+     * @param dateTime  the local date-time to change to, not null
+     * @return an {@code OffsetDateTime} based on this time with the requested time, not null
+     */
+    public OffsetDateTime withDateTime(LocalDateTime dateTime) {
+        return this.dateTime.equals(dateTime) ? this : new OffsetDateTime(dateTime, offset);
+    }
+
     /**
      * Returns a copy of this OffsetDateTime with the date altered using the adjuster.
      * <p>

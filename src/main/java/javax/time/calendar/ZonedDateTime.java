@@ -603,22 +603,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with a different local date-time.
-     * <p>
-     * This method changes the offset date-time stored to a different one.
-     * The local date-time is checked against the zone rules, and the retain
-     * offset resolver used if necessary.
-     *
-     * @param dateTime  the local date-time to change to, not null
-     * @return a {@code ZonedDateTime} based on this date-time with the requested date-time, not null
-     */
-    public ZonedDateTime withDateTime(LocalDateTime dateTime) {
-        return this.toLocalDateTime().equals(dateTime) ?
-                this : ZonedDateTime.resolve(dateTime, zone, this, ZoneResolvers.retainOffset());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the zone offset, such as '+01:00'.
      *
      * @return the zone offset, not null
@@ -954,6 +938,21 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this ZonedDateTime with a different local date-time.
+     * <p>
+     * This method changes the offset date-time stored to a different one.
+     * The local date-time is checked against the zone rules, and the retain
+     * offset resolver used if necessary.
+     *
+     * @param dateTime  the local date-time to change to, not null
+     * @return a {@code ZonedDateTime} based on this date-time with the requested date-time, not null
+     */
+    public ZonedDateTime withDateTime(LocalDateTime dateTime) {
+        return this.toLocalDateTime().equals(dateTime) ?
+                this : ZonedDateTime.resolve(dateTime, zone, this, ZoneResolvers.retainOffset());
+    }
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the date altered using the adjuster.
      * <p>
