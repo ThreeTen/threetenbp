@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import java.io.Serializable;
 
 /**
  * Provides common implementations of {@code DateResolver}.
@@ -54,138 +53,109 @@ public final class DateResolvers {
     /**
      * Returns the strict resolver which does not manipulate the state
      * in any way, resulting in an exception for all invalid values.
+     * <p>
+     * The invalid input 2011-02-30 will throw an exception.<br />
+     * The invalid input 2012-02-30 will throw an exception (leap year).<br />
+     * The invalid input 2011-04-31 will throw an exception.
      *
      * @return the strict resolver, not null
      */
     public static DateResolver strict() {
-        return Strict.INSTANCE;
+        return Impl.STRICT;
     }
 
-    /**
-     * Class implementing strict resolver.
-     */
-    private static class Strict implements DateResolver, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateResolver INSTANCE = new Strict();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-            return LocalDate.of(year, monthOfYear, dayOfMonth);
-        }
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns the previous valid day resolver, which adjusts the date to be
      * valid by moving to the last valid day of the month.
+     * <p>
+     * The invalid input 2011-02-30 will return 2011-02-28.<br />
+     * The invalid input 2012-02-30 will return 2012-02-29 (leap year).<br />
+     * The invalid input 2011-04-31 will return 2011-04-30.
      *
      * @return the previous valid day resolver, not null
      */
     public static DateResolver previousValid() {
-        return PreviousValid.INSTANCE;
+        return Impl.PREVIOUS_VALID;
     }
 
-    /**
-     * Class implementing previousValid resolver.
-     */
-    private static class PreviousValid implements DateResolver, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateResolver INSTANCE = new PreviousValid();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-            int lastDay = monthOfYear.getLastDayOfMonth(ISOChronology.isLeapYear(year));
-            if (dayOfMonth > lastDay) {
-                return LocalDate.of(year, monthOfYear, lastDay);
-            }
-            return LocalDate.of(year, monthOfYear, dayOfMonth);
-        }
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns the next valid day resolver, which adjusts the date to be
      * valid by moving to the first of the next month.
+     * <p>
+     * The invalid input 2011-02-30 will return 2011-03-01.<br />
+     * The invalid input 2012-02-30 will return 2012-03-01 (leap year).<br />
+     * The invalid input 2011-04-31 will return 2011-05-01.
      *
      * @return the next valid day resolver, not null
      */
     public static DateResolver nextValid() {
-        return NextValid.INSTANCE;
+        return Impl.NEXT_VALID;
     }
 
-    /**
-     * Class implementing nextValid resolver.
-     */
-    private static class NextValid implements DateResolver, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateResolver INSTANCE = new NextValid();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-            int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
-            if (dayOfMonth > len) {
-                return LocalDate.of(year, monthOfYear.next(), 1);
-            }
-            return LocalDate.of(year, monthOfYear, dayOfMonth);
-        }
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns the part lenient resolver, which adjusts the date to be
      * valid by moving it to the next month by the number of days that
      * are invalid up to the 31st of the month.
+     * <p>
+     * The invalid input 2011-02-29 will return 2011-03-01.<br />
+     * The invalid input 2011-02-30 will return 2011-03-02.<br />
+     * The invalid input 2011-02-31 will return 2011-03-03.<br />
+     * The invalid input 2012-02-30 will return 2012-03-01 (leap year).<br />
+     * The invalid input 2012-02-31 will return 2012-03-02 (leap year).<br />
+     * The invalid input 2011-04-31 will return 2011-05-01.
      *
      * @return the part lenient resolver, not null
      */
     public static DateResolver partLenient() {
-        return PartLenient.INSTANCE;
+        return Impl.PART_LENIENT;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Class implementing partLenient resolver.
+     * Enum implementing the resolvers.
      */
-    private static class PartLenient implements DateResolver, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateResolver INSTANCE = new PartLenient();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-            int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
-            if (dayOfMonth > len) {
-                // this line works because December is never invalid assuming the input is from 1-31
-                return LocalDate.of(year, monthOfYear.next(), dayOfMonth - len);
+    private static enum Impl implements DateResolver {
+        /** Strict resolver. */
+        STRICT {
+            /** {@inheritDoc} */
+            public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+                return LocalDate.of(year, monthOfYear, dayOfMonth);
             }
-            return LocalDate.of(year, monthOfYear, dayOfMonth);
-        }
+        },
+        /** Previous valid resolver. */
+        PREVIOUS_VALID {
+            /** {@inheritDoc} */
+            public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+                int lastDay = monthOfYear.getLastDayOfMonth(ISOChronology.isLeapYear(year));
+                if (dayOfMonth > lastDay) {
+                    return LocalDate.of(year, monthOfYear, lastDay);
+                }
+                return LocalDate.of(year, monthOfYear, dayOfMonth);
+            }
+        },
+        /** Next valid resolver. */
+        NEXT_VALID {
+            /** {@inheritDoc} */
+            public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+                int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
+                if (dayOfMonth > len) {
+                    return LocalDate.of(year, monthOfYear.next(), 1);
+                }
+                return LocalDate.of(year, monthOfYear, dayOfMonth);
+            }
+        },
+        /** Part lenient resolver. */
+        PART_LENIENT {
+            /** {@inheritDoc} */
+            public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+                int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
+                if (dayOfMonth > len) {
+                    // this line works because December is never invalid assuming the input is from 1-31
+                    return LocalDate.of(year, monthOfYear.next(), dayOfMonth - len);
+                }
+                return LocalDate.of(year, monthOfYear, dayOfMonth);
+            }
+        },
     }
 
 }
