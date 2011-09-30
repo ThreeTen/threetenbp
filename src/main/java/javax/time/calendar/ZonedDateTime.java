@@ -951,10 +951,31 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this time with the requested date-time, not null
      */
     public ZonedDateTime withDateTime(LocalDateTime dateTime) {
-        return this.toLocalDateTime().equals(dateTime) ?
-                this : ZonedDateTime.resolve(dateTime, zone, this, ZoneResolvers.retainOffset());
+        return withDateTime(dateTime, ZoneResolvers.retainOffset());
     }
 
+    /**
+     * Returns a copy of this {@code ZonedDateTime} with the local date-time altered,
+     * providing a resolver for invalid date-times.
+     * <p>
+     * This method returns an object with the same {@code ZoneId} and the
+     * specified {@code LocalDateTime}.
+     * <p>
+     * If the adjusted date results in a date-time that is invalid, then the
+     * specified resolver is used.
+     *
+     * @param dateTime  the local date-time to change to, not null
+     * @param resolver  the resolver to use, not null
+     * @return a {@code ZonedDateTime} based on this time with the requested date-time, not null
+     */
+    public ZonedDateTime withDateTime(LocalDateTime dateTime, ZoneResolver resolver) {
+        ISOChronology.checkNotNull(dateTime, "LocalDateTime must not be null");
+        ISOChronology.checkNotNull(resolver, "ZoneResolver must not be null");
+        return this.toLocalDateTime().equals(dateTime) ?
+                this : ZonedDateTime.resolve(dateTime, zone, this, resolver);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code ZonedDateTime} with the date altered using the adjuster.
      * <p>
@@ -1001,6 +1022,7 @@ public final class ZonedDateTime
         return (newDT == dateTime.toLocalDateTime() ? this : resolve(newDT, zone, this, resolver));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this {@code ZonedDateTime} with the time altered using the adjuster.
      * <p>
@@ -1036,6 +1058,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
+     * @param resolver  the resolver to use, not null
      * @return a {@code ZonedDateTime} based on this date-time with the time adjusted, not null
      * @throws CalendricalException if the date-time cannot be resolved
      */
