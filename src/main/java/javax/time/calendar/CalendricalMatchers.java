@@ -32,7 +32,6 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 
@@ -164,83 +163,51 @@ public final class CalendricalMatchers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the first in month matcher, which returns true if the date
-     * is the first occurrence of day-of-week in the month.
+     * Creates a matcher that wraps a {@code DateAdjuster}.
+     * <p>
+     * This wraps a date adjuster as a matcher.
+     * This extracts a date from the input calendrical, adjusts it, and then
+     * checks if the adjusted date equals the original.
+     * <p>
+     * Note all adjusters make sense to be used here. For example, any adjuster
+     * that always changes the date will never return true.
+     * <p>
+     * This is typically used as follows:
+     * <pre>
+     *   if (date.matches(dateAt(adjuster))) ...
+     *   // for example
+     *   if (date.matches(dateMatching(firstInMonth(TUESDAY)))) ...
+     * </pre>
      *
-     * @param dayOfWeek  the day-of-week, not null
-     * @return the first in month matcher, not null
+     * @param adjuster  the adjuster to wrap, not null
      */
-    public static CalendricalMatcher firstInMonth(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
+    public static CalendricalMatcher dateMatching(DateAdjuster adjuster) {
+        if (adjuster == null) {
+            throw new NullPointerException("DateAdjuster must not be null");
         }
-        return new DayOfWeekInMonth(1, dayOfWeek);
+        return new DateAt(adjuster);
     }
 
     /**
-     * Returns the day-of-week in month matcher, which returns true if the
-     * date is the ordinal occurrence of the day-of-week in the month.
-     * This is used for expressions like the 'second Tuesday in March'.
-     *
-     * @param ordinal  ordinal, from 1 to 5
-     * @param dayOfWeek  the day-of-week, not null
-     * @return the day-of-week in month matcher, not null
-     * @throws IllegalArgumentException if the ordinal is invalid
+     * Class implementing conversion of adjuster to matcher.
      */
-    public static CalendricalMatcher dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
-        if (ordinal < 1 || ordinal > 5) {
-            throw new IllegalArgumentException("Illegal value for ordinal, value " + ordinal +
-                    " is not in the range 1 to 5");
-        }
-        if (dayOfWeek == null) {
-            throw new NullPointerException("DayOfWeek must not be null");
-        }
-        return new DayOfWeekInMonth(ordinal, dayOfWeek);
-    }
-
-    /**
-     * Class implementing day-of-week in month matcher.
-     */
-    private static final class DayOfWeekInMonth implements CalendricalMatcher, Serializable {
+    private static final class DateAt implements CalendricalMatcher, Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
-        /** The ordinal, from 1 to 5. */
-        private final int ordinal;
         /** The day-of-week. */
-        private final DayOfWeek dayOfWeek;
+        private final DateAdjuster adjuster;
 
         /**
          * Constructor.
-         * @param ordinal  ordinal, from 1 to 5
-         * @param dayOfWeek  the day-of-week, not null
+         * @param adjuster  the adjuster to wrap, not null
          */
-        private DayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
-            super();
-            this.ordinal = ordinal;
-            this.dayOfWeek = dayOfWeek;
+        private DateAt(DateAdjuster adjuster) {
+            this.adjuster = adjuster;
         }
         /** {@inheritDoc} */
         public boolean matchesCalendrical(Calendrical calendrical) {
-            DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
-            DateTimeField dowVal = calendrical.get(DAY_OF_WEEK);
-            if (dowVal == null || domVal == null || dowVal.getValue() != dayOfWeek.getValue()) {
-                return false;
-            }
-            return (domVal.getValidIntValue() - 1) / 7 == ordinal - 1;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof DayOfWeekInMonth) {
-                DayOfWeekInMonth other = (DayOfWeekInMonth) obj;
-                return ordinal == other.ordinal && dayOfWeek == other.dayOfWeek;
-            }
-            return false;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public int hashCode() {
-            return ordinal + 8 * dayOfWeek.ordinal();
+            LocalDate date = calendrical.get(LocalDate.rule());
+            return (date != null && date.with(adjuster).equals(date));
         }
     }
 
