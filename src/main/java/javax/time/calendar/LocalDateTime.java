@@ -67,8 +67,7 @@ import javax.time.calendar.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, CalendricalMatcher, DateAdjuster, TimeAdjuster,
-                    Comparable<LocalDateTime>, Serializable {
+        implements Calendrical, CalendricalMatcher, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -1595,32 +1594,6 @@ public final class LocalDateTime
      */
     public boolean matchesCalendrical(Calendrical calendrical) {
         return this.equals(calendrical.get(rule()));
-    }
-
-    /**
-     * Adjusts a date to have the value of the date part of this object.
-     * <p>
-     * This method implements the {@code DateAdjuster} interface.
-     * It is intended that applications use {@link #with(DateAdjuster)} rather than this method.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, not null
-     */
-    public LocalDate adjustDate(LocalDate date) {
-        return this.date.adjustDate(date);
-    }
-
-    /**
-     * Adjusts a time to have the value of the time part of this object.
-     * <p>
-     * This method implements the {@code TimeAdjuster} interface.
-     * It is intended that applications use {@link #with(TimeAdjuster)} rather than this method.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, not null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        return this.time.adjustTime(time);
     }
 
     //-----------------------------------------------------------------------

@@ -3821,43 +3821,4 @@ public class TestLocalDateTime extends AbstractTest {
         TEST_2007_07_15_12_30_40_987654321.matchesCalendrical(null);
     }
 
-    //-----------------------------------------------------------------------
-    // adjustDate()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_adjustDate(int y, int m, int d) {
-        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withDate(y, m, d);
-        assertSame(a.adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), a.toLocalDate());
-        assertSame(TEST_2007_07_15_12_30_40_987654321.adjustDate(a.toLocalDate()), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
-    }
-
-    public void test_adjustDate_same() {
-        assertSame(LocalDateTime.ofMidnight(2007, 7, 15).adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), 
-                TEST_2007_07_15_12_30_40_987654321.toLocalDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_null() {
-        TEST_2007_07_15_12_30_40_987654321.adjustDate(null);
-    }
-    
-    //-----------------------------------------------------------------------
-    // adjustTime()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_adjustTime(int h, int m, int s, int n) {
-        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withTime(h, m, s, n);
-        assertSame(a.adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), a.toLocalTime());
-        assertSame(TEST_2007_07_15_12_30_40_987654321.adjustTime(a.toLocalTime()), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
-    }
-
-    public void test_adjustTime_same() {
-        assertSame(LocalDateTime.of(1, 1, 1, 12, 30, 40, 987654321).adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), 
-                TEST_2007_07_15_12_30_40_987654321.toLocalTime());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustTime_null() {
-        TEST_2007_07_15_12_30_40_987654321.adjustTime(null);
-    }
 }
