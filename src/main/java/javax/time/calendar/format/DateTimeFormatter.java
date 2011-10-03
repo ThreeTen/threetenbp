@@ -36,6 +36,7 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
@@ -257,7 +258,7 @@ public final class DateTimeFormatter {
      * Internally, this uses the mid and low level parsing methods.
      *
      * @param text  the text to parse, not null
-     * @return the parsed date, not null
+     * @return the parsed calendrical, not null
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws CalendricalParseException if the parse fails
      */
@@ -268,15 +269,77 @@ public final class DateTimeFormatter {
         try {
             CalendricalEngine engine = parseToEngine(str);
             return engine.deriveChecked(rule);
+        } catch (UnsupportedOperationException ex) {
+            throw ex;
         } catch (CalendricalParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
-            String abbr = str;
-            if (abbr.length() > 64) {
-                abbr = abbr.substring(0, 64) + "...";
-            }
-            throw new CalendricalParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), str, 0, ex);
+            throw createError(str, ex);
         }
+    }
+
+    /**
+     * Fully parses the text producing an object of one of the types defined by the rules.
+     * <p>
+     * This parse method is convenient for use when the parser can handle optional elements.
+     * For example, a pattern of 'yyyy-MM[-dd[Z]]' can be fully parsed to an {@code OffsetDate},
+     * or partially parsed to a {@code LocalDate} or a {@code YearMonth}.
+     * The rules must be specified in order, starting from the best matching full-parse option
+     * and ending with the worst matching minimal parse option.
+     * <p>
+     * The result is associated with the first rule that successfully parses.
+     * Normally, applications will use {@code instanceof} to check the result.
+     * For example:
+     * <pre>
+     * Calendrical dt = parser.parse(str, OffsetDate.rule(), LocalDate.rule());
+     * if (dt instanceof OffsetDate) {
+     *  ...
+     * } else {
+     *  ...
+     * }
+     * </pre>
+     * If the parse completes without reading the entire length of the text,
+     * or a problem occurs during parsing or merging, then an exception is thrown.
+     * <p>
+     * Internally, this uses the mid and low level parsing methods.
+     *
+     * @param text  the text to parse, not null
+     * @return the parsed calendrical, not null
+     * @throws IllegalArgumentException if less than 2 rules are specified
+     * @throws UnsupportedOperationException if this formatter cannot parse
+     * @throws CalendricalParseException if the parse fails
+     */
+    public Calendrical parseBest(CharSequence text, CalendricalRule<?>... rules) {
+        DateTimeFormatter.checkNotNull(text, "Text must not be null");
+        DateTimeFormatter.checkNotNull(rules, "CalendricalRule array must not be null");
+        if (rules.length < 2) {
+            throw new IllegalArgumentException("At least two rules must be specified");
+        }
+        String str = text.toString();  // parsing whole String, so this makes sense
+        try {
+            CalendricalEngine engine = parseToEngine(str);
+            for (CalendricalRule<?> rule : rules) {
+                Calendrical cal = (Calendrical) engine.derive(rule);
+                if (cal != null) {
+                    return cal;
+                }
+            }
+            throw new CalendricalException("Unable to convert parsed text to any specified rule: " + Arrays.toString(rules));
+        } catch (UnsupportedOperationException ex) {
+            throw ex;
+        } catch (CalendricalParseException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
+            throw createError(str, ex);
+        }
+    }
+
+    private CalendricalParseException createError(String str, RuntimeException ex) {
+        String abbr = str;
+        if (abbr.length() > 64) {
+            abbr = abbr.substring(0, 64) + "...";
+        }
+        return new CalendricalParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), str, 0, ex);
     }
 
     //-----------------------------------------------------------------------
