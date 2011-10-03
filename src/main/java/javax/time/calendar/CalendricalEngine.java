@@ -155,8 +155,8 @@ public final class CalendricalEngine {
             throw new CalendricalException("Unable to merge " + Arrays.toString(calendricals) + ": " + ex.getMessage(), ex);
         }
         // normalization is quiet, so need to check it was successful
-        if (target.getErrors().size() > 0) {
-            throw new CalendricalException("Unable to merge " + Arrays.toString(calendricals) + ": " + target.getErrors());
+        if (target.errors.size() > 0) {
+            throw new CalendricalException("Unable to merge " + Arrays.toString(calendricals) + ": " + target.errors);
         }
         return target;
     }
@@ -754,8 +754,31 @@ public final class CalendricalEngine {
 
     // phase 3
     //-----------------------------------------------------------------------
-    @SuppressWarnings("unchecked")
     public <R> R derive(CalendricalRule<R> ruleToDerive) {
+        if (errors.size() > 0) {
+            return null;  // quiet
+        }
+        R result = doDerive(ruleToDerive);
+        if (errors.size() > 0) {
+            errors.clear();
+            return null;  // quiet
+        }
+        return result;
+    }
+
+    public <R> R deriveChecked(CalendricalRule<R> ruleToDerive) {
+        R result = doDerive(ruleToDerive);
+        if (result == null) {
+            if (errors.size() > 0) {
+                throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this + ": " + errors);
+            }
+            throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this);
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <R> R doDerive(CalendricalRule<R> ruleToDerive) {
         if (errors.size() > 0) {
             return null;  // quiet
         }
@@ -775,29 +798,6 @@ public final class CalendricalEngine {
             addError(ex.getMessage());
             return null;
         }
-    }
-
-    public <R> R deriveChecked(CalendricalRule<R> ruleToDerive) {
-        R result = derive(ruleToDerive);
-        if (result == null) {
-            if (errors.size() > 0) {
-                throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this + ": " + errors);
-            }
-            throw new CalendricalException("Unable to derive " + ruleToDerive + " from " + this);
-        }
-        return result;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the modifiable list of errors that have occurred.
-     * <p>
-     * Use {@link #addError} to add to this list.
-     * 
-     * @return the list of errors, not null, no nulls
-     */
-    public Set<String> getErrors() {
-        return errors;
     }
 
     /**
