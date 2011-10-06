@@ -291,6 +291,18 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
+    protected long extract(long value, DateTimeRule requiredRule) {
+        if (requiredRule.equals(this)) {
+            return value;
+        }
+        return Long.MIN_VALUE;
+    }
+
+    protected long extractFrom(DateTimeRule valueRule, long value) {
+        return Long.MIN_VALUE;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Override point to allow the rule to normalize the fields in the merger.
      * <p>

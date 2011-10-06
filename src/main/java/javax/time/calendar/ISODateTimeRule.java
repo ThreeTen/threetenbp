@@ -174,6 +174,267 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
+    protected long extract(long value, DateTimeRule requiredRule) {
+        if (requiredRule instanceof ISODateTimeRule) {
+            return extractISO(value, (ISODateTimeRule) requiredRule);
+        }
+        return requiredRule.extractFrom(this, value);
+    }
+
+    long extractISO(long value, ISODateTimeRule requiredRule) {
+        if (this == requiredRule) {
+            return value;
+        }
+        switch (ordinal) {
+            case DAY_OF_MONTH_ORDINAL: return extractFromDom(value, requiredRule);
+            case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
+            case EPOCH_DAY_ORDINAL: return extractFromEd(value, requiredRule);
+            case MONTH_OF_YEAR_ORDINAL: return extractFromMoy(value, requiredRule);
+            case ZERO_EPOCH_MONTH_ORDINAL: return extractFromEm(value, requiredRule);
+            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return extractFromPemd(value, requiredRule);
+            case PACKED_YEAR_DAY_ORDINAL: return extractFromPy(value, requiredRule);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long extractFromEd(long ed, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
+            case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromEd(ed));
+            case DAY_OF_YEAR_ORDINAL: return doyFromPy(pyFromEd(ed));
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromEd(ed)));
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPy(pyFromEd(ed)));
+            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
+            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromEd(ed)));
+            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
+            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pemdFromEd(ed));
+            case YEAR_ORDINAL: return yFromEm(emFromPemd(pemdFromEd(ed)));
+            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromEd(ed);
+            case PACKED_YEAR_DAY_ORDINAL: return pyFromEd(ed);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long pemdFromEd(long ed) {
+        // find the march-based year
+        long zeroDay = ed + ISOChronology.DAYS_0000_TO_1970 - 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
+        long adjust = 0;
+        if (zeroDay < 0) {
+            // adjust negative years to positive for calculation
+            long adjustCycles = (zeroDay + 1) / ISOChronology.DAYS_PER_CYCLE - 1;
+            adjust = adjustCycles * 400;
+            zeroDay += -adjustCycles * ISOChronology.DAYS_PER_CYCLE;
+        }
+        long yearEst = (400 * zeroDay + 591) / ISOChronology.DAYS_PER_CYCLE;
+        long doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        if (doyEst < 0) {
+            // fix estimate
+            yearEst--;
+            doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        }
+        yearEst += adjust;  // reset any negative year
+        int marchDoy0 = (int) doyEst;
+        
+        // convert march-based values back to january-based
+        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
+        int month = (marchMonth0 + 2) % 12 + 1;
+        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
+        long year = yearEst + marchMonth0 / 10;
+        
+        // pack
+        return packPemd(year, month, dom);
+    }
+
+    private static long pyFromEd(long ed) {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    private static long dowFromEd(long ed) {
+        return MathUtils.floorMod(ed + 3, 7) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long extractFromPemd(long pemd, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case DAY_OF_WEEK_ORDINAL: return dowFromEd(edFromPemd(pemd));
+            case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemd);
+            case DAY_OF_YEAR_ORDINAL: return doyFromPemd(pemd);
+            case EPOCH_DAY_ORDINAL: return edFromPemd(pemd);
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemd));
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPemd(pemd));
+            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemd)));
+            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemd));
+            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemd)));
+            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pemd);
+            case YEAR_ORDINAL: return yFromEm(emFromPemd(pemd));
+            case PACKED_YEAR_DAY_ORDINAL: return pyFromPemd(pemd);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long edFromPemd(long pemd) {
+        long em = emFromPemd(pemd);
+        long year = yFromEm(em);
+        long y = year;
+        long m = moyFromEm(em);
+        long total = 0;
+        total += 365 * y;
+        if (y >= 0) {
+            total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+        } else {
+            total -= y / -4 - y / -100 + y / -400;
+        }
+        total += ((367 * m - 362) / 12);
+        total += domFromPemd(pemd) - 1;
+        if (m > 2) {
+            total--;
+            if (ISOChronology.isLeapYear(year) == false) {
+                total--;
+            }
+        }
+        return total - ISOChronology.DAYS_0000_TO_1970;
+    }
+
+    static long pyFromPemd(long pemd) {
+        return packPy(yFromEm(emFromPemd(pemd)), doyFromPemd(pemd));
+    }
+
+    static long domFromPemd(long pemd) {
+        return (pemd & 31);
+    }
+
+    static long emFromPemd(long pemd) {
+        return (pemd >> 5);
+    }
+
+    static long doyFromPemd(long pemd) {
+        long dom = domFromPemd(pemd);
+        long em = emFromPemd(pemd);
+        long moy = moyFromEm(em);
+        long year = yFromEm(em);
+        return MonthOfYear.of((int) moy).getMonthStartDayOfYear(ISOChronology.isLeapYear(year)) + dom - 1;
+    }
+
+    static long packPemd(long year, int month, int dom) {
+        return packPemd((year - 1970) * 12 + (month - 1), dom);
+    }
+
+    static long packPemd(long em, int dom) {
+        return (em << 5) + dom;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long extractFromPy(long py, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case DAY_OF_WEEK_ORDINAL: return dowFromEd(edFromPy(py));
+            case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromPy(py));
+            case DAY_OF_YEAR_ORDINAL: return doyFromPy(py);
+            case EPOCH_DAY_ORDINAL: return edFromPy(py);
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromPy(py)));
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPy(py));
+            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromPy(py))));
+            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromPy(py)));
+            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromPy(py))));
+            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(py);
+            case YEAR_ORDINAL: return yFromPy(py);
+            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromPy(py);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long edFromPy(long py) {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    private static long pemdFromPy(long py) {
+        throw new UnsupportedOperationException();  // TODO
+    }
+
+    private static long yFromPy(long py) {
+        return (py >> 9);
+    }
+
+    private static long doyFromPy(long py) {
+        return (py & 511);
+    }
+
+    static long packPy(long year, long doy) {
+        return (year << 9) + doy;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long extractFromEm(long em, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(em));
+            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(em);
+            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(em));
+            case YEAR_ORDINAL: return yFromEm(em);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    static long moyFromEm(long em) {
+        return MathUtils.floorMod(em, 12) + 1;
+    }
+
+    static long yFromEm(long em) {
+        return MathUtils.floorDiv(em, 12) + 1970;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long extractFromDom(long dom, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(dom);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long awomFromDom(long value) {
+        return ((value - 1) / 7) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long extractFromDoy(long doy, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doy);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long awoyFromDoy(long value) {
+        return ((value - 1) / 7) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long extractFromMoy(long moy, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moy);
+            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moy);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long qoyFromMoy(long value) {
+        return ((value - 1) / 3) + 1;
+    }
+
+    private static long moqFromMoy(long value) {
+        return ((value - 1) % 3) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected long extractFrom(DateTimeRule valueRule, long value) {
+        long epDay = valueRule.extract(value, EPOCH_DAY);
+        if (epDay != Long.MIN_VALUE) {
+            return EPOCH_DAY.extractISO(epDay, this);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     protected void normalize(CalendricalEngine engine) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
@@ -418,6 +679,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static final int QUARTER_OF_YEAR_ORDINAL =      30 * 16;
     private static final int WEEK_BASED_YEAR_ORDINAL =      31 * 16;
     private static final int YEAR_ORDINAL =                 32 * 16;
+    private static final int PACKED_MONTH_DAY_ORDINAL =     33 * 16;
+    private static final int PACKED_EPOCH_MONTH_DAY_ORDINAL = 34 * 16;
+    private static final int PACKED_YEAR_DAY_ORDINAL =      35 * 16;
 
     //-----------------------------------------------------------------------
     /**
@@ -426,35 +690,35 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * This field counts nanoseconds sequentially from the start of the day.
      * The values run from 0 to 86,399,999,999,999.
      */
-    public static final DateTimeRule NANO_OF_DAY = new ISODateTimeRule(NANO_OF_DAY_ORDINAL, "NanoOfDay", NANOS, DAYS, 0, 86399999999999L, 86399999999999L, null);
+    public static final ISODateTimeRule NANO_OF_DAY = new ISODateTimeRule(NANO_OF_DAY_ORDINAL, "NanoOfDay", NANOS, DAYS, 0, 86399999999999L, 86399999999999L, null);
     /**
      * The rule for the nano-of-milli field.
      * <p>
      * This field counts nanoseconds sequentially from the start of the millisecond.
      * The values run from 0 to 999,999.
      */
-    public static final DateTimeRule NANO_OF_MILLI = new ISODateTimeRule(NANO_OF_MILLI_ORDINAL, "NanoOfMilli", NANOS, MILLIS, 0, 999999, 999999, NANO_OF_DAY);
+    public static final ISODateTimeRule NANO_OF_MILLI = new ISODateTimeRule(NANO_OF_MILLI_ORDINAL, "NanoOfMilli", NANOS, MILLIS, 0, 999999, 999999, NANO_OF_DAY);
     /**
      * The rule for the nano-of-second field.
      * <p>
      * This field counts nanoseconds sequentially from the start of the second.
      * The values run from 0 to 999,999,999.
      */
-    public static final DateTimeRule NANO_OF_SECOND = new ISODateTimeRule(NANO_OF_SECOND_ORDINAL, "NanoOfSecond", NANOS, SECONDS, 0, 999999999, 999999999, NANO_OF_DAY);
+    public static final ISODateTimeRule NANO_OF_SECOND = new ISODateTimeRule(NANO_OF_SECOND_ORDINAL, "NanoOfSecond", NANOS, SECONDS, 0, 999999999, 999999999, NANO_OF_DAY);
     /**
      * The rule for the nano-of-minute field.
      * <p>
      * This field counts nanoseconds sequentially from the start of the minute.
      * The values run from 0 to 59,999,999,999.
      */
-    public static final DateTimeRule NANO_OF_MINUTE = new ISODateTimeRule(NANO_OF_MINUTE_ORDINAL, "NanoOfMinute", NANOS, MINUTES, 0, 59999999999L, 59999999999L, NANO_OF_DAY);
+    public static final ISODateTimeRule NANO_OF_MINUTE = new ISODateTimeRule(NANO_OF_MINUTE_ORDINAL, "NanoOfMinute", NANOS, MINUTES, 0, 59999999999L, 59999999999L, NANO_OF_DAY);
     /**
      * The rule for the nano-of-hour field.
      * <p>
      * This field counts nanoseconds sequentially from the start of the hour.
      * The values run from 0 to 3,599,999,999,999.
      */
-    public static final DateTimeRule NANO_OF_HOUR = new ISODateTimeRule(NANO_OF_HOUR_ORDINAL, "NanoOfHour", NANOS, HOURS, 0, 3599999999999L, 3599999999999L, NANO_OF_DAY);
+    public static final ISODateTimeRule NANO_OF_HOUR = new ISODateTimeRule(NANO_OF_HOUR_ORDINAL, "NanoOfHour", NANOS, HOURS, 0, 3599999999999L, 3599999999999L, NANO_OF_DAY);
 
     /**
      * The rule for the milli-of-second field.
@@ -462,28 +726,28 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * This field counts milliseconds sequentially from the start of the second.
      * The values run from 0 to 999.
      */
-    public static final DateTimeRule MILLI_OF_SECOND = new ISODateTimeRule(MILLI_OF_SECOND_ORDINAL, "MilliOfSecond", MILLIS, SECONDS, 0, 999, 999, NANO_OF_DAY);
+    public static final ISODateTimeRule MILLI_OF_SECOND = new ISODateTimeRule(MILLI_OF_SECOND_ORDINAL, "MilliOfSecond", MILLIS, SECONDS, 0, 999, 999, NANO_OF_DAY);
     /**
      * The rule for the milli-of-minute field.
      * <p>
      * This field counts milliseconds sequentially from the start of the minute.
      * The values run from 0 to 59,999.
      */
-    public static final DateTimeRule MILLI_OF_MINUTE = new ISODateTimeRule(MILLI_OF_MINUTE_ORDINAL, "MilliOfMinute", MILLIS, MINUTES, 0, 59999, 59999, NANO_OF_DAY);
+    public static final ISODateTimeRule MILLI_OF_MINUTE = new ISODateTimeRule(MILLI_OF_MINUTE_ORDINAL, "MilliOfMinute", MILLIS, MINUTES, 0, 59999, 59999, NANO_OF_DAY);
     /**
      * The rule for the milli-of-hour field.
      * <p>
      * This field counts milliseconds sequentially from the start of the hour.
      * The values run from 0 to 3,599,999.
      */
-    public static final DateTimeRule MILLI_OF_HOUR = new ISODateTimeRule(MILLI_OF_HOUR_ORDINAL, "MilliOfHour", MILLIS, HOURS, 0, 3599999, 3599999, NANO_OF_DAY);
+    public static final ISODateTimeRule MILLI_OF_HOUR = new ISODateTimeRule(MILLI_OF_HOUR_ORDINAL, "MilliOfHour", MILLIS, HOURS, 0, 3599999, 3599999, NANO_OF_DAY);
     /**
      * The rule for the milli-of-day field.
      * <p>
      * This field counts milliseconds sequentially from the start of the day.
      * The values run from 0 to 86,399,999.
      */
-    public static final DateTimeRule MILLI_OF_DAY = new ISODateTimeRule(MILLI_OF_DAY_ORDINAL, "MilliOfDay", MILLIS, DAYS, 0, 86399999, 86399999, NANO_OF_DAY);
+    public static final ISODateTimeRule MILLI_OF_DAY = new ISODateTimeRule(MILLI_OF_DAY_ORDINAL, "MilliOfDay", MILLIS, DAYS, 0, 86399999, 86399999, NANO_OF_DAY);
 
     /**
      * The rule for the second-of-minute field.
@@ -491,28 +755,28 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * This field counts seconds sequentially from the start of the minute.
      * The values run from 0 to 59.
      */
-    public static final DateTimeRule SECOND_OF_MINUTE = new ISODateTimeRule(SECOND_OF_MINUTE_ORDINAL, "SecondOfMinute", SECONDS, MINUTES, 0, 59, 59, NANO_OF_DAY);
+    public static final ISODateTimeRule SECOND_OF_MINUTE = new ISODateTimeRule(SECOND_OF_MINUTE_ORDINAL, "SecondOfMinute", SECONDS, MINUTES, 0, 59, 59, NANO_OF_DAY);
     /**
      * The rule for the second-of-hour field.
      * <p>
      * This field counts seconds sequentially from the start of the hour.
      * The values run from 0 to 3,599.
      */
-    public static final DateTimeRule SECOND_OF_HOUR = new ISODateTimeRule(SECOND_OF_HOUR_ORDINAL, "SecondOfHour", SECONDS, HOURS, 0, 3599, 3599, NANO_OF_DAY);
+    public static final ISODateTimeRule SECOND_OF_HOUR = new ISODateTimeRule(SECOND_OF_HOUR_ORDINAL, "SecondOfHour", SECONDS, HOURS, 0, 3599, 3599, NANO_OF_DAY);
     /**
      * The rule for the second-of-day field.
      * <p>
      * This field counts seconds sequentially from the start of the day.
      * The values run from 0 to 86399.
      */
-    public static final DateTimeRule SECOND_OF_DAY = new ISODateTimeRule(SECOND_OF_DAY_ORDINAL, "SecondOfDay", SECONDS, DAYS, 0, 86399, 86399, NANO_OF_DAY);
+    public static final ISODateTimeRule SECOND_OF_DAY = new ISODateTimeRule(SECOND_OF_DAY_ORDINAL, "SecondOfDay", SECONDS, DAYS, 0, 86399, 86399, NANO_OF_DAY);
     /**
      * The rule for the epoch-second field.
      * <p>
      * This field counts seconds sequentially from 1970-01-01.
      * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
      */
-    public static final DateTimeRule EPOCH_SECOND = new ISODateTimeRule(EPOCH_SECOND_ORDINAL, "EpochSecond", SECONDS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
+    public static final ISODateTimeRule EPOCH_SECOND = new ISODateTimeRule(EPOCH_SECOND_ORDINAL, "EpochSecond", SECONDS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
 
     /**
      * The rule for the minute-of-hour field.
@@ -520,14 +784,14 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * This field counts minutes sequentially from the start of the hour.
      * The values run from 0 to 59.
      */
-    public static final DateTimeRule MINUTE_OF_HOUR = new ISODateTimeRule(MINUTE_OF_HOUR_ORDINAL, "MinuteOfHour", MINUTES, HOURS, 0, 59, 59, NANO_OF_DAY);
+    public static final ISODateTimeRule MINUTE_OF_HOUR = new ISODateTimeRule(MINUTE_OF_HOUR_ORDINAL, "MinuteOfHour", MINUTES, HOURS, 0, 59, 59, NANO_OF_DAY);
     /**
      * The rule for the minute-of-day field.
      * <p>
      * This field counts minutes sequentially from the start of the day.
      * The values run from 0 to 1439.
      */
-    public static final DateTimeRule MINUTE_OF_DAY = new ISODateTimeRule(MINUTE_OF_DAY_ORDINAL, "MinuteOfDay", MINUTES, DAYS, 0, 1439, 1439, NANO_OF_DAY);
+    public static final ISODateTimeRule MINUTE_OF_DAY = new ISODateTimeRule(MINUTE_OF_DAY_ORDINAL, "MinuteOfDay", MINUTES, DAYS, 0, 1439, 1439, NANO_OF_DAY);
 
     /**
      * The rule for the hour of AM/PM field from 0 to 11.
@@ -535,14 +799,14 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * This field counts hours sequentially from the start of the half-day AM/PM.
      * The values run from 0 to 11.
      */
-    public static final DateTimeRule HOUR_OF_AMPM = new ISODateTimeRule(HOUR_OF_AMPM_ORDINAL, "HourOfAmPm", HOURS, _12_HOURS, 0, 11, 11, NANO_OF_DAY);
+    public static final ISODateTimeRule HOUR_OF_AMPM = new ISODateTimeRule(HOUR_OF_AMPM_ORDINAL, "HourOfAmPm", HOURS, _12_HOURS, 0, 11, 11, NANO_OF_DAY);
     /**
      * The rule for the clock hour of AM/PM field from 1 to 12.
      * <p>
      * This field counts hours sequentially within the half-day AM/PM as normally seen on a clock or watch.
      * The values run from 1 to 12.
      */
-    public static final DateTimeRule CLOCK_HOUR_OF_AMPM = new ISODateTimeRule(CLOCK_HOUR_OF_AMPM_ORDINAL, "ClockHourOfAmPm", HOURS, _12_HOURS, 1, 12, 12, HOUR_OF_AMPM);
+    public static final ISODateTimeRule CLOCK_HOUR_OF_AMPM = new ISODateTimeRule(CLOCK_HOUR_OF_AMPM_ORDINAL, "ClockHourOfAmPm", HOURS, _12_HOURS, 1, 12, 12, HOUR_OF_AMPM);
 
     /**
      * The rule for the hour-of-day field.
@@ -550,14 +814,14 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * This field counts hours sequentially from the start of the day.
      * The values run from 0 to 23.
      */
-    public static final DateTimeRule HOUR_OF_DAY = new ISODateTimeRule(HOUR_OF_DAY_ORDINAL, "HourOfDay", HOURS, DAYS, 0, 23, 23, NANO_OF_DAY);
+    public static final ISODateTimeRule HOUR_OF_DAY = new ISODateTimeRule(HOUR_OF_DAY_ORDINAL, "HourOfDay", HOURS, DAYS, 0, 23, 23, NANO_OF_DAY);
     /**
      * The rule for the clock hour of AM/PM field from 1 to 24.
      * <p>
      * This field counts hours sequentially within the day starting from 1.
      * The values run from 1 to 24.
      */
-    public static final DateTimeRule CLOCK_HOUR_OF_DAY = new ISODateTimeRule(CLOCK_HOUR_OF_DAY_ORDINAL, "ClockHourOfDay", HOURS, DAYS, 1, 24, 24, HOUR_OF_DAY);
+    public static final ISODateTimeRule CLOCK_HOUR_OF_DAY = new ISODateTimeRule(CLOCK_HOUR_OF_DAY_ORDINAL, "ClockHourOfDay", HOURS, DAYS, 1, 24, 24, HOUR_OF_DAY);
     /**
      * The rule for the AM/PM of day field.
      * <p>
@@ -569,7 +833,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * applications when referring to the day of the week to avoid
      * hard-coding the values.
      */
-    public static final DateTimeRule AMPM_OF_DAY = new ISODateTimeRule(AMPM_OF_DAY_ORDINAL, "AmPmOfDay", _12_HOURS, DAYS, 0, 1, 1, NANO_OF_DAY);
+    public static final ISODateTimeRule AMPM_OF_DAY = new ISODateTimeRule(AMPM_OF_DAY_ORDINAL, "AmPmOfDay", _12_HOURS, DAYS, 0, 1, 1, NANO_OF_DAY);
 
     /**
      * The rule for the day-of-week field.
@@ -581,7 +845,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * applications when referring to the day of the week value to avoid
      * needing to remember the values from 1 to 7.
      */
-    public static final DateTimeRule DAY_OF_WEEK = new ISODateTimeRule(DAY_OF_WEEK_ORDINAL, "DayOfWeek", DAYS, WEEKS, 1, 7, 7, null);
+    public static final ISODateTimeRule DAY_OF_WEEK = new ISODateTimeRule(DAY_OF_WEEK_ORDINAL, "DayOfWeek", DAYS, WEEKS, 1, 7, 7, null);
     /**
      * The rule for the day-of-month field in the ISO chronology.
      * <p>
@@ -589,21 +853,21 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The first day of the month is 1 and the last is 28, 29, 30 or 31
      * depending on the month and whether it is a leap year.
      */
-    public static final DateTimeRule DAY_OF_MONTH = new ISODateTimeRule(DAY_OF_MONTH_ORDINAL, "DayOfMonth", DAYS, MONTHS, 1, 31, 28, null);
+    public static final ISODateTimeRule DAY_OF_MONTH = new ISODateTimeRule(DAY_OF_MONTH_ORDINAL, "DayOfMonth", DAYS, MONTHS, 1, 31, 28, null);
     /**
      * The rule for the day-of-year field in the ISO chronology.
      * <p>
      * This field counts days sequentially from the start of the year.
      * The first day of the year is 1 and the last is 365, or 366 in a leap year.
      */
-    public static final DateTimeRule DAY_OF_YEAR = new ISODateTimeRule(DAY_OF_YEAR_ORDINAL, "DayOfYear", DAYS, YEARS, 1, 366, 365, null);
+    public static final ISODateTimeRule DAY_OF_YEAR = new ISODateTimeRule(DAY_OF_YEAR_ORDINAL, "DayOfYear", DAYS, YEARS, 1, 366, 365, null);
     /**
      * The rule for the epoch-day field.
      * <p>
      * This field counts days sequentially from 1970-01-01.
      * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
      */
-    public static final DateTimeRule EPOCH_DAY = new ISODateTimeRule(EPOCH_DAY_ORDINAL, "EpochDay", DAYS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
+    public static final ISODateTimeRule EPOCH_DAY = new ISODateTimeRule(EPOCH_DAY_ORDINAL, "EpochDay", DAYS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
     /**
      * The rule for the aligned-week-of-month field in the ISO chronology.
      * <p>
@@ -617,7 +881,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * <p>
      * See {@link WeekRules} for other week fields, including that defined by ISO-8601.
      */
-    public static final DateTimeRule ALIGNED_WEEK_OF_MONTH = new ISODateTimeRule(ALIGNED_WEEK_OF_MONTH_ORDINAL, "AlignedWeekOfMonth", WEEKS, MONTHS, 1, 5, 4, DAY_OF_MONTH);
+    public static final ISODateTimeRule ALIGNED_WEEK_OF_MONTH = new ISODateTimeRule(ALIGNED_WEEK_OF_MONTH_ORDINAL, "AlignedWeekOfMonth", WEEKS, MONTHS, 1, 5, 4, DAY_OF_MONTH);
     /**
      * The rule for the week-of-week-based-year field in the ISO chronology.
      * <p>
@@ -628,7 +892,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * 4th January in the new year. The year which is aligned with this field is
      * known as the {@link #WEEK_BASED_YEAR week-based-year}.
      */
-    public static final DateTimeRule WEEK_OF_WEEK_BASED_YEAR = new ISODateTimeRule(WEEK_OF_WEEK_BASED_YEAR_ORDINAL, "WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, 1, 53, 52, null);
+    public static final ISODateTimeRule WEEK_OF_WEEK_BASED_YEAR = new ISODateTimeRule(WEEK_OF_WEEK_BASED_YEAR_ORDINAL, "WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, 1, 53, 52, null);
     /**
      * The rule for the aligned-week-of-year field in the ISO chronology.
      * <p>
@@ -642,7 +906,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * <p>
      * See {@link WeekRules} for other week fields, including that defined by ISO-8601.
      */
-    public static final DateTimeRule ALIGNED_WEEK_OF_YEAR = new ISODateTimeRule(ALIGNED_WEEK_OF_YEAR_ORDINAL, "AlignedWeekOfYear", WEEKS, YEARS, 1, 53, 53, DAY_OF_YEAR);
+    public static final ISODateTimeRule ALIGNED_WEEK_OF_YEAR = new ISODateTimeRule(ALIGNED_WEEK_OF_YEAR_ORDINAL, "AlignedWeekOfYear", WEEKS, YEARS, 1, 53, 53, DAY_OF_YEAR);
 
     /**
      * The rule for the zero-epoch-month field.
@@ -651,7 +915,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * numbering scheme, see {@link #YEAR}.
      * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
      */
-    public static final DateTimeRule ZERO_EPOCH_MONTH = new ISODateTimeRule(ZERO_EPOCH_MONTH_ORDINAL, "ZeroEpochMonth", MONTHS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
+    public static final ISODateTimeRule ZERO_EPOCH_MONTH = new ISODateTimeRule(ZERO_EPOCH_MONTH_ORDINAL, "ZeroEpochMonth", MONTHS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
     /**
      * The rule for the month-of-quarter field in the ISO chronology.
      * <p>
@@ -659,7 +923,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The first month of the quarter is 1 and the last is 3.
      * Each quarter lasts exactly three months.
      */
-    public static final DateTimeRule MONTH_OF_QUARTER = new ISODateTimeRule(MONTH_OF_QUARTER_ORDINAL, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3, 3, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule MONTH_OF_QUARTER = new ISODateTimeRule(MONTH_OF_QUARTER_ORDINAL, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3, 3, ZERO_EPOCH_MONTH);
     /**
      * The rule for the month-of-year field in the ISO chronology.
      * <p>
@@ -670,7 +934,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The enum {@link MonthOfYear} should be used wherever possible in applications
      * when referring to the day of the week to avoid hard-coding the values.
      */
-    public static final DateTimeRule MONTH_OF_YEAR = new ISODateTimeRule(MONTH_OF_YEAR_ORDINAL, "MonthOfYear", MONTHS, YEARS, 1, 12, 12, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule MONTH_OF_YEAR = new ISODateTimeRule(MONTH_OF_YEAR_ORDINAL, "MonthOfYear", MONTHS, YEARS, 1, 12, 12, ZERO_EPOCH_MONTH);
     /**
      * The rule for the quarter-of-year field in the ISO chronology.
      * <p>
@@ -678,7 +942,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The first quarter of the year is 1 and the last is 4.
      * Each quarter lasts exactly three months.
      */
-    public static final DateTimeRule QUARTER_OF_YEAR = new ISODateTimeRule(QUARTER_OF_YEAR_ORDINAL, "QuarterOfYear", QUARTERS, YEARS, 1, 4, 4, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule QUARTER_OF_YEAR = new ISODateTimeRule(QUARTER_OF_YEAR_ORDINAL, "QuarterOfYear", QUARTERS, YEARS, 1, 4, 4, ZERO_EPOCH_MONTH);
     /**
      * The rule for the year field in the ISO chronology.
      * <p>
@@ -694,7 +958,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * exists. This roughly equates to 1 BC/BCE, however the alignment is
      * not exact as explained above.
      */
-    public static final DateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, ZERO_EPOCH_MONTH);
 
     /**
      * The rule for the week-based-year field in the ISO chronology.
@@ -705,8 +969,44 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The week-based-year will either be 52 or 53 weeks long, depending on the
      * result of the algorithm for a particular date.
      */
-    public static final DateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(
+    public static final ISODateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(
             WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, null);
+
+    /**
+     * The rule for the the combined month-day in the ISO chronology.
+     * <p>
+     * This field combines the month-of-year and day-of-month values into a single {@code long}.
+     * The format uses the least significant 32 bits for the unsigned day-of-month (from 1 to 31)
+     * and the most significant 32 bits for the unsigned month-of-year (from 1 to 12).
+     * <p>
+     * This field is intended primarily for internal use.
+     */
+    public static final ISODateTimeRule PACKED_MONTH_DAY = new ISODateTimeRule(
+            PACKED_MONTH_DAY_ORDINAL, "PackedMonthDay", DAYS, YEARS, 1, (12 << 32) + 31, (12 << 32) + 31, null);
+
+    /**
+     * The rule for the the combined year-month-day in the ISO chronology.
+     * <p>
+     * This field combines the year, month-of-year and day-of-month values into a single {@code long}.
+     * The format uses the least significant 5 bits for the unsigned day-of-month  (from 1 to 31)
+     * and the most significant 59 bits for the signed count of epoch months, where 0 is January 1970.
+     * <p>
+     * This field is intended primarily for internal use.
+     */
+    public static final ISODateTimeRule PACKED_EPOCH_MONTH_DAY = new ISODateTimeRule(
+            PACKED_EPOCH_MONTH_DAY_ORDINAL, "PackedEpochMonthDay", DAYS, null, ((Year.MIN_YEAR * 12L) << 5) + 1, ((Year.MAX_YEAR * 12L) << 5) + 31, ((Year.MAX_YEAR * 12L) << 5) + 31, null);
+
+    /**
+     * The rule for the the combined year-day in the ISO chronology.
+     * <p>
+     * This field combines the year and day-of-year values into a single {@code long}.
+     * The format uses the least significant 5 bits for the unsigned day-of-month and the remaining
+     * bits for the signed count of months from the 1970-01-01 epoch.
+     * <p>
+     * This field is intended primarily for internal use.
+     */
+    public static final ISODateTimeRule PACKED_YEAR_DAY = new ISODateTimeRule(
+            PACKED_YEAR_DAY_ORDINAL, "PackedYearDay", DAYS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, null);
 
     /**
      * Cache of rules for deserialization.

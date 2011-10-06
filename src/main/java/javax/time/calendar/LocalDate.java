@@ -32,8 +32,12 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.PACKED_EPOCH_MONTH_DAY;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
 import java.io.Serializable;
 
@@ -90,17 +94,9 @@ public final class LocalDate
     public static final LocalDate MAX_DATE = LocalDate.of(Year.MAX_YEAR, 12, 31);
 
     /**
-     * The year.
+     * The packed epoch-month day-of-month value.
      */
-    private final int year;
-    /**
-     * The month-of-year, not null.
-     */
-    private final MonthOfYear month;
-    /**
-     * The day-of-month.
-     */
-    private final int day;
+    private final long pemd;
 
     //-----------------------------------------------------------------------
     /**
@@ -144,8 +140,8 @@ public final class LocalDate
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
-        long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
-        return LocalDate.ofYearZeroDay(yearZeroDay);
+        long epochDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY);
+        return LocalDate.ofEpochDay(epochDay);
     }
 
     //-----------------------------------------------------------------------
@@ -199,7 +195,12 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
     public static LocalDate ofEpochDay(long epochDay) {
-        return ofYearZeroDay(epochDay + ISOChronology.DAYS_0000_TO_1970);
+        EPOCH_DAY.checkValidValue(epochDay);
+        long pemd = EPOCH_DAY.extractISO(epochDay, PACKED_EPOCH_MONTH_DAY);
+        long year = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, YEAR);
+        long moy = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, MONTH_OF_YEAR);
+        long dom = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, DAY_OF_MONTH);
+        return LocalDate.of((int) year, (int) moy, (int) dom);
     }
 
     /**
@@ -227,34 +228,7 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
     static LocalDate ofYearZeroDay(long zeroDay) {
-        // find the march-based year
-        zeroDay -= 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
-        long adjust = 0;
-        if (zeroDay < 0) {
-            // adjust negative years to positive for calculation
-            long adjustCycles = (zeroDay + 1) / ISOChronology.DAYS_PER_CYCLE - 1;
-            adjust = adjustCycles * 400;
-            zeroDay += -adjustCycles * ISOChronology.DAYS_PER_CYCLE;
-        }
-        long yearEst = (400 * zeroDay + 591) / ISOChronology.DAYS_PER_CYCLE;
-        long doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
-        if (doyEst < 0) {
-            // fix estimate
-            yearEst--;
-            doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
-        }
-        yearEst += adjust;  // reset any negative year
-        int marchDoy0 = (int) doyEst;
-        
-        // convert march-based values back to january-based
-        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
-        int month = (marchMonth0 + 2) % 12 + 1;
-        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
-        yearEst += marchMonth0 / 10;
-        
-        // check year now we are certain it is correct
-        int year = YEAR.checkValidIntValue(yearEst);
-        return new LocalDate(year, MonthOfYear.of(month), dom);
+        return ofEpochDay(zeroDay - ISOChronology.DAYS_0000_TO_1970);
     }
 
     //-----------------------------------------------------------------------
@@ -325,7 +299,7 @@ public final class LocalDate
                         " is not valid for month " + monthOfYear.name(), DAY_OF_MONTH);
             }
         }
-        return new LocalDate(year, monthOfYear, dayOfMonth);
+        return new LocalDate(ISODateTimeRule.packPemd(year, monthOfYear.getValue(), dayOfMonth));
     }
 
     /**
@@ -335,10 +309,8 @@ public final class LocalDate
      * @param monthOfYear  the month-of-year to represent, not null
      * @param dayOfMonth  the day-of-month to represent, valid for year-month, from 1 to 31
      */
-    private LocalDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        this.year = year;
-        this.month = monthOfYear;
-        this.day = dayOfMonth;
+    private LocalDate(long pemd) {
+        this.pemd = pemd;
     }
 
     //-----------------------------------------------------------------------
@@ -366,7 +338,7 @@ public final class LocalDate
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
-        return year;
+        return (int) ISODateTimeRule.yFromEm(ISODateTimeRule.emFromPemd(pemd));
     }
 
     /**
@@ -384,7 +356,7 @@ public final class LocalDate
      * @return the month-of-year, not null
      */
     public MonthOfYear getMonthOfYear() {
-        return month;
+        return MonthOfYear.of((int) ISODateTimeRule.moyFromEm(ISODateTimeRule.emFromPemd(pemd)));
     }
 
     /**
@@ -395,7 +367,7 @@ public final class LocalDate
      * @return the day-of-month, from 1 to 31
      */
     public int getDayOfMonth() {
-        return day;
+        return (int) ISODateTimeRule.domFromPemd(pemd);
     }
 
     /**
@@ -406,7 +378,7 @@ public final class LocalDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return ISOChronology.getDayOfYearFromDate(this);
+        return (int) ISODateTimeRule.doyFromPemd(pemd);
     }
 
     /**
@@ -423,7 +395,7 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return ISOChronology.getDayOfWeekFromDate(this);
+        return DayOfWeek.of((int) PACKED_EPOCH_MONTH_DAY.extractISO(pemd, DAY_OF_WEEK));
     }
 
     //-----------------------------------------------------------------------
@@ -446,7 +418,7 @@ public final class LocalDate
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeapYear() {
-        return ISOChronology.isLeapYear(year);
+        return ISOChronology.isLeapYear(getYear());
     }
 
     //-----------------------------------------------------------------------
@@ -517,10 +489,10 @@ public final class LocalDate
      */
     public LocalDate withYear(int year, DateResolver dateResolver) {
         ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
-        if (this.year == year) {
+        if (this.getYear() == year) {
             return this;
         }
-        return resolveDate(dateResolver, year, month, day);
+        return resolveDate(dateResolver, year, getMonthOfYear(), getDayOfMonth());
     }
 
     /**
@@ -582,10 +554,10 @@ public final class LocalDate
     public LocalDate with(MonthOfYear monthOfYear, DateResolver dateResolver) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
-        if (this.month == monthOfYear) {
+        if (this.getMonthOfYear() == monthOfYear) {
             return this;
         }
-        return resolveDate(dateResolver, year, monthOfYear, day);
+        return resolveDate(dateResolver, getYear(), monthOfYear, getDayOfMonth());
     }
 
     /**
@@ -600,10 +572,10 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public LocalDate withDayOfMonth(int dayOfMonth) {
-        if (this.day == dayOfMonth) {
+        if (this.getDayOfMonth() == dayOfMonth) {
             return this;
         }
-        return of(year, month, dayOfMonth);
+        return of(getYear(), getMonthOfYear(), dayOfMonth);
     }
 
     /**
@@ -619,10 +591,10 @@ public final class LocalDate
      */
     public LocalDate withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
         ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
-        if (this.day == dayOfMonth) {
+        if (this.getDayOfMonth() == dayOfMonth) {
             return this;
         }
-        return resolveDate(dateResolver, year, month, dayOfMonth);
+        return resolveDate(dateResolver, getYear(), getMonthOfYear(), dayOfMonth);
     }
 
     /**
@@ -640,7 +612,7 @@ public final class LocalDate
         if (this.getDayOfYear() == dayOfYear) {
             return this;
         }
-        return ISOChronology.getDateFromDayOfYear(year, dayOfYear);
+        return ISOChronology.getDateFromDayOfYear(getYear(), dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -695,9 +667,10 @@ public final class LocalDate
         if (periodMonths == 0) {
             return plusDays(periodDays);  // optimization that also returns this for zero
         }
-        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = monthCount + periodMonths;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
+        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        int day = getDayOfMonth();
+        long calcMonths = epm + periodMonths;  // safe overflow
+        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
@@ -757,8 +730,8 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        int newYear = YEAR.checkValidIntValue(year + years);  // safe overflow
-        return resolveDate(dateResolver, newYear, month, day);
+        int newYear = YEAR.checkValidIntValue(getYear() + years);  // safe overflow
+        return resolveDate(dateResolver, newYear, getMonthOfYear(), getDayOfMonth());
     }
 
     /**
@@ -810,11 +783,11 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long monthCount = year * 12L + (month.getValue() - 1);
-        long calcMonths = monthCount + months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
+        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        long calcMonths = epm + months;  // safe overflow
+        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        return resolveDate(dateResolver, newYear, newMonth, day);
+        return resolveDate(dateResolver, newYear, newMonth, getDayOfMonth());
     }
 
     /**
@@ -911,9 +884,10 @@ public final class LocalDate
         if (periodMonths == 0) {
             return minusDays(periodDays);  // optimization that also returns this for zero
         }
-        long monthCount = ((long) year) * 12 + (month.getValue() - 1);
-        long calcMonths = monthCount - periodMonths;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
+        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        int day = getDayOfMonth();
+        long calcMonths = epm - periodMonths;  // safe overflow
+        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
         int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
         int newDay = Math.min(day, newMonthLen);
@@ -973,8 +947,8 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        int newYear = YEAR.checkValidIntValue(year - years);  // safe overflow
-        return resolveDate(dateResolver, newYear, month, day);
+        int newYear = YEAR.checkValidIntValue(getYear() - years);  // safe overflow
+        return resolveDate(dateResolver, newYear, getMonthOfYear(), getDayOfMonth());
     }
 
     /**
@@ -1026,11 +1000,11 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long monthCount = year * 12L + (month.getValue() - 1);
-        long calcMonths = monthCount - months;  // safe overflow
-        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
+        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        long calcMonths = epm - months;  // safe overflow
+        int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        return resolveDate(dateResolver, newYear, newMonth, day);
+        return resolveDate(dateResolver, newYear, newMonth, getDayOfMonth());
     }
 
     /**
@@ -1276,7 +1250,7 @@ public final class LocalDate
      * @return the Epoch Day equivalent to this date
      */
     public long toEpochDay() {
-        return toYearZeroDay() - ISOChronology.DAYS_0000_TO_1970;
+        return PACKED_EPOCH_MONTH_DAY.extractISO(pemd, EPOCH_DAY);
     }
 
     /**
@@ -1300,8 +1274,9 @@ public final class LocalDate
      * @return the year zero days count equal to this date
      */
     long toYearZeroDay() {
+        long year = getYear();
         long y = year;
-        long m = month.getValue();
+        long m = getMonthOfYear().getValue();
         long total = 0;
         total += 365 * y;
         if (y >= 0) {
@@ -1310,7 +1285,7 @@ public final class LocalDate
             total -= y / -4 - y / -100 + y / -400;
         }
         total += ((367 * m - 362) / 12);
-        total += day - 1;
+        total += getDayOfMonth() - 1;
         if (m > 2) {
             total--;
             if (ISOChronology.isLeapYear(year) == false) {
@@ -1330,14 +1305,7 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(LocalDate other) {
-        int cmp = MathUtils.safeCompare(year, other.year);
-        if (cmp == 0) {
-            cmp = month.compareTo(other.month);
-            if (cmp == 0) {
-                cmp = MathUtils.safeCompare(day, other.day);
-            }
-        }
-        return cmp;
+        return MathUtils.safeCompare(pemd, other.pemd);
     }
 
     /**
@@ -1349,7 +1317,7 @@ public final class LocalDate
      * @return true if this is after the specified date
      */
     public boolean isAfter(LocalDate other) {
-        return compareTo(other) > 0;
+        return pemd > other.pemd;
     }
 
     /**
@@ -1361,7 +1329,7 @@ public final class LocalDate
      * @return true if this is before the specified date
      */
     public boolean isBefore(LocalDate other) {
-        return compareTo(other) < 0;
+        return pemd < other.pemd;
     }
 
     //-----------------------------------------------------------------------
@@ -1380,7 +1348,7 @@ public final class LocalDate
         }
         if (obj instanceof LocalDate) {
             LocalDate other = (LocalDate) obj;
-            return (year == other.year && month == other.month && day == other.day);
+            return (pemd == other.pemd);
         }
         return false;
     }
@@ -1392,10 +1360,7 @@ public final class LocalDate
      */
     @Override
     public int hashCode() {
-        int yearValue = year;
-        int monthValue = month.getValue();
-        int dayValue = day;
-        return (yearValue & 0xFFFFF800) ^ ((yearValue << 11) + (monthValue << 6) + (dayValue));
+        return (int) ((pemd >>> 32) ^ pemd);
     }
 
     //-----------------------------------------------------------------------
@@ -1408,9 +1373,9 @@ public final class LocalDate
      */
     @Override
     public String toString() {
-        int yearValue = year;
-        int monthValue = month.getValue();
-        int dayValue = day;
+        int yearValue = getYear();
+        int monthValue = getMonthOfYear().getValue();
+        int dayValue = getDayOfMonth();
         int absYear = Math.abs(yearValue);
         StringBuilder buf = new StringBuilder(10);
         if (absYear < 1000) {

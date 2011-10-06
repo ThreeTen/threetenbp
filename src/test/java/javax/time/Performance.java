@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.ZoneId;
@@ -69,7 +70,7 @@ public class Performance {
         NF.setGroupingUsed(true);
     }
     /** Size. */
-    private static final int SIZE = 100000;
+    private static final int SIZE = 200000;
 
     /**
      * Main.
@@ -85,37 +86,42 @@ public class Performance {
         LocalTime time = LocalTime.of(12, 30, 20);
         System.out.println(time);
         
+        List<LocalDate> ld = setupDateOfEpochDay();
+        queryListDateNew(ld);
+        formatListDateNew(ld);
+        sortListDateNew(ld);
+        
         List<LocalDateTime> ldt = setupDateTime();
         queryListDateTime(ldt);
         formatListDateTime(ldt);
         sortListDateTime(ldt);
 
-        List<ZonedDateTime> zdt = setupZonedDateTime();
-        queryListZonedDateTime(zdt);
-        formatListZonedDateTime(zdt);
-        sortListZonedDateTime(zdt);
-
-        List<Instant> instants = setupInstant();
-        queryListInstant(instants);
-        formatListInstant(instants);
-        sortListInstant(instants);
-
-        List<Date> judates = setupDate();
-        queryListDate(judates);
-        formatListDate(judates);
-        sortListDate(judates);
-
-        List<LocalTime> times = setupTime();
-        queryListTime(times);
-        formatListTime(times);
-        sortListTime(times);
-
-        List<GregorianCalendar> gcals = setupGCal();
-        queryListGCal(gcals);
-        formatListGCal(gcals);
-        sortListGCal(gcals);
-        
-        deriveDateTime(ldt);
+//        List<ZonedDateTime> zdt = setupZonedDateTime();
+//        queryListZonedDateTime(zdt);
+//        formatListZonedDateTime(zdt);
+//        sortListZonedDateTime(zdt);
+//
+//        List<Instant> instants = setupInstant();
+//        queryListInstant(instants);
+//        formatListInstant(instants);
+//        sortListInstant(instants);
+//
+//        List<Date> judates = setupDate();
+//        queryListDate(judates);
+//        formatListDate(judates);
+//        sortListDate(judates);
+//
+//        List<LocalTime> times = setupTime();
+//        queryListTime(times);
+//        formatListTime(times);
+//        sortListTime(times);
+//
+//        List<GregorianCalendar> gcals = setupGCal();
+//        queryListGCal(gcals);
+//        formatListGCal(gcals);
+//        sortListGCal(gcals);
+//        
+//        deriveDateTime(ldt);
     }
 
     //-----------------------------------------------------------------------
@@ -428,6 +434,53 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("GCalendar: Format: " + NF.format(end - start) + " ns" + " " + buf);
+    }
+
+    //-----------------------------------------------------------------------
+    private static List<LocalDate> setupDateOfEpochDay() {
+        Random random = new Random(47658758756875687L);
+        List<LocalDate> list = new ArrayList<LocalDate>(SIZE);
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            LocalDate d = LocalDate.ofEpochDay(random.nextInt());
+            list.add(d);
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalD:    Setup:  " + NF.format(end - start) + " ns");
+        return list;
+    }
+
+    private static void sortListDateNew(List<LocalDate> list) {
+        long start = System.nanoTime();
+        Collections.sort(list);
+        long end = System.nanoTime();
+        System.out.println("LocalD:    Sort:   " + NF.format(end - start) + " ns " + list.get(0));
+    }
+
+    private static void queryListDateNew(List<LocalDate> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (LocalDate dt : list) {
+            total += dt.getYear();
+            total += dt.getMonthOfYear().getValue();
+            total += dt.getDayOfMonth();
+            total += dt.getDayOfWeek().getValue();
+            total += dt.getDayOfYear();
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalD:    Query:  " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    private static void formatListDateNew(List<LocalDate> list) {
+        StringBuilder buf = new StringBuilder();
+        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+        long start = System.nanoTime();
+        for (LocalDate dt : list) {
+            buf.setLength(0);
+            buf.append(format.print(dt));
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalD:    Format: " + NF.format(end - start) + " ns" + " " + buf);
     }
 
 }
