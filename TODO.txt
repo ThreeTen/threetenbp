@@ -108,7 +108,7 @@ Time zones
 
 Periods
 - WIP branch, decide on normalization
-- Between factories -> ? DAYS.between(date1, date2)
+- Between factories -> ? DAYS.between(date1, date2) - difference between epoch amounts in unit
 - Formatting/parsing (defer?)
 - Period.toString is not output of state
 
