@@ -31,8 +31,8 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
-import static javax.time.calendar.ISOPeriodUnit.SECONDS;
+import static javax.time.calendar.PeriodUnit.NANOS;
+import static javax.time.calendar.PeriodUnit.SECONDS;
 
 import java.io.Serializable;
 import java.util.Arrays;

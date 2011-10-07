@@ -31,18 +31,18 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit.HOURS;
-import static javax.time.calendar.ISOPeriodUnit.MILLIS;
-import static javax.time.calendar.ISOPeriodUnit.MINUTES;
-import static javax.time.calendar.ISOPeriodUnit.MONTHS;
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
-import static javax.time.calendar.ISOPeriodUnit.QUARTERS;
-import static javax.time.calendar.ISOPeriodUnit.SECONDS;
-import static javax.time.calendar.ISOPeriodUnit.WEEKS;
-import static javax.time.calendar.ISOPeriodUnit.WEEK_BASED_YEARS;
-import static javax.time.calendar.ISOPeriodUnit.YEARS;
-import static javax.time.calendar.ISOPeriodUnit._12_HOURS;
+import static javax.time.calendar.PeriodUnit.DAYS;
+import static javax.time.calendar.PeriodUnit.HOURS;
+import static javax.time.calendar.PeriodUnit.MILLIS;
+import static javax.time.calendar.PeriodUnit.MINUTES;
+import static javax.time.calendar.PeriodUnit.MONTHS;
+import static javax.time.calendar.PeriodUnit.NANOS;
+import static javax.time.calendar.PeriodUnit.QUARTERS;
+import static javax.time.calendar.PeriodUnit.SECONDS;
+import static javax.time.calendar.PeriodUnit.WEEKS;
+import static javax.time.calendar.PeriodUnit.WEEK_BASED_YEARS;
+import static javax.time.calendar.PeriodUnit.YEARS;
+import static javax.time.calendar.PeriodUnit._12_HOURS;
 
 import java.io.Serializable;
 

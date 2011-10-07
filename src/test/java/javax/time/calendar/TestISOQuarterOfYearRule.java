@@ -60,8 +60,8 @@ public class TestISOQuarterOfYearRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "QuarterOfYear");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 4));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.QUARTERS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.QUARTERS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------

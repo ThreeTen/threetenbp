@@ -887,7 +887,7 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_plus_PeriodProvider_big() {
-        TEST_12_30_40_987654321.plus(PeriodField.of(Long.MAX_VALUE, ISOPeriodUnit._12_HOURS));
+        TEST_12_30_40_987654321.plus(PeriodField.of(Long.MAX_VALUE, PeriodUnit._12_HOURS));
     }
 
     //-----------------------------------------------------------------------
@@ -1304,7 +1304,7 @@ public class TestLocalTime {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_PeriodProvider_big() {
-        TEST_12_30_40_987654321.minus(PeriodField.of(Long.MAX_VALUE, ISOPeriodUnit._12_HOURS));
+        TEST_12_30_40_987654321.minus(PeriodField.of(Long.MAX_VALUE, PeriodUnit._12_HOURS));
     }
 
     //-----------------------------------------------------------------------

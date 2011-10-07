@@ -55,13 +55,13 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodField {
 
-    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
-    private static final PeriodUnit QUARTERS = ISOPeriodUnit.QUARTERS;
-    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
-    private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
-    private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
-    private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
-    private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
+    private static final PeriodUnit YEARS = PeriodUnit.YEARS;
+    private static final PeriodUnit QUARTERS = PeriodUnit.QUARTERS;
+    private static final PeriodUnit MONTHS = PeriodUnit.MONTHS;
+    private static final PeriodUnit DAYS = PeriodUnit.DAYS;
+    private static final PeriodUnit HOURS = PeriodUnit.HOURS;
+    private static final PeriodUnit MINUTES = PeriodUnit.MINUTES;
+    private static final PeriodUnit SECONDS = PeriodUnit.SECONDS;
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
@@ -538,7 +538,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     public void test_toDurationEstimate() {
         Duration test = PeriodField.of(5, DAYS).toDurationEstimate();
-        Duration fiveDays = ISOPeriodUnit.DAYS.getDurationEstimate().multipliedBy(5);
+        Duration fiveDays = PeriodUnit.DAYS.getDurationEstimate().multipliedBy(5);
         assertEquals(test, fiveDays);
     }
 
@@ -557,7 +557,7 @@ public class TestPeriodField {
     }
 
     public void test_toDuration_millis() {
-        Duration test = PeriodField.of(5, ISOPeriodUnit.MILLIS).toDuration();
+        Duration test = PeriodField.of(5, PeriodUnit.MILLIS).toDuration();
         Duration fiveMillis = Duration.ofMillis(5);
         assertEquals(test, fiveMillis);
     }

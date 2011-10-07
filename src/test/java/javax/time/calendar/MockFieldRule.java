@@ -47,7 +47,7 @@ public class MockFieldRule extends DateTimeRule implements Serializable {
 
     /** Constructor. */
     MockFieldRule() {
-        super("Century", ISOPeriodUnit.CENTURIES, null, DateTimeRuleRange.of(Year.MIN_YEAR / 100, Year.MAX_YEAR / 100), null);
+        super("Century", PeriodUnit.CENTURIES, null, DateTimeRuleRange.of(Year.MIN_YEAR / 100, Year.MAX_YEAR / 100), null);
     }
 
 }

@@ -41,7 +41,6 @@ import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
@@ -291,7 +290,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return the period unit for years, not null
      */
     public static PeriodUnit periodEras() {
-        return ISOPeriodUnit.ERAS;
+        return PeriodUnit.ERAS;
     }
 
     /**
@@ -332,7 +331,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return the period unit for weeks, not null
      */
     public static PeriodUnit periodWeeks() {
-        return ISOPeriodUnit.WEEKS;
+        return PeriodUnit.WEEKS;
     }
 
     /**
@@ -346,7 +345,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return the period unit for days, not null
      */
     public static PeriodUnit periodDays() {
-        return ISOPeriodUnit.DAYS;
+        return PeriodUnit.DAYS;
     }
 
     //-----------------------------------------------------------------------

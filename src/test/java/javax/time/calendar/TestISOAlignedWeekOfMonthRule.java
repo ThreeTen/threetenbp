@@ -60,8 +60,8 @@ public class TestISOAlignedWeekOfMonthRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "AlignedWeekOfMonth");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 4, 5));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.WEEKS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.MONTHS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.WEEKS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.MONTHS);
     }
 
     //-----------------------------------------------------------------------

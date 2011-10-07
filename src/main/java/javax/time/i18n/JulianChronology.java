@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.calendar.Chronology;
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -211,7 +210,7 @@ public final class JulianChronology extends Chronology implements Serializable {
      * @return the period unit for weeks, not null
      */
     public static PeriodUnit periodWeeks() {
-        return ISOPeriodUnit.WEEKS;
+        return PeriodUnit.WEEKS;
     }
 
     /**
@@ -225,7 +224,7 @@ public final class JulianChronology extends Chronology implements Serializable {
      * @return the period unit for days, not null
      */
     public static PeriodUnit periodDays() {
-        return ISOPeriodUnit.DAYS;
+        return PeriodUnit.DAYS;
     }
 
 //    //-----------------------------------------------------------------------

@@ -42,7 +42,6 @@ import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -119,14 +118,14 @@ public final class CopticChronology extends Chronology implements Serializable {
      * <p>
      * This is equivalent to the ISO days period unit.
      */
-    public static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
+    public static final PeriodUnit DAYS = PeriodUnit.DAYS;
 
     /**
      * The period unit for weeks in the Coptic calendar system.
      * <p>
      * This is equivalent to the ISO weeks period unit.
      */
-    public static final PeriodUnit WEEKS = ISOPeriodUnit.WEEKS;
+    public static final PeriodUnit WEEKS = PeriodUnit.WEEKS;
 
     /**
      * The period unit for months in the Coptic calendar system.

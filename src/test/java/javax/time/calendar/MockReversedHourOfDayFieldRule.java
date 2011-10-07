@@ -49,7 +49,7 @@ public final class MockReversedHourOfDayFieldRule extends DateTimeRule implement
 
     /** Constructor. */
     private MockReversedHourOfDayFieldRule() {
-        super("ReversedHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
+        super("ReversedHourOfDay", PeriodUnit.HOURS, PeriodUnit.DAYS,
                 DateTimeRuleRange.of(1, 24), HOUR_OF_DAY);
     }
 

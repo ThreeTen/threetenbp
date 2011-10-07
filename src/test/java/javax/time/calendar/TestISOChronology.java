@@ -117,8 +117,8 @@ public class TestISOChronology {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinuteOfHour");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 59));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MINUTES);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.HOURS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.MINUTES);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.HOURS);
         serialize(rule);
     }
 
@@ -127,8 +127,8 @@ public class TestISOChronology {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "SecondOfMinute");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 59));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.SECONDS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.MINUTES);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.SECONDS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.MINUTES);
         serialize(rule);
     }
 
@@ -137,8 +137,8 @@ public class TestISOChronology {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "NanoOfSecond");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 999999999));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.NANOS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.SECONDS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.NANOS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.SECONDS);
         serialize(rule);
     }
 
@@ -148,8 +148,8 @@ public class TestISOChronology {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "SecondOfDay");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 24 * 60 * 60 - 1));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.SECONDS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.SECONDS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.DAYS);
         serialize(rule);
     }
 
@@ -158,8 +158,8 @@ public class TestISOChronology {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MilliOfDay");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 24 * 60 * 60 * 1000 - 1));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MILLIS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.MILLIS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.DAYS);
         serialize(rule);
     }
 
@@ -168,8 +168,8 @@ public class TestISOChronology {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MilliOfSecond");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 999));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MILLIS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.SECONDS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.MILLIS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.SECONDS);
         serialize(rule);
     }
 
@@ -177,8 +177,8 @@ public class TestISOChronology {
     // eras
     //-----------------------------------------------------------------------
     public void test_eras() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.ERAS;
-        assertSame(ISOPeriodUnit.ERAS, rule);
+        PeriodUnit rule = PeriodUnit.ERAS;
+        assertSame(PeriodUnit.ERAS, rule);
         assertEquals(rule.getName(), "Eras");
         assertEquals(rule.getBaseEquivalent(), rule.field(1));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds((long) (365.2425 * (2000000000L * 24 * 60 * 60L))));
@@ -189,10 +189,10 @@ public class TestISOChronology {
     // millennia
     //-----------------------------------------------------------------------
     public void test_millennia() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.MILLENNIA;
-        assertSame(ISOPeriodUnit.MILLENNIA, rule);
+        PeriodUnit rule = PeriodUnit.MILLENNIA;
+        assertSame(PeriodUnit.MILLENNIA, rule);
         assertEquals(rule.getName(), "Millennia");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.MONTHS.field(12000));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.MONTHS.field(12000));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds((long) (365.2425 * (1000L * 24 * 60 * 60L))));
         serialize(rule);
     }
@@ -201,10 +201,10 @@ public class TestISOChronology {
     // centuries
     //-----------------------------------------------------------------------
     public void test_centuries() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.CENTURIES;
-        assertSame(ISOPeriodUnit.CENTURIES, rule);
+        PeriodUnit rule = PeriodUnit.CENTURIES;
+        assertSame(PeriodUnit.CENTURIES, rule);
         assertEquals(rule.getName(), "Centuries");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.MONTHS.field(1200));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.MONTHS.field(1200));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds((long) (365.2425 * (100L * 24 * 60 * 60L))));
         serialize(rule);
     }
@@ -213,10 +213,10 @@ public class TestISOChronology {
     // decades
     //-----------------------------------------------------------------------
     public void test_decades() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.DECADES;
-        assertSame(ISOPeriodUnit.DECADES, rule);
+        PeriodUnit rule = PeriodUnit.DECADES;
+        assertSame(PeriodUnit.DECADES, rule);
         assertEquals(rule.getName(), "Decades");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.MONTHS.field(120));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.MONTHS.field(120));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds((long) (365.2425 * (10L * 24 * 60 * 60L))));
         serialize(rule);
     }
@@ -225,10 +225,10 @@ public class TestISOChronology {
     // years
     //-----------------------------------------------------------------------
     public void test_years() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.YEARS;
-        assertSame(ISOPeriodUnit.YEARS, rule);
+        PeriodUnit rule = PeriodUnit.YEARS;
+        assertSame(PeriodUnit.YEARS, rule);
         assertEquals(rule.getName(), "Years");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.MONTHS.field(12));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.MONTHS.field(12));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds((long) (365.2425 * (24 * 60 * 60L))));
         serialize(rule);
     }
@@ -237,10 +237,10 @@ public class TestISOChronology {
     // quarters
     //-----------------------------------------------------------------------
     public void test_quarters() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.QUARTERS;
-        assertSame(ISOPeriodUnit.QUARTERS, rule);
+        PeriodUnit rule = PeriodUnit.QUARTERS;
+        assertSame(PeriodUnit.QUARTERS, rule);
         assertEquals(rule.getName(), "Quarters");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.MONTHS.field(3));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.MONTHS.field(3));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(((long) (365.2425 * (24 * 60 * 60L)) / 4)));
         serialize(rule);
     }
@@ -249,8 +249,8 @@ public class TestISOChronology {
     // months
     //-----------------------------------------------------------------------
     public void test_months() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.MONTHS;
-        assertSame(ISOPeriodUnit.MONTHS, rule);
+        PeriodUnit rule = PeriodUnit.MONTHS;
+        assertSame(PeriodUnit.MONTHS, rule);
         assertEquals(rule.getName(), "Months");
         assertEquals(rule.getBaseEquivalent(), rule.field(1));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(((long) (365.2425 * (24 * 60 * 60L)) / 12)));
@@ -261,8 +261,8 @@ public class TestISOChronology {
     // weekBasedYears
     //-----------------------------------------------------------------------
     public void test_weekyears() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.WEEK_BASED_YEARS;
-        assertSame(ISOPeriodUnit.WEEK_BASED_YEARS, rule);
+        PeriodUnit rule = PeriodUnit.WEEK_BASED_YEARS;
+        assertSame(PeriodUnit.WEEK_BASED_YEARS, rule);
         assertEquals(rule.getName(), "WeekBasedYears");
         assertEquals(rule.getBaseEquivalent(), rule.field(1));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds((long) ((52 * 7 + 0.5) * (24 * 60 * 60L))));
@@ -273,10 +273,10 @@ public class TestISOChronology {
     // weeks
     //-----------------------------------------------------------------------
     public void test_weeks() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.WEEKS;
-        assertSame(ISOPeriodUnit.WEEKS, rule);
+        PeriodUnit rule = PeriodUnit.WEEKS;
+        assertSame(PeriodUnit.WEEKS, rule);
         assertEquals(rule.getName(), "Weeks");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.DAYS.field(7));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.DAYS.field(7));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(7 * 24 * 60 * 60L));
         serialize(rule);
     }
@@ -285,8 +285,8 @@ public class TestISOChronology {
     // days
     //-----------------------------------------------------------------------
     public void test_days() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.DAYS;
-        assertSame(ISOPeriodUnit.DAYS, rule);
+        PeriodUnit rule = PeriodUnit.DAYS;
+        assertSame(PeriodUnit.DAYS, rule);
         assertEquals(rule.getName(), "Days");
         assertEquals(rule.getBaseEquivalent(), rule.field(1));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(24 * 60 * 60L));
@@ -297,10 +297,10 @@ public class TestISOChronology {
     // 24Hours
     //-----------------------------------------------------------------------
     public void test_24hours() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit._24_HOURS;
-        assertSame(ISOPeriodUnit._24_HOURS, rule);
+        PeriodUnit rule = PeriodUnit._24_HOURS;
+        assertSame(PeriodUnit._24_HOURS, rule);
         assertEquals(rule.getName(), "24Hours");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.NANOS.field(24 * 60 * 60 * 1000000000L));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.NANOS.field(24 * 60 * 60 * 1000000000L));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(24 * 60 * 60L));
         serialize(rule);
     }
@@ -309,10 +309,10 @@ public class TestISOChronology {
     // 12Hours
     //-----------------------------------------------------------------------
     public void test_12hours() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit._12_HOURS;
-        assertSame(ISOPeriodUnit._12_HOURS, rule);
+        PeriodUnit rule = PeriodUnit._12_HOURS;
+        assertSame(PeriodUnit._12_HOURS, rule);
         assertEquals(rule.getName(), "12Hours");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.NANOS.field(12 * 60 * 60 * 1000000000L));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.NANOS.field(12 * 60 * 60 * 1000000000L));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(12 * 60 * 60L));
         serialize(rule);
     }
@@ -321,10 +321,10 @@ public class TestISOChronology {
     // hours
     //-----------------------------------------------------------------------
     public void test_hours() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.HOURS;
-        assertSame(ISOPeriodUnit.HOURS, rule);
+        PeriodUnit rule = PeriodUnit.HOURS;
+        assertSame(PeriodUnit.HOURS, rule);
         assertEquals(rule.getName(), "Hours");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.NANOS.field(60 * 60 * 1000000000L));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.NANOS.field(60 * 60 * 1000000000L));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(60 * 60L));
         serialize(rule);
     }
@@ -333,10 +333,10 @@ public class TestISOChronology {
     // minutes
     //-----------------------------------------------------------------------
     public void test_minutes() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.MINUTES;
-        assertSame(ISOPeriodUnit.MINUTES, rule);
+        PeriodUnit rule = PeriodUnit.MINUTES;
+        assertSame(PeriodUnit.MINUTES, rule);
         assertEquals(rule.getName(), "Minutes");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.NANOS.field(60 * 1000000000L));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.NANOS.field(60 * 1000000000L));
         assertEquals(rule.getDurationEstimate(), Duration.ofSeconds(60L));
         serialize(rule);
     }
@@ -345,10 +345,10 @@ public class TestISOChronology {
     // seconds
     //-----------------------------------------------------------------------
     public void test_seconds() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.SECONDS;
-        assertSame(ISOPeriodUnit.SECONDS, rule);
+        PeriodUnit rule = PeriodUnit.SECONDS;
+        assertSame(PeriodUnit.SECONDS, rule);
         assertEquals(rule.getName(), "Seconds");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.NANOS.field(1000000000L));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.NANOS.field(1000000000L));
         assertEquals(rule.getDurationEstimate(), Duration.ofNanos(1000000000L));
         serialize(rule);
     }
@@ -357,10 +357,10 @@ public class TestISOChronology {
     // millis
     //-----------------------------------------------------------------------
     public void test_millis() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.MILLIS;
-        assertSame(ISOPeriodUnit.MILLIS, rule);
+        PeriodUnit rule = PeriodUnit.MILLIS;
+        assertSame(PeriodUnit.MILLIS, rule);
         assertEquals(rule.getName(), "Millis");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.NANOS.field(1000000L));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.NANOS.field(1000000L));
         assertEquals(rule.getDurationEstimate(), Duration.ofNanos(1000000L));
         serialize(rule);
     }
@@ -369,10 +369,10 @@ public class TestISOChronology {
     // micros
     //-----------------------------------------------------------------------
     public void test_micros() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.MICROS;
-        assertSame(ISOPeriodUnit.MICROS, rule);
+        PeriodUnit rule = PeriodUnit.MICROS;
+        assertSame(PeriodUnit.MICROS, rule);
         assertEquals(rule.getName(), "Micros");
-        assertEquals(rule.getBaseEquivalent(), ISOPeriodUnit.NANOS.field(1000L));
+        assertEquals(rule.getBaseEquivalent(), PeriodUnit.NANOS.field(1000L));
         assertEquals(rule.getDurationEstimate(), Duration.ofNanos(1000L));
         serialize(rule);
     }
@@ -381,8 +381,8 @@ public class TestISOChronology {
     // nanos
     //-----------------------------------------------------------------------
     public void test_nanos() throws Exception {
-        PeriodUnit rule = ISOPeriodUnit.NANOS;
-        assertSame(ISOPeriodUnit.NANOS, rule);
+        PeriodUnit rule = PeriodUnit.NANOS;
+        assertSame(PeriodUnit.NANOS, rule);
         assertEquals(rule.getName(), "Nanos");
         assertEquals(rule.getBaseEquivalent(), rule.field(1));
         assertEquals(rule.getDurationEstimate(), Duration.ofNanos(1L));
@@ -394,23 +394,23 @@ public class TestISOChronology {
     //-----------------------------------------------------------------------
     public void test_compareTo_periodUnits() {
         List<PeriodUnit> list = new ArrayList<PeriodUnit>();
-        list.add(ISOPeriodUnit.NANOS);
-        list.add(ISOPeriodUnit.MICROS);
-        list.add(ISOPeriodUnit.MILLIS);
-        list.add(ISOPeriodUnit.SECONDS);
-        list.add(ISOPeriodUnit.MINUTES);
-        list.add(ISOPeriodUnit.HOURS);
-        list.add(ISOPeriodUnit._12_HOURS);
-        list.add(ISOPeriodUnit.DAYS);
-        list.add(ISOPeriodUnit.WEEKS);
-        list.add(ISOPeriodUnit.MONTHS);
-        list.add(ISOPeriodUnit.QUARTERS);
-        list.add(ISOPeriodUnit.WEEK_BASED_YEARS);
-        list.add(ISOPeriodUnit.YEARS);
-        list.add(ISOPeriodUnit.DECADES);
-        list.add(ISOPeriodUnit.CENTURIES);
-        list.add(ISOPeriodUnit.MILLENNIA);
-        list.add(ISOPeriodUnit.ERAS);
+        list.add(PeriodUnit.NANOS);
+        list.add(PeriodUnit.MICROS);
+        list.add(PeriodUnit.MILLIS);
+        list.add(PeriodUnit.SECONDS);
+        list.add(PeriodUnit.MINUTES);
+        list.add(PeriodUnit.HOURS);
+        list.add(PeriodUnit._12_HOURS);
+        list.add(PeriodUnit.DAYS);
+        list.add(PeriodUnit.WEEKS);
+        list.add(PeriodUnit.MONTHS);
+        list.add(PeriodUnit.QUARTERS);
+        list.add(PeriodUnit.WEEK_BASED_YEARS);
+        list.add(PeriodUnit.YEARS);
+        list.add(PeriodUnit.DECADES);
+        list.add(PeriodUnit.CENTURIES);
+        list.add(PeriodUnit.MILLENNIA);
+        list.add(PeriodUnit.ERAS);
         
         List<PeriodUnit> test = new ArrayList<PeriodUnit>(list);
         Collections.shuffle(test);

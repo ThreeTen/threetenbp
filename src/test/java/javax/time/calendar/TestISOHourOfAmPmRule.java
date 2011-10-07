@@ -60,8 +60,8 @@ public class TestISOHourOfAmPmRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "HourOfAmPm");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 11));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.HOURS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit._12_HOURS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.HOURS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit._12_HOURS);
     }
 
     public void test_values() throws Exception {

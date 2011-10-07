@@ -42,7 +42,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodFields;
 import javax.time.calendar.PeriodUnit;
 
@@ -168,7 +167,7 @@ public class TestSeconds {
     public void test_getUnit() {
         PeriodUnit unit = Seconds.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, ISOPeriodUnit.SECONDS);
+        assertEquals(unit, PeriodUnit.SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -328,7 +327,7 @@ public class TestSeconds {
     //-----------------------------------------------------------------------
     public void test_toPeriodFields() {
         Seconds test5 = Seconds.of(5);
-        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, ISOPeriodUnit.SECONDS));
+        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, PeriodUnit.SECONDS));
     }
 
     //-----------------------------------------------------------------------

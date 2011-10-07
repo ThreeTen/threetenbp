@@ -60,8 +60,8 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 28, 31));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.MONTHS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.DAYS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.MONTHS);
     }
 
     //-----------------------------------------------------------------------

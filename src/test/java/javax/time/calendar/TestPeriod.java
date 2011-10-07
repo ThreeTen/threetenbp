@@ -63,15 +63,15 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriod {
 
-    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
-    private static final PeriodUnit QUARTERS = ISOPeriodUnit.QUARTERS;
-    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
-    private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
-    private static final PeriodUnit DAYS24 = ISOPeriodUnit._24_HOURS;
-    private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
-    private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
-    private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
-    private static final PeriodUnit NANOS = ISOPeriodUnit.NANOS;
+    private static final PeriodUnit YEARS = PeriodUnit.YEARS;
+    private static final PeriodUnit QUARTERS = PeriodUnit.QUARTERS;
+    private static final PeriodUnit MONTHS = PeriodUnit.MONTHS;
+    private static final PeriodUnit DAYS = PeriodUnit.DAYS;
+    private static final PeriodUnit DAYS24 = PeriodUnit._24_HOURS;
+    private static final PeriodUnit HOURS = PeriodUnit.HOURS;
+    private static final PeriodUnit MINUTES = PeriodUnit.MINUTES;
+    private static final PeriodUnit SECONDS = PeriodUnit.SECONDS;
+    private static final PeriodUnit NANOS = PeriodUnit.NANOS;
     private static final PeriodUnit HISTORIC_MONTHS = HistoricChronology.periodMonths();
 
     private static final BigInteger MAX_BINT = BigInteger.valueOf(Integer.MAX_VALUE);
@@ -2181,8 +2181,8 @@ public class TestPeriod {
 
     public void test_toEstimatedDuration_Days() {
         assertEquals(Period.ZERO.toEstimatedDuration(), Duration.ofSeconds(0));
-        assertEquals(Period.ofDays(2).toEstimatedDuration(), ISOPeriodUnit.DAYS.getDurationEstimate().multipliedBy(2));
-        assertEquals(Period.ofMonths(2).toEstimatedDuration(), ISOPeriodUnit.MONTHS.getDurationEstimate().multipliedBy(2));
+        assertEquals(Period.ofDays(2).toEstimatedDuration(), PeriodUnit.DAYS.getDurationEstimate().multipliedBy(2));
+        assertEquals(Period.ofMonths(2).toEstimatedDuration(), PeriodUnit.MONTHS.getDurationEstimate().multipliedBy(2));
     }
 
     //-----------------------------------------------------------------------

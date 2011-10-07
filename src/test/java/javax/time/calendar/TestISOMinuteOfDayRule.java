@@ -60,8 +60,8 @@ public class TestISOMinuteOfDayRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "MinuteOfDay");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(0, 24 * 60 - 1));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MINUTES);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.DAYS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.MINUTES);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.DAYS);
     }
 
     public void test_values() throws Exception {

@@ -33,7 +33,6 @@ package javax.time.period.field;
 
 import java.io.Serializable;
 
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -131,7 +130,7 @@ public final class Years extends PeriodField implements Comparable<Years>, Seria
      */
     @Override
     public PeriodUnit getUnit() {
-        return ISOPeriodUnit.YEARS;
+        return PeriodUnit.YEARS;
     }
 
     //-----------------------------------------------------------------------

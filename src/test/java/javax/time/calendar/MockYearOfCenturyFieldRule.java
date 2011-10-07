@@ -32,8 +32,8 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
-import static javax.time.calendar.ISOPeriodUnit.CENTURIES;
-import static javax.time.calendar.ISOPeriodUnit.YEARS;
+import static javax.time.calendar.PeriodUnit.CENTURIES;
+import static javax.time.calendar.PeriodUnit.YEARS;
 
 import java.io.Serializable;
 

@@ -33,7 +33,6 @@ package javax.time.period.field;
 
 import java.io.Serializable;
 
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.PeriodUnit;
 
 /**
@@ -131,7 +130,7 @@ public final class Weeks extends PeriodField implements Comparable<Weeks>, Seria
      */
     @Override
     public PeriodUnit getUnit() {
-        return ISOPeriodUnit.WEEKS;
+        return PeriodUnit.WEEKS;
     }
 
     //-----------------------------------------------------------------------

@@ -51,7 +51,7 @@ public final class MockYearOfDecadeFieldRule extends DateTimeRule implements Ser
 
     /** Constructor. */
     private MockYearOfDecadeFieldRule() {
-        super("YearOfDecade", ISOPeriodUnit.YEARS, ISOPeriodUnit.DECADES, 0, 9, ZERO_EPOCH_MONTH);
+        super("YearOfDecade", PeriodUnit.YEARS, PeriodUnit.DECADES, 0, 9, ZERO_EPOCH_MONTH);
     }
 
     private Object readResolve() {

@@ -32,11 +32,11 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit.HOURS;
-import static javax.time.calendar.ISOPeriodUnit.MINUTES;
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
-import static javax.time.calendar.ISOPeriodUnit.WEEKS;
+import static javax.time.calendar.PeriodUnit.DAYS;
+import static javax.time.calendar.PeriodUnit.HOURS;
+import static javax.time.calendar.PeriodUnit.MINUTES;
+import static javax.time.calendar.PeriodUnit.NANOS;
+import static javax.time.calendar.PeriodUnit.WEEKS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 

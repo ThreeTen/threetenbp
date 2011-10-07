@@ -60,8 +60,8 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(1, 365, 366));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.DAYS);
-        assertEquals(rule.getPeriodRange(), ISOPeriodUnit.YEARS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.DAYS);
+        assertEquals(rule.getPeriodRange(), PeriodUnit.YEARS);
     }
 
     //-----------------------------------------------------------------------

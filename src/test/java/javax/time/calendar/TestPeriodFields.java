@@ -64,17 +64,17 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodFields {
 
-    private static final PeriodUnit DECADES = ISOPeriodUnit.DECADES;
-    private static final PeriodUnit YEARS = ISOPeriodUnit.YEARS;
-    private static final PeriodUnit MONTHS = ISOPeriodUnit.MONTHS;
-    private static final PeriodUnit DAYS = ISOPeriodUnit.DAYS;
-    private static final PeriodUnit HOURS24 = ISOPeriodUnit._24_HOURS;
-    private static final PeriodUnit HOURS = ISOPeriodUnit.HOURS;
-    private static final PeriodUnit MINUTES = ISOPeriodUnit.MINUTES;
-    private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
-    private static final PeriodUnit MILLIS = ISOPeriodUnit.MILLIS;
-    private static final PeriodUnit MICROS = ISOPeriodUnit.MICROS;
-    private static final PeriodUnit NANOS = ISOPeriodUnit.NANOS;
+    private static final PeriodUnit DECADES = PeriodUnit.DECADES;
+    private static final PeriodUnit YEARS = PeriodUnit.YEARS;
+    private static final PeriodUnit MONTHS = PeriodUnit.MONTHS;
+    private static final PeriodUnit DAYS = PeriodUnit.DAYS;
+    private static final PeriodUnit HOURS24 = PeriodUnit._24_HOURS;
+    private static final PeriodUnit HOURS = PeriodUnit.HOURS;
+    private static final PeriodUnit MINUTES = PeriodUnit.MINUTES;
+    private static final PeriodUnit SECONDS = PeriodUnit.SECONDS;
+    private static final PeriodUnit MILLIS = PeriodUnit.MILLIS;
+    private static final PeriodUnit MICROS = PeriodUnit.MICROS;
+    private static final PeriodUnit NANOS = PeriodUnit.NANOS;
 
     private PeriodFields fixtureP2Y5D;
     private PeriodFields fixtureZeroYears;
@@ -1326,8 +1326,8 @@ public class TestPeriodFields {
     //-----------------------------------------------------------------------
     public void test_toDurationEstimate() {
         Duration test = fixtureP2Y5D.toDurationEstimate();
-        Duration twoYears = ISOPeriodUnit.YEARS.getDurationEstimate().multipliedBy(2);
-        Duration fiveDays = ISOPeriodUnit.DAYS.getDurationEstimate().multipliedBy(5);
+        Duration twoYears = PeriodUnit.YEARS.getDurationEstimate().multipliedBy(2);
+        Duration fiveDays = PeriodUnit.DAYS.getDurationEstimate().multipliedBy(5);
         assertEquals(test, twoYears.plus(fiveDays));
     }
 
@@ -1341,7 +1341,7 @@ public class TestPeriodFields {
     }
 
     public void test_toDuration_millis() {
-        Duration test = PeriodFields.of(5, ISOPeriodUnit.MILLIS).toDuration();
+        Duration test = PeriodFields.of(5, PeriodUnit.MILLIS).toDuration();
         Duration fiveMillis = Duration.ofMillis(5);
         assertEquals(test, fiveMillis);
     }

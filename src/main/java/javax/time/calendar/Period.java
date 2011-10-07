@@ -31,13 +31,13 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit.HOURS;
-import static javax.time.calendar.ISOPeriodUnit.MINUTES;
-import static javax.time.calendar.ISOPeriodUnit.MONTHS;
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
-import static javax.time.calendar.ISOPeriodUnit.SECONDS;
-import static javax.time.calendar.ISOPeriodUnit.YEARS;
+import static javax.time.calendar.PeriodUnit.DAYS;
+import static javax.time.calendar.PeriodUnit.HOURS;
+import static javax.time.calendar.PeriodUnit.MINUTES;
+import static javax.time.calendar.PeriodUnit.MONTHS;
+import static javax.time.calendar.PeriodUnit.NANOS;
+import static javax.time.calendar.PeriodUnit.SECONDS;
+import static javax.time.calendar.PeriodUnit.YEARS;
 
 import java.io.Serializable;
 import java.util.TreeMap;

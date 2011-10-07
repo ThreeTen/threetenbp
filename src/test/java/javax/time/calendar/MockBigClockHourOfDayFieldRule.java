@@ -50,7 +50,7 @@ public final class MockBigClockHourOfDayFieldRule extends DateTimeRule implement
 
     /** Constructor. */
     private MockBigClockHourOfDayFieldRule() {
-        super("BigClockHourOfDay", ISOPeriodUnit.HOURS, ISOPeriodUnit.DAYS,
+        super("BigClockHourOfDay", PeriodUnit.HOURS, PeriodUnit.DAYS,
                 DateTimeRuleRange.of(0, 2300), CLOCK_HOUR_OF_DAY);
     }
 

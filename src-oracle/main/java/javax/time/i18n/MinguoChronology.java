@@ -14,7 +14,6 @@ import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.format.TextStyle;
@@ -192,7 +191,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * @return the period unit for eras, never null
      */
     public static PeriodUnit periodEras() {
-        return ISOPeriodUnit.ERAS;
+        return PeriodUnit.ERAS;
     }
 
     /**
@@ -206,7 +205,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * @return the period unit for years, never null
      */
     public static PeriodUnit periodYears() {
-        return ISOPeriodUnit.YEARS;
+        return PeriodUnit.YEARS;
     }
 
     /**
@@ -220,7 +219,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * @return the period unit for months, never null
      */
     public static PeriodUnit periodMonths() {
-        return ISOPeriodUnit.MONTHS;
+        return PeriodUnit.MONTHS;
     }
 
     /**
@@ -232,7 +231,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * @return the period unit for weeks, never null
      */
     public static PeriodUnit periodWeeks() {
-        return ISOPeriodUnit.WEEKS;
+        return PeriodUnit.WEEKS;
     }
 
     /**
@@ -246,7 +245,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      * @return the period unit for days, never null
      */
     public static PeriodUnit periodDays() {
-        return ISOPeriodUnit.DAYS;
+        return PeriodUnit.DAYS;
     }
 
     //-----------------------------------------------------------------------

@@ -39,10 +39,10 @@ import javax.time.MathUtils;
 /**
  * A unit of time for measuring a period, such as 'Days' or 'Minutes'.
  * <p>
- * {@code PeriodUnit} is an immutable definition of a unit of human-scale time.
- * For example, humans typically measure periods of time in units of years, months,
- * days, hours, minutes and seconds. These concepts are defined by instances of
- * this class defined in the chronology classes.
+ * {@code PeriodUnit} defines a unit of human-scale time. For example, humans typically
+ * measure periods of time in units of years, months, days, hours, minutes and seconds.
+ * A basic selection of constants is defined in this class.
+ * Other calendar systems may define their own constants.
  * <p>
  * Units are either basic or derived. A derived unit can be converted accurately to
  * another smaller unit. A basic unit is fundamental, and has no smaller representation.
@@ -61,6 +61,186 @@ import javax.time.MathUtils;
  */
 public abstract class PeriodUnit
         implements Comparable<PeriodUnit>, Serializable {
+
+    private static final int NANOS_ORDINAL = 0;
+    private static final int MICROS_ORDINAL = 1;
+    private static final int MILLIS_ORDINAL = 2;
+    private static final int SECONDS_ORDINAL = 3;
+    private static final int MINUTES_ORDINAL = 4;
+    private static final int HOURS_ORDINAL = 5;
+    private static final int _12_HOURS_ORDINAL = 6;
+    private static final int _24_HOURS_ORDINAL = 7;
+    private static final int DAYS_ORDINAL = 8;
+    private static final int WEEKS_ORDINAL = 9;
+    private static final int MONTHS_ORDINAL = 10;
+    private static final int QUARTERS_ORDINAL = 11;
+    private static final int WEEK_BASED_YEARS_ORDINAL = 12;
+    private static final int YEARS_ORDINAL = 13;
+    private static final int DECADES_ORDINAL = 14;
+    private static final int CENTURIES_ORDINAL = 15;
+    private static final int MILLENNIA_ORDINAL = 16;
+    private static final int ERAS_ORDINAL = 17;
+
+    /**
+     * The period unit for nanoseconds.
+     * <p>
+     * This is a basic unit and has no equivalent period.
+     * The estimated duration is 1 nanosecond.
+     * This unit does not depends on any other unit.
+     */
+    public static final PeriodUnit NANOS = new ISO(NANOS_ORDINAL, "Nanos", 1, null, Duration.ofNanos(1));
+    /**
+     * The period unit for microseconds.
+     * <p>
+     * The equivalent period and estimated duration is based on 1000 nanoseconds.
+     * This unit depends on the Nanos unit and all units that depends on.
+     */
+    public static final PeriodUnit MICROS = new ISO(MICROS_ORDINAL, "Micros", 1000L, NANOS, Duration.ofNanos(1000));
+    /**
+     * The period unit for milliseconds.
+     * <p>
+     * The equivalent period and estimated duration is based on 1,000,000 nanoseconds.
+     * This unit depends on the Micros unit and all units that depends on.
+     */
+    public static final PeriodUnit MILLIS = new ISO(MILLIS_ORDINAL, "Millis", 1000000L, NANOS, Duration.ofMillis(1));
+    /**
+     * The period unit for seconds.
+     * <p>
+     * The equivalent period and estimated duration is based on 1,000,000,000 nanoseconds.
+     * This unit depends on the Millis unit and all units that depends on.
+     */
+    public static final PeriodUnit SECONDS = new ISO(SECONDS_ORDINAL, "Seconds", 1000000000L, NANOS, Duration.ofSeconds(1));
+    /**
+     * The period unit for minutes.
+     * <p>
+     * The equivalent period and estimated duration is based on 60 seconds.
+     * This unit depends on the Seconds unit and all units that depends on.
+     */
+    public static final PeriodUnit MINUTES = new ISO(MINUTES_ORDINAL, "Minutes", 60L * 1000000000L, NANOS, Duration.ofSeconds(60));
+    /**
+     * The period unit for hours.
+     * <p>
+     * The equivalent period and estimated duration is based on 60 minutes.
+     * This unit depends on the Minutes unit and all units that depends on.
+     */
+    public static final PeriodUnit HOURS = new ISO(HOURS_ORDINAL, "Hours", 60L * 60L * 1000000000L, NANOS, Duration.ofSeconds(60 * 60));
+    /**
+     * The period unit for twelve hours, as used by AM/PM.
+     * <p>
+     * The equivalent period and estimated duration is based on 12 hours.
+     * This unit depends on the Hours unit and all units that depends on.
+     */
+    public static final PeriodUnit _12_HOURS = new ISO(_12_HOURS_ORDINAL, "12Hours", 12L * 60L * 60L * 1000000000L, NANOS, Duration.ofSeconds(12 * 60 * 60));
+    /**
+     * The period unit for twenty-four hours, that is often treated as a day.
+     * <p>
+     * The period unit defines the concept of a period of exactly 24 hours that
+     * is often treated as a day. The unit name of "24Hours" is intended to convey
+     * the fact that this is primarily a 24 hour unit that happens to be used as
+     * a day unit on occasion. In most scenarios, the standard {@link #DAYS Days}
+     * unit is more applicable and accurate.
+     * <p>
+     * This class defines two units that could represent a day.
+     * This unit, {@code 24Hours}, represents a fixed length of exactly 24 hours,
+     * allowing it to be converted to seconds, nanoseconds and {@link Duration}.
+     * By contrast, the {@code Days} unit varies in length based on time-zone (daylight
+     * savings time) changes and cannot be converted to seconds, nanoseconds or {@code Duration}.
+     * <p>
+     * The equivalent period and estimated duration is based on 24 hours.
+     * This unit depends on the 12Hours unit and all units that depends on.
+     */
+    public static final PeriodUnit _24_HOURS = new ISO(_24_HOURS_ORDINAL, "24Hours", 24L * 60L * 60L * 1000000000L, NANOS, Duration.ofSeconds(24 * 60 * 60));
+
+    /**
+     * The period unit for days.
+     * <p>
+     * The period unit defines the concept of a period of a day.
+     * This is typically equal to 24 hours, but may vary due to time-zone changes.
+     * <p>
+     * This class defines two units that could represent a day.
+     * This unit, {@code Days}, represents a day that varies in length based on
+     * time-zone (daylight savings time) changes. It is a basic unit that cannot
+     * be converted to seconds, nanoseconds or {@link Duration}.
+     * By contrast, the {@link #_24_HOURS 24Hours} unit has a fixed length of
+     * exactly 24 hours allowing it to be converted to seconds, nanoseconds and {@code Duration}.
+     * <p>
+     * This is a basic unit and has no equivalent period.
+     * The estimated duration is equal to 24 hours.
+     * This unit does not depends on any other unit.
+     */
+    public static final PeriodUnit DAYS = new ISO(DAYS_ORDINAL, "Days", 1, null, Duration.ofSeconds(86400));
+    /**
+     * The period unit for weeks.
+     * <p>
+     * The equivalent period and estimated duration is based on 7 days.
+     * This unit depends on the Days unit and all units that depends on.
+     */
+    public static final PeriodUnit WEEKS = new ISO(WEEKS_ORDINAL, "Weeks", 7, DAYS, Duration.ofSeconds(7L * 86400L));
+    /**
+     * The period unit for months.
+     * This is typically 28 to 31 days.
+     * <p>
+     * This is a basic unit and has no equivalent period.
+     * The estimated duration is equal to one-twelfth of a year based on 365.2425 days.
+     * This unit does not depend on any other unit.
+     */
+    public static final PeriodUnit MONTHS = new ISO(MONTHS_ORDINAL, "Months", 1, null, Duration.ofSeconds(31556952L / 12L));
+    /**
+     * The period unit for quarters of years.
+     * <p>
+     * The equivalent period and estimated duration is based on 3 months.
+     * This unit depends on the Months unit and all units that depends on.
+     */
+    public static final PeriodUnit QUARTERS = new ISO(QUARTERS_ORDINAL, "Quarters", 3, MONTHS, Duration.ofSeconds(31556952L / 4));
+    /**
+     * The period unit for week-based-years as defined by ISO-8601.
+     * This is typically 52 weeks, and occasionally 53 weeks.
+     * <p>
+     * This is a basic unit and has no equivalent period.
+     * The estimated duration is equal to 364.5 days, which is just over 52 weeks.
+     * This unit does not depend on any other unit.
+     */
+    public static final PeriodUnit WEEK_BASED_YEARS = new ISO(WEEK_BASED_YEARS_ORDINAL, "WeekBasedYears", 1, null, Duration.ofSeconds(364L * 86400L + 43200L));  // 364.5 days
+    /**
+     * The period unit for years.
+     * <p>
+     * The equivalent period and estimated duration is based on 12 months based on 365.2425 days.
+     * This unit depends on the Quarters unit and all units that depends on.
+     */
+    public static final PeriodUnit YEARS = new ISO(YEARS_ORDINAL, "Years", 12, MONTHS, Duration.ofSeconds(31556952L));  // 365.2425 days
+    /**
+     * The period unit for decades.
+     * <p>
+     * The equivalent period and estimated duration is based on 10 years.
+     * This unit depends on the Years unit and all units that depends on.
+     */
+    public static final PeriodUnit DECADES = new ISO(DECADES_ORDINAL, "Decades", 120, MONTHS, Duration.ofSeconds(10L * 31556952L));
+    /**
+     * The period unit for centuries.
+     * <p>
+     * The equivalent period and estimated duration is based on 100 years.
+     * This unit depends on the Decades unit and all units that depends on.
+     */
+    public static final PeriodUnit CENTURIES = new ISO(CENTURIES_ORDINAL, "Centuries", 1200, MONTHS, Duration.ofSeconds(100L * 31556952L));
+    /**
+     * The period unit for millennia.
+     * <p>
+     * The equivalent period and estimated duration is based on 1000 years.
+     * This unit depends on the Centuries unit and all units that depends on.
+     */
+    public static final PeriodUnit MILLENNIA = new ISO(MILLENNIA_ORDINAL, "Millennia", 12000, MONTHS, Duration.ofSeconds(1000L * 31556952L));
+    /**
+     * The period unit for eras.
+     * <p>
+     * This represents an era based on a simple before/after point on the time-line.
+     * Such an era is infinite in length.
+     * For this rule, an era has an estimated duration of 2,000,000,000 years.
+     * <p>
+     * This is a basic unit and has no equivalent period.
+     * The estimated duration is equal to 2,000,000,000 years.
+     * This unit does not depend on any other unit.
+     */
+    public static final PeriodUnit ERAS = new ISO(ERAS_ORDINAL, "Eras", 1, null, Duration.ofSeconds(31556952L * 2000000000L));
 
     /**
      * Serialization version.
@@ -402,6 +582,79 @@ public abstract class PeriodUnit
     @Override
     public String toString() {
         return name;
+    }
+
+    /**
+     * Constants for the ISO calendar system.
+     */
+    private static final class ISO extends PeriodUnit implements Serializable {
+
+        /**
+         * Serialization version.
+         */
+        private static final long serialVersionUID = 1L;
+        /**
+         * Ordinal for performance and serialization.
+         */
+        private final int ordinal;
+
+        /**
+         * Restricted constructor.
+         */
+        ISO(int ordinal, String name, long baseEquivalentPeriod, PeriodUnit baseUnit, Duration estimatedDuration) {
+            super(name, baseEquivalentPeriod, baseUnit, estimatedDuration);
+            this.ordinal = ordinal;
+        }
+
+        /**
+         * Ensure singletons.
+         * @return the singleton, not null
+         */
+        private Object readResolve() {
+            switch (ordinal) {
+                case NANOS_ORDINAL: return NANOS;
+                case MICROS_ORDINAL: return MICROS;
+                case MILLIS_ORDINAL: return MILLIS;
+                case SECONDS_ORDINAL: return SECONDS;
+                case MINUTES_ORDINAL: return MINUTES;
+                case HOURS_ORDINAL: return HOURS;
+                case _12_HOURS_ORDINAL: return _12_HOURS;
+                case _24_HOURS_ORDINAL: return _24_HOURS;
+                case DAYS_ORDINAL: return DAYS;
+                case WEEKS_ORDINAL: return WEEKS;
+                case MONTHS_ORDINAL: return MONTHS;
+                case QUARTERS_ORDINAL: return QUARTERS;
+                case WEEK_BASED_YEARS_ORDINAL: return WEEK_BASED_YEARS;
+                case YEARS_ORDINAL: return YEARS;
+                case DECADES_ORDINAL: return DECADES;
+                case CENTURIES_ORDINAL: return CENTURIES;
+                case MILLENNIA_ORDINAL: return MILLENNIA;
+                case ERAS_ORDINAL: return ERAS;
+            }
+            throw new IllegalArgumentException("Unknown period unit");
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public int compareTo(PeriodUnit other) {
+            if (other instanceof ISO) {
+                return ordinal - ((ISO) other).ordinal;
+            }
+            return super.compareTo(other);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof ISO) {
+                return ordinal == ((ISO) obj).ordinal;
+            }
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            return ISO.class.hashCode() + ordinal;
+        }
     }
 
 }

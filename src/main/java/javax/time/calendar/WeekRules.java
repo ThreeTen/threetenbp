@@ -536,7 +536,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         private final WeekRules weekRules;
 
         DayOfWeekRule(WeekRules weekRules) {
-            super("DayOfWeek-" + weekRules.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7, null);
+            super("DayOfWeek-" + weekRules.toString(), PeriodUnit.DAYS, PeriodUnit.WEEKS, 1, 7, null);
             this.weekRules = weekRules;
         }
 //        @Override
@@ -574,7 +574,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         private final WeekRules weekRules;
 
         WeekOfMonthRule(WeekRules weekRules) {
-            super("WeekOfMonth-" + weekRules.toString(), ISOPeriodUnit.WEEKS, ISOPeriodUnit.MONTHS,
+            super("WeekOfMonth-" + weekRules.toString(), PeriodUnit.WEEKS, PeriodUnit.MONTHS,
                     DateTimeRuleRange.of(0, 1, 4, 6),
                     null);
             this.weekRules = weekRules;

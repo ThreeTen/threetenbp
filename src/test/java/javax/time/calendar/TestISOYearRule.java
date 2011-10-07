@@ -60,7 +60,7 @@ public class TestISOYearRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "Year");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(Year.MIN_YEAR, Year.MAX_YEAR));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.YEARS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.YEARS);
         assertEquals(rule.getPeriodRange(), null);
     }
 

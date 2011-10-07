@@ -60,7 +60,7 @@ public class TestISOZeroEpochMonthRule extends AbstractTestDateTimeRule {
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ZeroEpochMonth");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(Long.MIN_VALUE, Long.MAX_VALUE));
-        assertEquals(rule.getPeriodUnit(), ISOPeriodUnit.MONTHS);
+        assertEquals(rule.getPeriodUnit(), PeriodUnit.MONTHS);
         assertEquals(rule.getPeriodRange(), null);
     }
 
