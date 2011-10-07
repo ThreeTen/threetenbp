@@ -68,7 +68,7 @@ import javax.time.MathUtils;
  * {@code PeriodFields} can store units of any kind which makes it usable with
  * any calendar system.
  * <p>
- * PeriodFields is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
