@@ -362,7 +362,6 @@ public final class LocalTime
      * @param secondOfMinute  the second-of-minute to represent, validated from 0 to 59
      * @param nanoOfSecond  the nano-of-second to represent, validated from 0 to 999,999,999
      * @return the local time, not null
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     private static LocalTime create(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         if ((minuteOfHour | secondOfMinute | nanoOfSecond) == 0) {
