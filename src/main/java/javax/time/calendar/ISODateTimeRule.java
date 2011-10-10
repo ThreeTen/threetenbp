@@ -195,11 +195,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             return value;
         }
         switch (ordinal) {
-        	case NANO_OF_DAY_ORDINAL: return extractFromNod(value, requiredRule);
-        	case SECOND_OF_DAY_ORDINAL: return extractFromSod(value, requiredRule);
-        	case MINUTE_OF_DAY_ORDINAL: return extractFromMod(value, requiredRule);
-        	case HOUR_OF_DAY_ORDINAL: return extractFromHod(value, requiredRule);
-        	case CLOCK_HOUR_OF_DAY_ORDINAL: return extractFromChod(value, requiredRule);
+            case NANO_OF_DAY_ORDINAL: return extractFromNod(value, requiredRule);
+            case SECOND_OF_DAY_ORDINAL: return extractFromSod(value, requiredRule);
+            case MINUTE_OF_DAY_ORDINAL: return extractFromMod(value, requiredRule);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return extractFromChoap(value, requiredRule);
+            case HOUR_OF_AMPM_ORDINAL: return extractFromHoap(value, requiredRule);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return extractFromChod(value, requiredRule);
+            case HOUR_OF_DAY_ORDINAL: return extractFromHod(value, requiredRule);
             case DAY_OF_MONTH_ORDINAL: return extractFromDom(value, requiredRule);
             case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
             case EPOCH_DAY_ORDINAL: return extractFromEd(value, requiredRule);
@@ -211,77 +213,88 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return Long.MIN_VALUE;
     }
 
-	private long simple(long value, long div, int mod) {
-		return (value / div) % mod;
-	}
+    private long simple(long value, long div, int mod) {
+        return (value / div) % mod;
+    }
 
-	private long clock(long value, int clock) {
-		return (value == 0 ? clock : value);
-	}
-
-	//-------------------------------------------------------------------------
-    private long extractFromNod(long nod, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-        	case NANO_OF_SECOND_ORDINAL: return (nod % NANOS_PER_SECOND);
-	        case SECOND_OF_HOUR_ORDINAL: return simple(nod, NANOS_PER_SECOND, SECONDS_PER_HOUR);
-	        case SECOND_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_SECOND, SECONDS_PER_DAY);
-	        case MINUTE_OF_HOUR_ORDINAL: return simple(nod, NANOS_PER_MINUTE, MINUTES_PER_HOUR);
-	        case MINUTE_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_MINUTE, MINUTES_PER_DAY);
-        	case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(nod, NANOS_PER_HOUR, 12), 12);
-	        case HOUR_OF_AMPM_ORDINAL: return simple(nod, NANOS_PER_HOUR, 12);
-        	case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(nod, NANOS_PER_HOUR, HOURS_PER_DAY), 12);
-	        case HOUR_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_HOUR, HOURS_PER_DAY);
-	        case AMPM_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_HOUR * 12, 2);
-        }
-        return Long.MIN_VALUE;
-	}
+    private long clock(long value, int clock) {
+        return (value == 0 ? clock : value);
+    }
 
     //-------------------------------------------------------------------------
-	private long extractFromSod(long sod, ISODateTimeRule requiredRule) {
+    private long extractFromNod(long nod, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
-	        case SECOND_OF_HOUR_ORDINAL: return (sod % SECONDS_PER_HOUR);
-	        case MINUTE_OF_HOUR_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_HOUR);
-	        case MINUTE_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_DAY);
-        	case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, 12), 12);
-	        case HOUR_OF_AMPM_ORDINAL: return simple(sod, SECONDS_PER_HOUR, 12);
-        	case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY), 12);
-	        case HOUR_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY);
-	        case AMPM_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR * 12, 2);
+            case NANO_OF_SECOND_ORDINAL: return (nod % NANOS_PER_SECOND);
+            case SECOND_OF_HOUR_ORDINAL: return simple(nod, NANOS_PER_SECOND, SECONDS_PER_HOUR);
+            case SECOND_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_SECOND, SECONDS_PER_DAY);
+            case MINUTE_OF_HOUR_ORDINAL: return simple(nod, NANOS_PER_MINUTE, MINUTES_PER_HOUR);
+            case MINUTE_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_MINUTE, MINUTES_PER_DAY);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(nod, NANOS_PER_HOUR, 12), 12);
+            case HOUR_OF_AMPM_ORDINAL: return simple(nod, NANOS_PER_HOUR, 12);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(nod, NANOS_PER_HOUR, HOURS_PER_DAY), 24);
+            case HOUR_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_HOUR, HOURS_PER_DAY);
+            case AMPM_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_HOUR * 12, 2);
         }
         return Long.MIN_VALUE;
-	}
+    }
 
-	//-------------------------------------------------------------------------
-	private long extractFromMod(long mod, ISODateTimeRule requiredRule) {
+    //-------------------------------------------------------------------------
+    private long extractFromSod(long sod, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
-	        case MINUTE_OF_HOUR_ORDINAL: return (mod % MINUTES_PER_HOUR);
-        	case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(mod, MINUTES_PER_HOUR, 12), 12);
-	        case HOUR_OF_AMPM_ORDINAL: return simple(mod, MINUTES_PER_HOUR, 12);
-        	case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(mod, MINUTES_PER_HOUR, HOURS_PER_DAY), 24);
-	        case HOUR_OF_DAY_ORDINAL: return simple(mod, MINUTES_PER_HOUR, HOURS_PER_DAY);
-	        case AMPM_OF_DAY_ORDINAL: return simple(mod, MINUTES_PER_HOUR * 12, 2);
+            case SECOND_OF_HOUR_ORDINAL: return (sod % SECONDS_PER_HOUR);
+            case MINUTE_OF_HOUR_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_HOUR);
+            case MINUTE_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_DAY);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, 12), 12);
+            case HOUR_OF_AMPM_ORDINAL: return simple(sod, SECONDS_PER_HOUR, 12);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY), 24);
+            case HOUR_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY);
+            case AMPM_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR * 12, 2);
         }
         return Long.MIN_VALUE;
-	}
+    }
 
-	//-------------------------------------------------------------------------
-	private long extractFromHod(long hod, ISODateTimeRule requiredRule) {
+    //-------------------------------------------------------------------------
+    private long extractFromMod(long mod, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
-        	case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(hod % 12, 12);
-	        case HOUR_OF_AMPM_ORDINAL: return (hod % 12);
-	        case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(hod, 24);
-	        case AMPM_OF_DAY_ORDINAL: return simple(hod, 12, 2);
+            case MINUTE_OF_HOUR_ORDINAL: return (mod % MINUTES_PER_HOUR);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(mod, MINUTES_PER_HOUR, 12), 12);
+            case HOUR_OF_AMPM_ORDINAL: return simple(mod, MINUTES_PER_HOUR, 12);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(mod, MINUTES_PER_HOUR, HOURS_PER_DAY), 24);
+            case HOUR_OF_DAY_ORDINAL: return simple(mod, MINUTES_PER_HOUR, HOURS_PER_DAY);
+            case AMPM_OF_DAY_ORDINAL: return simple(mod, MINUTES_PER_HOUR * 12, 2);
         }
         return Long.MIN_VALUE;
-	}
+    }
 
-	//-------------------------------------------------------------------------
-	private long extractFromChod(long chod, ISODateTimeRule requiredRule) {
-		long hod = (chod == 24 ? 0 : chod);
-		return extractFromHod(hod, requiredRule);
-	}
+    //-------------------------------------------------------------------------
+    private long extractFromHod(long hod, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(hod % 12, 12);
+            case HOUR_OF_AMPM_ORDINAL: return (hod % 12);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(hod, 24);
+            case AMPM_OF_DAY_ORDINAL: return simple(hod, 12, 2);
+        }
+        return Long.MIN_VALUE;
+    }
 
-	//-----------------------------------------------------------------------
+    private long extractFromHoap(long hoap, ISODateTimeRule requiredRule) {
+        switch (requiredRule.ordinal) {
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(hoap, 12);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private long extractFromChoap(long choap, ISODateTimeRule requiredRule) {
+        long hoap = (choap == 12 ? 0 : choap);
+        return HOUR_OF_AMPM.extractISO(hoap, requiredRule);
+    }
+
+    private long extractFromChod(long chod, ISODateTimeRule requiredRule) {
+        long hod = (chod == 24 ? 0 : chod);
+        return HOUR_OF_DAY.extractISO(hod, requiredRule);
+    }
+
+    //-----------------------------------------------------------------------
     private static long extractFromEd(long ed, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
