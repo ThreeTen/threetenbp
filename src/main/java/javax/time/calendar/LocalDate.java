@@ -195,6 +195,8 @@ public final class LocalDate
     public static LocalDate ofEpochDay(long epochDay) {
         EPOCH_DAY.checkValidValue(epochDay);
         long pemd = EPOCH_DAY.extractISO(epochDay, PACKED_EPOCH_MONTH_DAY);
+        long year = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, YEAR);
+        YEAR.checkValidValue(year);  // TODO: better validation
         return new LocalDate(pemd);
     }
 
@@ -1356,7 +1358,7 @@ public final class LocalDate
      */
     @Override
     public int hashCode() {
-        return (int) ((pemd >>> 32) ^ pemd);
+        return (int) (pemd ^ (pemd >>> 32));
     }
 
     //-----------------------------------------------------------------------
