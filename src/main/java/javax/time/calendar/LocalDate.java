@@ -340,6 +340,19 @@ public final class LocalDate
     }
 
     /**
+     * Gets the month-of-year field, as an {@code int} from 1 to 12.
+     * <p>
+     * This method returns the month-of-year value from 1 to 12.
+     * Applications are encouraged to use the enum returned by {@link #getMonthOfYear()}
+     * which also provides additional related information.
+     *
+     * @return the month-of-year,  from 1 to 12
+     */
+    public int getMonthValue() {
+        return (int) ISODateTimeRule.moyFromEm(ISODateTimeRule.emFromPemd(pemd));
+    }
+
+    /**
      * Gets the month-of-year field, which is an enum {@code MonthOfYear}.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
@@ -354,7 +367,7 @@ public final class LocalDate
      * @return the month-of-year, not null
      */
     public MonthOfYear getMonthOfYear() {
-        return MonthOfYear.of((int) ISODateTimeRule.moyFromEm(ISODateTimeRule.emFromPemd(pemd)));
+        return MonthOfYear.of(getMonthValue());
     }
 
     /**
@@ -1274,7 +1287,7 @@ public final class LocalDate
     long toYearZeroDay() {
         long year = getYear();
         long y = year;
-        long m = getMonthOfYear().getValue();
+        long m = getMonthValue();
         long total = 0;
         total += 365 * y;
         if (y >= 0) {
@@ -1372,7 +1385,7 @@ public final class LocalDate
     @Override
     public String toString() {
         int yearValue = getYear();
-        int monthValue = getMonthOfYear().getValue();
+        int monthValue = getMonthValue();
         int dayValue = getDayOfMonth();
         int absYear = Math.abs(yearValue);
         StringBuilder buf = new StringBuilder(10);
