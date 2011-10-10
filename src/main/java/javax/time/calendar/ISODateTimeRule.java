@@ -37,7 +37,6 @@ import static javax.time.calendar.ISOChronology.MINUTES_PER_HOUR;
 import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
 import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
 import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
 import static javax.time.calendar.ISOChronology.SECONDS_PER_HOUR;
 import static javax.time.calendar.ISOChronology.SECONDS_PER_MINUTE;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
@@ -213,35 +212,37 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return Long.MIN_VALUE;
     }
 
-    private long simple(long value, long div, int mod) {
+    private static long simple(long value, long div, int mod) {
         return (value / div) % mod;
     }
 
-    private long clock(long value, int clock) {
+    private static long clock(long value, int clock) {
         return (value == 0 ? clock : value);
     }
 
     //-------------------------------------------------------------------------
-    private long extractFromNod(long nod, ISODateTimeRule requiredRule) {
+    private static long extractFromNod(long nod, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case NANO_OF_SECOND_ORDINAL: return (nod % NANOS_PER_SECOND);
-            case SECOND_OF_HOUR_ORDINAL: return simple(nod, NANOS_PER_SECOND, SECONDS_PER_HOUR);
-            case SECOND_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_SECOND, SECONDS_PER_DAY);
-            case MINUTE_OF_HOUR_ORDINAL: return simple(nod, NANOS_PER_MINUTE, MINUTES_PER_HOUR);
-            case MINUTE_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_MINUTE, MINUTES_PER_DAY);
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(nod, NANOS_PER_HOUR, 12), 12);
-            case HOUR_OF_AMPM_ORDINAL: return simple(nod, NANOS_PER_HOUR, 12);
-            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(nod, NANOS_PER_HOUR, HOURS_PER_DAY), 24);
-            case HOUR_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_HOUR, HOURS_PER_DAY);
-            case AMPM_OF_DAY_ORDINAL: return simple(nod, NANOS_PER_HOUR * 12, 2);
+            case SECOND_OF_MINUTE_ORDINAL:
+            case SECOND_OF_DAY_ORDINAL:
+            case MINUTE_OF_HOUR_ORDINAL:
+            case MINUTE_OF_DAY_ORDINAL:
+            case CLOCK_HOUR_OF_AMPM_ORDINAL:
+            case HOUR_OF_AMPM_ORDINAL:
+            case CLOCK_HOUR_OF_DAY_ORDINAL:
+            case HOUR_OF_DAY_ORDINAL:
+            case AMPM_OF_DAY_ORDINAL: {
+                return extractFromSod(nod / NANOS_PER_SECOND, requiredRule);
+            }
         }
         return Long.MIN_VALUE;
     }
 
     //-------------------------------------------------------------------------
-    private long extractFromSod(long sod, ISODateTimeRule requiredRule) {
+    private static long extractFromSod(long sod, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
-            case SECOND_OF_HOUR_ORDINAL: return (sod % SECONDS_PER_HOUR);
+            case SECOND_OF_MINUTE_ORDINAL: return (sod % SECONDS_PER_MINUTE);
             case MINUTE_OF_HOUR_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_HOUR);
             case MINUTE_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_DAY);
             case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, 12), 12);
@@ -254,7 +255,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-------------------------------------------------------------------------
-    private long extractFromMod(long mod, ISODateTimeRule requiredRule) {
+    private static long extractFromMod(long mod, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case MINUTE_OF_HOUR_ORDINAL: return (mod % MINUTES_PER_HOUR);
             case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(mod, MINUTES_PER_HOUR, 12), 12);
@@ -267,7 +268,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-------------------------------------------------------------------------
-    private long extractFromHod(long hod, ISODateTimeRule requiredRule) {
+    private static long extractFromHod(long hod, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(hod % 12, 12);
             case HOUR_OF_AMPM_ORDINAL: return (hod % 12);
@@ -277,21 +278,29 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return Long.MIN_VALUE;
     }
 
-    private long extractFromHoap(long hoap, ISODateTimeRule requiredRule) {
+    private static long extractFromHoap(long hoap, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(hoap, 12);
         }
         return Long.MIN_VALUE;
     }
 
-    private long extractFromChoap(long choap, ISODateTimeRule requiredRule) {
+    private static long extractFromChoap(long choap, ISODateTimeRule requiredRule) {
         long hoap = (choap == 12 ? 0 : choap);
         return HOUR_OF_AMPM.extractISO(hoap, requiredRule);
     }
 
-    private long extractFromChod(long chod, ISODateTimeRule requiredRule) {
+    private static long extractFromChod(long chod, ISODateTimeRule requiredRule) {
         long hod = (chod == 24 ? 0 : chod);
         return HOUR_OF_DAY.extractISO(hod, requiredRule);
+    }
+
+    static long packHmsn(int hod, int moh, int som, int nos) {
+        long total = hod * NANOS_PER_HOUR;
+        total += moh * NANOS_PER_MINUTE;
+        total += som * NANOS_PER_SECOND;
+        total += nos;
+        return total;
     }
 
     //-----------------------------------------------------------------------
@@ -526,6 +535,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         long epDay = valueRule.extract(value, EPOCH_DAY);
         if (epDay != Long.MIN_VALUE) {
             return EPOCH_DAY.extractISO(epDay, this);
+        }
+        long nod = valueRule.extract(value, NANO_OF_DAY);
+        if (nod != Long.MIN_VALUE) {
+            return NANO_OF_DAY.extractISO(epDay, this);
         }
         return Long.MIN_VALUE;
     }
