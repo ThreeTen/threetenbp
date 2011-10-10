@@ -192,7 +192,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case MONTH_OF_YEAR_ORDINAL: return extractFromMoy(value, requiredRule);
             case ZERO_EPOCH_MONTH_ORDINAL: return extractFromEm(value, requiredRule);
             case PACKED_EPOCH_MONTH_DAY_ORDINAL: return extractFromPemd(value, requiredRule);
-            case PACKED_YEAR_DAY_ORDINAL: return extractFromPy(value, requiredRule);
+            case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, requiredRule);
         }
         return Long.MIN_VALUE;
     }
@@ -202,9 +202,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         switch (requiredRule.ordinal) {
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromEd(ed));
-            case DAY_OF_YEAR_ORDINAL: return doyFromPy(pyFromEd(ed));
+            case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pyFromEd(ed));
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromEd(ed)));
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPy(pyFromEd(ed)));
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPyd(pyFromEd(ed)));
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
             case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromEd(ed)));
             case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
@@ -297,7 +297,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     static long pyFromPemd(long pemd) {
-        return packPy(yFromEm(emFromPemd(pemd)), doyFromPemd(pemd));
+        return packPyd(yFromEm(emFromPemd(pemd)), doyFromPemd(pemd));
     }
 
     static long domFromPemd(long pemd) {
@@ -325,41 +325,41 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
-    private static long extractFromPy(long py, ISODateTimeRule requiredRule) {
+    private static long extractFromPyd(long pyd, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
-            case DAY_OF_WEEK_ORDINAL: return dowFromEd(edFromPy(py));
-            case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromPy(py));
-            case DAY_OF_YEAR_ORDINAL: return doyFromPy(py);
-            case EPOCH_DAY_ORDINAL: return edFromPy(py);
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromPy(py)));
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPy(py));
-            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromPy(py))));
-            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromPy(py)));
-            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromPy(py))));
-            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(py);
-            case YEAR_ORDINAL: return yFromPy(py);
-            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromPy(py);
+            case DAY_OF_WEEK_ORDINAL: return dowFromEd(edFromPyd(pyd));
+            case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromPyd(pyd));
+            case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pyd);
+            case EPOCH_DAY_ORDINAL: return edFromPyd(pyd);
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromPyd(pyd)));
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPyd(pyd));
+            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromPyd(pyd))));
+            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromPyd(pyd)));
+            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromPyd(pyd))));
+            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pyd);
+            case YEAR_ORDINAL: return yFromPyd(pyd);
+            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromPyd(pyd);
         }
         return Long.MIN_VALUE;
     }
 
-    private static long edFromPy(long py) {
+    private static long edFromPyd(long pyd) {
         throw new UnsupportedOperationException();  // TODO
     }
 
-    private static long pemdFromPy(long py) {
+    private static long pemdFromPyd(long pyd) {
         throw new UnsupportedOperationException();  // TODO
     }
 
-    private static long yFromPy(long py) {
-        return (py >> 9);
+    private static long yFromPyd(long pyd) {
+        return (pyd >> 9);
     }
 
-    private static long doyFromPy(long py) {
-        return (py & 511);
+    private static long doyFromPyd(long pyd) {
+        return (pyd & 511);
     }
 
-    static long packPy(long year, long doy) {
+    static long packPyd(long year, long doy) {
         return (year << 9) + doy;
     }
 

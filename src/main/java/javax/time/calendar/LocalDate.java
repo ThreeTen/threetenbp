@@ -158,10 +158,8 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static LocalDate of(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        YEAR.checkValidValue(year);
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        return create(year, monthOfYear, dayOfMonth);
+        return of(year, monthOfYear.getValue(), dayOfMonth);
     }
 
     /**
@@ -180,7 +178,7 @@ public final class LocalDate
         YEAR.checkValidValue(year);
         MONTH_OF_YEAR.checkValidValue(monthOfYear);
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
-        return create(year, MonthOfYear.of(monthOfYear), dayOfMonth);
+        return create(year, monthOfYear, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -197,10 +195,7 @@ public final class LocalDate
     public static LocalDate ofEpochDay(long epochDay) {
         EPOCH_DAY.checkValidValue(epochDay);
         long pemd = EPOCH_DAY.extractISO(epochDay, PACKED_EPOCH_MONTH_DAY);
-        long year = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, YEAR);
-        long moy = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, MONTH_OF_YEAR);
-        long dom = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, DAY_OF_MONTH);
-        return LocalDate.of((int) year, (int) moy, (int) dom);
+        return new LocalDate(pemd);
     }
 
     /**
@@ -289,17 +284,18 @@ public final class LocalDate
      * @return the local date, not null
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(ISOChronology.isLeapYear(year))) {
+    private static LocalDate create(int year, int monthOfYear, int dayOfMonth) {
+    	MonthOfYear month = MonthOfYear.of(monthOfYear);
+        if (dayOfMonth > 28 && dayOfMonth > month.lengthInDays(ISOChronology.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
                         year + " is not a leap year", DAY_OF_MONTH);
             } else {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                        " is not valid for month " + monthOfYear.name(), DAY_OF_MONTH);
+                        " is not valid for month " + month.name(), DAY_OF_MONTH);
             }
         }
-        return new LocalDate(ISODateTimeRule.packPemd(year, monthOfYear.getValue(), dayOfMonth));
+        return new LocalDate(ISODateTimeRule.packPemd(year, monthOfYear, dayOfMonth));
     }
 
     /**
