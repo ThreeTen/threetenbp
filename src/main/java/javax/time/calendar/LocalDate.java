@@ -323,6 +323,13 @@ public final class LocalDate
      * @return the value for the rule, null if the value cannot be returned
      */
     public <T> T get(CalendricalRule<T> ruleToDerive) {
+//        if (ruleToDerive instanceof DateTimeRule) {
+//            DateTimeRule rule = (DateTimeRule) ruleToDerive;
+//            long value = PACKED_EPOCH_MONTH_DAY.extract(pemd, rule);
+//            if (value != Long.MIN_VALUE) {
+//                return (T) rule.field(value);
+//            }
+//        }
         return CalendricalEngine.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
     }
 

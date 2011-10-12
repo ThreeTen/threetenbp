@@ -189,6 +189,20 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return requiredRule.extractFrom(this, value);
     }
 
+    @Override
+    protected long extractFrom(DateTimeRule valueRule, long value) {
+        long epDay = valueRule.extract(value, EPOCH_DAY);
+        if (epDay != Long.MIN_VALUE) {
+            return EPOCH_DAY.extractISO(epDay, this);
+        }
+        long nod = valueRule.extract(value, NANO_OF_DAY);
+        if (nod != Long.MIN_VALUE) {
+            return NANO_OF_DAY.extractISO(epDay, this);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    //-----------------------------------------------------------------------
     long extractISO(long value, ISODateTimeRule requiredRule) {
         if (this == requiredRule) {
             return value;
@@ -527,20 +541,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     private static long moqFromMoy(long value) {
         return ((value - 1) % 3) + 1;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    protected long extractFrom(DateTimeRule valueRule, long value) {
-        long epDay = valueRule.extract(value, EPOCH_DAY);
-        if (epDay != Long.MIN_VALUE) {
-            return EPOCH_DAY.extractISO(epDay, this);
-        }
-        long nod = valueRule.extract(value, NANO_OF_DAY);
-        if (nod != Long.MIN_VALUE) {
-            return NANO_OF_DAY.extractISO(epDay, this);
-        }
-        return Long.MIN_VALUE;
     }
 
     //-----------------------------------------------------------------------
