@@ -89,6 +89,32 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * Constant for the maximum week-based-year.
      */
     private static final int MAX_WEEK_BASED_YEAR = Year.MAX_YEAR;  // TODO check value
+    /**
+     * Constant for the day-of-month length of 28.
+     */
+    private static final DateTimeRuleRange RANGE_1_28 = DateTimeRuleRange.of(1, 28);
+    /**
+     * Constant for the day-of-month length of 29.
+     */
+    private static final DateTimeRuleRange RANGE_1_29 = DateTimeRuleRange.of(1, 29);
+    /**
+     * Constant for the day-of-month length of 28 or 29.
+     */
+    private static final DateTimeRuleRange RANGE_1_28_29 = DateTimeRuleRange.of(1, 28, 29);
+    /**
+     * Constant for the day-of-month length of 30.
+     */
+    private static final DateTimeRuleRange RANGE_1_30 = DateTimeRuleRange.of(1, 30);
+    /**
+     * Constant for the day-of-month length of 31.
+     */
+    private static final DateTimeRuleRange RANGE_1_31 = DateTimeRuleRange.of(1, 31);
+    /**
+     * Lookup for the range.
+     */
+    private static final DateTimeRuleRange[] RANGE = {
+        RANGE_1_31, RANGE_1_28_29, RANGE_1_31, RANGE_1_30, RANGE_1_31, RANGE_1_30,
+        RANGE_1_31, RANGE_1_31, RANGE_1_30, RANGE_1_31, RANGE_1_30, RANGE_1_31};
 
     /**
      * Ordinal for performance and serialization.
@@ -128,16 +154,14 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_MONTH_ORDINAL: {
                 DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
                 if (moyVal != null) {
-                    MonthOfYear moy = MonthOfYear.of(moyVal.getValidIntValue());
-                    if (moy == MonthOfYear.FEBRUARY) {
+                    int moy = moyVal.getValidIntValue();
+                    if (moy == 2) {
                         DateTimeField yearVal = calendrical.get(YEAR);
                         if (yearVal != null) {
-                            return DateTimeRuleRange.of(1, moy.lengthInDays(ISOChronology.isLeapYear(yearVal.getValue())));
+                            return (ISOChronology.isLeapYear(yearVal.getValue()) ? RANGE_1_29 : RANGE_1_28);
                         }
-                        return DateTimeRuleRange.of(1, 28, 29);
-                    } else {
-                        return DateTimeRuleRange.of(1, moy.maxLengthInDays());
                     }
+                    return RANGE[moy - 1];
                 }
                 break;
             }
@@ -173,6 +197,49 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                         return DateTimeRuleRange.of(1, 53);
                     }
                     return DateTimeRuleRange.of(1, 52);
+                }
+                break;
+            }
+        }
+        return super.getValueRange();
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected DateTimeRuleRange valueRangeFrom(DateTimeRule valueRule, long value) {
+        switch (ordinal) {
+            case DAY_OF_MONTH_ORDINAL: {
+                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                if (moy != Long.MIN_VALUE) {
+                    if (moy == 2) {
+                        long year = valueRule.extract(value, YEAR);
+                        if (year != Long.MIN_VALUE) {
+                            return (ISOChronology.isLeapYear(year) ? RANGE_1_29 : RANGE_1_28);
+                        }
+                    }
+                    return RANGE[(int) (moy - 1)];
+                }
+                break;
+            }
+            case DAY_OF_YEAR_ORDINAL: {
+                long year = valueRule.extract(value, YEAR);
+                if (year != Long.MIN_VALUE) {
+                    int len = ISOChronology.isLeapYear(year) ? 366 : 365;
+                    return DateTimeRuleRange.of(1, len);
+                }
+                break;
+            }
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
+                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                if (moy != Long.MIN_VALUE) {
+                    if (moy == 2) {
+                        long year = valueRule.extract(value, YEAR);
+                        if (year != Long.MIN_VALUE) {
+                            return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 5 : 4);
+                        }
+                    } else {
+                        return DateTimeRuleRange.of(1, 5);
+                    }
                 }
                 break;
             }

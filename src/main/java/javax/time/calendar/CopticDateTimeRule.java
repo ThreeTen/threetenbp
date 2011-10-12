@@ -118,6 +118,36 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
 
     //-----------------------------------------------------------------------
     @Override
+    protected DateTimeRuleRange valueRangeFrom(DateTimeRule valueRule, long value) {
+        switch (ordinal) {
+            case DAY_OF_MONTH_ORDINAL: {
+                long moy = valueRule.extract(value, CopticChronology.MONTH_OF_YEAR);
+                if (moy != Long.MIN_VALUE) {
+                    if (moy == 13) {
+                        long year = valueRule.extract(value, CopticChronology.YEAR);
+                        if (year != Long.MIN_VALUE) {
+                            return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
+                        }
+                        return DateTimeRuleRange.of(1, 5, 6);
+                    } else {
+                        return DateTimeRuleRange.of(1, 30);
+                    }
+                }
+                break;
+            }
+            case DAY_OF_YEAR_ORDINAL: {
+                long year = valueRule.extract(value, CopticChronology.YEAR);
+                if (year != Long.MIN_VALUE) {
+                    return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
+                }
+                break;
+            }
+        }
+        return super.getValueRange();
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     protected long extract(long value, DateTimeRule requiredRule) {
         if (this == requiredRule) {
             return value;
@@ -131,7 +161,10 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     @Override
     protected long extractFrom(DateTimeRule valueRule, long value) {
         long ed = valueRule.extract(value, EPOCH_DAY);
-        return (ed != Long.MIN_VALUE ? extractFromEd(ed, this) : Long.MIN_VALUE);
+        if (ed != Long.MIN_VALUE) {
+            return extractFromEd(ed, this);
+        }
+        return Long.MIN_VALUE;
     }
 
     //-----------------------------------------------------------------------

@@ -291,11 +291,19 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
+    protected DateTimeRuleRange valueRange(long value, DateTimeRule requiredRule) {
+        return requiredRule.valueRangeFrom(this, value);
+    }
+
+    protected DateTimeRuleRange valueRangeFrom(DateTimeRule valueRule, long value) {
+        return getValueRange();
+    }
+
     protected long extract(long value, DateTimeRule requiredRule) {
         if (requiredRule.equals(this)) {
             return value;
         }
-        return Long.MIN_VALUE;
+        return requiredRule.extractFrom(this, value);
     }
 
     protected long extractFrom(DateTimeRule valueRule, long value) {
