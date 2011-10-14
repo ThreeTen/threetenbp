@@ -291,22 +291,39 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    protected DateTimeRuleRange valueRange(long value, DateTimeRule requiredRule) {
-        return requiredRule.valueRangeFrom(this, value);
+    public final DateTimeRuleRange calculateValueRange(long value, DateTimeRule requiredRule) {
+        return doValueRangeFromThis(value, requiredRule);
     }
 
-    protected DateTimeRuleRange valueRangeFrom(DateTimeRule valueRule, long value) {
+    protected DateTimeRuleRange doValueRangeFromThis(long value, DateTimeRule requiredRule) {
+        return requiredRule.doValueRangeFromOther(this, value);
+    }
+
+    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
         return getValueRange();
     }
 
-    protected long extract(long value, DateTimeRule requiredRule) {
-        if (requiredRule.equals(this)) {
-            return value;
+    //-----------------------------------------------------------------------
+    public final long extract(long value, DateTimeRule requiredRule) {
+        long result = extractValue(value, requiredRule);
+        if (result != Long.MIN_VALUE) {
+            return result;
         }
-        return requiredRule.extractFrom(this, value);
+        return requiredRule.doExtractFromOther(this, value);
     }
 
-    protected long extractFrom(DateTimeRule valueRule, long value) {
+    protected final long extractValue(long value, DateTimeRule requiredRule) {
+        if (this.equals(requiredRule)) {
+            return value;
+        }
+        return doExtractFromThis(value, requiredRule);
+    }
+
+    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
+        return Long.MIN_VALUE;
+    }
+
+    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
         return Long.MIN_VALUE;
     }
 

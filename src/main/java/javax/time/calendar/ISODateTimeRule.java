@@ -206,7 +206,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected DateTimeRuleRange valueRangeFrom(DateTimeRule valueRule, long value) {
+    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
                 long moy = valueRule.extract(value, MONTH_OF_YEAR);
@@ -249,22 +249,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long extract(long value, DateTimeRule requiredRule) {
+    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
         if (requiredRule instanceof ISODateTimeRule) {
             return extractISO(value, (ISODateTimeRule) requiredRule);
-        }
-        return requiredRule.extractFrom(this, value);
-    }
-
-    @Override
-    protected long extractFrom(DateTimeRule valueRule, long value) {
-        long epDay = valueRule.extract(value, EPOCH_DAY);
-        if (epDay != Long.MIN_VALUE) {
-            return EPOCH_DAY.extractISO(epDay, this);
-        }
-        long nod = valueRule.extract(value, NANO_OF_DAY);
-        if (nod != Long.MIN_VALUE) {
-            return NANO_OF_DAY.extractISO(epDay, this);
         }
         return Long.MIN_VALUE;
     }
