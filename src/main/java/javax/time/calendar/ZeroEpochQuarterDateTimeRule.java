@@ -45,6 +45,7 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.i18n.CopticChronology;
+import javax.time.i18n.CopticDateTimeRule;
 
 /**
  * The rules of date and time for zero-epoch-quarter.
@@ -124,11 +125,11 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
     //-----------------------------------------------------------------------
     @Override
     protected long doExtractFromThis(long zeq, DateTimeRule requiredRule) {
-        long result = QUARTER_OF_YEAR.extractValue(qoyFromZeq(zeq), requiredRule);
+        long result = extractValue(QUARTER_OF_YEAR, qoyFromZeq(zeq), requiredRule);
         if (result != Long.MIN_VALUE) {
             return result;
         }
-        result = YEAR.extractValue(yFromZeq(zeq), requiredRule);
+        result = extractValue(YEAR, yFromZeq(zeq), requiredRule);
         if (result != Long.MIN_VALUE) {
             return result;
         }
@@ -137,7 +138,7 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 
     @Override
     protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        long zem = valueRule.extractValue(value, ZERO_EPOCH_MONTH);
+        long zem = extractValue(valueRule, value, ZERO_EPOCH_MONTH);
         if (zem != Long.MIN_VALUE) {
             return extractFromZem(zem);
         }

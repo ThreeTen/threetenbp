@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.i18n;
 
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
@@ -39,16 +39,21 @@ import static javax.time.calendar.ISOPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
-import javax.time.i18n.CopticChronology;
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeField;
+import javax.time.calendar.DateTimeRule;
+import javax.time.calendar.DateTimeRuleRange;
+import javax.time.calendar.PeriodUnit;
+import javax.time.calendar.Year;
 
 /**
- * The rules of date and time used by the Ethiopic calendar system.
+ * The rules of date and time used by the Coptic calendar system.
  * <p>
  * This class is final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public final class EthiopicDateTimeRule extends DateTimeRule implements Serializable {
+public final class CopticDateTimeRule extends DateTimeRule implements Serializable {
     // TODO: package scoped, expose via chrono
     // TODO: packed y-doy if date resolver needed
 
@@ -65,7 +70,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     /**
      * Restricted constructor.
      */
-    private EthiopicDateTimeRule(int ordinal, 
+    private CopticDateTimeRule(int ordinal, 
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
@@ -85,6 +90,36 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
      */
     private Object readResolve() {
         return RULE_CACHE[ordinal / 16];
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public DateTimeRuleRange getValueRange(Calendrical calendrical) {
+        switch (ordinal) {
+            case DAY_OF_MONTH_ORDINAL: {
+                DateTimeField moy = calendrical.get(CopticChronology.MONTH_OF_YEAR);
+                if (moy != null) {
+                    if (moy.getValue() == 13) {
+                        DateTimeField year = calendrical.get(CopticChronology.YEAR);
+                        if (year != null) {
+                            return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year.getValue()) ? 6 : 5);
+                        }
+                        return DateTimeRuleRange.of(1, 5, 6);
+                    } else {
+                        return DateTimeRuleRange.of(1, 30);
+                    }
+                }
+                break;
+            }
+            case DAY_OF_YEAR_ORDINAL: {
+                DateTimeField year = calendrical.get(CopticChronology.YEAR);
+                if (year != null) {
+                    return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year.getValidIntValue()) ? 366 : 365);
+                }
+                break;
+            }
+        }
+        return super.getValueRange();
     }
 
     //-----------------------------------------------------------------------
@@ -120,17 +155,17 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     //-----------------------------------------------------------------------
     @Override
     protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
-        if (requiredRule instanceof EthiopicDateTimeRule) {
-            return extractEthiopic(value, (EthiopicDateTimeRule) requiredRule);
+        if (requiredRule instanceof CopticDateTimeRule) {
+            return extractCoptic(value, (CopticDateTimeRule) requiredRule);
         } else if (ordinal == PACKED_YEAR_DAY_ORDINAL) {
-            return EPOCH_DAY.extractValue(edFromPyd(value), requiredRule);
+            return extractValue(EPOCH_DAY, edFromPyd(value), requiredRule);
         }
         return Long.MIN_VALUE;
     }
 
     @Override
     protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        long ed = valueRule.extractValue(value, EPOCH_DAY);
+        long ed = extractValue(valueRule, value, EPOCH_DAY);
         if (ed != Long.MIN_VALUE) {
             return extractFromEd(ed, this);
         }
@@ -138,7 +173,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     }
 
     //-----------------------------------------------------------------------
-    private long extractEthiopic(long value, EthiopicDateTimeRule requiredRule) {
+    private long extractCoptic(long value, CopticDateTimeRule requiredRule) {
         switch (ordinal) {
             case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
             case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, requiredRule);
@@ -148,7 +183,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     }
 
     //-----------------------------------------------------------------------
-    private static long extractFromPyd(long pyd, EthiopicDateTimeRule requiredRule) {
+    private static long extractFromPyd(long pyd, CopticDateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case DAY_OF_MONTH_ORDINAL: return domFromDoy(doyFromPyd(pyd));
             case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pyd);
@@ -175,7 +210,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     }
 
     //-----------------------------------------------------------------------
-    private static long extractFromY(long y, EthiopicDateTimeRule requiredRule) {
+    private static long extractFromY(long y, CopticDateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case YEAR_OF_ERA_ORDINAL: return yoeFromY(y);
             case ERA_ORDINAL: return eFromY(y);
@@ -192,7 +227,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     }
 
     //-----------------------------------------------------------------------
-    private static long extractFromDoy(long doy, EthiopicDateTimeRule requiredRule) {
+    private static long extractFromDoy(long doy, CopticDateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
             case DAY_OF_MONTH_ORDINAL: return domFromDoy(doy);
             case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(doy);
@@ -209,8 +244,12 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     }
 
     //-----------------------------------------------------------------------
-    private static long extractFromEd(long ed, EthiopicDateTimeRule requiredRule) {
-        ed = ed + ISOChronology.DAYS_0000_TO_1970 - ISOChronology.DAYS_0000_TO_MJD_EPOCH + 574971;
+    private static final int DAYS_PER_CYCLE = 146097;
+    private static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
+    private static final long DAYS_0000_TO_MJD_EPOCH = 678941;
+
+    private static long extractFromEd(long ed, CopticDateTimeRule requiredRule) {
+        ed = ed + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
         long y = ((ed * 4) + 1463) / 1461;
         switch (requiredRule.ordinal) {
             case YEAR_OF_ERA_ORDINAL: return yoeFromY(y);
@@ -235,23 +274,23 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     //-----------------------------------------------------------------------
     @Override
     public int compareTo(DateTimeRule other) {
-        if (other instanceof EthiopicDateTimeRule) {
-            return ordinal - ((EthiopicDateTimeRule) other).ordinal;
+        if (other instanceof CopticDateTimeRule) {
+            return ordinal - ((CopticDateTimeRule) other).ordinal;
         }
         return super.compareTo(other);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof EthiopicDateTimeRule) {
-            return ordinal == ((EthiopicDateTimeRule) obj).ordinal;
+        if (obj instanceof CopticDateTimeRule) {
+            return ordinal == ((CopticDateTimeRule) obj).ordinal;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return EthiopicDateTimeRule.class.hashCode() + ordinal;
+        return CopticDateTimeRule.class.hashCode() + ordinal;
     }
 
     //-----------------------------------------------------------------------
@@ -265,53 +304,53 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     /**
-     * The rule for the day-of-month field in the Ethiopic chronology.
+     * The rule for the day-of-month field in the Coptic chronology.
      * <p>
      * This field counts days sequentially from the start of the month.
      * The first day of the month is 1 and the last is 30 except in month 13 when it is 5 or 6.
      */
-    public static final DateTimeRule DAY_OF_MONTH = new EthiopicDateTimeRule(DAY_OF_MONTH_ORDINAL, "EthiopicDayOfMonth", DAYS, MONTHS, 1, 30, 5, null);
+    public static final DateTimeRule DAY_OF_MONTH = new CopticDateTimeRule(DAY_OF_MONTH_ORDINAL, "CopticDayOfMonth", DAYS, MONTHS, 1, 30, 5, null);
     /**
-     * The rule for the day-of-year field in the Ethiopic chronology.
+     * The rule for the day-of-year field in the Coptic chronology.
      * <p>
      * This field counts days sequentially from the start of the year.
      * The first day of the year is 1 and the last is 365, or 366 in a leap year.
      */
-    public static final DateTimeRule DAY_OF_YEAR = new EthiopicDateTimeRule(DAY_OF_YEAR_ORDINAL, "EthiopicDayOfYear", DAYS, YEARS, 1, 366, 365, null);
+    public static final DateTimeRule DAY_OF_YEAR = new CopticDateTimeRule(DAY_OF_YEAR_ORDINAL, "CopticDayOfYear", DAYS, YEARS, 1, 366, 365, null);
     /**
-     * The rule for the the combined year-day in the Ethiopic chronology.
+     * The rule for the the combined year-day in the Coptic chronology.
      * <p>
      * This field combines the year and day-of-year values into a single {@code long}.
      * The format uses the least significant 9 bits for the unsigned day-of-year  (from 1 to 366)
-     * and the most significant 55 bits for the signed Ethiopic year.
+     * and the most significant 55 bits for the signed Coptic year.
      * <p>
      * This field is intended primarily for internal use.
      */
-    public static final DateTimeRule PACKED_YEAR_DAY = new EthiopicDateTimeRule(PACKED_YEAR_DAY_ORDINAL, "PackedEthiopicYearDay", DAYS, null, -1000000, 1000000, 1000000, null);  // TODO
+    public static final DateTimeRule PACKED_YEAR_DAY = new CopticDateTimeRule(PACKED_YEAR_DAY_ORDINAL, "PackedCopticYearDay", DAYS, null, -1000000, 1000000, 1000000, null);  // TODO
     /**
-     * The rule for the month-of-year field in the Ethiopic chronology.
+     * The rule for the month-of-year field in the Coptic chronology.
      * <p>
      * This field counts months sequentially from the start of the year from 1 to 13.
      */
-    public static final DateTimeRule MONTH_OF_YEAR = new EthiopicDateTimeRule(MONTH_OF_YEAR_ORDINAL, "EthiopicMonthOfYear", MONTHS, YEARS, 1, 13, 13, null);
+    public static final DateTimeRule MONTH_OF_YEAR = new CopticDateTimeRule(MONTH_OF_YEAR_ORDINAL, "CopticMonthOfYear", MONTHS, YEARS, 1, 13, 13, null);
     /**
-     * The rule for the year field in the Ethiopic chronology.
+     * The rule for the year field in the Coptic chronology.
      * <p>
      * This field counts years as a single number, including year zero.
      */
-    public static final DateTimeRule YEAR_OF_ERA = new EthiopicDateTimeRule(YEAR_OF_ERA_ORDINAL, "EthiopicYearOfEra", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, null);
+    public static final DateTimeRule YEAR_OF_ERA = new CopticDateTimeRule(YEAR_OF_ERA_ORDINAL, "CopticYearOfEra", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, null);
     /**
-     * The rule for the year field in the Ethiopic chronology.
+     * The rule for the year field in the Coptic chronology.
      * <p>
      * This field counts years as a single number, including year zero.
      */
-    public static final DateTimeRule YEAR = new EthiopicDateTimeRule(YEAR_ORDINAL, "EthiopicYear", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, null);  // TODO
+    public static final DateTimeRule YEAR = new CopticDateTimeRule(YEAR_ORDINAL, "CopticYear", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, null);  // TODO
     /**
-     * The rule for the year field in the Ethiopic chronology.
+     * The rule for the year field in the Coptic chronology.
      * <p>
      * This field counts years as a single number, including year zero.
      */
-    public static final DateTimeRule ERA = new EthiopicDateTimeRule(ERA_ORDINAL, "EthiopicEra", ERAS, null, 0, 1, 1, null);
+    public static final DateTimeRule ERA = new CopticDateTimeRule(ERA_ORDINAL, "CopticEra", ERAS, null, 0, 1, 1, null);
 
     /**
      * Cache of rules for deserialization.
