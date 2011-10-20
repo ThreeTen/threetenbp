@@ -63,11 +63,13 @@
         <path refid="main.path" />
         <path refid="test.commonpath" />
     </path>
-    
+
     <path id="tck.path">
         <pathelement location="${tck.implementation}" />
         <path refid="test.commonpath" />
     </path>
+    
+    <property name="tck.groups" value="tck" />
 
     <path id="coverage.path">
         <path refid="main.path" />
@@ -185,8 +187,8 @@
     </target>
 
     <target name="test-core" depends="compile-core-tests,compile-tzdb">
-        <taskdef resource="testngtasks" classpathref="abstract.test.path" />
-        <testng classpathref="abstract.test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
+        <taskdef resource="testngtasks" classpathref="test.path" />
+        <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
@@ -195,8 +197,8 @@
     </target>
 
     <target name="test-extra" depends="compile-extra-tests,compile-tzdb">
-        <taskdef resource="testngtasks" classpathref="abstract.test.path" />
-        <testng classpathref="abstract.test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
+        <taskdef resource="testngtasks" classpathref="test.path" />
+        <testng classpathref="test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
@@ -204,19 +206,16 @@
         </testng>
     </target>
 
-    <target name="test" description="run tests">
-        <antcall target="test-core">
-            <reference refid="test.path" torefid="abstract.test.path" />
-        </antcall>
-        <antcall target="test-extra">
-            <reference refid="test.path" torefid="abstract.test.path" />
-        </antcall>
-    </target>
+    <target name="test" depends="test-core,test-extra" description="run tests" />
     
     <target name="tck" description="run tck acceptance criteria">
-        <antcall target="test-core">
-            <reference refid="tck.path" torefid="abstract.test.path" />
-        </antcall>
+        <taskdef resource="testngtasks" classpathref="tck.path" />
+        <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck">
+            <jvmarg value="-Xmx512M" />
+            <jvmarg value="-Duser.language=en" />
+            <jvmarg value="-Duser.country=UK" />
+            <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
+        </testng>
     </target>
 
     <!-- ==================================================================== -->
