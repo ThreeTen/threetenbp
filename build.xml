@@ -47,9 +47,8 @@
         <pathelement location="${ojdk.main.classes}" />
         <pathelement location="${lib.main}/${tzdb.outputjar}"/>
     </path>
-
-    <path id="test.path">
-        <path refid="main.path" />
+    
+    <path id="test.commonpath">
         <pathelement location="${core.test.classes}" />
         <pathelement location="${extra.test.classes}" />
         <pathelement location="${oracle.test.classes}" />
@@ -58,6 +57,16 @@
         <fileset dir="lib/test">
             <include name="**/*.jar" />
         </fileset>
+    </path>
+
+    <path id="test.path">
+        <path refid="main.path" />
+        <path refid="test.commonpath" />
+    </path>
+    
+    <path id="tck.path">
+        <pathelement location="${tck.implementation}" />
+        <path refid="test.commonpath" />
     </path>
 
     <path id="coverage.path">
@@ -176,8 +185,8 @@
     </target>
 
     <target name="test-core" depends="compile-core-tests,compile-tzdb">
-        <taskdef resource="testngtasks" classpathref="test.path" />
-        <testng classpathref="test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
+        <taskdef resource="testngtasks" classpathref="abstract.test.path" />
+        <testng classpathref="abstract.test.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
@@ -186,8 +195,8 @@
     </target>
 
     <target name="test-extra" depends="compile-extra-tests,compile-tzdb">
-        <taskdef resource="testngtasks" classpathref="test.path" />
-        <testng classpathref="test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
+        <taskdef resource="testngtasks" classpathref="abstract.test.path" />
+        <testng classpathref="abstract.test.path" outputDir="${extra.test.classes}" sourceDir="${extra.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
@@ -195,7 +204,20 @@
         </testng>
     </target>
 
-    <target name="test" depends="test-core,test-extra" description="run tests" />
+    <target name="test" description="run tests">
+        <antcall target="test-core">
+            <reference refid="test.path" torefid="abstract.test.path" />
+        </antcall>
+        <antcall target="test-extra">
+            <reference refid="test.path" torefid="abstract.test.path" />
+        </antcall>
+    </target>
+    
+    <target name="tck" description="run tck acceptance criteria">
+        <antcall target="test-core">
+            <reference refid="tck.path" torefid="abstract.test.path" />
+        </antcall>
+    </target>
 
     <!-- ==================================================================== -->
     <target name="coverage" depends="compile-core-tests" description="test coverage">
