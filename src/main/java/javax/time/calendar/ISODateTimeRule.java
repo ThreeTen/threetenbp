@@ -556,6 +556,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return MathUtils.floorDiv(em, 12) + 1970;
     }
 
+//    static long packEm(long year, long month) {
+//        return (year - 1970) * 12 + (month - 1);
+//    }
+
     //-----------------------------------------------------------------------
     private static long extractFromDom(long dom, ISODateTimeRule requiredRule) {
         switch (requiredRule.ordinal) {
@@ -595,6 +599,128 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     private static long moqFromMoy(long value) {
         return ((value - 1) % 3) + 1;
+    }
+
+    @Override
+    protected long doSet(long value, DateTimeRule ruleToSet, long valueToSet) {
+    	if (this.equals(ruleToSet)) {
+    		return valueToSet;
+    	}
+    	if (ruleToSet instanceof ISODateTimeRule) {
+    		ISODateTimeRule isoRuleToSet = (ISODateTimeRule) ruleToSet;
+        	switch (ordinal) {
+	    		case ZERO_EPOCH_MONTH_ORDINAL: {
+	    			switch (isoRuleToSet.ordinal) {
+	    				case YEAR_ORDINAL: {
+	    					long current = moyFromEm(value);
+	    					return value + (valueToSet - current) * 12;
+	    				}
+	    				case MONTH_OF_YEAR_ORDINAL: {
+	    					long current = moyFromEm(value);
+	    					return value + (valueToSet - current);
+	    				}
+	    				case QUARTER_OF_YEAR_ORDINAL: {
+	    					long current = qoyFromMoy(moyFromEm(value));
+	    					return value + (valueToSet - current) * 3;
+	    				}
+	    				case MONTH_OF_QUARTER_ORDINAL: {
+	    					long current = moqFromMoy(moyFromEm(value));
+	    					return value + (valueToSet - current);
+	    				}
+	    			}
+	    		}
+	    		case MONTH_OF_YEAR_ORDINAL: {
+	    			switch (isoRuleToSet.ordinal) {
+	    				case MONTH_OF_QUARTER_ORDINAL: {
+	    					long current = moqFromMoy(value);
+	    					return value + (valueToSet - current);
+	    				}
+	    				case QUARTER_OF_YEAR_ORDINAL: {
+	    					long current = qoyFromMoy(value);
+	    					return value + (valueToSet - current) * 3;
+	    				}
+	    			}
+	    		}
+	    		case DAY_OF_MONTH_ORDINAL: {
+	    			switch (isoRuleToSet.ordinal) {
+	    				case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
+	    					long current = awomFromDom(value);
+	    					return value + (valueToSet - current) * 7;
+	    				}
+	    			}
+	    		}
+	    		case DAY_OF_YEAR_ORDINAL: {
+	    			switch (isoRuleToSet.ordinal) {
+	    				case ALIGNED_WEEK_OF_YEAR_ORDINAL: {
+	    					long current = awoyFromDoy(value);
+	    					return value + (valueToSet - current) * 7;
+	    				}
+	    			}
+	    		}
+	    		case PACKED_EPOCH_MONTH_DAY_ORDINAL: {
+	    			switch (isoRuleToSet.ordinal) {
+	    				case DAY_OF_MONTH_ORDINAL: {
+	    					long current = domFromPemd(value);
+	    					return value + (valueToSet - current);
+	    				}
+	    				case ZERO_EPOCH_MONTH_ORDINAL:
+	    				case MONTH_OF_QUARTER_ORDINAL:
+	    				case MONTH_OF_YEAR_ORDINAL:
+	    				case QUARTER_OF_YEAR_ORDINAL:
+	    				case YEAR_ORDINAL: {
+	    					long current = emFromPemd(value);
+	    					long adjusted = ZERO_EPOCH_MONTH.doSet(current, isoRuleToSet, valueToSet);
+	    					return value + (adjusted - current) * 32;
+	    				}
+	    				case EPOCH_DAY_ORDINAL:
+	    				case DAY_OF_WEEK_ORDINAL: {
+	    					long ed = edFromPemd(value);
+	    					long adjusted = EPOCH_DAY.doSet(ed, isoRuleToSet, valueToSet);
+	    					return pemdFromEd(adjusted);
+	    				}
+	    			}
+	    		}
+	    		case EPOCH_DAY_ORDINAL: {
+	    			switch (isoRuleToSet.ordinal) {
+	    				case DAY_OF_WEEK_ORDINAL: {
+	    					long current = dowFromEd(value);
+	    					return value + (valueToSet - current);
+	    				}
+	    				case PACKED_YEAR_DAY_ORDINAL:
+	    				case DAY_OF_YEAR_ORDINAL: {
+	    					long pyd = pydFromEd(value);
+	    					long adjusted = PACKED_YEAR_DAY.doSet(pyd, isoRuleToSet, valueToSet);
+	    					return edFromPyd(adjusted);
+	    				}
+	    				case DAY_OF_MONTH_ORDINAL:
+	    				case ZERO_EPOCH_MONTH_ORDINAL:
+	    				case MONTH_OF_QUARTER_ORDINAL:
+	    				case MONTH_OF_YEAR_ORDINAL:
+	    				case QUARTER_OF_YEAR_ORDINAL:
+	    				case YEAR_ORDINAL: {
+	    					long pemd = pemdFromEd(value);
+	    					long adjusted = PACKED_EPOCH_MONTH_DAY.doSet(pemd, isoRuleToSet, valueToSet);
+	    					return edFromPemd(adjusted);
+	    				}
+	    			}
+	    		}
+	    	}
+    	}
+    	return super.doSet(value, ruleToSet, valueToSet);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    protected DateTimeRule doMergeProduces(DateTimeRule rule1, DateTimeRule rule2) {
+    	if (rule1 == MONTH_OF_YEAR && rule2 == YEAR) {
+    		return ZERO_EPOCH_MONTH;
+    	}
+    	
+    	
+    	if (rule1 instanceof ISODateTimeRule && rule2 instanceof ISODateTimeRule) {
+    		
+    	}
+    	return super.doMergeProduces(rule1, rule2);
     }
 
     //-----------------------------------------------------------------------

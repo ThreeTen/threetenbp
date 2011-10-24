@@ -330,6 +330,23 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return Long.MIN_VALUE;
     }
 
+    //-------------------------------------------------------------------------
+    protected long doSet(long value, DateTimeRule ruleToSet, long valueToSet) {
+        return Long.MIN_VALUE;
+    }
+
+    //-------------------------------------------------------------------------
+    // EpQ needs to merge QoY and Y
+    // how to merge MoY + Y to QoY???
+
+    protected DateTimeRule doMergeProduces(DateTimeRule rule1, DateTimeRule rule2) {
+        return null;
+    }
+
+    protected long doMerge(DateTimeRule rule1, long value1, DateTimeRule rule2, long value2) {
+        return Long.MIN_VALUE;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Override point to allow the rule to normalize the fields in the merger.
