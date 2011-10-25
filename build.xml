@@ -5,6 +5,7 @@
   @author Michael Nascimento Santos
   @author Oliver Fischer (o.b.fischer@swe-blog.net)
   @author Stephen Colebourne
+  @author Richard Warburton
 -->
 <project name="threeten" default="dist">
     <description>
