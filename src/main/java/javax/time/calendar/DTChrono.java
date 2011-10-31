@@ -31,13 +31,19 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.PACKED_EPOCH_MONTH_DAY;
+import static javax.time.calendar.ISODateTimeRule.PACKED_YEAR_DAY;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_HOUR;
@@ -49,21 +55,37 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 class DTChrono {
+    // problem with chronologies like Historic, where the cutover date possibilities are semi-infinite
+    // any registration based approach naturally leads to an unbound map
+    
+    // could only register concept calculation, with details like week-rules or historic cutover read
+    // from passed in rule, but then how would you look up the calc in the map?
+    
+    // pushes design back to just focusing on rules or chronologies
+    
+    // same problem would apply to triple-based approach, rather than pair-based
+
     static ConcurrentMap<DateTimeRule, DTCalc> map = new ConcurrentHashMap<DateTimeRule, DTCalc>();
     static {
-    	registerDivMod(SECOND_OF_DAY, SECOND_OF_MINUTE, 1, 60);
-    	registerDivMod(SECOND_OF_DAY, SECOND_OF_HOUR, 1, 60 * 60);
-    	registerDivMod(SECOND_OF_DAY, MINUTE_OF_HOUR, 60, 60);
-    	registerDivMod(SECOND_OF_DAY, MINUTE_OF_DAY, 60, 60 * 24);
-    	registerDivMod(SECOND_OF_DAY, HOUR_OF_DAY, 60 * 60, 24);
-    	registerDivMod(MINUTE_OF_DAY, MINUTE_OF_HOUR, 1, 60);
-    	registerDivMod(MINUTE_OF_DAY, HOUR_OF_DAY, 60, 24);
-    	registerDivMod(HOUR_OF_DAY, HOUR_OF_AMPM, 1, 12);
-    	registerDivMod(HOUR_OF_DAY, AMPM_OF_DAY, 12, 2);
-    	registerDivMod(ZERO_EPOCH_MONTH, MONTH_OF_QUARTER, 1, 3);
-    	registerDivMod(ZERO_EPOCH_MONTH, MONTH_OF_YEAR, 1, 12);
-    	registerDivMod(ZERO_EPOCH_MONTH, QUARTER_OF_YEAR, 3, 4);
-    	registerDivMod(ZERO_EPOCH_MONTH, YEAR, 12, Long.MAX_VALUE);
+        registerDivMod(SECOND_OF_HOUR, SECOND_OF_MINUTE, 1, 60);
+        registerDivMod(SECOND_OF_HOUR, MINUTE_OF_HOUR, 60, 60);
+        registerDivMod(SECOND_OF_DAY, SECOND_OF_MINUTE, 1, 60);
+        registerDivMod(SECOND_OF_DAY, SECOND_OF_HOUR, 1, 60 * 60);
+        registerDivMod(SECOND_OF_DAY, MINUTE_OF_HOUR, 60, 60);
+        registerDivMod(SECOND_OF_DAY, MINUTE_OF_DAY, 60, 60 * 24);
+        registerDivMod(SECOND_OF_DAY, HOUR_OF_DAY, 60 * 60, 24);
+        registerDivMod(MINUTE_OF_DAY, MINUTE_OF_HOUR, 1, 60);
+        registerDivMod(MINUTE_OF_DAY, HOUR_OF_DAY, 60, 24);
+        registerDivMod(HOUR_OF_DAY, HOUR_OF_AMPM, 1, 12);
+        registerDivMod(HOUR_OF_DAY, AMPM_OF_DAY, 12, 2);
+        registerPacked(PACKED_EPOCH_MONTH_DAY, ZERO_EPOCH_MONTH, DAY_OF_MONTH, 31);
+        registerPacked(PACKED_YEAR_DAY, YEAR, DAY_OF_YEAR, 511);
+        registerDivMod(DAY_OF_MONTH, ALIGNED_WEEK_OF_MONTH, 7, 5);
+        registerDivMod(DAY_OF_YEAR, ALIGNED_WEEK_OF_YEAR, 7, 53);
+        registerDivMod(ZERO_EPOCH_MONTH, MONTH_OF_QUARTER, 1, 3);
+        registerDivMod(ZERO_EPOCH_MONTH, MONTH_OF_YEAR, 1, 12);
+        registerDivMod(ZERO_EPOCH_MONTH, QUARTER_OF_YEAR, 3, 4);
+        registerDivMod(ZERO_EPOCH_MONTH, YEAR, 12, Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -86,22 +108,22 @@ class DTChrono {
     }
 
     public static void registerDivMod(DateTimeRule parentRule, DateTimeRule childRule, long div, long mod) {
-    	checkNotNull(parentRule, "DateTimeRule must not be null");
-    	checkNotNull(childRule, "DateTimeRule must not be null");
-		registerCalc(new DivModCalc(parentRule, childRule, div, mod));
+        checkNotNull(parentRule, "DateTimeRule must not be null");
+        checkNotNull(childRule, "DateTimeRule must not be null");
+        registerCalc(new DivModCalc(parentRule, childRule, div, mod));
     }
 
     public static void registerPacked(DateTimeRule parentRule, DateTimeRule midRule, DateTimeRule childRule, long packAmount) {
-    	checkNotNull(parentRule, "DateTimeRule must not be null");
-    	checkNotNull(midRule, "DateTimeRule must not be null");
-    	checkNotNull(childRule, "DateTimeRule must not be null");
-		registerCalc(new PackHighCalc(parentRule, midRule, Long.bitCount(packAmount)));
-		registerCalc(new PackLowCalc(midRule, childRule, packAmount));
+        checkNotNull(parentRule, "DateTimeRule must not be null");
+        checkNotNull(midRule, "DateTimeRule must not be null");
+        checkNotNull(childRule, "DateTimeRule must not be null");
+        registerCalc(new PackHighCalc(parentRule, midRule, Long.bitCount(packAmount)));
+        registerCalc(new PackLowCalc(midRule, childRule, packAmount));
     }
 
     public static void registerCalc(DTCalc calc) {
-    	checkNotNull(calc, "DTCalc must not be null");
-		map.putIfAbsent(calc.getParentRule(), calc);
+        checkNotNull(calc, "DTCalc must not be null");
+        map.putIfAbsent(calc.getParentRule(), calc);
     }
 
     //-----------------------------------------------------------------------
@@ -148,8 +170,8 @@ class DTChrono {
         PackHighCalc(DateTimeRule parentRule, DateTimeRule childRule, long packBits) {
             this.parentRule = parentRule;
             this.childRule = parentRule;
-            this.packBits= packBits;
-		}
+            this.packBits = packBits;
+        }
 
         @Override
         public DateTimeRule getParentRule() {
@@ -180,8 +202,8 @@ class DTChrono {
         PackLowCalc(DateTimeRule parentRule, DateTimeRule childRule, long packAmount) {
             this.parentRule = parentRule;
             this.childRule = parentRule;
-            this.packAmount= packAmount;
-		}
+            this.packAmount = packAmount;
+        }
 
         @Override
         public DateTimeRule getParentRule() {
