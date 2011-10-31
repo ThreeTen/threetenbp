@@ -41,7 +41,6 @@ import java.io.Serializable;
 
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.Year;
 
@@ -54,7 +53,6 @@ import javax.time.calendar.Year;
  */
 public final class EthiopicDateTimeRule extends DateTimeRule implements Serializable {
     // TODO: package scoped, expose via chrono
-    // TODO: packed y-doy if date resolver needed
 
     /**
      * Serialization version.

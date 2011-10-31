@@ -39,8 +39,6 @@ import static javax.time.calendar.ISOPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.PeriodUnit;
@@ -55,7 +53,6 @@ import javax.time.calendar.Year;
  */
 public final class CopticDateTimeRule extends DateTimeRule implements Serializable {
     // TODO: package scoped, expose via chrono
-    // TODO: packed y-doy if date resolver needed
 
     /**
      * Serialization version.
@@ -90,36 +87,6 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
      */
     private Object readResolve() {
         return RULE_CACHE[ordinal / 16];
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    public DateTimeRuleRange getValueRange(Calendrical calendrical) {
-        switch (ordinal) {
-            case DAY_OF_MONTH_ORDINAL: {
-                DateTimeField moy = calendrical.get(CopticChronology.MONTH_OF_YEAR);
-                if (moy != null) {
-                    if (moy.getValue() == 13) {
-                        DateTimeField year = calendrical.get(CopticChronology.YEAR);
-                        if (year != null) {
-                            return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year.getValue()) ? 6 : 5);
-                        }
-                        return DateTimeRuleRange.of(1, 5, 6);
-                    } else {
-                        return DateTimeRuleRange.of(1, 30);
-                    }
-                }
-                break;
-            }
-            case DAY_OF_YEAR_ORDINAL: {
-                DateTimeField year = calendrical.get(CopticChronology.YEAR);
-                if (year != null) {
-                    return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year.getValidIntValue()) ? 366 : 365);
-                }
-                break;
-            }
-        }
-        return super.getValueRange();
     }
 
     //-----------------------------------------------------------------------
