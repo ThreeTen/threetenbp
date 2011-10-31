@@ -77,7 +77,7 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
             DateTimeRule baseRule) {
         super(name, periodUnit, periodRange,
                 DateTimeRuleRange.of(minimumValue, smallestMaximum, maximumValue), baseRule);
-        this.ordinal = ordinal;  // 16 multiplier allow space for new rules
+        this.ordinal = ordinal;
     }
 
     /**
@@ -86,7 +86,7 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
      * @return the resolved value, not null
      */
     private Object readResolve() {
-        return RULE_CACHE[ordinal / 16];
+        return RULE_CACHE[ordinal];
     }
 
     //-----------------------------------------------------------------------
@@ -261,13 +261,13 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     }
 
     //-----------------------------------------------------------------------
-    private static final int DAY_OF_MONTH_ORDINAL =         1 * 16;
-    private static final int DAY_OF_YEAR_ORDINAL =          2 * 16;
-    private static final int PACKED_YEAR_DAY_ORDINAL =      3 * 16;
-    private static final int MONTH_OF_YEAR_ORDINAL =        4 * 16;
-    private static final int YEAR_OF_ERA_ORDINAL =          5 * 16;
-    private static final int YEAR_ORDINAL =                 6 * 16;
-    private static final int ERA_ORDINAL =                  7 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL =         0;
+    private static final int DAY_OF_YEAR_ORDINAL =          1;
+    private static final int PACKED_YEAR_DAY_ORDINAL =      2;
+    private static final int MONTH_OF_YEAR_ORDINAL =        3;
+    private static final int YEAR_OF_ERA_ORDINAL =          4;
+    private static final int YEAR_ORDINAL =                 5;
+    private static final int ERA_ORDINAL =                  6;
 
     //-----------------------------------------------------------------------
     /**
