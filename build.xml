@@ -209,15 +209,17 @@
 
     <target name="test" depends="test-core,test-extra" description="run tests" />
     
-    <target name="tck" description="run tck acceptance criteria">
-        <taskdef resource="testngtasks" classpathref="tck.path" />
+	<target name="runtck" >
+		<taskdef resource="testngtasks" classpathref="tck.path" />
         <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
             <classfileset dir="${core.test.classes}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
-    </target>
+	</target>
+	
+    <target name="tck" depends="compile-core-tests,compile-tzdb,runtck" description="run tck acceptance criteria" />
 
     <!-- ==================================================================== -->
     <target name="coverage" depends="compile-core-tests" description="test coverage">
