@@ -304,30 +304,31 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final long extract(long value, DateTimeRule requiredRule) {
-        if (this.equals(requiredRule)) {
-            return value;
+    public final long extractFrom(DateTimeRule valueRule, long epSecs) {
+        if (canExtract(valueRule)) {
+            return doExtractFromEpochSecs(epSecs);
         }
-        long result = doExtractFromThis(value, requiredRule);
-        if (result != Long.MIN_VALUE) {
-            return result;
-        }
-        return requiredRule.doExtractFromOther(this, value);
-    }
-
-    protected static final long extractValue(DateTimeRule valueRule, long value, DateTimeRule requiredRule) {
-        if (valueRule.equals(requiredRule)) {
-            return value;
-        }
-        return valueRule.doExtractFromThis(value, requiredRule);
-    }
-
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
         return Long.MIN_VALUE;
     }
 
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
+    public final boolean canExtract(DateTimeRule valueRule) {
+        return doIsChildOf(valueRule) && valueRule.doIsParentOf(this);
+    }
+
+    protected boolean doIsChildOf(DateTimeRule parentRule) {
+        return false;
+    }
+
+    protected boolean doIsParentOf(DateTimeRule childRule) {
+        return false;
+    }
+
+    protected long doExtractFromEpochSecs(long epSecs) {
         return Long.MIN_VALUE;
+    }
+
+    protected static final long epochDaysFromEpochSecs(long epSecs) {
+        return epSecs / ISOChronology.SECONDS_PER_DAY;
     }
 
     //-----------------------------------------------------------------------

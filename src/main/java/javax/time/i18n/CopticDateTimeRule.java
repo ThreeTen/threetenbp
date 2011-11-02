@@ -94,10 +94,10 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 13) {
-                        long year = valueRule.extract(value, YEAR);
+                        long year = YEAR.extractFrom(valueRule, value);
                         if (year != Long.MIN_VALUE) {
                             return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
                         }
@@ -109,7 +109,7 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
-                long year = valueRule.extract(value, YEAR);
+                long year = YEAR.extractFrom(valueRule, value);
                 if (year != Long.MIN_VALUE) {
                     return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
                 }
@@ -121,93 +121,26 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
-        if (requiredRule instanceof CopticDateTimeRule) {
-            return extractCoptic(value, (CopticDateTimeRule) requiredRule);
-        } else if (ordinal == PACKED_YEAR_DAY_ORDINAL) {
-            return extractValue(EPOCH_DAY, edFromPyd(value), requiredRule);
-        }
-        return Long.MIN_VALUE;
+    protected long doExtractFromEpochSecs(long epSecs) {
+        long ed = epochDaysFromEpochSecs(epSecs);
+        return extractFromEd(ed, this);
     }
 
     @Override
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        long ed = extractValue(valueRule, value, EPOCH_DAY);
-        if (ed != Long.MIN_VALUE) {
-            return extractFromEd(ed, this);
+    protected boolean doIsChildOf(DateTimeRule parentRule) {
+        if (parentRule instanceof CopticDateTimeRule) {
+            switch (((CopticDateTimeRule) parentRule).ordinal) {
+                case PACKED_YEAR_DAY_ORDINAL: return true;
+                case DAY_OF_YEAR_ORDINAL: return (ordinal == DAY_OF_MONTH_ORDINAL || ordinal == MONTH_OF_YEAR_ORDINAL);
+                case YEAR_ORDINAL: return (ordinal == YEAR_OF_ERA_ORDINAL || ordinal == ERA_ORDINAL);
+            }
         }
-        return Long.MIN_VALUE;
+        return (parentRule.canExtract(EPOCH_DAY));
     }
 
-    //-----------------------------------------------------------------------
-    private long extractCoptic(long value, CopticDateTimeRule requiredRule) {
-        switch (ordinal) {
-            case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
-            case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, requiredRule);
-            case YEAR_ORDINAL: return extractFromY(value, requiredRule);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromPyd(long pyd, CopticDateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case DAY_OF_MONTH_ORDINAL: return domFromDoy(doyFromPyd(pyd));
-            case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pyd);
-            case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(doyFromPyd(pyd));
-            case YEAR_OF_ERA_ORDINAL: return yoeFromY(yFromPyd(pyd));
-            case YEAR_ORDINAL: return yFromPyd(pyd);
-            case ERA_ORDINAL: return eFromY(yFromPyd(pyd));
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long doyFromPyd(long pyd) {
-        return (pyd & 511);
-    }
-
-    private static long yFromPyd(long pyd) {
-        return (pyd >>> 9);
-    }
-
-    private static long edFromPyd(long pyd) {
-        long doy = doyFromPyd(pyd);
-        long y = yFromPyd(pyd);
-        return (y - 1) * 365 + (y / 4) + doy - 1;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromY(long y, CopticDateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case YEAR_OF_ERA_ORDINAL: return yoeFromY(y);
-            case ERA_ORDINAL: return eFromY(y);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long yoeFromY(long y) {
-        return y < 1 ? (1 - y) : y;
-    }
-
-    private static int eFromY(long y) {
-        return y < 1 ? 0 : 1;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromDoy(long doy, CopticDateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case DAY_OF_MONTH_ORDINAL: return domFromDoy(doy);
-            case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(doy);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long moyFromDoy(long doy) {
-        return ((doy - 1) / 30) + 1;
-    }
-
-    private static long domFromDoy(long doy) {
-        return ((doy - 1) % 30) + 1;
+    @Override
+    protected boolean doIsParentOf(DateTimeRule childRule) {
+        return ordinal == PACKED_YEAR_DAY_ORDINAL && childRule.equals(EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------
@@ -232,6 +165,14 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
             case MONTH_OF_YEAR_ORDINAL: return ((doy0 / 30) + 1);
         }
         return Long.MIN_VALUE;
+    }
+
+    private static long yoeFromY(long y) {
+        return y < 1 ? (1 - y) : y;
+    }
+
+    private static int eFromY(long y) {
+        return y < 1 ? 0 : 1;
     }
 
     private static long packPyd(long y, long doy) {

@@ -209,10 +209,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 2) {
-                        long year = valueRule.extract(value, YEAR);
+                        long year = YEAR.extractFrom(valueRule, value);
                         if (year != Long.MIN_VALUE) {
                             return (ISOChronology.isLeapYear(year) ? RANGE_1_29 : RANGE_1_28);
                         }
@@ -222,7 +222,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
-                long year = valueRule.extract(value, YEAR);
+                long year = YEAR.extractFrom(valueRule, value);
                 if (year != Long.MIN_VALUE) {
                     int len = ISOChronology.isLeapYear(year) ? 366 : 365;
                     return DateTimeRuleRange.of(1, len);
@@ -230,10 +230,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 2) {
-                        long year = valueRule.extract(value, YEAR);
+                        long year = YEAR.extractFrom(valueRule, value);
                         if (year != Long.MIN_VALUE) {
                             return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 5 : 4);
                         }
@@ -249,11 +249,99 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
-        if (requiredRule instanceof ISODateTimeRule) {
-            return extractISO(value, (ISODateTimeRule) requiredRule);
+    protected long doExtractFromEpochSecs(long epSecs) {
+        switch (ordinal) {
+            case SECOND_OF_MINUTE_ORDINAL:
+            case SECOND_OF_HOUR_ORDINAL:
+            case SECOND_OF_DAY_ORDINAL:
+            case MINUTE_OF_HOUR_ORDINAL:
+            case MINUTE_OF_DAY_ORDINAL:
+            case CLOCK_HOUR_OF_AMPM_ORDINAL:
+            case HOUR_OF_AMPM_ORDINAL:
+            case CLOCK_HOUR_OF_DAY_ORDINAL:
+            case HOUR_OF_DAY_ORDINAL:
+            case AMPM_OF_DAY_ORDINAL:
+                return extractFromSod(epSecs, this);
+            case DAY_OF_WEEK_ORDINAL:
+            case DAY_OF_MONTH_ORDINAL:
+            case DAY_OF_YEAR_ORDINAL:
+            case EPOCH_DAY_ORDINAL:
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL:
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL:
+            case MONTH_OF_QUARTER_ORDINAL:
+            case MONTH_OF_YEAR_ORDINAL:
+            case QUARTER_OF_YEAR_ORDINAL:
+            case ZERO_EPOCH_MONTH_ORDINAL:
+            case YEAR_ORDINAL:
+            case PACKED_EPOCH_MONTH_DAY_ORDINAL:
+            case PACKED_YEAR_DAY_ORDINAL:
+                return extractFromEd(epochDaysFromEpochSecs(epSecs), this);
         }
         return Long.MIN_VALUE;
+    }
+
+    @Override
+    protected boolean doIsChildOf(DateTimeRule parentRule) {
+        if (parentRule instanceof ISODateTimeRule) {
+            ISODateTimeRule isoRule = (ISODateTimeRule) parentRule;
+            switch ((isoRule.ordinal << 16) + ordinal) {
+                case (DAY_OF_WEEK_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
+                case (DAY_OF_MONTH_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
+                case (DAY_OF_MONTH_ORDINAL << 16) + ALIGNED_WEEK_OF_MONTH_ORDINAL:
+                case (DAY_OF_YEAR_ORDINAL << 16) + DAY_OF_YEAR_ORDINAL:
+                case (DAY_OF_YEAR_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + DAY_OF_YEAR_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + EPOCH_DAY_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_MONTH_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + YEAR_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + PACKED_YEAR_DAY_ORDINAL:
+                case (ALIGNED_WEEK_OF_MONTH_ORDINAL << 16) + ALIGNED_WEEK_OF_MONTH_ORDINAL:
+                case (ALIGNED_WEEK_OF_YEAR_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
+                case (MONTH_OF_QUARTER_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (MONTH_OF_YEAR_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (MONTH_OF_YEAR_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (MONTH_OF_YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (QUARTER_OF_YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (YEAR_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (YEAR_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (YEAR_ORDINAL << 16) + YEAR_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_YEAR_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + EPOCH_DAY_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_MONTH_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + YEAR_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + PACKED_YEAR_DAY_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + DAY_OF_YEAR_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + EPOCH_DAY_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_MONTH_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + YEAR_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + PACKED_YEAR_DAY_ORDINAL:
+                    return true;
+            }
+            return false;
+        }
+        return false; //TODO: (parentRule.canExtract(EPOCH_DAY));
     }
 
     //-----------------------------------------------------------------------
