@@ -31,7 +31,6 @@
  */
 package javax.time.i18n;
 
-import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.ERAS;
 import static javax.time.calendar.ISOPeriodUnit.MONTHS;
@@ -94,10 +93,10 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 13) {
-                        long year = valueRule.extract(value, YEAR);
+                        long year = YEAR.extractFrom(valueRule, value);
                         if (year != Long.MIN_VALUE) {
                             return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
                         }
@@ -109,7 +108,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
-                long year = valueRule.extract(value, YEAR);
+                long year = YEAR.extractFrom(valueRule, value);
                 if (year != Long.MIN_VALUE) {
                     return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
                 }
@@ -121,32 +120,26 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
-        if (requiredRule instanceof EthiopicDateTimeRule) {
-            return extractEthiopic(value, (EthiopicDateTimeRule) requiredRule);
-        } else if (ordinal == PACKED_YEAR_DAY_ORDINAL) {
-            return extractValue(EPOCH_DAY, edFromPyd(value), requiredRule);
+    protected long doExtractFrom(DateTimeRule valueRule, long value) {
+        if (valueRule instanceof EthiopicDateTimeRule) {
+            switch (((EthiopicDateTimeRule) valueRule).ordinal) {
+                case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, this);
+                case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, this);
+                case YEAR_ORDINAL: return extractFromY(value, this);
+                default: return Long.MIN_VALUE;
+            }
         }
-        return Long.MIN_VALUE;
+        return extractViaEpochDays(valueRule, value);
     }
 
     @Override
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        long ed = extractValue(valueRule, value, EPOCH_DAY);
-        if (ed != Long.MIN_VALUE) {
-            return extractFromEd(ed, this);
-        }
-        return Long.MIN_VALUE;
+    protected long extractFromEpochDays(long ed) {
+        return extractFromEd(ed, this);
     }
 
-    //-----------------------------------------------------------------------
-    private long extractEthiopic(long value, EthiopicDateTimeRule requiredRule) {
-        switch (ordinal) {
-            case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
-            case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, requiredRule);
-            case YEAR_ORDINAL: return extractFromY(value, requiredRule);
-        }
-        return Long.MIN_VALUE;
+    @Override
+    protected long toEpochDays(long value) {
+        return (ordinal == PACKED_YEAR_DAY_ORDINAL ? edFromPyd(value) : Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

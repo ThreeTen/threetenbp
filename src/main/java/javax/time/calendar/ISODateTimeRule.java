@@ -209,10 +209,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 2) {
-                        long year = valueRule.extract(value, YEAR);
+                        long year = YEAR.extractFrom(valueRule, value);
                         if (year != Long.MIN_VALUE) {
                             return (ISOChronology.isLeapYear(year) ? RANGE_1_29 : RANGE_1_28);
                         }
@@ -222,7 +222,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
-                long year = valueRule.extract(value, YEAR);
+                long year = YEAR.extractFrom(valueRule, value);
                 if (year != Long.MIN_VALUE) {
                     int len = ISOChronology.isLeapYear(year) ? 366 : 365;
                     return DateTimeRuleRange.of(1, len);
@@ -230,10 +230,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 2) {
-                        long year = valueRule.extract(value, YEAR);
+                        long year = YEAR.extractFrom(valueRule, value);
                         if (year != Long.MIN_VALUE) {
                             return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 5 : 4);
                         }
@@ -249,11 +249,21 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
-        if (requiredRule instanceof ISODateTimeRule) {
-            return extractISO(value, (ISODateTimeRule) requiredRule);
+    protected long doExtractFrom(DateTimeRule valueRule, long value) {
+        if (valueRule instanceof ISODateTimeRule) {
+            return ((ISODateTimeRule) valueRule).extractISO(value, this);
         }
-        return Long.MIN_VALUE;
+        return extractViaEpochDays(valueRule, value);
+    }
+
+    @Override
+    protected long extractFromEpochDays(long ed) {
+        return extractFromEd(ed, this);
+    }
+
+    @Override
+    protected long toEpochDays(long value) {
+        return extractISO(value, EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------

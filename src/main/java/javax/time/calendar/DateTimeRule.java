@@ -304,29 +304,27 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final long extract(long value, DateTimeRule requiredRule) {
-        if (this.equals(requiredRule)) {
+    public final long extractFrom(DateTimeRule valueRule, long value) {
+        if (this.equals(valueRule)) {
             return value;
         }
-        long result = doExtractFromThis(value, requiredRule);
-        if (result != Long.MIN_VALUE) {
-            return result;
-        }
-        return requiredRule.doExtractFromOther(this, value);
+        return doExtractFrom(valueRule, value);
     }
 
-    protected static final long extractValue(DateTimeRule valueRule, long value, DateTimeRule requiredRule) {
-        if (valueRule.equals(requiredRule)) {
-            return value;
-        }
-        return valueRule.doExtractFromThis(value, requiredRule);
-    }
-
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
+    protected long doExtractFrom(DateTimeRule valueRule, long value) {
         return Long.MIN_VALUE;
     }
 
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
+    protected long extractViaEpochDays(DateTimeRule valueRule, long value) {
+        long ed = valueRule.toEpochDays(value);
+        return (ed == Long.MIN_VALUE ? Long.MIN_VALUE : extractFromEpochDays(ed));
+    }
+
+    protected long extractFromEpochDays(long ed) {
+        return Long.MIN_VALUE;
+    }
+
+    protected long toEpochDays(long value) {
         return Long.MIN_VALUE;
     }
 

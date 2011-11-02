@@ -68,14 +68,14 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
         assertEquals(INSTANCE.doValueRangeFromThis(3, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
         assertEquals(INSTANCE.doValueRangeFromThis(4, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
         //assertEquals(INSTANCE.valueRange(12, DAY_OF_MONTH), DateTimeRuleRange.of(1, 29, 31));
-        assertEquals(INSTANCE.extract(4, DAY_OF_MONTH), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extract(4, MONTH_OF_QUARTER), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extract(4, MONTH_OF_YEAR), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extract(4, QUARTER_OF_YEAR), 1);
-        assertEquals(INSTANCE.extract(1, ZERO_EPOCH_MONTH), Long.MIN_VALUE);
-        assertEquals(ZERO_EPOCH_MONTH.extract(4, INSTANCE), 1);
-        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EPOCH_DAY), -362);
-        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, DAY_OF_MONTH), 4);
+        assertEquals(DAY_OF_MONTH.extractFrom(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_QUARTER.extractFrom(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_YEAR.extractFrom(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(QUARTER_OF_YEAR.extractFrom(INSTANCE, 4), 1);
+        assertEquals(ZERO_EPOCH_MONTH.extractFrom(INSTANCE, 1), Long.MIN_VALUE);
+        assertEquals(ZERO_EPOCH_MONTH.extractFrom(INSTANCE, 4), 1);
+        assertEquals(EPOCH_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4), -362);
+        assertEquals(DAY_OF_MONTH.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4), 4);
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EthiopicDateTimeRule.PACKED_YEAR_DAY), 4);
         System.out.println("OK");
     }
@@ -124,21 +124,20 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromThis(long zeq, DateTimeRule requiredRule) {
-        long result = extractValue(QUARTER_OF_YEAR, qoyFromZeq(zeq), requiredRule);
-        if (result != Long.MIN_VALUE) {
-            return result;
+    protected long doExtractFrom(DateTimeRule valueRule, long value) {
+        // NOTE: recursion to extract children of YEAR/QOY lost compared to base of branch
+        // also lost extraction of this rule from epoch-month
+        
+        if (valueRule == this) {
+            if (valueRule.equals(QUARTER_OF_YEAR)) {
+                return qoyFromZeq(value);
+            }
+            if (valueRule.equals(YEAR)) {
+                return yFromZeq(value);
+            }
+            return Long.MIN_VALUE;
         }
-        result = extractValue(YEAR, yFromZeq(zeq), requiredRule);
-        if (result != Long.MIN_VALUE) {
-            return result;
-        }
-        return Long.MIN_VALUE;
-    }
-
-    @Override
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        long zem = extractValue(valueRule, value, ZERO_EPOCH_MONTH);
+        long zem = ZERO_EPOCH_MONTH.extractFrom(valueRule, value);
         if (zem != Long.MIN_VALUE) {
             return extractFromZem(zem);
         }
