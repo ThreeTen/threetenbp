@@ -40,6 +40,15 @@
                 usetimestamp="true" ignoreerrors="true"/>
         </sequential>
     </macrodef>
+	  
+	<target name="tdtck" description="Setup task definitions for the TCK">
+		<taskdef name="setup-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ASetup"
+		    classpath="${lib.test}/sigtestdev.jar"/>
+		<taskdef name="test-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ATest"
+		    classpath="${lib.test}/sigtestdev.jar"/>
+		<property name="tck-signatures" value="${build.test}/jsr310.sig" />
+		<property name="tck-rt-jar" value="${java.home}/lib/rt.jar" />
+	</target>
 
     <path id="main.path">
         <pathelement location="${core.main.classes}" />
@@ -209,8 +218,35 @@
 
     <target name="test" depends="test-core,test-extra" description="run tests" />
     
-	<target name="runtck" >
-		<taskdef resource="testngtasks" classpathref="tck.path" />
+	<target name="setup-sigtest"
+		  description="generates the signatures file from the reference implementation"
+		  depends="tdtck">
+	  <setup-sigtest-task package="javax.time" failonerror="true" apiVersion="openapi-v2"
+	    filename="${tck-signatures}">
+	    <classpath>
+	      <pathelement location="${tck-rt-jar}"/>
+	      <pathelement location="${build}/${jarName}"/>
+	    </classpath>
+	  	<!--<exclude class="com.acme.openapi.NotTested"/>-->
+	  </setup-sigtest-task>
+	</target>
+	
+	<target name="run-sigtest"
+		  description="compares the reference implementation sigtest results with a specified path"
+		  depends="tdtck">
+	  <test-sigtest-task failonerror="true" apiVersion="openapi-v2"
+	    filename="${tck-signatures}" backward="true" output="st_report.txt">
+	    <package name="javax.time" />
+	    <!--<exclude class="com.acme.openapi.NotTested"/>-->
+	    <classpath>
+	      <pathelement location="${tck-rt-jar}"/>
+	      <pathelement location="${tck.implementation}"/>
+	    </classpath>
+	 </test-sigtest-task>
+	</target>
+
+    <target name="runtck" >
+	<taskdef resource="testngtasks" classpathref="tck.path" />
         <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
@@ -219,7 +255,7 @@
         </testng>
 	</target>
 	
-    <target name="tck" depends="compile-core-tests,compile-tzdb,runtck" description="run tck acceptance criteria" />
+	<target name="tck" depends="compile-core-tests,compile-tzdb,runtck" description="run tck acceptance criteria" />
 
     <!-- ==================================================================== -->
     <target name="coverage" depends="compile-core-tests" description="test coverage">
