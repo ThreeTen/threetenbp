@@ -284,6 +284,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     protected boolean doIsChildOf(DateTimeRule parentRule) {
         if (parentRule instanceof ISODateTimeRule) {
             ISODateTimeRule isoRule = (ISODateTimeRule) parentRule;
+            // TODO: bitmap
             switch ((isoRule.ordinal << 16) + ordinal) {
                 case (DAY_OF_WEEK_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
                 case (DAY_OF_MONTH_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
