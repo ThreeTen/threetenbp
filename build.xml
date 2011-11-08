@@ -41,15 +41,6 @@
         </sequential>
     </macrodef>
 	  
-	<target name="tdtck" description="Setup task definitions for the TCK">
-		<taskdef name="setup-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ASetup"
-		    classpath="${lib.test}/sigtestdev.jar"/>
-		<taskdef name="test-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ATest"
-		    classpath="${lib.test}/sigtestdev.jar"/>
-		<property name="tck-signatures" value="${build.test}/jsr310.sig" />
-		<property name="tck-rt-jar" value="${java.home}/lib/rt.jar" />
-	</target>
-
     <path id="main.path">
         <pathelement location="${core.main.classes}" />
         <pathelement location="${extra.main.classes}" />
@@ -218,6 +209,36 @@
 
     <target name="test" depends="test-core,test-extra" description="run tests" />
     
+    <target name="check-sigtest-downloaded">
+        <available property="sigtest.exists" file="${sigtest.loc}"/>
+    </target>
+    
+    <target name="download-sigtest" depends="check-sigtest-downloaded" unless="${sigtest.exists}">
+        <get
+            src="${sigtest.dist.origin}"
+            dest="${sigtest.dist.file}"
+            verbose="true"
+            usetimestamp="true" />
+        <unzip
+            src="${sigtest.dist.file}"
+            dest="${lib.test}">
+            <patternset>
+                <include name="${sigtest.dist.jarloc}" />
+            </patternset>
+            <mapper type="flatten"/>
+        </unzip>
+        <delete file="${sigtest.dist.file}" />
+    </target>
+    
+    <target name="tdtck" description="Setup task definitions for the TCK" depends="download-sigtest" >
+		<taskdef name="setup-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ASetup"
+		    classpath="${sigtest.loc}"/>
+		<taskdef name="test-sigtest-task" classname="com.sun.tdk.signaturetest.ant.ATest"
+		    classpath="${sigtest.loc}"/>
+		<property name="tck-signatures" value="${build.test}/jsr310.sig" />
+		<property name="tck-rt-jar" value="${java.home}/lib/rt.jar" />		
+	</target>
+   
 	<target name="setup-sigtest"
 		  description="generates the signatures file from the reference implementation"
 		  depends="tdtck">
@@ -246,7 +267,7 @@
 	</target>
 
     <target name="runtck" >
-	<taskdef resource="testngtasks" classpathref="tck.path" />
+	    <taskdef resource="testngtasks" classpathref="tck.path" />
         <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
@@ -255,7 +276,7 @@
         </testng>
 	</target>
 	
-	<target name="tck" depends="compile-core-tests,compile-tzdb,runtck" description="run tck acceptance criteria" />
+	<target name="tck" depends="compile-core-tests,compile-tzdb,runtck,run-sigtest" description="run tck acceptance criteria" />
 
     <!-- ==================================================================== -->
     <target name="coverage" depends="compile-core-tests" description="test coverage">
