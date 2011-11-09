@@ -127,7 +127,7 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     }
 
     @Override
-    protected boolean doIsChildOf(DateTimeRule parentRule) {
+    protected boolean doIsExtractableFrom(DateTimeRule parentRule) {
         if (parentRule instanceof CopticDateTimeRule) {
             switch (((CopticDateTimeRule) parentRule).ordinal) {
                 case PACKED_YEAR_DAY_ORDINAL: return true;
@@ -135,12 +135,12 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
                 case YEAR_ORDINAL: return (ordinal == YEAR_OF_ERA_ORDINAL || ordinal == ERA_ORDINAL);
             }
         }
-        return (EPOCH_DAY.canExtractFrom(parentRule));
+        return (EPOCH_DAY.isExtractableFrom(parentRule));
     }
 
     @Override
-    protected boolean doIsParentOf(DateTimeRule childRule) {
-        return ordinal == PACKED_YEAR_DAY_ORDINAL && childRule.equals(EPOCH_DAY);
+    protected boolean doIsExtractableTo(DateTimeRule childRule) {
+        return ordinal == PACKED_YEAR_DAY_ORDINAL && childRule.isExtractableFrom(EPOCH_DAY);
     }
 
     //-----------------------------------------------------------------------

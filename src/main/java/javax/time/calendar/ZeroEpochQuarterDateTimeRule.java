@@ -73,10 +73,11 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
         assertEquals(MONTH_OF_YEAR.extractFrom(INSTANCE, 4 * 86400), Long.MIN_VALUE);
         assertEquals(QUARTER_OF_YEAR.extractFrom(INSTANCE, 4 * 86400), 1);
         assertEquals(ZERO_EPOCH_MONTH.extractFrom(INSTANCE, 1 * 86400), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extractFrom(ZERO_EPOCH_MONTH, 4 * 86400), 1);
-        assertEquals(EPOCH_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), -362);
-        assertEquals(DAY_OF_MONTH.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
-//        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EthiopicDateTimeRule.PACKED_YEAR_DAY), 4);
+        assertEquals(INSTANCE.extractFrom(ZERO_EPOCH_MONTH, 4 * 86400), 0);
+        assertEquals(EPOCH_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
+        assertEquals(DAY_OF_MONTH.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 5);
+//        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extractFrom(EthiopicDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
+//        assertEquals(EthiopicDateTimeRule.PACKED_YEAR_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
         System.out.println("OK");
     }
 
@@ -123,19 +124,6 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
     }
 
     //-----------------------------------------------------------------------
-//    @Override
-//    protected long doExtractFromThis(long zeq, DateTimeRule requiredRule) {
-//        long result = extractValue(QUARTER_OF_YEAR, qoyFromZeq(zeq), requiredRule);
-//        if (result != Long.MIN_VALUE) {
-//            return result;
-//        }
-//        result = extractValue(YEAR, yFromZeq(zeq), requiredRule);
-//        if (result != Long.MIN_VALUE) {
-//            return result;
-//        }
-//        return Long.MIN_VALUE;
-//    }
-
     @Override
     protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
         long em = ZERO_EPOCH_MONTH.extractFrom(valueRule, epSecs);
@@ -146,13 +134,15 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
     }
 
     @Override
-    protected boolean doIsChildOf(DateTimeRule parentRule) {
-        return ZERO_EPOCH_MONTH.canExtractFrom(parentRule);
+    protected boolean doIsExtractableFrom(DateTimeRule parentRule) {
+        // if EpMonth can be extracted from target rule then this can be extracted
+        return ZERO_EPOCH_MONTH.isExtractableFrom(parentRule);
     }
 
     @Override
-    protected boolean doIsParentOf(DateTimeRule childRule) {
-        return childRule.canExtractFrom(QUARTER_OF_YEAR) || childRule.canExtractFrom(YEAR);
+    protected boolean doIsExtractableTo(DateTimeRule childRule) {
+        // if target rule can be extracted from QoY or Year then it can be extracted from this
+        return childRule.isExtractableFrom(QUARTER_OF_YEAR) || childRule.isExtractableFrom(YEAR);
     }
 
     //-----------------------------------------------------------------------

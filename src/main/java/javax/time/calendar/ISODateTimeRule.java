@@ -281,7 +281,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     @Override
-    protected boolean doIsChildOf(DateTimeRule parentRule) {
+    protected boolean doIsExtractableFrom(DateTimeRule parentRule) {
         if (parentRule instanceof ISODateTimeRule) {
             ISODateTimeRule isoRule = (ISODateTimeRule) parentRule;
             // TODO: bitmap
@@ -299,6 +299,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (EPOCH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + YEAR_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
@@ -309,10 +310,12 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (MONTH_OF_YEAR_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (MONTH_OF_YEAR_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
                 case (MONTH_OF_YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
+                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + YEAR_ORDINAL:
                 case (QUARTER_OF_YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
-                case (YEAR_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
-                case (YEAR_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
-                case (YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (YEAR_ORDINAL << 16) + YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
@@ -322,6 +325,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
@@ -334,6 +338,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + YEAR_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
@@ -495,6 +500,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromEd(ed));
             case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pydFromEd(ed));
+            case EPOCH_DAY_ORDINAL: return ed;
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromEd(ed)));
             case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPyd(pydFromEd(ed)));
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
