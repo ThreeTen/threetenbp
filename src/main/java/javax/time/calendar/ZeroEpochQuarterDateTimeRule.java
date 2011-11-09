@@ -33,11 +33,11 @@ package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.ISOPeriodUnit.QUARTERS;
 import static org.testng.Assert.assertEquals;
 
@@ -68,14 +68,14 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 //        assertEquals(INSTANCE.doValueRangeFromThis(3, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
 //        assertEquals(INSTANCE.doValueRangeFromThis(4, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
         //assertEquals(INSTANCE.valueRange(12, DAY_OF_MONTH), DateTimeRuleRange.of(1, 29, 31));
-        assertEquals(DAY_OF_MONTH.extractFrom(INSTANCE, 4 * 86400), Long.MIN_VALUE);
-        assertEquals(MONTH_OF_QUARTER.extractFrom(INSTANCE, 4 * 86400), Long.MIN_VALUE);
-        assertEquals(MONTH_OF_YEAR.extractFrom(INSTANCE, 4 * 86400), Long.MIN_VALUE);
-        assertEquals(QUARTER_OF_YEAR.extractFrom(INSTANCE, 4 * 86400), 1);
-        assertEquals(EPOCH_MONTH.extractFrom(INSTANCE, 1 * 86400), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extractFrom(EPOCH_MONTH, 4 * 86400), 0);
-        assertEquals(EPOCH_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
-        assertEquals(DAY_OF_MONTH.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 5);
+        assertEquals(DAY_OF_MONTH.extractFrom(INSTANCE, 4, 0), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_QUARTER.extractFrom(INSTANCE, 4, 0), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_YEAR.extractFrom(INSTANCE, 4, 0), Long.MIN_VALUE);
+        assertEquals(QUARTER_OF_YEAR.extractFrom(INSTANCE, 4, 0), 1);
+        assertEquals(EPOCH_MONTH.extractFrom(INSTANCE, 1, 0), Long.MIN_VALUE);
+        assertEquals(INSTANCE.extractFrom(EPOCH_MONTH, 4, 0), 0);
+        assertEquals(EPOCH_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4, 0), 4);
+        assertEquals(DAY_OF_MONTH.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4, 0), 5);
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extractFrom(EthiopicDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
 //        assertEquals(EthiopicDateTimeRule.PACKED_YEAR_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
         System.out.println("OK");
@@ -125,8 +125,8 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFrom(DateTimeRule valueRule, long pdt) {
-        long em = EPOCH_MONTH.extractFrom(valueRule, pdt);
+    protected long doExtractFrom(DateTimeRule valueRule, long pemd, long nod) {
+        long em = EPOCH_MONTH.extractFrom(valueRule, pemd, nod);
         if (em != Long.MIN_VALUE) {
             return extractFromZem(em);
         }

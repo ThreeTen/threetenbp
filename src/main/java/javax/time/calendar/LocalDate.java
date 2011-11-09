@@ -32,12 +32,10 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.PACKED_EPOCH_MONTH_DAY;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 
 import java.io.Serializable;
 
@@ -194,8 +192,8 @@ public final class LocalDate
      */
     public static LocalDate ofEpochDay(long epochDay) {
         EPOCH_DAY.checkValidValue(epochDay);
-        long pemd = EPOCH_DAY.extractISO(epochDay, PACKED_EPOCH_MONTH_DAY);
-        long year = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, YEAR);
+        long pemd = ISODateTimeRule.pemdFromEd(epochDay);
+        long year = YEAR.doExtractFrom(PACKED_EPOCH_MONTH_DAY, pemd, 0);
         YEAR.checkValidValue(year);  // TODO: better validation
         return new LocalDate(pemd);
     }
@@ -413,7 +411,7 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of((int) PACKED_EPOCH_MONTH_DAY.extractISO(pemd, DAY_OF_WEEK));
+        return ISOChronology.getDayOfWeekFromDate(this);
     }
 
     //-----------------------------------------------------------------------
@@ -1068,7 +1066,7 @@ public final class LocalDate
     }
 
     private long toEpochMonth() {
-        return PACKED_EPOCH_MONTH_DAY.extractISO(pemd, EPOCH_MONTH);
+        return ISODateTimeRule.emFromPemd(pemd);
     }
 
     //-----------------------------------------------------------------------
@@ -1272,7 +1270,7 @@ public final class LocalDate
      * @return the Epoch Day equivalent to this date
      */
     public long toEpochDay() {
-        return PACKED_EPOCH_MONTH_DAY.extractISO(pemd, EPOCH_DAY);
+        return DateTimeRule.epochDaysFromPackedDate(pemd);
     }
 
     /**

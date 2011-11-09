@@ -308,12 +308,13 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * Extracts the value of this rule from the specified rule.
      * 
      * @param valueRule  the rule to extract from
-     * @param pdt  the packed date-time value
+     * @param pemd  the packed date value
+     * @param nod  the nanos-of-day value
      * @return the value in terms of this rule, MIN_VALUE if unable to convert
      */
-    public final long extractFrom(DateTimeRule valueRule, long pdt) {
+    public final long extractFrom(DateTimeRule valueRule, long pemd, long nod) {
         if (isExtractableFrom(valueRule)) {
-            return doExtractFrom(valueRule, pdt);
+            return doExtractFrom(valueRule, pemd, nod);
         }
         return Long.MIN_VALUE;
     }
@@ -330,25 +331,13 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return false;
     }
 
-    protected long doExtractFrom(DateTimeRule valueRule, long pdt) {
+    protected long doExtractFrom(DateTimeRule valueRule, long pemd, long nod) {
         return Long.MIN_VALUE;
     }
 
     //-----------------------------------------------------------------------
-    protected static final long packedDateFromPackedDateTime(long pdt) {
-        return pdt / ISOChronology.SECONDS_PER_DAY;
-    }
-
-    protected static final long epochMonthFromPackedDateTime(long pdt) {
-        return pdt / (ISOChronology.SECONDS_PER_DAY * 32);
-    }
-
-    protected static final long epochDaysFromPackedDateTime(long pdt) {
-        return edFromPemd(packedDateFromPackedDateTime(pdt));
-    }
-
-    private static long edFromPemd(long pd) {
-        long em = epochMonthFromPackedDateTime(pd);
+    protected static final long epochDaysFromPackedDate(long pemd) {
+        long em = (pemd / 32);
         long year = (em / 12) + 1970;
         long y = year;
         long m = (em % 12) + 1;
@@ -360,7 +349,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             total -= y / -4 - y / -100 + y / -400;
         }
         total += ((367 * m - 362) / 12);
-        total += (pd & 31);
+        total += (pemd & 31);
         if (m > 2) {
             total--;
             if (ISOChronology.isLeapYear(year) == false) {

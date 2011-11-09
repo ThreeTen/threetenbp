@@ -90,39 +90,39 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
-        switch (ordinal) {
-            case DAY_OF_MONTH_ORDINAL: {
-                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value);
-                if (moy != Long.MIN_VALUE) {
-                    if (moy == 13) {
-                        long year = YEAR.extractFrom(valueRule, value);
-                        if (year != Long.MIN_VALUE) {
-                            return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
-                        }
-                        return DateTimeRuleRange.of(1, 5, 6);
-                    } else {
-                        return DateTimeRuleRange.of(1, 30);
-                    }
-                }
-                break;
-            }
-            case DAY_OF_YEAR_ORDINAL: {
-                long year = YEAR.extractFrom(valueRule, value);
-                if (year != Long.MIN_VALUE) {
-                    return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
-                }
-                break;
-            }
-        }
-        return super.getValueRange();
-    }
+//    @Override
+//    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
+//        switch (ordinal) {
+//            case DAY_OF_MONTH_ORDINAL: {
+//                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value, 0);
+//                if (moy != Long.MIN_VALUE) {
+//                    if (moy == 13) {
+//                        long year = YEAR.extractFrom(valueRule, value, 0);
+//                        if (year != Long.MIN_VALUE) {
+//                            return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
+//                        }
+//                        return DateTimeRuleRange.of(1, 5, 6);
+//                    } else {
+//                        return DateTimeRuleRange.of(1, 30);
+//                    }
+//                }
+//                break;
+//            }
+//            case DAY_OF_YEAR_ORDINAL: {
+//                long year = YEAR.extractFrom(valueRule, value, 0);
+//                if (year != Long.MIN_VALUE) {
+//                    return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
+//                }
+//                break;
+//            }
+//        }
+//        return super.getValueRange();
+//    }
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFrom(DateTimeRule valueRule, long pdt) {
-        return extractFromEd(epochDaysFromPackedDateTime(pdt));
+    protected long doExtractFrom(DateTimeRule valueRule, long pemd, long nod) {
+        return extractFromEd(epochDaysFromPackedDate(pemd));
     }
 
     @Override
