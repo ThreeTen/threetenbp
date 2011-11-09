@@ -305,14 +305,14 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 
     //-----------------------------------------------------------------------
     public final long extractFrom(DateTimeRule valueRule, long epSecs) {
-        if (canExtract(valueRule)) {
-            return doExtractFromEpochSecs(epSecs);
+        if (canExtractFrom(valueRule)) {
+            return doExtractFrom(valueRule, epSecs);
         }
         return Long.MIN_VALUE;
     }
 
-    public final boolean canExtract(DateTimeRule valueRule) {
-        return doIsChildOf(valueRule) && valueRule.doIsParentOf(this);
+    public final boolean canExtractFrom(DateTimeRule valueRule) {
+        return doIsChildOf(valueRule) || valueRule.doIsParentOf(this);
     }
 
     protected boolean doIsChildOf(DateTimeRule parentRule) {
@@ -323,7 +323,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return false;
     }
 
-    protected long doExtractFromEpochSecs(long epSecs) {
+    protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
         return Long.MIN_VALUE;
     }
 

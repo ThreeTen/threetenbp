@@ -249,7 +249,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromEpochSecs(long epSecs) {
+    protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
         switch (ordinal) {
             case SECOND_OF_MINUTE_ORDINAL:
             case SECOND_OF_HOUR_ORDINAL:
@@ -341,7 +341,36 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             }
             return false;
         }
-        return false; //TODO: (parentRule.canExtract(EPOCH_DAY));
+//        switch (ordinal) {
+//	        case SECOND_OF_MINUTE_ORDINAL:
+//	        case SECOND_OF_HOUR_ORDINAL:
+//	        case SECOND_OF_DAY_ORDINAL:
+//	        case MINUTE_OF_HOUR_ORDINAL:
+//	        case MINUTE_OF_DAY_ORDINAL:
+//	        case CLOCK_HOUR_OF_AMPM_ORDINAL:
+//	        case HOUR_OF_AMPM_ORDINAL:
+//	        case CLOCK_HOUR_OF_DAY_ORDINAL:
+//	        case HOUR_OF_DAY_ORDINAL:
+//	        case AMPM_OF_DAY_ORDINAL:
+//	            return (SECOND_OF_DAY.canExtractFrom(parentRule));
+//	        case DAY_OF_WEEK_ORDINAL:
+//	        case DAY_OF_MONTH_ORDINAL:
+//	        case DAY_OF_YEAR_ORDINAL:
+//	        case EPOCH_DAY_ORDINAL:
+//	        case ALIGNED_WEEK_OF_MONTH_ORDINAL:
+//	        case ALIGNED_WEEK_OF_YEAR_ORDINAL:
+//	        case MONTH_OF_QUARTER_ORDINAL:
+//	        case MONTH_OF_YEAR_ORDINAL:
+//	        case QUARTER_OF_YEAR_ORDINAL:
+//	        case ZERO_EPOCH_MONTH_ORDINAL:
+//	        case YEAR_ORDINAL:
+//	        case PACKED_EPOCH_MONTH_DAY_ORDINAL:
+//	        case PACKED_YEAR_DAY_ORDINAL:
+//	            return (EPOCH_DAY.canExtractFrom(parentRule));
+//	        case EPOCH_SECOND_ORDINAL:
+//	            return (EPOCH_SECOND.canExtractFrom(parentRule));
+//	    }
+	    return false;
     }
 
     //-----------------------------------------------------------------------

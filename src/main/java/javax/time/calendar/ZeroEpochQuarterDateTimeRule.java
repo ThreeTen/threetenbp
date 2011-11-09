@@ -57,25 +57,25 @@ import javax.time.i18n.CopticDateTimeRule;
 public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements Serializable {
     // This is a test to ensure that the longrules mechanism works
     public static void main(String[] args) {
-        assertEquals(DAY_OF_MONTH.doValueRangeFromThis(12, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
-        assertEquals(EPOCH_DAY.doValueRangeFromThis(12, DAY_OF_MONTH), DateTimeRuleRange.of(1, 31));
-        assertEquals(EPOCH_DAY.doValueRangeFromThis(34, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28));
-        assertEquals(EPOCH_DAY.doValueRangeFromThis(64, DAY_OF_MONTH), DateTimeRuleRange.of(1, 31));
-        assertEquals(EPOCH_DAY.doValueRangeFromThis(94, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30));
-        assertEquals(INSTANCE.doValueRangeFromThis(0, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
-        assertEquals(INSTANCE.doValueRangeFromThis(1, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
-        assertEquals(INSTANCE.doValueRangeFromThis(2, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
-        assertEquals(INSTANCE.doValueRangeFromThis(3, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
-        assertEquals(INSTANCE.doValueRangeFromThis(4, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
+//        assertEquals(DAY_OF_MONTH.doValueRangeFromThis(12, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
+//        assertEquals(EPOCH_DAY.doValueRangeFromThis(12, DAY_OF_MONTH), DateTimeRuleRange.of(1, 31));
+//        assertEquals(EPOCH_DAY.doValueRangeFromThis(34, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28));
+//        assertEquals(EPOCH_DAY.doValueRangeFromThis(64, DAY_OF_MONTH), DateTimeRuleRange.of(1, 31));
+//        assertEquals(EPOCH_DAY.doValueRangeFromThis(94, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30));
+//        assertEquals(INSTANCE.doValueRangeFromThis(0, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
+//        assertEquals(INSTANCE.doValueRangeFromThis(1, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
+//        assertEquals(INSTANCE.doValueRangeFromThis(2, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
+//        assertEquals(INSTANCE.doValueRangeFromThis(3, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
+//        assertEquals(INSTANCE.doValueRangeFromThis(4, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
         //assertEquals(INSTANCE.valueRange(12, DAY_OF_MONTH), DateTimeRuleRange.of(1, 29, 31));
-        assertEquals(INSTANCE.extract(4, DAY_OF_MONTH), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extract(4, MONTH_OF_QUARTER), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extract(4, MONTH_OF_YEAR), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extract(4, QUARTER_OF_YEAR), 1);
-        assertEquals(INSTANCE.extract(1, ZERO_EPOCH_MONTH), Long.MIN_VALUE);
-        assertEquals(ZERO_EPOCH_MONTH.extract(4, INSTANCE), 1);
-        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EPOCH_DAY), -362);
-        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, DAY_OF_MONTH), 4);
+        assertEquals(DAY_OF_MONTH.extractFrom(INSTANCE, 4 * 86400), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_QUARTER.extractFrom(INSTANCE, 4 * 86400), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_YEAR.extractFrom(INSTANCE, 4 * 86400), Long.MIN_VALUE);
+        assertEquals(QUARTER_OF_YEAR.extractFrom(INSTANCE, 4 * 86400), 1);
+        assertEquals(ZERO_EPOCH_MONTH.extractFrom(INSTANCE, 1 * 86400), Long.MIN_VALUE);
+        assertEquals(INSTANCE.extractFrom(ZERO_EPOCH_MONTH, 4 * 86400), 1);
+        assertEquals(EPOCH_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), -362);
+        assertEquals(DAY_OF_MONTH.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EthiopicDateTimeRule.PACKED_YEAR_DAY), 4);
         System.out.println("OK");
     }
@@ -123,26 +123,36 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
     }
 
     //-----------------------------------------------------------------------
+//    @Override
+//    protected long doExtractFromThis(long zeq, DateTimeRule requiredRule) {
+//        long result = extractValue(QUARTER_OF_YEAR, qoyFromZeq(zeq), requiredRule);
+//        if (result != Long.MIN_VALUE) {
+//            return result;
+//        }
+//        result = extractValue(YEAR, yFromZeq(zeq), requiredRule);
+//        if (result != Long.MIN_VALUE) {
+//            return result;
+//        }
+//        return Long.MIN_VALUE;
+//    }
+
     @Override
-    protected long doExtractFromThis(long zeq, DateTimeRule requiredRule) {
-        long result = extractValue(QUARTER_OF_YEAR, qoyFromZeq(zeq), requiredRule);
-        if (result != Long.MIN_VALUE) {
-            return result;
-        }
-        result = extractValue(YEAR, yFromZeq(zeq), requiredRule);
-        if (result != Long.MIN_VALUE) {
-            return result;
+    protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
+        long em = ZERO_EPOCH_MONTH.extractFrom(valueRule, epSecs);
+        if (em != Long.MIN_VALUE) {
+            return extractFromZem(em);
         }
         return Long.MIN_VALUE;
     }
 
     @Override
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        long zem = extractValue(valueRule, value, ZERO_EPOCH_MONTH);
-        if (zem != Long.MIN_VALUE) {
-            return extractFromZem(zem);
-        }
-        return Long.MIN_VALUE;
+    protected boolean doIsChildOf(DateTimeRule parentRule) {
+        return ZERO_EPOCH_MONTH.canExtractFrom(parentRule);
+    }
+
+    @Override
+    protected boolean doIsParentOf(DateTimeRule childRule) {
+        return childRule.canExtractFrom(QUARTER_OF_YEAR) || childRule.canExtractFrom(YEAR);
     }
 
     //-----------------------------------------------------------------------

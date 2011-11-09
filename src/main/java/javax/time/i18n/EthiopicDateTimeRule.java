@@ -121,7 +121,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromEpochSecs(long epSecs) {
+    protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
         long ed = epochDaysFromEpochSecs(epSecs);
         return extractFromEd(ed, this);
     }
@@ -135,7 +135,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
                 case YEAR_ORDINAL: return (ordinal == YEAR_OF_ERA_ORDINAL || ordinal == ERA_ORDINAL);
             }
         }
-        return (parentRule.canExtract(EPOCH_DAY));
+        return (EPOCH_DAY.canExtractFrom(parentRule));
     }
 
     @Override
