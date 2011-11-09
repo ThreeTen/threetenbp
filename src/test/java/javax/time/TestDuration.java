@@ -60,7 +60,7 @@ import org.testng.annotations.Test;
 public class TestDuration {
 
     //-----------------------------------------------------------------------
-	@Test(groups={"tck"})
+	@Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Serializable.class.isAssignableFrom(Duration.class));
         assertTrue(Comparable.class.isAssignableFrom(Duration.class));
@@ -691,7 +691,7 @@ public class TestDuration {
         assertSame(ser, Duration.ZERO);
     }
 
-    @Test(groups={"implementation"})
+    @Test(groups={"tck"})
     public void test_deserialization() throws Exception {
         Duration orginal = Duration.ofSeconds(2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
