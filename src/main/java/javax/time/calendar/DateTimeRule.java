@@ -291,15 +291,15 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final DateTimeRuleRange calculateValueRange(long value, DateTimeRule requiredRule) {
-        return doValueRangeFromThis(value, requiredRule);
+    public final DateTimeRuleRange calculateValueRangeFrom(DateTimeRule valueRule, long pemd, long nod) {
+        return valueRule.doValueRangeFor(this, pemd, nod);
     }
 
-    protected DateTimeRuleRange doValueRangeFromThis(long value, DateTimeRule requiredRule) {
-        return requiredRule.doValueRangeFromOther(this, value);
+    protected DateTimeRuleRange doValueRangeFor(DateTimeRule targetRule, long pemd, long nod) {
+        return targetRule.doValueRangeFrom(this, pemd, nod);
     }
 
-    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
+    protected DateTimeRuleRange doValueRangeFrom(DateTimeRule valueRule, long pemd, long nod) {
         return getValueRange();
     }
 

@@ -110,8 +110,9 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 
     //-----------------------------------------------------------------------
     @Override
-    protected DateTimeRuleRange doValueRangeFromThis(long zeq, DateTimeRule requiredRule) {
+    protected DateTimeRuleRange doValueRangeFor(DateTimeRule requiredRule, long pemd, long nod) {
         if (requiredRule.equals(DAY_OF_MONTH)) {
+            long zeq = doExtractFrom(this, pemd, nod);
             long qoy = qoyFromZeq(zeq);
             if (qoy == 1) {
                 long year = yFromZeq(zeq);
@@ -120,7 +121,7 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
                 return DateTimeRuleRange.of(1, 30, 31);
             }
         }
-        return super.doValueRangeFromThis(zeq, requiredRule);
+        return super.doValueRangeFor(requiredRule, pemd, nod);
     }
 
     //-----------------------------------------------------------------------

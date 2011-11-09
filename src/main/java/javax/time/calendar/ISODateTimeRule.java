@@ -206,13 +206,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
+    protected DateTimeRuleRange doValueRangeFrom(DateTimeRule valueRule, long pemd, long nod) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
-                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value, 0);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, pemd, nod);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 2) {
-                        long year = YEAR.extractFrom(valueRule, value, 0);
+                        long year = YEAR.extractFrom(valueRule, pemd, nod);
                         if (year != Long.MIN_VALUE) {
                             return (ISOChronology.isLeapYear(year) ? RANGE_1_29 : RANGE_1_28);
                         }
@@ -222,7 +222,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
-                long year = YEAR.extractFrom(valueRule, value, 0);
+                long year = YEAR.extractFrom(valueRule, pemd, nod);
                 if (year != Long.MIN_VALUE) {
                     int len = ISOChronology.isLeapYear(year) ? 366 : 365;
                     return DateTimeRuleRange.of(1, len);
@@ -230,10 +230,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
-                long moy = MONTH_OF_YEAR.extractFrom(valueRule, value, 0);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, pemd, nod);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 2) {
-                        long year = YEAR.extractFrom(valueRule, value, 0);
+                        long year = YEAR.extractFrom(valueRule, pemd, nod);
                         if (year != Long.MIN_VALUE) {
                             return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 5 : 4);
                         }
