@@ -49,7 +49,7 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -659,8 +659,8 @@ public class TestDateTimeFields {
             // convert
             {dtf(MONTH_OF_YEAR, 6), QUARTER_OF_YEAR, 2},
             {dtf(MONTH_OF_YEAR, 6), MONTH_OF_QUARTER, 3},
-            {dtf(ZERO_EPOCH_MONTH, 2012 * 12 + 3), MONTH_OF_YEAR, 4},
-            {dtf(ZERO_EPOCH_MONTH, 2012 * 12 + 3), YEAR, 2012},
+            {dtf(EPOCH_MONTH, 2012 * 12 + 3), MONTH_OF_YEAR, 4},
+            {dtf(EPOCH_MONTH, 2012 * 12 + 3), YEAR, 2012},
             {dtf(HOUR_OF_DAY, 14), HOUR_OF_AMPM, 2},
             {dtf(SECOND_OF_DAY, 15 * 3600 + 74), HOUR_OF_DAY, 15},
             {dtf(SECOND_OF_DAY, 3 * 3600 + 74), MINUTE_OF_HOUR, 1},

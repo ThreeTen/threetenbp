@@ -304,9 +304,16 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final long extractFrom(DateTimeRule valueRule, long epSecs) {
+    /**
+     * Extracts the value of this rule from the specified rule.
+     * 
+     * @param valueRule  the rule to extract from
+     * @param pdt  the packed date-time value
+     * @return the value in terms of this rule, MIN_VALUE if unable to convert
+     */
+    public final long extractFrom(DateTimeRule valueRule, long pdt) {
         if (isExtractableFrom(valueRule)) {
-            return doExtractFrom(valueRule, epSecs);
+            return doExtractFrom(valueRule, pdt);
         }
         return Long.MIN_VALUE;
     }
@@ -323,12 +330,44 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return false;
     }
 
-    protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
+    protected long doExtractFrom(DateTimeRule valueRule, long pdt) {
         return Long.MIN_VALUE;
     }
 
-    protected static final long epochDaysFromEpochSecs(long epSecs) {
-        return epSecs / ISOChronology.SECONDS_PER_DAY;
+    //-----------------------------------------------------------------------
+    protected static final long packedDateFromPackedDateTime(long pdt) {
+        return pdt / ISOChronology.SECONDS_PER_DAY;
+    }
+
+    protected static final long epochMonthFromPackedDateTime(long pdt) {
+        return pdt / (ISOChronology.SECONDS_PER_DAY * 32);
+    }
+
+    protected static final long epochDaysFromPackedDateTime(long pdt) {
+        return edFromPemd(packedDateFromPackedDateTime(pdt));
+    }
+
+    private static long edFromPemd(long pd) {
+        long em = epochMonthFromPackedDateTime(pd);
+        long year = (em / 12) + 1970;
+        long y = year;
+        long m = (em % 12) + 1;
+        long total = 0;
+        total += 365 * y;
+        if (y >= 0) {
+            total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+        } else {
+            total -= y / -4 - y / -100 + y / -400;
+        }
+        total += ((367 * m - 362) / 12);
+        total += (pd & 31);
+        if (m > 2) {
+            total--;
+            if (ISOChronology.isLeapYear(year) == false) {
+                total--;
+            }
+        }
+        return total - ISOChronology.DAYS_0000_TO_1970;
     }
 
     //-----------------------------------------------------------------------

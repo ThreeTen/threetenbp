@@ -37,7 +37,7 @@ import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.PACKED_EPOCH_MONTH_DAY;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 
 import java.io.Serializable;
 
@@ -685,7 +685,7 @@ public final class LocalDate
         if (periodMonths == 0) {
             return plusDays(periodDays);  // optimization that also returns this for zero
         }
-        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        long epm = toEpochMonth();
         int day = getDayOfMonth();
         long calcMonths = epm + periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
@@ -801,7 +801,7 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        long epm = toEpochMonth();
         long calcMonths = epm + months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
@@ -902,7 +902,7 @@ public final class LocalDate
         if (periodMonths == 0) {
             return minusDays(periodDays);  // optimization that also returns this for zero
         }
-        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        long epm = toEpochMonth();
         int day = getDayOfMonth();
         long calcMonths = epm - periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
@@ -1018,7 +1018,7 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long epm = PACKED_EPOCH_MONTH_DAY.extractISO(pemd, ZERO_EPOCH_MONTH);
+        long epm = toEpochMonth();
         long calcMonths = epm - months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
@@ -1065,6 +1065,10 @@ public final class LocalDate
         }
         long mjDay = MathUtils.safeSubtract(toModifiedJulianDay(), days);
         return LocalDate.ofModifiedJulianDay(mjDay);
+    }
+
+    private long toEpochMonth() {
+        return PACKED_EPOCH_MONTH_DAY.extractISO(pemd, EPOCH_MONTH);
     }
 
     //-----------------------------------------------------------------------

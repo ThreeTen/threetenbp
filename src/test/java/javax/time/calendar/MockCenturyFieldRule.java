@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.ISOPeriodUnit.CENTURIES;
 
 import java.io.Serializable;
@@ -52,7 +52,7 @@ public final class MockCenturyFieldRule extends DateTimeRule implements Serializ
 
     /** Constructor. */
     private MockCenturyFieldRule() {
-        super("Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100, ZERO_EPOCH_MONTH);
+        super("Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100, EPOCH_MONTH);
     }
 
     private Object readResolve() {

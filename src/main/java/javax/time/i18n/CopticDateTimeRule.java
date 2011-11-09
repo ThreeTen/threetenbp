@@ -121,9 +121,8 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
-        long ed = epochDaysFromEpochSecs(epSecs);
-        return extractFromEd(ed, this);
+    protected long doExtractFrom(DateTimeRule valueRule, long pdt) {
+        return extractFromEd(epochDaysFromPackedDateTime(pdt));
     }
 
     @Override
@@ -148,17 +147,17 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     private static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
     private static final long DAYS_0000_TO_MJD_EPOCH = 678941;
 
-    private static long extractFromEd(long ed, CopticDateTimeRule requiredRule) {
+    private long extractFromEd(long ed) {
         ed = ed + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
         long y = ((ed * 4) + 1463) / 1461;
-        switch (requiredRule.ordinal) {
+        switch (ordinal) {
             case YEAR_OF_ERA_ORDINAL: return yoeFromY(y);
             case YEAR_ORDINAL: return y;
             case ERA_ORDINAL: return eFromY(y);
         }
         long startYearEpochDay = (y - 1) * 365 + (y / 4);
         long doy0 = ed - startYearEpochDay;
-        switch (requiredRule.ordinal) {
+        switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: return ((doy0 % 30) + 1);
             case DAY_OF_YEAR_ORDINAL: return (doy0 + 1);
             case PACKED_YEAR_DAY_ORDINAL: return packPyd(y, doy0 + 1);

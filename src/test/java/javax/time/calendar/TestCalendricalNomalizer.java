@@ -48,7 +48,7 @@ import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.MonthOfYear.FEBRUARY;
 import static javax.time.calendar.MonthOfYear.JUNE;
 import static javax.time.calendar.MonthOfYear.OCTOBER;
@@ -87,7 +87,7 @@ public class TestCalendricalNomalizer {
     private static final DateTimeField FIELD_MOQ_3 = MONTH_OF_QUARTER.field(3);
     private static final DateTimeField FIELD_DOW_4 = DAY_OF_WEEK.field(4);
     private static final DateTimeField FIELD_DOY_181 = DAY_OF_YEAR.field(181);
-    private static final DateTimeField FIELD_ZEM_2011_06 = ZERO_EPOCH_MONTH.field(2011 * 12 + 6 - 1);
+    private static final DateTimeField FIELD_ZEM_2011_06 = EPOCH_MONTH.field(2011 * 12 + 6 - 1);
     private static final DateTimeField FIELD_AWOM_5 = ALIGNED_WEEK_OF_MONTH.field(5);
     private static final DateTimeField FIELD_AP_0 = AMPM_OF_DAY.field(0);
     private static final DateTimeField FIELD_HAP_11 = HOUR_OF_AMPM.field(11);
@@ -143,7 +143,7 @@ public class TestCalendricalNomalizer {
             {cals(DATE_TIME_2011_06_30_11_30), DayOfWeek.rule(), THURSDAY},
             {cals(DATE_TIME_2011_06_30_11_30), YEAR, FIELD_YEAR_2011},
             {cals(DATE_TIME_2011_06_30_11_30), QUARTER_OF_YEAR, FIELD_QOY_2},
-            {cals(DATE_TIME_2011_06_30_11_30), ZERO_EPOCH_MONTH, FIELD_ZEM_2011_06},
+            {cals(DATE_TIME_2011_06_30_11_30), EPOCH_MONTH, FIELD_ZEM_2011_06},
             {cals(DATE_TIME_2011_06_30_11_30), MONTH_OF_YEAR, FIELD_MOY_06},
             {cals(DATE_TIME_2011_06_30_11_30), MONTH_OF_QUARTER, FIELD_MOQ_3},
             {cals(DATE_TIME_2011_06_30_11_30), DAY_OF_YEAR, FIELD_DOY_181},
@@ -177,7 +177,7 @@ public class TestCalendricalNomalizer {
             {cals(DATE_2011_06_30), DayOfWeek.rule(), THURSDAY},
             {cals(DATE_2011_06_30), YEAR, FIELD_YEAR_2011},
             {cals(DATE_2011_06_30), QUARTER_OF_YEAR, FIELD_QOY_2},
-            {cals(DATE_2011_06_30), ZERO_EPOCH_MONTH, FIELD_ZEM_2011_06},
+            {cals(DATE_2011_06_30), EPOCH_MONTH, FIELD_ZEM_2011_06},
             {cals(DATE_2011_06_30), MONTH_OF_YEAR, FIELD_MOY_06},
             {cals(DATE_2011_06_30), MONTH_OF_QUARTER, FIELD_MOQ_3},
             {cals(DATE_2011_06_30), DAY_OF_YEAR, FIELD_DOY_181},
@@ -211,7 +211,7 @@ public class TestCalendricalNomalizer {
             {cals(YEAR_2011), DayOfWeek.rule(), null},
             {cals(YEAR_2011), YEAR, FIELD_YEAR_2011},
             {cals(YEAR_2011), QUARTER_OF_YEAR, null},
-            {cals(YEAR_2011), ZERO_EPOCH_MONTH, null},
+            {cals(YEAR_2011), EPOCH_MONTH, null},
             {cals(YEAR_2011), MONTH_OF_YEAR, null},
             {cals(YEAR_2011), MONTH_OF_QUARTER, null},
             {cals(YEAR_2011), DAY_OF_YEAR, null},
@@ -238,7 +238,7 @@ public class TestCalendricalNomalizer {
             {cals(YEAR_MONTH_2011_06), DayOfWeek.rule(), null},
             {cals(YEAR_MONTH_2011_06), YEAR, FIELD_YEAR_2011},
             {cals(YEAR_MONTH_2011_06), QUARTER_OF_YEAR, FIELD_QOY_2},
-            {cals(YEAR_MONTH_2011_06), ZERO_EPOCH_MONTH, FIELD_ZEM_2011_06},
+            {cals(YEAR_MONTH_2011_06), EPOCH_MONTH, FIELD_ZEM_2011_06},
             {cals(YEAR_MONTH_2011_06), MONTH_OF_YEAR, FIELD_MOY_06},
             {cals(YEAR_MONTH_2011_06), MONTH_OF_QUARTER, FIELD_MOQ_3},
             {cals(YEAR_MONTH_2011_06), DAY_OF_YEAR, null},
@@ -265,7 +265,7 @@ public class TestCalendricalNomalizer {
             {cals(MONTH_DAY_06_30), DayOfWeek.rule(), null},
             {cals(MONTH_DAY_06_30), YEAR, null},
             {cals(MONTH_DAY_06_30), QUARTER_OF_YEAR, FIELD_QOY_2},
-            {cals(MONTH_DAY_06_30), ZERO_EPOCH_MONTH, null},
+            {cals(MONTH_DAY_06_30), EPOCH_MONTH, null},
             {cals(MONTH_DAY_06_30), MONTH_OF_YEAR, FIELD_MOY_06},
             {cals(MONTH_DAY_06_30), MONTH_OF_QUARTER, FIELD_MOQ_3},
             {cals(MONTH_DAY_06_30), DAY_OF_YEAR, null},
@@ -292,7 +292,7 @@ public class TestCalendricalNomalizer {
             {cals(Q2), DayOfWeek.rule(), null},
             {cals(Q2), YEAR, null},
             {cals(Q2), QUARTER_OF_YEAR, FIELD_QOY_2},
-            {cals(Q2), ZERO_EPOCH_MONTH, null},
+            {cals(Q2), EPOCH_MONTH, null},
             {cals(Q2), MONTH_OF_YEAR, null},
             {cals(Q2), MONTH_OF_QUARTER, null},
             {cals(Q2), DAY_OF_YEAR, null},
@@ -319,7 +319,7 @@ public class TestCalendricalNomalizer {
             {cals(JUNE), DayOfWeek.rule(), null},
             {cals(JUNE), YEAR, null},
             {cals(JUNE), QUARTER_OF_YEAR, FIELD_QOY_2},
-            {cals(JUNE), ZERO_EPOCH_MONTH, null},
+            {cals(JUNE), EPOCH_MONTH, null},
             {cals(JUNE), MONTH_OF_YEAR, FIELD_MOY_06},
             {cals(JUNE), MONTH_OF_QUARTER, FIELD_MOQ_3},
             {cals(JUNE), DAY_OF_YEAR, null},
@@ -346,7 +346,7 @@ public class TestCalendricalNomalizer {
             {cals(THURSDAY), DayOfWeek.rule(), THURSDAY},
             {cals(THURSDAY), YEAR, null},
             {cals(THURSDAY), QUARTER_OF_YEAR, null},
-            {cals(THURSDAY), ZERO_EPOCH_MONTH, null},
+            {cals(THURSDAY), EPOCH_MONTH, null},
             {cals(THURSDAY), MONTH_OF_YEAR, null},
             {cals(THURSDAY), MONTH_OF_QUARTER, null},
             {cals(THURSDAY), DAY_OF_YEAR, null},
@@ -373,7 +373,7 @@ public class TestCalendricalNomalizer {
             {cals(TIME_11_30), DayOfWeek.rule(), null},
             {cals(TIME_11_30), YEAR, null},
             {cals(TIME_11_30), QUARTER_OF_YEAR, null},
-            {cals(TIME_11_30), ZERO_EPOCH_MONTH, null},
+            {cals(TIME_11_30), EPOCH_MONTH, null},
             {cals(TIME_11_30), MONTH_OF_YEAR, null},
             {cals(TIME_11_30), MONTH_OF_QUARTER, null},
             {cals(TIME_11_30), DAY_OF_YEAR, null},

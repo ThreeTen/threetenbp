@@ -249,7 +249,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFrom(DateTimeRule valueRule, long epSecs) {
+    protected long doExtractFrom(DateTimeRule valueRule, long pdt) {
         switch (ordinal) {
             case SECOND_OF_MINUTE_ORDINAL:
             case SECOND_OF_HOUR_ORDINAL:
@@ -261,21 +261,22 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case CLOCK_HOUR_OF_DAY_ORDINAL:
             case HOUR_OF_DAY_ORDINAL:
             case AMPM_OF_DAY_ORDINAL:
-                return extractFromSod(epSecs, this);
+                return extractFromSod(pdt, this);
             case DAY_OF_WEEK_ORDINAL:
+            case EPOCH_DAY_ORDINAL:
+                return extractFromEd(epochDaysFromPackedDateTime(pdt), this);
             case DAY_OF_MONTH_ORDINAL:
             case DAY_OF_YEAR_ORDINAL:
-            case EPOCH_DAY_ORDINAL:
             case ALIGNED_WEEK_OF_MONTH_ORDINAL:
             case ALIGNED_WEEK_OF_YEAR_ORDINAL:
             case MONTH_OF_QUARTER_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL:
             case QUARTER_OF_YEAR_ORDINAL:
-            case ZERO_EPOCH_MONTH_ORDINAL:
+            case EPOCH_MONTH_ORDINAL:
             case YEAR_ORDINAL:
             case PACKED_EPOCH_MONTH_DAY_ORDINAL:
             case PACKED_YEAR_DAY_ORDINAL:
-                return extractFromEd(epochDaysFromEpochSecs(epSecs), this);
+                return extractFromPemd(packedDateFromPackedDateTime(pdt), this);
         }
         return Long.MIN_VALUE;
     }
@@ -299,7 +300,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (EPOCH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
-                case (EPOCH_DAY_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
+                case (EPOCH_DAY_ORDINAL << 16) + EPOCH_MONTH_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + YEAR_ORDINAL:
                 case (EPOCH_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
@@ -310,11 +311,11 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (MONTH_OF_YEAR_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (MONTH_OF_YEAR_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
                 case (MONTH_OF_YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
-                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
-                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
-                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
-                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
-                case (ZERO_EPOCH_MONTH_ORDINAL << 16) + YEAR_ORDINAL:
+                case (EPOCH_MONTH_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
+                case (EPOCH_MONTH_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
+                case (EPOCH_MONTH_ORDINAL << 16) + EPOCH_MONTH_ORDINAL:
+                case (EPOCH_MONTH_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
+                case (EPOCH_MONTH_ORDINAL << 16) + YEAR_ORDINAL:
                 case (QUARTER_OF_YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (YEAR_ORDINAL << 16) + YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
@@ -325,7 +326,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
-                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
+                case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + EPOCH_MONTH_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + YEAR_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
@@ -338,7 +339,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + ALIGNED_WEEK_OF_YEAR_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + MONTH_OF_QUARTER_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + MONTH_OF_YEAR_ORDINAL:
-                case (PACKED_YEAR_DAY_ORDINAL << 16) + ZERO_EPOCH_MONTH_ORDINAL:
+                case (PACKED_YEAR_DAY_ORDINAL << 16) + EPOCH_MONTH_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + YEAR_ORDINAL:
                 case (PACKED_YEAR_DAY_ORDINAL << 16) + PACKED_EPOCH_MONTH_DAY_ORDINAL:
@@ -396,7 +397,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
             case EPOCH_DAY_ORDINAL: return extractFromEd(value, requiredRule);
             case MONTH_OF_YEAR_ORDINAL: return extractFromMoy(value, requiredRule);
-            case ZERO_EPOCH_MONTH_ORDINAL: return extractFromEm(value, requiredRule);
+            case EPOCH_MONTH_ORDINAL: return extractFromEm(value, requiredRule);
             case PACKED_EPOCH_MONTH_DAY_ORDINAL: return extractFromPemd(value, requiredRule);
             case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, requiredRule);
         }
@@ -506,7 +507,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
             case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromEd(ed)));
             case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
-            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pemdFromEd(ed));
+            case EPOCH_MONTH_ORDINAL: return emFromPemd(pemdFromEd(ed));
             case YEAR_ORDINAL: return yFromEm(emFromPemd(pemdFromEd(ed)));
             case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromEd(ed);
             case PACKED_YEAR_DAY_ORDINAL: return pydFromEd(ed);
@@ -564,7 +565,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemd)));
             case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemd));
             case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemd)));
-            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pemd);
+            case EPOCH_MONTH_ORDINAL: return emFromPemd(pemd);
             case YEAR_ORDINAL: return yFromEm(emFromPemd(pemd));
             case PACKED_YEAR_DAY_ORDINAL: return pyFromPemd(pemd);
         }
@@ -634,7 +635,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromPyd(pyd))));
             case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromPyd(pyd)));
             case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromPyd(pyd))));
-            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pyd);
+            case EPOCH_MONTH_ORDINAL: return emFromPemd(pyd);
             case YEAR_ORDINAL: return yFromPyd(pyd);
             case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromPyd(pyd);
         }
@@ -728,7 +729,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_MONTH_ORDINAL: {
                 // year-month-day
                 DateTimeField dom = engine.getField(DAY_OF_MONTH, false);
-                DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
+                DateTimeField epm = engine.getField(EPOCH_MONTH, false);
                 if (dom != null && epm != null) {
                     int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
                     int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
@@ -752,7 +753,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 // year-month-alignedWeek-day
                 DateTimeField dow = engine.getField(DAY_OF_WEEK, false);
                 DateTimeField wom = engine.getField(ALIGNED_WEEK_OF_MONTH, false);
-                DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
+                DateTimeField epm = engine.getField(EPOCH_MONTH, false);
                 if (dow != null && wom != null && epm != null) {
                     int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
                     int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;
@@ -826,7 +827,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
                     case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
                     case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
-                    case ZERO_EPOCH_MONTH_ORDINAL: return field(MathUtils.safeAdd(MathUtils.safeMultiply(date.getYear(), 12L), date.getMonthOfYear().ordinal()));
+                    case EPOCH_MONTH_ORDINAL: return field(MathUtils.safeAdd(MathUtils.safeMultiply(date.getYear(), 12L), date.getMonthOfYear().ordinal()));
                     case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
                     case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
                     case YEAR_ORDINAL: return field(date.getYear());
@@ -963,7 +964,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static final int ALIGNED_WEEK_OF_YEAR_ORDINAL = 26 * 16;
     private static final int MONTH_OF_QUARTER_ORDINAL =     27 * 16;
     private static final int MONTH_OF_YEAR_ORDINAL =        28 * 16;
-    private static final int ZERO_EPOCH_MONTH_ORDINAL =     29 * 16;
+    private static final int EPOCH_MONTH_ORDINAL =     29 * 16;
     private static final int QUARTER_OF_YEAR_ORDINAL =      30 * 16;
     private static final int WEEK_BASED_YEAR_ORDINAL =      31 * 16;
     private static final int YEAR_ORDINAL =                 32 * 16;
@@ -1197,13 +1198,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     public static final ISODateTimeRule ALIGNED_WEEK_OF_YEAR = new ISODateTimeRule(ALIGNED_WEEK_OF_YEAR_ORDINAL, "AlignedWeekOfYear", WEEKS, YEARS, 1, 53, 53, DAY_OF_YEAR);
 
     /**
-     * The rule for the zero-epoch-month field.
+     * The rule for the epoch-month field.
      * <p>
-     * This field counts months sequentially from 0000-01-01 in the ISO year
+     * This field counts months sequentially from 1970-01-01 in the ISO year
      * numbering scheme, see {@link #YEAR}.
      * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
      */
-    public static final ISODateTimeRule ZERO_EPOCH_MONTH = new ISODateTimeRule(ZERO_EPOCH_MONTH_ORDINAL, "ZeroEpochMonth", MONTHS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
+    public static final ISODateTimeRule EPOCH_MONTH = new ISODateTimeRule(EPOCH_MONTH_ORDINAL, "EpochMonth", MONTHS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
     /**
      * The rule for the month-of-quarter field in the ISO chronology.
      * <p>
@@ -1211,7 +1212,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The first month of the quarter is 1 and the last is 3.
      * Each quarter lasts exactly three months.
      */
-    public static final ISODateTimeRule MONTH_OF_QUARTER = new ISODateTimeRule(MONTH_OF_QUARTER_ORDINAL, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3, 3, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule MONTH_OF_QUARTER = new ISODateTimeRule(MONTH_OF_QUARTER_ORDINAL, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3, 3, EPOCH_MONTH);
     /**
      * The rule for the month-of-year field in the ISO chronology.
      * <p>
@@ -1222,7 +1223,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The enum {@link MonthOfYear} should be used wherever possible in applications
      * when referring to the day of the week to avoid hard-coding the values.
      */
-    public static final ISODateTimeRule MONTH_OF_YEAR = new ISODateTimeRule(MONTH_OF_YEAR_ORDINAL, "MonthOfYear", MONTHS, YEARS, 1, 12, 12, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule MONTH_OF_YEAR = new ISODateTimeRule(MONTH_OF_YEAR_ORDINAL, "MonthOfYear", MONTHS, YEARS, 1, 12, 12, EPOCH_MONTH);
     /**
      * The rule for the quarter-of-year field in the ISO chronology.
      * <p>
@@ -1230,7 +1231,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The first quarter of the year is 1 and the last is 4.
      * Each quarter lasts exactly three months.
      */
-    public static final ISODateTimeRule QUARTER_OF_YEAR = new ISODateTimeRule(QUARTER_OF_YEAR_ORDINAL, "QuarterOfYear", QUARTERS, YEARS, 1, 4, 4, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule QUARTER_OF_YEAR = new ISODateTimeRule(QUARTER_OF_YEAR_ORDINAL, "QuarterOfYear", QUARTERS, YEARS, 1, 4, 4, EPOCH_MONTH);
     /**
      * The rule for the year field in the ISO chronology.
      * <p>
@@ -1246,7 +1247,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * exists. This roughly equates to 1 BC/BCE, however the alignment is
      * not exact as explained above.
      */
-    public static final ISODateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, ZERO_EPOCH_MONTH);
+    public static final ISODateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, EPOCH_MONTH);
 
     /**
      * The rule for the week-based-year field in the ISO chronology.
@@ -1308,7 +1309,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY, AMPM_OF_DAY,
         DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY,
         ALIGNED_WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, ALIGNED_WEEK_OF_YEAR,
-        MONTH_OF_QUARTER, MONTH_OF_YEAR, ZERO_EPOCH_MONTH,
+        MONTH_OF_QUARTER, MONTH_OF_YEAR, EPOCH_MONTH,
         QUARTER_OF_YEAR,
         WEEK_BASED_YEAR,
         YEAR,

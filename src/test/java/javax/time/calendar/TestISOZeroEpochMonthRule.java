@@ -49,14 +49,14 @@ public class TestISOZeroEpochMonthRule extends AbstractTestDateTimeRule {
 
     @Override
     protected DateTimeRule rule() {
-        return ISODateTimeRule.ZERO_EPOCH_MONTH;
+        return ISODateTimeRule.EPOCH_MONTH;
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeRule rule = ISODateTimeRule.ZERO_EPOCH_MONTH;
+        DateTimeRule rule = ISODateTimeRule.EPOCH_MONTH;
         assertEquals(rule.getType(), DateTimeField.class);
         assertEquals(rule.getName(), "ZeroEpochMonth");
         assertEquals(rule.getValueRange(), DateTimeRuleRange.of(Long.MIN_VALUE, Long.MAX_VALUE));

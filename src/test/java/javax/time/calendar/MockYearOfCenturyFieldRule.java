@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.ISOPeriodUnit.CENTURIES;
 import static javax.time.calendar.ISOPeriodUnit.YEARS;
 
@@ -53,7 +53,7 @@ public final class MockYearOfCenturyFieldRule extends DateTimeRule implements Se
 
     /** Constructor. */
     private MockYearOfCenturyFieldRule() {
-        super("YearOfCentury", YEARS, CENTURIES, 0, 99, ZERO_EPOCH_MONTH);
+        super("YearOfCentury", YEARS, CENTURIES, 0, 99, EPOCH_MONTH);
     }
 
     private Object readResolve() {

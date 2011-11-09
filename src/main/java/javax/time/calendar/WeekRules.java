@@ -32,7 +32,7 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
@@ -581,7 +581,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
         }
         @Override
         protected void normalize(CalendricalEngine engine) {
-            DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
+            DateTimeField epm = engine.getField(EPOCH_MONTH, false);
             if (epm != null) {
                 int year = MathUtils.safeToInt(MathUtils.floorDiv(epm.getValue(), 12));
                 int moy = MathUtils.floorMod(epm.getValue(), 12) + 1;

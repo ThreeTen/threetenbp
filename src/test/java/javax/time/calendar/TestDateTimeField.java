@@ -47,7 +47,7 @@ import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
-import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
 import static javax.time.calendar.MonthOfYear.SEPTEMBER;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
@@ -294,8 +294,8 @@ public class TestDateTimeField {
             // convert
             {DateTimeField.of(MONTH_OF_YEAR, 6), QUARTER_OF_YEAR, 2},
             {DateTimeField.of(MONTH_OF_YEAR, 6), MONTH_OF_QUARTER, 3},
-            {DateTimeField.of(ZERO_EPOCH_MONTH, 2012 * 12 + 3), MONTH_OF_YEAR, 4},
-            {DateTimeField.of(ZERO_EPOCH_MONTH, 2012 * 12 + 3), YEAR, 2012},
+            {DateTimeField.of(EPOCH_MONTH, 2012 * 12 + 3), MONTH_OF_YEAR, 4},
+            {DateTimeField.of(EPOCH_MONTH, 2012 * 12 + 3), YEAR, 2012},
             {DateTimeField.of(HOUR_OF_DAY, 14), HOUR_OF_AMPM, 2},
             {DateTimeField.of(SECOND_OF_DAY, 15 * 3600 + 74), HOUR_OF_DAY, 15},
             {DateTimeField.of(SECOND_OF_DAY, 25 * 3600 + 74), HOUR_OF_DAY, 25},
