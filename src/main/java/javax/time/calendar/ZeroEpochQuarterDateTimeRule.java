@@ -44,7 +44,6 @@ import static org.testng.Assert.assertEquals;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDateTimeRule;
 
 /**
@@ -111,12 +110,13 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
     //-----------------------------------------------------------------------
     @Override
     protected DateTimeRuleRange doValueRangeFor(DateTimeRule requiredRule, long pemd, long nod) {
+    	// TODO: handled by ISODTRule, but useful as test of design
         if (requiredRule.equals(DAY_OF_MONTH)) {
             long zeq = doExtractFrom(this, pemd, nod);
             long qoy = qoyFromZeq(zeq);
             if (qoy == 1) {
                 long year = yFromZeq(zeq);
-                return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 29 : 28, 31);
+                return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 29 : 28, 31);
             } else {
                 return DateTimeRuleRange.of(1, 30, 31);
             }

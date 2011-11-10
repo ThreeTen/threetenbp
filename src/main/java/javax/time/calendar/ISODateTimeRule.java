@@ -219,6 +219,15 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     }
                     return RANGE[(int) (moy - 1)];
                 }
+                long qoy = QUARTER_OF_YEAR.extractFrom(valueRule, pemd, nod);
+                if (qoy != Long.MIN_VALUE) {
+                	if (qoy == 1) {
+	                    long year = YEAR.extractFrom(valueRule, pemd, nod);
+	                	int min = (year != Long.MIN_VALUE && ISOChronology.isLeapYear(year) ? 29 : 28);
+						return DateTimeRuleRange.of(1, min, 31);
+	                }
+                    return DateTimeRuleRange.of(1, 30, 31);
+                }
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
@@ -230,18 +239,8 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 break;
             }
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
-                long moy = MONTH_OF_YEAR.extractFrom(valueRule, pemd, nod);
-                if (moy != Long.MIN_VALUE) {
-                    if (moy == 2) {
-                        long year = YEAR.extractFrom(valueRule, pemd, nod);
-                        if (year != Long.MIN_VALUE) {
-                            return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 5 : 4);
-                        }
-                    } else {
-                        return DateTimeRuleRange.of(1, 5);
-                    }
-                }
-                break;
+            	DateTimeRuleRange moyRange = MONTH_OF_YEAR.doValueRangeFrom(valueRule, pemd, nod);
+                return DateTimeRuleRange.of(1, moyRange.getSmallestMaximum() > 28 ? 5 : 4);
             }
         }
         return super.getValueRange();
