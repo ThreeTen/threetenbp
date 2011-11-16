@@ -46,7 +46,7 @@ import org.testng.annotations.Test;
  *
  * @author Michael Nascimento Santos
  */
-@Test
+@Test(groups={"implementation"})
 public class TestMathUtils {
 
     @SuppressWarnings("rawtypes")
