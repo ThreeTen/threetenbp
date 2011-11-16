@@ -279,19 +279,32 @@
 	<target name="tck" depends="compile-core-tests,compile-tzdb,runtck,run-sigtest" description="run tck acceptance criteria" />
 
     <!-- ==================================================================== -->
+    <macrodef name="do-coverage">
+        <attribute name="runclass" />
+        <attribute name="htmlout" />
+        <attribute name="txtout" />
+        <sequential>
+            <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
+            <mkdir dir="${build.coverage}" />
+            <emmajava libclasspathref="emma.lib"
+                      fullmetadata="yes"
+                      sourcepath="${core.main}"
+                      classname="@{runclass}"
+                      classpathref="coverage.path">
+                   <jvmarg value="-Xmx512M" />
+                   <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
+                <txt outfile="${build.coverage}/@{txtout}" />
+                <html outfile="${build.coverage}/@{htmlout}" metrics="method:90,block:90,line:90,class:95" />
+            </emmajava>
+        </sequential>
+    </macrodef>
+
+    <target name="tck-coverage" depends="compile-core-tests" description="tck coverage">
+        <do-coverage runclass="javax.time.AllTCK" htmlout="tck.html" txtout="tck.txt" />
+    </target>
+
     <target name="coverage" depends="compile-core-tests" description="test coverage">
-        <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
-        <mkdir dir="${build.coverage}" />
-           <emmajava libclasspathref="emma.lib"
-                   fullmetadata="yes"
-                   sourcepath="${core.main}"
-                   classname="javax.time.AllTest"
-                classpathref="coverage.path">
-               <jvmarg value="-Xmx512M" />
-               <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
-               <txt outfile="${build.coverage}/coverage.txt" />
-               <html outfile="${build.coverage}/coverage.html" metrics="method:90,block:90,line:90,class:95" />
-        </emmajava>
+        <do-coverage runclass="javax.time.AllTest" htmlout="coverage.html" txtout="coverage.txt" />
     </target>
 
     <!-- ==================================================================== -->
