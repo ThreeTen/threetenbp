@@ -266,7 +266,7 @@
 	 </test-sigtest-task>
 	</target>
 
-    <target name="runtck" >
+    <target name="runtck" depends="compile-core-tests" >
 	    <taskdef resource="testngtasks" classpathref="tck.path" />
         <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck">
             <jvmarg value="-Xmx512M" />
@@ -276,7 +276,7 @@
         </testng>
 	</target>
 	
-	<target name="tck" depends="compile-core-tests,compile-tzdb,runtck,run-sigtest" description="run tck acceptance criteria" />
+	<target name="tck" depends="compile-tzdb,runtck,run-sigtest" description="run tck acceptance criteria" />
 
     <!-- ==================================================================== -->
     <macrodef name="do-coverage">
