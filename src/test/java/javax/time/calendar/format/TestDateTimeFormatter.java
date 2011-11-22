@@ -71,7 +71,7 @@ public class TestDateTimeFormatter {
     private NumberPrinterParser numberPP;
     private CompositePrinterParser compPP;
 
-    @BeforeMethod
+    @BeforeMethod(groups={"tck"})
     public void setUp() {
         printers = new ArrayList<DateTimePrinter>();
         parsers = new ArrayList<DateTimeParser>();
