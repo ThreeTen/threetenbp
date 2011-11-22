@@ -59,30 +59,32 @@ public class TestDateTimeParseContext {
     private DateTimeFormatSymbols symbols;
     private DateTimeParseContext context;
 
-    @BeforeMethod
+    @BeforeMethod(groups={"tck"})
     public void setUp() {
         symbols = DateTimeFormatSymbols.of(Locale.GERMANY);
         context = new DateTimeParseContext(Locale.GERMANY, symbols);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_constructor() throws Exception {
         assertEquals(context.getSymbols(), symbols);
         assertEquals(context.getLocale(), Locale.GERMANY);
         assertEquals(context.getParsed().size(), 0);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_constructor_nullLocale() throws Exception {
         new DateTimeParseContext(null, DateTimeFormatSymbols.STANDARD);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_constructor_nullSymbols() throws Exception {
         new DateTimeParseContext(Locale.GERMANY, null);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_caseSensitive() throws Exception {
         assertEquals(context.isCaseSensitive(), true);
         context.setCaseSensitive(false);
@@ -90,6 +92,7 @@ public class TestDateTimeParseContext {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_subSequenceEquals() throws Exception {
         assertEquals(context.subSequenceEquals("ABBA", 0, "abba", 0, 4), false);
         assertEquals(context.subSequenceEquals("ABBA", 0, "ABBA", 1, 3), false);
@@ -104,6 +107,7 @@ public class TestDateTimeParseContext {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_strict() throws Exception {
         assertEquals(context.isStrict(), true);
         context.setStrict(false);
@@ -111,24 +115,29 @@ public class TestDateTimeParseContext {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getParsed_DateTimeRule_null() throws Exception {
         assertEquals(context.getParsed((DateTimeRule) null), null);
     }
 
+    @Test(groups={"tck"})
     public void test_getParsed_DateTimeRule_notPresent() throws Exception {
         assertEquals(context.getParsed(DAY_OF_MONTH), null);
     }
 
     //-------------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getParsed_Class_null() throws Exception {
         assertEquals(context.getParsed((Class<?>) null), null);
     }
 
+    @Test(groups={"tck"})
     public void test_getParsed_Class_notPresent() throws Exception {
         assertEquals(context.getParsed(LocalDate.class), null);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getParsed_modifyList() throws Exception {
         assertEquals(context.getParsed().size(), 0);
         
@@ -143,6 +152,7 @@ public class TestDateTimeParseContext {
     }
 
     //-------------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_setParsed() throws Exception {
         context.setParsed(LocalDate.of(2010, 6, 30));
         assertEquals(context.getParsed().size(), 1);
@@ -154,12 +164,13 @@ public class TestDateTimeParseContext {
         assertEquals(context.getParsed().get(1), LocalDate.of(2010, 9, 23));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_setParsed_null() throws Exception {
         context.setParsed(null);
     }
 
     //-------------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_setParsedField() throws Exception {
         context.setParsedField(YEAR, 2008);
         assertEquals(context.getParsed().size(), 1);
@@ -171,12 +182,13 @@ public class TestDateTimeParseContext {
         assertEquals(context.getParsed().get(1), MONTH_OF_YEAR.field(6));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_setParsedField_null() throws Exception {
         context.setParsedField(null, 2008);
     }
 
     //-------------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toCalendricalMerger() throws Exception {
         context.setParsedField(YEAR, 2008);
         context.setParsedField(MONTH_OF_YEAR, 6);
@@ -191,6 +203,7 @@ public class TestDateTimeParseContext {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString() throws Exception {
         context.setParsedField(YEAR, 2008);
         context.setParsedField(MONTH_OF_YEAR, 6);
