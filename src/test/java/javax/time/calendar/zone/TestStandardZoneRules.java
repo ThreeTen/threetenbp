@@ -65,7 +65,7 @@ import org.testng.annotations.Test;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-@Test
+@Test(groups="implementation")
 public class TestStandardZoneRules {
 
     private static final ZoneOffset OFFSET_ZERO = ZoneOffset.ofHours(0);
