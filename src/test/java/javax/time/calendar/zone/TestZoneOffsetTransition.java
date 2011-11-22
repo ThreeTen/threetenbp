@@ -127,7 +127,6 @@ public class TestZoneOffsetTransition {
         assertSerializable(test);
     }
 
-    @Test(groups={"tck"})
     private void assertSerializable(ZoneOffsetTransition test) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
