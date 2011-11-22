@@ -47,7 +47,7 @@ import org.testng.annotations.Test;
  *
  * @author Stephen Colebourne
  */
-@Test
+@Test(groups={"implementation"})
 public class TestReducedParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------
@@ -70,7 +70,6 @@ public class TestReducedParser extends AbstractTestPrinterParser {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
     public void test_parse_fieldRangeIgnored() throws Exception {
         ReducedPrinterParser pp = new ReducedPrinterParser(DAY_OF_YEAR, 3, 10);
         int newPos = pp.parse(parseContext, "456", 0);
@@ -131,14 +130,14 @@ public class TestReducedParser extends AbstractTestPrinterParser {
        };
     }
 
-    @Test(dataProvider="Parse", groups={"tck"})
+    @Test(dataProvider="Parse")
     public void test_parse(ReducedPrinterParser pp, String input, int pos, int parseLen, Integer parseVal) {
         int newPos = pp.parse(parseContext, input, pos);
         assertEquals(newPos, parseLen);
         assertParsed(YEAR, parseVal);
     }
 
-    @Test(dataProvider="Parse", groups={"tck"})
+    @Test(dataProvider="Parse")
     public void test_parseLenient(ReducedPrinterParser pp, String input, int pos, int parseLen, Integer parseVal) {
         parseContext.setStrict(false);
         int newPos = pp.parse(parseContext, input, pos);
