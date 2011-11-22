@@ -63,17 +63,17 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     // factory
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_nullTransition() {
         ZoneOffsetTransition.of(null, OFFSET_0200);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_nullOffset() {
         ZoneOffsetTransition.of(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_sameOffset() {
         ZoneOffsetTransition.of(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), OFFSET_0200);
     }
@@ -81,6 +81,7 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     // getters
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getters_gap() throws Exception {
         OffsetDateTime odt = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0300);
@@ -96,6 +97,7 @@ public class TestZoneOffsetTransition {
         assertSerializable(test);
     }
 
+    @Test(groups={"tck"})
     public void test_getters_overlap() throws Exception {
         OffsetDateTime odt = OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300);
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0200);
@@ -111,18 +113,21 @@ public class TestZoneOffsetTransition {
         assertSerializable(test);
     }
 
+    @Test(groups={"tck"})
     public void test_serialization_unusual1() throws Exception {
         OffsetDateTime odt = OffsetDateTime.of(Year.MAX_YEAR, 12, 31, 1, 31, 53, ZoneOffset.of("+02:04:56"));
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, ZoneOffset.of("-10:02:34"));
         assertSerializable(test);
     }
 
+    @Test(groups={"tck"})
     public void test_serialization_unusual2() throws Exception {
         OffsetDateTime odt = OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 12, 1, 3, ZoneOffset.of("+02:04:56"));
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, ZoneOffset.of("+10:02:34"));
         assertSerializable(test);
     }
 
+    @Test(groups={"tck"})
     private void assertSerializable(ZoneOffsetTransition test) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -140,6 +145,7 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     // isValidOffset()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_isValidOffset_gap() {
         OffsetDateTime odt = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0300);
@@ -150,6 +156,7 @@ public class TestZoneOffsetTransition {
         assertEquals(test.isValidOffset(OFFSET_0400), false);
     }
 
+    @Test(groups={"tck"})
     public void test_isValidOffset_overlap() {
         OffsetDateTime odt = OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300);
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0200);
@@ -163,6 +170,7 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_compareTo() {
         Instant i = Instant.ofEpochSecond(23875287L);
         ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i.minusSeconds(1), OFFSET_0200), OFFSET_0300);
@@ -182,6 +190,7 @@ public class TestZoneOffsetTransition {
         assertEquals(c.compareTo(c) == 0, true);
     }
 
+    @Test(groups={"tck"})
     public void test_compareTo_sameInstant() {
         Instant i = Instant.ofEpochSecond(23875287L);
         ZoneOffsetTransition a = new ZoneOffsetTransition(OffsetDateTime.ofInstant(i, OFFSET_0200), OFFSET_0300);
@@ -204,6 +213,7 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals() {
         OffsetDateTime odtA = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
         ZoneOffsetTransition a1 = new ZoneOffsetTransition(odtA, OFFSET_0300);
@@ -228,6 +238,7 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_hashCode_floatingWeek_gap_notEndOfDay() {
         OffsetDateTime odtA = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
         ZoneOffsetTransition a1 = new ZoneOffsetTransition(odtA, OFFSET_0300);
@@ -243,12 +254,14 @@ public class TestZoneOffsetTransition {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString_gap() {
         OffsetDateTime odt = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0300);
         assertEquals(test.toString(), "Transition[Gap at 2010-03-31T01:00+02:00 to +03:00]");
     }
 
+    @Test(groups={"tck"})
     public void test_toString_overlap() {
         OffsetDateTime odt = OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300);
         ZoneOffsetTransition test = new ZoneOffsetTransition(odt, OFFSET_0200);
