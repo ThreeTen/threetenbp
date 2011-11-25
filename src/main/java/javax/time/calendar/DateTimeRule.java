@@ -301,12 +301,30 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final DateTimeRuleRange calculateValueRangeFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
-        return valueRule.doValueRangeFor(this, packedDateTime, nanoOfSecond);
+    /**
+     * Gets the valid range of values for this rule using the specified
+     * context to refine the accuracy of the response.
+     * <p>
+     * This uses the specified date-time information as a context to return a
+     * more accurate range of valid values than {@link #getValueRange()}.
+     * The result of this method may still be inaccurate if there is insufficient
+     * information in the specified date-time.
+     * For example, the 'DayOfMonth' rule has values from 1 to between 28 and 31.
+     * If the contextual date-time specifies 'February', then the returned range will
+     * be from 1 to between 28 and 29. If the contextual date-time specifies
+     * 'February' in a leap year, then the returned range will be from 1 to 29 exactly.
+     *
+     * @param contextualRule  the rule part of the standard format date-time, not null
+     * @param contextualPackedDateTime  the packed-date-time part of the standard format date-time
+     * @param contextualNanoOfSecond  the nano-of-second part of the standard format date-time
+     * @return the valid range of values given the contextual date-time, not null
+     */
+    public final DateTimeRuleRange calculateValueRangeFrom(DateTimeRule contextualRule, long contextualPackedDateTime, int contextualNanoOfSecond) {
+        return contextualRule.doValueRangeFor(this, contextualPackedDateTime, contextualNanoOfSecond);
     }
 
-    protected DateTimeRuleRange doValueRangeFor(DateTimeRule targetRule, long packedDateTime, int nanoOfSecond) {
-        return targetRule.doValueRangeFrom(this, packedDateTime, nanoOfSecond);
+    protected DateTimeRuleRange doValueRangeFor(DateTimeRule contextualRule, long packedDateTime, int nanoOfSecond) {
+        return contextualRule.doValueRangeFrom(this, packedDateTime, nanoOfSecond);
     }
 
     protected DateTimeRuleRange doValueRangeFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
