@@ -115,17 +115,17 @@ public class TestPeriodParser {
 
     @Test(dataProvider="Parse")
     public void factory_parse(String text, Period expected) {
-    	Period p = new PeriodParser(text).parse();
+        Period p = new PeriodParser(text).parse();
         assertEquals(p, expected);
     }
 
     @Test(dataProvider="Parse")
     public void factory_parse_comma(String text, Period expected) {
-    	if (text.contains(".")) {
-    		text = text.replace('.', ',');
-    		Period p = new PeriodParser(text).parse();
-        	assertEquals(p, expected);
-    	}
+        if (text.contains(".")) {
+            text = text.replace('.', ',');
+            Period p = new PeriodParser(text).parse();
+            assertEquals(p, expected);
+        }
     }
 
     @DataProvider(name="ParseFailures")
@@ -200,14 +200,14 @@ public class TestPeriodParser {
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooBig() {
-    	String text = "PT" + Long.MAX_VALUE + "1S";
-    	new PeriodParser(text).parse();
+        String text = "PT" + Long.MAX_VALUE + "1S";
+        new PeriodParser(text).parse();
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooBig_decimal() {
-    	String text = "PT" + Long.MAX_VALUE + "1.1S";
-    	new PeriodParser(text).parse();
+        String text = "PT" + Long.MAX_VALUE + "1.1S";
+        new PeriodParser(text).parse();
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
@@ -224,25 +224,25 @@ public class TestPeriodParser {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_null() {
-    	new PeriodParser(null).parse();
+        new PeriodParser(null).parse();
     }
 
     @DataProvider(name="ParseSequenceFailures")
     Object[][] provider_factory_parseSequenceFailures() {
         return new Object[][] {
-        	{"P0M0Y0DT0H0M0.0S"},
-        	{"P0M0D0YT0H0M0.0S"},
-        	{"P0S0D0YT0S0M0.0H"},
-        	{"PT0M0H0.0S"},
-        	{"PT0M0H"},
-        	{"PT0S0M"},
-        	{"PT0.0M2S"},
+            {"P0M0Y0DT0H0M0.0S"},
+            {"P0M0D0YT0H0M0.0S"},
+            {"P0S0D0YT0S0M0.0H"},
+            {"PT0M0H0.0S"},
+            {"PT0M0H"},
+            {"PT0S0M"},
+            {"PT0.0M2S"},
         };
     }
 
     @Test(dataProvider="ParseSequenceFailures", expectedExceptions=CalendricalParseException.class)
     public void factory_parse_badSequence(String text) {
-    	new PeriodParser(text).parse();
+        new PeriodParser(text).parse();
     }
 
 }

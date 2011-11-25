@@ -120,7 +120,7 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
     //-----------------------------------------------------------------------
     @Override
     protected DateTimeRuleRange doValueRangeFor(DateTimeRule requiredRule, long pemd, long nod) {
-    	// TODO: handled by ISODTRule, but useful as test of design
+        // TODO: handled by ISODTRule, but useful as test of design
         if (requiredRule.equals(DAY_OF_MONTH)) {
             long zeq = doExtractFrom(this, pemd, nod);
             long qoy = qoyFromZeq(zeq);

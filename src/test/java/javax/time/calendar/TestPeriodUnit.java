@@ -227,7 +227,7 @@ public class TestPeriodUnit {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getEquivalentPeriod_null() {
-    	BASIC.toEquivalent((PeriodUnit) null);
+        BASIC.toEquivalent((PeriodUnit) null);
     }
 
     //-----------------------------------------------------------------------
