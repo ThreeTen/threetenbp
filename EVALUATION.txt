@@ -1,0 +1,18 @@
+
+Design
+This branch provides general purpose long-long calculations between any two fields.
+Each conversion is registered.
+
+Problems
+Chronologies like Historic, where the cutover date possibilities are semi-infinite
+results in any registration based approach naturally leads to an unbound map
+    
+Culd only register concept calculation, with details like week-rules or historic cutover read
+from passed in rule, but then how would you look up the calc in the map?
+    
+Pushes design back to just focusing on rules or chronologies
+    
+Same problem would apply to triple-based approach, rather than pair-based
+
+Next step
+Try only calculating children.
