@@ -1,0 +1,14 @@
+
+Design
+This branch provides general purpose long-long calculations between any two fields
+focussed only on the derivation of children, not of parents.
+Each conversion is registered.
+
+Problems
+This strategy doesn't leave anywhere for the epoch-days to be extracted from pyd
+(as it only allows extraction of child from parent)
+which means that some generic kind of convertToEpochDays() would be needed
+which is more specific than the previous branch (pairstrategy), and not much less code
+
+Next step
+Try using a standard data format.
