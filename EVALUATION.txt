@@ -1,0 +1,12 @@
+
+Design
+This branch uses a standard format of a long packed-date and a long nano-of-day.
+All calculations are performed off the same standard fields.
+Other fields are handled by checking if A is derivable from B.
+
+Problems
+This branch works well, but suffers from the problem of being unable to define a DateTimeRule that
+specifies a DateTime. As such, there is no rule to pass in that can be used for the A/B derivation check.
+
+Next step
+Try using long secs and int fraction.
