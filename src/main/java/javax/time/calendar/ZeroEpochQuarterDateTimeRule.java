@@ -34,9 +34,13 @@ package javax.time.calendar;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_MONTH;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.ISOPeriodUnit.QUARTERS;
 import static org.testng.Assert.assertEquals;
@@ -77,6 +81,12 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
         assertEquals(DAY_OF_MONTH.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4, 0), 5);
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extractFrom(EthiopicDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
 //        assertEquals(EthiopicDateTimeRule.PACKED_YEAR_DAY.extractFrom(CopticDateTimeRule.PACKED_YEAR_DAY, 4 * 86400), 4);
+        
+        assertEquals(SECOND_OF_MINUTE.extractFrom(SECOND_OF_DAY, 0, (2L * 3600 + 3 * 60 + 4) * 1000000000), 4);
+        assertEquals(MINUTE_OF_HOUR.extractFrom(SECOND_OF_DAY, 0, (2L * 3600 + 3 * 60 + 4) * 1000000000), 3);
+        assertEquals(HOUR_OF_DAY.extractFrom(SECOND_OF_DAY, 0, (2L * 3600 + 3 * 60 + 4) * 1000000000), 2);
+        
+        assertEquals(SECOND_OF_MINUTE.setInto(1, SECOND_OF_DAY, 0, (2L * 3600 + 3 * 60 + 4) * 1000000000)[1], (2L * 3600 + 3 * 60 + 1) * 1000000000);
         System.out.println("OK");
     }
 

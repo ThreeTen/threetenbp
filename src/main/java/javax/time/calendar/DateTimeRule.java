@@ -324,6 +324,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     protected boolean doIsExtractableFrom(DateTimeRule parentRule) {
+    	// NOTE: could base this (at least as a default) on base rule & period units
+    	// same applies to calculation
         return false;
     }
 
@@ -359,7 +361,28 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return total - ISOChronology.DAYS_0000_TO_1970;
     }
 
-    //-----------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    /**
+     * Sets the value of this rule into the specified date-time.
+     * 
+     * @param newValue  the new value to set, in terms of this rule
+     * @param valueRule  the rule to extract from, not null
+     * @param basePemd  the base packed date value to set into
+     * @param baseNod  the base nanos-of-day value to set into
+     * @return the new date-time expressed as an array of packed-date/nano-of-day, null if unable to set
+     */
+    public final long[] setInto(long newValue, DateTimeRule valueRule, long basePemd, long baseNod) {
+        if (isExtractableFrom(valueRule)) {
+            return doSetInto(newValue, valueRule, basePemd, baseNod);
+        }
+        return null;
+    }
+
+    protected long[] doSetInto(long newValue, DateTimeRule valueRule, long basePemd, long baseNod) {
+		return null;
+	}
+
+	//-----------------------------------------------------------------------
     /**
      * Override point to allow the rule to normalize the fields in the merger.
      * <p>

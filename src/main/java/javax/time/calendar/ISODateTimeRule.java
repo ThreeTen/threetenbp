@@ -37,7 +37,7 @@ import static javax.time.calendar.ISOChronology.MINUTES_PER_HOUR;
 import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
 import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
 import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_HOUR;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
 import static javax.time.calendar.ISOChronology.SECONDS_PER_MINUTE;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.HOURS;
@@ -275,7 +275,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case EPOCH_MONTH_ORDINAL:
             case YEAR_ORDINAL:
             case PACKED_EPOCH_MONTH_DAY_ORDINAL:
-                return extractFromPemd(pemd, this);
+                return extractFromPemd(pemd);
         }
         return Long.MIN_VALUE;
     }
@@ -286,6 +286,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             ISODateTimeRule isoRule = (ISODateTimeRule) parentRule;
             // TODO: bitmap
             switch ((isoRule.ordinal << 16) + ordinal) {
+            	case (SECOND_OF_MINUTE_ORDINAL << 16) + SECOND_OF_MINUTE_ORDINAL:
+            	case (SECOND_OF_DAY_ORDINAL << 16) + SECOND_OF_MINUTE_ORDINAL:
+                case (SECOND_OF_DAY_ORDINAL << 16) + SECOND_OF_DAY_ORDINAL:
+                case (SECOND_OF_DAY_ORDINAL << 16) + MINUTE_OF_HOUR_ORDINAL:
+                case (SECOND_OF_DAY_ORDINAL << 16) + HOUR_OF_DAY_ORDINAL:
+                case (MINUTE_OF_HOUR_ORDINAL << 16) + MINUTE_OF_HOUR_ORDINAL:
+                case (HOUR_OF_DAY_ORDINAL << 16) + HOUR_OF_DAY_ORDINAL:
                 case (DAY_OF_WEEK_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
                 case (DAY_OF_MONTH_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
                 case (DAY_OF_MONTH_ORDINAL << 16) + ALIGNED_WEEK_OF_MONTH_ORDINAL:
@@ -335,8 +342,42 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return false;
     }
 
-    //-----------------------------------------------------------------------
-    private static long simple(long value, long div, int mod) {
+
+    @Override
+    protected long[] doSetInto(long newValue, DateTimeRule valueRule, long basePemd, long baseNod) {
+        switch (ordinal) {
+	        case NANO_OF_SECOND_ORDINAL:
+	        case NANO_OF_DAY_ORDINAL:
+	        case SECOND_OF_MINUTE_ORDINAL:
+	        case SECOND_OF_HOUR_ORDINAL:
+	        case SECOND_OF_DAY_ORDINAL:
+	        case MINUTE_OF_HOUR_ORDINAL:
+	        case MINUTE_OF_DAY_ORDINAL:
+	        case CLOCK_HOUR_OF_AMPM_ORDINAL:
+	        case HOUR_OF_AMPM_ORDINAL:
+	        case CLOCK_HOUR_OF_DAY_ORDINAL:
+	        case HOUR_OF_DAY_ORDINAL:
+	        case AMPM_OF_DAY_ORDINAL:
+	            return new long[] {basePemd, setIntoNod(newValue, baseNod)};
+	        case DAY_OF_WEEK_ORDINAL:
+	        case EPOCH_DAY_ORDINAL:
+	        case DAY_OF_MONTH_ORDINAL:
+	        case DAY_OF_YEAR_ORDINAL:
+	        case ALIGNED_WEEK_OF_MONTH_ORDINAL:
+	        case ALIGNED_WEEK_OF_YEAR_ORDINAL:
+	        case MONTH_OF_QUARTER_ORDINAL:
+	        case MONTH_OF_YEAR_ORDINAL:
+	        case QUARTER_OF_YEAR_ORDINAL:
+	        case EPOCH_MONTH_ORDINAL:
+	        case YEAR_ORDINAL:
+	        case PACKED_EPOCH_MONTH_DAY_ORDINAL:
+	            return new long[] {setIntoPemd(newValue, basePemd), baseNod};
+        }
+        return null;
+    }
+
+	//-----------------------------------------------------------------------
+    private static long simpleGet(long value, long div, int mod) {
         return (value / div) % mod;
     }
 
@@ -349,20 +390,38 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         switch (ordinal) {
             case NANO_OF_SECOND_ORDINAL: return (nod % NANOS_PER_SECOND);
             case NANO_OF_DAY_ORDINAL: return nod;
-        }
-        long sod = (nod / NANOS_PER_SECOND);
-        switch (ordinal) {
-            case SECOND_OF_DAY_ORDINAL: return sod;
-            case SECOND_OF_MINUTE_ORDINAL: return (sod % SECONDS_PER_MINUTE);
-            case MINUTE_OF_HOUR_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_HOUR);
-            case MINUTE_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_DAY);
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, 12), 12);
-            case HOUR_OF_AMPM_ORDINAL: return simple(sod, SECONDS_PER_HOUR, 12);
-            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY), 24);
-            case HOUR_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY);
-            case AMPM_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR * 12, 2);
+            case SECOND_OF_MINUTE_ORDINAL: return simpleGet(nod, NANOS_PER_SECOND, SECONDS_PER_MINUTE);
+            case SECOND_OF_DAY_ORDINAL: return simpleGet(nod, NANOS_PER_SECOND, SECONDS_PER_DAY);
+            case MINUTE_OF_HOUR_ORDINAL: return simpleGet(nod, NANOS_PER_MINUTE, MINUTES_PER_HOUR);
+            case MINUTE_OF_DAY_ORDINAL: return simpleGet(nod, NANOS_PER_MINUTE, MINUTES_PER_DAY);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simpleGet(nod, NANOS_PER_HOUR, 12), 12);
+            case HOUR_OF_AMPM_ORDINAL: return simpleGet(nod, NANOS_PER_HOUR, 12);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simpleGet(nod, NANOS_PER_HOUR, HOURS_PER_DAY), 24);
+            case HOUR_OF_DAY_ORDINAL: return simpleGet(nod, NANOS_PER_HOUR, HOURS_PER_DAY);
+            case AMPM_OF_DAY_ORDINAL: return simpleGet(nod, NANOS_PER_HOUR * 12, 2);
         }
         return Long.MIN_VALUE;
+    }
+
+    private long setIntoNod(long newValue, long baseNod) {
+        switch (ordinal) {
+	        case NANO_OF_SECOND_ORDINAL: return simpleSetNod(newValue, baseNod, 1);
+	        case NANO_OF_DAY_ORDINAL: return newValue;
+            case SECOND_OF_MINUTE_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_SECOND);
+            case SECOND_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_SECOND);
+            case MINUTE_OF_HOUR_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_MINUTE);
+            case MINUTE_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_MINUTE);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return simpleSetNod((newValue == 12 ? 0 : newValue), baseNod, NANOS_PER_HOUR);
+            case HOUR_OF_AMPM_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_HOUR);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return simpleSetNod((newValue == 24 ? 0 : newValue), baseNod, NANOS_PER_HOUR);
+            case HOUR_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_HOUR);
+            case AMPM_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_HOUR * 12);
+        }
+        return Long.MIN_VALUE;
+	}
+
+    private long simpleSetNod(long newValue, long baseNod, long unitNanos) {
+        return baseNod + (newValue - extractFromNod(baseNod)) * unitNanos;
     }
 
     static long packHmsn(int hod, int moh, int som, int nos) {
@@ -409,8 +468,8 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
-    private static long extractFromPemd(long pemd, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
+    private long extractFromPemd(long pemd) {
+        switch (ordinal) {
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(edFromPemd(pemd));
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemd);
             case DAY_OF_YEAR_ORDINAL: return doyFromPemd(pemd);
@@ -422,6 +481,24 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemd)));
             case EPOCH_MONTH_ORDINAL: return emFromPemd(pemd);
             case YEAR_ORDINAL: return yFromEm(emFromPemd(pemd));
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private long setIntoPemd(long newValue, long basePemd) {
+    	// TODO
+        switch (ordinal) {
+            case DAY_OF_WEEK_ORDINAL: return 0;
+            case DAY_OF_MONTH_ORDINAL: return basePemd + (newValue - extractFromPemd(basePemd));
+            case DAY_OF_YEAR_ORDINAL: return 0;
+            case EPOCH_DAY_ORDINAL: return pemdFromEd(newValue);
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return 0;
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return 0;
+            case MONTH_OF_QUARTER_ORDINAL: return basePemd + (newValue - extractFromPemd(basePemd)) * 32;
+            case MONTH_OF_YEAR_ORDINAL: return basePemd + (newValue - extractFromPemd(basePemd)) * 32;
+            case QUARTER_OF_YEAR_ORDINAL: return basePemd + (newValue - extractFromPemd(basePemd)) * 32 * 3;
+            case EPOCH_MONTH_ORDINAL: return basePemd + (newValue - extractFromPemd(basePemd)) * 32;  // TODO: overflow?
+            case YEAR_ORDINAL: return basePemd + (newValue - extractFromPemd(basePemd)) * 32;  // TODO: overflow?
         }
         return Long.MIN_VALUE;
     }
