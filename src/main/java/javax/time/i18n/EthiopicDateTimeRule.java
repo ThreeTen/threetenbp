@@ -91,13 +91,13 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    protected DateTimeRuleRange doValueRangeFrom(DateTimeRule valueRule, long pemd, long nod) {
+    protected DateTimeRuleRange doValueRangeFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
-                long moy = MONTH_OF_YEAR.extractFrom(valueRule, pemd, nod);
+                long moy = MONTH_OF_YEAR.extractFrom(valueRule, packedDateTime, nanoOfSecond);
                 if (moy != Long.MIN_VALUE) {
                     if (moy == 13) {
-                        long year = YEAR.extractFrom(valueRule, pemd, nod);
+                        long year = YEAR.extractFrom(valueRule, packedDateTime, nanoOfSecond);
                         if (year != Long.MIN_VALUE) {
                             return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
                         }
@@ -109,7 +109,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
-                long year = YEAR.extractFrom(valueRule, pemd, nod);
+                long year = YEAR.extractFrom(valueRule, packedDateTime, nanoOfSecond);
                 if (year != Long.MIN_VALUE) {
                     return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
                 }
@@ -121,8 +121,8 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFrom(DateTimeRule valueRule, long pemd, long nod) {
-        return extractFromEd(epochDaysFromPackedDate(pemd));
+    protected long doExtractFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
+        return extractFromEd(epochDaysFromPackedDateTime(packedDateTime));
     }
 
     @Override

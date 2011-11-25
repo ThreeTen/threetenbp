@@ -184,7 +184,7 @@ public final class LocalTime
             return HOURS[hourOfDay];  // for performance
         }
         MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
-        return new LocalTime(ISODateTimeRule.packHmsn(hourOfDay, minuteOfHour, 0, 0));
+        return new LocalTime(hourOfDay * NANOS_PER_HOUR + minuteOfHour * NANOS_PER_MINUTE);
     }
 
     /**
@@ -207,7 +207,7 @@ public final class LocalTime
         }
         MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
         SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
-        return new LocalTime(ISODateTimeRule.packHmsn(hourOfDay, minuteOfHour, secondOfMinute, 0));
+        return new LocalTime(hourOfDay * NANOS_PER_HOUR + minuteOfHour * NANOS_PER_MINUTE + secondOfMinute * NANOS_PER_SECOND);
     }
 
     /**
@@ -230,7 +230,7 @@ public final class LocalTime
         MINUTE_OF_HOUR.checkValidValue(minuteOfHour);
         SECOND_OF_MINUTE.checkValidValue(secondOfMinute);
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
-        return new LocalTime(ISODateTimeRule.packHmsn(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond));
+        return new LocalTime(hourOfDay * NANOS_PER_HOUR + minuteOfHour * NANOS_PER_MINUTE + secondOfMinute * NANOS_PER_SECOND + nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------

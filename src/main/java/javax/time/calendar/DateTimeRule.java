@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Locale;
@@ -62,6 +64,14 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Bit shift for packed date-time.
+     */
+    static final int PDT_BITS = 22;
+    /**
+     * Bit mask for packed date-time.
+     */
+    static final long PDT_MASK = 4194304 - 1;  // 2 pow 22
 
     /**
      * The period unit, not null.
@@ -291,30 +301,33 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final DateTimeRuleRange calculateValueRangeFrom(DateTimeRule valueRule, long pemd, long nod) {
-        return valueRule.doValueRangeFor(this, pemd, nod);
+    public final DateTimeRuleRange calculateValueRangeFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
+        return valueRule.doValueRangeFor(this, packedDateTime, nanoOfSecond);
     }
 
-    protected DateTimeRuleRange doValueRangeFor(DateTimeRule targetRule, long pemd, long nod) {
-        return targetRule.doValueRangeFrom(this, pemd, nod);
+    protected DateTimeRuleRange doValueRangeFor(DateTimeRule targetRule, long packedDateTime, int nanoOfSecond) {
+        return targetRule.doValueRangeFrom(this, packedDateTime, nanoOfSecond);
     }
 
-    protected DateTimeRuleRange doValueRangeFrom(DateTimeRule valueRule, long pemd, long nod) {
+    protected DateTimeRuleRange doValueRangeFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
         return getValueRange();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Extracts the value of this rule from the specified rule.
+     * Extracts the value of this rule from another value expressed in standard format.
+     * <p>
+     * This calculates the value of this rule from the specified local instant.
+     * The constraints of the local instant are defined by the specified rule.
      * 
-     * @param valueRule  the rule to extract from
-     * @param pemd  the packed date value
-     * @param nod  the nanos-of-day value
+     * @param valueRule  the rule that constrains the specified local instant
+     * @param packedDateTime  the packed date-time local instant
+     * @param nanoOfSecond  the nano-of-second local instant
      * @return the value in terms of this rule, MIN_VALUE if unable to convert
      */
-    public final long extractFrom(DateTimeRule valueRule, long pemd, long nod) {
+    public final long extractFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
         if (isExtractableFrom(valueRule)) {
-            return doExtractFrom(valueRule, pemd, nod);
+            return doExtractFrom(valueRule, packedDateTime, nanoOfSecond);
         }
         return Long.MIN_VALUE;
     }
@@ -324,8 +337,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     protected boolean doIsExtractableFrom(DateTimeRule parentRule) {
-    	// NOTE: could base this (at least as a default) on base rule & period units
-    	// same applies to calculation
+        // NOTE: could base this (at least as a default) on base rule & period units
+        // same applies to calculation
         return false;
     }
 
@@ -333,13 +346,13 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return false;
     }
 
-    protected long doExtractFrom(DateTimeRule valueRule, long pemd, long nod) {
+    protected long doExtractFrom(DateTimeRule valueRule, long packedDateTime, int nanoOfSecond) {
         return Long.MIN_VALUE;
     }
 
     //-----------------------------------------------------------------------
-    protected static final long epochDaysFromPackedDate(long pemd) {
-        long em = (pemd / 32);
+    protected static final long epochDaysFromPackedDateTime(long packedDateTime) {
+        long em = (packedDateTime >> PDT_BITS);
         long year = (em / 12) + 1970;
         long y = year;
         long m = (em % 12) + 1;
@@ -351,7 +364,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             total -= y / -4 - y / -100 + y / -400;
         }
         total += ((367 * m - 362) / 12);
-        total += (pemd & 31);
+        total += ((packedDateTime & PDT_MASK) / SECONDS_PER_DAY);
         if (m > 2) {
             total--;
             if (ISOChronology.isLeapYear(year) == false) {
@@ -367,22 +380,22 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * 
      * @param newValue  the new value to set, in terms of this rule
      * @param valueRule  the rule to extract from, not null
-     * @param basePemd  the base packed date value to set into
-     * @param baseNod  the base nanos-of-day value to set into
-     * @return the new date-time expressed as an array of packed-date/nano-of-day, null if unable to set
+     * @param basePackedDateTime  the base packed date-time value to set into
+     * @param baseNanoOfSecond  the base nano-of-second
+     * @return the new date-time expressed as an array of packed-date-time/fraction, null if unable to set
      */
-    public final long[] setInto(long newValue, DateTimeRule valueRule, long basePemd, long baseNod) {
+    public final long[] setInto(long newValue, DateTimeRule valueRule, long basePackedDateTime, int baseNanoOfSecond) {
         if (isExtractableFrom(valueRule)) {
-            return doSetInto(newValue, valueRule, basePemd, baseNod);
+            return doSetInto(newValue, valueRule, basePackedDateTime, baseNanoOfSecond);
         }
         return null;
     }
 
-    protected long[] doSetInto(long newValue, DateTimeRule valueRule, long basePemd, long baseNod) {
-		return null;
-	}
+    protected long[] doSetInto(long newValue, DateTimeRule valueRule, long basePackedDateTime, int baseNanoOfSecond) {
+        return null;
+    }
 
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     /**
      * Override point to allow the rule to normalize the fields in the merger.
      * <p>

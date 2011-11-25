@@ -92,9 +92,9 @@ public final class LocalDate
     public static final LocalDate MAX_DATE = LocalDate.of(Year.MAX_YEAR, 12, 31);
 
     /**
-     * The packed epoch-month day-of-month value.
+     * The packed date-time value.
      */
-    private final long pemd;
+    private final long pdt;
 
     //-----------------------------------------------------------------------
     /**
@@ -192,10 +192,10 @@ public final class LocalDate
      */
     public static LocalDate ofEpochDay(long epochDay) {
         EPOCH_DAY.checkValidValue(epochDay);
-        long pemd = ISODateTimeRule.pemdFromEd(epochDay);
-        long year = YEAR.doExtractFrom(PACKED_EPOCH_MONTH_DAY, pemd, 0);
+        long pdt = ISODateTimeRule.pdtFromEd(epochDay);
+        long year = YEAR.doExtractFrom(PACKED_EPOCH_MONTH_DAY, pdt, 0);
         YEAR.checkValidValue(year);  // TODO: better validation
-        return new LocalDate(pemd);
+        return new LocalDate(pdt);
     }
 
     /**
@@ -295,18 +295,16 @@ public final class LocalDate
                         " is not valid for month " + month.name(), DAY_OF_MONTH);
             }
         }
-        return new LocalDate(ISODateTimeRule.packPemd(year, monthOfYear, dayOfMonth));
+        return new LocalDate(ISODateTimeRule.packPdt(year, monthOfYear, dayOfMonth, 0, 0, 0));
     }
 
     /**
      * Constructor, previously validated.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, valid for year-month, from 1 to 31
+     * @param pdt  the packed date-time, validated
      */
-    private LocalDate(long pemd) {
-        this.pemd = pemd;
+    private LocalDate(long pdt) {
+        this.pdt = pdt;
     }
 
     //-----------------------------------------------------------------------
@@ -341,7 +339,7 @@ public final class LocalDate
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
-        return (int) ISODateTimeRule.yFromEm(ISODateTimeRule.emFromPemd(pemd));
+        return (int) ISODateTimeRule.yFromEm(ISODateTimeRule.emFromPdt(pdt));
     }
 
     /**
@@ -354,7 +352,7 @@ public final class LocalDate
      * @return the month-of-year,  from 1 to 12
      */
     public int getMonthValue() {
-        return (int) ISODateTimeRule.moyFromEm(ISODateTimeRule.emFromPemd(pemd));
+        return (int) ISODateTimeRule.moyFromEm(ISODateTimeRule.emFromPdt(pdt));
     }
 
     /**
@@ -383,7 +381,7 @@ public final class LocalDate
      * @return the day-of-month, from 1 to 31
      */
     public int getDayOfMonth() {
-        return (int) ISODateTimeRule.domFromPemd(pemd);
+        return (int) ISODateTimeRule.domFromPdt(pdt);
     }
 
     /**
@@ -394,7 +392,7 @@ public final class LocalDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return (int) ISODateTimeRule.doyFromPemd(pemd);
+        return (int) ISODateTimeRule.doyFromPdt(pdt);
     }
 
     /**
@@ -1066,7 +1064,7 @@ public final class LocalDate
     }
 
     private long toEpochMonth() {
-        return ISODateTimeRule.emFromPemd(pemd);
+        return ISODateTimeRule.emFromPdt(pdt);
     }
 
     //-----------------------------------------------------------------------
@@ -1270,7 +1268,7 @@ public final class LocalDate
      * @return the Epoch Day equivalent to this date
      */
     public long toEpochDay() {
-        return DateTimeRule.epochDaysFromPackedDate(pemd);
+        return DateTimeRule.epochDaysFromPackedDateTime(pdt);
     }
 
     /**
@@ -1325,7 +1323,7 @@ public final class LocalDate
      * @return the comparator value, negative if less, positive if greater
      */
     public int compareTo(LocalDate other) {
-        return MathUtils.safeCompare(pemd, other.pemd);
+        return MathUtils.safeCompare(pdt, other.pdt);
     }
 
     /**
@@ -1337,7 +1335,7 @@ public final class LocalDate
      * @return true if this is after the specified date
      */
     public boolean isAfter(LocalDate other) {
-        return pemd > other.pemd;
+        return pdt > other.pdt;
     }
 
     /**
@@ -1349,7 +1347,7 @@ public final class LocalDate
      * @return true if this is before the specified date
      */
     public boolean isBefore(LocalDate other) {
-        return pemd < other.pemd;
+        return pdt < other.pdt;
     }
 
     //-----------------------------------------------------------------------
@@ -1368,7 +1366,7 @@ public final class LocalDate
         }
         if (obj instanceof LocalDate) {
             LocalDate other = (LocalDate) obj;
-            return (pemd == other.pemd);
+            return (pdt == other.pdt);
         }
         return false;
     }
@@ -1380,7 +1378,7 @@ public final class LocalDate
      */
     @Override
     public int hashCode() {
-        return (int) (pemd ^ (pemd >>> 32));
+        return (int) (pdt ^ (pdt >>> 32));
     }
 
     //-----------------------------------------------------------------------
