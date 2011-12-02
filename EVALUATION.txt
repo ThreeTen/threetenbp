@@ -1,0 +1,16 @@
+
+Design
+This branch uses a standard format of a long packed-date-time and an int nano-of-second.
+All calculations are performed off the same standard fields.
+Other fields are handled by checking if A is derivable from B.
+
+Problems
+This branch works well, but fails where you try to setDayOfYear() onto the format.
+Setting the value requires the year to be known, but there is no simple way to know
+if the year is known. For example, setting (doy = 278) will result in a different
+month and dom depending on the year. The situation is worst with doy 366.
+
+The problem is liable to be worse when dealing with other calendar systems.
+
+Next step
+Apply some kind of restriction to what can be derived from what.
