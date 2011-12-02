@@ -34,11 +34,10 @@ package javax.time.calendar;
 import static javax.time.calendar.ISOChronology.HOURS_PER_DAY;
 import static javax.time.calendar.ISOChronology.MINUTES_PER_DAY;
 import static javax.time.calendar.ISOChronology.MINUTES_PER_HOUR;
+import static javax.time.calendar.ISOChronology.NANOS_PER_DAY;
 import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
 import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
 import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_HOUR;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_MINUTE;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.HOURS;
 import static javax.time.calendar.ISOPeriodUnit.MILLIS;
@@ -205,162 +204,73 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
-    @Override
-    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
-        switch (ordinal) {
-            case DAY_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
-                if (moy != Long.MIN_VALUE) {
-                    if (moy == 2) {
-                        long year = valueRule.extract(value, YEAR);
-                        if (year != Long.MIN_VALUE) {
-                            return (ISOChronology.isLeapYear(year) ? RANGE_1_29 : RANGE_1_28);
-                        }
-                    }
-                    return RANGE[(int) (moy - 1)];
-                }
-                break;
-            }
-            case DAY_OF_YEAR_ORDINAL: {
-                long year = valueRule.extract(value, YEAR);
-                if (year != Long.MIN_VALUE) {
-                    int len = ISOChronology.isLeapYear(year) ? 366 : 365;
-                    return DateTimeRuleRange.of(1, len);
-                }
-                break;
-            }
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
-                if (moy != Long.MIN_VALUE) {
-                    if (moy == 2) {
-                        long year = valueRule.extract(value, YEAR);
-                        if (year != Long.MIN_VALUE) {
-                            return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 5 : 4);
-                        }
-                    } else {
-                        return DateTimeRuleRange.of(1, 5);
-                    }
-                }
-                break;
-            }
-        }
-        return super.getValueRange();
-    }
+//    @Override
+//    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
+//        switch (ordinal) {
+//            case DAY_OF_MONTH_ORDINAL: {
+//                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+//                if (moy != Long.MIN_VALUE) {
+//                    if (moy == 2) {
+//                        long year = valueRule.extract(value, YEAR);
+//                        if (year != Long.MIN_VALUE) {
+//                            return (ISOChronology.isLeapYear(year) ? RANGE_1_29 : RANGE_1_28);
+//                        }
+//                    }
+//                    return RANGE[(int) (moy - 1)];
+//                }
+//                break;
+//            }
+//            case DAY_OF_YEAR_ORDINAL: {
+//                long year = valueRule.extract(value, YEAR);
+//                if (year != Long.MIN_VALUE) {
+//                    int len = ISOChronology.isLeapYear(year) ? 366 : 365;
+//                    return DateTimeRuleRange.of(1, len);
+//                }
+//                break;
+//            }
+//            case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
+//                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+//                if (moy != Long.MIN_VALUE) {
+//                    if (moy == 2) {
+//                        long year = valueRule.extract(value, YEAR);
+//                        if (year != Long.MIN_VALUE) {
+//                            return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(year) ? 5 : 4);
+//                        }
+//                    } else {
+//                        return DateTimeRuleRange.of(1, 5);
+//                    }
+//                }
+//                break;
+//            }
+//        }
+//        return super.getValueRange();
+//    }
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
-        if (requiredRule instanceof ISODateTimeRule) {
-            return extractISO(value, (ISODateTimeRule) requiredRule);
+    protected long doExtractFromTime(long nanoOfDay) {
+        switch (ordinal) {
+            case NANO_OF_SECOND_ORDINAL: return simpleGet(nanoOfDay, 1, NANOS_PER_SECOND);
+            case NANO_OF_DAY_ORDINAL: return simpleGet(nanoOfDay, 1, NANOS_PER_DAY);
+            case SECOND_OF_MINUTE_ORDINAL: return simpleGet(nanoOfDay, 1, NANOS_PER_MINUTE);
+            case SECOND_OF_DAY_ORDINAL: return simpleGet(nanoOfDay, 1, NANOS_PER_DAY);
+            case MINUTE_OF_HOUR_ORDINAL: return simpleGet(nanoOfDay, NANOS_PER_MINUTE, MINUTES_PER_HOUR);
+            case MINUTE_OF_DAY_ORDINAL: return simpleGet(nanoOfDay, NANOS_PER_MINUTE, MINUTES_PER_DAY);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simpleGet(nanoOfDay, NANOS_PER_HOUR, 12), 12);
+            case HOUR_OF_AMPM_ORDINAL: return simpleGet(nanoOfDay, NANOS_PER_HOUR, 12);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simpleGet(nanoOfDay, NANOS_PER_HOUR, HOURS_PER_DAY), 24);
+            case HOUR_OF_DAY_ORDINAL: return simpleGet(nanoOfDay, NANOS_PER_HOUR, HOURS_PER_DAY);
+            case AMPM_OF_DAY_ORDINAL: return simpleGet(nanoOfDay, NANOS_PER_HOUR * 12, 2);
         }
         return Long.MIN_VALUE;
     }
 
-    //-----------------------------------------------------------------------
-    long extractISO(long value, ISODateTimeRule requiredRule) {
-        if (this == requiredRule) {
-            return value;
-        }
-        switch (ordinal) {
-            case NANO_OF_DAY_ORDINAL: return extractFromNod(value, requiredRule);
-            case SECOND_OF_DAY_ORDINAL: return extractFromSod(value, requiredRule);
-            case MINUTE_OF_DAY_ORDINAL: return extractFromMod(value, requiredRule);
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return extractFromChoap(value, requiredRule);
-            case HOUR_OF_AMPM_ORDINAL: return extractFromHoap(value, requiredRule);
-            case CLOCK_HOUR_OF_DAY_ORDINAL: return extractFromChod(value, requiredRule);
-            case HOUR_OF_DAY_ORDINAL: return extractFromHod(value, requiredRule);
-            case DAY_OF_MONTH_ORDINAL: return extractFromDom(value, requiredRule);
-            case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
-            case EPOCH_DAY_ORDINAL: return extractFromEd(value, requiredRule);
-            case MONTH_OF_YEAR_ORDINAL: return extractFromMoy(value, requiredRule);
-            case ZERO_EPOCH_MONTH_ORDINAL: return extractFromEm(value, requiredRule);
-            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return extractFromPemd(value, requiredRule);
-            case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, requiredRule);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long simple(long value, long div, int mod) {
-        return (value / div) % mod;
+    private static long simpleGet(long nanoOfDay, long div, long mod) {
+        return (nanoOfDay / div) % mod;
     }
 
     private static long clock(long value, int clock) {
         return (value == 0 ? clock : value);
-    }
-
-    //-------------------------------------------------------------------------
-    private static long extractFromNod(long nod, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case NANO_OF_SECOND_ORDINAL: return (nod % NANOS_PER_SECOND);
-            case SECOND_OF_MINUTE_ORDINAL:
-            case SECOND_OF_DAY_ORDINAL:
-            case MINUTE_OF_HOUR_ORDINAL:
-            case MINUTE_OF_DAY_ORDINAL:
-            case CLOCK_HOUR_OF_AMPM_ORDINAL:
-            case HOUR_OF_AMPM_ORDINAL:
-            case CLOCK_HOUR_OF_DAY_ORDINAL:
-            case HOUR_OF_DAY_ORDINAL:
-            case AMPM_OF_DAY_ORDINAL: {
-                return extractFromSod(nod / NANOS_PER_SECOND, requiredRule);
-            }
-        }
-        return Long.MIN_VALUE;
-    }
-
-    //-------------------------------------------------------------------------
-    private static long extractFromSod(long sod, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case SECOND_OF_MINUTE_ORDINAL: return (sod % SECONDS_PER_MINUTE);
-            case MINUTE_OF_HOUR_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_HOUR);
-            case MINUTE_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_MINUTE, MINUTES_PER_DAY);
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, 12), 12);
-            case HOUR_OF_AMPM_ORDINAL: return simple(sod, SECONDS_PER_HOUR, 12);
-            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY), 24);
-            case HOUR_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR, HOURS_PER_DAY);
-            case AMPM_OF_DAY_ORDINAL: return simple(sod, SECONDS_PER_HOUR * 12, 2);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    //-------------------------------------------------------------------------
-    private static long extractFromMod(long mod, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case MINUTE_OF_HOUR_ORDINAL: return (mod % MINUTES_PER_HOUR);
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(simple(mod, MINUTES_PER_HOUR, 12), 12);
-            case HOUR_OF_AMPM_ORDINAL: return simple(mod, MINUTES_PER_HOUR, 12);
-            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(simple(mod, MINUTES_PER_HOUR, HOURS_PER_DAY), 24);
-            case HOUR_OF_DAY_ORDINAL: return simple(mod, MINUTES_PER_HOUR, HOURS_PER_DAY);
-            case AMPM_OF_DAY_ORDINAL: return simple(mod, MINUTES_PER_HOUR * 12, 2);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    //-------------------------------------------------------------------------
-    private static long extractFromHod(long hod, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(hod % 12, 12);
-            case HOUR_OF_AMPM_ORDINAL: return (hod % 12);
-            case CLOCK_HOUR_OF_DAY_ORDINAL: return clock(hod, 24);
-            case AMPM_OF_DAY_ORDINAL: return simple(hod, 12, 2);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long extractFromHoap(long hoap, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case CLOCK_HOUR_OF_AMPM_ORDINAL: return clock(hoap, 12);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long extractFromChoap(long choap, ISODateTimeRule requiredRule) {
-        long hoap = (choap == 12 ? 0 : choap);
-        return HOUR_OF_AMPM.extractISO(hoap, requiredRule);
-    }
-
-    private static long extractFromChod(long chod, ISODateTimeRule requiredRule) {
-        long hod = (chod == 24 ? 0 : chod);
-        return HOUR_OF_DAY.extractISO(hod, requiredRule);
     }
 
     static long packHmsn(int hod, int moh, int som, int nos) {
@@ -372,69 +282,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
-    private static long extractFromEd(long ed, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
-            case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromEd(ed));
-            case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pydFromEd(ed));
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromEd(ed)));
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPyd(pydFromEd(ed)));
-            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
-            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromEd(ed)));
-            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromEd(ed))));
-            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pemdFromEd(ed));
-            case YEAR_ORDINAL: return yFromEm(emFromPemd(pemdFromEd(ed)));
-            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromEd(ed);
-            case PACKED_YEAR_DAY_ORDINAL: return pydFromEd(ed);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long pemdFromEd(long ed) {
-        // find the march-based year
-        long zeroDay = ed + ISOChronology.DAYS_0000_TO_1970 - 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
-        long adjust = 0;
-        if (zeroDay < 0) {
-            // adjust negative years to positive for calculation
-            long adjustCycles = (zeroDay + 1) / ISOChronology.DAYS_PER_CYCLE - 1;
-            adjust = adjustCycles * 400;
-            zeroDay += -adjustCycles * ISOChronology.DAYS_PER_CYCLE;
-        }
-        long yearEst = (400 * zeroDay + 591) / ISOChronology.DAYS_PER_CYCLE;
-        long doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
-        if (doyEst < 0) {
-            // fix estimate
-            yearEst--;
-            doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
-        }
-        yearEst += adjust;  // reset any negative year
-        int marchDoy0 = (int) doyEst;
-        
-        // convert march-based values back to january-based
-        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
-        int month = (marchMonth0 + 2) % 12 + 1;
-        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
-        long year = yearEst + marchMonth0 / 10;
-        
-        // pack
-        return packPemd(year, month, dom);
-    }
-
-    private static long pydFromEd(long ed) {
-        throw new UnsupportedOperationException();  // TODO
-    }
-
-    private static long dowFromEd(long ed) {
-        return MathUtils.floorMod(ed + 3, 7) + 1;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromPemd(long pemd, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case DAY_OF_WEEK_ORDINAL: return dowFromEd(edFromPemd(pemd));
+    @Override
+    protected long doExtractFromPackedDateTime(long pemd, long nod) {
+        switch (ordinal) {
+            case DAY_OF_WEEK_ORDINAL: return dowFromEd(epochDaysFromPackedDate(pemd));
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemd);
             case DAY_OF_YEAR_ORDINAL: return doyFromPemd(pemd);
-            case EPOCH_DAY_ORDINAL: return edFromPemd(pemd);
+            case EPOCH_DAY_ORDINAL: return epochDaysFromPackedDate(pemd);
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemd));
             case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPemd(pemd));
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemd)));
@@ -442,36 +296,22 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemd)));
             case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pemd);
             case YEAR_ORDINAL: return yFromEm(emFromPemd(pemd));
-            case PACKED_YEAR_DAY_ORDINAL: return pyFromPemd(pemd);
         }
         return Long.MIN_VALUE;
     }
 
-    private static long edFromPemd(long pemd) {
-        long em = emFromPemd(pemd);
-        long year = yFromEm(em);
-        long y = year;
-        long m = moyFromEm(em);
-        long total = 0;
-        total += 365 * y;
-        if (y >= 0) {
-            total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
-        } else {
-            total -= y / -4 - y / -100 + y / -400;
+    @Override
+    protected long doExtractFromEpochDaysTime(long ed, long nanoOfDay) {
+        switch (ordinal) {
+            case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
+            case EPOCH_DAY_ORDINAL: return ed;
         }
-        total += ((367 * m - 362) / 12);
-        total += domFromPemd(pemd) - 1;
-        if (m > 2) {
-            total--;
-            if (ISOChronology.isLeapYear(year) == false) {
-                total--;
-            }
-        }
-        return total - ISOChronology.DAYS_0000_TO_1970;
+        return doExtractFromPackedDateTime(packedDateFromEpochDays(ed), nanoOfDay);
     }
 
-    static long pyFromPemd(long pemd) {
-        return packPyd(yFromEm(emFromPemd(pemd)), doyFromPemd(pemd));
+    //-----------------------------------------------------------------------
+    private static long dowFromEd(long ed) {
+        return MathUtils.floorMod(ed + 3, 7) + 1;
     }
 
     static long domFromPemd(long pemd) {
@@ -490,64 +330,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return MonthOfYear.of((int) moy).getMonthStartDayOfYear(ISOChronology.isLeapYear(year)) + dom - 1;
     }
 
-    static long packPemd(long year, int month, int dom) {
-        return packPemd((year - 1970) * 12 + (month - 1), dom);
-    }
-
-    static long packPemd(long em, int dom) {
-        return (em << 5) + dom;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromPyd(long pyd, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case DAY_OF_WEEK_ORDINAL: return dowFromEd(edFromPyd(pyd));
-            case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemdFromPyd(pyd));
-            case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pyd);
-            case EPOCH_DAY_ORDINAL: return edFromPyd(pyd);
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemdFromPyd(pyd)));
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPyd(pyd));
-            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemdFromPyd(pyd))));
-            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(emFromPemd(pemdFromPyd(pyd)));
-            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(emFromPemd(pemdFromPyd(pyd))));
-            case ZERO_EPOCH_MONTH_ORDINAL: return emFromPemd(pyd);
-            case YEAR_ORDINAL: return yFromPyd(pyd);
-            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemdFromPyd(pyd);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long edFromPyd(long pyd) {
-        throw new UnsupportedOperationException();  // TODO
-    }
-
-    private static long pemdFromPyd(long pyd) {
-        throw new UnsupportedOperationException();  // TODO
-    }
-
-    private static long yFromPyd(long pyd) {
-        return (pyd >> 9);
-    }
-
-    private static long doyFromPyd(long pyd) {
-        return (pyd & 511);
-    }
-
-    static long packPyd(long year, long doy) {
-        return (year << 9) + doy;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromEm(long em, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(em));
-            case MONTH_OF_YEAR_ORDINAL: return moyFromEm(em);
-            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moyFromEm(em));
-            case YEAR_ORDINAL: return yFromEm(em);
-        }
-        return Long.MIN_VALUE;
-    }
-
     static long moyFromEm(long em) {
         return MathUtils.floorMod(em, 12) + 1;
     }
@@ -556,37 +338,12 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return MathUtils.floorDiv(em, 12) + 1970;
     }
 
-    //-----------------------------------------------------------------------
-    private static long extractFromDom(long dom, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(dom);
-        }
-        return Long.MIN_VALUE;
-    }
-
     private static long awomFromDom(long value) {
         return ((value - 1) / 7) + 1;
     }
 
-    //-----------------------------------------------------------------------
-    private static long extractFromDoy(long doy, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doy);
-        }
-        return Long.MIN_VALUE;
-    }
-
     private static long awoyFromDoy(long value) {
         return ((value - 1) / 7) + 1;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromMoy(long moy, ISODateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moy);
-            case QUARTER_OF_YEAR_ORDINAL: return qoyFromMoy(moy);
-        }
-        return Long.MIN_VALUE;
     }
 
     private static long qoyFromMoy(long value) {
@@ -845,7 +602,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static final int YEAR_ORDINAL =                 32 * 16;
     private static final int PACKED_MONTH_DAY_ORDINAL =     33 * 16;
     private static final int PACKED_EPOCH_MONTH_DAY_ORDINAL = 34 * 16;
-    private static final int PACKED_YEAR_DAY_ORDINAL =      35 * 16;
 
     //-----------------------------------------------------------------------
     /**
@@ -1108,6 +864,17 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      */
     public static final ISODateTimeRule QUARTER_OF_YEAR = new ISODateTimeRule(QUARTER_OF_YEAR_ORDINAL, "QuarterOfYear", QUARTERS, YEARS, 1, 4, 4, ZERO_EPOCH_MONTH);
     /**
+     * The rule for the week-based-year field in the ISO chronology.
+     * <p>
+     * This field is the year that results from calculating weeks with the ISO-8601 algorithm.
+     * See {@link #WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year} for details.
+     * <p>
+     * The week-based-year will either be 52 or 53 weeks long, depending on the
+     * result of the algorithm for a particular date.
+     */
+    public static final ISODateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(
+            WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, null);
+    /**
      * The rule for the year field in the ISO chronology.
      * <p>
      * This field counts years using the modern civil calendar system as defined
@@ -1123,18 +890,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * not exact as explained above.
      */
     public static final ISODateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, ZERO_EPOCH_MONTH);
-
-    /**
-     * The rule for the week-based-year field in the ISO chronology.
-     * <p>
-     * This field is the year that results from calculating weeks with the ISO-8601 algorithm.
-     * See {@link #WEEK_OF_WEEK_BASED_YEAR week-of-week-based-year} for details.
-     * <p>
-     * The week-based-year will either be 52 or 53 weeks long, depending on the
-     * result of the algorithm for a particular date.
-     */
-    public static final ISODateTimeRule WEEK_BASED_YEAR = new ISODateTimeRule(
-            WEEK_BASED_YEAR_ORDINAL, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR, null);
 
     /**
      * The rule for the the combined month-day in the ISO chronology.
@@ -1161,18 +916,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             PACKED_EPOCH_MONTH_DAY_ORDINAL, "PackedEpochMonthDay", DAYS, null, ((Year.MIN_YEAR * 12L) << 5) + 1, ((Year.MAX_YEAR * 12L) << 5) + 31, ((Year.MAX_YEAR * 12L) << 5) + 31, null);
 
     /**
-     * The rule for the the combined year-day in the ISO chronology.
-     * <p>
-     * This field combines the year and day-of-year values into a single {@code long}.
-     * The format uses the least significant 5 bits for the unsigned day-of-month and the remaining
-     * bits for the signed count of months from the 1970-01-01 epoch.
-     * <p>
-     * This field is intended primarily for internal use.
-     */
-    public static final ISODateTimeRule PACKED_YEAR_DAY = new ISODateTimeRule(
-            PACKED_YEAR_DAY_ORDINAL, "PackedYearDay", DAYS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, null);
-
-    /**
      * Cache of rules for deserialization.
      * Indices must match ordinal passed to rule constructor.
      */
@@ -1188,6 +931,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         QUARTER_OF_YEAR,
         WEEK_BASED_YEAR,
         YEAR,
+        PACKED_MONTH_DAY, PACKED_EPOCH_MONTH_DAY
     };
 
 }

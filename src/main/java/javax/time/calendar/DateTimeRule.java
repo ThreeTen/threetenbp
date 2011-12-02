@@ -304,30 +304,90 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final long extract(long value, DateTimeRule requiredRule) {
-        if (this.equals(requiredRule)) {
-            return value;
-        }
-        long result = doExtractFromThis(value, requiredRule);
-        if (result != Long.MIN_VALUE) {
-            return result;
-        }
-        return requiredRule.doExtractFromOther(this, value);
+    public final long extractFromTime(long nanoOfDay) {
+        return doExtractFromTime(nanoOfDay);
     }
 
-    protected static final long extractValue(DateTimeRule valueRule, long value, DateTimeRule requiredRule) {
-        if (valueRule.equals(requiredRule)) {
-            return value;
-        }
-        return valueRule.doExtractFromThis(value, requiredRule);
-    }
-
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
+    protected long doExtractFromTime(long nanoOfDay) {
         return Long.MIN_VALUE;
     }
 
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        return Long.MIN_VALUE;
+    public final long extractFromPackedDateTime(long packedDate, long nanoOfDay) {
+        return doExtractFromPackedDateTime(packedDate, nanoOfDay);
+    }
+
+    protected long doExtractFromPackedDateTime(long packedDate, long nanoOfDay) {
+        return doExtractFromEpochDaysTime(epochDaysFromPackedDate(packedDate), nanoOfDay);
+    }
+
+    public final long extractFromEpochDaysTime(long epochDays, long nanoOfDay) {
+        return doExtractFromEpochDaysTime(epochDays, nanoOfDay);
+    }
+
+    protected long doExtractFromEpochDaysTime(long epochDays, long nanoOfDay) {
+        return doExtractFromEpochDaysTime(packedDateFromEpochDays(epochDays), nanoOfDay);
+    }
+
+    //-----------------------------------------------------------------------
+    protected static long epochDaysFromPackedDate(long pemd) {
+        long em = (pemd / 32);
+        long year = (em / 12) + 1970;
+        long y = year;
+        long m = (em % 12) + 1;
+        long total = 0;
+        total += 365 * y;
+        if (y >= 0) {
+            total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+        } else {
+            total -= y / -4 - y / -100 + y / -400;
+        }
+        total += ((367 * m - 362) / 12);
+        total += (pemd & 31);
+        if (m > 2) {
+            total--;
+            if (ISOChronology.isLeapYear(year) == false) {
+                total--;
+            }
+        }
+        return total - ISOChronology.DAYS_0000_TO_1970;
+    }
+
+    protected static long packedDateFromEpochDays(long ed) {
+        // find the march-based year
+        long zeroDay = ed + ISOChronology.DAYS_0000_TO_1970 - 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
+        long adjust = 0;
+        if (zeroDay < 0) {
+            // adjust negative years to positive for calculation
+            long adjustCycles = (zeroDay + 1) / ISOChronology.DAYS_PER_CYCLE - 1;
+            adjust = adjustCycles * 400;
+            zeroDay += -adjustCycles * ISOChronology.DAYS_PER_CYCLE;
+        }
+        long yearEst = (400 * zeroDay + 591) / ISOChronology.DAYS_PER_CYCLE;
+        long doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        if (doyEst < 0) {
+            // fix estimate
+            yearEst--;
+            doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        }
+        yearEst += adjust;  // reset any negative year
+        int marchDoy0 = (int) doyEst;
+        
+        // convert march-based values back to january-based
+        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
+        int month = (marchMonth0 + 2) % 12 + 1;
+        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
+        long year = yearEst + marchMonth0 / 10;
+        
+        // pack
+        return packPemd(year, month, dom);
+    }
+
+    protected static long packPemd(long year, int month, int dom) {
+        return packPemd((year - 1970) * 12 + (month - 1), dom);
+    }
+
+    protected static long packPemd(long em, int dom) {
+        return (em << 5) + dom;
     }
 
     //-----------------------------------------------------------------------
