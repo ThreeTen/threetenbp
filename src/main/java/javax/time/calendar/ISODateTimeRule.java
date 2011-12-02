@@ -328,6 +328,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 case (EPOCH_MONTH_ORDINAL << 16) + YEAR_ORDINAL:
                 case (QUARTER_OF_YEAR_ORDINAL << 16) + QUARTER_OF_YEAR_ORDINAL:
                 case (YEAR_ORDINAL << 16) + YEAR_ORDINAL:
+                case (PACKED_DATE_TIME_ORDINAL << 16) + PACKED_DATE_TIME_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_WEEK_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_MONTH_ORDINAL:
                 case (PACKED_EPOCH_MONTH_DAY_ORDINAL << 16) + DAY_OF_YEAR_ORDINAL:
@@ -347,68 +348,57 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return false;
     }
 
-//    @Override
-//    protected long[] doSetInto(long newValue, DateTimeRule valueRule, long basePackedDateTime, long baseFraction9dp) {
-//        switch (ordinal) {
-//            case NANO_OF_SECOND_ORDINAL:
-//            case NANO_OF_DAY_ORDINAL:
-//            case SECOND_OF_MINUTE_ORDINAL:
-//            case SECOND_OF_HOUR_ORDINAL:
-//            case SECOND_OF_DAY_ORDINAL:
-//            case MINUTE_OF_HOUR_ORDINAL:
-//            case MINUTE_OF_DAY_ORDINAL:
-//            case CLOCK_HOUR_OF_AMPM_ORDINAL:
-//            case HOUR_OF_AMPM_ORDINAL:
-//            case CLOCK_HOUR_OF_DAY_ORDINAL:
-//            case HOUR_OF_DAY_ORDINAL:
-//            case AMPM_OF_DAY_ORDINAL:
-//                return new long[] {basePackedDateTime, setIntoNod(newValue, baseFraction9dp)};
-//            case DAY_OF_WEEK_ORDINAL:
-//            case EPOCH_DAY_ORDINAL:
-//            case DAY_OF_MONTH_ORDINAL:
-//            case DAY_OF_YEAR_ORDINAL:
-//            case ALIGNED_WEEK_OF_MONTH_ORDINAL:
-//            case ALIGNED_WEEK_OF_YEAR_ORDINAL:
-//            case MONTH_OF_QUARTER_ORDINAL:
-//            case MONTH_OF_YEAR_ORDINAL:
-//            case QUARTER_OF_YEAR_ORDINAL:
-//            case EPOCH_MONTH_ORDINAL:
-//            case YEAR_ORDINAL:
-//            case PACKED_EPOCH_MONTH_DAY_ORDINAL:
-//                return new long[] {setIntoPemd(newValue, basePackedDateTime), baseFraction9dp};
-//        }
-//        return null;
-//    }
+    //-------------------------------------------------------------------------
+    @Override
+    protected long doSetIntoDateTime(long newValue, DateTimeRule baseRule, long basePackedDateTime, int baseNanoOfSecond) {
+        switch (ordinal) {
+            case NANO_OF_SECOND_ORDINAL: return basePackedDateTime;
+            case NANO_OF_DAY_ORDINAL: newValue /= NANOS_PER_SECOND;  // drop through
+            case SECOND_OF_MINUTE_ORDINAL:
+            case SECOND_OF_HOUR_ORDINAL:
+            case SECOND_OF_DAY_ORDINAL:
+            	return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, 1);
+            case MINUTE_OF_HOUR_ORDINAL:
+            case MINUTE_OF_DAY_ORDINAL:
+            	return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, SECONDS_PER_MINUTE);
+            case CLOCK_HOUR_OF_AMPM_ORDINAL: return simpleSetPdt((newValue == 12 ? 0 : newValue), baseRule, basePackedDateTime, baseNanoOfSecond, SECONDS_PER_HOUR);
+            case CLOCK_HOUR_OF_DAY_ORDINAL: return simpleSetPdt((newValue == 24 ? 0 : newValue), baseRule, basePackedDateTime, baseNanoOfSecond, SECONDS_PER_HOUR);
+            case HOUR_OF_AMPM_ORDINAL:
+            case HOUR_OF_DAY_ORDINAL:
+            	return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, SECONDS_PER_HOUR);
+            case AMPM_OF_DAY_ORDINAL:
+            	return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, SECONDS_PER_HOUR * 12);
+            case DAY_OF_WEEK_ORDINAL: return 0;
+            case EPOCH_DAY_ORDINAL: return pdtFromEd(newValue) + SECOND_OF_DAY.extractFrom(baseRule, basePackedDateTime, baseNanoOfSecond);
+            case DAY_OF_MONTH_ORDINAL: return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, SECONDS_PER_DAY);
+            case DAY_OF_YEAR_ORDINAL: return 0;
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, 7 * SECONDS_PER_DAY);
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return 0;
+            case MONTH_OF_QUARTER_ORDINAL:
+            case MONTH_OF_YEAR_ORDINAL:
+            case EPOCH_MONTH_ORDINAL:
+            	return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, 1 * (PDT_MASK + 1));
+            case QUARTER_OF_YEAR_ORDINAL: return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, 3 * (PDT_MASK + 1));
+            case YEAR_ORDINAL: return simpleSetPdt(newValue, baseRule, basePackedDateTime, baseNanoOfSecond, 12 * (PDT_MASK + 1));
+            case PACKED_DATE_TIME_ORDINAL: return newValue;
+        }
+        throw new IllegalStateException();
+    }
 
-    //-----------------------------------------------------------------------
-//    private long setIntoNod(long newValue, long baseNod) {
-//        switch (ordinal) {
-//            case NANO_OF_SECOND_ORDINAL: return simpleSetNod(newValue, baseNod, 1);
-//            case NANO_OF_DAY_ORDINAL: return newValue;
-//            case SECOND_OF_MINUTE_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_SECOND);
-//            case SECOND_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_SECOND);
-//            case MINUTE_OF_HOUR_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_MINUTE);
-//            case MINUTE_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_MINUTE);
-//            case CLOCK_HOUR_OF_AMPM_ORDINAL: return simpleSetNod((newValue == 12 ? 0 : newValue), baseNod, NANOS_PER_HOUR);
-//            case HOUR_OF_AMPM_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_HOUR);
-//            case CLOCK_HOUR_OF_DAY_ORDINAL: return simpleSetNod((newValue == 24 ? 0 : newValue), baseNod, NANOS_PER_HOUR);
-//            case HOUR_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_HOUR);
-//            case AMPM_OF_DAY_ORDINAL: return simpleSetNod(newValue, baseNod, NANOS_PER_HOUR * 12);
-//        }
-//        return Long.MIN_VALUE;
-//    }
-//
-//    private long simpleSetNod(long newValue, long baseNod, long unitNanos) {
-//        return baseNod + (newValue - extractFromNod(baseNod)) * unitNanos;
-//    }
+    @Override
+    protected int doSetIntoNanoOfSecond(long newValue, DateTimeRule baseRule, long basePackedDateTime, int baseNanoOfSecond) {
+        switch (ordinal) {
+            case NANO_OF_SECOND_ORDINAL:
+            case NANO_OF_DAY_ORDINAL:
+            	return (int) (newValue % NANOS_PER_SECOND);
+        	default:
+        		return baseNanoOfSecond;
+        }
+    }
 
-//    static long packHmsn(int hod, int moh, int som, int nos) {
-//        long total = hod * NANOS_PER_HOUR;
-//        total += moh * NANOS_PER_MINUTE;
-//        total += som * NANOS_PER_SECOND;
-//        total += nos;
-//        return total;
-//    }
+    private long simpleSetPdt(long newValue, DateTimeRule baseRule, long basePdt, int baseNos, long multiplier) {
+        return basePdt + (newValue - doExtractFrom(baseRule, basePdt, baseNos)) * multiplier;
+    }
 
     //-----------------------------------------------------------------------
     static long pdtFromEd(long ed) {

@@ -397,20 +397,26 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * Sets the value of this rule into the specified date-time.
      * 
      * @param newValue  the new value to set, in terms of this rule
-     * @param valueRule  the rule to extract from, not null
-     * @param basePackedDateTime  the base packed date-time value to set into
-     * @param baseNanoOfSecond  the base nano-of-second
+     * @param baseRule  the rule part of the standard format date-time to set into, not null
+     * @param basePackedDateTime  the packed-date-time part of the standard format date-time to set into
+     * @param baseNanoOfSecond  the nano-of-second part of the standard format date-time to set into
      * @return the new date-time expressed as an array of packed-date-time/fraction, null if unable to set
      */
-    public final long[] setInto(long newValue, DateTimeRule valueRule, long basePackedDateTime, int baseNanoOfSecond) {
-        if (isExtractableFrom(valueRule)) {
-            return doSetInto(newValue, valueRule, basePackedDateTime, baseNanoOfSecond);
+    public final long[] setInto(long newValue, DateTimeRule baseRule, long basePackedDateTime, int baseNanoOfSecond) {
+        if (isExtractableFrom(baseRule)) {
+            return new long[] {
+                doSetIntoDateTime(newValue, baseRule, basePackedDateTime, baseNanoOfSecond),
+                doSetIntoNanoOfSecond(newValue, baseRule, basePackedDateTime, baseNanoOfSecond)};
         }
         return null;
     }
 
-    protected long[] doSetInto(long newValue, DateTimeRule valueRule, long basePackedDateTime, int baseNanoOfSecond) {
-        return null;
+    protected long doSetIntoDateTime(long newValue, DateTimeRule baseRule, long basePackedDateTime, int baseNanoOfSecond) {
+        return basePackedDateTime;
+    }
+
+    protected int doSetIntoNanoOfSecond(long newValue, DateTimeRule baseRule, long basePackedDateTime, int baseNanoOfSecond) {
+        return baseNanoOfSecond;
     }
 
     //-----------------------------------------------------------------------
