@@ -56,6 +56,7 @@ public class TestZoneRules {
     //-----------------------------------------------------------------------
     // ofFixed()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_ofFixed_ZoneOffset() {
         ZoneRules test = ZoneRules.ofFixed(OFFSET_1_15);
         assertEquals(test.isFixedOffset(), true);
@@ -69,7 +70,7 @@ public class TestZoneRules {
         assertEquals(test.getDaylightSavings(Instant.EPOCH), PERIOD_0);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toRules_nullID() {
         ZoneRules.ofFixed(null);
     }
