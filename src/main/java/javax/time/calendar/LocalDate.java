@@ -657,7 +657,7 @@ public final class LocalDate
      * The detailed rules for the addition have some complexity due to variable length months.
      * The goal is to match the code for {@code plusYears().plusMonths().plusDays()} in most cases.
      * The principle case of difference is best expressed by example:
-     * {@code 2010-01-31} plus {@code P1M-1M} yields {@code 2010-02-28} whereas
+     * {@code 2010-01-31} plus {@code P1M-1D} yields {@code 2010-02-28} whereas
      * {@code plusMonths(1).plusDays(-1)} gives {@code 2010-02-27}.
      * <p>
      * The rules are expressed in five steps:
@@ -873,7 +873,7 @@ public final class LocalDate
      * The detailed rules for the subtraction have some complexity due to variable length months.
      * The goal is to match the code for {@code minusYears().minusMonths().minusDays()} in most cases.
      * The principle case of difference is best expressed by example:
-     * {@code 2010-03-31} minus {@code P1M1M} yields {@code 2010-02-28} whereas
+     * {@code 2010-03-31} minus {@code P1M1D} yields {@code 2010-02-28} whereas
      * {@code minusMonths(1).minusDays(1)} gives {@code 2010-02-27}.
      * <p>
      * The rules are expressed in five steps:
