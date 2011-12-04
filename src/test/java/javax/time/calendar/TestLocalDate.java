@@ -951,6 +951,13 @@ public class TestLocalDate extends AbstractTest {
             {LocalDate.of(2008, 3, 2), 0, 0, -1, LocalDate.of(2008, 3, 1)},
             {LocalDate.of(2008, 3, 2), 0, 0, -2, LocalDate.of(2008, 2, 29)},
             {LocalDate.of(2008, 3, 2), 0, 0, -3, LocalDate.of(2008, 2, 28)},
+            
+            // plus(P1YnD) from 29 Feb
+            {LocalDate.of(2008, 2, 29), 1, 0, 0, LocalDate.of(2009, 2, 28)},
+            {LocalDate.of(2008, 2, 29), 1, 0, -1, LocalDate.of(2009, 2, 28)},
+            {LocalDate.of(2008, 2, 29), 1, 0, -2, LocalDate.of(2009, 2, 27)},
+            {LocalDate.of(2008, 2, 29), 1, 0, 1, LocalDate.of(2009, 3, 1)},
+            {LocalDate.of(2008, 2, 29), 1, 0, 2, LocalDate.of(2009, 3, 2)},
         };
     }
 
