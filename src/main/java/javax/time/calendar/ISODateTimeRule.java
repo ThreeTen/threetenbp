@@ -285,6 +285,21 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     @Override
     protected long doExtractFromPackedDateTime(long pemd, long nod) {
         switch (ordinal) {
+            case NANO_OF_SECOND_ORDINAL:
+            case NANO_OF_DAY_ORDINAL:
+            case SECOND_OF_MINUTE_ORDINAL:
+            case SECOND_OF_DAY_ORDINAL:
+            case MINUTE_OF_HOUR_ORDINAL:
+            case MINUTE_OF_DAY_ORDINAL:
+            case CLOCK_HOUR_OF_AMPM_ORDINAL:
+            case HOUR_OF_AMPM_ORDINAL:
+            case CLOCK_HOUR_OF_DAY_ORDINAL:
+            case HOUR_OF_DAY_ORDINAL:
+            case AMPM_OF_DAY_ORDINAL:
+                if (nod == Long.MIN_VALUE) {
+                    return Long.MIN_VALUE;
+                }
+                return doExtractFromTime(nod);
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(epochDayFromPackedDate(pemd));
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemd);
             case DAY_OF_YEAR_ORDINAL: return doyFromPemd(pemd);

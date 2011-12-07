@@ -31,7 +31,6 @@
  */
 package javax.time.i18n;
 
-import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.ERAS;
 import static javax.time.calendar.ISOPeriodUnit.MONTHS;
@@ -53,6 +52,10 @@ import javax.time.calendar.Year;
  */
 public final class CopticDateTimeRule extends DateTimeRule implements Serializable {
     // TODO: package scoped, expose via chrono
+
+    private static final int DAYS_PER_CYCLE = 146097;
+    private static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
+    private static final long DAYS_0000_TO_MJD_EPOCH = 678941;
 
     /**
      * Serialization version.
@@ -90,97 +93,51 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     }
 
     //-----------------------------------------------------------------------
+//    @Override
+//    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
+//        switch (ordinal) {
+//            case DAY_OF_MONTH_ORDINAL: {
+//                long moy = valueRule.extract(value, MONTH_OF_YEAR);
+//                if (moy != Long.MIN_VALUE) {
+//                    if (moy == 13) {
+//                        long year = valueRule.extract(value, YEAR);
+//                        if (year != Long.MIN_VALUE) {
+//                            return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
+//                        }
+//                        return DateTimeRuleRange.of(1, 5, 6);
+//                    } else {
+//                        return DateTimeRuleRange.of(1, 30);
+//                    }
+//                }
+//                break;
+//            }
+//            case DAY_OF_YEAR_ORDINAL: {
+//                long year = valueRule.extract(value, YEAR);
+//                if (year != Long.MIN_VALUE) {
+//                    return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
+//                }
+//                break;
+//            }
+//        }
+//        return super.getValueRange();
+//    }
+
+    //-----------------------------------------------------------------------
     @Override
-    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
+    protected long doExtractFromEpochDayTime(long ed, long nod) {
+        ed = ed + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
+        long y = ((ed * 4) + 1463) / 1461;
         switch (ordinal) {
-            case DAY_OF_MONTH_ORDINAL: {
-                long moy = valueRule.extract(value, MONTH_OF_YEAR);
-                if (moy != Long.MIN_VALUE) {
-                    if (moy == 13) {
-                        long year = valueRule.extract(value, YEAR);
-                        if (year != Long.MIN_VALUE) {
-                            return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 6 : 5);
-                        }
-                        return DateTimeRuleRange.of(1, 5, 6);
-                    } else {
-                        return DateTimeRuleRange.of(1, 30);
-                    }
-                }
-                break;
-            }
-            case DAY_OF_YEAR_ORDINAL: {
-                long year = valueRule.extract(value, YEAR);
-                if (year != Long.MIN_VALUE) {
-                    return DateTimeRuleRange.of(1, CopticChronology.isLeapYear(year) ? 366 : 365);
-                }
-                break;
-            }
-        }
-        return super.getValueRange();
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    protected long doExtractFromThis(long value, DateTimeRule requiredRule) {
-        if (requiredRule instanceof CopticDateTimeRule) {
-            return extractCoptic(value, (CopticDateTimeRule) requiredRule);
-        } else if (ordinal == PACKED_YEAR_DAY_ORDINAL) {
-            return extractValue(EPOCH_DAY, edFromPyd(value), requiredRule);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    @Override
-    protected long doExtractFromOther(DateTimeRule valueRule, long value) {
-        long ed = extractValue(valueRule, value, EPOCH_DAY);
-        if (ed != Long.MIN_VALUE) {
-            return extractFromEd(ed, this);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    //-----------------------------------------------------------------------
-    private long extractCoptic(long value, CopticDateTimeRule requiredRule) {
-        switch (ordinal) {
-            case DAY_OF_YEAR_ORDINAL: return extractFromDoy(value, requiredRule);
-            case PACKED_YEAR_DAY_ORDINAL: return extractFromPyd(value, requiredRule);
-            case YEAR_ORDINAL: return extractFromY(value, requiredRule);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromPyd(long pyd, CopticDateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case DAY_OF_MONTH_ORDINAL: return domFromDoy(doyFromPyd(pyd));
-            case DAY_OF_YEAR_ORDINAL: return doyFromPyd(pyd);
-            case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(doyFromPyd(pyd));
-            case YEAR_OF_ERA_ORDINAL: return yoeFromY(yFromPyd(pyd));
-            case YEAR_ORDINAL: return yFromPyd(pyd);
-            case ERA_ORDINAL: return eFromY(yFromPyd(pyd));
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long doyFromPyd(long pyd) {
-        return (pyd & 511);
-    }
-
-    private static long yFromPyd(long pyd) {
-        return (pyd >>> 9);
-    }
-
-    private static long edFromPyd(long pyd) {
-        long doy = doyFromPyd(pyd);
-        long y = yFromPyd(pyd);
-        return (y - 1) * 365 + (y / 4) + doy - 1;
-    }
-
-    //-----------------------------------------------------------------------
-    private static long extractFromY(long y, CopticDateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
             case YEAR_OF_ERA_ORDINAL: return yoeFromY(y);
+            case YEAR_ORDINAL: return y;
             case ERA_ORDINAL: return eFromY(y);
+        }
+        long startYearEpochDay = (y - 1) * 365 + (y / 4);
+        long doy0 = ed - startYearEpochDay;
+        switch (ordinal) {
+            case DAY_OF_MONTH_ORDINAL: return ((doy0 % 30) + 1);
+            case DAY_OF_YEAR_ORDINAL: return (doy0 + 1);
+            case MONTH_OF_YEAR_ORDINAL: return ((doy0 / 30) + 1);
         }
         return Long.MIN_VALUE;
     }
@@ -193,50 +150,22 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
         return y < 1 ? 0 : 1;
     }
 
-    //-----------------------------------------------------------------------
-    private static long extractFromDoy(long doy, CopticDateTimeRule requiredRule) {
-        switch (requiredRule.ordinal) {
-            case DAY_OF_MONTH_ORDINAL: return domFromDoy(doy);
-            case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(doy);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long moyFromDoy(long doy) {
-        return ((doy - 1) / 30) + 1;
-    }
-
-    private static long domFromDoy(long doy) {
-        return ((doy - 1) % 30) + 1;
-    }
-
-    //-----------------------------------------------------------------------
-    private static final int DAYS_PER_CYCLE = 146097;
-    private static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
-    private static final long DAYS_0000_TO_MJD_EPOCH = 678941;
-
-    private static long extractFromEd(long ed, CopticDateTimeRule requiredRule) {
-        ed = ed + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
-        long y = ((ed * 4) + 1463) / 1461;
-        switch (requiredRule.ordinal) {
-            case YEAR_OF_ERA_ORDINAL: return yoeFromY(y);
-            case YEAR_ORDINAL: return y;
-            case ERA_ORDINAL: return eFromY(y);
-        }
-        long startYearEpochDay = (y - 1) * 365 + (y / 4);
-        long doy0 = ed - startYearEpochDay;
-        switch (requiredRule.ordinal) {
-            case DAY_OF_MONTH_ORDINAL: return ((doy0 % 30) + 1);
-            case DAY_OF_YEAR_ORDINAL: return (doy0 + 1);
-            case PACKED_YEAR_DAY_ORDINAL: return packPyd(y, doy0 + 1);
-            case MONTH_OF_YEAR_ORDINAL: return ((doy0 / 30) + 1);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private static long packPyd(long y, long doy) {
-        return (y << 9) + doy;
-    }
+//    //-----------------------------------------------------------------------
+//    private static long extractFromDoy(long doy, CopticDateTimeRule requiredRule) {
+//        switch (requiredRule.ordinal) {
+//            case DAY_OF_MONTH_ORDINAL: return domFromDoy(doy);
+//            case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(doy);
+//        }
+//        return Long.MIN_VALUE;
+//    }
+//
+//    private static long moyFromDoy(long doy) {
+//        return ((doy - 1) / 30) + 1;
+//    }
+//
+//    private static long domFromDoy(long doy) {
+//        return ((doy - 1) % 30) + 1;
+//    }
 
     //-----------------------------------------------------------------------
     @Override
@@ -263,11 +192,10 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     //-----------------------------------------------------------------------
     private static final int DAY_OF_MONTH_ORDINAL =         0;
     private static final int DAY_OF_YEAR_ORDINAL =          1;
-    private static final int PACKED_YEAR_DAY_ORDINAL =      2;
-    private static final int MONTH_OF_YEAR_ORDINAL =        3;
-    private static final int YEAR_OF_ERA_ORDINAL =          4;
-    private static final int YEAR_ORDINAL =                 5;
-    private static final int ERA_ORDINAL =                  6;
+    private static final int MONTH_OF_YEAR_ORDINAL =        2;
+    private static final int YEAR_OF_ERA_ORDINAL =          3;
+    private static final int YEAR_ORDINAL =                 4;
+    private static final int ERA_ORDINAL =                  5;
 
     //-----------------------------------------------------------------------
     /**
@@ -284,16 +212,6 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
      * The first day of the year is 1 and the last is 365, or 366 in a leap year.
      */
     public static final DateTimeRule DAY_OF_YEAR = new CopticDateTimeRule(DAY_OF_YEAR_ORDINAL, "CopticDayOfYear", DAYS, YEARS, 1, 366, 365, null);
-    /**
-     * The rule for the the combined year-day in the Coptic chronology.
-     * <p>
-     * This field combines the year and day-of-year values into a single {@code long}.
-     * The format uses the least significant 9 bits for the unsigned day-of-year  (from 1 to 366)
-     * and the most significant 55 bits for the signed Coptic year.
-     * <p>
-     * This field is intended primarily for internal use.
-     */
-    public static final DateTimeRule PACKED_YEAR_DAY = new CopticDateTimeRule(PACKED_YEAR_DAY_ORDINAL, "PackedCopticYearDay", DAYS, null, -1000000, 1000000, 1000000, null);  // TODO
     /**
      * The rule for the month-of-year field in the Coptic chronology.
      * <p>
@@ -324,7 +242,7 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
      * Indices must match ordinal passed to rule constructor.
      */
     private static final DateTimeRule[] RULE_CACHE = new DateTimeRule[] {
-        DAY_OF_MONTH, DAY_OF_YEAR, PACKED_YEAR_DAY,
+        DAY_OF_MONTH, DAY_OF_YEAR,
         MONTH_OF_YEAR, YEAR_OF_ERA, YEAR, ERA,
     };
 

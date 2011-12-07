@@ -330,6 +330,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 
     //-----------------------------------------------------------------------
     protected static long epochDayFromPackedDate(long pemd) {
+        long dom = pemd & 31;
         long em = (pemd / 32);
         long year = (em / 12) + 1970;
         long y = year;
@@ -342,7 +343,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             total -= y / -4 - y / -100 + y / -400;
         }
         total += ((367 * m - 362) / 12);
-        total += (pemd & 31);
+        total += dom;
         if (m > 2) {
             total--;
             if (ISOChronology.isLeapYear(year) == false) {

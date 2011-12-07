@@ -194,7 +194,7 @@ public final class LocalDate
     public static LocalDate ofEpochDay(long epochDay) {
         EPOCH_DAY.checkValidValue(epochDay);
         long pemd = DateTimeRule.packedDateFromEpochDay(epochDay);
-        long year = YEAR.extractFromPackedDateTime(pemd, 0);
+        long year = YEAR.extractFromPackedDateTime(pemd, Long.MIN_VALUE);
         YEAR.checkValidValue(year);  // TODO: better validation
         return new LocalDate(pemd);
     }
