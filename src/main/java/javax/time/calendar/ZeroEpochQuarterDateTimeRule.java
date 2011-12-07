@@ -31,8 +31,15 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 import static javax.time.calendar.ISOPeriodUnit.QUARTERS;
 import static org.testng.Assert.assertEquals;
@@ -41,6 +48,7 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.i18n.CopticChronology;
+import javax.time.i18n.EthiopicDateTimeRule;
 
 /**
  * The rules of date and time for zero-epoch-quarter.
@@ -76,7 +84,31 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
         assertEquals(MONTH_OF_YEAR.extractFromPackedDateTime(4 + 32, 0), 2);
         assertEquals(MONTH_OF_YEAR.extractFromPackedDateTime(4 - 32, 0), 12);
         
-//        assertEquals(INSTANCE.extract(4, DAY_OF_MONTH), Long.MIN_VALUE);
+        assertEquals(INSTANCE.extractFromValue(DAY_OF_MONTH, 4), Long.MIN_VALUE);
+        assertEquals(INSTANCE.extractFromValue(MONTH_OF_QUARTER, 4), Long.MIN_VALUE);
+        assertEquals(INSTANCE.extractFromValue(QUARTER_OF_YEAR, 4), Long.MIN_VALUE);
+        
+        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 0), 0);
+        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 1), 0);
+        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 2), 0);
+        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 3), 1);
+        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 4), 1);
+        
+        assertEquals(DAY_OF_MONTH.extractFromValue(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(QUARTER_OF_YEAR.extractFromValue(INSTANCE, 3), 4);
+        assertEquals(QUARTER_OF_YEAR.extractFromValue(INSTANCE, 4), 1);
+        assertEquals(QUARTER_OF_YEAR.extractFromValue(MONTH_OF_YEAR, 4), 2);
+        assertEquals(MONTH_OF_QUARTER.extractFromValue(MONTH_OF_YEAR, 4), 1);
+        assertEquals(ALIGNED_WEEK_OF_MONTH.extractFromValue(DAY_OF_MONTH, 4), 1);
+        assertEquals(ALIGNED_WEEK_OF_MONTH.extractFromValue(DAY_OF_MONTH, 8), 2);
+        assertEquals(ALIGNED_WEEK_OF_YEAR.extractFromValue(DAY_OF_YEAR, 4), 1);
+        assertEquals(ALIGNED_WEEK_OF_YEAR.extractFromValue(DAY_OF_YEAR, 8), 2);
+        assertEquals(HOUR_OF_DAY.extractFromValue(SECOND_OF_DAY, 1), 0);
+        assertEquals(HOUR_OF_DAY.extractFromValue(SECOND_OF_DAY, 3601), 1);
+        
+        assertEquals(EthiopicDateTimeRule.MONTH_OF_YEAR.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 2);
+        assertEquals(EthiopicDateTimeRule.DAY_OF_MONTH.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 4);
+        
 //        assertEquals(INSTANCE.extract(4, MONTH_OF_QUARTER), Long.MIN_VALUE);
 //        assertEquals(INSTANCE.extract(4, MONTH_OF_YEAR), Long.MIN_VALUE);
 //        assertEquals(INSTANCE.extract(4, QUARTER_OF_YEAR), 1);

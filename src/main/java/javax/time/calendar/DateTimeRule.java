@@ -36,6 +36,7 @@ import java.math.RoundingMode;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 import javax.time.calendar.format.TextStyle;
 
 /**
@@ -326,6 +327,47 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 
     protected long doExtractFromEpochDayTime(long epochDays, long nanoOfDay) {
         return doExtractFromEpochDayTime(packedDateFromEpochDay(epochDays), nanoOfDay);
+    }
+
+    //-----------------------------------------------------------------------
+    public final long extractFromValue(DateTimeRule valueRule, long value) {
+        ISOChronology.checkNotNull(valueRule, "DateTimeRule must not be null");
+        // check if this is the desired output already
+        if (this.equals(valueRule)) {
+            return value;
+        }
+        return doExtractFromValue(valueRule, value);
+    }
+
+    protected long doExtractFromValue(DateTimeRule valueRule, long value) {
+        // check conversion is feasible and permitted
+        if (getBaseRule().equals(valueRule.getBaseRule()) &&
+                valueRule.comparePeriodUnit(this) <= 0 &&
+                valueRule.comparePeriodRange(this) >= 0) {
+            return defaultExtractFromValue(valueRule, value);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private long defaultExtractFromValue(DateTimeRule valueRule, long value) {
+        // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
+        long period = valueRule.convertToPeriod(value);
+        long bottomConversion = getPeriodUnit().toEquivalent(valueRule.getPeriodUnit());
+        if (bottomConversion < 0) {
+            return Long.MIN_VALUE;
+        }
+        period = MathUtils.floorDiv(period, bottomConversion);
+        if (getPeriodRange() != null && valueRule.comparePeriodRange(this) != 0) {
+//                if (periodRange.equals(DAYS)) {  // TODO: hack
+//                    periodRange = _24_HOURS;
+//                }
+            long topConversion = getPeriodRange().toEquivalent(getPeriodUnit());
+            if (topConversion < 0) {
+                return Long.MIN_VALUE;
+            }
+            period = MathUtils.floorMod(period, topConversion);
+        }
+        return convertFromPeriod(period);
     }
 
     //-----------------------------------------------------------------------
