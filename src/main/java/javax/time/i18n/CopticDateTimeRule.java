@@ -142,14 +142,6 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
         return Long.MIN_VALUE;
     }
 
-    private static long yoeFromY(long y) {
-        return y < 1 ? (1 - y) : y;
-    }
-
-    private static int eFromY(long y) {
-        return y < 1 ? 0 : 1;
-    }
-
     //-----------------------------------------------------------------------
     @Override
     protected long doExtractFromValue(DateTimeRule valueRule, long value) {
@@ -167,6 +159,41 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
             }
         }
         return Long.MIN_VALUE;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    protected long doSetIntoValue(long newValue, DateTimeRule baseRule, long baseValue) {
+        if (DAY_OF_YEAR.equals(baseRule)) {
+            // allow overflow to invalid day-of-year
+            switch (ordinal) {
+                case DAY_OF_MONTH_ORDINAL: {
+                    long curValue = domFromDoy(baseValue);
+                    return baseValue + (newValue - curValue);
+                }
+                case MONTH_OF_YEAR_ORDINAL: {
+                    long curValue = moyFromDoy(baseValue);
+                    return baseValue + (newValue - curValue) * 30;
+                }
+            }
+            return Long.MIN_VALUE;
+        }
+//        if (YEAR.equals(valueRule)) {
+//            switch (ordinal) {
+//                case YEAR_OF_ERA_ORDINAL: return yoeFromY(value);
+//                case ERA_ORDINAL: return eFromY(value);
+//            }
+//        }
+        return Long.MIN_VALUE;
+    }
+
+    //-----------------------------------------------------------------------
+    private static long yoeFromY(long y) {
+        return y < 1 ? (1 - y) : y;
+    }
+
+    private static int eFromY(long y) {
+        return y < 1 ? 0 : 1;
     }
 
     private static long moyFromDoy(long doy) {

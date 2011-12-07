@@ -360,11 +360,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 
     private long defaultExtractFromValue(DateTimeRule valueRule, long value) {
         // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
-        long period = valueRule.convertToPeriod(value);
         long bottomConversion = getPeriodUnit().toEquivalent(valueRule.getPeriodUnit());
         if (bottomConversion < 0) {
             return Long.MIN_VALUE;
         }
+        long period = valueRule.convertToPeriod(value);
         period = MathUtils.floorDiv(period, bottomConversion);
         if (getPeriodRange() != null && valueRule.comparePeriodRange(this) != 0) {
 //                if (periodRange.equals(DAYS)) {  // TODO: hack
@@ -377,6 +377,34 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             period = MathUtils.floorMod(period, topConversion);
         }
         return convertFromPeriod(period);
+    }
+
+    //-----------------------------------------------------------------------
+//    public final long setIntoPackedDateTime(long packedDate, long nanoOfDay) {
+//        return doSetIntoPackedDateTime(packedDate, nanoOfDay);
+//    }
+//
+//    protected long doSetIntoPackedDateTime(long packedDate, long nanoOfDay) {
+//        return doExtractFromEpochDayTime(epochDayFromPackedDate(packedDate), nanoOfDay);
+//    }
+
+    public final long setIntoEpochDayTime(long epochDays, long nanoOfDay) {
+        return doSetIntoEpochDayTime(epochDays, nanoOfDay);
+    }
+
+    protected long doSetIntoEpochDayTime(long epochDays, long nanoOfDay) {
+        return 0;
+    }
+
+    public final long setIntoValue(long newValue, DateTimeRule baseRule, long baseValue) {
+        return doSetIntoValue(newValue, baseRule, baseValue);
+    }
+
+    protected long doSetIntoValue(long newValue, DateTimeRule baseRule, long baseValue) {
+        long curValue = extractFromValue(baseRule, baseValue);
+        long bottomConversion = getPeriodUnit().toEquivalent(baseRule.getPeriodUnit());
+        long change = convertToPeriod(newValue) - convertToPeriod(curValue);
+        return baseValue + change * bottomConversion;
     }
 
     //-----------------------------------------------------------------------

@@ -49,6 +49,7 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.i18n.CopticChronology;
+import javax.time.i18n.CopticDateTimeRule;
 import javax.time.i18n.EthiopicDateTimeRule;
 
 /**
@@ -110,6 +111,14 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
         
         assertEquals(EthiopicDateTimeRule.MONTH_OF_YEAR.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 2);
         assertEquals(EthiopicDateTimeRule.DAY_OF_MONTH.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 4);
+        
+        assertEquals(HOUR_OF_DAY.setIntoValue(2, SECOND_OF_DAY, 3601), 7201);
+        assertEquals(QUARTER_OF_YEAR.setIntoValue(3, MONTH_OF_YEAR, 2), 8);
+        
+        assertEquals(CopticDateTimeRule.MONTH_OF_YEAR.setIntoValue(3, CopticDateTimeRule.DAY_OF_YEAR, 34), 64);
+        assertEquals(CopticDateTimeRule.MONTH_OF_YEAR.setIntoValue(13, CopticDateTimeRule.DAY_OF_YEAR, 34), 12 * 30 + 4);
+        assertEquals(CopticDateTimeRule.DAY_OF_MONTH.setIntoValue(3, CopticDateTimeRule.DAY_OF_YEAR, 34), 33);
+        assertEquals(CopticDateTimeRule.DAY_OF_MONTH.setIntoValue(13, CopticDateTimeRule.DAY_OF_YEAR, 12 * 30 + 4), 12 * 30 + 13);
         
 //        assertEquals(INSTANCE.extract(4, MONTH_OF_QUARTER), Long.MIN_VALUE);
 //        assertEquals(INSTANCE.extract(4, MONTH_OF_YEAR), Long.MIN_VALUE);
