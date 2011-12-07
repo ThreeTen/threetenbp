@@ -304,6 +304,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemd);
             case DAY_OF_YEAR_ORDINAL: return doyFromPemd(pemd);
             case EPOCH_DAY_ORDINAL: return epochDayFromPackedDate(pemd);
+            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return pemd;
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemd));
             case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPemd(pemd));
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemd)));

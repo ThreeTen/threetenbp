@@ -150,22 +150,43 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
         return y < 1 ? 0 : 1;
     }
 
-//    //-----------------------------------------------------------------------
-//    private static long extractFromDoy(long doy, CopticDateTimeRule requiredRule) {
-//        switch (requiredRule.ordinal) {
-//            case DAY_OF_MONTH_ORDINAL: return domFromDoy(doy);
-//            case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(doy);
-//        }
-//        return Long.MIN_VALUE;
-//    }
-//
-//    private static long moyFromDoy(long doy) {
-//        return ((doy - 1) / 30) + 1;
-//    }
-//
-//    private static long domFromDoy(long doy) {
-//        return ((doy - 1) % 30) + 1;
-//    }
+    //-----------------------------------------------------------------------
+    @Override
+    protected long doExtractFromValue(DateTimeRule valueRule, long value) {
+        if (DAY_OF_YEAR.equals(valueRule)) {
+            switch (ordinal) {
+                case DAY_OF_MONTH_ORDINAL: return domFromDoy(value);
+                case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(value);
+            }
+            return Long.MIN_VALUE;
+        }
+        if (YEAR.equals(valueRule)) {
+            switch (ordinal) {
+                case YEAR_OF_ERA_ORDINAL: return yoeFromY(value);
+                case ERA_ORDINAL: return eFromY(value);
+            }
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long moyFromDoy(long doy) {
+        return ((doy - 1) / 30) + 1;
+    }
+
+    private static long domFromDoy(long doy) {
+        return ((doy - 1) % 30) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long convertToPeriod(long value) {
+        return (ordinal <= YEAR_OF_ERA_ORDINAL ? value - 1 : value);
+    }
+
+    @Override
+    public long convertFromPeriod(long period) {
+        return (ordinal <= YEAR_OF_ERA_ORDINAL ? period + 1 : period);
+    }
 
     //-----------------------------------------------------------------------
     @Override
