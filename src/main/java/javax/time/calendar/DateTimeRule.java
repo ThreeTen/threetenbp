@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
+import static javax.time.calendar.ISODateTimeRule.PACKED_EPOCH_MONTH_DAY;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Locale;
@@ -335,6 +338,12 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         // check if this is the desired output already
         if (this.equals(valueRule)) {
             return value;
+        }
+        if (EPOCH_DAY.equals(valueRule)) {
+            return doExtractFromEpochDayTime(value, Long.MIN_VALUE);
+        }
+        if (PACKED_EPOCH_MONTH_DAY.equals(valueRule)) {
+            return doExtractFromPackedDateTime(value, Long.MIN_VALUE);
         }
         return doExtractFromValue(valueRule, value);
     }

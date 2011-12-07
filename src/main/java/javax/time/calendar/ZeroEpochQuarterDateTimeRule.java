@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
@@ -105,6 +106,7 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
         assertEquals(ALIGNED_WEEK_OF_YEAR.extractFromValue(DAY_OF_YEAR, 8), 2);
         assertEquals(HOUR_OF_DAY.extractFromValue(SECOND_OF_DAY, 1), 0);
         assertEquals(HOUR_OF_DAY.extractFromValue(SECOND_OF_DAY, 3601), 1);
+        assertEquals(DAY_OF_MONTH.extractFromValue(EPOCH_DAY, 2), 3);
         
         assertEquals(EthiopicDateTimeRule.MONTH_OF_YEAR.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 2);
         assertEquals(EthiopicDateTimeRule.DAY_OF_MONTH.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 4);

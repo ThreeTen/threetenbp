@@ -324,15 +324,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return doExtractFromPackedDateTime(packedDateFromEpochDay(ed), nanoOfDay);
     }
 
-    @Override
-    protected long doExtractFromValue(DateTimeRule valueRule, long value) {
-        switch (ordinal) {
-            case EPOCH_DAY_ORDINAL: return doExtractFromEpochDayTime(value, Long.MIN_VALUE);
-            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return doExtractFromPackedDateTime(value, Long.MIN_VALUE);
-        }
-        return super.doExtractFromValue(valueRule, value);
-    }
-
     //-----------------------------------------------------------------------
     private static long dowFromEd(long ed) {
         return MathUtils.floorMod(ed + 3, 7) + 1;
