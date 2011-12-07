@@ -285,10 +285,10 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     @Override
     protected long doExtractFromPackedDateTime(long pemd, long nod) {
         switch (ordinal) {
-            case DAY_OF_WEEK_ORDINAL: return dowFromEd(epochDaysFromPackedDate(pemd));
+            case DAY_OF_WEEK_ORDINAL: return dowFromEd(epochDayFromPackedDate(pemd));
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemd);
             case DAY_OF_YEAR_ORDINAL: return doyFromPemd(pemd);
-            case EPOCH_DAY_ORDINAL: return epochDaysFromPackedDate(pemd);
+            case EPOCH_DAY_ORDINAL: return epochDayFromPackedDate(pemd);
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: return awomFromDom(domFromPemd(pemd));
             case ALIGNED_WEEK_OF_YEAR_ORDINAL: return awoyFromDoy(doyFromPemd(pemd));
             case MONTH_OF_QUARTER_ORDINAL: return moqFromMoy(moyFromEm(emFromPemd(pemd)));
@@ -301,12 +301,12 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     @Override
-    protected long doExtractFromEpochDaysTime(long ed, long nanoOfDay) {
+    protected long doExtractFromEpochDayTime(long ed, long nanoOfDay) {
         switch (ordinal) {
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
             case EPOCH_DAY_ORDINAL: return ed;
         }
-        return doExtractFromPackedDateTime(packedDateFromEpochDays(ed), nanoOfDay);
+        return doExtractFromPackedDateTime(packedDateFromEpochDay(ed), nanoOfDay);
     }
 
     //-----------------------------------------------------------------------

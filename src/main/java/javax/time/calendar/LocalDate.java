@@ -193,7 +193,7 @@ public final class LocalDate
      */
     public static LocalDate ofEpochDay(long epochDay) {
         EPOCH_DAY.checkValidValue(epochDay);
-        long pemd = DateTimeRule.packedDateFromEpochDays(epochDay);
+        long pemd = DateTimeRule.packedDateFromEpochDay(epochDay);
         long year = YEAR.extractFromPackedDateTime(pemd, 0);
         YEAR.checkValidValue(year);  // TODO: better validation
         return new LocalDate(pemd);
@@ -1267,7 +1267,7 @@ public final class LocalDate
      * @return the Epoch Day equivalent to this date
      */
     public long toEpochDay() {
-        return DateTimeRule.epochDaysFromPackedDate(pemd);
+        return DateTimeRule.epochDayFromPackedDate(pemd);
     }
 
     /**

@@ -317,19 +317,19 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     protected long doExtractFromPackedDateTime(long packedDate, long nanoOfDay) {
-        return doExtractFromEpochDaysTime(epochDaysFromPackedDate(packedDate), nanoOfDay);
+        return doExtractFromEpochDayTime(epochDayFromPackedDate(packedDate), nanoOfDay);
     }
 
-    public final long extractFromEpochDaysTime(long epochDays, long nanoOfDay) {
-        return doExtractFromEpochDaysTime(epochDays, nanoOfDay);
+    public final long extractFromEpochDayTime(long epochDays, long nanoOfDay) {
+        return doExtractFromEpochDayTime(epochDays, nanoOfDay);
     }
 
-    protected long doExtractFromEpochDaysTime(long epochDays, long nanoOfDay) {
-        return doExtractFromEpochDaysTime(packedDateFromEpochDays(epochDays), nanoOfDay);
+    protected long doExtractFromEpochDayTime(long epochDays, long nanoOfDay) {
+        return doExtractFromEpochDayTime(packedDateFromEpochDay(epochDays), nanoOfDay);
     }
 
     //-----------------------------------------------------------------------
-    protected static long epochDaysFromPackedDate(long pemd) {
+    protected static long epochDayFromPackedDate(long pemd) {
         long em = (pemd / 32);
         long year = (em / 12) + 1970;
         long y = year;
@@ -352,7 +352,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return total - ISOChronology.DAYS_0000_TO_1970;
     }
 
-    protected static long packedDateFromEpochDays(long ed) {
+    protected static long packedDateFromEpochDay(long ed) {
         // find the march-based year
         long zeroDay = ed + ISOChronology.DAYS_0000_TO_1970 - 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
         long adjust = 0;
