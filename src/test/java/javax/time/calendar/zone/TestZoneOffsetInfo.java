@@ -56,22 +56,22 @@ public class TestZoneOffsetInfo {
     //-----------------------------------------------------------------------
     // factory
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_ZO_nullLDT() {
         ZoneOffsetInfo.of((LocalDateTime) null, OFFSET_0200, null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_ZOT_nullLDT() {
         ZoneOffsetInfo.of((LocalDateTime) null, null, ZoneOffsetTransition.of(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), OFFSET_0100));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_nullZO_ZOT() {
         ZoneOffsetInfo.of(LocalDateTime.of(2010, 12, 3, 11, 30), null, null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_ZO_ZOT() {
         ZoneOffsetInfo.of(LocalDateTime.of(2010, 12, 3, 11, 30), OFFSET_0200, ZoneOffsetTransition.of(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), OFFSET_0100));
     }
@@ -79,6 +79,7 @@ public class TestZoneOffsetInfo {
     //-----------------------------------------------------------------------
     // getters
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_normal() throws Exception {
         LocalDateTime ldt = LocalDateTime.of(2010, 3, 31, 1, 30);
         
@@ -95,6 +96,7 @@ public class TestZoneOffsetInfo {
         assertEquals(test.isValidOffset(OFFSET_0400), false);
     }
 
+    @Test(groups={"tck"})
     public void test_gap() throws Exception {
         LocalDateTime ldt = LocalDateTime.of(2010, 3, 31, 1, 30);
         OffsetDateTime odt = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
@@ -114,6 +116,7 @@ public class TestZoneOffsetInfo {
         assertEquals(test.isValidOffset(OFFSET_0400), false);
     }
 
+    @Test(groups={"tck"})
     public void test_overlap() throws Exception {
         LocalDateTime ldt = LocalDateTime.of(2010, 3, 31, 1, 30);
         OffsetDateTime odt = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0300);
@@ -136,6 +139,7 @@ public class TestZoneOffsetInfo {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals_ZOT() {
         OffsetDateTime odtA = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
         ZoneOffsetTransition zota1 = new ZoneOffsetTransition(odtA, OFFSET_0300);
@@ -161,6 +165,7 @@ public class TestZoneOffsetInfo {
         assertEquals(c.equals(c), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_ZO() {
         ZoneOffsetInfo a1 = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), OFFSET_0100, null);
         ZoneOffsetInfo a2 = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), OFFSET_0100, null);
@@ -181,6 +186,7 @@ public class TestZoneOffsetInfo {
         assertEquals(c.equals(c), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_ZO_to_ZOT() {
         ZoneOffsetTransition zota = new ZoneOffsetTransition(OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200), OFFSET_0300);
         ZoneOffsetInfo a = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), null, zota);
@@ -192,6 +198,7 @@ public class TestZoneOffsetInfo {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_other() {
         ZoneOffsetInfo test = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), OFFSET_0100, null);
         assertEquals(test.equals(""), false);
@@ -201,6 +208,7 @@ public class TestZoneOffsetInfo {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_hashCode_ZOT() {
         ZoneOffsetTransition zot = new ZoneOffsetTransition(OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200), OFFSET_0300);
         ZoneOffsetInfo test = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), null, zot);
@@ -208,6 +216,7 @@ public class TestZoneOffsetInfo {
         assertEquals(test.hashCode(), test.hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_hashCode_ZO() {
         ZoneOffsetInfo test = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), OFFSET_0200, null);
         
@@ -217,17 +226,20 @@ public class TestZoneOffsetInfo {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString_normal() {
         ZoneOffsetInfo test = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), OFFSET_0200, null);
         assertEquals(test.toString(), "OffsetInfo[2010-03-31T01:00 +02:00]");
     }
 
+    @Test(groups={"tck"})
     public void test_toString_gap() {
         ZoneOffsetTransition zot = new ZoneOffsetTransition(OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200), OFFSET_0300);
         ZoneOffsetInfo test = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), null, zot);
         assertEquals(test.toString(), "OffsetInfo[2010-03-31T01:00 Transition[Gap at 2010-03-31T01:00+02:00 to +03:00]]");
     }
 
+    @Test(groups={"tck"})
     public void test_toString_overlap() {
         ZoneOffsetTransition zot = new ZoneOffsetTransition(OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300), OFFSET_0200);
         ZoneOffsetInfo test = new ZoneOffsetInfo(LocalDateTime.of(2010, 3, 31, 1, 0), null, zot);
