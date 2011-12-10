@@ -92,7 +92,7 @@ public class TestOffsetDate {
     private Instant MAX_INSTANT;
     private Instant MIN_INSTANT;
 
-    @BeforeMethod
+    @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
         TEST_2007_07_15_PONE = OffsetDate.of(2007, 7, 15, OFFSET_PONE);
         
