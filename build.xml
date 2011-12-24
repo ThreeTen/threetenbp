@@ -268,7 +268,7 @@
 
     <target name="runtck" depends="compile-core-tests" >
 	    <taskdef resource="testngtasks" classpathref="tck.path" />
-        <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck,implementation">
+        <testng classpathref="tck.path" outputDir="${core.test.classes}" sourceDir="${core.test}" haltonfailure="true" verbose="2" groups="tck">
             <jvmarg value="-Xmx512M" />
             <jvmarg value="-Duser.language=en" />
             <jvmarg value="-Duser.country=UK" />
