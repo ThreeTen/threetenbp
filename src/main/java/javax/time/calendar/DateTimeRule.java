@@ -388,12 +388,17 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 //        return doExtractFromEpochDayTime(epochDayFromPackedDate(packedDate), nanoOfDay);
 //    }
 
-    public final long setIntoEpochDayTime(long epochDays, long nanoOfDay) {
-        return doSetIntoEpochDayTime(epochDays, nanoOfDay);
+    public final long[] setIntoEpochDayTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
+        return new long[] {doSetIntoEpochDay(newValue, baseEpochDay, baseNanoOfDay),
+        				doSetIntoTime(newValue, baseEpochDay, baseNanoOfDay)};
     }
 
-    protected long doSetIntoEpochDayTime(long epochDays, long nanoOfDay) {
-        return 0;
+    protected long doSetIntoEpochDay(long newValue, long baseEpochDay, long baseNanoOfDay) {
+        return baseEpochDay;
+    }
+
+    protected long doSetIntoTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
+        return baseNanoOfDay;
     }
 
     public final long setIntoValue(long newValue, DateTimeRule baseRule, long baseValue) {

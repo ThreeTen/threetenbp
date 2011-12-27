@@ -38,6 +38,7 @@ import static javax.time.calendar.ISOChronology.NANOS_PER_DAY;
 import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
 import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
 import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.HOURS;
 import static javax.time.calendar.ISOPeriodUnit.MILLIS;
@@ -368,6 +369,52 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     private static long moqFromMoy(long value) {
         return ((value - 1) % 3) + 1;
+    }
+ 
+    //-------------------------------------------------------------------------
+    @Override
+    protected long doSetIntoEpochDay(long newValue, long baseEd, long baseNod) {
+    	switch (ordinal) {
+    		case DAY_OF_WEEK_ORDINAL: return baseEd + (newValue - dowFromEd(baseEd));
+    		case EPOCH_DAY_ORDINAL: return newValue;
+    		default: return doSetIntoPackedDate(newValue, packedDateFromEpochDay(baseEd), baseNod);
+    	}
+    }
+
+    protected long doSetIntoPackedDate(long newValue, long basePemd, long baseNod) {
+    	switch (ordinal) {
+    		case DAY_OF_WEEK_ORDINAL: return doSetIntoEpochDay(newValue, epochDayFromPackedDate(basePemd), baseNod);
+    		case DAY_OF_MONTH_ORDINAL: return basePemd + (newValue - domFromPemd(basePemd));
+    		case DAY_OF_YEAR_ORDINAL: return 0;
+    		case EPOCH_DAY_ORDINAL: return packedDateFromEpochDay(newValue);
+    		case ALIGNED_WEEK_OF_MONTH_ORDINAL: return basePemd + (newValue - awomFromDom(domFromPemd(basePemd)) * 7);
+    		case ALIGNED_WEEK_OF_YEAR_ORDINAL: return 0;
+    		case MONTH_OF_QUARTER_ORDINAL: return basePemd + (newValue - moqFromMoy(moyFromEm(emFromPemd(basePemd))) * 32);
+    		case MONTH_OF_YEAR_ORDINAL: return basePemd + (newValue - moyFromEm(emFromPemd(basePemd)) * 32);
+    		case ZERO_EPOCH_MONTH_ORDINAL: return basePemd + (newValue - emFromPemd(basePemd) * 32);
+    		case QUARTER_OF_YEAR_ORDINAL: return basePemd + (newValue - qoyFromMoy(moyFromEm(emFromPemd(basePemd))) * 32 * 3);
+    		case YEAR_ORDINAL: return basePemd + (newValue - yFromEm(emFromPemd(basePemd)) * 32 * 12);
+    		case PACKED_EPOCH_MONTH_DAY_ORDINAL: return newValue;
+    	}
+        return Long.MIN_VALUE;
+    }
+
+    @Override
+    protected long doSetIntoValue(long newValue, DateTimeRule baseRule, long baseValue) {
+    	if (EPOCH_DAY.equals(baseRule)) {
+    		return doSetIntoEpochDay(newValue, baseValue, Long.MIN_VALUE);
+    	}
+    	if (PACKED_EPOCH_MONTH_DAY.equals(baseRule)) {
+    		return packedDateFromEpochDay(doSetIntoEpochDay(newValue, epochDayFromPackedDate(baseValue), Long.MIN_VALUE));
+    	}
+    	if (EPOCH_SECOND.equals(baseRule)) {
+    		long baseEd = MathUtils.floorDiv(baseValue, SECONDS_PER_DAY);
+    		long baseNod = MathUtils.floorMod(baseValue, SECONDS_PER_DAY) * NANOS_PER_SECOND;
+    		long ed = doSetIntoEpochDay(newValue, baseEd, baseNod);
+    		long nod = doSetIntoTime(newValue, baseEd, baseNod);
+    		return (ed * SECONDS_PER_DAY) + (nod / NANOS_PER_SECOND);
+    	}
+        return super.doSetIntoValue(newValue, baseRule, baseValue);
     }
 
     //-----------------------------------------------------------------------
