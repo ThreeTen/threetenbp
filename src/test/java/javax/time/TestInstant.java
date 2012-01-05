@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
+import javax.time.calendar.format.CalendricalParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -360,6 +361,72 @@ public class TestInstant {
     public void factory_from_badProvider() {
         InstantProvider provider = new MockInstantProviderReturnsNull();
         Instant.of(provider);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse(String)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="Parse")
+    Object[][] provider_factory_parse() {
+        return new Object[][] {
+            {"1970-01-01T00:00:00Z", 0, 0},
+            {"1970-01-01t00:00:00Z", 0, 0},
+            {"1970-01-01T00:00:00z", 0, 0},
+            {"1970-01-01T00:00:00.0Z", 0, 0},
+            {"1970-01-01T00:00:00.000000000Z", 0, 0},
+
+            {"1970-01-01T00:00:00.000000001Z", 0, 1},
+            {"1970-01-01T00:00:00.100000000Z", 0, 100000000},
+            {"1970-01-01T00:00:01Z", 1, 0},
+            {"1970-01-01T00:01:00Z", 60, 0},
+            {"1970-01-01T00:01:01Z", 61, 0},
+            {"1970-01-01T00:01:01.000000001Z", 61, 1},
+            {"1970-01-01T01:00:00.000000000Z", 3600, 0},
+            {"1970-01-01T01:01:01.000000001Z", 3661, 1},
+            {"1970-01-02T01:01:01.100000000Z", 90061, 100000000},
+        };
+    }
+
+    @Test(dataProvider="Parse")
+    public void factory_parse(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
+        Instant t = Instant.parse(text);
+        assertEquals(t.getEpochSecond(), expectedEpochSeconds);
+        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+
+//    @Test(dataProvider="Parse")
+//    public void factory_parse_comma(String text, long expectedEpochSeconds, int expectedNanoOfSecond) {
+//        text = text.replace('.', ',');
+//        Instant t = Instant.parse(text);
+//        assertEquals(t.getEpochSecond(), expectedEpochSeconds);
+//        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+//    }
+//
+    @DataProvider(name="ParseFailures")
+    Object[][] provider_factory_parseFailures() {
+        return new Object[][] {
+            {""},
+            {"Z"},
+            {"1970-01-01T00:00:00"},
+            {"1970-01-01T00:00:0Z"},
+            {"1970-01-01T00:00:00.0000000000Z"},
+        };
+    }
+
+    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
+    public void factory_parseFailures(String text) {
+        Instant.parse(text);
+    }
+
+//    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
+//    public void factory_parseFailures_comma(String text) {
+//        text = text.replace('.', ',');
+//        Instant.parse(text);
+//    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        Instant.parse(null);
     }
 
     //-----------------------------------------------------------------------
