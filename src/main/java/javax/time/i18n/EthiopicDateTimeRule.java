@@ -31,6 +31,7 @@
  */
 package javax.time.i18n;
 
+import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.ERAS;
 import static javax.time.calendar.ISOPeriodUnit.MONTHS;
@@ -40,6 +41,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
+import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.PeriodUnit;
 import javax.time.calendar.Year;
 
@@ -124,16 +126,37 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromEpochDayTime(long ed, long nod) {
-        ed = ed + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
-        long y = ((ed * 4) + 1463) / 1461;
+    protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+        if (DAY_OF_YEAR.equals(fieldRule)) {
+            switch (ordinal) {
+                case DAY_OF_MONTH_ORDINAL: return domFromDoy(fieldValue);
+                case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(fieldValue);
+            }
+            return Long.MIN_VALUE;
+        }
+        if (YEAR.equals(fieldRule)) {
+            switch (ordinal) {
+                case YEAR_OF_ERA_ORDINAL: return yoeFromY(fieldValue);
+                case ERA_ORDINAL: return eFromY(fieldValue);
+            }
+        }
+        long ed = EPOCH_DAY.extractFromValue(fieldRule, fieldValue);
+        if (ed != Long.MIN_VALUE) {
+            return doGetFromEpochDay(ed);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private long doGetFromEpochDay(long ed) {
+        long dayCount = ed + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
+        long y = ((dayCount * 4) + 1463) / 1461;
         switch (ordinal) {
             case YEAR_OF_ERA_ORDINAL: return yoeFromY(y);
             case YEAR_ORDINAL: return y;
             case ERA_ORDINAL: return eFromY(y);
         }
         long startYearEpochDay = (y - 1) * 365 + (y / 4);
-        long doy0 = ed - startYearEpochDay;
+        long doy0 = dayCount - startYearEpochDay;
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: return ((doy0 % 30) + 1);
             case DAY_OF_YEAR_ORDINAL: return (doy0 + 1);
@@ -142,31 +165,69 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
         return Long.MIN_VALUE;
     }
 
+    //-----------------------------------------------------------------------
+    @Override
+    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+        if (DAY_OF_YEAR.equals(fieldRule)) {
+            // allow overflow to invalid day-of-year  TODO resolve?
+            switch (ordinal) {
+                case DAY_OF_MONTH_ORDINAL: return fieldValue + (newValue - domFromDoy(fieldValue));
+                case MONTH_OF_YEAR_ORDINAL: return fieldValue + (newValue - moyFromDoy(fieldValue)) * 30;
+            }
+            return Long.MIN_VALUE;
+        }
+        if (YEAR.equals(fieldRule)) {
+            switch (ordinal) {
+                case YEAR_OF_ERA_ORDINAL: return fieldValue + (newValue - yoeFromY(fieldValue));
+                case ERA_ORDINAL: return (1 - yoeFromY(fieldValue));
+            }
+        }
+        long ed = EPOCH_DAY.extractFromValue(fieldRule, fieldValue);
+        if (ed != Long.MIN_VALUE) {
+            long newEd = doSetIntoEpochDay(newValue, ed);
+            return EPOCH_DAY.setIntoValue(newEd, fieldRule, fieldValue);
+        }
+        return super.doSetIntoValue(newValue, fieldRule, fieldValue);
+    }
+
+    private long doSetIntoEpochDay(long newValue, long fieldEd) {
+        long dayCount = fieldEd + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
+        long year = ((dayCount * 4) + 1463) / 1461;
+        long startYearEpochDay = (year - 1) * 365 + (year / 4);
+        long doy = dayCount - startYearEpochDay + 1;
+        switch (ordinal) {
+            case DAY_OF_MONTH_ORDINAL:
+            case DAY_OF_YEAR_ORDINAL:
+            case MONTH_OF_YEAR_ORDINAL: {
+                long newDoy = this.setIntoValue(newValue, DAY_OF_YEAR, doy);
+                return packDate(year, newDoy);
+            }
+            case YEAR_OF_ERA_ORDINAL:
+            case YEAR_ORDINAL:
+            case ERA_ORDINAL: {
+                long newYear = this.setIntoValue(newValue, YEAR, year);
+                return packDate(newYear, doy);
+            }
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static long packDate(long year, long doy) {
+        YEAR.checkValidValue(year);
+        DAY_OF_YEAR.checkValidValue(doy);
+        if (doy == 366 && CopticChronology.isLeapYear(year) == false) {
+            throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.DAY_OF_YEAR);
+        }
+        return (year - 1) * 365 + (year / 4) + doy - 1;
+    }
+
+    //-----------------------------------------------------------------------
     private static long yoeFromY(long y) {
         return y < 1 ? (1 - y) : y;
     }
 
     private static int eFromY(long y) {
         return y < 1 ? 0 : 1;
-    }
-
-    //-----------------------------------------------------------------------
-    @Override
-    protected long doExtractFromValue(DateTimeRule valueRule, long value) {
-        if (DAY_OF_YEAR.equals(valueRule)) {
-            switch (ordinal) {
-                case DAY_OF_MONTH_ORDINAL: return domFromDoy(value);
-                case MONTH_OF_YEAR_ORDINAL: return moyFromDoy(value);
-            }
-            return Long.MIN_VALUE;
-        }
-        if (YEAR.equals(valueRule)) {
-            switch (ordinal) {
-                case YEAR_OF_ERA_ORDINAL: return yoeFromY(value);
-                case ERA_ORDINAL: return eFromY(value);
-            }
-        }
-        return Long.MIN_VALUE;
     }
 
     private static long moyFromDoy(long doy) {

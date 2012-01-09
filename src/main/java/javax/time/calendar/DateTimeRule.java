@@ -31,9 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
-import static javax.time.calendar.ISODateTimeRule.PACKED_EPOCH_MONTH_DAY;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Locale;
@@ -294,79 +291,65 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return field(value).getText(textStyle, locale);
     }
 
+//    //-----------------------------------------------------------------------
+//    public final DateTimeRuleRange calculateValueRange(long value, DateTimeRule requiredRule) {
+//        return doValueRangeFromThis(value, requiredRule);
+//    }
+//
+//    protected DateTimeRuleRange doValueRangeFromThis(long value, DateTimeRule requiredRule) {
+//        return requiredRule.doValueRangeFromOther(this, value);
+//    }
+//
+//    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
+//        return getValueRange();
+//    }
+
     //-----------------------------------------------------------------------
-    public final DateTimeRuleRange calculateValueRange(long value, DateTimeRule requiredRule) {
-        return doValueRangeFromThis(value, requiredRule);
-    }
-
-    protected DateTimeRuleRange doValueRangeFromThis(long value, DateTimeRule requiredRule) {
-        return requiredRule.doValueRangeFromOther(this, value);
-    }
-
-    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
-        return getValueRange();
-    }
-
-    //-----------------------------------------------------------------------
-    public final long extractFromTime(long nanoOfDay) {
-        return doExtractFromTime(nanoOfDay);
-    }
-
-    protected long doExtractFromTime(long nanoOfDay) {
-        return Long.MIN_VALUE;
-    }
-
-    public final long extractFromPackedDateTime(long packedDate, long nanoOfDay) {
-        return doExtractFromPackedDateTime(packedDate, nanoOfDay);
-    }
-
-    protected long doExtractFromPackedDateTime(long packedDate, long nanoOfDay) {
-        return doExtractFromEpochDayTime(epochDayFromPackedDate(packedDate), nanoOfDay);
-    }
-
-    public final long extractFromEpochDayTime(long epochDays, long nanoOfDay) {
-        return doExtractFromEpochDayTime(epochDays, nanoOfDay);
-    }
-
-    protected long doExtractFromEpochDayTime(long epochDays, long nanoOfDay) {
-        return doExtractFromEpochDayTime(packedDateFromEpochDay(epochDays), nanoOfDay);
+//    public final long extractFromDate(long epochDays) {
+//        return doExtractFromDate(epochDays);
+//    }
+//
+//    protected long doExtractFromDate(long epochDays) {
+//        return Long.MIN_VALUE;
+//    }
+//
+//    public final long extractFromTime(long nanoOfDay) {
+//        return doExtractFromTime(nanoOfDay);
+//    }
+//
+//    protected long doExtractFromTime(long nanoOfDay) {
+//        return Long.MIN_VALUE;
+//    }
+//
+    protected boolean isDate() {
+        return false;
+//        return EPOCH_DAY.equals(getBaseRule()) && DAYS.equals(getPeriodUnit());
     }
 
     //-----------------------------------------------------------------------
-    public final long extractFromValue(DateTimeRule valueRule, long value) {
-        ISOChronology.checkNotNull(valueRule, "DateTimeRule must not be null");
-        // check if this is the desired output already
-        if (this.equals(valueRule)) {
-            return value;
+    public final long extractFromValue(DateTimeRule fieldRule, long fieldValue) {
+        if (fieldRule.equals(this)) {  // intentional NPE
+            return fieldValue;
         }
-        if (EPOCH_DAY.equals(valueRule)) {
-            return doExtractFromEpochDayTime(value, Long.MIN_VALUE);
-        }
-        if (PACKED_EPOCH_MONTH_DAY.equals(valueRule)) {
-            return doExtractFromPackedDateTime(value, Long.MIN_VALUE);
-        }
-        return doExtractFromValue(valueRule, value);
+        return doExtractFromValue(fieldRule, fieldValue);
     }
 
-    protected long doExtractFromValue(DateTimeRule valueRule, long value) {
-        // check conversion is feasible and permitted
-        if (getBaseRule().equals(valueRule.getBaseRule()) &&
-                valueRule.comparePeriodUnit(this) <= 0 &&
-                valueRule.comparePeriodRange(this) >= 0) {
-            return defaultExtractFromValue(valueRule, value);
+    protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+        if (isDerivable(fieldRule)) {
+            return defaultExtractFromValue(fieldRule, fieldValue);
         }
         return Long.MIN_VALUE;
     }
 
-    private long defaultExtractFromValue(DateTimeRule valueRule, long value) {
+    private long defaultExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
         // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
-        long bottomConversion = getPeriodUnit().toEquivalent(valueRule.getPeriodUnit());
+        long bottomConversion = getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
         if (bottomConversion < 0) {
             return Long.MIN_VALUE;
         }
-        long period = valueRule.convertToPeriod(value);
+        long period = fieldRule.convertToPeriod(fieldValue);
         period = MathUtils.floorDiv(period, bottomConversion);
-        if (getPeriodRange() != null && valueRule.comparePeriodRange(this) != 0) {
+        if (getPeriodRange() != null && fieldRule.comparePeriodRange(this) != 0) {
 //                if (periodRange.equals(DAYS)) {  // TODO: hack
 //                    periodRange = _24_HOURS;
 //                }
@@ -387,93 +370,59 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 //    protected long doSetIntoPackedDateTime(long packedDate, long nanoOfDay) {
 //        return doExtractFromEpochDayTime(epochDayFromPackedDate(packedDate), nanoOfDay);
 //    }
+//
+//    public final long[] setIntoEpochDayTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
+//        return new long[] {doSetIntoEpochDay(newValue, baseEpochDay, baseNanoOfDay),
+//                        doSetIntoTime(newValue, baseEpochDay, baseNanoOfDay)};
+//    }
+//
+//    protected long doSetIntoEpochDay(long newValue, long baseEpochDay, long baseNanoOfDay) {
+//        return baseEpochDay;
+//    }
+//
+//    protected long doSetIntoTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
+//        return baseNanoOfDay;
+//    }
 
-    public final long[] setIntoEpochDayTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
-        return new long[] {doSetIntoEpochDay(newValue, baseEpochDay, baseNanoOfDay),
-        				doSetIntoTime(newValue, baseEpochDay, baseNanoOfDay)};
-    }
-
-    protected long doSetIntoEpochDay(long newValue, long baseEpochDay, long baseNanoOfDay) {
-        return baseEpochDay;
-    }
-
-    protected long doSetIntoTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
-        return baseNanoOfDay;
-    }
-
-    public final long setIntoValue(long newValue, DateTimeRule baseRule, long baseValue) {
-        return doSetIntoValue(newValue, baseRule, baseValue);
-    }
-
-    protected long doSetIntoValue(long newValue, DateTimeRule baseRule, long baseValue) {
-        long curValue = extractFromValue(baseRule, baseValue);
-        long bottomConversion = getPeriodUnit().toEquivalent(baseRule.getPeriodUnit());
-        long change = convertToPeriod(newValue) - convertToPeriod(curValue);
-        return baseValue + change * bottomConversion;
-    }
-
-    //-----------------------------------------------------------------------
-    protected static long epochDayFromPackedDate(long pemd) {
-        long dom = pemd & 31;
-        long em = (pemd / 32);
-        long year = (em / 12) + 1970;
-        long y = year;
-        long m = (em % 12) + 1;
-        long total = 0;
-        total += 365 * y;
-        if (y >= 0) {
-            total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
-        } else {
-            total -= y / -4 - y / -100 + y / -400;
+    public final long setIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+        if (fieldRule.equals(this)) {  // intentional NPE
+            return newValue;
         }
-        total += ((367 * m - 362) / 12);
-        total += dom;
-        if (m > 2) {
-            total--;
-            if (ISOChronology.isLeapYear(year) == false) {
-                total--;
-            }
-        }
-        return total - ISOChronology.DAYS_0000_TO_1970;
+        return doSetIntoValue(newValue, fieldRule, fieldValue);
     }
 
-    protected static long packedDateFromEpochDay(long ed) {
-        // find the march-based year
-        long zeroDay = ed + ISOChronology.DAYS_0000_TO_1970 - 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
-        long adjust = 0;
-        if (zeroDay < 0) {
-            // adjust negative years to positive for calculation
-            long adjustCycles = (zeroDay + 1) / ISOChronology.DAYS_PER_CYCLE - 1;
-            adjust = adjustCycles * 400;
-            zeroDay += -adjustCycles * ISOChronology.DAYS_PER_CYCLE;
+    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+        if (isDerivable(fieldRule)) {
+            long curValue = extractFromValue(fieldRule, fieldValue);
+            long bottomConversion = getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
+            long change = convertToPeriod(newValue) - convertToPeriod(curValue);
+            return fieldValue + change * bottomConversion;
         }
-        long yearEst = (400 * zeroDay + 591) / ISOChronology.DAYS_PER_CYCLE;
-        long doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
-        if (doyEst < 0) {
-            // fix estimate
-            yearEst--;
-            doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
-        }
-        yearEst += adjust;  // reset any negative year
-        int marchDoy0 = (int) doyEst;
-        
-        // convert march-based values back to january-based
-        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
-        int month = (marchMonth0 + 2) % 12 + 1;
-        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
-        long year = yearEst + marchMonth0 / 10;
-        
-        // pack
-        return packPemd(year, month, dom);
+        return Long.MIN_VALUE;
     }
 
-    protected static long packPemd(long year, int month, int dom) {
-        return packPemd((year - 1970) * 12 + (month - 1), dom);
+    /**
+     * Checks if the specified rule can be derived from this rule automatically.
+     * <p>
+     * This check returns true if both rules share a base rule and the specified
+     * rule has a unit and range within the bounds of this rule.
+     * For example, the rule minute-of-hour can be derived from minute-of-day
+     * but not from hour-of-day or second-of-minute.
+     * 
+     * @param rule  the rule to check, not null
+     * @return true if the specified rule can be derived from this rule.
+     */
+    protected boolean isDerivable(DateTimeRule rule) {
+        return getBaseRule().equals(rule.getBaseRule()) &&
+                rule.comparePeriodUnit(this) <= 0 &&
+                rule.comparePeriodRange(this) >= 0;
     }
 
-    protected static long packPemd(long em, int dom) {
-        return (em << 5) + dom;
-    }
+//    protected long doSimpleSet(long newValue, DateTimeRule baseRule, long baseValue, long unitMultiple) {
+//        long curValue = extractFromValue(baseRule, baseValue);
+//        long change = convertToPeriod(newValue) - convertToPeriod(curValue);
+//        return baseValue + change * unitMultiple;
+//    }
 
     //-----------------------------------------------------------------------
     /**

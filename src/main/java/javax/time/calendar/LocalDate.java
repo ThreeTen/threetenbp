@@ -193,8 +193,8 @@ public final class LocalDate
      */
     public static LocalDate ofEpochDay(long epochDay) {
         EPOCH_DAY.checkValidValue(epochDay);
-        long pemd = DateTimeRule.packedDateFromEpochDay(epochDay);
-        long year = YEAR.extractFromPackedDateTime(pemd, Long.MIN_VALUE);
+        long pemd = ISODateTimeRule.packedDateFromEpochDay(epochDay);
+        long year = YEAR.extractFromPackedDate(pemd);
         YEAR.checkValidValue(year);  // TODO: better validation
         return new LocalDate(pemd);
     }
@@ -286,7 +286,7 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     private static LocalDate create(int year, int monthOfYear, int dayOfMonth) {
-    	MonthOfYear month = MonthOfYear.of(monthOfYear);
+        MonthOfYear month = MonthOfYear.of(monthOfYear);
         if (dayOfMonth > 28 && dayOfMonth > month.lengthInDays(ISOChronology.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
@@ -412,7 +412,7 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.of((int) DAY_OF_WEEK.extractFromPackedDateTime(pemd, 0));
+        return DayOfWeek.of((int) DAY_OF_WEEK.extractFromPackedDate(pemd));
     }
 
     //-----------------------------------------------------------------------
@@ -684,7 +684,7 @@ public final class LocalDate
         if (periodMonths == 0) {
             return plusDays(periodDays);  // optimization that also returns this for zero
         }
-        long epm = ZERO_EPOCH_MONTH.extractFromPackedDateTime(pemd, 0);
+        long epm = ZERO_EPOCH_MONTH.extractFromPackedDate(pemd);
         int day = getDayOfMonth();
         long calcMonths = epm + periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
@@ -800,7 +800,7 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long epm = ZERO_EPOCH_MONTH.extractFromPackedDateTime(pemd, 0);
+        long epm = ZERO_EPOCH_MONTH.extractFromPackedDate(pemd);
         long calcMonths = epm + months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
@@ -901,7 +901,7 @@ public final class LocalDate
         if (periodMonths == 0) {
             return minusDays(periodDays);  // optimization that also returns this for zero
         }
-        long epm = ZERO_EPOCH_MONTH.extractFromPackedDateTime(pemd, 0);
+        long epm = ZERO_EPOCH_MONTH.extractFromPackedDate(pemd);
         int day = getDayOfMonth();
         long calcMonths = epm - periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
@@ -1017,7 +1017,7 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long epm = ZERO_EPOCH_MONTH.extractFromPackedDateTime(pemd, 0);
+        long epm = ZERO_EPOCH_MONTH.extractFromPackedDate(pemd);
         long calcMonths = epm - months;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12) + 1970);
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
@@ -1267,7 +1267,7 @@ public final class LocalDate
      * @return the Epoch Day equivalent to this date
      */
     public long toEpochDay() {
-        return DateTimeRule.epochDayFromPackedDate(pemd);
+        return ISODateTimeRule.epochDayFromPackedDate(pemd);
     }
 
     /**
