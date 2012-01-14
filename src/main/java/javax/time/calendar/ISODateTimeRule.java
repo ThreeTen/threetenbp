@@ -283,9 +283,9 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     static long epochDayFromPackedDate(long pemd) {
         long dom0 = pemd & 31;
         long em = (pemd >> 5);
-        long year = (em / 12) + 1970;
+        long year = MathUtils.floorDiv(em, 12) + 1970;
         long y = year;
-        long m = (em % 12) + 1;
+        long m = MathUtils.floorMod(em, 12) + 1;
         long total = 0;
         total += 365 * y;
         if (y >= 0) {
