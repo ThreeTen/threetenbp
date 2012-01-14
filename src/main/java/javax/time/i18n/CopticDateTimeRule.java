@@ -124,6 +124,12 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
 //        return super.getValueRange();
 //    }
 
+    //-------------------------------------------------------------------------
+    @Override
+    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return doGetFromEpochDay(localEpochDay);
+    }
+
     //-----------------------------------------------------------------------
     @Override
     protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
@@ -166,6 +172,12 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+        localEpochDay = doSetIntoEpochDay(newValue, localEpochDay);
+        return new long[] {localEpochDay, nanoOfDay, offsetSecs};
+    }
+
     @Override
     protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
         if (DAY_OF_YEAR.equals(fieldRule)) {
@@ -215,7 +227,7 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
     private static long packDate(long year, long doy) {
         YEAR.checkValidValue(year);
         DAY_OF_YEAR.checkValidValue(doy);
-        if (doy == 366 && CopticChronology.isLeapYear(year) == false) {
+        if (doy < 1 || doy > 366 || (doy == 366 && CopticChronology.isLeapYear(year) == false)) {
             throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.DAY_OF_YEAR);
         }
         return (year - 1) * 365 + (year / 4) + doy - 1;

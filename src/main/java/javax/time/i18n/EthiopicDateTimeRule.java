@@ -124,6 +124,12 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 //        return super.getValueRange();
 //    }
 
+    //-------------------------------------------------------------------------
+    @Override
+    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return doGetFromEpochDay(localEpochDay);
+    }
+
     //-----------------------------------------------------------------------
     @Override
     protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
@@ -166,6 +172,12 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+        localEpochDay = doSetIntoEpochDay(newValue, localEpochDay);
+        return new long[] {localEpochDay, nanoOfDay, offsetSecs};
+    }
+
     @Override
     protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
         if (DAY_OF_YEAR.equals(fieldRule)) {

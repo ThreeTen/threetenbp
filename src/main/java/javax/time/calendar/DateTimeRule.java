@@ -327,6 +327,48 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
+//    public final long extractFromInstant(long utcEpcohSecs, long nanoOfSec, long offsetSecs) {
+//        long localEpochSecs = utcEpcohSecs + ((offsetSecs << 1) >> 1);  // treats MIN_VALUE as zero
+//        if (isDateBased()) {
+//            return extractFromValue(EPOCH_DAY, localEpcohSecs / 86400);
+//        }
+//        if (isTimeBased()) {
+//            return extractFromValue(NANO_OF_DAY, (localEpcohSecs % 86400) * 1000000000 + nanoOfSec);
+//        }
+//        if (isOffsetBased() && offsetSecs != Long.MIN_VALUE) {
+//            return extractFromValue(TOTAL_OFFSET_SECONDS, offsetSecs);
+//        }
+//        return doExtractFromInstant(localEpcohSecs, nanoOfSec, offsetSecs);
+//    }
+//
+//    public final long extractFromDateTime(long localEpochDays, long nanoOfDay, long offsetSecs) {
+//        // extraction of "date" and "time" is based on field (eg. sunrise/sunset based)
+//        
+//        if (isDateBased()) {
+//            return extractFromValue(EPOCH_DAY, calcDateFromInstant(localEpochDays, nanoOfDay, offsetSecs));
+//        }
+//        if (isTimeBased()) {
+//            return extractFromValue(NANO_OF_DAY, nanoOfDay);
+//        }
+//        if (isOffsetBased() && offsetSecs != Long.MIN_VALUE) {
+//            return extractFromValue(TOTAL_OFFSET_SECONDS, offsetSecs);
+//        }
+//        return doExtractFromInstant(localEpochDays, nanoOfSec, offsetSecs);
+//    }
+
+    public final long extractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return doExtractFromInstant(localEpochDay, nanoOfDay, offsetSecs);
+    }
+
+    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return Long.MIN_VALUE;
+    }
+
+//    protected long calcDateFromInstant(long localEpochDays, long nanoOfDay, long offsetSecs) {
+//        return localEpochDays;
+//    }
+
+    //-----------------------------------------------------------------------
     public final long extractFromValue(DateTimeRule fieldRule, long fieldValue) {
         if (fieldRule.equals(this)) {  // intentional NPE
             return fieldValue;
@@ -363,19 +405,14 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-//    public final long setIntoPackedDateTime(long packedDate, long nanoOfDay) {
-//        return doSetIntoPackedDateTime(packedDate, nanoOfDay);
-//    }
-//
-//    protected long doSetIntoPackedDateTime(long packedDate, long nanoOfDay) {
-//        return doExtractFromEpochDayTime(epochDayFromPackedDate(packedDate), nanoOfDay);
-//    }
-//
-//    public final long[] setIntoEpochDayTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
-//        return new long[] {doSetIntoEpochDay(newValue, baseEpochDay, baseNanoOfDay),
-//                        doSetIntoTime(newValue, baseEpochDay, baseNanoOfDay)};
-//    }
-//
+    public final long[] setIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return doSetIntoInstant(newValue, localEpochDay, nanoOfDay, offsetSecs);
+    }
+
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+        throw new UnsupportedOperationException();  // TODO: method should be abstract
+    }
+
 //    protected long doSetIntoEpochDay(long newValue, long baseEpochDay, long baseNanoOfDay) {
 //        return baseEpochDay;
 //    }

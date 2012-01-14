@@ -34,6 +34,7 @@ package javax.time.calendar;
 import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
 import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
 import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
+import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
 import static javax.time.calendar.ISOPeriodUnit.DAYS;
 import static javax.time.calendar.ISOPeriodUnit.HOURS;
 import static javax.time.calendar.ISOPeriodUnit.MILLIS;
@@ -280,8 +281,8 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     static long epochDayFromPackedDate(long pemd) {
-        long dom = pemd & 31;
-        long em = (pemd / 32);
+        long dom0 = pemd & 31;
+        long em = (pemd >> 5);
         long year = (em / 12) + 1970;
         long y = year;
         long m = (em % 12) + 1;
@@ -293,7 +294,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             total -= y / -4 - y / -100 + y / -400;
         }
         total += ((367 * m - 362) / 12);
-        total += dom;
+        total += dom0;
         if (m > 2) {
             total--;
             if (ISOChronology.isLeapYear(year) == false) {
@@ -338,7 +339,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     static long packPemd(long em, int dom) {
-        return (em << 5) + dom;
+        return (em << 5) + (dom - 1);
     }
 
     //-------------------------------------------------------------------------
@@ -348,6 +349,30 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        switch (ordinal) {
+            case EPOCH_MILLI_ORDINAL: {
+                if (offsetSecs != Long.MIN_VALUE) {
+                    return (localEpochDay * SECONDS_PER_DAY + offsetSecs) * 1000 + (nanoOfDay / 1000000L);
+                }
+                break;
+            }
+            case EPOCH_SECOND_ORDINAL: {
+                if (offsetSecs != Long.MIN_VALUE) {
+                    return localEpochDay * SECONDS_PER_DAY + (nanoOfDay / NANOS_PER_SECOND) + offsetSecs;
+                }
+                break;
+            }
+
+        }
+        if (ordinal >= DAY_OF_WEEK_ORDINAL) {
+            return doExtractFromEpochDay(localEpochDay);
+        }
+        return super.doExtractFromValue(NANO_OF_DAY, nanoOfDay);
+    }
+
+    //-------------------------------------------------------------------------
     @Override
     protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
         if (PACKED_EPOCH_MONTH_DAY.equals(fieldRule)) {
@@ -391,6 +416,27 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-------------------------------------------------------------------------
     @Override
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+        if (ordinal == EPOCH_SECOND_ORDINAL) {
+            offsetSecs = ((offsetSecs << 1) >> 1);  // converts MIN_VALUE to 0
+            long localSecs = newValue - offsetSecs;
+            localEpochDay = MathUtils.floorDiv(localSecs, SECONDS_PER_DAY);
+            nanoOfDay = MathUtils.floorMod(localSecs, SECONDS_PER_DAY) * NANOS_PER_SECOND + (nanoOfDay % NANOS_PER_SECOND);
+        } else if (ordinal == EPOCH_MILLI_ORDINAL) {
+            offsetSecs = ((offsetSecs << 1) >> 1);  // converts MIN_VALUE to 0
+            long localSecs = MathUtils.floorDiv(newValue, 1000) - offsetSecs;
+            localEpochDay = MathUtils.floorDiv(localSecs, SECONDS_PER_DAY);
+            nanoOfDay = MathUtils.floorMod(localSecs, SECONDS_PER_DAY) * NANOS_PER_SECOND +
+                            MathUtils.floorMod(newValue, 1000) * 1000000L + (nanoOfDay % 1000000L);
+        } else if (ordinal >= DAY_OF_WEEK_ORDINAL) {
+            localEpochDay = doSetIntoEpochDay(newValue, localEpochDay);
+        } else {
+            nanoOfDay = doSetIntoValue(newValue, NANO_OF_DAY, nanoOfDay);
+        }
+        return new long[] {localEpochDay, nanoOfDay, offsetSecs};
+    }
+
+    @Override
     protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
         if (PACKED_EPOCH_MONTH_DAY.equals(fieldRule)) {
             return doSetIntoPackedDate(newValue, fieldValue);
@@ -400,13 +446,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             long newEd = doSetIntoEpochDay(newValue, ed);
             return fieldRule.convertFromPeriod(newEd);
         }
-//        if (EPOCH_SECOND.equals(fieldRule)) {
-//            long baseEd = MathUtils.floorDiv(fieldValue, SECONDS_PER_DAY);
-//            long baseNod = MathUtils.floorMod(fieldValue, SECONDS_PER_DAY) * NANOS_PER_SECOND;
-//            long ed = doSetIntoEpochDay(newValue, baseEd);
-//            long nod = doSetIntoTime(newValue, baseEd, baseNod);
-//            return (ed * SECONDS_PER_DAY) + (nod / NANOS_PER_SECOND);
-//        }
         return super.doSetIntoValue(newValue, fieldRule, fieldValue);
     }
 
@@ -442,7 +481,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     }
 
     static long domFromPemd(long pemd) {
-        return (pemd & 31);
+        return (pemd & 31) + 1;
     }
 
     static long emFromPemd(long pemd) {
@@ -707,32 +746,32 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     private static final int MILLI_OF_MINUTE_ORDINAL =      6 * 16;
     private static final int MILLI_OF_HOUR_ORDINAL =        7 * 16;
     private static final int MILLI_OF_DAY_ORDINAL =         8 * 16;
-    private static final int SECOND_OF_MINUTE_ORDINAL =     9 * 16;
-    private static final int SECOND_OF_HOUR_ORDINAL =       10 * 16;
-    private static final int SECOND_OF_DAY_ORDINAL =        11 * 16;
-    private static final int EPOCH_SECOND_ORDINAL =         12 * 16;
-    private static final int MINUTE_OF_HOUR_ORDINAL =       13 * 16;
-    private static final int MINUTE_OF_DAY_ORDINAL =        14 * 16;
-    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL =   15 * 16;
-    private static final int HOUR_OF_AMPM_ORDINAL =         16 * 16;
-    private static final int CLOCK_HOUR_OF_DAY_ORDINAL =    17 * 16;
-    private static final int HOUR_OF_DAY_ORDINAL =          18 * 16;
-    private static final int AMPM_OF_DAY_ORDINAL =          19 * 16;
-    private static final int DAY_OF_WEEK_ORDINAL =          20 * 16;
-    private static final int DAY_OF_MONTH_ORDINAL =         21 * 16;
-    private static final int DAY_OF_YEAR_ORDINAL =          22 * 16;
-    private static final int EPOCH_DAY_ORDINAL =            23 * 16;
-    private static final int ALIGNED_WEEK_OF_MONTH_ORDINAL = 24 * 16;
-    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 25 * 16;
-    private static final int ALIGNED_WEEK_OF_YEAR_ORDINAL = 26 * 16;
-    private static final int MONTH_OF_QUARTER_ORDINAL =     27 * 16;
-    private static final int MONTH_OF_YEAR_ORDINAL =        28 * 16;
-    private static final int ZERO_EPOCH_MONTH_ORDINAL =     29 * 16;
-    private static final int QUARTER_OF_YEAR_ORDINAL =      30 * 16;
-    private static final int WEEK_BASED_YEAR_ORDINAL =      31 * 16;
-    private static final int YEAR_ORDINAL =                 32 * 16;
-    private static final int PACKED_MONTH_DAY_ORDINAL =     33 * 16;
-    private static final int PACKED_EPOCH_MONTH_DAY_ORDINAL = 34 * 16;
+    private static final int EPOCH_MILLI_ORDINAL =          9 * 16;
+    private static final int SECOND_OF_MINUTE_ORDINAL =     10 * 16;
+    private static final int SECOND_OF_HOUR_ORDINAL =       11 * 16;
+    private static final int SECOND_OF_DAY_ORDINAL =        12 * 16;
+    private static final int EPOCH_SECOND_ORDINAL =         13 * 16;
+    private static final int MINUTE_OF_HOUR_ORDINAL =       14 * 16;
+    private static final int MINUTE_OF_DAY_ORDINAL =        15 * 16;
+    private static final int CLOCK_HOUR_OF_AMPM_ORDINAL =   16 * 16;
+    private static final int HOUR_OF_AMPM_ORDINAL =         17 * 16;
+    private static final int CLOCK_HOUR_OF_DAY_ORDINAL =    18 * 16;
+    private static final int HOUR_OF_DAY_ORDINAL =          19 * 16;
+    private static final int AMPM_OF_DAY_ORDINAL =          20 * 16;
+    private static final int DAY_OF_WEEK_ORDINAL =          21 * 16;
+    private static final int DAY_OF_MONTH_ORDINAL =         22 * 16;
+    private static final int DAY_OF_YEAR_ORDINAL =          23 * 16;
+    private static final int EPOCH_DAY_ORDINAL =            24 * 16;
+    private static final int PACKED_EPOCH_MONTH_DAY_ORDINAL = 25 * 16;
+    private static final int ALIGNED_WEEK_OF_MONTH_ORDINAL = 26 * 16;
+    private static final int WEEK_OF_WEEK_BASED_YEAR_ORDINAL = 27 * 16;
+    private static final int ALIGNED_WEEK_OF_YEAR_ORDINAL = 28 * 16;
+    private static final int MONTH_OF_QUARTER_ORDINAL =     29 * 16;
+    private static final int MONTH_OF_YEAR_ORDINAL =        30 * 16;
+    private static final int ZERO_EPOCH_MONTH_ORDINAL =     31 * 16;
+    private static final int QUARTER_OF_YEAR_ORDINAL =      32 * 16;
+    private static final int WEEK_BASED_YEAR_ORDINAL =      33 * 16;
+    private static final int YEAR_ORDINAL =                 34 * 16;
 
     //-----------------------------------------------------------------------
     /**
@@ -799,6 +838,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * The values run from 0 to 86,399,999.
      */
     public static final ISODateTimeRule MILLI_OF_DAY = new ISODateTimeRule(MILLI_OF_DAY_ORDINAL, "MilliOfDay", MILLIS, DAYS, 0, 86399999, 86399999, NANO_OF_DAY);
+    /**
+     * The rule for the epoch-milli field.
+     * <p>
+     * This field counts milliseconds sequentially from 1970-01-01Z.
+     * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
+     */
+    public static final ISODateTimeRule EPOCH_MILLI = new ISODateTimeRule(EPOCH_MILLI_ORDINAL, "EpochMilli", MILLIS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
 
     /**
      * The rule for the second-of-minute field.
@@ -824,7 +870,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     /**
      * The rule for the epoch-second field.
      * <p>
-     * This field counts seconds sequentially from 1970-01-01.
+     * This field counts seconds sequentially from 1970-01-01Z.
      * The values run from Long.MIN_VALUE to Long.MAX_VALUE.
      */
     public static final ISODateTimeRule EPOCH_SECOND = new ISODateTimeRule(EPOCH_SECOND_ORDINAL, "EpochSecond", SECONDS, null, Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, null);
@@ -1023,18 +1069,6 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     public static final ISODateTimeRule YEAR = new ISODateTimeRule(YEAR_ORDINAL, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR, Year.MAX_YEAR, ZERO_EPOCH_MONTH);
 
     /**
-     * The rule for the the combined month-day in the ISO chronology.
-     * <p>
-     * This field combines the month-of-year and day-of-month values into a single {@code long}.
-     * The format uses the least significant 32 bits for the unsigned day-of-month (from 1 to 31)
-     * and the most significant 32 bits for the unsigned month-of-year (from 1 to 12).
-     * <p>
-     * This field is intended primarily for internal use.
-     */
-    public static final ISODateTimeRule PACKED_MONTH_DAY = new ISODateTimeRule(
-            PACKED_MONTH_DAY_ORDINAL, "PackedMonthDay", DAYS, YEARS, 1, (12 << 32) + 31, (12 << 32) + 31, null);
-
-    /**
      * The rule for the the combined year-month-day in the ISO chronology.
      * <p>
      * This field combines the year, month-of-year and day-of-month values into a single {@code long}.
@@ -1052,17 +1086,16 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      */
     private static final DateTimeRule[] RULE_CACHE = new DateTimeRule[] {
         NANO_OF_MILLI, NANO_OF_SECOND, NANO_OF_SECOND, NANO_OF_MINUTE, NANO_OF_DAY,
-        MILLI_OF_SECOND, MILLI_OF_MINUTE, MILLI_OF_HOUR, MILLI_OF_DAY,
+        MILLI_OF_SECOND, MILLI_OF_MINUTE, MILLI_OF_HOUR, MILLI_OF_DAY, EPOCH_MILLI,
         SECOND_OF_MINUTE, SECOND_OF_HOUR, SECOND_OF_DAY, EPOCH_SECOND,
         MINUTE_OF_HOUR, MINUTE_OF_DAY,
         CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY, AMPM_OF_DAY,
-        DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY,
+        DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY, PACKED_EPOCH_MONTH_DAY,
         ALIGNED_WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, ALIGNED_WEEK_OF_YEAR,
         MONTH_OF_QUARTER, MONTH_OF_YEAR, ZERO_EPOCH_MONTH,
         QUARTER_OF_YEAR,
         WEEK_BASED_YEAR,
         YEAR,
-        PACKED_MONTH_DAY, PACKED_EPOCH_MONTH_DAY
     };
 
 }

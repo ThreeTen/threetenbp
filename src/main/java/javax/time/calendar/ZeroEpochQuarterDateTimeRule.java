@@ -79,8 +79,8 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
         assertEquals(INSTANCE.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 + 96), 1);
         assertEquals(INSTANCE.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 - 32), -1);
         
-        assertEquals(DAY_OF_MONTH.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4), 4);
-        assertEquals(DAY_OF_MONTH.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 - 32), 4);
+        assertEquals(DAY_OF_MONTH.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4), 5);
+        assertEquals(DAY_OF_MONTH.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 - 32), 5);
         
         assertEquals(MONTH_OF_YEAR.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4), 1);
         assertEquals(MONTH_OF_YEAR.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 + 32), 2);
@@ -133,6 +133,19 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, DAY_OF_MONTH), 4);
         
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EthiopicDateTimeRule.PACKED_YEAR_DAY), 4);
+        
+        assertEquals(DAY_OF_MONTH.setIntoValue(1, EPOCH_DAY, 0), 0);
+        assertEquals(DAY_OF_MONTH.setIntoValue(2, EPOCH_DAY, 0), 1);
+        assertEquals(DAY_OF_MONTH.setIntoValue(3, EPOCH_DAY, 0), 2);
+        
+        assertEquals(HOUR_OF_DAY.setIntoInstant(2, 123, 3601 * 1000000000L, 321)[0], 123);
+        assertEquals(HOUR_OF_DAY.setIntoInstant(2, 123, 3601 * 1000000000L, 321)[1], 7201 * 1000000000L);
+        assertEquals(HOUR_OF_DAY.setIntoInstant(2, 123, 3601 * 1000000000L, 321)[2], 321);
+        
+        assertEquals(DAY_OF_MONTH.setIntoInstant(2, 33, 3601 * 1000000000L, 321)[0], 32);
+        assertEquals(DAY_OF_MONTH.setIntoInstant(2, 33, 3601 * 1000000000L, 321)[1], 3601 * 1000000000L);
+        assertEquals(DAY_OF_MONTH.setIntoInstant(2, 33, 3601 * 1000000000L, 321)[2], 321);
+        
         System.out.println("OK");
     }
 
@@ -186,7 +199,12 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 //        return MathUtils.floorMod(zeq, 4) + 1;
 //    }
 
-    //-----------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    @Override
+    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return doExtractFromValue(EPOCH_DAY, localEpochDay);
+    }
+
     @Override
     protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
         long em = ZERO_EPOCH_MONTH.extractFromValue(fieldRule, fieldValue);
@@ -194,6 +212,13 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
             return eqFromEm(em);
         }
         return super.doExtractFromValue(fieldRule, fieldValue);
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+        localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay);
+        return new long[] {localEpochDay, nanoOfDay, offsetSecs};
     }
 
     @Override
