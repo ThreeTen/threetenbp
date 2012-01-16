@@ -149,10 +149,10 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    private void check(LocalDate test_2008_02_29, int y, int m, int d) {
-        assertEquals(test_2008_02_29.getYear(), y);
-        assertEquals(test_2008_02_29.getMonthOfYear().getValue(), m);
-        assertEquals(test_2008_02_29.getDayOfMonth(), d);
+    private void check(LocalDate test, int y, int m, int d) {
+        assertEquals(test.getYear(), y);
+        assertEquals(test.getMonthOfYear().getValue(), m);
+        assertEquals(test.getDayOfMonth(), d);
     }
 
     //-----------------------------------------------------------------------
@@ -566,6 +566,32 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
+    // get(DateTimeRule)
+    //-----------------------------------------------------------------------
+    public void test_get_DateTimeRule() {
+        LocalDate test = LocalDate.of(2008, 6, 30);
+        assertEquals(test.getValue(YEAR), 2008);
+        assertEquals(test.getValue(QUARTER_OF_YEAR), 2);
+        assertEquals(test.getValue(MONTH_OF_YEAR), 6);
+        assertEquals(test.getValue(MONTH_OF_QUARTER), 3);
+        assertEquals(test.getValue(DAY_OF_MONTH), 30);
+        assertEquals(test.getValue(DAY_OF_WEEK), 1);
+        assertEquals(test.getValue(DAY_OF_YEAR), 182);
+//        assertEquals(test.getValue(WEEK_OF_WEEK_BASED_YEAR), 27);
+//        assertEquals(test.getValue(WEEK_BASED_YEAR), 2008);
+    }
+
+    @Test(expectedExceptions = CalendricalRuleException.class)
+    public void test_get_DateTimeRule_timeField() {
+        TEST_2007_07_15.getValue(HOUR_OF_DAY);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_get_DateTimeRule_null() {
+        TEST_2007_07_15.get((CalendricalRule<?>) null);
+    }
+
+    //-----------------------------------------------------------------------
     // get*()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
@@ -817,6 +843,49 @@ public class TestLocalDate extends AbstractTest {
     public void test_withDayOfYear_invalid() {
         TEST_2007_07_15.withDayOfYear(366);
     }
+
+    //-----------------------------------------------------------------------
+    // with(Rule,long)
+    //-----------------------------------------------------------------------
+    public void test_with_rule_long_normalDayOfMonth() {
+        LocalDate t = TEST_2007_07_15.with(DAY_OF_MONTH, 26);
+        assertEquals(t, LocalDate.of(2007, 7, 26));
+    }
+
+    public void test_with_rule_long_normalDayOfYear() {
+        LocalDate t = TEST_2007_07_15.with(DAY_OF_YEAR, 33);
+        assertEquals(t, LocalDate.of(2007, 2, 2));
+    }
+
+    public void test_with_rule_long_noChangeDayOfMonth() {
+        LocalDate t = TEST_2007_07_15.with(DAY_OF_MONTH, 15);
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    public void test_with_rule_long_noChangeDayOfYear() {
+        LocalDate t = TEST_2007_07_15.with(DAY_OF_YEAR, 31 + 28 + 31 + 30 + 31 + 30 + 15);
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_with_rule_long_timeField() {
+        TEST_2007_07_15.with(HOUR_OF_DAY, 15);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_with_rule_long_illegal() {
+        TEST_2007_07_15.with(DAY_OF_YEAR, 367);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_with_rule_long_null() {
+        TEST_2007_07_15.with(null, 3);
+    }
+
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_with_rule_long_invalid() {
+//        TEST_2007_07_15.withDayOfYear(366);
+//    }
 
     //-----------------------------------------------------------------------
     // plus(PeriodProvider)

@@ -35,6 +35,7 @@ import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendar.ISODateTimeRule.PACKED_EPOCH_MONTH_DAY;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
@@ -330,6 +331,25 @@ public final class LocalDate
 //            }
 //        }
         return CalendricalEngine.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
+    }
+
+    /**
+     * Gets the value of the specified rule.
+     * <p>
+     * This method queries the value of the specified rule.
+     * this can be used to extract any rule that can derive from a date
+     * including rules from other calendar systems.
+     *
+     * @param rule  the rule to derive, not null
+     * @return the value for the rule
+     * @throws CalendricalException if the value cannot be obtained
+     */
+    public long getValue(DateTimeRule rule) {
+        long result = rule.extractFromValue(PACKED_EPOCH_MONTH_DAY, pemd);
+        if (result == Long.MIN_VALUE) {
+            throw new CalendricalRuleException("Unable to extract from date: " + rule, rule);
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -630,6 +650,29 @@ public final class LocalDate
             return this;
         }
         return ISOChronology.getDateFromDayOfYear(getYear(), dayOfYear);
+    }
+
+    /**
+     * Returns a copy of this {@code LocalDate} with the specified rule altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param rule  the rule to set, not null
+     * @param value  the new value for the rule, within the valid range of the rule
+     * @return a {@code LocalDate} based on this date with the value of the rule changed, not null
+     * @throws CalendricalException if the value cannot be set
+     */
+    public LocalDate with(DateTimeRule rule, long value) {
+        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
+        rule.checkValidValue(value);
+        long result = rule.setIntoValue(value, PACKED_EPOCH_MONTH_DAY, pemd);
+        if (result == Long.MIN_VALUE) {
+            throw new CalendricalException("Unable to set date for rule: " + rule);
+        }
+        if (result == pemd) {
+            return this;
+        }
+        return new LocalDate(result);
     }
 
     //-----------------------------------------------------------------------
