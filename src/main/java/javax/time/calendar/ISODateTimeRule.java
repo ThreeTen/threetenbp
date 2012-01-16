@@ -461,11 +461,17 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         switch (ordinal) {
             case DAY_OF_WEEK_ORDINAL: return packedDateFromEpochDay(doSetIntoEpochDay(newValue, epochDayFromPackedDate(fieldPemd)));
             case DAY_OF_MONTH_ORDINAL: return fieldPemd + (newValue - domFromPemd(fieldPemd));
-            case DAY_OF_YEAR_ORDINAL: return 0;  // TODO
+            case DAY_OF_YEAR_ORDINAL: {
+                long diff = (newValue - doyFromPemd(fieldPemd));
+                return packedDateFromEpochDay(epochDayFromPackedDate(fieldPemd) + diff);
+            }
             case EPOCH_DAY_ORDINAL: return packedDateFromEpochDay(newValue);
             case PACKED_EPOCH_MONTH_DAY_ORDINAL: return newValue;
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: return fieldPemd + (newValue - awomFromDom(domFromPemd(fieldPemd))) * 7;
-            case ALIGNED_WEEK_OF_YEAR_ORDINAL: return 0;  // TODO
+            case ALIGNED_WEEK_OF_YEAR_ORDINAL:  {
+                long diff = (newValue - awoyFromDoy(doyFromPemd(fieldPemd))) * 7;
+                return packedDateFromEpochDay(epochDayFromPackedDate(fieldPemd) + diff);
+            }
             case MONTH_OF_QUARTER_ORDINAL: return fieldPemd + (newValue - moqFromMoy(moyFromEm(emFromPemd(fieldPemd)))) * 32;
             case MONTH_OF_YEAR_ORDINAL: return fieldPemd + (newValue - moyFromEm(emFromPemd(fieldPemd))) * 32;
             case ZERO_EPOCH_MONTH_ORDINAL: return fieldPemd + (newValue - emFromPemd(fieldPemd)) * 32;
