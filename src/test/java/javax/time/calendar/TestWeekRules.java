@@ -38,6 +38,8 @@ import static javax.time.calendar.DayOfWeek.SUNDAY;
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.DayOfWeek.TUESDAY;
 import static javax.time.calendar.DayOfWeek.WEDNESDAY;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.MonthOfYear.JULY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -473,6 +475,22 @@ public class TestWeekRules {
 //        assertEquals(rule.field(14), rule.derive(DAY_OF_WEEK.field(13)));  // next Sat
 //        
 //        assertEquals(rule.field(15), rule.derive(DAY_OF_WEEK.field(21)));  // 2next Sun
+    }
+
+    public void test_dayOfWeek_get_sun1() {
+        DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
+        
+        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 7), 1);  // Sun
+        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 1), 2);  // Mon
+        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 2), 3);  // Tue
+        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 3), 4);  // Wed
+        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 4), 5);  // Thu
+        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 5), 6);  // Fri
+        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 6), 7);  // Sat
+        
+        assertEquals(rule.extractFromValue(EPOCH_DAY, -1), 4);  // Wed
+        assertEquals(rule.extractFromValue(EPOCH_DAY, 0), 5);  // Thu
+        assertEquals(rule.extractFromValue(EPOCH_DAY, 1), 6);  // Fri
     }
 
     //-----------------------------------------------------------------------

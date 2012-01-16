@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
 import java.io.Serializable;
@@ -539,6 +540,36 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             super("DayOfWeek-" + weekRules.toString(), ISOPeriodUnit.DAYS, ISOPeriodUnit.WEEKS, 1, 7, null);
             this.weekRules = weekRules;
         }
+        @Override
+        protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+            return doExtractFromValue(EPOCH_DAY, localEpochDay);
+        }
+        @Override
+        protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
+            if (dow != Long.MIN_VALUE) {
+                return wrdowFromDow(dow);
+            }
+            return super.doExtractFromValue(fieldRule, fieldValue);
+        }
+        @Override
+        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay);
+            return new long[] {localEpochDay, nanoOfDay, offsetSecs};
+        }
+        @Override
+        protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
+            if (dow != Long.MIN_VALUE) {
+                long newDow = dow + (newValue - wrdowFromDow(dow)) * 3;
+                return DAY_OF_WEEK.setIntoValue(newDow, fieldRule, fieldValue);
+            }
+            return super.doSetIntoValue(newValue, fieldRule, fieldValue);
+        }
+        private long wrdowFromDow(long fieldValue) {
+            return ((fieldValue - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1;
+        }
+
 //        @Override
 //        protected void normalize(CalendricalEngine engine) {
 //            DateTimeField rdow = engine.getField(this, false);
@@ -579,6 +610,36 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
                     null);
             this.weekRules = weekRules;
         }
+//        @Override
+//        protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+//            return doExtractFromValue(EPOCH_DAY, localEpochDay);
+//        }
+//        @Override
+//        protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+//            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
+//            if (dow != Long.MIN_VALUE) {
+//                return wrdowFromDow(dow);
+//            }
+//            return super.doExtractFromValue(fieldRule, fieldValue);
+//        }
+//        @Override
+//        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+//            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay);
+//            return new long[] {localEpochDay, nanoOfDay, offsetSecs};
+//        }
+//        @Override
+//        protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+//            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
+//            if (dow != Long.MIN_VALUE) {
+//                long newDow = dow + (newValue - wrdowFromDow(dow)) * 3;
+//                return DAY_OF_WEEK.setIntoValue(newDow, fieldRule, fieldValue);
+//            }
+//            return super.doSetIntoValue(newValue, fieldRule, fieldValue);
+//        }
+//        private long wrdowFromDow(long fieldValue) {
+//            return ((fieldValue - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1;
+//        }
+        
         @Override
         protected void normalize(CalendricalEngine engine) {
             DateTimeField epm = engine.getField(ZERO_EPOCH_MONTH, false);
