@@ -33,6 +33,8 @@ package javax.time.calendar;
 
 import java.util.Arrays;
 
+import javax.time.calendrical.Calendrical;
+
 /**
  * Base test class.
  *

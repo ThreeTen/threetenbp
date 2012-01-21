@@ -33,6 +33,9 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalRule;
+
 /**
  * Internal class supplying the rules for the additional date and time objects.
  * <p>

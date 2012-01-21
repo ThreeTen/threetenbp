@@ -31,15 +31,15 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
-import javax.time.calendar.DateTimeRule;
+import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

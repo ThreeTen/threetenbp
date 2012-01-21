@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.zone;
 
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,10 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -52,6 +49,9 @@ import javax.time.calendar.Period;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
+import javax.time.calendrical.DateAdjusters;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 /**
  * A mutable builder used to create all the rules for a historic time-zone.

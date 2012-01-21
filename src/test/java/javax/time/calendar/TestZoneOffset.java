@@ -31,9 +31,9 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -48,6 +48,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.MockOtherChronology;
+import javax.time.calendrical.MockRuleNoValue;
+import javax.time.calendrical.PeriodField;
+import javax.time.calendrical.PeriodFields;
+import javax.time.calendrical.PeriodProvider;
 
 import org.testng.annotations.Test;
 

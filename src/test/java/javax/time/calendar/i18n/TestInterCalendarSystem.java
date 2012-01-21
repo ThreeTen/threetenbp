@@ -31,11 +31,11 @@
  */
 package javax.time.calendar.i18n;
 
-import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.DateTimeField;
 import javax.time.calendar.LocalDate;
+import javax.time.calendrical.DateTimeField;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 

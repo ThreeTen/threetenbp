@@ -47,6 +47,9 @@ import javax.time.CalendricalException;
 import javax.time.calendar.format.TextStyle;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRulesGroup;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalRule;
 
 /**
  * A time-zone id representing the set of rules by which the zone offset
@@ -268,8 +271,8 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @throws CalendricalException if the time-zone cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
-        ISOChronology.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
-        ISOChronology.checkNotNull(aliasMap, "Alias map must not be null");
+        LocalDate.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
+        LocalDate.checkNotNull(aliasMap, "Alias map must not be null");
         String zoneId = aliasMap.get(timeZoneIdentifier);
         zoneId = (zoneId != null ? zoneId : timeZoneIdentifier);
         return of(zoneId);
@@ -353,7 +356,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @throws CalendricalException if the time-zone cannot be found
      */
     private static ZoneId ofID(String zoneID, boolean checkAvailable) {
-        ISOChronology.checkNotNull(zoneID, "Time zone ID must not be null");
+        LocalDate.checkNotNull(zoneID, "Time zone ID must not be null");
         
         // special fixed cases
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
@@ -405,7 +408,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * @return the time-zone for the offset, not null
      */
     public static ZoneId of(ZoneOffset offset) {
-        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }
@@ -894,7 +897,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withVersion(String versionID) {
-            ISOChronology.checkNotNull(versionID, "Version ID must not be null");
+            LocalDate.checkNotNull(versionID, "Version ID must not be null");
             if (versionID.length() == 0) {
                 return withFloatingVersion();
             }
@@ -909,7 +912,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withLatestVersionValidFor(OffsetDateTime dateTime) {
-            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            LocalDate.checkNotNull(dateTime, "OffsetDateTime must not be null");
             return withVersion(getGroup().getLatestVersionIDValidFor(regionID, dateTime));
         }
 
@@ -950,7 +953,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            LocalDate.checkNotNull(dateTime, "OffsetDateTime must not be null");
             ZoneRulesGroup group = getGroup();
             if (isFloatingVersion()) {
                 return group.getRules(regionID, group.getLatestVersionIDValidFor(regionID, dateTime));
@@ -1042,7 +1045,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withVersion(String versionID) {
-            ISOChronology.checkNotNull(versionID, "Version ID must not be null");
+            LocalDate.checkNotNull(versionID, "Version ID must not be null");
             if (versionID.length() > 0) {
                 throw new CalendricalException("Fixed time-zone does not provide versions");
             }
@@ -1051,7 +1054,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withLatestVersionValidFor(OffsetDateTime dateTime) {
-            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            LocalDate.checkNotNull(dateTime, "OffsetDateTime must not be null");
             if (getRules().getOffset(dateTime).equals(dateTime.getOffset()) == false) {
                 throw new CalendricalException("Fixed time-zone " + getID() + " is invalid for date-time " + dateTime);
             }
@@ -1083,7 +1086,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
-            ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+            LocalDate.checkNotNull(dateTime, "OffsetDateTime must not be null");
             // fixed rules always in transient field
             if (rules.getOffset(dateTime).equals(dateTime.getOffset()) == false) {
                 throw new CalendricalException("Fixed time-zone " + getID() + " is invalid for date-time " + dateTime);

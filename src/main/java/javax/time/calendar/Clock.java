@@ -125,7 +125,7 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
-        ISOChronology.checkNotNull(zone, "ZoneId must not be null");
+        LocalDate.checkNotNull(zone, "ZoneId must not be null");
         return new TimeSourceClock(TimeSource.system(), zone);
     }
 
@@ -141,7 +141,7 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock clockDefaultZone(TimeSource timeSource) {
-        ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
+        LocalDate.checkNotNull(timeSource, "TimeSource must not be null");
         ZoneId zone = ZoneId.of(TimeZone.getDefault().getID());
         return new TimeSourceClock(timeSource, zone);
     }
@@ -155,8 +155,8 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock clock(TimeSource timeSource, ZoneId timeZone) {
-        ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
-        ISOChronology.checkNotNull(timeZone, "ZoneId must not be null");
+        LocalDate.checkNotNull(timeSource, "TimeSource must not be null");
+        LocalDate.checkNotNull(timeZone, "ZoneId must not be null");
         return new TimeSourceClock(timeSource, timeZone);
     }
 
@@ -587,7 +587,7 @@ public abstract class Clock {
         /** {@inheritDoc} */
         @Override
         public Clock withSource(TimeSource timeSource) {
-            ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
+            LocalDate.checkNotNull(timeSource, "TimeSource must not be null");
             if (timeSource.equals(this.timeSource)) {
                 return this;
             }
@@ -603,7 +603,7 @@ public abstract class Clock {
         /** {@inheritDoc} */
         @Override
         public Clock withZone(ZoneId zone) {
-            ISOChronology.checkNotNull(zone, "ZoneId must not be null");
+            LocalDate.checkNotNull(zone, "ZoneId must not be null");
             if (zone.equals(this.zone)) {
                 return this;
             }

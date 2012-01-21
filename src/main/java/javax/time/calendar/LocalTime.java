@@ -31,22 +31,22 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOChronology.HOURS_PER_DAY;
-import static javax.time.calendar.ISOChronology.MINUTES_PER_DAY;
-import static javax.time.calendar.ISOChronology.MINUTES_PER_HOUR;
-import static javax.time.calendar.ISOChronology.NANOS_PER_DAY;
-import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
-import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
-import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_HOUR;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_MINUTE;
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendar.ISODateTimeRule.NANO_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ISOChronology.HOURS_PER_DAY;
+import static javax.time.calendrical.ISOChronology.MINUTES_PER_DAY;
+import static javax.time.calendrical.ISOChronology.MINUTES_PER_HOUR;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_DAY;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_HOUR;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_MINUTE;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_SECOND;
+import static javax.time.calendrical.ISOChronology.SECONDS_PER_DAY;
+import static javax.time.calendrical.ISOChronology.SECONDS_PER_HOUR;
+import static javax.time.calendrical.ISOChronology.SECONDS_PER_MINUTE;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ISODateTimeRule.NANO_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
 
 import java.io.Serializable;
 
@@ -57,6 +57,14 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.TimeAdjuster;
 
 /**
  * A time without time-zone in the ISO-8601 calendar system,
@@ -166,7 +174,7 @@ public final class LocalTime
      * @return the current time, not null
      */
     public static LocalTime now(Clock clock) {
-        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        LocalDate.checkNotNull(clock, "Clock must not be null");
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -347,7 +355,7 @@ public final class LocalTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -834,7 +842,7 @@ public final class LocalTime
      * @return the adjusted time, not null
      */
     public LocalTime adjustTime(LocalTime time) {
-        ISOChronology.checkNotNull(time, "LocalTime must not be null");
+        LocalDate.checkNotNull(time, "LocalTime must not be null");
         return this.equals(time) ? time : this;
     }
 
@@ -1027,7 +1035,7 @@ public final class LocalTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

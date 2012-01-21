@@ -39,11 +39,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.time.calendar.Chronology;
-import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.ISODateTimeRule;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
+import javax.time.calendrical.DateTimeRule;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.ISODateTimeRule;
 
 /**
  * Builder to create formatters for calendricals.

@@ -31,13 +31,13 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOChronology.HOURS_PER_DAY;
-import static javax.time.calendar.ISOChronology.MINUTES_PER_DAY;
-import static javax.time.calendar.ISOChronology.NANOS_PER_DAY;
-import static javax.time.calendar.ISOChronology.NANOS_PER_HOUR;
-import static javax.time.calendar.ISOChronology.NANOS_PER_MINUTE;
-import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
-import static javax.time.calendar.ISOChronology.SECONDS_PER_DAY;
+import static javax.time.calendrical.ISOChronology.HOURS_PER_DAY;
+import static javax.time.calendrical.ISOChronology.MINUTES_PER_DAY;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_DAY;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_HOUR;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_MINUTE;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_SECOND;
+import static javax.time.calendrical.ISOChronology.SECONDS_PER_DAY;
 
 import java.io.Serializable;
 
@@ -48,6 +48,20 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateResolver;
+import javax.time.calendrical.DateResolvers;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.ZoneResolver;
+import javax.time.calendrical.ZoneResolvers;
 
 /**
  * A date-time without a time-zone in the ISO-8601 calendar system,
@@ -133,7 +147,7 @@ public final class LocalDateTime
      * @return the current date-time, not null
      */
     public static LocalDateTime now(Clock clock) {
-        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        LocalDate.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -213,7 +227,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime ofMidnight(LocalDate date) {
-        ISOChronology.checkNotNull(date, "LocalDate must not be null");
+        LocalDate.checkNotNull(date, "LocalDate must not be null");
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -379,8 +393,8 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime of(LocalDate date, LocalTime time) {
-        ISOChronology.checkNotNull(date, "LocalDate must not be null");
-        ISOChronology.checkNotNull(time, "LocalTime must not be null");
+        LocalDate.checkNotNull(date, "LocalDate must not be null");
+        LocalDate.checkNotNull(time, "LocalTime must not be null");
         return new LocalDateTime(date, time);
     }
 
@@ -446,7 +460,7 @@ public final class LocalDateTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -1083,7 +1097,7 @@ public final class LocalDateTime
      * @param years  the years to add, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(long, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendrical.DateResolver)
      */
     public LocalDateTime plusYears(long years) {
         LocalDate newDate = date.plusYears(years);
@@ -1133,7 +1147,7 @@ public final class LocalDateTime
      * @param months  the months to add, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(long, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendrical.DateResolver)
      */
     public LocalDateTime plusMonths(long months) {
         LocalDate newDate = date.plusMonths(months);
@@ -1360,7 +1374,7 @@ public final class LocalDateTime
      * @param years  the years to subtract, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(long, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendrical.DateResolver)
      */
     public LocalDateTime minusYears(long years) {
         LocalDate newDate = date.minusYears(years);
@@ -1410,7 +1424,7 @@ public final class LocalDateTime
      * @param months  the months to subtract, may be negative
      * @return a {@code LocalDateTime} based on this date-time with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(long, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendrical.DateResolver)
      */
     public LocalDateTime minusMonths(long months) {
         LocalDate newDate = date.minusMonths(months);
@@ -1786,7 +1800,7 @@ public final class LocalDateTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

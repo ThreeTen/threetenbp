@@ -42,6 +42,20 @@ import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneRules;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateResolver;
+import javax.time.calendrical.DateResolvers;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.TimeAdjuster;
+import javax.time.calendrical.ZoneResolver;
+import javax.time.calendrical.ZoneResolvers;
 
 /**
  * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -115,7 +129,7 @@ public final class OffsetDateTime
      * @return the current date-time, not null
      */
     public static OffsetDateTime now(Clock clock) {
-        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        LocalDate.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -393,7 +407,7 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
-        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
         return new OffsetDateTime(ldt, offset);
@@ -411,7 +425,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
-        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = epochSecond + offset.getAmountSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
         return new OffsetDateTime(ldt, offset);
@@ -479,7 +493,7 @@ public final class OffsetDateTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -1144,7 +1158,7 @@ public final class OffsetDateTime
      * @param years  the years to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(long, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime plusYears(long years) {
         LocalDateTime newDT = dateTime.plusYears(years);
@@ -1194,7 +1208,7 @@ public final class OffsetDateTime
      * @param months  the months to add, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(long, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime plusMonths(long months) {
         LocalDateTime newDT = dateTime.plusMonths(months);
@@ -1381,7 +1395,7 @@ public final class OffsetDateTime
      * @param years  the years to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(long, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime minusYears(long years) {
         LocalDateTime newDT = dateTime.minusYears(years);
@@ -1431,7 +1445,7 @@ public final class OffsetDateTime
      * @param months  the months to subtract, may be negative
      * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(long, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDateTime minusMonths(long months) {
         LocalDateTime newDT = dateTime.minusMonths(months);
@@ -1877,7 +1891,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

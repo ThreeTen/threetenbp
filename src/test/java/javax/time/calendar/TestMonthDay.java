@@ -31,11 +31,11 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_QUARTER;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.MonthOfYear.JANUARY;
 import static javax.time.calendar.MonthOfYear.JULY;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -57,6 +57,18 @@ import javax.time.Instant;
 import javax.time.TimeSource;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateResolver;
+import javax.time.calendrical.DateResolvers;
+import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.MockDateResolverReturnsNull;
+import javax.time.calendrical.MockRuleNoValue;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.CalendricalEngine;
+import javax.time.calendrical.CalendricalEngine;
 
 /**
  * Strategy for parsing text to calendrical information.

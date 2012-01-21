@@ -31,22 +31,22 @@
  */
 package javax.time.calendar.field;
 
-import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalEngine;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeAdjuster;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeRule;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.TimeAdjuster;
 
 /**
  * A representation of a minute-of-hour in the ISO-8601 calendar system.

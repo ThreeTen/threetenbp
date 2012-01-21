@@ -31,13 +31,16 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.MILLI_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.MILLI_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_DAY;
 
 import java.io.Serializable;
 
 import javax.time.MathUtils;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateTimeField;
 
 /**
  * Internal class supplying the rules for the principal date and time objects.

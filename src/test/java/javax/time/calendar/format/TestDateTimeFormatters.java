@@ -31,17 +31,17 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -54,11 +54,6 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.CalendricalRuleException;
-import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.OffsetDateTime;
@@ -67,6 +62,11 @@ import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZoneId;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalRuleException;
+import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

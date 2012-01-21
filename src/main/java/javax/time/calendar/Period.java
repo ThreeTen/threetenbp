@@ -31,21 +31,27 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOPeriodUnit.DAYS;
-import static javax.time.calendar.ISOPeriodUnit.HOURS;
-import static javax.time.calendar.ISOPeriodUnit.MINUTES;
-import static javax.time.calendar.ISOPeriodUnit.MONTHS;
-import static javax.time.calendar.ISOPeriodUnit.NANOS;
-import static javax.time.calendar.ISOPeriodUnit.SECONDS;
-import static javax.time.calendar.ISOPeriodUnit.YEARS;
+import static javax.time.calendrical.ISOPeriodUnit.DAYS;
+import static javax.time.calendrical.ISOPeriodUnit.HOURS;
+import static javax.time.calendrical.ISOPeriodUnit.MINUTES;
+import static javax.time.calendrical.ISOPeriodUnit.MONTHS;
+import static javax.time.calendrical.ISOPeriodUnit.NANOS;
+import static javax.time.calendrical.ISOPeriodUnit.SECONDS;
+import static javax.time.calendrical.ISOPeriodUnit.YEARS;
 
 import java.io.Serializable;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.PeriodField;
+import javax.time.calendrical.PeriodFields;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,
@@ -180,7 +186,7 @@ public final class Period
      * @throws ArithmeticException if any provided amount, exceeds the supported range
      */
     public static Period of(PeriodProvider periodProvider) {
-        PeriodFields.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        LocalDate.checkNotNull(periodProvider, "PeriodProvider must not be null");
         if (periodProvider instanceof Period) {
             return (Period) periodProvider;
         }
@@ -407,7 +413,7 @@ public final class Period
      * @throws ArithmeticException if the result exceeds the supported period range
      */
     public static Period of(Duration duration) {
-        PeriodFields.checkNotNull(duration, "Duration must not be null");
+        LocalDate.checkNotNull(duration, "Duration must not be null");
         if (duration.isZero()) {
             return ZERO;
         }
@@ -548,7 +554,7 @@ public final class Period
      * @throws CalendricalParseException if the text cannot be parsed to a Period
      */
     public static Period parse(final CharSequence text) {
-        PeriodFields.checkNotNull(text, "Text to parse must not be null");
+        LocalDate.checkNotNull(text, "Text to parse must not be null");
         return new PeriodParser(text).parse();
     }
 
@@ -1516,29 +1522,29 @@ public final class Period
     public PeriodFields toPeriodFields() {
         PeriodFields fields = periodFields;
         if (fields == null) {
-            TreeMap<PeriodUnit, PeriodField> map = PeriodFields.createMap();
+            List<PeriodField> list = new ArrayList<PeriodField>();
             if (years != 0) {
-                map.put(YEARS, PeriodField.of(years, YEARS));
+                list.add(PeriodField.of(years, YEARS));
             }
             if (months != 0) {
-                map.put(MONTHS, PeriodField.of(months, MONTHS));
+                list.add(PeriodField.of(months, MONTHS));
             }
             if (days != 0) {
-                map.put(DAYS, PeriodField.of(days, DAYS));
+                list.add(PeriodField.of(days, DAYS));
             }
             if (hours != 0) {
-                map.put(HOURS, PeriodField.of(hours, HOURS));
+                list.add(PeriodField.of(hours, HOURS));
             }
             if (minutes != 0) {
-                map.put(MINUTES, PeriodField.of(minutes, MINUTES));
+                list.add(PeriodField.of(minutes, MINUTES));
             }
             if (seconds != 0) {
-                map.put(SECONDS, PeriodField.of(seconds, SECONDS));
+                list.add(PeriodField.of(seconds, SECONDS));
             }
             if (nanos != 0) {
-                map.put(NANOS, PeriodField.of(nanos, NANOS));
+                list.add(PeriodField.of(nanos, NANOS));
             }
-            periodFields = fields = PeriodFields.create(map);
+            periodFields = fields = PeriodFields.of(list);
         }
         return fields;
     }

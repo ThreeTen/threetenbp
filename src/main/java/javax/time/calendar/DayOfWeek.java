@@ -31,12 +31,20 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
 import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.format.TextStyle;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.ISODateTimeRule;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.WeekRules;
 
 /**
  * A day-of-week, such as 'Tuesday'.

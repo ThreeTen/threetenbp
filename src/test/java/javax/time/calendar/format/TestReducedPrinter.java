@@ -31,14 +31,14 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.DateTimeField;
+import javax.time.calendrical.DateTimeField;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

@@ -34,8 +34,8 @@ package javax.time.calendar.format;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalRule;
 
 /**
  * Context object used during date and time printing.

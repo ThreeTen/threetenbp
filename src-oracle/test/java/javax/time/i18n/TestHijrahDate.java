@@ -14,12 +14,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;

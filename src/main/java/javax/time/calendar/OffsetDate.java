@@ -40,6 +40,18 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateResolver;
+import javax.time.calendrical.DateResolvers;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.ZoneResolvers;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -115,7 +127,7 @@ public final class OffsetDate
      * @return the current date, not null
      */
     public static OffsetDate now(Clock clock) {
-        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        LocalDate.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -193,7 +205,7 @@ public final class OffsetDate
      */
     public static OffsetDate ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
-        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         long epochSec = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
         long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDay);
@@ -261,7 +273,7 @@ public final class OffsetDate
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDate parse(CharSequence text, DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -339,7 +351,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the requested offset, not null
      */
     public OffsetDate withOffset(ZoneOffset offset) {
-        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         return with(date, offset);
     }
 
@@ -646,7 +658,7 @@ public final class OffsetDate
      * @param years  the years to add, may be negative
      * @return an {@code OffsetDate} based on this date with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(long, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDate plusYears(long years) {
         return with(date.plusYears(years), offset);
@@ -694,7 +706,7 @@ public final class OffsetDate
      * @param months  the months to add, may be negative
      * @return an {@code OffsetDate} based on this date with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(long, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDate plusMonths(long months) {
         return with(date.plusMonths(months), offset);
@@ -806,7 +818,7 @@ public final class OffsetDate
      * @param years  the years to subtract, may be negative
      * @return an {@code OffsetDate} based on this date with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(long, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDate minusYears(long years) {
         return with(date.minusYears(years), offset);
@@ -854,7 +866,7 @@ public final class OffsetDate
      * @param months  the months to subtract, may be negative
      * @return an {@code OffsetDate} based on this date with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(long, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendrical.DateResolver)
      */
     public OffsetDate minusMonths(long months) {
         return with(date.minusMonths(months), offset);
@@ -1240,7 +1252,7 @@ public final class OffsetDate
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

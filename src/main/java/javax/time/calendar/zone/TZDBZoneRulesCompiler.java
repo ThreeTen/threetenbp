@@ -31,9 +31,9 @@
  */
 package javax.time.calendar.zone;
 
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -56,10 +56,7 @@ import java.util.TreeSet;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import javax.time.calendar.DateAdjusters;
-import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -71,6 +68,9 @@ import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeParseContext;
 import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
+import javax.time.calendrical.DateAdjusters;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.ISOChronology;
 
 /**
  * A builder that can read the TZDB time-zone files and build {@code ZoneRules} instances.

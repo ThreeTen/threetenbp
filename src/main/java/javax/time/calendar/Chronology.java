@@ -31,6 +31,11 @@
  */
 package javax.time.calendar;
 
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.ISOChronology;
+
 /**
  * A calendar system, consisting of rules controlling the passage of human-scale time.
  * <p>

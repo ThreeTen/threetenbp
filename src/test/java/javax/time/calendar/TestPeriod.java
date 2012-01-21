@@ -48,6 +48,12 @@ import java.math.BigInteger;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
+import javax.time.calendrical.ISOPeriodUnit;
+import javax.time.calendrical.MockPeriodProviderReturnsNull;
+import javax.time.calendrical.PeriodField;
+import javax.time.calendrical.PeriodFields;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.PeriodUnit;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.HistoricChronology;
 

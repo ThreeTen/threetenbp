@@ -31,9 +31,9 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
 import java.io.Serializable;
 
@@ -43,6 +43,18 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateResolver;
+import javax.time.calendrical.DateResolvers;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.ZoneResolvers;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -139,7 +151,7 @@ public final class LocalDate
      * @return the current date, not null
      */
     public static LocalDate now(Clock clock) {
-        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        LocalDate.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDate factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -163,7 +175,7 @@ public final class LocalDate
      */
     public static LocalDate of(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         YEAR.checkValidValue(year);
-        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        LocalDate.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         return create(year, monthOfYear, dayOfMonth);
     }
@@ -301,8 +313,22 @@ public final class LocalDate
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -464,7 +490,7 @@ public final class LocalDate
         YEAR.checkValidValue(year);
         DAY_OF_MONTH.checkValidValue(day);
         LocalDate date = dateResolver.resolveDate(year, month, day);
-        ISOChronology.checkNotNull(date, "DateResolver implementation must not return null");
+        LocalDate.checkNotNull(date, "DateResolver implementation must not return null");
         return date;
     }
 
@@ -481,9 +507,9 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date adjusted as necessary, not null
      */
     public LocalDate with(DateAdjuster adjuster) {
-        ISOChronology.checkNotNull(adjuster, "DateAdjuster must not be null");
+        LocalDate.checkNotNull(adjuster, "DateAdjuster must not be null");
         LocalDate date = adjuster.adjustDate(this);
-        ISOChronology.checkNotNull(date, "DateAdjuster implementation must not return null");
+        LocalDate.checkNotNull(date, "DateAdjuster implementation must not return null");
         return date;
     }
 
@@ -516,7 +542,7 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDate withYear(int year, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(dateResolver, "DateResolver must not be null");
         if (this.year == year) {
             return this;
         }
@@ -580,8 +606,8 @@ public final class LocalDate
      * @return a {@code LocalDate} based on this date with the requested month, not null
      */
     public LocalDate with(MonthOfYear monthOfYear, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        LocalDate.checkNotNull(dateResolver, "DateResolver must not be null");
         if (this.month == monthOfYear) {
             return this;
         }
@@ -618,7 +644,7 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the day-of-month value is invalid
      */
     public LocalDate withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(dateResolver, "DateResolver must not be null");
         if (this.day == dayOfMonth) {
             return this;
         }
@@ -729,7 +755,7 @@ public final class LocalDate
      * @param years  the years to add, may be negative
      * @return a {@code LocalDate} based on this date with the years added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusYears(long, javax.time.calendar.DateResolver)
+     * @see #plusYears(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate plusYears(long years) {
         return plusYears(years, DateResolvers.previousValid());
@@ -753,7 +779,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusYears(long years, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(dateResolver, "DateResolver must not be null");
         if (years == 0) {
             return this;
         }
@@ -782,7 +808,7 @@ public final class LocalDate
      * @param months  the months to add, may be negative
      * @return a {@code LocalDate} based on this date with the months added, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #plusMonths(long, javax.time.calendar.DateResolver)
+     * @see #plusMonths(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate plusMonths(long months) {
         return plusMonths(months, DateResolvers.previousValid());
@@ -806,7 +832,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusMonths(long months, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(dateResolver, "DateResolver must not be null");
         if (months == 0) {
             return this;
         }
@@ -945,7 +971,7 @@ public final class LocalDate
      * @param years  the years to subtract, may be negative
      * @return a {@code LocalDate} based on this date with the years subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusYears(long, javax.time.calendar.DateResolver)
+     * @see #minusYears(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate minusYears(long years) {
         return minusYears(years, DateResolvers.previousValid());
@@ -969,7 +995,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusYears(long years, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(dateResolver, "DateResolver must not be null");
         if (years == 0) {
             return this;
         }
@@ -998,7 +1024,7 @@ public final class LocalDate
      * @param months  the months to subtract, may be negative
      * @return a {@code LocalDate} based on this date with the months subtracted, not null
      * @throws CalendricalException if the result exceeds the supported date range
-     * @see #minusMonths(long, javax.time.calendar.DateResolver)
+     * @see #minusMonths(long, javax.time.calendrical.DateResolver)
      */
     public LocalDate minusMonths(long months) {
         return minusMonths(months, DateResolvers.previousValid());
@@ -1022,7 +1048,7 @@ public final class LocalDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusMonths(long months, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(dateResolver, "DateResolver must not be null");
         if (months == 0) {
             return this;
         }
@@ -1114,7 +1140,7 @@ public final class LocalDate
      * @return the adjusted date, not null
      */
     public LocalDate adjustDate(LocalDate date) {
-        ISOChronology.checkNotNull(date, "LocalDate must not be null");
+        LocalDate.checkNotNull(date, "LocalDate must not be null");
         return this.equals(date) ? date : this;
     }
 
@@ -1441,7 +1467,7 @@ public final class LocalDate
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

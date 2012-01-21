@@ -31,9 +31,9 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.MonthOfYear.FEBRUARY;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 
 import java.io.Serializable;
 
@@ -42,6 +42,19 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.DateAdjuster;
+import javax.time.calendrical.DateResolver;
+import javax.time.calendrical.DateResolvers;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.ISODateTimeRule;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
 
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
@@ -152,7 +165,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
     public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
-        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        LocalDate.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
@@ -240,7 +253,7 @@ public final class MonthDay
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -333,7 +346,7 @@ public final class MonthDay
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
-        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        LocalDate.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         int maxDays = monthOfYear.maxLengthInDays();
         if (day > maxDays) {
             return with(monthOfYear, maxDays);
@@ -472,13 +485,13 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        ISOChronology.checkNotNull(date, "LocalDate must not be null");
-        ISOChronology.checkNotNull(resolver, "DateResolver must not be null");
+        LocalDate.checkNotNull(date, "LocalDate must not be null");
+        LocalDate.checkNotNull(resolver, "DateResolver must not be null");
         if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
             return date;
         }
         LocalDate resolved = resolver.resolveDate(date.getYear(), month, day);
-        ISOChronology.checkNotNull(resolved, "The implementation of DateResolver must not return null");
+        LocalDate.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }
 
@@ -626,7 +639,7 @@ public final class MonthDay
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

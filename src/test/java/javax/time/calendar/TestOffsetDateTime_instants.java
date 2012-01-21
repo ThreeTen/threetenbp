@@ -34,6 +34,8 @@ package javax.time.calendar;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.Instant;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.MockMultiProvider;
 
 import org.testng.annotations.Test;
 

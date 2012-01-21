@@ -31,20 +31,19 @@
  */
 package javax.time;
 
-import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
 import static javax.time.calendar.DayOfWeek.FRIDAY;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
 import static javax.time.calendar.MonthOfYear.DECEMBER;
 import static javax.time.calendar.Period.ofDateFields;
+import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
 import java.util.Locale;
 
 import javax.time.calendar.Clock;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -52,12 +51,13 @@ import javax.time.calendar.MonthDay;
 import javax.time.calendar.Period;
 import javax.time.calendar.Year;
 import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneResolvers;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.format.SignStyle;
+import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.ZoneResolvers;
 
 /**
  * Examples for this project.

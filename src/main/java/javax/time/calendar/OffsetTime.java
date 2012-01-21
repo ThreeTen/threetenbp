@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOChronology.NANOS_PER_SECOND;
+import static javax.time.calendrical.ISOChronology.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
@@ -43,6 +43,14 @@ import javax.time.MathUtils;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.PeriodProvider;
+import javax.time.calendrical.TimeAdjuster;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -117,7 +125,7 @@ public final class OffsetTime
      * @return the current time, not null
      */
     public static OffsetTime now(Clock clock) {
-        ISOChronology.checkNotNull(clock, "Clock must not be null");
+        LocalDate.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -212,7 +220,7 @@ public final class OffsetTime
      */
     public static OffsetTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
-        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         
         long secsOfDay = instant.getEpochSecond() % ISOChronology.SECONDS_PER_DAY;
         secsOfDay = (secsOfDay + offset.getAmountSeconds()) % ISOChronology.SECONDS_PER_DAY;
@@ -284,7 +292,7 @@ public final class OffsetTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text, DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -904,7 +912,7 @@ public final class OffsetTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        LocalDate.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

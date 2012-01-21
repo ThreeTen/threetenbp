@@ -31,10 +31,10 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
 import static javax.time.calendar.MonthOfYear.JUNE;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -44,6 +44,9 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.format.TextStyle;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalMatcher;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

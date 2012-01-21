@@ -31,11 +31,11 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_AMPM;
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
@@ -57,6 +57,9 @@ import javax.time.Instant;
 import javax.time.calendar.format.TextStyle;
 import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneOffsetTransition;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.MockRuleNoValue;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
