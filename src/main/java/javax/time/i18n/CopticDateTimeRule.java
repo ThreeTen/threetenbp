@@ -39,6 +39,7 @@ import static javax.time.calendar.ISOPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
+import javax.time.calendar.DateTimeResolver;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -173,13 +174,13 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
 
     //-----------------------------------------------------------------------
     @Override
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
-        localEpochDay = doSetIntoEpochDay(newValue, localEpochDay);
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+        localEpochDay = doSetIntoEpochDay(newValue, localEpochDay, resolver);
         return new long[] {localEpochDay, nanoOfDay, offsetSecs};
     }
 
     @Override
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
         if (DAY_OF_YEAR.equals(fieldRule)) {
             // allow overflow to invalid day-of-year  TODO resolve?
             switch (ordinal) {
@@ -196,35 +197,34 @@ public final class CopticDateTimeRule extends DateTimeRule implements Serializab
         }
         long ed = EPOCH_DAY.extractFromValue(fieldRule, fieldValue);
         if (ed != Long.MIN_VALUE) {
-            long newEd = doSetIntoEpochDay(newValue, ed);
-            return EPOCH_DAY.setIntoValue(newEd, fieldRule, fieldValue);
+            long newEd = doSetIntoEpochDay(newValue, ed, resolver);
+            return EPOCH_DAY.setIntoValue(newEd, fieldRule, fieldValue, resolver);
         }
-        return super.doSetIntoValue(newValue, fieldRule, fieldValue);
+        return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
     }
 
-    private long doSetIntoEpochDay(long newValue, long fieldEd) {
+    private long doSetIntoEpochDay(long newValue, long fieldEd, DateTimeResolver resolver) {
         long dayCount = fieldEd + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
         long year = ((dayCount * 4) + 1463) / 1461;
         long startYearEpochDay = (year - 1) * 365 + (year / 4);
         long doy = dayCount - startYearEpochDay + 1;
         switch (ordinal) {
-            case DAY_OF_MONTH_ORDINAL:
-            case DAY_OF_YEAR_ORDINAL:
-            case MONTH_OF_YEAR_ORDINAL: {
-                long newDoy = this.setIntoValue(newValue, DAY_OF_YEAR, doy);
-                return packDate(year, newDoy);
-            }
+            case DAY_OF_MONTH_ORDINAL: doy += (newValue - domFromDoy(doy)); break;
+            case DAY_OF_YEAR_ORDINAL: doy = newValue; break;
+            case MONTH_OF_YEAR_ORDINAL:  doy += (newValue - moyFromDoy(doy)) * 30; break;
             case YEAR_OF_ERA_ORDINAL:
             case YEAR_ORDINAL:
             case ERA_ORDINAL: {
-                long newYear = this.setIntoValue(newValue, YEAR, year);
-                return packDate(newYear, doy);
+                year = this.setIntoValue(newValue, YEAR, year, resolver);
+                break;
             }
+            default:
+                return Long.MIN_VALUE;
         }
-        return Long.MIN_VALUE;
+        return resolveDate(year, doy, resolver);
     }
 
-    private static long packDate(long year, long doy) {
+    private static long resolveDate(long year, long doy, DateTimeResolver resolver) {
         YEAR.checkValidValue(year);
         DAY_OF_YEAR.checkValidValue(doy);
         if (doy < 1 || doy > 366 || (doy == 366 && CopticChronology.isLeapYear(year) == false)) {

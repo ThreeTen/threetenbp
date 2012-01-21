@@ -405,11 +405,11 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public final long[] setIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
-        return doSetIntoInstant(newValue, localEpochDay, nanoOfDay, offsetSecs);
+    public final long[] setIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+        return doSetIntoInstant(newValue, localEpochDay, nanoOfDay, offsetSecs, resolver);
     }
 
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
         throw new UnsupportedOperationException();  // TODO: method should be abstract
     }
 
@@ -421,19 +421,19 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 //        return baseNanoOfDay;
 //    }
 
-    public final long setIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+    public final long setIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
         if (fieldRule.equals(this)) {  // intentional NPE
             return newValue;
         }
-        return doSetIntoValue(newValue, fieldRule, fieldValue);
+        return doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
     }
 
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
         if (isDerivable(fieldRule)) {
             long curValue = extractFromValue(fieldRule, fieldValue);
             long bottomConversion = getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
-            long change = convertToPeriod(newValue) - convertToPeriod(curValue);
-            return fieldValue + change * bottomConversion;
+            long diff = convertToPeriod(newValue) - convertToPeriod(curValue);
+            return fieldValue + diff * bottomConversion;
         }
         return Long.MIN_VALUE;
     }

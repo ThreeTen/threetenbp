@@ -338,7 +338,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return packPemd((year - 1970) * 12 + (month - 1), dom);
     }
 
-    static long packPemd(long em, int dom) {
+    static long packPemd(long em, long dom) {
         return (em << 5) + (dom - 1);
     }
 
@@ -416,7 +416,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-------------------------------------------------------------------------
     @Override
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
         if (ordinal == EPOCH_SECOND_ORDINAL) {
             offsetSecs = ((offsetSecs << 1) >> 1);  // converts MIN_VALUE to 0
             long localSecs = newValue - offsetSecs;
@@ -429,56 +429,87 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             nanoOfDay = MathUtils.floorMod(localSecs, SECONDS_PER_DAY) * NANOS_PER_SECOND +
                             MathUtils.floorMod(newValue, 1000) * 1000000L + (nanoOfDay % 1000000L);
         } else if (ordinal >= DAY_OF_WEEK_ORDINAL) {
-            localEpochDay = doSetIntoEpochDay(newValue, localEpochDay);
+            localEpochDay = doSetIntoEpochDay(newValue, localEpochDay, resolver);
         } else {
-            nanoOfDay = doSetIntoValue(newValue, NANO_OF_DAY, nanoOfDay);
+            nanoOfDay = doSetIntoValue(newValue, NANO_OF_DAY, nanoOfDay, resolver);
         }
         return new long[] {localEpochDay, nanoOfDay, offsetSecs};
     }
 
     @Override
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
         if (PACKED_EPOCH_MONTH_DAY.equals(fieldRule)) {
-            return doSetIntoPackedDate(newValue, fieldValue);
+            return doSetIntoPackedDate(newValue, fieldValue, resolver);
         }
         if (fieldRule.isDate()) {
             long ed = fieldRule.convertToPeriod(fieldValue);
-            long newEd = doSetIntoEpochDay(newValue, ed);
+            long newEd = doSetIntoEpochDay(newValue, ed, resolver);
             return fieldRule.convertFromPeriod(newEd);
         }
-        return super.doSetIntoValue(newValue, fieldRule, fieldValue);
+        return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
     }
 
-    private long doSetIntoEpochDay(long newValue, long fieldEd) {
+    private long doSetIntoEpochDay(long newValue, long fieldEd, DateTimeResolver resolver) {
         switch (ordinal) {
             case DAY_OF_WEEK_ORDINAL: return fieldEd + (newValue - dowFromEd(fieldEd));
             case EPOCH_DAY_ORDINAL: return newValue;
-            default: return epochDayFromPackedDate(doSetIntoPackedDate(newValue, packedDateFromEpochDay(fieldEd)));
+            default: return epochDayFromPackedDate(doSetIntoPackedDate(newValue, packedDateFromEpochDay(fieldEd), resolver));
         }
     }
 
-    private long doSetIntoPackedDate(long newValue, long fieldPemd) {
+    private long doSetIntoPackedDate(long newValue, long fieldPemd, DateTimeResolver resolver) {
         switch (ordinal) {
-            case DAY_OF_WEEK_ORDINAL: return packedDateFromEpochDay(doSetIntoEpochDay(newValue, epochDayFromPackedDate(fieldPemd)));
-            case DAY_OF_MONTH_ORDINAL: return fieldPemd + (newValue - domFromPemd(fieldPemd));
-            case DAY_OF_YEAR_ORDINAL: {
-                long diff = (newValue - doyFromPemd(fieldPemd));
-                return packedDateFromEpochDay(epochDayFromPackedDate(fieldPemd) + diff);
-            }
+            case DAY_OF_WEEK_ORDINAL: return packedDateFromEpochDay(doSetIntoEpochDay(newValue, epochDayFromPackedDate(fieldPemd), resolver));
             case EPOCH_DAY_ORDINAL: return packedDateFromEpochDay(newValue);
-            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return newValue;
-            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return fieldPemd + (newValue - awomFromDom(domFromPemd(fieldPemd))) * 7;
+            case PACKED_EPOCH_MONTH_DAY_ORDINAL: return resolvePemd(emFromPemd(newValue), domFromPemd(newValue), resolver);
+            case ZERO_EPOCH_MONTH_ORDINAL: return resolvePemd(newValue, domFromPemd(fieldPemd), resolver);
+        }
+        long dom = domFromPemd(fieldPemd);
+        long em = emFromPemd(fieldPemd);
+        long moy = moyFromEm(em);
+        long y = yFromEm(em);
+        switch (ordinal) {
+            case DAY_OF_MONTH_ORDINAL: return resolvePemd(y, moy, newValue, resolver);
+            case DAY_OF_YEAR_ORDINAL: {
+                boolean leap = ISOChronology.isLeapYear(y);
+                MonthOfYear moyObj = MonthOfYear.of((int) ((newValue - 1) / 31 + 1));  // TODO: cast
+                int monthEnd = moyObj.getMonthEndDayOfYear(leap);
+                if (newValue > monthEnd) {
+                    moyObj = moyObj.next();
+                }
+                dom = newValue - moyObj.getMonthStartDayOfYear(leap) + 1;
+                moy = moyObj.getValue();
+                return resolvePemd(y, moy, dom, resolver);
+            }
+            case ALIGNED_WEEK_OF_MONTH_ORDINAL: return resolvePemd(y, moy, dom + (newValue - awomFromDom(dom)) * 7, resolver);
             case ALIGNED_WEEK_OF_YEAR_ORDINAL:  {
                 long diff = (newValue - awoyFromDoy(doyFromPemd(fieldPemd))) * 7;
-                return packedDateFromEpochDay(epochDayFromPackedDate(fieldPemd) + diff);
+                return packedDateFromEpochDay(epochDayFromPackedDate(fieldPemd) + diff);  // TODO, maybe no resolve?
             }
-            case MONTH_OF_QUARTER_ORDINAL: return fieldPemd + (newValue - moqFromMoy(moyFromEm(emFromPemd(fieldPemd)))) * 32;
-            case MONTH_OF_YEAR_ORDINAL: return fieldPemd + (newValue - moyFromEm(emFromPemd(fieldPemd))) * 32;
-            case ZERO_EPOCH_MONTH_ORDINAL: return fieldPemd + (newValue - emFromPemd(fieldPemd)) * 32;
-            case QUARTER_OF_YEAR_ORDINAL: return fieldPemd + (newValue - qoyFromMoy(moyFromEm(emFromPemd(fieldPemd)))) * 32 * 3;
-            case YEAR_ORDINAL: return fieldPemd + (newValue - yFromEm(emFromPemd(fieldPemd))) * 32 * 12;
+            case MONTH_OF_QUARTER_ORDINAL: return resolvePemd(y, moy + (newValue - moqFromMoy(moy)), dom, resolver);
+            case MONTH_OF_YEAR_ORDINAL: return resolvePemd(y, newValue, dom, resolver);
+            case QUARTER_OF_YEAR_ORDINAL: return resolvePemd(y, moy + (newValue - qoyFromMoy(moy)) * 3, dom, resolver);
+            case YEAR_ORDINAL: return resolvePemd(newValue, moy, dom, resolver);
         }
         return Long.MIN_VALUE;
+    }
+
+    private long resolvePemd(long em, long dom, DateTimeResolver resolver) {
+        return resolvePemd(yFromEm(em), moyFromEm(em), dom, resolver);
+    }
+
+    private long resolvePemd(long y, long moy, long dom, DateTimeResolver resolver) {
+        YEAR.checkValidValue(y);
+        MONTH_OF_YEAR.checkValidValue(moy);
+//        int moyLen = MonthOfYear.of((int) moy).lengthInDays(ISOChronology.isLeapYear(y));
+//        if (dom < 0 || dom > moyLen) {
+//            long adjust = resolver.resolve(this, em, dom, moyLen - dom);
+//            dom += adjust;
+//            if (dom > moyLen) {
+//                long
+//            }
+//        }
+        return packPemd(y, (int) moy, (int) dom);  // TODO
     }
 
     //-----------------------------------------------------------------------

@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.EPOCH_DAY;
 import static javax.time.calendar.ISODateTimeRule.ZERO_EPOCH_MONTH;
@@ -610,23 +611,39 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
                     null);
             this.weekRules = weekRules;
         }
-//        @Override
-//        protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
-//            return doExtractFromValue(EPOCH_DAY, localEpochDay);
-//        }
-//        @Override
-//        protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+        @Override
+        protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+            return doExtractFromValue(EPOCH_DAY, localEpochDay);
+        }
+        @Override
+        protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+            long dow0 = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue) - 1;
+            long dom = DAY_OF_MONTH.extractFromValue(fieldRule, fieldValue);
+            int minDays = weekRules.getMinimalDaysInFirstWeek();
+            int firstDow0 = weekRules.getFirstDayOfWeek().ordinal();
+            if (dow0 > firstDow0) {
+                dom -= (firstDow0 - dow0);
+            }
+            if (dow0 < firstDow0) {
+                dom += (firstDow0 - dow0);
+            }
+            // TODO
+            
+//            LocalDate startWeek2 = date.withDayOfMonth(minDays).with(DateAdjusters.next(firstDow));
+//            return field((date.getDayOfMonth() - startWeek2.getDayOfMonth() + 14) / 7);
+//            
+//            
 //            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
 //            if (dow != Long.MIN_VALUE) {
 //                return wrdowFromDow(dow);
 //            }
-//            return super.doExtractFromValue(fieldRule, fieldValue);
-//        }
-//        @Override
-//        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
-//            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay);
-//            return new long[] {localEpochDay, nanoOfDay, offsetSecs};
-//        }
+            return super.doExtractFromValue(fieldRule, fieldValue);
+        }
+        @Override
+        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay, resolver);
+            return new long[] {localEpochDay, nanoOfDay, offsetSecs};
+        }
 //        @Override
 //        protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
 //            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
