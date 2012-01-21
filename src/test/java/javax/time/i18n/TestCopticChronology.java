@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar.i18n;
+package javax.time.i18n;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;

@@ -33,9 +33,6 @@ package javax.time;
 
 import java.util.Arrays;
 
-import javax.time.calendar.i18n.TestCopticChronology;
-import javax.time.calendar.i18n.TestCopticDate;
-import javax.time.calendar.i18n.TestInterCalendarSystem;
 import javax.time.calendrical.TestCalendricalMatchers;
 import javax.time.calendrical.TestCalendricalNomalizer;
 import javax.time.calendrical.TestCalendricalRule;
@@ -93,6 +90,9 @@ import javax.time.format.TestTextPrinter;
 import javax.time.format.TestZoneIdParser;
 import javax.time.format.TestZoneOffsetParser;
 import javax.time.format.TestZoneOffsetPrinter;
+import javax.time.i18n.TestCopticChronology;
+import javax.time.i18n.TestCopticDate;
+import javax.time.i18n.TestInterCalendarSystem;
 import javax.time.scale.TestTAIInstant;
 import javax.time.scale.TestUTCInstant;
 import javax.time.scale.TestUTCRules;
