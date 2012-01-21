@@ -35,6 +35,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneOffsetTransition;
 import javax.time.zone.ZoneRules;
@@ -43,7 +44,7 @@ import javax.time.zone.ZoneRules;
  * Provides common implementations of {@code ZoneResolver}.
  * <p>
  * A {@link ZoneResolver} provides a strategy for handling the gaps and overlaps
- * on the time-line that occur due to changes in the offset from UTC, usually
+ * on the time-line that occur due to changes in the {@link ZoneOffset}, usually
  * caused by Daylight Savings Time.
  * <p>
  * This is a utility class.

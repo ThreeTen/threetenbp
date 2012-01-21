@@ -61,7 +61,7 @@ import javax.time.format.TextStyle;
  * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
- * As such, this enum may be used by any calendar system that has the month-of-year
+ * As such, this enum may be used by any calendar system that has the am-pm
  * concept defined exactly equivalent to the ISO calendar system.
  * <p>
  * This is an immutable and thread-safe enum.

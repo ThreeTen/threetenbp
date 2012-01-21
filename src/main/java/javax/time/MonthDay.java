@@ -547,7 +547,6 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(MonthDay other) {
         int cmp = month.compareTo(other.month);
@@ -562,7 +561,6 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return true if this is after the specified month-day
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(MonthDay other) {
         return compareTo(other) > 0;
@@ -573,7 +571,6 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return true if this point is before the specified month-day
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(MonthDay other) {
         return compareTo(other) < 0;
