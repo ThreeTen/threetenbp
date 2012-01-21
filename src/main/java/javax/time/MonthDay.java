@@ -394,48 +394,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Rolls the month-of-year, adding the specified number of months to a copy
-     * of this {@code MonthDay}.
-     * <p>
-     * This method will add the specified number of months to the month-day,
-     * rolling from December back to January if necessary.
-     * <p>
-     * If the day-of-month is invalid for the specified month in the result,
-     * the day will be adjusted to the last valid day-of-month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to roll by, positive or negative
-     * @return a {@code MonthDay} based on this month-day with the month rolled, not null
-     */
-    public MonthDay rollMonthOfYear(int months) {
-        return with(month.roll(months));
-    }
-
-    /**
-     * Rolls the day-of-month, adding the specified number of days to a copy
-     * of this {@code MonthDay}.
-     * <p>
-     * This method will add the specified number of days to the month-day,
-     * rolling from last day-of-month to the first if necessary.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to roll by, positive or negative
-     * @return a {@code MonthDay} based on this month-day with the day rolled, not null
-     */
-    public MonthDay rollDayOfMonth(int days) {
-        if (days == 0) {
-            return this;
-        }
-        int monthLength = month.maxLengthInDays();
-        int newDOM0 = (days % monthLength) + (day - 1);
-        newDOM0 = (newDOM0 + monthLength) % monthLength;
-        return withDayOfMonth(++newDOM0);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the month-day extracted from the calendrical matches this.
      * <p>
      * This method implements the {@code CalendricalMatcher} interface.
