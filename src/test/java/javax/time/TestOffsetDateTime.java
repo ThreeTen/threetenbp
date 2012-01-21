@@ -205,7 +205,7 @@ public class TestOffsetDateTime {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), ZoneId.of(OFFSET_PONE));
+            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds())), ZoneId.of(OFFSET_PONE));
             OffsetDateTime test = OffsetDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);

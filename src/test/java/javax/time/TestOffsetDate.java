@@ -377,7 +377,7 @@ public class TestOffsetDate {
     public void factory_ofInstant_InstantProvider_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getAmountSeconds()), OFFSET_PONE);
+            OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);

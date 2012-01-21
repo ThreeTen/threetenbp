@@ -336,7 +336,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             LocalDateTime dtAfter = savingsLocalTransitions[index + 1];
             ZoneOffset offsetBefore = wallOffsets[index / 2];
             ZoneOffset offsetAfter = wallOffsets[index / 2 + 1];
-            if (offsetAfter.getAmountSeconds() > offsetBefore.getAmountSeconds()) {
+            if (offsetAfter.getTotalSeconds() > offsetBefore.getTotalSeconds()) {
                 // gap
                 return new ZoneOffsetInfo(dt, null, new ZoneOffsetTransition(OffsetDateTime.of(dtBefore, offsetBefore), offsetAfter));
             } else {

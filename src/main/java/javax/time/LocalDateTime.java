@@ -147,7 +147,7 @@ public final class LocalDateTime
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long localSeconds = now.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         return create(localSeconds, now.getNanoOfSecond());
     }
 

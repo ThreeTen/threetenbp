@@ -218,7 +218,7 @@ public final class OffsetTime
         LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         
         long secsOfDay = instant.getEpochSecond() % ISOChronology.SECONDS_PER_DAY;
-        secsOfDay = (secsOfDay + offset.getAmountSeconds()) % ISOChronology.SECONDS_PER_DAY;
+        secsOfDay = (secsOfDay + offset.getTotalSeconds()) % ISOChronology.SECONDS_PER_DAY;
         if (secsOfDay < 0) {
             secsOfDay += ISOChronology.SECONDS_PER_DAY;
         }
@@ -381,7 +381,7 @@ public final class OffsetTime
         if (offset.equals(this.offset)) {
             return this;
         }
-        int difference = offset.getAmountSeconds() - this.offset.getAmountSeconds();
+        int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
         LocalTime adjusted = time.plusSeconds(difference);
         return new OffsetTime(adjusted, offset);
     }
@@ -759,7 +759,7 @@ public final class OffsetTime
      */
     private long toEpochNano() {
         long nod = time.toNanoOfDay();
-        long offsetNanos = offset.getAmountSeconds() * NANOS_PER_SECOND;
+        long offsetNanos = offset.getTotalSeconds() * NANOS_PER_SECOND;
         return nod - offsetNanos;
     }
 

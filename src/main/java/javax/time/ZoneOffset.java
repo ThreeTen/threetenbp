@@ -110,7 +110,7 @@ public final class ZoneOffset
     /**
      * The offset in seconds.
      */
-    private final int amountSeconds;
+    private final int totalSeconds;
     /**
      * The string form of the time-zone offset.
      */
@@ -400,15 +400,15 @@ public final class ZoneOffset
      */
     private ZoneOffset(int totalSeconds) {
         super();
-        amountSeconds = totalSeconds;
-        if (amountSeconds == 0) {
+        this.totalSeconds = totalSeconds;
+        if (totalSeconds == 0) {
             id = "Z";
         } else {
-            int absTotalSeconds = Math.abs(amountSeconds);
+            int absTotalSeconds = Math.abs(totalSeconds);
             StringBuilder buf = new StringBuilder();
             int absHours = absTotalSeconds / SECONDS_PER_HOUR;
             int absMinutes = (absTotalSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
-            buf.append(amountSeconds < 0 ? "-" : "+")
+            buf.append(totalSeconds < 0 ? "-" : "+")
                 .append(absHours < 10 ? "0" : "").append(absHours)
                 .append(absMinutes < 10 ? ":0" : ":").append(absMinutes);
             int absSeconds = absTotalSeconds % SECONDS_PER_MINUTE;
@@ -425,7 +425,7 @@ public final class ZoneOffset
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ZoneOffset.ofTotalSeconds(amountSeconds);
+        return ZoneOffset.ofTotalSeconds(totalSeconds);
     }
 
     //-----------------------------------------------------------------------
@@ -453,8 +453,8 @@ public final class ZoneOffset
      *
      * @return the total zone offset amount in seconds
      */
-    public int getAmountSeconds() {
-        return amountSeconds;
+    public int getTotalSeconds() {
+        return totalSeconds;
     }
 
     /**
@@ -480,7 +480,7 @@ public final class ZoneOffset
      * <p>
      * This method only has meaning when considered with the minutes and seconds
      * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getAmountSeconds()}.
+     * or {@link #getTotalSeconds()}.
      * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the hours field.
@@ -490,7 +490,7 @@ public final class ZoneOffset
      * @return the hours field of the zone offset amount, from -18 to 18
      */
     public int getHoursField() {
-        return amountSeconds / SECONDS_PER_HOUR;
+        return totalSeconds / SECONDS_PER_HOUR;
     }
 
     /**
@@ -498,7 +498,7 @@ public final class ZoneOffset
      * <p>
      * This method only has meaning when considered with the hours and minutes
      * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getAmountSeconds()}.
+     * or {@link #getTotalSeconds()}.
      * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the minutes field.
@@ -509,7 +509,7 @@ public final class ZoneOffset
      *      from -59 to 59 where the sign matches the hours and seconds
      */
     public int getMinutesField() {
-        return (amountSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
+        return (totalSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
     }
 
     /**
@@ -517,7 +517,7 @@ public final class ZoneOffset
      * <p>
      * This method only has meaning when considered with the hours and minutes
      * fields. Most applications are advised to use {@link #toPeriod()}
-     * or {@link #getAmountSeconds()}.
+     * or {@link #getTotalSeconds()}.
      * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the seconds field.
@@ -528,7 +528,7 @@ public final class ZoneOffset
      *      from -59 to 59 where the sign matches the hours and minutes
      */
     public int getSecondsField() {
-        return amountSeconds % SECONDS_PER_MINUTE;
+        return totalSeconds % SECONDS_PER_MINUTE;
     }
 
     //-----------------------------------------------------------------------
@@ -593,7 +593,7 @@ public final class ZoneOffset
      * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(ZoneOffset other) {
-        return other.amountSeconds - amountSeconds;
+        return other.totalSeconds - totalSeconds;
     }
 
     //-----------------------------------------------------------------------
@@ -611,7 +611,7 @@ public final class ZoneOffset
            return true;
         }
         if (obj instanceof ZoneOffset) {
-            return amountSeconds == ((ZoneOffset) obj).amountSeconds;
+            return totalSeconds == ((ZoneOffset) obj).totalSeconds;
         }
         return false;
     }
@@ -623,7 +623,7 @@ public final class ZoneOffset
      */
     @Override
     public int hashCode() {
-        return amountSeconds;
+        return totalSeconds;
     }
 
     //-----------------------------------------------------------------------

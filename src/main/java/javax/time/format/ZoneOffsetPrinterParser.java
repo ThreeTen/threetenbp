@@ -87,7 +87,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         if (offset == null) {
             return false;
         }
-        int totalSecs = offset.getAmountSeconds();
+        int totalSecs = offset.getTotalSeconds();
         if (totalSecs == 0) {
             buf.append(noOffsetText);
         } else if (type == 4 || (type == 2 && offset.getSecondsField() == 0)) {

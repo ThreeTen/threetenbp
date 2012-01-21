@@ -403,7 +403,7 @@ public final class OffsetDateTime
     public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
-        long localSeconds = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
         return new OffsetDateTime(ldt, offset);
     }
@@ -421,7 +421,7 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
         LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
-        long localSeconds = epochSecond + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
         return new OffsetDateTime(ldt, offset);
     }
@@ -607,7 +607,7 @@ public final class OffsetDateTime
         if (offset.equals(this.offset)) {
             return this;
         }
-        int difference = offset.getAmountSeconds() - this.offset.getAmountSeconds();
+        int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
         LocalDateTime adjusted = dateTime.plusSeconds(difference);
         return new OffsetDateTime(adjusted, offset);
     }
@@ -1732,7 +1732,7 @@ public final class OffsetDateTime
     public long toEpochSecond() {
         long epochDay = dateTime.toLocalDate().toEpochDay();
         long secs = epochDay * ISOChronology.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
-        secs -= offset.getAmountSeconds();
+        secs -= offset.getTotalSeconds();
         return secs;
     }
 

@@ -156,7 +156,7 @@ public class TestOffsetDateTime_instants {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
-        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MIN.getAmountSeconds());
+        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MIN.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MIN);
         assertEquals(test.getYear(), Year.MIN_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 1);
@@ -172,7 +172,7 @@ public class TestOffsetDateTime_instants {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
-        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MAX.getAmountSeconds());
+        Instant instant = Instant.ofEpochSecond(days * 24L * 60L * 60L - OFFSET_MAX.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MAX);
         assertEquals(test.getYear(), Year.MIN_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 1);
@@ -188,7 +188,7 @@ public class TestOffsetDateTime_instants {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
-        Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getAmountSeconds());
+        Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MIN);
         assertEquals(test.getYear(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
@@ -204,7 +204,7 @@ public class TestOffsetDateTime_instants {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_YEAR;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
-        Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getAmountSeconds());
+        Instant instant = Instant.ofEpochSecond((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getTotalSeconds());
         OffsetDateTime test = OffsetDateTime.ofInstant(instant, OFFSET_MAX);
         assertEquals(test.getYear(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
