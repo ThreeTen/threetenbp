@@ -52,12 +52,12 @@ import javax.time.Period;
 import javax.time.Year;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
-import javax.time.calendar.format.DateTimeFormatter;
-import javax.time.calendar.format.DateTimeFormatterBuilder;
-import javax.time.calendar.format.DateTimeFormatters;
-import javax.time.calendar.format.SignStyle;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatterBuilder;
+import javax.time.format.DateTimeFormatters;
+import javax.time.format.SignStyle;
 
 /**
  * Examples for this project.

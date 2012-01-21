@@ -47,10 +47,10 @@ import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.QuarterOfYear;
-import javax.time.calendar.format.TextStyle;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.format.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

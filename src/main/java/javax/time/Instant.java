@@ -36,7 +36,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.format.CalendricalParseException;
 import javax.time.scale.TAIInstant;
 import javax.time.scale.UTCInstant;
 import javax.time.scale.UTCRules;

@@ -35,7 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.Period;
 import javax.time.PeriodParser;
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

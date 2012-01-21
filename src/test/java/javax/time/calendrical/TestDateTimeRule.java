@@ -44,7 +44,6 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Locale;
 
-import javax.time.calendar.format.TextStyle;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.CalendricalRuleException;
 import javax.time.calendrical.DateTimeField;
@@ -52,6 +51,7 @@ import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.TextStyle;
 
 import org.testng.annotations.Test;
 

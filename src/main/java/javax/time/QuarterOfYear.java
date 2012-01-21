@@ -35,7 +35,6 @@ import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 
 import java.util.Locale;
 
-import javax.time.calendar.format.TextStyle;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalMatcher;
@@ -44,6 +43,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.format.TextStyle;
 
 /**
  * A quarter-of-year, such as 'Q2'.

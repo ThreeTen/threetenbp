@@ -36,9 +36,6 @@ import static javax.time.calendrical.ISOChronology.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
 
-import javax.time.calendar.format.CalendricalParseException;
-import javax.time.calendar.format.DateTimeFormatter;
-import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendrical.Calendrical;
@@ -55,6 +52,9 @@ import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.format.CalendricalParseException;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * A date-time with a time-zone in the ISO-8601 calendar system,

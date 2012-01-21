@@ -53,9 +53,9 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.ZoneId;
 import javax.time.ZonedDateTime;
-import javax.time.calendar.format.DateTimeFormatter;
-import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendrical.ZoneResolvers;
+import javax.time.format.DateTimeFormatter;
+import javax.time.format.DateTimeFormatters;
 
 /**
  * Test Performance.
