@@ -33,6 +33,9 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.scale.TAIInstant;
+import javax.time.scale.UTCInstant;
+
 /**
  * A source providing access to the current instant.
  * <p>

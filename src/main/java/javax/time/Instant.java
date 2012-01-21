@@ -39,6 +39,9 @@ import java.util.concurrent.TimeUnit;
 import javax.time.calendar.Clock;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.scale.TAIInstant;
+import javax.time.scale.UTCInstant;
+import javax.time.scale.UTCRules;
 
 /**
  * An instantaneous point on the time-line.

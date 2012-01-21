@@ -123,6 +123,9 @@ import javax.time.calendar.zone.TestZoneOffsetTransitionRule;
 import javax.time.calendar.zone.TestZoneRules;
 import javax.time.calendar.zone.TestZoneRulesBuilder;
 import javax.time.calendar.zone.TestZoneRulesGroup;
+import javax.time.scale.TestTAIInstant;
+import javax.time.scale.TestUTCInstant;
+import javax.time.scale.TestUTCRules;
 
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
@@ -143,12 +146,9 @@ public class AllTest {
             TestDuration.class,
             TestInstant.class,
             TestMathUtils.class,
-            TestTAIInstant.class,
             TestTimeSource_Fixed.class,
             TestTimeSource_OffsetSystem.class,
             TestTimeSource_System.class,
-            TestUTCInstant.class,
-            TestUTCRules.class,
             // calendar classes
             TestAmPmOfDay.class,
             TestCalendricalMatchers.class,
@@ -244,6 +244,10 @@ public class AllTest {
             TestZoneRules.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
+            // scale
+            TestTAIInstant.class,
+            TestUTCInstant.class,
+            TestUTCRules.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));

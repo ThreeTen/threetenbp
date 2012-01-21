@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import javax.time.scale.TAIInstant;
+import javax.time.scale.UTCInstant;
+import javax.time.scale.UTCRules;
+
 /**
  * Mock rules that returns a leap second on day 1000.
  *
