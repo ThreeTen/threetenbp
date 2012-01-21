@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.OffsetDateTime;
+import javax.time.OffsetDateTime;
 
 /**
  * A group of time-zone rules wrapping a provider of multiple versions of the data.

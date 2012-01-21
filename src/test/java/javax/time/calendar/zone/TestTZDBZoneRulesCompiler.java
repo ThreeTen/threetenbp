@@ -39,11 +39,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.Year;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
+import javax.time.Year;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.LeapSecondRule;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.TZDBMonthDayTime;
 import javax.time.calendar.zone.TZDBZoneRulesCompiler.TZDBRule;

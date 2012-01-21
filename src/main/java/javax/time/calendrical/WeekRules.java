@@ -40,9 +40,9 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
 
 /**
  * Rules defining how weeks are counted.

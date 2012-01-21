@@ -33,9 +33,9 @@ package javax.time.calendrical;
 
 import java.io.Serializable;
 
+import javax.time.Chronology;
 import javax.time.Duration;
 import javax.time.MathUtils;
-import javax.time.calendar.Chronology;
 
 /**
  * A unit of time for measuring a period, such as 'Days' or 'Minutes'.

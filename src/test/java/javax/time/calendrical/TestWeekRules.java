@@ -31,14 +31,14 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendar.DayOfWeek.FRIDAY;
-import static javax.time.calendar.DayOfWeek.MONDAY;
-import static javax.time.calendar.DayOfWeek.SATURDAY;
-import static javax.time.calendar.DayOfWeek.SUNDAY;
-import static javax.time.calendar.DayOfWeek.THURSDAY;
-import static javax.time.calendar.DayOfWeek.TUESDAY;
-import static javax.time.calendar.DayOfWeek.WEDNESDAY;
-import static javax.time.calendar.MonthOfYear.JULY;
+import static javax.time.DayOfWeek.FRIDAY;
+import static javax.time.DayOfWeek.MONDAY;
+import static javax.time.DayOfWeek.SATURDAY;
+import static javax.time.DayOfWeek.SUNDAY;
+import static javax.time.DayOfWeek.THURSDAY;
+import static javax.time.DayOfWeek.TUESDAY;
+import static javax.time.DayOfWeek.WEDNESDAY;
+import static javax.time.MonthOfYear.JULY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -51,10 +51,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.YearMonth;
+import javax.time.YearMonth;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;

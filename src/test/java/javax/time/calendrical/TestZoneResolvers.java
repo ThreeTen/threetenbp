@@ -43,10 +43,10 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;

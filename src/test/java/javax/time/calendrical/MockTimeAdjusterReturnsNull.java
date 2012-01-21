@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import javax.time.calendar.LocalTime;
+import javax.time.LocalTime;
 import javax.time.calendrical.TimeAdjuster;
 
 /**

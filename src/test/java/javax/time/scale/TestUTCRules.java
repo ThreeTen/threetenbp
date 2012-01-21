@@ -45,9 +45,9 @@ import java.util.Arrays;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDate;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneOffset;
 import javax.time.scale.SystemUTCRules;
 import javax.time.scale.TAIInstant;
 import javax.time.scale.UTCInstant;

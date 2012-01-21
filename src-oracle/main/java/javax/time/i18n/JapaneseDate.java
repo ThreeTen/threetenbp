@@ -6,9 +6,9 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthOfYear;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;

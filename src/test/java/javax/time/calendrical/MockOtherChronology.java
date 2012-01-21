@@ -31,8 +31,8 @@
  */
 package javax.time.calendrical;
 
+import javax.time.Chronology;
 import javax.time.Duration;
-import javax.time.calendar.Chronology;
 import javax.time.calendrical.PeriodUnit;
 
 /**

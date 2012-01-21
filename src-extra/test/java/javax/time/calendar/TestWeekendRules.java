@@ -31,9 +31,9 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.DayOfWeek.MONDAY;
-import static javax.time.calendar.DayOfWeek.SATURDAY;
-import static javax.time.calendar.DayOfWeek.SUNDAY;
+import static javax.time.DayOfWeek.MONDAY;
+import static javax.time.DayOfWeek.SATURDAY;
+import static javax.time.DayOfWeek.SUNDAY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -47,6 +47,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateAdjuster;
 

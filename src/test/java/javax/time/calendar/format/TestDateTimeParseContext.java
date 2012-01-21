@@ -39,9 +39,9 @@ import static org.testng.Assert.assertEquals;
 import java.util.List;
 import java.util.Locale;
 
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDate;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.DateTimeRule;
 

@@ -33,8 +33,8 @@ package javax.time.calendrical;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 

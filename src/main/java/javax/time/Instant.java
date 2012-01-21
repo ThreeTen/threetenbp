@@ -36,8 +36,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.calendar.Clock;
-import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.scale.TAIInstant;
 import javax.time.scale.UTCInstant;

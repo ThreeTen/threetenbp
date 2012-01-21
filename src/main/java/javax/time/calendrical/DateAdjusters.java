@@ -33,9 +33,9 @@ package javax.time.calendrical;
 
 import java.io.Serializable;
 
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthOfYear;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
 
 /**
  * Provides common implementations of {@code DateAdjuster}.

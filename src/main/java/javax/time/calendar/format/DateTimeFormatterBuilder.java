@@ -38,9 +38,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.time.calendar.Chronology;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.Chronology;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;

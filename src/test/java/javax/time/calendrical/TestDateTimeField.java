@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendar.MonthOfYear.SEPTEMBER;
+import static javax.time.MonthOfYear.SEPTEMBER;
 import static javax.time.calendrical.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendrical.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
@@ -63,8 +63,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
 
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthOfYear;
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
 import javax.time.calendar.format.TextStyle;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalMatcher;

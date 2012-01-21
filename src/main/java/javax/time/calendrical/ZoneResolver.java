@@ -32,9 +32,9 @@
 package javax.time.calendrical;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneId;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneId;
 import javax.time.calendar.zone.ZoneOffsetInfo;
 import javax.time.calendar.zone.ZoneRules;
 

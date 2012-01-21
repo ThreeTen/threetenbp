@@ -33,6 +33,8 @@ package javax.time.calendar;
 
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateAdjuster;

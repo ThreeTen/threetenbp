@@ -35,7 +35,7 @@ import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
-import javax.time.calendar.MonthOfYear;
+import javax.time.MonthOfYear;
 
 /**
  * Provides common implementations of {@code CalendricalMatcher}.

@@ -31,7 +31,6 @@
  */
 
 /**
- * Provides classes to manage the continuous time-scale including a wrapper
- * for the system clock.
+ * Main date-time classes intended for day-to-day use.
  */
 package javax.time;

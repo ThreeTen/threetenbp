@@ -33,27 +33,6 @@ package javax.time;
 
 import java.util.Arrays;
 
-import javax.time.calendar.TestAmPmOfDay;
-import javax.time.calendar.TestClock;
-import javax.time.calendar.TestClock_TimeSourceClock;
-import javax.time.calendar.TestDayOfWeek;
-import javax.time.calendar.TestLocalDate;
-import javax.time.calendar.TestLocalDateTime;
-import javax.time.calendar.TestLocalTime;
-import javax.time.calendar.TestMonthDay;
-import javax.time.calendar.TestMonthOfYear;
-import javax.time.calendar.TestOffsetDate;
-import javax.time.calendar.TestOffsetDateTime;
-import javax.time.calendar.TestOffsetDateTime_instants;
-import javax.time.calendar.TestOffsetTime;
-import javax.time.calendar.TestPeriod;
-import javax.time.calendar.TestPeriodParser;
-import javax.time.calendar.TestQuarterOfYear;
-import javax.time.calendar.TestYear;
-import javax.time.calendar.TestYearMonth;
-import javax.time.calendar.TestZoneId;
-import javax.time.calendar.TestZoneOffset;
-import javax.time.calendar.TestZonedDateTime;
 import javax.time.calendar.format.TestCalendricalPrintException;
 import javax.time.calendar.format.TestCaseSensitivePrinterParser;
 import javax.time.calendar.format.TestCharLiteralParser;

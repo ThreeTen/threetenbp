@@ -37,9 +37,9 @@ import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.AmPmOfDay;
 import javax.time.CalendricalException;
-import javax.time.calendar.AmPmOfDay;
-import javax.time.calendar.LocalTime;
+import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalMatcher;

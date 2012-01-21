@@ -37,8 +37,8 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.CalendricalException;
+import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.calendar.LocalDate;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalMatcher;

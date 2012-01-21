@@ -45,10 +45,10 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.OffsetDate;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
+import javax.time.OffsetDate;
+import javax.time.ZoneOffset;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;

@@ -40,14 +40,14 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.MockInstantProviderReturnsNull;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.OffsetDate;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.OffsetTime;
-import javax.time.calendar.ZonedDateTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.ZonedDateTime;
 
 /**
  * Test java.util.GregorianCalendar additional methods.

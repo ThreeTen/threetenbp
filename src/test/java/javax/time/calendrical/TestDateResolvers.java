@@ -46,9 +46,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.Year;
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
+import javax.time.Year;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.InvalidCalendarFieldException;

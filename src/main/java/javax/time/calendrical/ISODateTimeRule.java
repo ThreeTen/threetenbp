@@ -46,15 +46,15 @@ import static javax.time.calendrical.ISOPeriodUnit._12_HOURS;
 
 import java.io.Serializable;
 
+import javax.time.AmPmOfDay;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.MathUtils;
-import javax.time.calendar.AmPmOfDay;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.Year;
-import javax.time.calendar.ZoneOffset;
+import javax.time.MonthOfYear;
+import javax.time.OffsetDateTime;
+import javax.time.Year;
+import javax.time.ZoneOffset;
 
 /**
  * The rules of date and time used by the ISO calendar system, such as 'HourOfDay' or 'MonthOfYear'.

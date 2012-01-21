@@ -31,8 +31,8 @@
  */
 package javax.time.calendar.zone;
 
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.ZoneOffset;
 
 /**
  * Information about the valid offsets applicable for a local date-time.

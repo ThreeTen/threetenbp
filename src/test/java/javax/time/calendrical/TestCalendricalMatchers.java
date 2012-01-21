@@ -48,9 +48,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthOfYear;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalMatchers;
 

@@ -39,7 +39,7 @@ import static org.testng.Assert.assertEquals;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.MonthOfYear;
+import javax.time.MonthOfYear;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 

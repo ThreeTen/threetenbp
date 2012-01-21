@@ -43,10 +43,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.Year;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDateTime;
+import javax.time.Year;
+import javax.time.ZoneOffset;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.

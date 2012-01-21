@@ -31,11 +31,11 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendar.DayOfWeek.MONDAY;
-import static javax.time.calendar.DayOfWeek.SUNDAY;
-import static javax.time.calendar.DayOfWeek.TUESDAY;
-import static javax.time.calendar.MonthOfYear.DECEMBER;
-import static javax.time.calendar.MonthOfYear.JANUARY;
+import static javax.time.DayOfWeek.MONDAY;
+import static javax.time.DayOfWeek.SUNDAY;
+import static javax.time.DayOfWeek.TUESDAY;
+import static javax.time.MonthOfYear.DECEMBER;
+import static javax.time.MonthOfYear.JANUARY;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -54,9 +54,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthOfYear;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateAdjusters;
 

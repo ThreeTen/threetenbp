@@ -46,8 +46,8 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateTimeFields;

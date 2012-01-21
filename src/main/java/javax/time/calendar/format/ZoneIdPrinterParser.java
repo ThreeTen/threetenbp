@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendar.zone.ZoneRulesGroup;
 
 /**

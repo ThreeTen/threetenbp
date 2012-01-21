@@ -38,11 +38,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.DayOfWeek;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneOffset;
 import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;

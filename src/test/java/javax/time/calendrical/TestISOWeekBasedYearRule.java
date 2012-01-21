@@ -33,9 +33,9 @@ package javax.time.calendrical;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.Year;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.Year;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;

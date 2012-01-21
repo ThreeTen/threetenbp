@@ -49,7 +49,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.time.Duration;
-import javax.time.calendar.LocalDate;
+import javax.time.LocalDate;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;

@@ -33,8 +33,8 @@ package javax.time.calendar.format;
 
 import java.util.Locale;
 
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZonedDateTime;
+import javax.time.ZoneId;
+import javax.time.ZonedDateTime;
 import javax.time.calendrical.DateTimeFields;
 
 import org.testng.annotations.BeforeMethod;

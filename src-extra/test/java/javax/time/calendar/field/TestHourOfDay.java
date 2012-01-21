@@ -43,10 +43,10 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.AmPmOfDay;
 import javax.time.CalendricalException;
-import javax.time.calendar.AmPmOfDay;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateTimeFields;

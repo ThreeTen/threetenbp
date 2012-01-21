@@ -31,8 +31,8 @@
  */
 package javax.time.calendrical;
 
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthOfYear;
+import javax.time.LocalDate;
+import javax.time.MonthOfYear;
 
 /**
  * Strategy for resolving an invalid year-month-day to a valid one.

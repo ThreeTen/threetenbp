@@ -17,9 +17,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.time.CalendricalException;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;

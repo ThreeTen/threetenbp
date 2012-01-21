@@ -40,7 +40,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StreamCorruptedException;
 
-import javax.time.calendar.ZoneOffset;
+import javax.time.ZoneOffset;
 
 /**
  * The shared serialization delegate for this package.

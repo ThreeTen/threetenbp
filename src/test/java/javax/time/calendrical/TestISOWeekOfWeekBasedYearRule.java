@@ -33,9 +33,9 @@ package javax.time.calendrical;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;

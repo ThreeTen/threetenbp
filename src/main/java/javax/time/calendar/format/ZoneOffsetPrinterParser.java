@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.ZoneOffset;
+import javax.time.ZoneOffset;
 
 /**
  * Prints or parses a zone offset.

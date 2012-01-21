@@ -4,7 +4,7 @@
 package javax.time.i18n;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.LocalDate;
+import javax.time.LocalDate;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;

@@ -33,9 +33,9 @@ package javax.time.calendar.zone;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDateTime;
+import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
 

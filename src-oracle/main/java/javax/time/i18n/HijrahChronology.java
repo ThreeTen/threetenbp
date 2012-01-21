@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.time.Chronology;
 import javax.time.Duration;
-import javax.time.calendar.Chronology;
 import javax.time.calendar.format.TextStyle;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;

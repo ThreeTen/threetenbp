@@ -35,8 +35,8 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.Instant;
+import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.calendar.LocalDate;
 
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale

@@ -44,12 +44,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.time.CalendricalException;
+import javax.time.Chronology;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.MathUtils;
-import javax.time.calendar.Chronology;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 
 /**
  * Main processing engine to merge and interpret calendrical information.

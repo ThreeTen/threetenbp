@@ -35,14 +35,14 @@ import java.util.List;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDate;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.OffsetTime;
-import javax.time.calendar.Period;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.ZonedDateTime;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.Period;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
 
 /**
  * The rules defining how the zone offset varies for a single time-zone.

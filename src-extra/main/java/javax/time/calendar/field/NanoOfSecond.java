@@ -37,7 +37,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.LocalTime;
+import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalMatcher;

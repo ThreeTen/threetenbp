@@ -68,8 +68,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;

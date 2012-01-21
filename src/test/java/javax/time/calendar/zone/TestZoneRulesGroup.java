@@ -40,11 +40,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.TestZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.DayOfWeek;
+import javax.time.MonthOfYear;
+import javax.time.OffsetDateTime;
+import javax.time.TestZoneId;
+import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
 
