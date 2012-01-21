@@ -42,7 +42,7 @@ import java.util.Set;
 
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
-import javax.time.calendar.zone.ZoneRulesGroup;
+import javax.time.zone.ZoneRulesGroup;
 
 /**
  * Prints or parses a zone id.

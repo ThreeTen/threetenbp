@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,26 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendrical;
-
-import javax.time.LocalDateTime;
-import javax.time.OffsetDateTime;
-import javax.time.ZoneId;
-import javax.time.calendrical.ZoneResolver;
-import javax.time.zone.ZoneOffsetInfo;
-import javax.time.zone.ZoneRules;
 
 /**
- * Mock ZoneResolver that returns null.
- *
- * @author Stephen Colebourne
+ * Provides classes to implement time-zones and their rules.
  */
-public class MockZoneResolverReturnsNull implements ZoneResolver {
-
-    /** {@inheritDoc} */
-    @Override
-    public OffsetDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneOffsetInfo info, ZoneRules rules, ZoneId zone, OffsetDateTime oldDateTime) {
-        return null;
-    }
-
-}
+package javax.time.zone;

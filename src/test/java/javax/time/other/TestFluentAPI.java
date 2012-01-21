@@ -69,9 +69,9 @@ import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
+import javax.time.zone.ZoneOffsetTransition;
 
 /**
  * Test class.

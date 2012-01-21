@@ -37,9 +37,9 @@ import static org.testng.Assert.assertTrue;
 import java.util.Set;
 
 import javax.time.ZoneId;
-import javax.time.calendar.zone.ZoneRulesGroup;
 import javax.time.format.TextStyle;
 import javax.time.format.ZoneIdPrinterParser;
+import javax.time.zone.ZoneRulesGroup;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

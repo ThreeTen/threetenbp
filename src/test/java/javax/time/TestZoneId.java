@@ -64,12 +64,12 @@ import javax.time.YearMonth;
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.ZonedDateTime;
-import javax.time.calendar.zone.ZoneOffsetInfo;
-import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.format.TextStyle;
+import javax.time.zone.ZoneOffsetInfo;
+import javax.time.zone.ZoneOffsetTransition;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
