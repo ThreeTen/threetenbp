@@ -460,12 +460,7 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        long mjd = toModifiedJulianDay();
-        if (mjd < 0) {
-            long weeks = mjd / 7;
-            mjd += (-weeks + 1) * 7;
-        }
-        int dow0 = (int) ((mjd + 2) % 7);
+        int dow0 = MathUtils.floorMod(toEpochDay() + 3, 7);
         return DayOfWeek.of(dow0 + 1);
     }
 
