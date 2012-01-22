@@ -36,9 +36,7 @@ import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
 import java.io.Serializable;
 
 import javax.time.Chronology;
-import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 
 /**
@@ -104,20 +102,6 @@ public final class ISOChronology extends Chronology implements Serializable {
      * Nanos per day.
      */
     public static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
-    /**
-     * The number of days in a 400 year cycle.
-     */
-    public static final int DAYS_PER_CYCLE = 146097;
-    /**
-     * The number of days from year zero to year 1970.
-     * There are five 400 year cycles from year zero to 2000.
-     * There are 7 leap years from 1970 to 2000.
-     */
-    public static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
-    /**
-     * The number of days from year zero to the Modified Julian Day epoch of 1858-11-17.
-     */
-    public static final long DAYS_0000_TO_MJD_EPOCH = 678941;
 
     //-----------------------------------------------------------------------
     /**
@@ -158,33 +142,6 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the day-of-week from a date.
-     *
-     * @param date  the date to use, not null
-     * @return the day-of-week
-     */
-    public static DayOfWeek getDayOfWeekFromDate(LocalDate date) {
-        long mjd = date.toModifiedJulianDay();
-        if (mjd < 0) {
-            long weeks = mjd / 7;
-            mjd += (-weeks + 1) * 7;
-        }
-        int dow0 = (int) ((mjd + 2) % 7);
-        return DayOfWeek.of(dow0 + 1);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the day-of-year from a date.
-     *
-     * @param date  the date to use, not null
-     * @return the day-of-year
-     */
-    public static int getDayOfYearFromDate(LocalDate date) {
-        return date.getMonthOfYear().getMonthStartDayOfYear(date.isLeapYear()) + date.getDayOfMonth() - 1;
-    }
-
-    /**
      * Calculates the date from a year and day-of-year.
      *
      * @param year  the year, valid
@@ -204,48 +161,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
         return LocalDate.of(year, moy, dom);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the week-based-year.
-     *
-     * @param date  the date, not null
-     * @return the week-based-year
-     */
-    public static int getWeekBasedYearFromDate(LocalDate date) {
-        int year = date.getYear();  // use ISO year object so previous/next are checked
-        if (date.getMonthOfYear() == MonthOfYear.JANUARY) {
-            int dom = date.getDayOfMonth();
-            if (dom < 4) {
-                int dow = date.getDayOfWeek().getValue();
-                if (dow > dom + 3) {
-                    year--;
-                }
-            }
-        } else if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
-            int dom = date.getDayOfMonth();
-            if (dom > 28) {
-                int dow = date.getDayOfWeek().getValue();
-                if (dow <= dom % 7) {
-                    year++;
-                }
-            }
-        }
-        return year;
-    }
-
-    /**
-     * Calculates the week of week-based-year.
-     *
-     * @param date  the date to use, not null
-     * @return the week
-     */
-    public static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
-        int wby = getWeekBasedYearFromDate(date);
-        LocalDate yearStart = LocalDate.of(wby, MonthOfYear.JANUARY, 4);
-        return MathUtils.safeToInt((date.toModifiedJulianDay() - yearStart.toModifiedJulianDay() +
-                yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
 
     //-----------------------------------------------------------------------

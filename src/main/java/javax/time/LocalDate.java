@@ -97,6 +97,20 @@ public final class LocalDate
      * This could be used by an application as a "far future" date.
      */
     public static final LocalDate MAX_DATE = LocalDate.of(Year.MAX_YEAR, 12, 31);
+    /**
+     * The number of days in a 400 year cycle.
+     */
+    private static final int DAYS_PER_CYCLE = 146097;
+    /**
+     * The number of days from year zero to year 1970.
+     * There are five 400 year cycles from year zero to 2000.
+     * There are 7 leap years from 1970 to 2000.
+     */
+    static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
+    /**
+     * The number of days from year zero to the Modified Julian Day epoch of 1858-11-17.
+     */
+    private static final long DAYS_0000_TO_MJD_EPOCH = 678941;
 
     /**
      * The year.
@@ -153,7 +167,7 @@ public final class LocalDate
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
         long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + DAYS_0000_TO_1970;
         return LocalDate.ofYearZeroDay(yearZeroDay);
     }
 
@@ -208,7 +222,7 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
     public static LocalDate ofEpochDay(long epochDay) {
-        return ofYearZeroDay(epochDay + ISOChronology.DAYS_0000_TO_1970);
+        return ofYearZeroDay(epochDay + DAYS_0000_TO_1970);
     }
 
     /**
@@ -222,7 +236,7 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if the modified julian days value is outside the supported range
      */
     public static LocalDate ofModifiedJulianDay(long mjDay) {
-        return ofYearZeroDay(mjDay + ISOChronology.DAYS_0000_TO_MJD_EPOCH);
+        return ofYearZeroDay(mjDay + DAYS_0000_TO_MJD_EPOCH);
     }
 
     /**
@@ -241,11 +255,11 @@ public final class LocalDate
         long adjust = 0;
         if (zeroDay < 0) {
             // adjust negative years to positive for calculation
-            long adjustCycles = (zeroDay + 1) / ISOChronology.DAYS_PER_CYCLE - 1;
+            long adjustCycles = (zeroDay + 1) / DAYS_PER_CYCLE - 1;
             adjust = adjustCycles * 400;
-            zeroDay += -adjustCycles * ISOChronology.DAYS_PER_CYCLE;
+            zeroDay += -adjustCycles * DAYS_PER_CYCLE;
         }
-        long yearEst = (400 * zeroDay + 591) / ISOChronology.DAYS_PER_CYCLE;
+        long yearEst = (400 * zeroDay + 591) / DAYS_PER_CYCLE;
         long doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
         if (doyEst < 0) {
             // fix estimate
@@ -429,7 +443,7 @@ public final class LocalDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return ISOChronology.getDayOfYearFromDate(this);
+        return getMonthOfYear().getMonthStartDayOfYear(isLeapYear()) + getDayOfMonth() - 1;
     }
 
     /**
@@ -446,7 +460,13 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return ISOChronology.getDayOfWeekFromDate(this);
+        long mjd = toModifiedJulianDay();
+        if (mjd < 0) {
+            long weeks = mjd / 7;
+            mjd += (-weeks + 1) * 7;
+        }
+        int dow0 = (int) ((mjd + 2) % 7);
+        return DayOfWeek.of(dow0 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -1299,7 +1319,7 @@ public final class LocalDate
      * @return the Epoch Day equivalent to this date
      */
     public long toEpochDay() {
-        return toYearZeroDay() - ISOChronology.DAYS_0000_TO_1970;
+        return toYearZeroDay() - DAYS_0000_TO_1970;
     }
 
     /**
@@ -1311,7 +1331,7 @@ public final class LocalDate
      * @return the Modified Julian Day equivalent to this date
      */
     public long toModifiedJulianDay() {
-        return toYearZeroDay() - ISOChronology.DAYS_0000_TO_MJD_EPOCH;
+        return toYearZeroDay() - DAYS_0000_TO_MJD_EPOCH;
     }
 
     /**

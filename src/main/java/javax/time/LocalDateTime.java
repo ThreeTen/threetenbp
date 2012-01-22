@@ -163,7 +163,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the instant exceeds the supported date range
      */
     static LocalDateTime create(long localSeconds, int nanoOfSecond) {
-        long yearZeroDays = MathUtils.floorDiv(localSeconds, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        long yearZeroDays = MathUtils.floorDiv(localSeconds, ISOChronology.SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
         int secsOfDay = MathUtils.floorMod(localSeconds, ISOChronology.SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDays);
         LocalTime time = LocalTime.ofSecondOfDay(secsOfDay, nanoOfSecond);

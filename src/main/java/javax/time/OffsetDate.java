@@ -203,7 +203,7 @@ public final class OffsetDate
         Instant instant = Instant.of(instantProvider);
         LocalDate.checkNotNull(offset, "ZoneOffset must not be null");
         long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDay);
         return new OffsetDate(date, offset);
     }
