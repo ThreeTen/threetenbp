@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,7 +37,9 @@ import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
 import javax.time.calendar.Clock;
+import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.CalendricalParseException;
 
 /**
@@ -311,16 +313,23 @@ public final class Instant
      * The seconds are mandatory, but the fractional seconds are optional.
      * There must be no more than 9 digits after the decimal point.
      * The letters (T and Z) will be accepted in upper or lower case.
-     * The decimal point may be either a dot or a comma.
      *
      * @param text  the text to parse, not null
      * @return an instant, not null
      * @throws CalendricalParseException if the text cannot be parsed to an {@code Instant}
      */
+    //TODO:The decimal point may be either a dot or a comma.
+    // TODO: optimize and handle big instants
     public static Instant parse(final CharSequence text) {
         Instant.checkNotNull(text, "Text to parse must not be null");
-        // TODO: Implement
-        throw new UnsupportedOperationException();
+        int length = text.length();
+        if (length < 2) {
+            throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);
+        }
+        if (text.charAt(length - 1) != 'Z' && text.charAt(length - 1) != 'z') {
+            throw new CalendricalParseException("Instant could not be parsed: " + text, text, length - 1);
+        }
+        return OffsetDateTime.of(LocalDateTime.parse(text.subSequence(0, length - 1)), ZoneOffset.UTC).toInstant();
     }
 
     //-----------------------------------------------------------------------
