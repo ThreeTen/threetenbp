@@ -66,6 +66,7 @@ import org.testng.annotations.Test;
 public class TestDateAdjusters {
 
     @SuppressWarnings("rawtypes")
+    @Test(groups={"implementation"})
     public void test_constructor() throws Exception {
         for (Constructor constructor : DateAdjusters.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
@@ -75,7 +76,7 @@ public class TestDateAdjusters {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test(expectedExceptions = InvocationTargetException.class)
+    @Test(expectedExceptions = InvocationTargetException.class, groups={"tck"})
     public void test_forceCoverage() throws Exception {
         Enum en = (Enum) DateAdjusters.lastDayOfYear();
         Class cls = en.getClass();
@@ -87,6 +88,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfMonth()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_firstDayOfMonth_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfMonth();
         assertTrue(firstDayOfMonth instanceof Serializable);
@@ -100,11 +102,17 @@ public class TestDateAdjusters {
         assertSame(ois.readObject(), firstDayOfMonth);
     }
 
+    @Test(groups={"tck"})
     public void factory_firstDayOfMonth() {
         assertNotNull(DateAdjusters.firstDayOfMonth());
-        assertSame(DateAdjusters.firstDayOfMonth(), DateAdjusters.firstDayOfMonth());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_firstDayOfMonthSame() {
+    	assertSame(DateAdjusters.firstDayOfMonth(), DateAdjusters.firstDayOfMonth());
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfMonth_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -117,6 +125,7 @@ public class TestDateAdjusters {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
@@ -132,6 +141,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // lastDayOfMonth()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_lastDayOfMonth_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster lastDayOfMonth = DateAdjusters.lastDayOfMonth();
         assertTrue(lastDayOfMonth instanceof Serializable);
@@ -145,11 +155,17 @@ public class TestDateAdjusters {
         assertSame(ois.readObject(), lastDayOfMonth);
     }
 
+    @Test(groups={"tck"})
     public void factory_lastDayOfMonth() {
         assertNotNull(DateAdjusters.lastDayOfMonth());
-        assertSame(DateAdjusters.lastDayOfMonth(), DateAdjusters.lastDayOfMonth());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_lastDayOfMonthSame() {
+    	assertSame(DateAdjusters.lastDayOfMonth(), DateAdjusters.lastDayOfMonth());
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfMonth_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -162,6 +178,7 @@ public class TestDateAdjusters {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
@@ -177,6 +194,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfNextMonth()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_firstDayOfNextMonth_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfNextMonth();
         assertTrue(firstDayOfMonth instanceof Serializable);
@@ -190,11 +208,17 @@ public class TestDateAdjusters {
         assertSame(ois.readObject(), firstDayOfMonth);
     }
 
+    @Test(groups={"tck"})
     public void factory_firstDayOfNextMonth() {
         assertNotNull(DateAdjusters.firstDayOfNextMonth());
-        assertSame(DateAdjusters.firstDayOfNextMonth(), DateAdjusters.firstDayOfNextMonth());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_firstDayOfNextMonthSame() {
+    	assertSame(DateAdjusters.firstDayOfNextMonth(), DateAdjusters.firstDayOfNextMonth());
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfNextMonth_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -207,6 +231,7 @@ public class TestDateAdjusters {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfNextMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
@@ -222,6 +247,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfYear()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_firstDayOfYear_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster firstDayOfYear = DateAdjusters.firstDayOfYear();
         assertTrue(firstDayOfYear instanceof Serializable);
@@ -235,11 +261,17 @@ public class TestDateAdjusters {
         assertSame(ois.readObject(), firstDayOfYear);
     }
 
+    @Test(groups={"tck"})
     public void factory_firstDayOfYear() {
         assertNotNull(DateAdjusters.firstDayOfYear());
-        assertSame(DateAdjusters.firstDayOfYear(), DateAdjusters.firstDayOfYear());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_firstDayOfYearSame() {
+    	assertSame(DateAdjusters.firstDayOfYear(), DateAdjusters.firstDayOfYear());
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -252,6 +284,7 @@ public class TestDateAdjusters {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfYear_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
@@ -267,6 +300,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // lastDayOfYear()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_lastDayOfYear_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster lastDayOfYear = DateAdjusters.lastDayOfYear();
         assertTrue(lastDayOfYear instanceof Serializable);
@@ -280,11 +314,17 @@ public class TestDateAdjusters {
         assertSame(ois.readObject(), lastDayOfYear);
     }
 
+    @Test(groups={"tck"})
     public void factory_lastDayOfYear() {
         assertNotNull(DateAdjusters.lastDayOfYear());
-        assertSame(DateAdjusters.lastDayOfYear(), DateAdjusters.lastDayOfYear());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_lastDayOfYearSame() {
+    	assertSame(DateAdjusters.lastDayOfYear(), DateAdjusters.lastDayOfYear());
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -297,6 +337,7 @@ public class TestDateAdjusters {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfYear_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
@@ -312,6 +353,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // firstDayOfNextYear()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_firstDayOfNextYear_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster firstDayOfMonth = DateAdjusters.firstDayOfNextYear();
         assertTrue(firstDayOfMonth instanceof Serializable);
@@ -325,11 +367,17 @@ public class TestDateAdjusters {
         assertSame(ois.readObject(), firstDayOfMonth);
     }
 
+    @Test(groups={"tck"})
     public void factory_firstDayOfNextYear() {
         assertNotNull(DateAdjusters.firstDayOfNextYear());
-        assertSame(DateAdjusters.firstDayOfNextYear(), DateAdjusters.firstDayOfNextYear());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_firstDayOfNextYearSame() {
+    	assertSame(DateAdjusters.firstDayOfNextYear(), DateAdjusters.firstDayOfNextYear());
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfNextYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -342,6 +390,7 @@ public class TestDateAdjusters {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_firstDayOfNextYear_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
@@ -357,6 +406,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // dayOfWeekInMonth()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster dayOfWeekInMonth = DateAdjusters.dayOfWeekInMonth(1, SUNDAY);
         assertTrue(dayOfWeekInMonth instanceof Serializable);
@@ -371,27 +421,29 @@ public class TestDateAdjusters {
         assertEquals(ois.readObject(), dayOfWeekInMonth);
     }
 
+    @Test(groups={"tck"})
     public void factory_dayOfWeekInMonth() {
         assertNotNull(DateAdjusters.dayOfWeekInMonth(1, MONDAY));
         assertEquals(DateAdjusters.dayOfWeekInMonth(1, MONDAY), DateAdjusters.dayOfWeekInMonth(1, MONDAY));
         assertEquals(DateAdjusters.dayOfWeekInMonth(2, MONDAY), DateAdjusters.dayOfWeekInMonth(2, MONDAY));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void factory_dayOfWeekInMonth_ordinalTooSmall() {
         DateAdjusters.dayOfWeekInMonth(0, MONDAY);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void factory_dayOfWeekInMonth_ordinalTooBig() {
         DateAdjusters.dayOfWeekInMonth(6, MONDAY);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_dayOfWeekInMonth_nullDayOfWeek() {
         DateAdjusters.dayOfWeekInMonth(1, null);
     }
 
+    @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_equals() {
         final DateAdjuster mondayInFirstWeek = DateAdjusters.dayOfWeekInMonth(1, MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
@@ -402,13 +454,15 @@ public class TestDateAdjusters {
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
         assertTrue(mondayInFirstWeek.equals(DateAdjusters.dayOfWeekInMonth(1, MONDAY)));
     }
-
+    
+    @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_hashCode() {
         assertEquals(DateAdjusters.dayOfWeekInMonth(1, MONDAY).hashCode(), DateAdjusters.dayOfWeekInMonth(1, MONDAY).hashCode());
         assertEquals(DateAdjusters.dayOfWeekInMonth(1, TUESDAY).hashCode(), DateAdjusters.dayOfWeekInMonth(1, TUESDAY).hashCode());
         assertEquals(DateAdjusters.dayOfWeekInMonth(2, MONDAY).hashCode(), DateAdjusters.dayOfWeekInMonth(2, MONDAY).hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_firstToForth() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -428,6 +482,7 @@ public class TestDateAdjusters {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_dayOfWeekInMonth_fifth() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -468,6 +523,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // firstInMonth()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_firstInMonth_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster firstInMonth = DateAdjusters.firstInMonth(SUNDAY);
         assertTrue(firstInMonth instanceof Serializable);
@@ -482,16 +538,18 @@ public class TestDateAdjusters {
         assertEquals(ois.readObject(), firstInMonth);
     }
 
+    @Test(groups={"tck"})
     public void factory_firstInMonth() {
         assertNotNull(DateAdjusters.firstInMonth(MONDAY));
         assertEquals(DateAdjusters.firstInMonth(MONDAY), DateAdjusters.firstInMonth(MONDAY));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_firstInMonth_nullDayOfWeek() {
         DateAdjusters.firstInMonth(null);
     }
 
+    @Test(groups={"tck"})
     public void test_firstInMonth_equals() {
         final DateAdjuster mondayInFirstWeek = DateAdjusters.firstInMonth(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
@@ -502,11 +560,13 @@ public class TestDateAdjusters {
         assertTrue(mondayInFirstWeek.equals(DateAdjusters.firstInMonth(MONDAY)));
     }
 
+    @Test(groups={"tck"})
     public void test_firstInMonth_hashCode() {
         assertEquals(DateAdjusters.firstInMonth(MONDAY).hashCode(), DateAdjusters.firstInMonth(MONDAY).hashCode());
         assertEquals(DateAdjusters.firstInMonth(TUESDAY).hashCode(), DateAdjusters.firstInMonth(TUESDAY).hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_firstInMonth() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -526,6 +586,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // next()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_next_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster next = DateAdjusters.next(SUNDAY);
         assertTrue(next instanceof Serializable);
@@ -540,16 +601,18 @@ public class TestDateAdjusters {
         assertEquals(ois.readObject(), next);
     }
 
+    @Test(groups={"tck"})
     public void factory_next() {
         assertNotNull(DateAdjusters.next(MONDAY));
         assertEquals(DateAdjusters.next(MONDAY), DateAdjusters.next(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void factory_next_nullDayOfWeek() {
         DateAdjusters.next(null);
     }
 
+    @Test(groups={"tck"})
     public void test_next_equals() {
         final DateAdjuster mondayInFirstWeek = DateAdjusters.next(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
@@ -560,11 +623,13 @@ public class TestDateAdjusters {
         assertTrue(mondayInFirstWeek.equals(DateAdjusters.next(MONDAY)));
     }
 
+    @Test(groups={"tck"})
     public void test_next_hashCode() {
         assertEquals(DateAdjusters.next(MONDAY).hashCode(), DateAdjusters.next(MONDAY).hashCode());
         assertEquals(DateAdjusters.next(TUESDAY).hashCode(), DateAdjusters.next(TUESDAY).hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_next() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -593,6 +658,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // nextOrCurrent()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_nextOrCurrent_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster nextOrCurrent = DateAdjusters.nextOrCurrent(SUNDAY);
         assertTrue(nextOrCurrent instanceof Serializable);
@@ -607,16 +673,18 @@ public class TestDateAdjusters {
         assertEquals(ois.readObject(), nextOrCurrent);
     }
 
+    @Test(groups={"tck"})
     public void factory_nextOrCurrent() {
         assertNotNull(DateAdjusters.nextOrCurrent(MONDAY));
         assertEquals(DateAdjusters.nextOrCurrent(MONDAY), DateAdjusters.nextOrCurrent(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void factory_nextOrCurrent_nullDayOfWeek() {
         DateAdjusters.nextOrCurrent(null);
     }
 
+    @Test(groups={"tck"})
     public void test_nextOrCurrent_equals() {
         final DateAdjuster mondayInFirstWeek = DateAdjusters.nextOrCurrent(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
@@ -628,11 +696,13 @@ public class TestDateAdjusters {
         assertTrue(mondayInFirstWeek.equals(DateAdjusters.nextOrCurrent(MONDAY)));
     }
 
+    @Test(groups={"tck"})
     public void test_nextOrCurrent_hashCode() {
         assertEquals(DateAdjusters.nextOrCurrent(MONDAY).hashCode(), DateAdjusters.nextOrCurrent(MONDAY).hashCode());
         assertEquals(DateAdjusters.nextOrCurrent(TUESDAY).hashCode(), DateAdjusters.nextOrCurrent(TUESDAY).hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_nextOrCurrent() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -663,6 +733,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // previous()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_previous_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster previous = DateAdjusters.previous(SUNDAY);
         assertTrue(previous instanceof Serializable);
@@ -677,16 +748,18 @@ public class TestDateAdjusters {
         assertEquals(ois.readObject(), previous);
     }
 
+    @Test(groups={"tck"})
     public void factory_previous() {
         assertNotNull(DateAdjusters.previous(MONDAY));
         assertEquals(DateAdjusters.previous(MONDAY), DateAdjusters.previous(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void factory_previous_nullDayOfWeek() {
         DateAdjusters.previous(null);
     }
 
+    @Test(groups={"tck"})
     public void test_previous_equals() {
         final DateAdjuster mondayInFirstWeek = DateAdjusters.previous(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
@@ -697,11 +770,13 @@ public class TestDateAdjusters {
         assertTrue(mondayInFirstWeek.equals(DateAdjusters.previous(MONDAY)));
     }
 
+    @Test(groups={"tck"})
     public void test_previous_hashCode() {
         assertEquals(DateAdjusters.previous(MONDAY).hashCode(), DateAdjusters.previous(MONDAY).hashCode());
         assertEquals(DateAdjusters.previous(TUESDAY).hashCode(), DateAdjusters.previous(TUESDAY).hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_previous() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -730,6 +805,7 @@ public class TestDateAdjusters {
     //-----------------------------------------------------------------------
     // previousOrCurrent()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_previousOrCurrent_serialization() throws IOException, ClassNotFoundException {
         DateAdjuster previousOrCurrent = DateAdjusters.previousOrCurrent(SUNDAY);
         assertTrue(previousOrCurrent instanceof Serializable);
@@ -744,16 +820,18 @@ public class TestDateAdjusters {
         assertEquals(ois.readObject(), previousOrCurrent);
     }
 
+    @Test(groups={"tck"})
     public void factory_previousOrCurrent() {
         assertNotNull(DateAdjusters.previousOrCurrent(MONDAY));
         assertEquals(DateAdjusters.previousOrCurrent(MONDAY), DateAdjusters.previousOrCurrent(MONDAY));
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void factory_previousOrCurrent_nullDayOfWeek() {
         DateAdjusters.previousOrCurrent(null);
     }
 
+    @Test(groups={"tck"})
     public void test_previousOrCurrent_equals() {
         final DateAdjuster mondayInFirstWeek = DateAdjusters.previousOrCurrent(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
@@ -765,11 +843,13 @@ public class TestDateAdjusters {
         assertTrue(mondayInFirstWeek.equals(DateAdjusters.previousOrCurrent(MONDAY)));
     }
 
+    @Test(groups={"tck"})
     public void test_previousOrCurrent_hashCode() {
         assertEquals(DateAdjusters.previousOrCurrent(MONDAY).hashCode(), DateAdjusters.previousOrCurrent(MONDAY).hashCode());
         assertEquals(DateAdjusters.previousOrCurrent(TUESDAY).hashCode(), DateAdjusters.previousOrCurrent(TUESDAY).hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_previousOrCurrent() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {

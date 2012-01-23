@@ -77,6 +77,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
+	@Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Calendrical.class.isAssignableFrom(DateTimeField.class));
         assertTrue(CalendricalMatcher.class.isAssignableFrom(DateTimeField.class));
@@ -92,7 +93,7 @@ public class TestDateTimeField {
         };
     }
 
-    @Test(dataProvider="simple")
+    @Test(dataProvider="simple", groups={"tck"})
     public void test_serialization(DateTimeField field) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -102,6 +103,7 @@ public class TestDateTimeField {
         assertEquals(ois.readObject(), field);
     }
 
+    @Test(groups={"tck"})
     public void test_immutable() {
         Class<DateTimeField> cls = DateTimeField.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
@@ -122,12 +124,13 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_of_ruleLong() {
         DateTimeField test = DateTimeField.of(YEAR, 2008);
         assertField(test, YEAR, 2008);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_of_nullRule() {
         DateTimeField.of(null, 1);
     }
@@ -135,6 +138,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // withRule()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_withRule() {
         DateTimeField base = DateTimeField.of(YEAR, 2008);
         DateTimeField test = base.withRule(MONTH_OF_YEAR);
@@ -143,7 +147,7 @@ public class TestDateTimeField {
         assertField(base, YEAR, 2008);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_withRule_nullRule() {
         DateTimeField base = DateTimeField.of(YEAR, 2008);
         base.withRule(null);
@@ -152,6 +156,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // withValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_withValue() {
         DateTimeField base = DateTimeField.of(YEAR, 2008);
         DateTimeField test = base.withValue(2007);
@@ -160,6 +165,7 @@ public class TestDateTimeField {
         assertField(base, YEAR, 2008);
     }
 
+    @Test(groups={"tck"})
     public void test_withValue_invalidValue() {
         DateTimeField base = DateTimeField.of(MONTH_OF_YEAR, 8);
         DateTimeField test = base.withValue(-1);
@@ -169,6 +175,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // isValidValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_isValidValue() {
         assertEquals(true, DateTimeField.of(MONTH_OF_YEAR, 6).isValidValue());
         assertEquals(false, DateTimeField.of(MONTH_OF_YEAR, 13).isValidValue());
@@ -178,11 +185,12 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // getValidValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getValidValue_valid() {
         assertEquals(6, DateTimeField.of(MONTH_OF_YEAR, 6).getValidValue());
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_getValidValue_invalid() {
         DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 13);  // out of range
         try {
@@ -196,6 +204,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // isValidIntValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_isValidIntValue() {
         assertEquals(true, DateTimeField.of(MONTH_OF_YEAR, 6).isValidValue());
         assertEquals(false, DateTimeField.of(MONTH_OF_YEAR, 13).isValidValue());
@@ -205,11 +214,12 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // getValidValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getValidIntValue_valid() {
         assertEquals(6, DateTimeField.of(MONTH_OF_YEAR, 6).getValidIntValue());
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_getValidIntValue_invalid() {
         DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 13);  // out of range
         try {
@@ -223,18 +233,19 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getText() {
         DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
         assertEquals(test.getText(TextStyle.SHORT, Locale.US), "Jan");
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullStyle() {
         DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
         test.getText(null, Locale.US);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullLocale() {
         DateTimeField test = DateTimeField.of(MONTH_OF_YEAR, 1);
         test.getText(TextStyle.FULL, null);
@@ -243,6 +254,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // get()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_get() {
         assertEquals(DateTimeField.of(MONTH_OF_YEAR, 9).get(MonthOfYear.rule()), SEPTEMBER);
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(HOUR_OF_DAY), HOUR_OF_DAY.field(18));
@@ -250,7 +262,7 @@ public class TestDateTimeField {
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 18).get(MONTH_OF_YEAR), null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_get_null() {
         DateTimeField.of(MONTH_OF_YEAR, 6).get(null);
     }
@@ -258,6 +270,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // matchesCalendrical()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_ymd_date() {
         LocalDate date = LocalDate.of(2008, 6, 30);
         assertEquals(DateTimeField.of(YEAR, 2008).matchesCalendrical(date), true);
@@ -272,7 +285,7 @@ public class TestDateTimeField {
         assertEquals(DateTimeField.of(HOUR_OF_DAY, 2).matchesCalendrical(date), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_matchesCalendrical_null() {
         DateTimeField.of(DAY_OF_WEEK, 2).matchesCalendrical(null);
     }
@@ -327,7 +340,7 @@ public class TestDateTimeField {
         };
     }
 
-    @Test(dataProvider = "derive")
+    @Test(dataProvider = "derive", groups={"tck"})
     public void test_derive(DateTimeField input, DateTimeRule rule, Number output) {
         if (output == null) {
             assertNull(input.derive(rule));
@@ -339,6 +352,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // comparteTo()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_compareTo() {
         DateTimeField a = DateTimeField.of(DAY_OF_MONTH, 7);
         DateTimeField b = DateTimeField.of(MONTH_OF_YEAR, 6);
@@ -357,7 +371,7 @@ public class TestDateTimeField {
         assertEquals(c.compareTo(c) == 0, true);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_compareTo_null() {
         DateTimeField.of(MONTH_OF_YEAR, 6).compareTo(null);
     }
@@ -365,6 +379,7 @@ public class TestDateTimeField {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals1() {
         DateTimeField a = DateTimeField.of(YEAR, 2008);
         DateTimeField b = DateTimeField.of(YEAR, 2008);
@@ -375,6 +390,7 @@ public class TestDateTimeField {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals2() {
         DateTimeField a = DateTimeField.of(YEAR, 2008);
         DateTimeField b = DateTimeField.of(YEAR, 2007);
@@ -384,6 +400,7 @@ public class TestDateTimeField {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals3() {
         DateTimeField a = DateTimeField.of(YEAR, 2008);
         DateTimeField b = DateTimeField.of(WEEK_BASED_YEAR, 2008);
@@ -393,11 +410,13 @@ public class TestDateTimeField {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_otherType() {
         DateTimeField a = DateTimeField.of(YEAR, 2008);
         assertEquals(a.equals("Rubbish"), false);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_null() {
         DateTimeField a = DateTimeField.of(YEAR, 2008);
         assertEquals(a.equals(null), false);
