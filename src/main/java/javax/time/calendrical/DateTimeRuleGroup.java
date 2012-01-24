@@ -44,14 +44,12 @@ public final class DateTimeRuleGroup {
     // TODO: tidy up, or delete, or merge into DTRule
 
     /** The rule groups. */
-    private static final ConcurrentMap<DateTimeRule, DateTimeRuleGroup> GROUPS =
-        new ConcurrentHashMap<DateTimeRule, DateTimeRuleGroup>(16, 0.75f, 2);
+    private static final ConcurrentMap<DateTimeRule, DateTimeRuleGroup> GROUPS = new ConcurrentHashMap<>(16, 0.75f, 2);
 
     /** The base rule. */
     private final DateTimeRule baseRule;
     /** The related rules. */
-    private final ConcurrentMap<Map.Entry<PeriodUnit, PeriodUnit>, DateTimeRule> rules =
-        new ConcurrentHashMap<Map.Entry<PeriodUnit, PeriodUnit>, DateTimeRule>(16, 0.75f, 2);
+    private final ConcurrentMap<Map.Entry<PeriodUnit, PeriodUnit>, DateTimeRule> rules = new ConcurrentHashMap<>(16, 0.75f, 2);
 
     /**
      *

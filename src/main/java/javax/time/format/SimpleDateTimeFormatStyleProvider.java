@@ -52,8 +52,7 @@ final class SimpleDateTimeFormatStyleProvider extends DateTimeFormatStyleProvide
     // TODO: Better implementation based on CLDR
 
     /** Cache of formatters. */
-    private static final ConcurrentMap<String, Object> FORMATTER_CACHE =
-                        new ConcurrentHashMap<String, Object>(16, 0.75f, 2);
+    private static final ConcurrentMap<String, Object> FORMATTER_CACHE = new ConcurrentHashMap<>(16, 0.75f, 2);
 
     /** {@inheritDoc} */
     @Override

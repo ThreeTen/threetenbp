@@ -89,7 +89,7 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Nanos per second.
      */
-    public static final long NANOS_PER_SECOND = 1000000000L;
+    public static final long NANOS_PER_SECOND = 1_000_000_000L;
     /**
      * Nanos per minute.
      */

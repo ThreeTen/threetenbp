@@ -232,7 +232,7 @@ public final class PeriodFields
      * @return ordered representation of internal map
      */
     static TreeMap<PeriodUnit, PeriodField> createMap() {
-        return new TreeMap<PeriodUnit, PeriodField>(Collections.reverseOrder());
+        return new TreeMap<>(Collections.reverseOrder());
     }
 
     /**

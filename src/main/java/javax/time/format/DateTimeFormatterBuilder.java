@@ -1019,7 +1019,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     /** Map of letters to rules. */
-    private static final Map<Character, DateTimeRule> RULE_MAP = new HashMap<Character, DateTimeRule>();
+    private static final Map<Character, DateTimeRule> RULE_MAP = new HashMap<>();
     static {
         // TODO: G -> era
         // TODO: y -> year-of-era

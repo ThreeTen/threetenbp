@@ -208,7 +208,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
         /**
          * Map of a substring to a set of substrings that contain the key.
          */
-        private final Map<CharSequence, SubstringTree> substringMap = new HashMap<CharSequence, SubstringTree>();
+        private final Map<CharSequence, SubstringTree> substringMap = new HashMap<>();
 
         /**
          * Constructor.

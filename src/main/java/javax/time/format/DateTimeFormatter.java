@@ -269,9 +269,7 @@ public final class DateTimeFormatter {
         try {
             CalendricalEngine engine = parseToEngine(str);
             return engine.deriveChecked(rule);
-        } catch (UnsupportedOperationException ex) {
-            throw ex;
-        } catch (CalendricalParseException ex) {
+        } catch (UnsupportedOperationException | CalendricalParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
             throw createError(str, ex);
@@ -325,9 +323,7 @@ public final class DateTimeFormatter {
                 }
             }
             throw new CalendricalException("Unable to convert parsed text to any specified rule: " + Arrays.toString(rules));
-        } catch (UnsupportedOperationException ex) {
-            throw ex;
-        } catch (CalendricalParseException ex) {
+        } catch (UnsupportedOperationException | CalendricalParseException ex) {
             throw ex;
         } catch (RuntimeException ex) {
             throw createError(str, ex);

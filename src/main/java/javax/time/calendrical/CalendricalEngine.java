@@ -567,7 +567,7 @@ public final class CalendricalEngine {
     public void setField(DateTimeField field, boolean storeErrorIfClash) {
         if (field != null) {
             if (fields == null) {
-                fields = new HashMap<DateTimeRule, DateTimeField>();
+                fields = new HashMap<>();
             }
             DateTimeField curField = fields.get(field.getRule());
             DateTimeField newField = set(curField, field, storeErrorIfClash);
@@ -637,7 +637,7 @@ public final class CalendricalEngine {
 
     private void normalizeAuto() {
         // group according to base rule
-        Map<DateTimeRule, List<DateTimeField>> grouped = new HashMap<DateTimeRule, List<DateTimeField>>();
+        Map<DateTimeRule, List<DateTimeField>> grouped = new HashMap<>();
         for (DateTimeField field : fields.values()) {
             DateTimeRule baseRule = field.getRule().getBaseRule();
             List<DateTimeField> groupedList = grouped.get(baseRule);

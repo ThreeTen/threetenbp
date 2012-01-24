@@ -88,13 +88,12 @@ public final class ZoneRulesGroup {
      * The zone IDs.
      * Should not be empty.
      */
-    private static final Map<String, Object> IDS = new ConcurrentHashMap<String, Object>(100, 0.75f, 4);
+    private static final Map<String, Object> IDS = new ConcurrentHashMap<>(100, 0.75f, 4);
     /**
      * The zone rule groups.
      * Should not be empty.
      */
-    private static final ConcurrentMap<String, ZoneRulesGroup> GROUPS =
-            new ConcurrentHashMap<String, ZoneRulesGroup>(16, 0.75f, 2);
+    private static final ConcurrentMap<String, ZoneRulesGroup> GROUPS = new ConcurrentHashMap<>(16, 0.75f, 2);
 
     static {
         ResourceZoneRulesDataProvider.load();
@@ -107,8 +106,7 @@ public final class ZoneRulesGroup {
     /**
      * The versions and rules.
      */
-    private AtomicReference<TreeMap<String, ZoneRulesVersion>> versions =
-            new AtomicReference<TreeMap<String, ZoneRulesVersion>>(
+    private AtomicReference<TreeMap<String, ZoneRulesVersion>> versions = new AtomicReference<>(
                     new TreeMap<String, ZoneRulesVersion>(Collections.reverseOrder()));
 
     //-----------------------------------------------------------------------

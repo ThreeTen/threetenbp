@@ -227,8 +227,8 @@ public final class TZDBZoneRulesCompiler {
      */
     private static void process(List<File> srcDirs, List<String> srcFileNames, File dstDir, boolean verbose) {
         // build actual jar files
-        Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
-        Map<String, SortedMap<String, ZoneRules>> allBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
+        Map<Object, Object> deduplicateMap = new HashMap<>();
+        Map<String, SortedMap<String, ZoneRules>> allBuiltZones = new TreeMap<>();
         Set<String> allRegionIds = new TreeSet<String>();
         Set<ZoneRules> allRules = new HashSet<ZoneRules>();
         SortedMap<LocalDate, Byte> bestLeapSeconds = null;
@@ -300,7 +300,7 @@ public final class TZDBZoneRulesCompiler {
      * Outputs the file.
      */
     private static void outputFile(File dstFile, String version, SortedMap<String, ZoneRules> builtZones, SortedMap<LocalDate, Byte> leapSeconds) {
-        Map<String, SortedMap<String, ZoneRules>> loopAllBuiltZones = new TreeMap<String, SortedMap<String, ZoneRules>>();
+        Map<String, SortedMap<String, ZoneRules>> loopAllBuiltZones = new TreeMap<>();
         loopAllBuiltZones.put(version, builtZones);
         Set<String> loopAllRegionIds = new TreeSet<String>(builtZones.keySet());
         Set<ZoneRules> loopAllRules = new HashSet<ZoneRules>(builtZones.values());
@@ -420,17 +420,17 @@ public final class TZDBZoneRulesCompiler {
 
     //-----------------------------------------------------------------------
     /** The TZDB rules. */
-    private final Map<String, List<TZDBRule>> rules = new HashMap<String, List<TZDBRule>>();
+    private final Map<String, List<TZDBRule>> rules = new HashMap<>();
     /** The TZDB zones. */
-    private final Map<String, List<TZDBZone>> zones = new HashMap<String, List<TZDBZone>>();
+    private final Map<String, List<TZDBZone>> zones = new HashMap<>();
     /** The TZDB links. */
-    private final Map<String, String> links = new HashMap<String, String>();
+    private final Map<String, String> links = new HashMap<>();
     /** The built zones. */
-    private final SortedMap<String, ZoneRules> builtZones = new TreeMap<String, ZoneRules>();
+    private final SortedMap<String, ZoneRules> builtZones = new TreeMap<>();
     /** A map to deduplicate object instances. */
-    private Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
+    private Map<Object, Object> deduplicateMap = new HashMap<>();
     /** Sorted collection of LeapSecondRules. */
-    private final SortedMap<LocalDate, Byte> leapSeconds = new TreeMap<LocalDate, Byte>();
+    private final SortedMap<LocalDate, Byte> leapSeconds = new TreeMap<>();
 
     /** The version to produce. */
     private final String version;
@@ -528,10 +528,7 @@ public final class TZDBZoneRulesCompiler {
         printVerbose("Parsing leap second file: " + leapSecondsFile);
         int lineNumber = 1;
         String line = null;
-        BufferedReader in = null;
-        
-        try {
-            in = new BufferedReader(new FileReader(leapSecondsFile));
+        try (BufferedReader in = new BufferedReader(new FileReader(leapSecondsFile))) {
             for ( ; (line = in.readLine()) != null; lineNumber++) {
                 int index = line.indexOf('#');  // remove comments (doesn't handle # in quotes)
                 if (index >= 0) {
@@ -545,14 +542,6 @@ public final class TZDBZoneRulesCompiler {
             }
         } catch (Exception ex) {
             throw new Exception("Failed while processing file '" + leapSecondsFile + "' on line " + lineNumber + " '" + line + "'", ex);
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception ex) {
-                // ignore NPE and IOE
-            }
         }
     }
 
@@ -620,9 +609,7 @@ public final class TZDBZoneRulesCompiler {
     private void parseFile(File file) throws Exception {
         int lineNumber = 1;
         String line = null;
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new FileReader(file));
+        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
             List<TZDBZone> openZone = null;
             for ( ; (line = in.readLine()) != null; lineNumber++) {
                 int index = line.indexOf('#');  // remove comments (doesn't handle # in quotes)
@@ -677,14 +664,6 @@ public final class TZDBZoneRulesCompiler {
             }
         } catch (Exception ex) {
             throw new Exception("Failed while processing file '" + file + "' on line " + lineNumber + " '" + line + "'", ex);
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception ex) {
-                // ignore NPE and IOE
-            }
         }
     }
 

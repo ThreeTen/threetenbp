@@ -96,8 +96,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * The map of recent transitions.
      */
-    private final ConcurrentMap<Integer, ZoneOffsetTransition[]> lastRulesCache =
-                new ConcurrentHashMap<Integer, ZoneOffsetTransition[]>();
+    private final ConcurrentMap<Integer, ZoneOffsetTransition[]> lastRulesCache = new ConcurrentHashMap<>();
 
     /**
      * Creates an instance.

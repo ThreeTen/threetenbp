@@ -432,9 +432,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             }
             return negative ? ofSeconds(secs, -nanos) : create(secs, nanos);
             
-        } catch (ArithmeticException ex) {
-            throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2, ex);
-        } catch (NumberFormatException ex) {
+        } catch (ArithmeticException | NumberFormatException ex) {
             throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2, ex);
         }
     }

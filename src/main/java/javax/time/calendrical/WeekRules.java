@@ -129,7 +129,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
     /**
      * The cache of rules by locale.
      */
-    private static final ConcurrentMap<Locale, WeekRules> CACHE = new ConcurrentHashMap<Locale, WeekRules>(4, 0.75f, 2);
+    private static final ConcurrentMap<Locale, WeekRules> CACHE = new ConcurrentHashMap<>(4, 0.75f, 2);
 
     /**
      * The first day-of-week.
