@@ -203,8 +203,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 DateTimeField doy = engine.getField(DAY_OF_YEAR, false);
                 DateTimeField year = engine.derive(YEAR);
                 if (doy != null && year != null) {
-                    LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
-                            .plusDays(doy.getValue()).minusDays(1);
+                    LocalDate date = LocalDate.ofYearDay(year.getValidIntValue(), 1).plusDays(doy.getValue()).minusDays(1);
                     engine.setDate(date, true);
                 }
                 break;

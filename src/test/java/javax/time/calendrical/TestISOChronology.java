@@ -49,14 +49,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.time.Duration;
-import javax.time.LocalDate;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.DateTimeRuleRange;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
 
@@ -99,23 +91,6 @@ public class TestISOChronology {
                 assertTrue(Modifier.isPrivate(field.getModifiers()));
                 assertTrue(Modifier.isFinal(field.getModifiers()));
             }
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_getDateFromDayOfYear_nonLeap() {
-        LocalDate date = LocalDate.of(2007, 1, 1);
-        for (int i = 1; i < 365; i++) {
-            assertEquals(ISOChronology.getDateFromDayOfYear(2007, i), date);
-            date = date.plusDays(1);
-        }
-    }
-
-    public void test_getDateFromDayOfYear_leap() {
-        LocalDate date = LocalDate.of(2008, 1, 1);
-        for (int i = 1; i < 366; i++) {
-            assertEquals(ISOChronology.getDateFromDayOfYear(2008, i), date);
-            date = date.plusDays(1);
         }
     }
 

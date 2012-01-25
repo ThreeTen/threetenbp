@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
@@ -175,7 +176,7 @@ public final class LocalDate
     /**
      * Obtains an instance of {@code LocalDate} from a year, month and day.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -194,7 +195,7 @@ public final class LocalDate
     /**
      * Obtains an instance of {@code LocalDate} from a year, month and day.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -208,6 +209,33 @@ public final class LocalDate
         MONTH_OF_YEAR.checkValidValue(monthOfYear);
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         return create(year, MonthOfYear.of(monthOfYear), dayOfMonth);
+    }
+
+    /**
+     * Obtains an instance of {@code LocalDate} from a year and day-of-year.
+     * <p>
+     * The day-of-year must be valid for the year, otherwise an exception will be thrown.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dayOfYear  the day-of-year to represent, from 1 to 366
+     * @return the local date, not null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the month-year
+     */
+    public static LocalDate ofYearDay(int year, int dayOfYear) {
+        YEAR.checkValidValue(year);
+        DAY_OF_YEAR.checkValidValue(dayOfYear);
+        boolean leap = Year.isLeap(year);
+        if (dayOfYear == 366 && leap == false) {
+            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, DAY_OF_YEAR);
+        }
+        MonthOfYear moy = MonthOfYear.of((dayOfYear - 1) / 31 + 1);
+        int monthEnd = moy.getMonthEndDayOfYear(leap);
+        if (dayOfYear > monthEnd) {
+            moy = moy.next();
+        }
+        int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
+        return create(year, moy, dom);
     }
 
     //-----------------------------------------------------------------------
@@ -678,7 +706,7 @@ public final class LocalDate
         if (this.getDayOfYear() == dayOfYear) {
             return this;
         }
-        return ISOChronology.getDateFromDayOfYear(year, dayOfYear);
+        return ofYearDay(year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------

@@ -31,14 +31,9 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-
 import java.io.Serializable;
 
 import javax.time.Chronology;
-import javax.time.LocalDate;
-import javax.time.MonthOfYear;
-import javax.time.Year;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
@@ -139,29 +134,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         if (object == null) {
             throw new NullPointerException(errorMessage);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the date from a year and day-of-year.
-     *
-     * @param year  the year, valid
-     * @param dayOfYear  the day-of-year, valid
-     * @return the date, not null
-     */
-    public static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {
-        DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = Year.isLeap(year);
-        if (dayOfYear == 366 && leap == false) {
-            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, DAY_OF_YEAR);
-        }
-        MonthOfYear moy = MonthOfYear.of((dayOfYear - 1) / 31 + 1);
-        int monthEnd = moy.getMonthEndDayOfYear(leap);
-        if (dayOfYear > monthEnd) {
-            moy = moy.next();
-        }
-        int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
-        return LocalDate.of(year, moy, dom);
     }
 
     //-----------------------------------------------------------------------
