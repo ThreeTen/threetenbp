@@ -31,7 +31,7 @@
  */
 package javax.time.calendrical;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.AM_PM_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendrical.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
@@ -860,7 +860,7 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30)
-            .with(AMPM_OF_DAY, 0);
+            .with(AM_PM_OF_DAY, 0);
         LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), true);
     }
@@ -869,7 +869,7 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30)
-            .with(AMPM_OF_DAY, 1);  // time is 11:30, but this says PM
+            .with(AM_PM_OF_DAY, 1);  // time is 11:30, but this says PM
         LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), false);
     }

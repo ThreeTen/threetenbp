@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.AM_PM_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
@@ -604,7 +604,7 @@ public class TestOffsetDate {
         assertEquals(test.get(SECOND_OF_MINUTE), null);
         assertEquals(test.get(NANO_OF_SECOND), null);
         assertEquals(test.get(HOUR_OF_AMPM), null);
-        assertEquals(test.get(AMPM_OF_DAY), null);
+        assertEquals(test.get(AM_PM_OF_DAY), null);
         
         assertEquals(test.get(LocalDate.rule()), test.toLocalDate());
         assertEquals(test.get(LocalTime.rule()), null);

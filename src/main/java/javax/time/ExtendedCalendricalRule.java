@@ -185,7 +185,7 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
      * @return the derived object, null if unable to obtain
      */
     static AmPmOfDay deriveAmPm(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.AMPM_OF_DAY, true);
+        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.AM_PM_OF_DAY, true);
         return (field != null ? AmPmOfDay.of(field.getValidIntValue()) : null);
     }
 
