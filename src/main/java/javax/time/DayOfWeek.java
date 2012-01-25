@@ -163,22 +163,6 @@ public enum DayOfWeek implements Calendrical, CalendricalMatcher {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code DayOfWeek} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the DayOfWeek singleton, null if unable to obtain
-     */
-    static DayOfWeek deriveFrom(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(DAY_OF_WEEK, true);
-        if (field == null) {
-            return null;
-        }
-        return of(field.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.

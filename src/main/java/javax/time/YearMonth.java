@@ -43,7 +43,6 @@ import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
@@ -183,23 +182,6 @@ public final class YearMonth
      */
     public static YearMonth from(Calendrical... calendricals) {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code YearMonth} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the YearMonth singleton, null if unable to obtain
-     */
-    static YearMonth deriveFrom(CalendricalEngine engine) {
-        DateTimeField year = engine.getFieldDerived(YEAR, true);
-        DateTimeField moy = engine.getFieldDerived(MONTH_OF_YEAR, true);
-        if (year == null || moy == null) {
-            return null;
-        }
-        return of(year.getValidIntValue(), moy.getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

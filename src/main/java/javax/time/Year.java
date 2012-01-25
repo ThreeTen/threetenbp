@@ -189,22 +189,6 @@ public final class Year
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code Year} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the year, null if unable to obtain
-     */
-    static Year deriveFrom(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(YEAR, true);
-        if (field == null) {
-            return null;
-        }
-        return of(field.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Year} from a text string such as {@code 2007}.

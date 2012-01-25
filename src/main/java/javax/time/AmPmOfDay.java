@@ -136,22 +136,6 @@ public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code AmPmOfDay} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the calendrical engine, not null
-     * @return the AmPmOfDay singleton, null if unable to obtain
-     */
-    static AmPmOfDay deriveFrom(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(AMPM_OF_DAY, true);
-        if (field == null) {
-            return null;
-        }
-        return of(field.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.
