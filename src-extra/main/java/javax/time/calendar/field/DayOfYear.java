@@ -279,7 +279,7 @@ public final class DayOfYear
      */
     public boolean isValid(int year) {
         YEAR.checkValidValue(year);
-        return (dayOfYear < 366 || ISOChronology.isLeapYear(year));
+        return (dayOfYear < 366 || Year.isLeap(year));
     }
 
     //-----------------------------------------------------------------------

@@ -57,28 +57,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.AmPmOfDay;
-import javax.time.CalendricalException;
-import javax.time.Chronology;
-import javax.time.Clock;
-import javax.time.Duration;
-import javax.time.Instant;
-import javax.time.InstantProvider;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.MonthDay;
-import javax.time.MonthOfYear;
-import javax.time.OffsetDate;
-import javax.time.OffsetDateTime;
-import javax.time.OffsetTime;
-import javax.time.Period;
-import javax.time.TimeSource;
-import javax.time.Year;
-import javax.time.YearMonth;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
@@ -684,7 +662,7 @@ public class TestZonedDateTime {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
+        assertEquals(a.isLeapYear(), Year.isLeap(a.getYear()));
         
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());

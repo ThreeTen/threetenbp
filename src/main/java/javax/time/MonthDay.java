@@ -463,7 +463,7 @@ public final class MonthDay
      * @see Year#isValidMonthDay(MonthDay)
      */
     public boolean isValidYear(int year) {
-        return (day == 29 && month == FEBRUARY && ISOChronology.isLeapYear(year) == false) == false;
+        return (day == 29 && month == FEBRUARY && Year.isLeap(year) == false) == false;
     }
 
     //-----------------------------------------------------------------------

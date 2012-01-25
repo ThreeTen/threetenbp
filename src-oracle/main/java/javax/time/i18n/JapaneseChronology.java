@@ -10,12 +10,12 @@ import java.util.Locale;
 import javax.time.Chronology;
 import javax.time.Duration;
 import javax.time.MonthOfYear;
+import javax.time.Year;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.DateTimeRuleRange;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.PeriodUnit;
 import javax.time.format.TextStyle;
@@ -454,7 +454,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                     if (eraVal != null && yoeVal != null) {
                         JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
                         int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
-                        return DateTimeRuleRange.of(1, moy.lengthInDays(ISOChronology.isLeapYear(isoYear)));
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(Year.isLeap(isoYear)));
                     }
                     return DateTimeRuleRange.of(1, 28, 29);
                 } else {
@@ -493,7 +493,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             if (eraVal != null && yoeVal != null) {
                 JapaneseEra era = JapaneseEra.of(eraVal.getValidIntValue());
                 int isoYear = era.getYearOffset() + yoeVal.getValidIntValue();
-                return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
+                return DateTimeRuleRange.of(1, Year.isLeap(isoYear) ? 366 : 365);
             }
             return getValueRange();
         }

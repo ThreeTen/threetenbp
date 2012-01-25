@@ -42,9 +42,9 @@ import javax.time.LocalDateTime;
 import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
+import javax.time.Year;
 import javax.time.ZoneOffset;
 import javax.time.calendrical.DateAdjusters;
-import javax.time.calendrical.ISOChronology;
 
 /**
  * A rule expressing how to create a transition.
@@ -397,7 +397,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.getLastDayOfMonth(Year.isLeap(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.previousOrCurrent(dow));
             }

@@ -38,6 +38,7 @@ import java.io.Serializable;
 import javax.time.Chronology;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
+import javax.time.Year;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
@@ -103,28 +104,28 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     public static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
 
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the specified year is a leap year according to the ISO calendar system rules.
-     * <p>
-     * The ISO calendar system applies the current rules for leap years across the whole time-line.
-     * In general, a year is a leap year if it is divisible by four without
-     * remainder. However, years divisible by 100, are not leap years, with
-     * the exception of years divisible by 400 which are.
-     * <p>
-     * For example, 1904 is a leap year it is divisible by 4.
-     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
-     * leap year as it is divisible by 400.
-     * <p>
-     * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO-8601 standard.
-     *
-     * @param year  the year to check, may be outside the valid range for the rule
-     * @return true if the year is a leap year
-     */
-    public static boolean isLeapYear(long year) {
-        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Checks if the specified year is a leap year according to the ISO calendar system rules.
+//     * <p>
+//     * The ISO calendar system applies the current rules for leap years across the whole time-line.
+//     * In general, a year is a leap year if it is divisible by four without
+//     * remainder. However, years divisible by 100, are not leap years, with
+//     * the exception of years divisible by 400 which are.
+//     * <p>
+//     * For example, 1904 is a leap year it is divisible by 4.
+//     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
+//     * leap year as it is divisible by 400.
+//     * <p>
+//     * The calculation is proleptic - applying the same rules into the far future and far past.
+//     * This is historically inaccurate, but is correct for the ISO-8601 standard.
+//     *
+//     * @param year  the year to check, may be outside the valid range for the rule
+//     * @return true if the year is a leap year
+//     */
+//    public static boolean isLeapYear(long year) {
+//        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -150,7 +151,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     public static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {
         DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = ISOChronology.isLeapYear(year);
+        boolean leap = Year.isLeap(year);
         if (dayOfYear == 366 && leap == false) {
             throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, DAY_OF_YEAR);
         }
