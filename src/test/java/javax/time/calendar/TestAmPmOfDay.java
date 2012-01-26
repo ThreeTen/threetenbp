@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.AM_PM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
@@ -93,7 +93,7 @@ public class TestAmPmOfDay {
         try {
             AmPmOfDay.of(2);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), AM_PM_OF_DAY);
+            assertEquals(ex.getRule(), AMPM_OF_DAY);
             assertEquals(ex.getActual(), 2);
             throw ex;
         }
@@ -103,7 +103,7 @@ public class TestAmPmOfDay {
     public void test_factory_Calendricals() {
         assertEquals(AmPmOfDay.from(LocalTime.of(8, 30)), AmPmOfDay.AM);
         assertEquals(AmPmOfDay.from(LocalTime.of(17, 30)), AmPmOfDay.PM);
-        assertEquals(AmPmOfDay.from(AM_PM_OF_DAY.field(1)), AmPmOfDay.PM);
+        assertEquals(AmPmOfDay.from(AMPM_OF_DAY.field(1)), AmPmOfDay.PM);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
@@ -138,8 +138,8 @@ public class TestAmPmOfDay {
         assertEquals(AmPmOfDay.AM.get(AmPmOfDay.rule()), AmPmOfDay.AM);
         assertEquals(AmPmOfDay.PM.get(AmPmOfDay.rule()), AmPmOfDay.PM);
         
-        assertEquals(AmPmOfDay.AM.get(AM_PM_OF_DAY), AM_PM_OF_DAY.field(0));
-        assertEquals(AmPmOfDay.PM.get(AM_PM_OF_DAY), AM_PM_OF_DAY.field(1));
+        assertEquals(AmPmOfDay.AM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(0));
+        assertEquals(AmPmOfDay.PM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(1));
         
         assertEquals(AmPmOfDay.AM.get(DAY_OF_WEEK), null);
     }
@@ -165,7 +165,7 @@ public class TestAmPmOfDay {
     // matcher
     //-----------------------------------------------------------------------
     public void test_matcher() {
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(AM_PM_OF_DAY.field(0)), true);
+        assertEquals(AmPmOfDay.AM.matchesCalendrical(AMPM_OF_DAY.field(0)), true);
         assertEquals(AmPmOfDay.AM.matchesCalendrical(AmPmOfDay.AM), true);
         assertEquals(AmPmOfDay.AM.matchesCalendrical(AmPmOfDay.PM), false);
         
@@ -182,8 +182,8 @@ public class TestAmPmOfDay {
     // toField()
     //-----------------------------------------------------------------------
     public void test_toField() {
-        assertEquals(AmPmOfDay.AM.toField(), AM_PM_OF_DAY.field(0));
-        assertEquals(AmPmOfDay.PM.toField(), AM_PM_OF_DAY.field(1));
+        assertEquals(AmPmOfDay.AM.toField(), AMPM_OF_DAY.field(0));
+        assertEquals(AmPmOfDay.PM.toField(), AMPM_OF_DAY.field(1));
     }
 
     //-----------------------------------------------------------------------
