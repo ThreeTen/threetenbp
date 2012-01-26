@@ -46,9 +46,6 @@ import javax.time.calendar.format.CalendricalParseException;
  * This class represents the duration between two of those instants.
  * The model is of a directed duration, meaning that the duration may be negative.
  * <p>
- * A physical instant is an instantaneous event.
- * However, for practicality the API and this class uses a precision of nanoseconds.
- * <p>
  * A physical duration could be of infinite length.
  * However, for practicality the API and this class limits the length to the
  * number of seconds that can be held in a {@code long}.

@@ -609,7 +609,6 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(YearMonth other) {
         int cmp = MathUtils.safeCompare(year, other.year);
@@ -624,7 +623,6 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return true if this is after the specified year-month
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(YearMonth other) {
         return compareTo(other) > 0;
@@ -635,7 +633,6 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return true if this point is before the specified year-month
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(YearMonth other) {
         return compareTo(other) < 0;

@@ -573,7 +573,6 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(Year other) {
         return MathUtils.safeCompare(year, other.year);
@@ -584,7 +583,6 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return true if this is after the specified year
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(Year other) {
         return year > other.year;
@@ -595,7 +593,6 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return true if this point is before the specified year
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(Year other) {
         return year < other.year;
