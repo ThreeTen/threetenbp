@@ -596,6 +596,7 @@ public class TestDuration {
             {"PT-000S"},
             {"PT+1S"},
             {"PT-.S"},
+            {"PT+.S"},
             
             {"PT1ABC2S"},
             {"PT1.1ABC2S"},
@@ -607,6 +608,8 @@ public class TestDuration {
             
             {"PT2.-3"},
             {"PT-2.-3"},
+            {"PT2.+3"},
+            {"PT-2.+3"},
         };
     }
 
