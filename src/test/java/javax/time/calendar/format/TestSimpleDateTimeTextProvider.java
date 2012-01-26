@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.AM_PM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
@@ -153,8 +153,8 @@ public class TestSimpleDateTimeTextProvider {
             {QUARTER_OF_YEAR, 3, TextStyle.SHORT, enUS, "Q3"},
             {QUARTER_OF_YEAR, 4, TextStyle.SHORT, enUS, "Q4"},
             
-            {AMPM_OF_DAY, 0, TextStyle.SHORT, enUS, "AM"},
-            {AMPM_OF_DAY, 1, TextStyle.SHORT, enUS, "PM"},
+            {AM_PM_OF_DAY, 0, TextStyle.SHORT, enUS, "AM"},
+            {AM_PM_OF_DAY, 1, TextStyle.SHORT, enUS, "PM"},
             
         };
     }

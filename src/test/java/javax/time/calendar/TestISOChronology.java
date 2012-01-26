@@ -437,7 +437,7 @@ public class TestISOChronology {
         list.add(ISODateTimeRule.HOUR_OF_AMPM);
         list.add(ISODateTimeRule.CLOCK_HOUR_OF_DAY);
         list.add(ISODateTimeRule.HOUR_OF_DAY);
-        list.add(ISODateTimeRule.AMPM_OF_DAY);
+        list.add(ISODateTimeRule.AM_PM_OF_DAY);
         list.add(ISODateTimeRule.DAY_OF_WEEK);
         list.add(ISODateTimeRule.DAY_OF_MONTH);
         list.add(ISODateTimeRule.DAY_OF_YEAR);

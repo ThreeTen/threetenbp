@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.AM_PM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
@@ -692,7 +692,7 @@ public class TestZonedDateTime {
         assertEquals(test.get(SECOND_OF_MINUTE).getValue(), 40);
         assertEquals(test.get(NANO_OF_SECOND).getValue(), 987654321);
         assertEquals(test.get(HOUR_OF_AMPM).getValue(), 0);
-        assertEquals(test.get(AMPM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(AM_PM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
         
         assertEquals(test.get(LocalDate.rule()), test.toLocalDate());
         assertEquals(test.get(LocalTime.rule()), test.toLocalTime());
