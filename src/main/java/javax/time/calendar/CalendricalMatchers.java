@@ -125,7 +125,7 @@ public final class CalendricalMatchers {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
                 DateTimeField yearVal = calendrical.get(YEAR);
-                return yearVal != null && ISOChronology.isLeapYear(yearVal.getValue());
+                return yearVal != null && Year.isLeap(yearVal.getValue());
             }
         },
         /** Leap day matcher. */
@@ -145,7 +145,7 @@ public final class CalendricalMatchers {
                 DateTimeField moy = calendrical.get(MONTH_OF_YEAR);
                 DateTimeField domVal = calendrical.get(DAY_OF_MONTH);
                 return yearVal != null && moy != null && domVal != null && moy.isValidValue() &&
-                        domVal.getValue() == MonthOfYear.of(moy.getValidIntValue()).getLastDayOfMonth(ISOChronology.isLeapYear(yearVal.getValue()));
+                        domVal.getValue() == MonthOfYear.of(moy.getValidIntValue()).getLastDayOfMonth(Year.isLeap(yearVal.getValue()));
             }
         },
         /** Last day-of-year matcher. */

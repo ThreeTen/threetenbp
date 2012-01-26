@@ -525,7 +525,7 @@ public class TestOffsetDateTime {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
+        assertEquals(a.isLeapYear(), Year.isLeap(a.getYear()));
         
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());

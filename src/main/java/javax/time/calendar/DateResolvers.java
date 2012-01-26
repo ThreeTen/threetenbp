@@ -126,7 +126,7 @@ public final class DateResolvers {
         PREVIOUS_VALID {
             /** {@inheritDoc} */
             public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-                int lastDay = monthOfYear.getLastDayOfMonth(ISOChronology.isLeapYear(year));
+                int lastDay = monthOfYear.getLastDayOfMonth(Year.isLeap(year));
                 if (dayOfMonth > lastDay) {
                     return LocalDate.of(year, monthOfYear, lastDay);
                 }
@@ -137,7 +137,7 @@ public final class DateResolvers {
         NEXT_VALID {
             /** {@inheritDoc} */
             public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-                int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
+                int len = monthOfYear.lengthInDays(Year.isLeap(year));
                 if (dayOfMonth > len) {
                     return LocalDate.of(year, monthOfYear.next(), 1);
                 }
@@ -148,7 +148,7 @@ public final class DateResolvers {
         PART_LENIENT {
             /** {@inheritDoc} */
             public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-                int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
+                int len = monthOfYear.lengthInDays(Year.isLeap(year));
                 if (dayOfMonth > len) {
                     // this line works because December is never invalid assuming the input is from 1-31
                     return LocalDate.of(year, monthOfYear.next(), dayOfMonth - len);

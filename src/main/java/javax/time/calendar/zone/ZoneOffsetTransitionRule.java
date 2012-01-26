@@ -38,12 +38,12 @@ import java.io.Serializable;
 
 import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
 
 /**
@@ -397,7 +397,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.getLastDayOfMonth(Year.isLeap(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.previousOrCurrent(dow));
             }

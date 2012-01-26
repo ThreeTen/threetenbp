@@ -203,7 +203,7 @@ public final class LocalDate
     public static LocalDate ofYearDay(int year, int dayOfYear) {
         YEAR.checkValidValue(year);
         DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = ISOChronology.isLeapYear(year);
+        boolean leap = Year.isLeap(year);
         if (dayOfYear == 366 && leap == false) {
             throw new InvalidCalendarFieldException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year", DAY_OF_YEAR);
         }
@@ -345,7 +345,7 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(ISOChronology.isLeapYear(year))) {
+        if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(Year.isLeap(year))) {
             if (dayOfMonth == 29) {
                 throw new InvalidCalendarFieldException("Invalid date 'February 29' as '" + year + "' is not a leap year", DAY_OF_MONTH);
             } else {
@@ -473,7 +473,7 @@ public final class LocalDate
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeapYear() {
-        return ISOChronology.isLeapYear(year);
+        return Year.isLeap(year);
     }
 
     //-----------------------------------------------------------------------
@@ -726,7 +726,7 @@ public final class LocalDate
         long calcMonths = monthCount + periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
+        int newMonthLen = newMonth.lengthInDays(Year.isLeap(newYear));
         int newDay = Math.min(day, newMonthLen);
         if (periodDays < 0 && day > newMonthLen) {
             periodDays = Math.min(periodDays + (day - newMonthLen), 0);  // adjust for invalid days
@@ -942,7 +942,7 @@ public final class LocalDate
         long calcMonths = monthCount - periodMonths;  // safe overflow
         int newYear = YEAR.checkValidIntValue(MathUtils.floorDiv(calcMonths, 12));
         MonthOfYear newMonth = MonthOfYear.of(MathUtils.floorMod(calcMonths, 12) + 1);
-        int newMonthLen = newMonth.lengthInDays(ISOChronology.isLeapYear(newYear));
+        int newMonthLen = newMonth.lengthInDays(Year.isLeap(newYear));
         int newDay = Math.min(day, newMonthLen);
         if (periodDays > 0 && day > newMonthLen) {
             periodDays = Math.max(periodDays - (day - newMonthLen), 0);  // adjust for invalid days
@@ -1340,7 +1340,7 @@ public final class LocalDate
         total += day - 1;
         if (m > 2) {
             total--;
-            if (ISOChronology.isLeapYear(year) == false) {
+            if (isLeapYear() == false) {
                 total--;
             }
         }

@@ -555,7 +555,7 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
+        assertEquals(a.isLeapYear(), Year.isLeap(a.getYear()));
         
         assertSame(a.toLocalDate(), localDate);
         assertEquals(a.toString(), localDate.toString() + offset.toString());
@@ -567,7 +567,7 @@ public class TestOffsetDate {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(ISOChronology.isLeapYear(y));
+            total += MonthOfYear.of(i).lengthInDays(Year.isLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);

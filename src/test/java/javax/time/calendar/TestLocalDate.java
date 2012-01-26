@@ -399,7 +399,7 @@ public class TestLocalDate extends AbstractTest {
     // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
     private LocalDate next(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth() + 1;
-        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(ISOChronology.isLeapYear(date.getYear()))) {
+        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(Year.isLeap(date.getYear()))) {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.withDayOfMonth(1);
@@ -418,7 +418,7 @@ public class TestLocalDate extends AbstractTest {
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
-        return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(ISOChronology.isLeapYear(date.getYear())));
+        return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(Year.isLeap(date.getYear())));
     }
 
     //-----------------------------------------------------------------------
@@ -662,7 +662,7 @@ public class TestLocalDate extends AbstractTest {
         LocalDate a = LocalDate.of(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(ISOChronology.isLeapYear(y));
+            total += MonthOfYear.of(i).lengthInDays(Year.isLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);

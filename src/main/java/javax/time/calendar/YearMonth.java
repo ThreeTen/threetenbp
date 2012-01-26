@@ -525,7 +525,7 @@ public final class YearMonth
      * @return the length of the month in days, from 28 to 31
      */
     public int lengthInDays() {
-        return month.lengthInDays(ISOChronology.isLeapYear(year));
+        return month.lengthInDays(Year.isLeap(year));
     }
 
     //-----------------------------------------------------------------------
