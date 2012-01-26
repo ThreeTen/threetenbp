@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
-
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
  * <i>de facto</i> world calendar.
@@ -125,48 +123,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         if (object == null) {
             throw new NullPointerException(errorMessage);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the week-based-year.
-     *
-     * @param date  the date, not null
-     * @return the week-based-year
-     */
-    static int getWeekBasedYearFromDate(LocalDate date) {
-        int year = date.getYear();  // use ISO year object so previous/next are checked
-        if (date.getMonthOfYear() == MonthOfYear.JANUARY) {
-            int dom = date.getDayOfMonth();
-            if (dom < 4) {
-                int dow = date.getDayOfWeek().getValue();
-                if (dow > dom + 3) {
-                    year--;
-                }
-            }
-        } else if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
-            int dom = date.getDayOfMonth();
-            if (dom > 28) {
-                int dow = date.getDayOfWeek().getValue();
-                if (dow <= dom % 7) {
-                    year++;
-                }
-            }
-        }
-        return year;
-    }
-
-    /**
-     * Calculates the week of week-based-year.
-     *
-     * @param date  the date to use, not null
-     * @return the week
-     */
-    static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
-        int wby = getWeekBasedYearFromDate(date);
-        LocalDate yearStart = LocalDate.of(wby, MonthOfYear.JANUARY, 4);
-        return MathUtils.safeToInt((date.toModifiedJulianDay() - yearStart.toModifiedJulianDay() +
-                yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
 
     //-----------------------------------------------------------------------
