@@ -139,7 +139,7 @@ public final class ZonedDateTime
      * day, hour, minute, second, nanosecond and time-zone
      * where the date-time must be valid for the time-zone.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      * <p>
      * The local date-time must be valid for the time-zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
@@ -169,7 +169,7 @@ public final class ZonedDateTime
      * day, hour, minute, second, nanosecond and time-zone
      * providing a resolver to handle an invalid date-time.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      * <p>
      * The local date-time must be valid for the time-zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
@@ -204,7 +204,7 @@ public final class ZonedDateTime
      * day, hour, minute, second, nanosecond and time-zone
      * where the date-time must be valid for the time-zone.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      * <p>
      * The local date-time must be valid for the time-zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
@@ -234,7 +234,7 @@ public final class ZonedDateTime
      * day, hour, minute, second, nanosecond and time-zone
      * providing a resolver to handle an invalid date-time.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      * <p>
      * The local date-time must be valid for the time-zone.
      * If the time is invalid for the zone, due to either being a gap or an overlap,
