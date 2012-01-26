@@ -173,23 +173,6 @@ public final class YearMonth
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code YearMonth} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the YearMonth singleton, null if unable to obtain
-     */
-    static YearMonth deriveFrom(CalendricalEngine engine) {
-        DateTimeField year = engine.getFieldDerived(YEAR, true);
-        DateTimeField moy = engine.getFieldDerived(MONTH_OF_YEAR, true);
-        if (year == null || moy == null) {
-            return null;
-        }
-        return of(year.getValidIntValue(), moy.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.

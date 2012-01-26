@@ -196,23 +196,6 @@ public final class MonthDay
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code MonthDay} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the MonthDay singleton, null if unable to obtain
-     */
-    static MonthDay deriveFrom(CalendricalEngine engine) {
-        DateTimeField moy = engine.getFieldDerived(MONTH_OF_YEAR, true);
-        DateTimeField dom = engine.getFieldDerived(DAY_OF_MONTH, true);
-        if (moy == null || dom == null) {
-            return null;
-        }
-        return of(moy.getValidIntValue(), dom.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
