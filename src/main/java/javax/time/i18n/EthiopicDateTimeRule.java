@@ -39,6 +39,7 @@ import static javax.time.calendar.ISOPeriodUnit.YEARS;
 
 import java.io.Serializable;
 
+import javax.time.calendar.DateTimeResolver;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -173,13 +174,13 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
-        localEpochDay = doSetIntoEpochDay(newValue, localEpochDay);
+    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+        localEpochDay = doSetIntoEpochDay(newValue, localEpochDay, resolver);
         return new long[] {localEpochDay, nanoOfDay, offsetSecs};
     }
 
     @Override
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
         if (DAY_OF_YEAR.equals(fieldRule)) {
             // allow overflow to invalid day-of-year  TODO resolve?
             switch (ordinal) {
@@ -196,13 +197,13 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
         }
         long ed = EPOCH_DAY.extractFromValue(fieldRule, fieldValue);
         if (ed != Long.MIN_VALUE) {
-            long newEd = doSetIntoEpochDay(newValue, ed);
-            return EPOCH_DAY.setIntoValue(newEd, fieldRule, fieldValue);
+            long newEd = doSetIntoEpochDay(newValue, ed, resolver);
+            return EPOCH_DAY.setIntoValue(newEd, fieldRule, fieldValue, resolver);
         }
-        return super.doSetIntoValue(newValue, fieldRule, fieldValue);
+        return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
     }
 
-    private long doSetIntoEpochDay(long newValue, long fieldEd) {
+    private long doSetIntoEpochDay(long newValue, long fieldEd, DateTimeResolver resolver) {
         long dayCount = fieldEd + DAYS_0000_TO_1970 - DAYS_0000_TO_MJD_EPOCH + 574971;
         long year = ((dayCount * 4) + 1463) / 1461;
         long startYearEpochDay = (year - 1) * 365 + (year / 4);
@@ -211,13 +212,13 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
             case DAY_OF_MONTH_ORDINAL:
             case DAY_OF_YEAR_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL: {
-                long newDoy = this.setIntoValue(newValue, DAY_OF_YEAR, doy);
+                long newDoy = this.setIntoValue(newValue, DAY_OF_YEAR, doy, resolver);
                 return packDate(year, newDoy);
             }
             case YEAR_OF_ERA_ORDINAL:
             case YEAR_ORDINAL:
             case ERA_ORDINAL: {
-                long newYear = this.setIntoValue(newValue, YEAR, year);
+                long newYear = this.setIntoValue(newValue, YEAR, year, resolver);
                 return packDate(newYear, doy);
             }
         }

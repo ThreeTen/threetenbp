@@ -173,23 +173,6 @@ public final class YearMonth
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code YearMonth} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the YearMonth singleton, null if unable to obtain
-     */
-    static YearMonth deriveFrom(CalendricalEngine engine) {
-        DateTimeField year = engine.getFieldDerived(YEAR, true);
-        DateTimeField moy = engine.getFieldDerived(MONTH_OF_YEAR, true);
-        if (year == null || moy == null) {
-            return null;
-        }
-        return of(year.getValidIntValue(), moy.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code YearMonth} from a text string such as {@code 2007-12}.
@@ -542,7 +525,7 @@ public final class YearMonth
      * @return the length of the month in days, from 28 to 31
      */
     public int lengthInDays() {
-        return month.lengthInDays(ISOChronology.isLeapYear(year));
+        return month.lengthInDays(Year.isLeap(year));
     }
 
     //-----------------------------------------------------------------------
@@ -626,7 +609,6 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(YearMonth other) {
         int cmp = MathUtils.safeCompare(year, other.year);
@@ -641,7 +623,6 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return true if this is after the specified year-month
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(YearMonth other) {
         return compareTo(other) > 0;
@@ -652,7 +633,6 @@ public final class YearMonth
      *
      * @param other  the other year-month to compare to, not null
      * @return true if this point is before the specified year-month
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(YearMonth other) {
         return compareTo(other) < 0;

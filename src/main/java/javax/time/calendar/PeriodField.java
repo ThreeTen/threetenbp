@@ -56,7 +56,7 @@ import javax.time.MathUtils;
  * {@code PeriodField} can store rules of any kind which makes it usable with
  * any calendar system.
  * <p>
- * PeriodField is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

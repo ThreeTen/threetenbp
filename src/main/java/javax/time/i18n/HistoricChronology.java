@@ -40,12 +40,12 @@ import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.PeriodUnit;
+import javax.time.calendar.Year;
 
 /**
  * The Historic calendar system.
@@ -183,7 +183,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         if (year < cutover.getYear()) {
             return JulianChronology.isLeapYear(year);
         } else if (year > cutover.getYear()) {
-            return ISOChronology.isLeapYear(year);
+            return Year.isLeap(year);
         } else {
             if (cutover.getMonthOfYear().compareTo(MonthOfYear.FEBRUARY) < 0) {
                 return false;  // TODO
@@ -463,7 +463,7 @@ public final class HistoricChronology extends Chronology implements Serializable
                 if (month == MonthOfYear.FEBRUARY) {
                     DateTimeField year = calendrical.get(chrono.yearRule());
                     if (year != null) {
-                        return DateTimeRuleRange.of(1, month.lengthInDays(ISOChronology.isLeapYear(year.getValue())));
+                        return DateTimeRuleRange.of(1, month.lengthInDays(Year.isLeap(year.getValue())));
                     }
                     return DateTimeRuleRange.of(1, 28, 29);
                 } else {

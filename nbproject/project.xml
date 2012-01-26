@@ -50,17 +50,17 @@
             </folders>
             <ide-actions>
                 <action name="build">
-                    <target>compileAll</target>
+                    <target>dist</target>
                 </action>
                 <action name="clean">
-                    <target>cleanAll</target>
+                    <target>clean</target>
                 </action>
                 <action name="test">
                     <target>test</target>
                 </action>
                 <action name="rebuild">
-                    <target>cleanAll</target>
-                    <target>compileAll</target>
+                    <target>clean</target>
+                    <target>dist</target>
                 </action>
                 <action name="javadoc">
                     <target>javadoc</target>
@@ -69,27 +69,27 @@
             <export>
                 <type>folder</type>
                 <location>build/main/core</location>
-                <build-target>compileAll</build-target>
+                <build-target>dist</build-target>
             </export>
             <export>
                 <type>folder</type>
                 <location>build/main/extra</location>
-                <build-target>compileAll</build-target>
+                <build-target>dist</build-target>
             </export>
             <export>
                 <type>folder</type>
                 <location>build/main/ojdk</location>
-                <build-target>compileAll</build-target>
+                <build-target>dist</build-target>
             </export>
             <export>
                 <type>folder</type>
                 <location>build/main/oracle</location>
-                <build-target>compileAll</build-target>
+                <build-target>dist</build-target>
             </export>
             <export>
                 <type>folder</type>
                 <location>build/test</location>
-                <build-target>compileAll</build-target>
+                <build-target>dist</build-target>
             </export>
             <view>
                 <items>

@@ -31,11 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
-
 import java.io.Serializable;
-
-import javax.time.MathUtils;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
@@ -117,29 +113,6 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified year is a leap year according to the ISO calendar system rules.
-     * <p>
-     * The ISO calendar system applies the current rules for leap years across the whole time-line.
-     * In general, a year is a leap year if it is divisible by four without
-     * remainder. However, years divisible by 100, are not leap years, with
-     * the exception of years divisible by 400 which are.
-     * <p>
-     * For example, 1904 is a leap year it is divisible by 4.
-     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
-     * leap year as it is divisible by 400.
-     * <p>
-     * The calculation is proleptic - applying the same rules into the far future and far past.
-     * This is historically inaccurate, but is correct for the ISO-8601 standard.
-     *
-     * @param year  the year to check, may be outside the valid range for the rule
-     * @return true if the year is a leap year
-     */
-    public static boolean isLeapYear(long year) {
-        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Validates that the input value is not null.
      *
      * @param object  the object to check
@@ -150,98 +123,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         if (object == null) {
             throw new NullPointerException(errorMessage);
         }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the day-of-week from a date.
-     *
-     * @param date  the date to use, not null
-     * @return the day-of-week
-     */
-    static DayOfWeek getDayOfWeekFromDate(LocalDate date) {
-        long mjd = date.toModifiedJulianDay();
-        if (mjd < 0) {
-            long weeks = mjd / 7;
-            mjd += (-weeks + 1) * 7;
-        }
-        int dow0 = (int) ((mjd + 2) % 7);
-        return DayOfWeek.of(dow0 + 1);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the day-of-year from a date.
-     *
-     * @param date  the date to use, not null
-     * @return the day-of-year
-     */
-    static int getDayOfYearFromDate(LocalDate date) {
-        return date.getMonthOfYear().getMonthStartDayOfYear(date.isLeapYear()) + date.getDayOfMonth() - 1;
-    }
-
-    /**
-     * Calculates the date from a year and day-of-year.
-     *
-     * @param year  the year, valid
-     * @param dayOfYear  the day-of-year, valid
-     * @return the date, not null
-     */
-    static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {
-        DAY_OF_YEAR.checkValidValue(dayOfYear);
-        boolean leap = ISOChronology.isLeapYear(year);
-        if (dayOfYear == 366 && leap == false) {
-            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, DAY_OF_YEAR);
-        }
-        MonthOfYear moy = MonthOfYear.of((dayOfYear - 1) / 31 + 1);
-        int monthEnd = moy.getMonthEndDayOfYear(leap);
-        if (dayOfYear > monthEnd) {
-            moy = moy.next();
-        }
-        int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
-        return LocalDate.of(year, moy, dom);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Calculates the week-based-year.
-     *
-     * @param date  the date, not null
-     * @return the week-based-year
-     */
-    static int getWeekBasedYearFromDate(LocalDate date) {
-        int year = date.getYear();  // use ISO year object so previous/next are checked
-        if (date.getMonthOfYear() == MonthOfYear.JANUARY) {
-            int dom = date.getDayOfMonth();
-            if (dom < 4) {
-                int dow = date.getDayOfWeek().getValue();
-                if (dow > dom + 3) {
-                    year--;
-                }
-            }
-        } else if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
-            int dom = date.getDayOfMonth();
-            if (dom > 28) {
-                int dow = date.getDayOfWeek().getValue();
-                if (dow <= dom % 7) {
-                    year++;
-                }
-            }
-        }
-        return year;
-    }
-
-    /**
-     * Calculates the week of week-based-year.
-     *
-     * @param date  the date to use, not null
-     * @return the week
-     */
-    static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
-        int wby = getWeekBasedYearFromDate(date);
-        LocalDate yearStart = LocalDate.of(wby, MonthOfYear.JANUARY, 4);
-        return MathUtils.safeToInt((date.toModifiedJulianDay() - yearStart.toModifiedJulianDay() +
-                yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
 
     //-----------------------------------------------------------------------

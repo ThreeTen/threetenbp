@@ -40,8 +40,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalEngine;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateTimeField;
@@ -279,7 +279,7 @@ public final class DayOfYear
      */
     public boolean isValid(int year) {
         YEAR.checkValidValue(year);
-        return (dayOfYear < 366 || ISOChronology.isLeapYear(year));
+        return (dayOfYear < 366 || Year.isLeap(year));
     }
 
     //-----------------------------------------------------------------------

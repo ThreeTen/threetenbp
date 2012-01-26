@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 
 import java.io.Serializable;
@@ -177,22 +176,6 @@ public final class Year
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code Year} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the year, null if unable to obtain
-     */
-    static Year deriveFrom(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(YEAR, true);
-        if (field == null) {
-            return null;
-        }
-        return of(field.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code Year} from a text string such as {@code 2007}.
@@ -222,6 +205,30 @@ public final class Year
     public static Year parse(CharSequence text, DateTimeFormatter formatter) {
         ISOChronology.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Checks if the year is a leap year, according to the ISO proleptic
+     * calendar system rules.
+     * <p>
+     * This method applies the current rules for leap years across the whole time-line.
+     * In general, a year is a leap year if it is divisible by four without
+     * remainder. However, years divisible by 100, are not leap years, with
+     * the exception of years divisible by 400 which are.
+     * <p>
+     * For example, 1904 is a leap year it is divisible by 4.
+     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
+     * leap year as it is divisible by 400.
+     * <p>
+     * The calculation is proleptic - applying the same rules into the far future and far past.
+     * This is historically inaccurate, but is correct for the ISO-8601 standard.
+     *
+     * @param year  the year to check
+     * @return true if the year is leap, false otherwise
+     */
+    public static boolean isLeap(long year) {
+        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
     }
 
     //-----------------------------------------------------------------------
@@ -283,7 +290,7 @@ public final class Year
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeap() {
-        return ISOChronology.isLeapYear(year);
+        return Year.isLeap(year);
     }
 
     //-----------------------------------------------------------------------
@@ -545,11 +552,7 @@ public final class Year
      * @throws InvalidCalendarFieldException if the day of year is 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
-        DAY_OF_YEAR.checkValidValue(dayOfYear);
-        if (dayOfYear == 366 && !isLeap()) {
-            throw new InvalidCalendarFieldException("Day of year 366 is invalid for year " + year, DAY_OF_YEAR);
-        }
-        return LocalDate.of(year, 1, 1).plusDays(dayOfYear - 1);
+        return LocalDate.ofYearDay(year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -570,7 +573,6 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(Year other) {
         return MathUtils.safeCompare(year, other.year);
@@ -581,7 +583,6 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return true if this is after the specified year
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(Year other) {
         return year > other.year;
@@ -592,7 +593,6 @@ public final class Year
      *
      * @param other  the other year to compare to, not null
      * @return true if this point is before the specified year
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(Year other) {
         return year < other.year;

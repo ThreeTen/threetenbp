@@ -196,23 +196,6 @@ public final class MonthDay
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code MonthDay} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the MonthDay singleton, null if unable to obtain
-     */
-    static MonthDay deriveFrom(CalendricalEngine engine) {
-        DateTimeField moy = engine.getFieldDerived(MONTH_OF_YEAR, true);
-        DateTimeField dom = engine.getFieldDerived(DAY_OF_MONTH, true);
-        if (moy == null || dom == null) {
-            return null;
-        }
-        return of(moy.getValidIntValue(), dom.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
@@ -383,48 +366,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Rolls the month-of-year, adding the specified number of months to a copy
-     * of this {@code MonthDay}.
-     * <p>
-     * This method will add the specified number of months to the month-day,
-     * rolling from December back to January if necessary.
-     * <p>
-     * If the day-of-month is invalid for the specified month in the result,
-     * the day will be adjusted to the last valid day-of-month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to roll by, positive or negative
-     * @return a {@code MonthDay} based on this month-day with the month rolled, not null
-     */
-    public MonthDay rollMonthOfYear(int months) {
-        return with(month.roll(months));
-    }
-
-    /**
-     * Rolls the day-of-month, adding the specified number of days to a copy
-     * of this {@code MonthDay}.
-     * <p>
-     * This method will add the specified number of days to the month-day,
-     * rolling from last day-of-month to the first if necessary.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to roll by, positive or negative
-     * @return a {@code MonthDay} based on this month-day with the day rolled, not null
-     */
-    public MonthDay rollDayOfMonth(int days) {
-        if (days == 0) {
-            return this;
-        }
-        int monthLength = month.maxLengthInDays();
-        int newDOM0 = (days % monthLength) + (day - 1);
-        newDOM0 = (newDOM0 + monthLength) % monthLength;
-        return withDayOfMonth(++newDOM0);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the month-day extracted from the calendrical matches this.
      * <p>
      * This method implements the {@code CalendricalMatcher} interface.
@@ -494,7 +435,7 @@ public final class MonthDay
      * @see Year#isValidMonthDay(MonthDay)
      */
     public boolean isValidYear(int year) {
-        return (day == 29 && month == FEBRUARY && ISOChronology.isLeapYear(year) == false) == false;
+        return (day == 29 && month == FEBRUARY && Year.isLeap(year) == false) == false;
     }
 
     //-----------------------------------------------------------------------
@@ -536,7 +477,6 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return the comparator value, negative if less, positive if greater
-     * @throws NullPointerException if {@code other} is null
      */
     public int compareTo(MonthDay other) {
         int cmp = month.compareTo(other.month);
@@ -551,7 +491,6 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return true if this is after the specified month-day
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isAfter(MonthDay other) {
         return compareTo(other) > 0;
@@ -562,7 +501,6 @@ public final class MonthDay
      *
      * @param other  the other month-day to compare to, not null
      * @return true if this point is before the specified month-day
-     * @throws NullPointerException if {@code other} is null
      */
     public boolean isBefore(MonthDay other) {
         return compareTo(other) < 0;

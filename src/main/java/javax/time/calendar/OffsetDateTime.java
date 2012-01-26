@@ -180,7 +180,8 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
-     * The second and nanosecond fields will be set to zero by this factory method.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The second and nanosecond fields will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -204,9 +205,8 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
-     * <p>
-     * The nanosecond field will be set to zero by this factory method.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The nanosecond field will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -231,7 +231,7 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute, second and nanosecond.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -258,9 +258,8 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
-     * <p>
-     * The second and nanosecond fields will be set to zero by this factory method.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The second and nanosecond fields will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -284,9 +283,8 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
-     * <p>
-     * The nanosecond field will be set to zero by this factory method.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
+     * The nanosecond field will be set to zero.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -311,7 +309,7 @@ public final class OffsetDateTime
      * Obtains an instance of {@code OffsetDateTime} from year, month,
      * day, hour, minute, second and nanosecond.
      * <p>
-     * The day must be valid for the year and month or an exception will be thrown.
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -394,7 +392,7 @@ public final class OffsetDateTime
     public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-        long localSeconds = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
         return new OffsetDateTime(ldt, offset);
     }
@@ -412,7 +410,7 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-        long localSeconds = epochSecond + offset.getAmountSeconds();  // overflow caught later
+        long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
         return new OffsetDateTime(ldt, offset);
     }
@@ -598,7 +596,7 @@ public final class OffsetDateTime
         if (offset.equals(this.offset)) {
             return this;
         }
-        int difference = offset.getAmountSeconds() - this.offset.getAmountSeconds();
+        int difference = offset.getTotalSeconds() - this.offset.getTotalSeconds();
         LocalDateTime adjusted = dateTime.plusSeconds(difference);
         return new OffsetDateTime(adjusted, offset);
     }
@@ -1723,7 +1721,7 @@ public final class OffsetDateTime
     public long toEpochSecond() {
         long epochDay = dateTime.toLocalDate().toEpochDay();
         long secs = epochDay * ISOChronology.SECONDS_PER_DAY + dateTime.toLocalTime().toSecondOfDay();
-        secs -= offset.getAmountSeconds();
+        secs -= offset.getTotalSeconds();
         return secs;
     }
 

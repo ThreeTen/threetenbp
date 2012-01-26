@@ -154,32 +154,34 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                     if (moy == 2) {
                         DateTimeField yearVal = calendrical.get(YEAR);
                         if (yearVal != null) {
-                            return (ISOChronology.isLeapYear(yearVal.getValue()) ? RANGE_1_29 : RANGE_1_28);
+                            return (Year.isLeap(yearVal.getValue()) ? RANGE_1_29 : RANGE_1_28);
                         }
                     }
                     return RANGE[moy - 1];
+                }
+                DateTimeField qoyVal = calendrical.get(QUARTER_OF_YEAR);
+                if (qoyVal != null) {
+                    if (qoyVal.getValue() == 1) {
+                        DateTimeField yearVal = calendrical.get(YEAR);
+                        int min = (yearVal != null && Year.isLeap(yearVal.getValue()) ? 29 : 28);
+                        return DateTimeRuleRange.of(1, min, 31);
+                    }
+                    return DateTimeRuleRange.of(1, 30, 31);
                 }
                 break;
             }
             case DAY_OF_YEAR_ORDINAL: {
                 DateTimeField yearVal = calendrical.get(YEAR);
                 if (yearVal != null) {
-                    int len = ISOChronology.isLeapYear(yearVal.getValidIntValue()) ? 366 : 365;
+                    int len = Year.isLeap(yearVal.getValidIntValue()) ? 366 : 365;
                     return DateTimeRuleRange.of(1, len);
                 }
                 break;
             }
             case ALIGNED_WEEK_OF_MONTH_ORDINAL: {
-                DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);
-                if (moyVal != null) {
-                    if (moyVal.getValue() == 2) {
-                        DateTimeField yearVal = calendrical.get(YEAR);
-                        if (yearVal != null) {
-                            return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(yearVal.getValidIntValue()) ? 5 : 4);
-                        }
-                    } else {
-                        return DateTimeRuleRange.of(1, 5);
-                    }
+                if (calendrical.get(MONTH_OF_YEAR) != null || calendrical.get(QUARTER_OF_YEAR) != null) {
+                    DateTimeRuleRange moyRange = DAY_OF_MONTH.getValueRange(calendrical);
+                    return DateTimeRuleRange.of(1, moyRange.getSmallestMaximum() > 28 ? 5 : 4);
                 }
                 break;
             }
@@ -189,7 +191,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 if (date != null) {
                     date = date.withDayOfYear(1);
                     if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
-                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && ISOChronology.isLeapYear(date.getYear()))) {
+                            (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && Year.isLeap(date.getYear()))) {
                         return DateTimeRuleRange.of(1, 53);
                     }
                     return DateTimeRuleRange.of(1, 52);
@@ -297,7 +299,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         total += dom0;
         if (m > 2) {
             total--;
-            if (ISOChronology.isLeapYear(year) == false) {
+            if (Year.isLeap(year) == false) {
                 total--;
             }
         }
@@ -471,7 +473,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: return resolvePemd(y, moy, newValue, resolver);
             case DAY_OF_YEAR_ORDINAL: {
-                boolean leap = ISOChronology.isLeapYear(y);
+                boolean leap = Year.isLeap(y);
                 MonthOfYear moyObj = MonthOfYear.of((int) ((newValue - 1) / 31 + 1));  // TODO: cast
                 int monthEnd = moyObj.getMonthEndDayOfYear(leap);
                 if (newValue > monthEnd) {
@@ -530,7 +532,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         long em = emFromPemd(pemd);
         long moy = moyFromEm(em);
         long year = yFromEm(em);
-        return MonthOfYear.of((int) moy).getMonthStartDayOfYear(ISOChronology.isLeapYear(year)) + dom - 1;
+        return MonthOfYear.of((int) moy).getMonthStartDayOfYear(Year.isLeap(year)) + dom - 1;
     }
 
     static long moyFromEm(long em) {
@@ -578,8 +580,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 DateTimeField doy = engine.getField(DAY_OF_YEAR, false);
                 DateTimeField year = engine.derive(YEAR);
                 if (doy != null && year != null) {
-                    LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
-                            .plusDays(doy.getValue()).minusDays(1);
+                    LocalDate date = LocalDate.of(year.getValidIntValue(), 1, 1).plusDays(doy.getValue()).minusDays(1);
                     engine.setDate(date, true);
                 }
                 break;
@@ -653,18 +654,18 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         if (ordinal >= DAY_OF_WEEK_ORDINAL) {
             if (date != null) {
                 switch (ordinal) {
-                    case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
+                    case DAY_OF_WEEK_ORDINAL: return field(date.getDayOfWeek().getValue());
                     case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
-                    case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
+                    case DAY_OF_YEAR_ORDINAL: return field(date.getDayOfYear());
                     case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
                     case ALIGNED_WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
-                    case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));
+                    case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(getWeekOfWeekBasedYearFromDate(date));
                     case ALIGNED_WEEK_OF_YEAR_ORDINAL: return field((date.getDayOfYear() - 1) / 7 + 1);
                     case MONTH_OF_QUARTER_ORDINAL: return field(date.getMonthOfYear().getMonthOfQuarter());
                     case MONTH_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getValue());
                     case ZERO_EPOCH_MONTH_ORDINAL: return field(MathUtils.safeAdd(MathUtils.safeMultiply(date.getYear(), 12L), date.getMonthOfYear().ordinal()));
                     case QUARTER_OF_YEAR_ORDINAL: return field(date.getMonthOfYear().getQuarterOfYear().getValue());
-                    case WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekBasedYearFromDate(date));
+                    case WEEK_BASED_YEAR_ORDINAL: return field(getWeekBasedYearFromDate(date));
                     case YEAR_ORDINAL: return field(date.getYear());
                 }
             }
@@ -700,6 +701,48 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             }
         }
         return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the week-based-year.
+     *
+     * @param date  the date, not null
+     * @return the week-based-year
+     */
+    private static int getWeekBasedYearFromDate(LocalDate date) {
+        int year = date.getYear();  // use ISO year object so previous/next are checked
+        if (date.getMonthOfYear() == MonthOfYear.JANUARY) {
+            int dom = date.getDayOfMonth();
+            if (dom < 4) {
+                int dow = date.getDayOfWeek().getValue();
+                if (dow > dom + 3) {
+                    year--;
+                }
+            }
+        } else if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
+            int dom = date.getDayOfMonth();
+            if (dom > 28) {
+                int dow = date.getDayOfWeek().getValue();
+                if (dow <= dom % 7) {
+                    year++;
+                }
+            }
+        }
+        return year;
+    }
+
+    /**
+     * Calculates the week of week-based-year.
+     *
+     * @param date  the date to use, not null
+     * @return the week
+     */
+    private static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
+        int wby = getWeekBasedYearFromDate(date);
+        LocalDate yearStart = LocalDate.of(wby, MonthOfYear.JANUARY, 4);
+        return MathUtils.safeToInt((date.toModifiedJulianDay() - yearStart.toModifiedJulianDay() +
+                yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -967,7 +1010,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
      * applications when referring to the day of the week to avoid
      * hard-coding the values.
      */
-    public static final ISODateTimeRule AMPM_OF_DAY = new ISODateTimeRule(AMPM_OF_DAY_ORDINAL, "AmPmOfDay", _12_HOURS, DAYS, 0, 1, 1, NANO_OF_DAY);
+    public static final DateTimeRule AM_PM_OF_DAY = new ISODateTimeRule(AMPM_OF_DAY_ORDINAL, "AmPmOfDay", _12_HOURS, DAYS, 0, 1, 1, NANO_OF_DAY);
 
     /**
      * The rule for the day-of-week field.
@@ -1126,7 +1169,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         MILLI_OF_SECOND, MILLI_OF_MINUTE, MILLI_OF_HOUR, MILLI_OF_DAY, EPOCH_MILLI,
         SECOND_OF_MINUTE, SECOND_OF_HOUR, SECOND_OF_DAY, EPOCH_SECOND,
         MINUTE_OF_HOUR, MINUTE_OF_DAY,
-        CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY, AMPM_OF_DAY,
+        CLOCK_HOUR_OF_AMPM, HOUR_OF_AMPM, CLOCK_HOUR_OF_DAY, HOUR_OF_DAY, AM_PM_OF_DAY,
         DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, EPOCH_DAY, PACKED_EPOCH_MONTH_DAY,
         ALIGNED_WEEK_OF_MONTH, WEEK_OF_WEEK_BASED_YEAR, ALIGNED_WEEK_OF_YEAR,
         MONTH_OF_QUARTER, MONTH_OF_YEAR, ZERO_EPOCH_MONTH,

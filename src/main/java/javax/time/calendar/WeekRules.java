@@ -554,18 +554,18 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             return super.doExtractFromValue(fieldRule, fieldValue);
         }
         @Override
-        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs) {
-            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay);
+        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay, resolver);
             return new long[] {localEpochDay, nanoOfDay, offsetSecs};
         }
         @Override
-        protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue) {
+        protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
             long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
             if (dow != Long.MIN_VALUE) {
                 long newDow = dow + (newValue - wrdowFromDow(dow)) * 3;
-                return DAY_OF_WEEK.setIntoValue(newDow, fieldRule, fieldValue);
+                return DAY_OF_WEEK.setIntoValue(newDow, fieldRule, fieldValue, resolver);
             }
-            return super.doSetIntoValue(newValue, fieldRule, fieldValue);
+            return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
         }
         private long wrdowFromDow(long fieldValue) {
             return ((fieldValue - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1;

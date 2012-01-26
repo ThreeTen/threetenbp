@@ -13,10 +13,10 @@ import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeField;
 import javax.time.calendar.DateTimeRule;
 import javax.time.calendar.DateTimeRuleRange;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.ISOPeriodUnit;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.PeriodUnit;
+import javax.time.calendar.Year;
 import javax.time.calendar.format.TextStyle;
 
 /**
@@ -444,7 +444,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
                     if (eraVal != null && yoeVal != null) {
                         int yoe = yoeVal.getValidIntValue();
                         int isoYear = (eraVal.getValidIntValue() == MinguoEra.BEFORE_MINGUO.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                        return DateTimeRuleRange.of(1, moy.lengthInDays(ISOChronology.isLeapYear(isoYear)));
+                        return DateTimeRuleRange.of(1, moy.lengthInDays(Year.isLeap(isoYear)));
                     }
                     return DateTimeRuleRange.of(1, 28, 29);
                 } else {
@@ -483,7 +483,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             if (era != null && yoeVal != null) {
                 int yoe = yoeVal.getValidIntValue();
                 int isoYear = (era.getValidIntValue() == MinguoEra.BEFORE_MINGUO.getValue() ? 1 - yoe : yoe) + YEAR_OFFSET;
-                return DateTimeRuleRange.of(1, ISOChronology.isLeapYear(isoYear) ? 366 : 365);
+                return DateTimeRuleRange.of(1, Year.isLeap(isoYear) ? 366 : 365);
             }
             return getValueRange();
         }

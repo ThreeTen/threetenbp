@@ -123,6 +123,8 @@ public final class OffsetDate
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of {@code OffsetDate} from a year, month and day.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -139,6 +141,8 @@ public final class OffsetDate
 
     /**
      * Obtains an instance of {@code OffsetDate} from a year, month and day.
+     * <p>
+     * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -194,7 +198,7 @@ public final class OffsetDate
     public static OffsetDate ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
-        long epochSec = instant.getEpochSecond() + offset.getAmountSeconds();  // overflow caught later
+        long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         long yearZeroDay = MathUtils.floorDiv(epochSec, ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDay);
         return new OffsetDate(date, offset);
@@ -1105,7 +1109,7 @@ public final class OffsetDate
     private long toEpochSecond() {
         long epochDay = date.toEpochDay();
         long secs = epochDay * ISOChronology.SECONDS_PER_DAY;
-        return secs - offset.getAmountSeconds();
+        return secs - offset.getTotalSeconds();
     }
 
     //-----------------------------------------------------------------------

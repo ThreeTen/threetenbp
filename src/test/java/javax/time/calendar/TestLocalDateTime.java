@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.AM_PM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
@@ -200,7 +200,7 @@ public class TestLocalDateTime extends AbstractTest {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i).plusNanos(123456789L);
-            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), ZoneId.of(OFFSET_PONE));
+            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds())), ZoneId.of(OFFSET_PONE));
             LocalDateTime test = LocalDateTime.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -801,7 +801,7 @@ public class TestLocalDateTime extends AbstractTest {
         assertEquals(test.get(SECOND_OF_MINUTE).getValue(), 40);
         assertEquals(test.get(NANO_OF_SECOND).getValue(), 987654321);
         assertEquals(test.get(HOUR_OF_AMPM).getValue(), 0);
-        assertEquals(test.get(AMPM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
+        assertEquals(test.get(AM_PM_OF_DAY).getValue(), AmPmOfDay.PM.getValue());
         
         assertEquals(test.get(LocalDate.rule()), test.toLocalDate());
         assertEquals(test.get(LocalTime.rule()), test.toLocalTime());
@@ -876,7 +876,7 @@ public class TestLocalDateTime extends AbstractTest {
         LocalDateTime a = LocalDateTime.of(y, m, d, 12 ,30);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(ISOChronology.isLeapYear(y));
+            total += MonthOfYear.of(i).lengthInDays(Year.isLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);

@@ -36,6 +36,8 @@ import javax.time.calendar.format.CalendricalParseException;
 /**
  * A period parser that creates an instance of {@code Period} from a string.
  * This parses the ISO-8601 period format {@code PnYnMnDTnHnMn.nS}.
+ * <p>
+ * This class is mutable and intended for use by a single thread.
  *
  * @author Darryl West
  * @author Stephen Colebourne

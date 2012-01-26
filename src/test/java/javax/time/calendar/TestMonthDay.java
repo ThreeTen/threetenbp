@@ -518,60 +518,6 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    // rollMonthOfYear()
-    //-----------------------------------------------------------------------
-    public void test_rollMonthOfYear() {
-        MonthDay base = MonthDay.of(7, 31);
-        assertSame(base.rollMonthOfYear(0), base);
-        assertEquals(base.rollMonthOfYear(1), MonthDay.of(8, 31));
-        assertEquals(base.rollMonthOfYear(2), MonthDay.of(9, 30));
-        assertEquals(base.rollMonthOfYear(3), MonthDay.of(10, 31));
-        assertEquals(base.rollMonthOfYear(4), MonthDay.of(11, 30));
-        assertEquals(base.rollMonthOfYear(5), MonthDay.of(12, 31));
-        assertEquals(base.rollMonthOfYear(6), MonthDay.of(1, 31));
-        assertEquals(base.rollMonthOfYear(7), MonthDay.of(2, 29));
-        assertEquals(base.rollMonthOfYear(8), MonthDay.of(3, 31));
-        assertEquals(base.rollMonthOfYear(9), MonthDay.of(4, 30));
-        assertEquals(base.rollMonthOfYear(10), MonthDay.of(5, 31));
-        assertEquals(base.rollMonthOfYear(11), MonthDay.of(6, 30));
-        assertEquals(base.rollMonthOfYear(12), MonthDay.of(7, 31));
-        
-        assertEquals(base.rollMonthOfYear(-1), MonthDay.of(6, 30));
-        assertEquals(base.rollMonthOfYear(-2), MonthDay.of(5, 31));
-        assertEquals(base.rollMonthOfYear(-3), MonthDay.of(4, 30));
-        assertEquals(base.rollMonthOfYear(-4), MonthDay.of(3, 31));
-        assertEquals(base.rollMonthOfYear(-5), MonthDay.of(2, 29));
-        assertEquals(base.rollMonthOfYear(-6), MonthDay.of(1, 31));
-        assertEquals(base.rollMonthOfYear(-7), MonthDay.of(12, 31));
-        assertEquals(base.rollMonthOfYear(-8), MonthDay.of(11, 30));
-        assertEquals(base.rollMonthOfYear(-9), MonthDay.of(10, 31));
-        assertEquals(base.rollMonthOfYear(-10), MonthDay.of(9, 30));
-        assertEquals(base.rollMonthOfYear(-11), MonthDay.of(8, 31));
-        assertEquals(base.rollMonthOfYear(-12), MonthDay.of(7, 31));
-    }
-
-    //-----------------------------------------------------------------------
-    // rollDayOfMonth()
-    //-----------------------------------------------------------------------
-    public void test_rollDayOfMonth_july() {
-        MonthDay base = MonthDay.of(7, 31);
-        assertEquals(base.rollDayOfMonth(-2), MonthDay.of(7, 29));
-        assertEquals(base.rollDayOfMonth(-1), MonthDay.of(7, 30));
-        assertSame(base.rollDayOfMonth(0), base);
-        assertEquals(base.rollDayOfMonth(1), MonthDay.of(7, 1));
-        assertEquals(base.rollDayOfMonth(2), MonthDay.of(7, 2));
-    }
-
-    public void test_rollDayOfMonth_feb() {
-        MonthDay base = MonthDay.of(2, 29);
-        assertEquals(base.rollDayOfMonth(-2), MonthDay.of(2, 27));
-        assertEquals(base.rollDayOfMonth(-1), MonthDay.of(2, 28));
-        assertSame(base.rollDayOfMonth(0), base);
-        assertEquals(base.rollDayOfMonth(1), MonthDay.of(2, 1));
-        assertEquals(base.rollDayOfMonth(2), MonthDay.of(2, 2));
-    }
-
-    //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
     public void test_adjustDate() {
