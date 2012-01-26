@@ -169,7 +169,7 @@ final class Ser implements Externalizable {
      * @throws IOException if an error occurs
      */
     static void writeOffset(ZoneOffset offset, DataOutput out) throws IOException {
-        final int offsetSecs = offset.getAmountSeconds();
+        final int offsetSecs = offset.getTotalSeconds();
         int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;  // compress to -72 to +72
         out.writeByte(offsetByte);
         if (offsetByte == 127) {
