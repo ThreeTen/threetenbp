@@ -195,8 +195,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 DateTimeField doy = engine.getField(DAY_OF_YEAR, false);
                 DateTimeField year = engine.derive(YEAR);
                 if (doy != null && year != null) {
-                    LocalDate date = ISOChronology.getDateFromDayOfYear(year.getValidIntValue(), 1)
-                            .plusDays(doy.getValue()).minusDays(1);
+                    LocalDate date = LocalDate.of(year.getValidIntValue(), 1, 1).plusDays(doy.getValue()).minusDays(1);
                     engine.setDate(date, true);
                 }
                 break;
@@ -272,7 +271,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
                 switch (ordinal) {
                     case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
                     case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
-                    case DAY_OF_YEAR_ORDINAL: return field(ISOChronology.getDayOfYearFromDate(date));
+                    case DAY_OF_YEAR_ORDINAL: return field(date.getDayOfYear());
                     case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());
                     case ALIGNED_WEEK_OF_MONTH_ORDINAL: return field((date.getDayOfMonth() - 1) / 7 + 1);
                     case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: return field(ISOChronology.getWeekOfWeekBasedYearFromDate(date));

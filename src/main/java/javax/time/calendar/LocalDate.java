@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.YEAR;
 
@@ -189,6 +190,34 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code LocalDate} from a year and day-of-year.
+     * <p>
+     * The day-of-year must be valid for the year, otherwise an exception will be thrown.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dayOfYear  the day-of-year to represent, from 1 to 366
+     * @return the local date, not null
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the month-year
+     */
+    public static LocalDate ofYearDay(int year, int dayOfYear) {
+        YEAR.checkValidValue(year);
+        DAY_OF_YEAR.checkValidValue(dayOfYear);
+        boolean leap = ISOChronology.isLeapYear(year);
+        if (dayOfYear == 366 && leap == false) {
+            throw new InvalidCalendarFieldException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year", DAY_OF_YEAR);
+        }
+        MonthOfYear moy = MonthOfYear.of((dayOfYear - 1) / 31 + 1);
+        int monthEnd = moy.getMonthEndDayOfYear(leap);
+        if (dayOfYear > monthEnd) {
+            moy = moy.next();
+        }
+        int dom = dayOfYear - moy.getMonthStartDayOfYear(leap) + 1;
+        return create(year, moy, dom);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code LocalDate} from the epoch day count.
      * <p>
      * The Epoch Day count is a simple incrementing count of days
@@ -318,11 +347,9 @@ public final class LocalDate
     private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(ISOChronology.isLeapYear(year))) {
             if (dayOfMonth == 29) {
-                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
-                        year + " is not a leap year", DAY_OF_MONTH);
+                throw new InvalidCalendarFieldException("Invalid date 'February 29' as '" + year + "' is not a leap year", DAY_OF_MONTH);
             } else {
-                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                        " is not valid for month " + monthOfYear.name(), DAY_OF_MONTH);
+                throw new InvalidCalendarFieldException("Invalid date '" + monthOfYear.name() + " " + dayOfMonth + "'", DAY_OF_MONTH);
             }
         }
         return new LocalDate(year, monthOfYear, dayOfMonth);
@@ -406,7 +433,7 @@ public final class LocalDate
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return ISOChronology.getDayOfYearFromDate(this);
+        return getMonthOfYear().getMonthStartDayOfYear(isLeapYear()) + getDayOfMonth() - 1;
     }
 
     /**
@@ -640,7 +667,7 @@ public final class LocalDate
         if (this.getDayOfYear() == dayOfYear) {
             return this;
         }
-        return ISOChronology.getDateFromDayOfYear(year, dayOfYear);
+        return ofYearDay(year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
