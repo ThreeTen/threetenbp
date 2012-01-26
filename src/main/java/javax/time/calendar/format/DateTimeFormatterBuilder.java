@@ -1037,7 +1037,7 @@ public final class DateTimeFormatterBuilder {
         RULE_MAP.put('d', ISODateTimeRule.DAY_OF_MONTH);            // Java, CLDR
         RULE_MAP.put('F', ISODateTimeRule.ALIGNED_WEEK_OF_MONTH);   // Java, CLDR
         RULE_MAP.put('E', ISODateTimeRule.DAY_OF_WEEK);             // Java, CLDR (different to both for 1/2 chars)
-        RULE_MAP.put('a', ISODateTimeRule.AM_PM_OF_DAY);             // Java, CLDR
+        RULE_MAP.put('a', ISODateTimeRule.AMPM_OF_DAY);             // Java, CLDR
         RULE_MAP.put('H', ISODateTimeRule.HOUR_OF_DAY);             // Java, CLDR
         RULE_MAP.put('k', ISODateTimeRule.CLOCK_HOUR_OF_DAY);       // Java, CLDR
         RULE_MAP.put('K', ISODateTimeRule.HOUR_OF_AMPM);            // Java, CLDR

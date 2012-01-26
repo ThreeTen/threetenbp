@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.AM_PM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
 import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
@@ -205,7 +205,7 @@ public final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
             styleMap.put(TextStyle.SHORT, map);
             return new LocaleStore(styleMap);
         }
-        if (rule.equals(AM_PM_OF_DAY)) {
+        if (rule.equals(AMPM_OF_DAY)) {
             DateFormatSymbols oldSymbols = DateFormatSymbols.getInstance(locale);
             Map<TextStyle, Map<DateTimeField, String>> styleMap = new HashMap<TextStyle, Map<DateTimeField, String>>();
             String[] array = oldSymbols.getAmPmStrings();

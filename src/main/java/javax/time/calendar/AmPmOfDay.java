@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISODateTimeRule.AM_PM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -80,7 +80,7 @@ public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
      * Gets the rule for {@code AmPmOfDay}.
      * <p>
      * This rule is a calendrical rule based on {@code AmPmOfDay}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#AM_PM_OF_DAY}.
+     * The equivalent date-time rule is {@link ISODateTimeRule#AMPM_OF_DAY}.
      *
      * @return the rule for the am-pm-of-day, not null
      */
@@ -110,7 +110,7 @@ public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
             case 1:
                 return PM;
             default:
-                throw new IllegalCalendarFieldValueException(AM_PM_OF_DAY, amPmOfDay);
+                throw new IllegalCalendarFieldValueException(AMPM_OF_DAY, amPmOfDay);
         }
     }
 
@@ -133,7 +133,7 @@ public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
     /**
      * Gets the value of the specified calendrical rule.
      * <p>
-     * This will only return a value for the {@link ISODateTimeRule#AM_PM_OF_DAY}
+     * This will only return a value for the {@link ISODateTimeRule#AMPM_OF_DAY}
      * rule, or something derivable from it.
      *
      * @param ruleToDerive  the rule to derive, not null
@@ -173,7 +173,7 @@ public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
      * @return the short text value of the AM/PM, not null
      */
     public String getText(TextStyle style, Locale locale) {
-        return AM_PM_OF_DAY.getText(getValue(), style, locale);
+        return AMPM_OF_DAY.getText(getValue(), style, locale);
     }
 
     //-----------------------------------------------------------------------
@@ -195,12 +195,12 @@ public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
     /**
      * Converts this AM/PM to an equivalent field.
      * <p>
-     * The field is based on {@link ISODateTimeRule#AM_PM_OF_DAY}.
+     * The field is based on {@link ISODateTimeRule#AMPM_OF_DAY}.
      *
      * @return the equivalent AM/PM field, not null
      */
     public DateTimeField toField() {
-        return AM_PM_OF_DAY.field(getValue());
+        return AMPM_OF_DAY.field(getValue());
     }
 
 }

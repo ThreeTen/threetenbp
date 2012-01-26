@@ -33,7 +33,7 @@ package javax.time.calendar;
 
 import static javax.time.calendar.DayOfWeek.THURSDAY;
 import static javax.time.calendar.ISODateTimeRule.ALIGNED_WEEK_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.AM_PM_OF_DAY;
+import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_AMPM;
 import static javax.time.calendar.ISODateTimeRule.CLOCK_HOUR_OF_DAY;
 import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
@@ -89,7 +89,7 @@ public class TestCalendricalNomalizer {
     private static final DateTimeField FIELD_DOY_181 = DAY_OF_YEAR.field(181);
     private static final DateTimeField FIELD_ZEM_2011_06 = ZERO_EPOCH_MONTH.field(2011 * 12 + 6 - 1);
     private static final DateTimeField FIELD_AWOM_5 = ALIGNED_WEEK_OF_MONTH.field(5);
-    private static final DateTimeField FIELD_AP_0 = AM_PM_OF_DAY.field(0);
+    private static final DateTimeField FIELD_AP_0 = AMPM_OF_DAY.field(0);
     private static final DateTimeField FIELD_HAP_11 = HOUR_OF_AMPM.field(11);
     private static final DateTimeField FIELD_HOD_11 = HOUR_OF_DAY.field(11);
     private static final DateTimeField FIELD_MOD_690 = MINUTE_OF_DAY.field(690);
@@ -151,7 +151,7 @@ public class TestCalendricalNomalizer {
             {cals(DATE_TIME_2011_06_30_11_30), DAY_OF_WEEK, FIELD_DOW_4},
             {cals(DATE_TIME_2011_06_30_11_30), ALIGNED_WEEK_OF_MONTH, FIELD_AWOM_5},
             {cals(DATE_TIME_2011_06_30_11_30), AmPmOfDay.rule(), AmPmOfDay.AM},
-            {cals(DATE_TIME_2011_06_30_11_30), AM_PM_OF_DAY, FIELD_AP_0},
+            {cals(DATE_TIME_2011_06_30_11_30), AMPM_OF_DAY, FIELD_AP_0},
             {cals(DATE_TIME_2011_06_30_11_30), HOUR_OF_AMPM, FIELD_HAP_11},
             {cals(DATE_TIME_2011_06_30_11_30), HOUR_OF_DAY, FIELD_HOD_11},
             {cals(DATE_TIME_2011_06_30_11_30), MINUTE_OF_DAY, FIELD_MOD_690},
@@ -185,7 +185,7 @@ public class TestCalendricalNomalizer {
             {cals(DATE_2011_06_30), DAY_OF_WEEK, FIELD_DOW_4},
             {cals(DATE_2011_06_30), ALIGNED_WEEK_OF_MONTH, FIELD_AWOM_5},
             {cals(DATE_2011_06_30), AmPmOfDay.rule(), null},
-            {cals(DATE_2011_06_30), AM_PM_OF_DAY, null},
+            {cals(DATE_2011_06_30), AMPM_OF_DAY, null},
             {cals(DATE_2011_06_30), HOUR_OF_AMPM, null},
             {cals(DATE_2011_06_30), HOUR_OF_DAY, null},
             {cals(DATE_2011_06_30), MINUTE_OF_DAY, null},
@@ -381,7 +381,7 @@ public class TestCalendricalNomalizer {
             {cals(TIME_11_30), DAY_OF_WEEK, null},
             {cals(TIME_11_30), ALIGNED_WEEK_OF_MONTH, null},
             {cals(TIME_11_30), AmPmOfDay.rule(), AmPmOfDay.AM},
-            {cals(TIME_11_30), AM_PM_OF_DAY, FIELD_AP_0},
+            {cals(TIME_11_30), AMPM_OF_DAY, FIELD_AP_0},
             {cals(TIME_11_30), HOUR_OF_AMPM, FIELD_HAP_11},
             {cals(TIME_11_30), HOUR_OF_DAY, FIELD_HOD_11},
             {cals(TIME_11_30), MINUTE_OF_DAY, FIELD_MOD_690},
