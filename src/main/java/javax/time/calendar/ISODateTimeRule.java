@@ -269,7 +269,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         if (ordinal >= DAY_OF_WEEK_ORDINAL) {
             if (date != null) {
                 switch (ordinal) {
-                    case DAY_OF_WEEK_ORDINAL: return field(ISOChronology.getDayOfWeekFromDate(date).getValue());
+                    case DAY_OF_WEEK_ORDINAL: return field(date.getDayOfWeek().getValue());
                     case DAY_OF_MONTH_ORDINAL: return field(date.getDayOfMonth());
                     case DAY_OF_YEAR_ORDINAL: return field(date.getDayOfYear());
                     case EPOCH_DAY_ORDINAL: return field(date.toEpochDay());

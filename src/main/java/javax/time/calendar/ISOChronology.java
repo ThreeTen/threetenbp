@@ -129,23 +129,6 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Calculates the day-of-week from a date.
-     *
-     * @param date  the date to use, not null
-     * @return the day-of-week
-     */
-    static DayOfWeek getDayOfWeekFromDate(LocalDate date) {
-        long mjd = date.toModifiedJulianDay();
-        if (mjd < 0) {
-            long weeks = mjd / 7;
-            mjd += (-weeks + 1) * 7;
-        }
-        int dow0 = (int) ((mjd + 2) % 7);
-        return DayOfWeek.of(dow0 + 1);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Calculates the week-based-year.
      *
      * @param date  the date, not null

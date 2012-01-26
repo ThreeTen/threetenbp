@@ -450,7 +450,8 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        return ISOChronology.getDayOfWeekFromDate(this);
+        int dow0 = MathUtils.floorMod(toEpochDay() + 3, 7);
+        return DayOfWeek.of(dow0 + 1);
     }
 
     //-----------------------------------------------------------------------
