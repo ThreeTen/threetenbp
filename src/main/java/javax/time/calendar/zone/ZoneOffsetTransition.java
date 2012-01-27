@@ -237,7 +237,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @return the length of the transition, positive for gaps, negative for overlaps
      */
     public Period getTransitionSize() {
-        int secs = getOffsetAfter().getAmountSeconds() - getOffsetBefore().getAmountSeconds();
+        int secs = getOffsetAfter().getTotalSeconds() - getOffsetBefore().getTotalSeconds();
         return Period.ofSeconds(secs).normalized();
     }
 
@@ -251,7 +251,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @return true if this transition is a gap, false if it is an overlap
      */
     public boolean isGap() {
-        return getOffsetAfter().getAmountSeconds() > getOffsetBefore().getAmountSeconds();
+        return getOffsetAfter().getTotalSeconds() > getOffsetBefore().getTotalSeconds();
     }
 
     /**
@@ -264,7 +264,7 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @return true if this transition is an overlap, false if it is a gap
      */
     public boolean isOverlap() {
-        return getOffsetAfter().getAmountSeconds() < getOffsetBefore().getAmountSeconds();
+        return getOffsetAfter().getTotalSeconds() < getOffsetBefore().getTotalSeconds();
     }
 
     /**

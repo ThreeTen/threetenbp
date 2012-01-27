@@ -143,22 +143,6 @@ public enum QuarterOfYear implements Calendrical, CalendricalMatcher {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
     }
 
-    /**
-     * Obtains an instance of {@code QuarterOfYear} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the QuarterOfYear singleton, null if unable to obtain
-     */
-    static QuarterOfYear deriveFrom(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(QUARTER_OF_YEAR, true);
-        if (field == null) {
-            return null;
-        }
-        return of(field.getValidIntValue());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the value of the specified calendrical rule.

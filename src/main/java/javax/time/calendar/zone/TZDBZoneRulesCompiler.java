@@ -1047,7 +1047,7 @@ public final class TZDBZoneRulesCompiler {
             adjustToFowards(year);
             LocalDate date;
             if (dayOfMonth == -1) {
-                dayOfMonth = month.getLastDayOfMonth(ISOChronology.isLeapYear(year));
+                dayOfMonth = month.getLastDayOfMonth(Year.isLeap(year));
                 date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));

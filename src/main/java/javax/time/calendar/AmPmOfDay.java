@@ -54,7 +54,7 @@ import javax.time.calendar.format.TextStyle;
  * Use {@code getValue()} instead.</b>
  * <p>
  * This enum represents a common concept that is found in many calendar systems.
- * As such, this enum may be used by any calendar system that has the month-of-year
+ * As such, this enum may be used by any calendar system that has the AM/PM
  * concept defined exactly equivalent to the ISO calendar system.
  * <p>
  * This is an immutable and thread-safe enum.
@@ -127,22 +127,6 @@ public enum AmPmOfDay implements Calendrical, CalendricalMatcher {
      */
     public static AmPmOfDay from(Calendrical... calendricals) {
         return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code AmPmOfDay} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the calendrical engine, not null
-     * @return the AmPmOfDay singleton, null if unable to obtain
-     */
-    static AmPmOfDay deriveFrom(CalendricalEngine engine) {
-        DateTimeField field = engine.getFieldDerived(AMPM_OF_DAY, true);
-        if (field == null) {
-            return null;
-        }
-        return of(field.getValidIntValue());
     }
 
     //-----------------------------------------------------------------------

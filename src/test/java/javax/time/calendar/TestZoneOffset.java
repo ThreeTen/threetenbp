@@ -438,12 +438,12 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
-    // getAmountSeconds()
+    // getTotalSeconds()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_getAmountSeconds() {
+    public void test_getTotalSeconds() {
         ZoneOffset offset = ZoneOffset.ofTotalSeconds(60 * 60 + 1);
-        assertEquals(offset.getAmountSeconds(), 60 * 60 + 1);
+        assertEquals(offset.getTotalSeconds(), 60 * 60 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -666,7 +666,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     private void doTestOffset(ZoneOffset offset, int hours, int minutes, int seconds) {
-        assertEquals(offset.getAmountSeconds(), hours * 60 * 60 + minutes * 60 + seconds);
+        assertEquals(offset.getTotalSeconds(), hours * 60 * 60 + minutes * 60 + seconds);
         final String id;
         if (hours == 0 && minutes == 0 && seconds == 0) {
             id = "Z";

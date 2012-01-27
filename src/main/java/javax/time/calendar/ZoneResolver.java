@@ -61,11 +61,11 @@ public interface ZoneResolver {
      * create the resultant offset date-time.
      * The result must be a valid date-time for the time-zone.
      * <p>
-     * The resolution may use the optional "old" date-time. For example, this
-     * might be used to pick the closest offset.
+     * The resolution may use the optional "old" date-time.
+     * For example, this might be used to pick the closest offset.
      * <p>
      * The method caller supplies the {@link ZoneOffsetInfo} and {@link ZoneRules} to use.
-     * These should be used in preference to methods on the time-zone.
+     * These should be used in preference to methods on the supplied {@link ZoneId}.
      * Most implementations query the info to determine if the local date-time
      * is in a gap or overlap, adjusting accordingly.
      *

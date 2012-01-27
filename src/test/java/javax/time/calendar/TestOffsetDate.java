@@ -363,7 +363,7 @@ public class TestOffsetDate {
     public void factory_ofInstant_InstantProvider_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getAmountSeconds()), OFFSET_PONE);
+            OffsetDate test = OffsetDate.ofInstant(instant.minusSeconds(OFFSET_PONE.getTotalSeconds()), OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
             assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
@@ -575,7 +575,7 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfMonth(), localDate.getDayOfMonth());
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
-        assertEquals(a.isLeapYear(), ISOChronology.isLeapYear(a.getYear()));
+        assertEquals(a.isLeapYear(), Year.isLeap(a.getYear()));
         
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), offset);
@@ -596,7 +596,7 @@ public class TestOffsetDate {
         OffsetDate a = OffsetDate.of(y, m, d, offset);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(ISOChronology.isLeapYear(y));
+            total += MonthOfYear.of(i).lengthInDays(Year.isLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);

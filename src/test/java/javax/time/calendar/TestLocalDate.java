@@ -202,7 +202,7 @@ public class TestLocalDate extends AbstractTest {
     public void now_Clock_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getAmountSeconds())), ZoneId.of(OFFSET_PONE));
+            Clock clock = Clock.clock(TimeSource.fixed(instant.minusSeconds(OFFSET_PONE.getTotalSeconds())), ZoneId.of(OFFSET_PONE));
             LocalDate test = LocalDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -259,66 +259,147 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // of() factories
     //-----------------------------------------------------------------------
-    public void factory_date_intsMonth() {
+    public void factory_of_intsMonth() {
         assertEquals(TEST_2007_07_15, LocalDate.of(2007, MonthOfYear.JULY, 15));
     }
 
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_of_intsMonth_29febNonLeap() {
+        try {
+            LocalDate.of(2007, MonthOfYear.FEBRUARY, 29);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_of_intsMonth_31apr() {
+        try {
+            LocalDate.of(2007, MonthOfYear.APRIL, 31);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
+            throw ex;
+        }
+    }
+
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_intsMonth_dayTooLow() {
+    public void factory_of_intsMonth_dayTooLow() {
         LocalDate.of(2007, MonthOfYear.JANUARY, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_intsMonth_dayTooHigh() {
+    public void factory_of_intsMonth_dayTooHigh() {
         LocalDate.of(2007, MonthOfYear.JANUARY, 32);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_intsMonth_nullMonth() {
+    public void factory_of_intsMonth_nullMonth() {
         LocalDate.of(2007, null, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_intsMonth_yearTooLow() {
+    public void factory_of_intsMonth_yearTooLow() {
         LocalDate.of(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_ints() {
+    public void factory_of_ints() {
         check(TEST_2007_07_15, 2007, 7, 15);
     }
 
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_of_ints_29febNonLeap() {
+        try {
+            LocalDate.of(2007, 2, 29);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_of_ints_31apr() {
+        try {
+            LocalDate.of(2007, 4, 31);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_MONTH);
+            throw ex;
+        }
+    }
+
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_dayTooLow() {
+    public void factory_of_ints_dayTooLow() {
         LocalDate.of(2007, 1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_dayTooHigh() {
+    public void factory_of_ints_dayTooHigh() {
         LocalDate.of(2007, 1, 32);
     }
 
-
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_monthTooLow() {
+    public void factory_of_ints_monthTooLow() {
         LocalDate.of(2007, 0, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_monthTooHigh() {
+    public void factory_of_ints_monthTooHigh() {
         LocalDate.of(2007, 13, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void factory_date_ints_yearTooLow() {
+    public void factory_of_ints_yearTooLow() {
         LocalDate.of(Integer.MIN_VALUE, 1, 1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_ofYearDay_ints_nonLeap() {
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        for (int i = 1; i < 365; i++) {
+            assertEquals(LocalDate.ofYearDay(2007, i), date);
+            date = next(date);
+        }
+    }
+
+    public void factory_ofYearDay_ints_leap() {
+        LocalDate date = LocalDate.of(2008, 1, 1);
+        for (int i = 1; i < 366; i++) {
+            assertEquals(LocalDate.ofYearDay(2008, i), date);
+            date = next(date);
+        }
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_ofYearDay_ints_366nonLeap() {
+        try {
+            LocalDate.ofYearDay(2007, 366);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getRule(), ISODateTimeRule.DAY_OF_YEAR);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_ofYearDay_ints_dayTooLow() {
+        LocalDate.ofYearDay(2007, 0);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_ofYearDay_ints_dayTooHigh() {
+        LocalDate.ofYearDay(2007, 367);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_ofYearDay_ints_yearTooLow() {
+        LocalDate.ofYearDay(Integer.MIN_VALUE, 1);
     }
 
     //-----------------------------------------------------------------------
     // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
     private LocalDate next(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth() + 1;
-        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(ISOChronology.isLeapYear(date.getYear()))) {
+        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(Year.isLeap(date.getYear()))) {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.withDayOfMonth(1);
@@ -337,7 +418,7 @@ public class TestLocalDate extends AbstractTest {
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
             date = date.withYear(date.getYear() - 1);
         }
-        return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(ISOChronology.isLeapYear(date.getYear())));
+        return date.withDayOfMonth(date.getMonthOfYear().getLastDayOfMonth(Year.isLeap(date.getYear())));
     }
 
     //-----------------------------------------------------------------------
@@ -581,7 +662,7 @@ public class TestLocalDate extends AbstractTest {
         LocalDate a = LocalDate.of(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.of(i).lengthInDays(ISOChronology.isLeapYear(y));
+            total += MonthOfYear.of(i).lengthInDays(Year.isLeap(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);

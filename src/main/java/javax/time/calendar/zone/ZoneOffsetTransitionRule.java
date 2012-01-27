@@ -38,12 +38,12 @@ import java.io.Serializable;
 
 import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
 
 /**
@@ -214,9 +214,9 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     void writeExternal(DataOutput out) throws IOException {
         final int timeSecs = (timeEndOfDay ? 86400 : time.toSecondOfDay());
-        final int stdOffset = standardOffset.getAmountSeconds();
-        final int beforeDiff = offsetBefore.getAmountSeconds() - stdOffset;
-        final int afterDiff = offsetAfter.getAmountSeconds() - stdOffset;
+        final int stdOffset = standardOffset.getTotalSeconds();
+        final int beforeDiff = offsetBefore.getTotalSeconds() - stdOffset;
+        final int afterDiff = offsetAfter.getTotalSeconds() - stdOffset;
         final int timeByte = (timeSecs % 3600 == 0 ? (timeEndOfDay ? 24 : time.getHourOfDay()) : 31);
         final int stdOffsetByte = (stdOffset % 900 == 0 ? stdOffset / 900 + 128 : 255);
         final int beforeByte = (beforeDiff == 0 || beforeDiff == 1800 || beforeDiff == 3600 ? beforeDiff / 1800 : 3);
@@ -238,10 +238,10 @@ public final class ZoneOffsetTransitionRule implements Serializable {
             out.writeInt(stdOffset);
         }
         if (beforeByte == 3) {
-            out.writeInt(offsetBefore.getAmountSeconds());
+            out.writeInt(offsetBefore.getTotalSeconds());
         }
         if (afterByte == 3) {
-            out.writeInt(offsetAfter.getAmountSeconds());
+            out.writeInt(offsetAfter.getTotalSeconds());
         }
     }
 
@@ -265,8 +265,8 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         int afterByte = (data & 3);
         LocalTime time = (timeByte == 31 ? LocalTime.ofSecondOfDay(in.readInt()) : LocalTime.of(timeByte % 24, 0));
         ZoneOffset std = (stdByte == 255 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds((stdByte - 128) * 900));
-        ZoneOffset before = (beforeByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getAmountSeconds() + beforeByte * 1800));
-        ZoneOffset after = (afterByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getAmountSeconds() + afterByte * 1800));
+        ZoneOffset before = (beforeByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getTotalSeconds() + beforeByte * 1800));
+        ZoneOffset after = (afterByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getTotalSeconds() + afterByte * 1800));
         return ZoneOffsetTransitionRule.of(month, dom, dow, time, timeByte == 24, defn, std, before, after);
     }
 
@@ -397,7 +397,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.getLastDayOfMonth(Year.isLeap(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.previousOrCurrent(dow));
             }

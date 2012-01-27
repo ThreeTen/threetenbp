@@ -46,9 +46,6 @@ import javax.time.calendar.format.CalendricalParseException;
  * This class represents the duration between two of those instants.
  * The model is of a directed duration, meaning that the duration may be negative.
  * <p>
- * A physical instant is an instantaneous event.
- * However, for practicality the API and this class uses a precision of nanoseconds.
- * <p>
  * A physical duration could be of infinite length.
  * However, for practicality the API and this class limits the length to the
  * number of seconds that can be held in a {@code long}.
@@ -386,6 +383,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
             throw new CalendricalParseException("Duration could not be parsed: " + text, text, 0);
         }
         String numberText = text.subSequence(2, len - 1).toString().replace(',', '.');
+        if (numberText.charAt(0) == '+') {
+            throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2);
+        }
         int dot = numberText.indexOf('.');
         try {
             if (dot == -1) {
@@ -403,7 +403,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             long secs = Long.parseLong(numberText.substring(0, dot));
             numberText = numberText.substring(dot + 1);
             len = numberText.length();
-            if (len == 0 || len > 9 || numberText.charAt(0) == '-') {
+            if (len == 0 || len > 9 || numberText.charAt(0) == '-' || numberText.charAt(0) == '+') {
                 throw new CalendricalParseException("Duration could not be parsed: " + text, text, 2);
             }
             int nanos = Integer.parseInt(numberText);

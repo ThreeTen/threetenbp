@@ -88,15 +88,100 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
     @Override
     protected T deriveFrom(CalendricalEngine engine) {
         switch (ordinal) {
-            case YEAR_ORDINAL: return (T) Year.deriveFrom(engine);
-            case YEAR_MONTH_ORDINAL: return (T) YearMonth.deriveFrom(engine);
-            case MONTH_DAY_ORDINAL: return (T) MonthDay.deriveFrom(engine);
-            case MONTH_OF_YEAR_ORDINAL: return (T) MonthOfYear.deriveFrom(engine);
-            case QUARTER_OF_YEAR_ORDINAL: return (T) QuarterOfYear.deriveFrom(engine);
-            case DAY_OF_WEEK_ORDINAL: return (T) DayOfWeek.deriveFrom(engine);
-            case AM_PM_OF_DAY_ORDINAL: return (T) AmPmOfDay.deriveFrom(engine);
+            case YEAR_ORDINAL: return (T) deriveYear(engine);
+            case YEAR_MONTH_ORDINAL: return (T) deriveYearMonth(engine);
+            case MONTH_DAY_ORDINAL: return (T) deriveMonthDay(engine);
+            case MONTH_OF_YEAR_ORDINAL: return (T) deriveMoy(engine);
+            case QUARTER_OF_YEAR_ORDINAL: return (T) deriveQoy(engine);
+            case DAY_OF_WEEK_ORDINAL: return (T) deriveDow(engine);
+            case AM_PM_OF_DAY_ORDINAL: return (T) deriveAmPm(engine);
         }
         return null;
+    }
+
+    /**
+     * Obtains an instance of {@code Year} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    static Year deriveYear(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.YEAR, true);
+        return (field != null ? Year.of(field.getValidIntValue()) : null);
+    }
+
+    /**
+     * Obtains an instance of {@code YearMonth} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    static YearMonth deriveYearMonth(CalendricalEngine engine) {
+        DateTimeField year = engine.getFieldDerived(ISODateTimeRule.YEAR, true);
+        DateTimeField moy = engine.getFieldDerived(ISODateTimeRule.MONTH_OF_YEAR, true);
+        if (year == null || moy == null) {
+            return null;
+        }
+        return YearMonth.of(year.getValidIntValue(), moy.getValidIntValue());
+    }
+
+    /**
+     * Obtains an instance of {@code MonthDay} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    static MonthDay deriveMonthDay(CalendricalEngine engine) {
+        DateTimeField moy = engine.getFieldDerived(ISODateTimeRule.MONTH_OF_YEAR, true);
+        DateTimeField dom = engine.getFieldDerived(ISODateTimeRule.DAY_OF_MONTH, true);
+        if (moy == null || dom == null) {
+            return null;
+        }
+        return MonthDay.of(moy.getValidIntValue(), dom.getValidIntValue());
+    }
+
+    /**
+     * Obtains an instance of {@code MonthOfYear} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    static MonthOfYear deriveMoy(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.MONTH_OF_YEAR, true);
+        return (field != null ? MonthOfYear.of(field.getValidIntValue()) : null);
+    }
+
+    /**
+     * Obtains an instance of {@code QuarterOfYear} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    static QuarterOfYear deriveQoy(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.QUARTER_OF_YEAR, true);
+        return (field != null ? QuarterOfYear.of(field.getValidIntValue()) : null);
+    }
+
+    /**
+     * Obtains an instance of {@code AmPmOfDay} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    static DayOfWeek deriveDow(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.DAY_OF_WEEK, true);
+        return (field != null ? DayOfWeek.of(field.getValidIntValue()) : null);
+    }
+
+    /**
+     * Obtains an instance of {@code AmPmOfDay} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    static AmPmOfDay deriveAmPm(CalendricalEngine engine) {
+        DateTimeField field = engine.getFieldDerived(ISODateTimeRule.AMPM_OF_DAY, true);
+        return (field != null ? AmPmOfDay.of(field.getValidIntValue()) : null);
     }
 
     //-----------------------------------------------------------------------
