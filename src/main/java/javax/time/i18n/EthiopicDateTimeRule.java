@@ -127,13 +127,13 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-------------------------------------------------------------------------
     @Override
-    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+    protected long doCalculateGetComplete(long localEpochDay, long nanoOfDay, long offsetSecs) {
         return doGetFromEpochDay(localEpochDay);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+    protected long doCalculateGet(DateTimeRule fieldRule, long fieldValue) {
         if (DAY_OF_YEAR.equals(fieldRule)) {
             switch (ordinal) {
                 case DAY_OF_MONTH_ORDINAL: return domFromDoy(fieldValue);
@@ -147,7 +147,7 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
                 case ERA_ORDINAL: return eFromY(fieldValue);
             }
         }
-        long ed = EPOCH_DAY.extractFromValue(fieldRule, fieldValue);
+        long ed = EPOCH_DAY.calculateGet(fieldRule, fieldValue);
         if (ed != Long.MIN_VALUE) {
             return doGetFromEpochDay(ed);
         }
@@ -174,13 +174,13 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
 
     //-----------------------------------------------------------------------
     @Override
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+    protected long[] doCalculateSetComplete(long localEpochDay, long nanoOfDay, long offsetSecs, long newValue, DateTimeResolver resolver) {
         localEpochDay = doSetIntoEpochDay(newValue, localEpochDay, resolver);
         return new long[] {localEpochDay, nanoOfDay, offsetSecs};
     }
 
     @Override
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
+    protected long doCalculateSet(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
         if (DAY_OF_YEAR.equals(fieldRule)) {
             // allow overflow to invalid day-of-year  TODO resolve?
             switch (ordinal) {
@@ -195,12 +195,12 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
                 case ERA_ORDINAL: return (1 - yoeFromY(fieldValue));
             }
         }
-        long ed = EPOCH_DAY.extractFromValue(fieldRule, fieldValue);
+        long ed = EPOCH_DAY.calculateGet(fieldRule, fieldValue);
         if (ed != Long.MIN_VALUE) {
             long newEd = doSetIntoEpochDay(newValue, ed, resolver);
-            return EPOCH_DAY.setIntoValue(newEd, fieldRule, fieldValue, resolver);
+            return EPOCH_DAY.calculateSet(fieldRule, fieldValue, newEd, resolver);
         }
-        return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
+        return super.doCalculateSet(fieldRule, fieldValue, newValue, resolver);
     }
 
     private long doSetIntoEpochDay(long newValue, long fieldEd, DateTimeResolver resolver) {
@@ -212,13 +212,13 @@ public final class EthiopicDateTimeRule extends DateTimeRule implements Serializ
             case DAY_OF_MONTH_ORDINAL:
             case DAY_OF_YEAR_ORDINAL:
             case MONTH_OF_YEAR_ORDINAL: {
-                long newDoy = this.setIntoValue(newValue, DAY_OF_YEAR, doy, resolver);
+                long newDoy = this.calculateSet(DAY_OF_YEAR, doy, newValue, resolver);
                 return packDate(year, newDoy);
             }
             case YEAR_OF_ERA_ORDINAL:
             case YEAR_ORDINAL:
             case ERA_ORDINAL: {
-                long newYear = this.setIntoValue(newValue, YEAR, year, resolver);
+                long newYear = this.calculateSet(YEAR, year, newValue, resolver);
                 return packDate(newYear, doy);
             }
         }

@@ -352,7 +352,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
     //-----------------------------------------------------------------------
     @Override
-    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
+    protected long doCalculateGetComplete(long localEpochDay, long nanoOfDay, long offsetSecs) {
         switch (ordinal) {
             case EPOCH_MILLI_ORDINAL: {
                 if (offsetSecs != Long.MIN_VALUE) {
@@ -369,28 +369,28 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 
         }
         if (ordinal >= DAY_OF_WEEK_ORDINAL) {
-            return doExtractFromEpochDay(localEpochDay);
+            return doCalculateGetEpochDay(localEpochDay);
         }
-        return super.doExtractFromValue(NANO_OF_DAY, nanoOfDay);
+        return super.doCalculateGet(NANO_OF_DAY, nanoOfDay);
     }
 
     //-------------------------------------------------------------------------
     @Override
-    protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
+    protected long doCalculateGet(DateTimeRule fieldRule, long fieldValue) {
         if (PACKED_EPOCH_MONTH_DAY.equals(fieldRule)) {
-            return extractFromPackedDate(fieldValue);
+            return doCalculateGetPackedDate(fieldValue);
         }
         if (EPOCH_DAY.equals(fieldRule)) {
-            return doExtractFromEpochDay(fieldValue);
+            return doCalculateGetEpochDay(fieldValue);
         }
         if (isDate()) {  // needed to avoid infinite loop
             long ed = fieldRule.convertToPeriod(fieldValue);
-            return doExtractFromEpochDay(ed);
+            return doCalculateGetEpochDay(ed);
         }
-        return super.doExtractFromValue(fieldRule, fieldValue);
+        return super.doCalculateGet(fieldRule, fieldValue);
     }
 
-    long extractFromPackedDate(long pemd) {
+    long doCalculateGetPackedDate(long pemd) {
         switch (ordinal) {
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(epochDayFromPackedDate(pemd));
             case DAY_OF_MONTH_ORDINAL: return domFromPemd(pemd);
@@ -408,17 +408,17 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         return Long.MIN_VALUE;
     }
 
-    private long doExtractFromEpochDay(long ed) {
+    private long doCalculateGetEpochDay(long ed) {
         switch (ordinal) {
             case DAY_OF_WEEK_ORDINAL: return dowFromEd(ed);
             case EPOCH_DAY_ORDINAL: return ed;
         }
-        return extractFromPackedDate(packedDateFromEpochDay(ed));
+        return doCalculateGetPackedDate(packedDateFromEpochDay(ed));
     }
 
     //-------------------------------------------------------------------------
     @Override
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+    protected long[] doCalculateSetComplete(long localEpochDay, long nanoOfDay, long offsetSecs, long newValue, DateTimeResolver resolver) {
         if (ordinal == EPOCH_SECOND_ORDINAL) {
             offsetSecs = ((offsetSecs << 1) >> 1);  // converts MIN_VALUE to 0
             long localSecs = newValue - offsetSecs;
@@ -433,13 +433,13 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
         } else if (ordinal >= DAY_OF_WEEK_ORDINAL) {
             localEpochDay = doSetIntoEpochDay(newValue, localEpochDay, resolver);
         } else {
-            nanoOfDay = doSetIntoValue(newValue, NANO_OF_DAY, nanoOfDay, resolver);
+            nanoOfDay = doCalculateSet(NANO_OF_DAY, nanoOfDay, newValue, resolver);
         }
         return new long[] {localEpochDay, nanoOfDay, offsetSecs};
     }
 
     @Override
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
+    protected long doCalculateSet(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
         if (PACKED_EPOCH_MONTH_DAY.equals(fieldRule)) {
             return doSetIntoPackedDate(newValue, fieldValue, resolver);
         }
@@ -448,7 +448,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             long newEd = doSetIntoEpochDay(newValue, ed, resolver);
             return fieldRule.convertFromPeriod(newEd);
         }
-        return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
+        return super.doCalculateSet(fieldRule, fieldValue, newValue, resolver);
     }
 
     private long doSetIntoEpochDay(long newValue, long fieldEd, DateTimeResolver resolver) {
@@ -512,6 +512,25 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
 //            }
 //        }
         return packPemd(y, (int) moy, (int) dom);  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
+    public long calculateAdd(DateTimeRule fieldRule, long fieldValue, long amountToAdd, DateTimeResolver resolver) {
+        // TODO
+        switch (ordinal) {
+            case DAY_OF_WEEK_ORDINAL:
+            case DAY_OF_MONTH_ORDINAL:
+            case DAY_OF_YEAR_ORDINAL:
+                break;
+            case MONTH_OF_QUARTER_ORDINAL:
+            case MONTH_OF_YEAR_ORDINAL:
+            case ZERO_EPOCH_MONTH_ORDINAL:
+            case QUARTER_OF_YEAR_ORDINAL:
+            case YEAR_ORDINAL:
+                break;
+        }
+        return super.calculateAdd(fieldRule, fieldValue, amountToAdd, resolver);
     }
 
     //-----------------------------------------------------------------------

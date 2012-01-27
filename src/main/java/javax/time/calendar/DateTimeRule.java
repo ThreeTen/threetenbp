@@ -305,8 +305,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 //    protected DateTimeRuleRange doValueRangeFromOther(DateTimeRule valueRule, long value) {
 //        return getValueRange();
 //    }
-
-    //-----------------------------------------------------------------------
+//
+//    //-----------------------------------------------------------------------
 //    public final long extractFromDate(long epochDays) {
 //        return doExtractFromDate(epochDays);
 //    }
@@ -323,12 +323,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 //        return Long.MIN_VALUE;
 //    }
 //
-    protected boolean isDate() {
-        return false;
-//        return EPOCH_DAY.equals(getBaseRule()) && DAYS.equals(getPeriodUnit());
-    }
-
-    //-----------------------------------------------------------------------
+//    //-----------------------------------------------------------------------
 //    public final long extractFromInstant(long utcEpcohSecs, long nanoOfSec, long offsetSecs) {
 //        long localEpochSecs = utcEpcohSecs + ((offsetSecs << 1) >> 1);  // treats MIN_VALUE as zero
 //        if (isDateBased()) {
@@ -358,88 +353,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
 //        return doExtractFromInstant(localEpochDays, nanoOfSec, offsetSecs);
 //    }
 
-    public final long extractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
-        return doExtractFromInstant(localEpochDay, nanoOfDay, offsetSecs);
-    }
-
-    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
-        return Long.MIN_VALUE;
-    }
-
-//    protected long calcDateFromInstant(long localEpochDays, long nanoOfDay, long offsetSecs) {
-//        return localEpochDays;
-//    }
-
     //-----------------------------------------------------------------------
-    public final long extractFromValue(DateTimeRule fieldRule, long fieldValue) {
-        if (fieldRule.equals(this)) {  // intentional NPE
-            return fieldValue;
-        }
-        return doExtractFromValue(fieldRule, fieldValue);
-    }
-
-    protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
-        if (isDerivable(fieldRule)) {
-            return defaultExtractFromValue(fieldRule, fieldValue);
-        }
-        return Long.MIN_VALUE;
-    }
-
-    private long defaultExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
-        // TODO: doesn't handle DAYS well, as DAYS are not a multiple of NANOS
-        long bottomConversion = getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
-        if (bottomConversion < 0) {
-            return Long.MIN_VALUE;
-        }
-        long period = fieldRule.convertToPeriod(fieldValue);
-        period = MathUtils.floorDiv(period, bottomConversion);
-        if (getPeriodRange() != null && fieldRule.comparePeriodRange(this) != 0) {
-//                if (periodRange.equals(DAYS)) {  // TODO: hack
-//                    periodRange = _24_HOURS;
-//                }
-            long topConversion = getPeriodRange().toEquivalent(getPeriodUnit());
-            if (topConversion < 0) {
-                return Long.MIN_VALUE;
-            }
-            period = MathUtils.floorMod(period, topConversion);
-        }
-        return convertFromPeriod(period);
-    }
-
-    //-----------------------------------------------------------------------
-    public final long[] setIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
-        checkValidValue(newValue);
-        return doSetIntoInstant(newValue, localEpochDay, nanoOfDay, offsetSecs, resolver);
-    }
-
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
-        throw new UnsupportedOperationException();  // TODO: method should be abstract
-    }
-
-//    protected long doSetIntoEpochDay(long newValue, long baseEpochDay, long baseNanoOfDay) {
-//        return baseEpochDay;
-//    }
-//
-//    protected long doSetIntoTime(long newValue, long baseEpochDay, long baseNanoOfDay) {
-//        return baseNanoOfDay;
-//    }
-
-    public final long setIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
-        checkValidValue(newValue);
-        if (fieldRule.equals(this)) {  // intentional NPE
-            return newValue;
-        }
-        return doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
-    }
-
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
-        if (isDerivable(fieldRule)) {
-            long curValue = extractFromValue(fieldRule, fieldValue);
-            long bottomConversion = getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
-            long diff = convertToPeriod(newValue) - convertToPeriod(curValue);
-            return fieldValue + diff * bottomConversion;
-        }
-        return Long.MIN_VALUE;
+    protected boolean isDate() {
+        return false;
     }
 
     /**
@@ -459,6 +375,89 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
                 rule.comparePeriodRange(this) >= 0;
     }
 
+    //-----------------------------------------------------------------------
+    public final long calculateGetComplete(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return doCalculateGetComplete(localEpochDay, nanoOfDay, offsetSecs);
+    }
+
+    protected long doCalculateGetComplete(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return Long.MIN_VALUE;
+    }
+
+    public final long[] calculateSetComplete(long localEpochDay, long nanoOfDay, long offsetSecs, long newValue, DateTimeResolver resolver) {
+        checkValidValue(newValue);
+        return doCalculateSetComplete(localEpochDay, nanoOfDay, offsetSecs, newValue, resolver);
+    }
+
+    protected long[] doCalculateSetComplete(long localEpochDay, long nanoOfDay, long offsetSecs, long newValue, DateTimeResolver resolver) {
+        throw null;
+    }
+
+    public long[] calculateSetLenientComplete(long localEpochDay, long nanoOfDay, long offsetSecs, long newValue, DateTimeResolver resolver) {
+        return new long[] {calculateSetLenient(EPOCH_DAY, localEpochDay, newValue, resolver), nanoOfDay, offsetSecs};
+    }
+
+    public long[] calculateAddComplete(long localEpochDay, long nanoOfDay, long offsetSecs, long amountToAdd, DateTimeResolver resolver) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    public final long calculateGet(DateTimeRule fieldRule, long fieldValue) {
+        if (fieldRule.equals(this)) {  // intentional NPE
+            return fieldValue;
+        }
+        return doCalculateGet(fieldRule, fieldValue);
+    }
+
+    protected long doCalculateGet(DateTimeRule fieldRule, long fieldValue) {
+        if (isDerivable(fieldRule)) {
+            return defaultCalculateGet(fieldRule, fieldValue);
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private long defaultCalculateGet(DateTimeRule fieldRule, long fieldValue) {
+        long bottomConversion = getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
+        if (bottomConversion < 0) {
+            return Long.MIN_VALUE;
+        }
+        long period = fieldRule.convertToPeriod(fieldValue);
+        period = MathUtils.floorDiv(period, bottomConversion);
+        if (getPeriodRange() != null && fieldRule.comparePeriodRange(this) != 0) {
+            long topConversion = getPeriodRange().toEquivalent(getPeriodUnit());
+            if (topConversion < 0) {
+                return Long.MIN_VALUE;
+            }
+            period = MathUtils.floorMod(period, topConversion);
+        }
+        return convertFromPeriod(period);
+    }
+
+    //-----------------------------------------------------------------------
+    public final long calculateSet(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
+        checkValidValue(newValue);
+        if (fieldRule.equals(this)) {  // intentional NPE
+            return newValue;
+        }
+//        DateTimeRuleRange range = calculateRange(fieldRule, fieldValue);
+//        if (newValue >= range.getLargestMinimum() && newValue <= range.getSmallestMaximum()) { // TODO, presumes continuous
+//            long curValue = calculateGet(fieldRule, fieldValue);
+//            long amountToAdd = convertToPeriod(newValue) - convertToPeriod(curValue);
+//            return calculateAdd(fieldRule, fieldValue, amountToAdd, resolver);
+//        }
+        return doCalculateSet(fieldRule, fieldValue, newValue, resolver);
+    }
+
+    protected long doCalculateSet(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
+        if (isDerivable(fieldRule)) {
+            long curValue = calculateGet(fieldRule, fieldValue);
+            long bottomConversion = getPeriodUnit().toEquivalent(fieldRule.getPeriodUnit());
+            long diff = convertToPeriod(newValue) - convertToPeriod(curValue);
+            return fieldValue + diff * bottomConversion;
+        }
+        return Long.MIN_VALUE;
+    }
+
 //    protected long doSimpleSet(long newValue, DateTimeRule baseRule, long baseValue, long unitMultiple) {
 //        long curValue = extractFromValue(baseRule, baseValue);
 //        long change = convertToPeriod(newValue) - convertToPeriod(curValue);
@@ -470,50 +469,34 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         return getValueRange(fieldRule.field(fieldValue));  // TODO
     }
 
-    public long calculateGetFromValue(DateTimeRule fieldRule, long fieldValue) {
-        return extractFromValue(fieldRule, fieldValue);  // TODO
-    }
-
-    public long calculateSetIntoValue(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
-        checkValidValue(newValue);
-        DateTimeRuleRange range = calculateRange(fieldRule, fieldValue);
-        if (newValue >= range.getLargestMinimum() && newValue <= range.getSmallestMaximum()) { // TODO, presumes continuous
-            long curValue = calculateGetFromValue(fieldRule, fieldValue);
-            long amountToAdd = convertToPeriod(newValue) - convertToPeriod(curValue);
-            return calculateAddIntoValue(fieldRule, fieldValue, amountToAdd, resolver);
-        }
-        return Long.MIN_VALUE;  // TODO
-    }
-
     //-------------------------------------------------------------------------
-    public long[] calculateSetLenientIntoInstant(long localEpochDay, long nanoOfDay, long offsetSecs, long newValue, DateTimeResolver resolver) {
-        return new long[] {calculateSetLenientIntoValue(EPOCH_DAY, localEpochDay, newValue, resolver), nanoOfDay, offsetSecs};
-    }
-
-    public long calculateSetLenientIntoValue(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
-        long curValue = calculateGetFromValue(fieldRule, fieldValue);
+    public long calculateSetLenient(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
+        long curValue = calculateGet(fieldRule, fieldValue);
         long amountToAdd = convertToPeriod(newValue) - convertToPeriod(curValue);
-        return calculateAddIntoValue(fieldRule, fieldValue, amountToAdd, resolver);
+        return calculateAdd(fieldRule, fieldValue, amountToAdd, resolver);
     }
 
     //-------------------------------------------------------------------------
-    public long[] calculateAddIntoInstant(long localEpochDay, long nanoOfDay, long offsetSecs, long amountToAdd, DateTimeResolver resolver) {
-        return null;
-    }
-
-    public long calculateAddIntoValue(DateTimeRule fieldRule, long fieldValue, long amountToAdd, DateTimeResolver resolver) {
+    public long calculateAdd(DateTimeRule fieldRule, long fieldValue, long amountToAdd, DateTimeResolver resolver) {
+//        if (isDerivable(fieldRule)) {
+//            
+//        }
         return Long.MIN_VALUE;
     }
 
-    public long calculateRollIntoValue(DateTimeRule fieldRule, long fieldValue, long amountToRoll, DateTimeResolver resolver) {
+    //-----------------------------------------------------------------------
+    public long calculateRoll(DateTimeRule fieldRule, long fieldValue, long amountToRoll) {
+        long curValue = calculateGet(fieldRule, fieldValue);
+        if (curValue == Long.MIN_VALUE || getPeriodRange() == null) {
+            return Long.MIN_VALUE;
+        }
         DateTimeRuleRange range = calculateRange(fieldRule, fieldValue);
-        long totalRange = range.getMaximum() - range.getMinimum()  + 1;
-        amountToRoll = MathUtils.floorMod(amountToRoll, totalRange);
-        long curValue = calculateGetFromValue(fieldRule, fieldValue);
+        long totalRange = range.getMaximum() - range.getMinimum()  + 1;  // TODO: range overflow?
+        long adjAmountToRoll = MathUtils.floorMod(amountToRoll, totalRange);
         long curPeriod = convertToPeriod(curValue);
-        long newPeriod = MathUtils.floorMod(curPeriod + amountToRoll, totalRange);
+        long newPeriod = MathUtils.floorMod(curPeriod + adjAmountToRoll, totalRange);  // TODO: range overflow?
         long newValue = convertFromPeriod(newPeriod);
-        return calculateAddIntoValue(fieldRule, fieldValue, newValue - curValue, resolver);
+        return calculateAdd(fieldRule, fieldValue, newValue - curValue, null);  // TODO: strict resolver
     }
 
 //    //-----------------------------------------------------------------------

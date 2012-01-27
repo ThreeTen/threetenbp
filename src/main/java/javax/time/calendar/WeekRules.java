@@ -542,30 +542,30 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             this.weekRules = weekRules;
         }
         @Override
-        protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
-            return doExtractFromValue(EPOCH_DAY, localEpochDay);
+        protected long doCalculateGetComplete(long localEpochDay, long nanoOfDay, long offsetSecs) {
+            return doCalculateGet(EPOCH_DAY, localEpochDay);
         }
         @Override
-        protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
-            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
+        protected long doCalculateGet(DateTimeRule fieldRule, long fieldValue) {
+            long dow = DAY_OF_WEEK.calculateGet(fieldRule, fieldValue);
             if (dow != Long.MIN_VALUE) {
                 return wrdowFromDow(dow);
             }
-            return super.doExtractFromValue(fieldRule, fieldValue);
+            return super.doCalculateGet(fieldRule, fieldValue);
         }
         @Override
-        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
-            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay, resolver);
+        protected long[] doCalculateSetComplete(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+            localEpochDay = doCalculateSet(EPOCH_DAY, localEpochDay, newValue, resolver);
             return new long[] {localEpochDay, nanoOfDay, offsetSecs};
         }
         @Override
-        protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
-            long dow = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue);
+        protected long doCalculateSet(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
+            long dow = DAY_OF_WEEK.calculateGet(fieldRule, fieldValue);
             if (dow != Long.MIN_VALUE) {
                 long newDow = dow + (newValue - wrdowFromDow(dow)) * 3;
-                return DAY_OF_WEEK.setIntoValue(newDow, fieldRule, fieldValue, resolver);
+                return DAY_OF_WEEK.calculateSet(fieldRule, fieldValue, newDow, resolver);
             }
-            return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
+            return super.doCalculateSet(fieldRule, fieldValue, newValue, resolver);
         }
         private long wrdowFromDow(long fieldValue) {
             return ((fieldValue - 1 - weekRules.getFirstDayOfWeek().ordinal() + 7) % 7) + 1;
@@ -612,13 +612,13 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
             this.weekRules = weekRules;
         }
         @Override
-        protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
-            return doExtractFromValue(EPOCH_DAY, localEpochDay);
+        protected long doCalculateGetComplete(long localEpochDay, long nanoOfDay, long offsetSecs) {
+            return doCalculateGet(EPOCH_DAY, localEpochDay);
         }
         @Override
-        protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
-            long dow0 = DAY_OF_WEEK.extractFromValue(fieldRule, fieldValue) - 1;
-            long dom = DAY_OF_MONTH.extractFromValue(fieldRule, fieldValue);
+        protected long doCalculateGet(DateTimeRule fieldRule, long fieldValue) {
+            long dow0 = DAY_OF_WEEK.calculateGet(fieldRule, fieldValue) - 1;
+            long dom = DAY_OF_MONTH.calculateGet(fieldRule, fieldValue);
             int minDays = weekRules.getMinimalDaysInFirstWeek();
             int firstDow0 = weekRules.getFirstDayOfWeek().ordinal();
             if (dow0 > firstDow0) {
@@ -637,11 +637,11 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
 //            if (dow != Long.MIN_VALUE) {
 //                return wrdowFromDow(dow);
 //            }
-            return super.doExtractFromValue(fieldRule, fieldValue);
+            return super.doCalculateGet(fieldRule, fieldValue);
         }
         @Override
-        protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
-            localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay, resolver);
+        protected long[] doCalculateSetComplete(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
+            localEpochDay = doCalculateSet(EPOCH_DAY, localEpochDay, newValue, resolver);
             return new long[] {localEpochDay, nanoOfDay, offsetSecs};
         }
 //        @Override

@@ -480,17 +480,17 @@ public class TestWeekRules {
     public void test_dayOfWeek_get_sun1() {
         DateTimeRule rule = WeekRules.of(SUNDAY, 1).dayOfWeek();
         
-        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 7), 1);  // Sun
-        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 1), 2);  // Mon
-        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 2), 3);  // Tue
-        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 3), 4);  // Wed
-        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 4), 5);  // Thu
-        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 5), 6);  // Fri
-        assertEquals(rule.extractFromValue(DAY_OF_WEEK, 6), 7);  // Sat
+        assertEquals(rule.calculateGet(DAY_OF_WEEK, 7), 1);  // Sun
+        assertEquals(rule.calculateGet(DAY_OF_WEEK, 1), 2);  // Mon
+        assertEquals(rule.calculateGet(DAY_OF_WEEK, 2), 3);  // Tue
+        assertEquals(rule.calculateGet(DAY_OF_WEEK, 3), 4);  // Wed
+        assertEquals(rule.calculateGet(DAY_OF_WEEK, 4), 5);  // Thu
+        assertEquals(rule.calculateGet(DAY_OF_WEEK, 5), 6);  // Fri
+        assertEquals(rule.calculateGet(DAY_OF_WEEK, 6), 7);  // Sat
         
-        assertEquals(rule.extractFromValue(EPOCH_DAY, -1), 4);  // Wed
-        assertEquals(rule.extractFromValue(EPOCH_DAY, 0), 5);  // Thu
-        assertEquals(rule.extractFromValue(EPOCH_DAY, 1), 6);  // Fri
+        assertEquals(rule.calculateGet(EPOCH_DAY, -1), 4);  // Wed
+        assertEquals(rule.calculateGet(EPOCH_DAY, 0), 5);  // Thu
+        assertEquals(rule.calculateGet(EPOCH_DAY, 1), 6);  // Fri
     }
 
     //-----------------------------------------------------------------------

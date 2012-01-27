@@ -73,79 +73,79 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 //        assertEquals(INSTANCE.doValueRangeFromThis(3, DAY_OF_MONTH), DateTimeRuleRange.of(1, 30, 31));
 //        assertEquals(INSTANCE.doValueRangeFromThis(4, DAY_OF_MONTH), DateTimeRuleRange.of(1, 28, 31));
         
-        assertEquals(INSTANCE.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4), 0);
-        assertEquals(INSTANCE.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 + 32), 0);
-        assertEquals(INSTANCE.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 + 64), 0);
-        assertEquals(INSTANCE.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 + 96), 1);
-        assertEquals(INSTANCE.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 - 32), -1);
+        assertEquals(INSTANCE.calculateGet(PACKED_EPOCH_MONTH_DAY, 4), 0);
+        assertEquals(INSTANCE.calculateGet(PACKED_EPOCH_MONTH_DAY, 4 + 32), 0);
+        assertEquals(INSTANCE.calculateGet(PACKED_EPOCH_MONTH_DAY, 4 + 64), 0);
+        assertEquals(INSTANCE.calculateGet(PACKED_EPOCH_MONTH_DAY, 4 + 96), 1);
+        assertEquals(INSTANCE.calculateGet(PACKED_EPOCH_MONTH_DAY, 4 - 32), -1);
         
-        assertEquals(DAY_OF_MONTH.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4), 5);
-        assertEquals(DAY_OF_MONTH.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 - 32), 5);
+        assertEquals(DAY_OF_MONTH.calculateGet(PACKED_EPOCH_MONTH_DAY, 4), 5);
+        assertEquals(DAY_OF_MONTH.calculateGet(PACKED_EPOCH_MONTH_DAY, 4 - 32), 5);
         
-        assertEquals(MONTH_OF_YEAR.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4), 1);
-        assertEquals(MONTH_OF_YEAR.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 + 32), 2);
-        assertEquals(MONTH_OF_YEAR.extractFromValue(PACKED_EPOCH_MONTH_DAY, 4 - 32), 12);
+        assertEquals(MONTH_OF_YEAR.calculateGet(PACKED_EPOCH_MONTH_DAY, 4), 1);
+        assertEquals(MONTH_OF_YEAR.calculateGet(PACKED_EPOCH_MONTH_DAY, 4 + 32), 2);
+        assertEquals(MONTH_OF_YEAR.calculateGet(PACKED_EPOCH_MONTH_DAY, 4 - 32), 12);
         
-        assertEquals(INSTANCE.extractFromValue(DAY_OF_MONTH, 4), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extractFromValue(MONTH_OF_QUARTER, 4), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extractFromValue(MONTH_OF_YEAR, 4), Long.MIN_VALUE);
-        assertEquals(INSTANCE.extractFromValue(QUARTER_OF_YEAR, 4), Long.MIN_VALUE);
+        assertEquals(INSTANCE.calculateGet(DAY_OF_MONTH, 4), Long.MIN_VALUE);
+        assertEquals(INSTANCE.calculateGet(MONTH_OF_QUARTER, 4), Long.MIN_VALUE);
+        assertEquals(INSTANCE.calculateGet(MONTH_OF_YEAR, 4), Long.MIN_VALUE);
+        assertEquals(INSTANCE.calculateGet(QUARTER_OF_YEAR, 4), Long.MIN_VALUE);
         
-        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 0), 0);
-        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 1), 0);
-        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 2), 0);
-        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 3), 1);
-        assertEquals(INSTANCE.extractFromValue(ZERO_EPOCH_MONTH, 4), 1);
+        assertEquals(INSTANCE.calculateGet(ZERO_EPOCH_MONTH, 0), 0);
+        assertEquals(INSTANCE.calculateGet(ZERO_EPOCH_MONTH, 1), 0);
+        assertEquals(INSTANCE.calculateGet(ZERO_EPOCH_MONTH, 2), 0);
+        assertEquals(INSTANCE.calculateGet(ZERO_EPOCH_MONTH, 3), 1);
+        assertEquals(INSTANCE.calculateGet(ZERO_EPOCH_MONTH, 4), 1);
         
-        assertEquals(DAY_OF_MONTH.extractFromValue(INSTANCE, 4), Long.MIN_VALUE);
-        assertEquals(MONTH_OF_QUARTER.extractFromValue(INSTANCE, 4), Long.MIN_VALUE);
-        assertEquals(MONTH_OF_YEAR.extractFromValue(INSTANCE, 4), Long.MIN_VALUE);
-        assertEquals(ZERO_EPOCH_MONTH.extractFromValue(INSTANCE, 4), Long.MIN_VALUE);
-        assertEquals(QUARTER_OF_YEAR.extractFromValue(INSTANCE, 3), 4);
-        assertEquals(QUARTER_OF_YEAR.extractFromValue(INSTANCE, 4), 1);
+        assertEquals(DAY_OF_MONTH.calculateGet(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_QUARTER.calculateGet(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(MONTH_OF_YEAR.calculateGet(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(ZERO_EPOCH_MONTH.calculateGet(INSTANCE, 4), Long.MIN_VALUE);
+        assertEquals(QUARTER_OF_YEAR.calculateGet(INSTANCE, 3), 4);
+        assertEquals(QUARTER_OF_YEAR.calculateGet(INSTANCE, 4), 1);
         
-        assertEquals(QUARTER_OF_YEAR.extractFromValue(MONTH_OF_YEAR, 4), 2);
-        assertEquals(MONTH_OF_QUARTER.extractFromValue(MONTH_OF_YEAR, 4), 1);
-        assertEquals(ALIGNED_WEEK_OF_MONTH.extractFromValue(DAY_OF_MONTH, 4), 1);
-        assertEquals(ALIGNED_WEEK_OF_MONTH.extractFromValue(DAY_OF_MONTH, 8), 2);
-        assertEquals(ALIGNED_WEEK_OF_YEAR.extractFromValue(DAY_OF_YEAR, 4), 1);
-        assertEquals(ALIGNED_WEEK_OF_YEAR.extractFromValue(DAY_OF_YEAR, 8), 2);
-        assertEquals(HOUR_OF_DAY.extractFromValue(SECOND_OF_DAY, 1), 0);
-        assertEquals(HOUR_OF_DAY.extractFromValue(SECOND_OF_DAY, 3601), 1);
-        assertEquals(DAY_OF_MONTH.extractFromValue(EPOCH_DAY, 2), 3);
+        assertEquals(QUARTER_OF_YEAR.calculateGet(MONTH_OF_YEAR, 4), 2);
+        assertEquals(MONTH_OF_QUARTER.calculateGet(MONTH_OF_YEAR, 4), 1);
+        assertEquals(ALIGNED_WEEK_OF_MONTH.calculateGet(DAY_OF_MONTH, 4), 1);
+        assertEquals(ALIGNED_WEEK_OF_MONTH.calculateGet(DAY_OF_MONTH, 8), 2);
+        assertEquals(ALIGNED_WEEK_OF_YEAR.calculateGet(DAY_OF_YEAR, 4), 1);
+        assertEquals(ALIGNED_WEEK_OF_YEAR.calculateGet(DAY_OF_YEAR, 8), 2);
+        assertEquals(HOUR_OF_DAY.calculateGet(SECOND_OF_DAY, 1), 0);
+        assertEquals(HOUR_OF_DAY.calculateGet(SECOND_OF_DAY, 3601), 1);
+        assertEquals(DAY_OF_MONTH.calculateGet(EPOCH_DAY, 2), 3);
         
-        assertEquals(EthiopicDateTimeRule.MONTH_OF_YEAR.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 2);
-        assertEquals(EthiopicDateTimeRule.DAY_OF_MONTH.extractFromValue(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 4);
+        assertEquals(EthiopicDateTimeRule.MONTH_OF_YEAR.calculateGet(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 2);
+        assertEquals(EthiopicDateTimeRule.DAY_OF_MONTH.calculateGet(EthiopicDateTimeRule.DAY_OF_YEAR, 34), 4);
         
         // sets
         DateTimeResolver resolver = null;
-        assertEquals(HOUR_OF_DAY.setIntoValue(2, SECOND_OF_DAY, 3601, resolver), 7201);
-        assertEquals(QUARTER_OF_YEAR.setIntoValue(3, MONTH_OF_YEAR, 2, resolver), 8);
-        assertEquals(MONTH_OF_YEAR.setIntoValue(3, PACKED_EPOCH_MONTH_DAY, 4 + 32, resolver), 4 + 64);
+        assertEquals(HOUR_OF_DAY.calculateSet(SECOND_OF_DAY, 3601, 2, resolver), 7201);
+        assertEquals(QUARTER_OF_YEAR.calculateSet(MONTH_OF_YEAR, 2, 3, resolver), 8);
+        assertEquals(MONTH_OF_YEAR.calculateSet(PACKED_EPOCH_MONTH_DAY, 4 + 32, 3, resolver), 4 + 64);
 //        assertEquals(MONTH_OF_YEAR.setIntoValue(3, EPOCH_DAY, 4 + 31 - 1), 4 + 31 + 28 - 1);
-        assertEquals(INSTANCE.setIntoValue(3, ZERO_EPOCH_MONTH, 5, resolver), 11);
+        assertEquals(INSTANCE.calculateSet(ZERO_EPOCH_MONTH, 5, 3, resolver), 11);
         
-        assertEquals(CopticDateTimeRule.MONTH_OF_YEAR.setIntoValue(3, CopticDateTimeRule.DAY_OF_YEAR, 34, resolver), 64);
-        assertEquals(CopticDateTimeRule.MONTH_OF_YEAR.setIntoValue(13, CopticDateTimeRule.DAY_OF_YEAR, 34, resolver), 12 * 30 + 4);
-        assertEquals(CopticDateTimeRule.DAY_OF_MONTH.setIntoValue(3, CopticDateTimeRule.DAY_OF_YEAR, 34, resolver), 33);
-        assertEquals(CopticDateTimeRule.DAY_OF_MONTH.setIntoValue(13, CopticDateTimeRule.DAY_OF_YEAR, 12 * 30 + 4, resolver), 12 * 30 + 13);
+        assertEquals(CopticDateTimeRule.MONTH_OF_YEAR.calculateSet(CopticDateTimeRule.DAY_OF_YEAR, 34, 3, resolver), 64);
+        assertEquals(CopticDateTimeRule.MONTH_OF_YEAR.calculateSet(CopticDateTimeRule.DAY_OF_YEAR, 34, 13, resolver), 12 * 30 + 4);
+        assertEquals(CopticDateTimeRule.DAY_OF_MONTH.calculateSet(CopticDateTimeRule.DAY_OF_YEAR, 34, 3, resolver), 33);
+        assertEquals(CopticDateTimeRule.DAY_OF_MONTH.calculateSet(CopticDateTimeRule.DAY_OF_YEAR, 12 * 30 + 4, 13, resolver), 12 * 30 + 13);
         
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EPOCH_DAY), -362);
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, DAY_OF_MONTH), 4);
         
 //        assertEquals(CopticDateTimeRule.PACKED_YEAR_DAY.extract(4, EthiopicDateTimeRule.PACKED_YEAR_DAY), 4);
         
-        assertEquals(DAY_OF_MONTH.setIntoValue(1, EPOCH_DAY, 0, resolver), 0);
-        assertEquals(DAY_OF_MONTH.setIntoValue(2, EPOCH_DAY, 0, resolver), 1);
-        assertEquals(DAY_OF_MONTH.setIntoValue(3, EPOCH_DAY, 0, resolver), 2);
+        assertEquals(DAY_OF_MONTH.calculateSet(EPOCH_DAY, 0, 1, resolver), 0);
+        assertEquals(DAY_OF_MONTH.calculateSet(EPOCH_DAY, 0, 2, resolver), 1);
+        assertEquals(DAY_OF_MONTH.calculateSet(EPOCH_DAY, 0, 3, resolver), 2);
         
-        assertEquals(HOUR_OF_DAY.setIntoInstant(2, 123, 3601 * 1000000000L, 321, resolver)[0], 123);
-        assertEquals(HOUR_OF_DAY.setIntoInstant(2, 123, 3601 * 1000000000L, 321, resolver)[1], 7201 * 1000000000L);
-        assertEquals(HOUR_OF_DAY.setIntoInstant(2, 123, 3601 * 1000000000L, 321, resolver)[2], 321);
+        assertEquals(HOUR_OF_DAY.calculateSetComplete(123, 3601 * 1000000000L, 321, 2, resolver)[0], 123);
+        assertEquals(HOUR_OF_DAY.calculateSetComplete(123, 3601 * 1000000000L, 321, 2, resolver)[1], 7201 * 1000000000L);
+        assertEquals(HOUR_OF_DAY.calculateSetComplete(123, 3601 * 1000000000L, 321, 2, resolver)[2], 321);
         
-        assertEquals(DAY_OF_MONTH.setIntoInstant(2, 33, 3601 * 1000000000L, 321, resolver)[0], 32);
-        assertEquals(DAY_OF_MONTH.setIntoInstant(2, 33, 3601 * 1000000000L, 321, resolver)[1], 3601 * 1000000000L);
-        assertEquals(DAY_OF_MONTH.setIntoInstant(2, 33, 3601 * 1000000000L, 321, resolver)[2], 321);
+        assertEquals(DAY_OF_MONTH.calculateSetComplete(33, 3601 * 1000000000L, 321, 2, resolver)[0], 32);
+        assertEquals(DAY_OF_MONTH.calculateSetComplete(33, 3601 * 1000000000L, 321, 2, resolver)[1], 3601 * 1000000000L);
+        assertEquals(DAY_OF_MONTH.calculateSetComplete(33, 3601 * 1000000000L, 321, 2, resolver)[2], 321);
         
         System.out.println("OK");
     }
@@ -202,34 +202,34 @@ public final class ZeroEpochQuarterDateTimeRule extends DateTimeRule implements 
 
     //-------------------------------------------------------------------------
     @Override
-    protected long doExtractFromInstant(long localEpochDay, long nanoOfDay, long offsetSecs) {
-        return doExtractFromValue(EPOCH_DAY, localEpochDay);
+    protected long doCalculateGetComplete(long localEpochDay, long nanoOfDay, long offsetSecs) {
+        return doCalculateGet(EPOCH_DAY, localEpochDay);
     }
 
     @Override
-    protected long doExtractFromValue(DateTimeRule fieldRule, long fieldValue) {
-        long em = ZERO_EPOCH_MONTH.extractFromValue(fieldRule, fieldValue);
+    protected long doCalculateGet(DateTimeRule fieldRule, long fieldValue) {
+        long em = ZERO_EPOCH_MONTH.calculateGet(fieldRule, fieldValue);
         if (em != Long.MIN_VALUE) {
             return eqFromEm(em);
         }
-        return super.doExtractFromValue(fieldRule, fieldValue);
+        return super.doCalculateGet(fieldRule, fieldValue);
     }
 
     //-------------------------------------------------------------------------
     @Override
-    protected long[] doSetIntoInstant(long newValue, long localEpochDay, long nanoOfDay, long offsetSecs, DateTimeResolver resolver) {
-        localEpochDay = doSetIntoValue(newValue, EPOCH_DAY, localEpochDay, resolver);
+    protected long[] doCalculateSetComplete(long localEpochDay, long nanoOfDay, long offsetSecs, long newValue, DateTimeResolver resolver) {
+        localEpochDay = doCalculateSet(EPOCH_DAY, localEpochDay, newValue, resolver);
         return new long[] {localEpochDay, nanoOfDay, offsetSecs};
     }
 
     @Override
-    protected long doSetIntoValue(long newValue, DateTimeRule fieldRule, long fieldValue, DateTimeResolver resolver) {
-        long em = ZERO_EPOCH_MONTH.extractFromValue(fieldRule, fieldValue);
+    protected long doCalculateSet(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
+        long em = ZERO_EPOCH_MONTH.calculateGet(fieldRule, fieldValue);
         if (em != Long.MIN_VALUE) {
             long newEm = em + (newValue - eqFromEm(em)) * 3;
-            return ZERO_EPOCH_MONTH.setIntoValue(newEm, fieldRule, fieldValue, resolver);
+            return ZERO_EPOCH_MONTH.calculateSet(fieldRule, fieldValue, newEm, resolver);
         }
-        return super.doSetIntoValue(newValue, fieldRule, fieldValue, resolver);
+        return super.doCalculateSet(fieldRule, fieldValue, newValue, resolver);
     }
 
     private static long eqFromEm(long em) {
