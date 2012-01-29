@@ -128,31 +128,6 @@ public abstract class CalendricalRule<T>
         return type;
     }
 
-    /**
-     * Returns the input value cast to the correct generic type.
-     * <p>
-     * Each rule uses an underlying type to represent the data.
-     * This is captured in the generic type of the rule.
-     * Since the generic implementation is Java is limited to the compiler, the
-     * underlying type has been reified which allows this method to validate
-     * the generic type fully. The implementation simply returns the input value
-     * typed as the generic type.
-     *
-     * @param value  the value to reify, may be null
-     * @return the type-cast input value, may be null
-     * @throws ClassCastException if the value is not of the reified type
-     */
-    @SuppressWarnings("unchecked")
-    public final T reify(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (type.isInstance(value)) {
-            return (T) value;
-        }
-        throw new ClassCastException("Value of type " + value.getClass().getName() + " cannot be cast to type " + type.getName());
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the value of this rule from the specified calendrical returning

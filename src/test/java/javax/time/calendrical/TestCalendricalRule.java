@@ -112,19 +112,6 @@ public class TestCalendricalRule {
     }
 
     //-----------------------------------------------------------------------
-    // reify(Object)
-    //-----------------------------------------------------------------------
-    public void test_reify() {
-        MockBigYear test = MockBigYearRule.INSTANCE.reify(new MockBigYear(1));
-        assertEquals(test.year, 1);
-    }
-
-    @Test(expectedExceptions=ClassCastException.class)
-    public void test_reify_wrongType() {
-        MockBigYearRule.INSTANCE.reify(Integer.valueOf(0));
-    }
-
-    //-----------------------------------------------------------------------
     // getName()
     //-----------------------------------------------------------------------
     public void test_getName() {

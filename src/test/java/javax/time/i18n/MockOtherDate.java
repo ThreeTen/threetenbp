@@ -61,9 +61,10 @@ public final class MockOtherDate
     }
 
     //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> rule) {
         if (rule == rule()) {
-            return rule.reify(this);
+            return (T) this;
         }
         return CalendricalEngine.derive(rule, rule(), toLocalDate(), null, null, null, ISOChronology.INSTANCE, null);
     }

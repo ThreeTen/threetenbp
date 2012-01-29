@@ -231,9 +231,10 @@ public final class CopticDate
      * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         if (ruleToDerive == rule()) {
-            return ruleToDerive.reify(this);
+            return (T) this;
         }
         return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), null, null, null, CopticChronology.INSTANCE, null);
     }
