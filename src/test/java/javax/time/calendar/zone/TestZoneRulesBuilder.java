@@ -81,13 +81,13 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // toRules()
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_toRules_noWindows() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.toRules("Europe/London");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toRules_nullID() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_2_30);
@@ -97,6 +97,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // Combined
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_combined_singleCutover() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1950, 1, 1, 1, 0), STANDARD);
@@ -107,6 +108,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_localFixedRules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1_15, dateTime(1920, 1, 1, 1, 0), WALL);
@@ -128,6 +130,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2008, 10, 26, 0, 20, OFFSET_2_30, OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_windowChangeDuringDST() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(2000, 7, 1, 1, 0), WALL);
@@ -146,6 +149,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2000, 12, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_windowChangeWithinDST() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(2000, 7, 1, 1, 0), WALL);
@@ -165,6 +169,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2000, 12, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_endsInSavings() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1_15, dateTime(1920, 1, 1, 1, 0), WALL);
@@ -182,6 +187,7 @@ public class TestZoneRulesBuilder {
         assertGap(test, 2001, 10, 28, 1, 20, OFFSET_1, OFFSET_2);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_closeTransitions() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
@@ -201,6 +207,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 20, 4, 2)).getOffset(), OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_closeTransitionsMeet() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
@@ -237,6 +244,7 @@ public class TestZoneRulesBuilder {
 //        assertEquals(test.getOffsetInfo(dateTime(2000, 3, 20, 3, 30)).getOffset(), OFFSET_1);
 //    }
 
+    @Test(groups={"tck"})
     public void test_combined_weirdSavingsBeforeLast() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
@@ -256,6 +264,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2001, 10, 20, 1, 30, OFFSET_2, OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_differentLengthLastRules1() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
@@ -289,6 +298,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2005, 10, 30, 1, 30, OFFSET_2, OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_combined_differentLengthLastRules2() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
@@ -322,6 +332,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2005, 10, 24, 1, 30, OFFSET_2, OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_argentina() {
 //      # On October 3, 1999, 0:00 local, Argentina implemented daylight savings time,
 //      # which did not result in the switch of a time zone, as they stayed 9 hours
@@ -363,6 +374,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 3, 1, 0)).getOffset(), minus3);
     }
 
+    @Test(groups={"tck"})
     public void test_cairo_dateChange() {
 //    Rule    Egypt   2008    max -   Apr lastFri  0:00s  1:00    S
 //    Rule    Egypt   2008    max -   Aug lastThu 23:00s  0   -
@@ -383,6 +395,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2009, 8, 27, 23, 0, plus3, plus2);  // overlaps from Fri 00:00 back to Thu 23:00
     }
 
+    @Test(groups={"tck"})
     public void test_sofia_lastRuleClash() {
         // UTC rule change in 1996 occurs after Wall change
         // need to ensure that last rule is only applied to last window
@@ -415,6 +428,7 @@ public class TestZoneRulesBuilder {
           assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 4, 0)).getOffset(), plus2);
       }
 
+    @Test(groups={"tck"})
     public void test_prague() {
         // need to calculate savings applicable at window start based on
         // first rule being transition from no savings to DST
@@ -452,6 +466,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 1945, 11, 18, 2, 30, plus2, plus1);
     }
 
+    @Test(groups={"tck"})
     public void test_tbilisi() {
         // has transition into and out of 1 year of permanent DST (Mar96-Oct97)
         // where the date in the window and rule are the same
@@ -496,6 +511,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 1997, 10, 25, 23, 30, plus5, plus4);
     }
 
+    @Test(groups={"tck"})
     public void test_vincennes() {
         // need to ensure that at least one real rule is added to expand on the last rule
 //        Rule    US  2007  max  -   Mar Sun>=8  2:00  1:00  D
@@ -525,6 +541,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 5, 0)).getOffset(), minus5);
     }
 
+    @Test(groups={"tck"})
     public void test_iqaluit() {
         // two hour overlap due to end of daylight and change of standard offset
 //      Rule    Canada  1987   2006 -   Apr Sun>=1  2:00    1:00  D
@@ -556,6 +573,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(1999, 10, 31, 3, 0)).getOffset(), minus6);
     }
 
+    @Test(groups={"tck"})
     public void test_jordan2400() {
         // rule is 24:00 - this is simplified from the TZDB
 //    Rule    Jordan  2002    max -   Mar lastThu 24:00   1:00    S
@@ -585,6 +603,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // addWindow()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_addWindow_constrainedRules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
@@ -602,6 +621,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2008, 10, 26, 0, 30)).getOffset(), OFFSET_2_30);
     }
 
+    @Test(groups={"tck"})
     public void test_addWindow_noRules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
@@ -613,19 +633,19 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_07_01).getOffset(), OFFSET_1);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addWindow_nullOffset() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow((ZoneOffset) null, dateTime(2008, 6, 30, 0, 0), STANDARD);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addWindow_nullTime() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, (LocalDateTime) null, STANDARD);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addWindow_nullTimeDefinition() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(2008, 6, 30, 0, 0), (TimeDefinition) null);
@@ -634,6 +654,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // addWindowForever()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_addWindowForever_noRules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -645,6 +666,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test, ZoneRules.ofFixed(OFFSET_1));
     }
 
+    @Test(groups={"tck"})
     public void test_addWindowForever_rules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -659,7 +681,7 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2008, 10, 26, 0, 20, OFFSET_2_30, OFFSET_1);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addWindowForever_nullOffset() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever((ZoneOffset) null);
@@ -668,6 +690,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // setFixedSavings()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_setFixedSavingsToWindow() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
@@ -681,6 +704,7 @@ public class TestZoneRulesBuilder {
         assertGap(test, 1800, 7, 1, 0, 0, OFFSET_1, OFFSET_2_30);
     }
 
+    @Test(groups={"tck"})
     public void test_setFixedSavingsToWindow_first() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -690,13 +714,13 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2_30);
     }
 
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_setFixedSavingsToWindow_noWindow() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_setFixedSavingsToWindow_cannotMixSavingsWithRule() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -704,7 +728,7 @@ public class TestZoneRulesBuilder {
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_setFixedSavingsToWindow_cannotMixSavingsWithLastRule() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -712,7 +736,7 @@ public class TestZoneRulesBuilder {
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_setFixedSavingsToWindow_nullPeriod() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -722,6 +746,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // addRuleToWindow()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_addRuleToWindow_endOfMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -743,6 +768,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2002, 7, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_addRuleToWindow_endOfMonthFeb() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -764,6 +790,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2006, 7, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
+    @Test(groups={"tck"})
     public void test_addRuleToWindow_fromDayOfMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -785,13 +812,13 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2002, 7, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_addRuleToWindow_noWindow() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_addRuleToWindow_cannotMixRuleWithSavings() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -799,70 +826,70 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalYear1() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(Year.MIN_YEAR - 1, 2008, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalYear2() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MIN_YEAR - 1, MARCH, -1, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalDayOfMonth_tooSmall() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, 2008, MARCH, -29, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalDayOfMonth_zero() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, 2008, MARCH, 0, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalDayOfMonth_tooLarge() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, 2008, MARCH, 32, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_nullMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MAX_YEAR, (MonthOfYear) null, 31, SUNDAY, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_nullTime() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, (LocalTime) null, false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_addRuleToWindow_illegalEndOfDayTime() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, 2008, MARCH, 1, SUNDAY, time(1, 0), true, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_nullTimeDefinition() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), false, (TimeDefinition) null, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_nullPeriod() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -872,6 +899,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // addRuleToWindow() - single year object
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_addRuleToWindow_singleYearObject() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -888,21 +916,21 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2001, 7, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYearObject_nullTime() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow((LocalDateTime) null, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYearObject_nullTimeDefinition() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(dateTime(2000, MARCH, 31, 1, 0), (TimeDefinition) null, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYearObject_nullPeriod() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -912,6 +940,7 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // addRuleToWindow() - single year
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_addRuleToWindow_singleYear() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -928,13 +957,13 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2001, 7, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_noWindow() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addRuleToWindow(2000, MARCH, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_cannotMixRuleWithSavings() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
@@ -942,56 +971,56 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(2000, MARCH, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_illegalYear() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(Year.MIN_YEAR - 1, MARCH, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_illegalDayOfMonth_tooSmall() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, -29, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_illegalDayOfMonth_zero() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, 0, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_illegalDayOfMonth_tooLarge() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, 32, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_nullMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, (MonthOfYear) null, 31, time(1, 0), false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_nullTime() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, 31, (LocalTime) null, false, WALL, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_nullTimeDefinition() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, 31, time(1, 0), false, (TimeDefinition) null, PERIOD_1HOUR30MIN);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_addRuleToWindow_singleYear_nullPeriod() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);

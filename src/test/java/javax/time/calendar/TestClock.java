@@ -90,6 +90,7 @@ public class TestClock {
     private static final Clock MOCK_NO_OVERRIDES = new MockClockNoOverrides();
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_simpleClock() throws Exception {
         Clock test = new MockSimpleClock();
         Method[] methods = Clock.class.getDeclaredMethods();
@@ -110,38 +111,41 @@ public class TestClock {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_mockClockNoOverrides_getSource() {
         MOCK_NO_OVERRIDES.getSource();
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_mockClockNoOverrides_withSource() {
         MOCK_NO_OVERRIDES.withSource(TIME_SOURCE);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_mockClockNoOverrides_getZone() {
         MOCK_NO_OVERRIDES.getZone();
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_mockClockNoOverrides_withZone() {
         MOCK_NO_OVERRIDES.withZone(ZONE);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_mockClock_get() {
         assertEquals(MOCK.getSource(), TIME_SOURCE);
         assertEquals(MOCK.getZone(), ZONE);
     }
 
+    @Test(groups={"tck"})
     public void test_mockClock_withSource() {
         Clock changed = MOCK.withSource(TimeSource.system());
         assertEquals(changed.getSource(), TimeSource.system());
         assertEquals(changed.getZone(), ZONE);
     }
-
+    
+    @Test(groups={"tck"})
     public void test_mockClock_withZone() {
         ZoneId london = ZoneId.of("Europe/London");
         Clock changed = MOCK.withZone(london);
@@ -150,6 +154,7 @@ public class TestClock {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_mockClock_dateAndTime() {
         assertEquals(MOCK.today(), LocalDate.of(2008, 6, 30));
         assertEquals(MOCK.yesterday(), LocalDate.of(2008, 6, 29));

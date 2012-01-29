@@ -63,6 +63,7 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Enum.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
@@ -72,12 +73,14 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_rule() {
         assertEquals(DayOfWeek.rule().getName(), "DayOfWeek");
         assertEquals(DayOfWeek.rule().getType(), DayOfWeek.class);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_int_singleton() {
         for (int i = 1; i <= 7; i++) {
             DayOfWeek test = DayOfWeek.of(i);
@@ -86,44 +89,45 @@ public class TestDayOfWeek {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_valueTooLow() {
         DayOfWeek.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
         DayOfWeek.of(8);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_Calendricals() {
         assertEquals(DayOfWeek.from(LocalDate.of(2011, 6, 6)), DayOfWeek.MONDAY);
         assertEquals(DayOfWeek.from(DAY_OF_WEEK.field(4)), DayOfWeek.THURSDAY);
         assertEquals(DayOfWeek.from(LocalDate.of(2011, 6, 6), MONDAY.toField()), DayOfWeek.MONDAY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
         DayOfWeek.from(TUESDAY, WEDNESDAY.toField());
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_noDerive() {
         DayOfWeek.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_empty() {
         DayOfWeek.from();
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_nullArray() {
         DayOfWeek.from((Calendrical[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
         DayOfWeek.from((Calendrical) null);
     }
@@ -131,6 +135,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // get()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_get() {
         assertEquals(DayOfWeek.MONDAY.get(DayOfWeek.rule()), DayOfWeek.MONDAY);
         assertEquals(DayOfWeek.FRIDAY.get(DayOfWeek.rule()), DayOfWeek.FRIDAY);
@@ -144,16 +149,17 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getText() {
         assertEquals(DayOfWeek.MONDAY.getText(TextStyle.SHORT, Locale.US), "Mon");
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullStyle() {
         DayOfWeek.MONDAY.getText(null, Locale.US);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullLocale() {
         DayOfWeek.MONDAY.getText(TextStyle.FULL, null);
     }
@@ -161,6 +167,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // next()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_next() {
         assertEquals(DayOfWeek.MONDAY.next(), DayOfWeek.TUESDAY);
         assertEquals(DayOfWeek.TUESDAY.next(), DayOfWeek.WEDNESDAY);
@@ -174,6 +181,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // previous()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_previous() {
         assertEquals(DayOfWeek.MONDAY.previous(), DayOfWeek.SUNDAY);
         assertEquals(DayOfWeek.TUESDAY.previous(), DayOfWeek.MONDAY);
@@ -187,6 +195,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // roll(int)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_plusDays_monday() {
         assertEquals(DayOfWeek.MONDAY.roll(-7), DayOfWeek.MONDAY);
         assertEquals(DayOfWeek.MONDAY.roll(-6), DayOfWeek.TUESDAY);
@@ -205,6 +214,7 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.MONDAY.roll(7), DayOfWeek.MONDAY);
     }
 
+    @Test(groups={"tck"})
     public void test_roll_thursday() {
         assertEquals(DayOfWeek.THURSDAY.roll(-7), DayOfWeek.THURSDAY);
         assertEquals(DayOfWeek.THURSDAY.roll(-6), DayOfWeek.FRIDAY);
@@ -226,6 +236,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // matcher
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_matcher() {
         assertEquals(DayOfWeek.MONDAY.matchesCalendrical(DAY_OF_WEEK.field(1)), true);
         assertEquals(DayOfWeek.MONDAY.matchesCalendrical(MONDAY), true);
@@ -235,7 +246,7 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalDate.of(1970, 1, 1)), false);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_matcher_null() {
         DayOfWeek.MONDAY.matchesCalendrical(null);
     }
@@ -243,6 +254,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // toField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toField() {
         assertEquals(DayOfWeek.MONDAY.toField(), DAY_OF_WEEK.field(1));
         assertEquals(DayOfWeek.THURSDAY.toField(), DAY_OF_WEEK.field(4));
@@ -251,6 +263,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString() {
         assertEquals(DayOfWeek.MONDAY.toString(), "MONDAY");
         assertEquals(DayOfWeek.TUESDAY.toString(), "TUESDAY");
@@ -264,6 +277,7 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     // generated methods
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_enum() {
         assertEquals(DayOfWeek.valueOf("MONDAY"), DayOfWeek.MONDAY);
         assertEquals(DayOfWeek.values()[0], DayOfWeek.MONDAY);

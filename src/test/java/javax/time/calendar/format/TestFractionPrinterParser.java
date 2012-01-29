@@ -49,7 +49,7 @@ import org.testng.annotations.Test;
  *
  * @author Stephen Colebourne
  */
-@Test
+@Test(groups={"implementation"})
 public class TestFractionPrinterParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

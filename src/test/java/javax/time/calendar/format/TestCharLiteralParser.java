@@ -42,7 +42,7 @@ import org.testng.annotations.Test;
  *
  * @author Stephen Colebourne
  */
-@Test
+@Test(groups={"implementation"})
 public class TestCharLiteralParser extends AbstractTestPrinterParser {
 
     @DataProvider(name="success")

@@ -82,6 +82,7 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Calendrical.class.isAssignableFrom(DateTimeFields.class));
         assertTrue(CalendricalMatcher.class.isAssignableFrom(DateTimeFields.class));
@@ -98,7 +99,7 @@ public class TestDateTimeFields {
         };
     }
 
-    @Test(dataProvider="simple")
+    @Test(dataProvider="simple", groups={"tck"})
     public void test_serialization(DateTimeFields fields) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -114,6 +115,7 @@ public class TestDateTimeFields {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_immutable() {
         Class<DateTimeFields> cls = DateTimeFields.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
@@ -132,62 +134,72 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void singleton_empty() {
         DateTimeFields test = DateTimeFields.EMPTY;
         assertEquals(test.size(), 0);
+    }
+
+    @Test(groups={"implementation"})
+    public void singleton_empty_same() {
         assertSame(DateTimeFields.EMPTY, DateTimeFields.EMPTY);
     }
 
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_fields_onePair() {
         DateTimeFields test = DateTimeFields.of(YEAR, 2008);
         assertFields(test, YEAR, 2008);
     }
 
+    @Test(groups={"tck"})
     public void factory_fields_onePair_invalidValue() {
         DateTimeFields test = DateTimeFields.of(MONTH_OF_YEAR, 13);
         assertFields(test, MONTH_OF_YEAR, 13);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_onePair_null() {
         DateTimeFields.of(NULL_RULE, 1);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_fields_twoPairs() {
         DateTimeFields test = DateTimeFields.of(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
+    @Test(groups={"tck"})
     public void factory_fields_twoPairs_orderNotSignificant() {
         DateTimeFields test = DateTimeFields.of(MONTH_OF_YEAR, 6, YEAR, 2008);
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class, groups={"tck"})
     public void factory_fields_twoPairs_sameFieldOverwrites() {
         DateTimeFields.of(MONTH_OF_YEAR, 6, MONTH_OF_YEAR, 7);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_twoPairs_nullFirst() {
         DateTimeFields.of(NULL_RULE, 1, MONTH_OF_YEAR, 6);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_twoPairs_nullSecond() {
         DateTimeFields.of(MONTH_OF_YEAR, 6, NULL_RULE, 1);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_twoPairs_nullBoth() {
         DateTimeFields.of(NULL_RULE, 1, NULL_RULE, 6);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_fields_array() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         list.add(DateTimeField.of(YEAR, 2008));
@@ -196,6 +208,7 @@ public class TestDateTimeFields {
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
+    @Test(groups={"tck"})
     public void factory_fields_array_sorted() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         list.add(DateTimeField.of(MONTH_OF_YEAR, 6));
@@ -204,12 +217,13 @@ public class TestDateTimeFields {
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
+    @Test(groups={"implementation"})
     public void factory_fields_array_empty_singleton() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         assertSame(DateTimeFields.of(list.toArray(new DateTimeField[0])), DateTimeFields.EMPTY);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void factory_fields_array_duplicate() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         list.add(DateTimeField.of(YEAR, 2008));
@@ -218,12 +232,12 @@ public class TestDateTimeFields {
         DateTimeFields.of(list.toArray(new DateTimeField[0]));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_array_null() {
         DateTimeFields.of((DateTimeField[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_array_nullContent() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         list.add(DateTimeField.of(YEAR, 2008));
@@ -232,6 +246,7 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_fields_iterable() {
         List<DateTimeField> list = new CopyOnWriteArrayList<DateTimeField>();  // CopyOnWriteArrayList objects to nulls
         list.add(DateTimeField.of(YEAR, 2008));
@@ -240,6 +255,7 @@ public class TestDateTimeFields {
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
+    @Test(groups={"tck"})
     public void factory_fields_iterable_sorted() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         list.add(DateTimeField.of(MONTH_OF_YEAR, 6));
@@ -248,12 +264,13 @@ public class TestDateTimeFields {
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
+    @Test(groups={"tck"})
     public void factory_fields_iterable_empty_singleton() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         assertSame(DateTimeFields.of(list), DateTimeFields.EMPTY);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void factory_fields_iterable_duplicate() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         list.add(DateTimeField.of(YEAR, 2008));
@@ -262,12 +279,12 @@ public class TestDateTimeFields {
         DateTimeFields.of(list);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_iterable_null() {
         DateTimeFields.of((Iterable<DateTimeField>) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_fields_iterable_nullContent() {
         List<DateTimeField> list = new ArrayList<DateTimeField>();
         list.add(DateTimeField.of(YEAR, 2008));
@@ -278,16 +295,19 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // size()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_size0() {
         DateTimeFields test = DateTimeFields.EMPTY;
         assertEquals(test.size(), 0);
     }
-
+    
+    @Test(groups={"tck"})
     public void test_size1() {
         DateTimeFields test = dtf(YEAR, 2008);
         assertEquals(test.size(), 1);
     }
 
+    @Test(groups={"tck"})
     public void test_size2() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.size(), 2);
@@ -296,12 +316,14 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // iterator()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_iterator0() {
         DateTimeFields test = DateTimeFields.EMPTY;
         Iterator<DateTimeField> iterator = test.iterator();
         assertEquals(iterator.hasNext(), false);
     }
 
+    @Test(groups={"tck"})
     public void test_iterator2() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         Iterator<DateTimeField> iterator = test.iterator();
@@ -312,7 +334,7 @@ public class TestDateTimeFields {
         assertEquals(iterator.hasNext(), false);
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class, groups={"tck"})
     public void test_iterator_immutable() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         Iterator<DateTimeField> iterator = test.iterator();
@@ -323,17 +345,20 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // contains()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_contains() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.contains(YEAR), true);
         assertEquals(test.contains(MONTH_OF_YEAR), true);
     }
 
+    @Test(groups={"tck"})
     public void test_contains_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.contains(NULL_RULE), false);
     }
 
+    @Test(groups={"tck"})
     public void test_contains_fieldNotPresent() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.contains(DAY_OF_MONTH), false);
@@ -342,23 +367,26 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // getField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getField() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.getField(YEAR), YEAR.field(2008));
         assertEquals(test.getField(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getField_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         test.getField((DateTimeRule) null);
     }
 
+    @Test(groups={"tck"})
     public void test_getField_fieldNotDerived() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.getField(QUARTER_OF_YEAR), null);
     }
 
+    @Test(groups={"tck"})
     public void test_getField_fieldNotPresent() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.getField(DAY_OF_MONTH), null);
@@ -367,19 +395,20 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // getValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getValue() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.getValue(YEAR), 2008);
         assertEquals(test.getValue(MONTH_OF_YEAR), 6);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getValue_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         test.getValue(NULL_RULE);
     }
 
-    @Test(expectedExceptions=CalendricalRuleException.class)
+    @Test(expectedExceptions=CalendricalRuleException.class, groups={"tck"})
     public void test_getValue_fieldNotPresent() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         try {
@@ -393,19 +422,20 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // getValidValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getValidValue() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.getValidValue(YEAR), 2008);
         assertEquals(test.getValidValue(MONTH_OF_YEAR), 6);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getValidValue_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         test.getValidValue(NULL_RULE);
     }
 
-    @Test(expectedExceptions=CalendricalRuleException.class)
+    @Test(expectedExceptions=CalendricalRuleException.class, groups={"tck"})
     public void test_getValidValue_fieldNotPresent() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         try {
@@ -416,7 +446,7 @@ public class TestDateTimeFields {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_getValidValue_invalid() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 13);  // out of range
         try {
@@ -431,19 +461,20 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // getValidIntValue()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getValidIntValue() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.getValidIntValue(YEAR), 2008);
         assertEquals(test.getValidIntValue(MONTH_OF_YEAR), 6);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getValidIntValue_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         test.getValidIntValue(NULL_RULE);
     }
 
-    @Test(expectedExceptions=CalendricalRuleException.class)
+    @Test(expectedExceptions=CalendricalRuleException.class, groups={"tck"})
     public void test_getValidIntValue_fieldNotPresent() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         try {
@@ -454,7 +485,7 @@ public class TestDateTimeFields {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_getValidIntValue_invalid() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 13);  // out of range
         try {
@@ -469,6 +500,7 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // with()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_with() {
         DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields test = base.with(DAY_OF_MONTH, 30);
@@ -477,25 +509,28 @@ public class TestDateTimeFields {
         assertFields(base, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
+    @Test(groups={"tck"})
     public void test_with_invalidValue() {
         DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields test = base.with(DAY_OF_MONTH, 123);
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 123);
     }
 
+    @Test(groups={"tck"})
     public void test_with_sameFieldOverwrites() {
         DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields test = base.with(MONTH_OF_YEAR, 1);
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 1);
     }
 
+    @Test(groups={"tck"})
     public void test_with_sameFieldNoChange() {
         DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields test = base.with(MONTH_OF_YEAR, 6);
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         test.with(NULL_RULE, 30);
@@ -615,6 +650,7 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // without()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_without() {
         DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields test = base.without(MONTH_OF_YEAR);
@@ -623,19 +659,21 @@ public class TestDateTimeFields {
         assertFields(base, YEAR, 2008, MONTH_OF_YEAR, 6);
     }
 
+    @Test(groups={"implementation"})
     public void test_without_fieldNotPresent() {
         DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields test = base.without(DAY_OF_MONTH);
         assertSame(test, base);
     }
 
+    @Test(groups={"implementation"})
     public void test_without_emptySingleton() {
         DateTimeFields base = dtf(YEAR, 2008);
         DateTimeFields test = base.without(YEAR);
         assertSame(test, DateTimeFields.EMPTY);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_without_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         test.without(NULL_RULE);
@@ -740,7 +778,7 @@ public class TestDateTimeFields {
         };
     }
 
-    @Test(dataProvider = "derive")
+    @Test(dataProvider = "derive", groups={"tck"})
     public void test_get_derive(DateTimeFields input, DateTimeRule rule, Number output) {
         if (output == null) {
             assertEquals(input.get(rule), null);
@@ -752,23 +790,26 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // get()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_get() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.get(YEAR), YEAR.field(2008));
         assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
     }
 
+    @Test(groups={"tck"})
     public void test_get_derived() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.get(QUARTER_OF_YEAR), QUARTER_OF_YEAR.field(2));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_get_null() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         test.get((CalendricalRule<?>) null);
     }
 
+    @Test(groups={"tck"})
     public void test_get_fieldNotPresent() {
         DateTimeFields test = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(test.get(DAY_OF_MONTH), null);
@@ -777,6 +818,7 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // matchesCalendrical()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_ymd_date() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
@@ -788,6 +830,7 @@ public class TestDateTimeFields {
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 30);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_dowMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
@@ -798,6 +841,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(date), true);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_dowNotMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
@@ -808,6 +852,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(date), false);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_ym_date_partialMatch() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
@@ -816,6 +861,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(date), true);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_timeIgnored() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
@@ -826,6 +872,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(date), true);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_invalidDay() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
@@ -835,6 +882,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(date), false);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_hm_time() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
@@ -845,6 +893,7 @@ public class TestDateTimeFields {
         assertFields(test, HOUR_OF_DAY, 11, MINUTE_OF_HOUR, 30);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_amPmMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
@@ -854,6 +903,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(time), true);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_amPmNotMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
@@ -863,6 +913,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(time), false);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_h_time_partialMatch() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11);
@@ -870,6 +921,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(time), true);
     }
 
+    @Test(groups={"tck"})
     public void test_matchesCalendrical_dateIgnored() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
@@ -879,7 +931,7 @@ public class TestDateTimeFields {
         assertEquals(test.matchesCalendrical(time), true);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_matchesCalendrical_null() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
@@ -887,7 +939,7 @@ public class TestDateTimeFields {
         test.matchesCalendrical(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_matchesCalendrical_null_emptyFields() {
         DateTimeFields test = DateTimeFields.EMPTY;
         test.matchesCalendrical((LocalTime) null);
@@ -896,6 +948,7 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals0() {
         DateTimeFields a = DateTimeFields.EMPTY;
         DateTimeFields b = DateTimeFields.EMPTY;
@@ -905,6 +958,7 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals1_equal() {
         DateTimeFields a = dtf(YEAR, 2008);
         DateTimeFields b = dtf(YEAR, 2008);
@@ -914,6 +968,7 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals1_notEqualValue() {
         DateTimeFields a = dtf(YEAR, 2008);
         DateTimeFields b = dtf(YEAR, 2007);
@@ -923,6 +978,7 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals1_notEqualField() {
         DateTimeFields a = dtf(MONTH_OF_YEAR, 3);
         DateTimeFields b = dtf(DAY_OF_MONTH, 3);
@@ -932,6 +988,7 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals2_equal() {
         DateTimeFields a = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields b = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
@@ -941,6 +998,7 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals2_notEqualOneValue() {
         DateTimeFields a = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields b = dtf(YEAR, 2007, MONTH_OF_YEAR, 6);
@@ -950,6 +1008,7 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals2_notEqualTwoValues() {
         DateTimeFields a = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields b = dtf(YEAR, 2007, MONTH_OF_YEAR, 5);
@@ -959,6 +1018,7 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals2_notEqualField() {
         DateTimeFields a = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         DateTimeFields b = dtf(YEAR, 2008, DAY_OF_MONTH, 6);
@@ -968,11 +1028,13 @@ public class TestDateTimeFields {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_otherType() {
         DateTimeFields a = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(a.equals("Rubbish"), false);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_null() {
         DateTimeFields a = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         assertEquals(a.equals(null), false);
@@ -981,18 +1043,21 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString0() {
         DateTimeFields base = DateTimeFields.EMPTY;
         String test = base.toString();
         assertEquals(test, "[]");
     }
 
+    @Test(groups={"tck"})
     public void test_toString1() {
         DateTimeFields base = dtf(YEAR, 2008);
         String test = base.toString();
         assertEquals(test, "[Year 2008]");
     }
 
+    @Test(groups={"tck"})
     public void test_toString2() {
         DateTimeFields base = dtf(YEAR, 2008, MONTH_OF_YEAR, 6);
         String test = base.toString();
