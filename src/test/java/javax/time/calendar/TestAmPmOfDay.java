@@ -60,7 +60,7 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Enum.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
