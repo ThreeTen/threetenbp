@@ -472,6 +472,9 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     //-------------------------------------------------------------------------
     public long calculateSetLenient(DateTimeRule fieldRule, long fieldValue, long newValue, DateTimeResolver resolver) {
         long curValue = calculateGet(fieldRule, fieldValue);
+        if (curValue == Long.MIN_VALUE) {
+            return Long.MIN_VALUE;
+        }
         long amountToAdd = convertToPeriod(newValue) - convertToPeriod(curValue);
         return calculateAdd(fieldRule, fieldValue, amountToAdd, resolver);
     }
@@ -485,9 +488,12 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     }
 
     //-----------------------------------------------------------------------
-    public long calculateRoll(DateTimeRule fieldRule, long fieldValue, long amountToRoll) {
+    public long calculateRoll(DateTimeRule fieldRule, long fieldValue, long amountToRoll, DateTimeResolver resolver) {
+        if (getPeriodRange() == null) {
+            return calculateAdd(fieldRule, fieldValue, amountToRoll, resolver);
+        }
         long curValue = calculateGet(fieldRule, fieldValue);
-        if (curValue == Long.MIN_VALUE || getPeriodRange() == null) {
+        if (curValue == Long.MIN_VALUE) {
             return Long.MIN_VALUE;
         }
         DateTimeRuleRange range = calculateRange(fieldRule, fieldValue);
@@ -496,7 +502,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
         long curPeriod = convertToPeriod(curValue);
         long newPeriod = MathUtils.floorMod(curPeriod + adjAmountToRoll, totalRange);  // TODO: range overflow?
         long newValue = convertFromPeriod(newPeriod);
-        return calculateAdd(fieldRule, fieldValue, newValue - curValue, null);  // TODO: strict resolver
+        return calculateAdd(fieldRule, fieldValue, newValue - curValue, resolver);
     }
 
 //    //-----------------------------------------------------------------------
