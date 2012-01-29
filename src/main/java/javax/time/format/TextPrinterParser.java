@@ -79,7 +79,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
         if (field == null) {
             return false;
         }
-        String text = new SimpleDateTimeTextProvider().getText(field, textStyle, context.getLocale());
+        String text = DateTimeFormatters.getTextProvider().getText(field, textStyle, context.getLocale());
         if (text == null) {
             return numberPrinterParser().print(context, buf);
         }
@@ -94,7 +94,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
             throw new IndexOutOfBoundsException();
         }
         TextStyle style = (context.isStrict() ? textStyle : null);
-        Iterator<Entry<String, DateTimeField>> it = new SimpleDateTimeTextProvider().getTextIterator(rule, style, context.getLocale());
+        Iterator<Entry<String, DateTimeField>> it = DateTimeFormatters.getTextProvider().getTextIterator(rule, style, context.getLocale());
         if (it != null) {
             while (it.hasNext()) {
                 Entry<String, DateTimeField> entry = it.next();

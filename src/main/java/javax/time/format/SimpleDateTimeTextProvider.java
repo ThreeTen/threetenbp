@@ -62,7 +62,7 @@ import javax.time.calendrical.DateTimeRule;
  *
  * @author Stephen Colebourne
  */
-public final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
+final class SimpleDateTimeTextProvider extends DateTimeTextProvider {
      // TODO: Better implementation based on CLDR
 
     /** Cache. */

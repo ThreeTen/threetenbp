@@ -36,7 +36,7 @@ import java.util.Locale;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.format.SimpleDateTimeTextProvider;
+import javax.time.format.DateTimeFormatters;
 import javax.time.format.TextStyle;
 
 /**
@@ -258,7 +258,7 @@ public final class DateTimeField
     public String getText(TextStyle textStyle, Locale locale) {
         ISOChronology.checkNotNull(textStyle, "TextStyle must not be null");
         ISOChronology.checkNotNull(locale, "Locale must not be null");
-        String text = new SimpleDateTimeTextProvider().getText(this, textStyle, locale);
+        String text = DateTimeFormatters.getTextProvider().getText(this, textStyle, locale);
         return text == null ? Long.toString(value) : text;
     }
 

@@ -990,4 +990,25 @@ public final class DateTimeFormatters {
         return new DateTimeFormatterBuilder().appendLocalized(dateStyle, timeStyle).toFormatter(locale);
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Gets the provider of text.
+     *
+     * @return the provider, not null
+     */
+    public static DateTimeTextProvider getTextProvider() {
+        // TODO: obtain provider properly
+        return new SimpleDateTimeTextProvider();
+    }
+
+    /**
+     * Gets the provider of format styles.
+     *
+     * @return the provider, not null
+     */
+    public static DateTimeFormatStyleProvider getFormatStyleProvider() {
+        // TODO: obtain provider properly
+        return new SimpleDateTimeFormatStyleProvider();
+    }
+
 }

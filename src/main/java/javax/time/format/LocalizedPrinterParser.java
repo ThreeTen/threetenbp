@@ -92,8 +92,7 @@ final class LocalizedPrinterParser implements DateTimePrinter, DateTimeParser {
      * @throws IllegalArgumentException if the formatter cannot be found
      */
     private DateTimeFormatter formatter(Locale locale) {
-        // TODO: obtain provider properly
-        return new SimpleDateTimeFormatStyleProvider().getFormatter(dateStyle, timeStyle, chronology, locale);
+        return DateTimeFormatters.getFormatStyleProvider().getFormatter(dateStyle, timeStyle, chronology, locale);
     }
 
     //-----------------------------------------------------------------------
