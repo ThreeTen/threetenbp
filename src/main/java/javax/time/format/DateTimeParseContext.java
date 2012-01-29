@@ -114,7 +114,7 @@ public final class DateTimeParseContext {
      * This locale is used to control localization in the parse except
      * where localization is controlled by the symbols.
      *
-     * @param symbols  the locale, not null
+     * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");

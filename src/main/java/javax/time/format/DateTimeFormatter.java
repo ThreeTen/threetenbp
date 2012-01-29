@@ -149,8 +149,8 @@ public final class DateTimeFormatter {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param locale  the new locale, not null
-     * @return a {@code DateTimeFormatter} based on this one with the requested locale, not null
+     * @param symbols  the new symbols, not null
+     * @return a {@code DateTimeFormatter} based on this one with the requested symbols, not null
      */
     public DateTimeFormatter withSymbols(DateTimeFormatSymbols symbols) {
         DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
