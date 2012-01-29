@@ -47,7 +47,7 @@ import org.testng.annotations.Test;
  *
  * @author Stephen Colebourne
  */
-@Test
+@Test(groups={"implementation"})
 public class TestNumberParser extends AbstractTestPrinterParser {
 
     //-----------------------------------------------------------------------

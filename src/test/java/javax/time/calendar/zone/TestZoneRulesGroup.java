@@ -59,6 +59,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // isValidGroupID()
     //-----------------------------------------------------------------------
+	@Test(groups={"tck"})
     public void test_isValidGroup() {
         assertEquals(ZoneRulesGroup.isValidGroupID("TZDB"), true);
         assertEquals(ZoneRulesGroup.isValidGroupID("NOTREAL"), false);
@@ -69,21 +70,22 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getGroup()
     //-----------------------------------------------------------------------
+	@Test(groups={"tck"})
     public void test_getGroup() {
         assertEquals(ZoneRulesGroup.getGroup("TZDB").getID(), "TZDB");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getGroup_badGroup() {
         ZoneRulesGroup.getGroup("NOTREAL");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getGroup_badGroupBlank() {
         ZoneRulesGroup.getGroup("");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getGroup_null() {
         ZoneRulesGroup.getGroup(null);
     }
@@ -91,6 +93,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getAvailableGroups()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getAvailableGroups() {
         List<ZoneRulesGroup> groups = ZoneRulesGroup.getAvailableGroups();
         assertEquals(groups.contains(ZoneRulesGroup.getGroup("TZDB")), true);
@@ -103,23 +106,24 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getParsableIDs()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getParsableIDs() {
         Set<String> parsableIDs = ZoneRulesGroup.getParsableIDs();
         assertEquals(parsableIDs.contains("Europe/London"), true);
         assertEquals(parsableIDs.contains("TZDB:Europe/London"), true);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_getParsableIDs_unmodifiableClear() {
         ZoneRulesGroup.getParsableIDs().clear();
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_getParsableIDs_unmodifiableRemove() {
         ZoneRulesGroup.getParsableIDs().remove("Europe/London");
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_getParsableIDs_unmodifiableAdd() {
         ZoneRulesGroup.getParsableIDs().add("Europe/Lon");
     }
@@ -127,6 +131,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // registerProvider()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_registerProvider() {
         List<ZoneRulesGroup> pre = ZoneRulesGroup.getAvailableGroups();
         for (ZoneRulesGroup group : pre) {
@@ -172,7 +177,7 @@ public class TestZoneRulesGroup {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_registerProvider_invalidGroupID() {
         ZoneRulesGroup.registerProvider(new MockTempProviderInvalidGroupID());
     }
@@ -190,7 +195,7 @@ public class TestZoneRulesGroup {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_registerProvider_invalidRegionVersionID() {
         ZoneRulesGroup.registerProvider(new MockTempProviderInvalidGroupID());
     }
@@ -224,6 +229,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // isValidRules()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_isValidRules() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         assertEquals(group.isValidRules("Europe/London", "2008i"), true);
@@ -236,6 +242,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getRules()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getRules() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         ZoneRules rules = group.getRules("Europe/London", "2008i");
@@ -248,25 +255,25 @@ public class TestZoneRulesGroup {
         assertEquals(rules.getTransitionRules().get(1).getMonthOfYear(), MonthOfYear.OCTOBER);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getRules_unknownRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getRules("Europe/Lon", "2008i");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getRules_unknownVersion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getRules("Europe/London", "20");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getRules_nullRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getRules(null, "2008i");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getRules_nullVersion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getRules("Europe/London", null);
@@ -275,6 +282,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getRulesValidFor()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getRulesValidFor() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
@@ -288,35 +296,35 @@ public class TestZoneRulesGroup {
         assertEquals(rules.getTransitionRules().get(1).getMonthOfYear(), MonthOfYear.OCTOBER);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getRulesValidFor_unknownRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
         group.getRulesValidFor("Europe/Lon", "2008i", odt);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getRulesValidFor_unknownVersion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
         group.getRulesValidFor("Europe/London", "20", odt);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getRulesValidFor_nullRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
         group.getRulesValidFor(null, "2008i", odt);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getRulesValidFor_nullVersion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
         group.getRulesValidFor("Europe/London", null, odt);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getRulesValidFor_nullDateTime() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getRulesValidFor("Europe/London", "2008i", null);
@@ -325,39 +333,42 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getLatestVersionIDValidFor()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getLatestVersionIDValidFor() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
         assertEquals(group.getLatestVersionIDValidFor("Europe/London", odt), TestZoneId.LATEST_TZDB);
     }
 
+    @Test(groups={"tck"})
     public void test_getLatestVersionIDValidFor_mock_latest() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.ofHoursMinutes(2, 45));
         assertEquals(group.getLatestVersionIDValidFor("RulesChange", odt), "v2");
     }
 
+    @Test(groups={"tck"})
     public void test_getLatestVersionIDValidFor_mock_notLatest() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.ofHoursMinutes(1, 45));
         assertEquals(group.getLatestVersionIDValidFor("RulesChange", odt), "v1");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getLatestVersionIDValidFor_unknownRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
         group.getLatestVersionIDValidFor("Europe/Lon", odt);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getLatestVersionIDValidFor_nullRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         OffsetDateTime odt = OffsetDateTime.of(2010, 1, 1, 12, 0, ZoneOffset.UTC);
         group.getLatestVersionIDValidFor(null, odt);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getLatestVersionIDValidFor_nullDateTime() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getLatestVersionIDValidFor("Europe/London", null);
@@ -366,12 +377,14 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getAvailableVersionIDs()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getAvailableVersionIDs_String() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         Set<String> versions = group.getAvailableVersionIDs();
         assertEquals(versions.contains("2008i"), true);
     }
 
+    @Test(groups={"tck"})
     public void test_getAvailableVersionIDs_String_mock() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         Set<String> versions = group.getAvailableVersionIDs();
@@ -380,7 +393,7 @@ public class TestZoneRulesGroup {
         assertEquals(versions.contains("v2"), true);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_getAvailableVersionIDs_String_unmodifiable() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         Set<String> versions = group.getAvailableVersionIDs();
@@ -413,11 +426,13 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getLatestVersionID(String)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getLatestVersionID() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         assertEquals(group.getLatestVersionID(), TestZoneId.LATEST_TZDB);
     }
 
+    @Test(groups={"tck"})
     public void test_getLatestVersionID_mock() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         assertEquals(group.getLatestVersionID(), "v2");
@@ -426,29 +441,31 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getLatestVersionID(String)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getLatestVersionID_String() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         assertEquals(group.getLatestVersionID("Europe/London"), TestZoneId.LATEST_TZDB);
     }
 
+    @Test(groups={"tck"})
     public void test_getLatestVersionID_String_mock() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         assertEquals(group.getLatestVersionID("RulesChange"), "v2");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getLatestVersionID_String_unknownRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getLatestVersionID("Europe/Lon");
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getLatestVersionID_String_unknownRegion_mock() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         group.getLatestVersionID("Europe/Lon");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getLatestVersionID_String_nullRegion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getLatestVersionID(null);
@@ -457,19 +474,21 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // isValidRegionID(String)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_isValidRegionID_String() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         assertEquals(group.isValidRegionID("Europe/London"), true);
         assertEquals(group.isValidRegionID("Rubbish"), false);
     }
 
+    @Test(groups={"tck"})
     public void test_isValidRegionID_String_mock() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         assertEquals(group.isValidRegionID("RulesChange"), true);
         assertEquals(group.isValidRegionID("Rubbish"), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_isValidRegionID_String_nullVersion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.isValidRegionID(null);
@@ -478,24 +497,26 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // getRegionIDs(String)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getRegionIDs_String() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         assertEquals(group.getRegionIDs("2008i").contains("Europe/London"), true);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
     public void test_getRegionIDs_String_unmodifiable() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         Set<String> regionIDs = group.getRegionIDs("v1");
         regionIDs.clear();
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_getRegionIDs_String_badVersion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         group.getRegionIDs("20");
     }
 
+    @Test(groups={"tck"})
     public void test_getRegionIDs_String_mock_v1() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         Set<String> regions = group.getRegionIDs("v1");
@@ -503,6 +524,7 @@ public class TestZoneRulesGroup {
         assertEquals(regions.contains("RulesChange"), true);
     }
 
+    @Test(groups={"tck"})
     public void test_getRegionIDs_String_mock_v2() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("MOCK");
         Set<String> regions = group.getRegionIDs("v2");
@@ -511,7 +533,7 @@ public class TestZoneRulesGroup {
         assertEquals(regions.contains("NewPlace"), true);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_getRegionIDs_String_nullVersion() {
         ZoneRulesGroup group = ZoneRulesGroup.getGroup("TZDB");
         group.getRegionIDs(null);
@@ -568,6 +590,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals() {
         ZoneRulesGroup a = ZoneRulesGroup.getGroup("TZDB");
         ZoneRulesGroup b = ZoneRulesGroup.getGroup("MOCK");
@@ -577,10 +600,12 @@ public class TestZoneRulesGroup {
         assertEquals(b.equals(b), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_string_false() {
         assertEquals(ZoneRulesGroup.getGroup("TZDB").equals("TZDB"), false);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_null_false() {
         assertEquals(ZoneRulesGroup.getGroup("TZDB").equals(null), false);
     }
@@ -597,6 +622,7 @@ public class TestZoneRulesGroup {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString() {
         assertEquals(ZoneRulesGroup.getGroup("TZDB").toString(), "TZDB");
         assertEquals(ZoneRulesGroup.getGroup("MOCK").toString(), "MOCK");

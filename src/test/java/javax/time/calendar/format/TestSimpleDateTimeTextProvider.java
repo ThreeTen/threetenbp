@@ -159,7 +159,7 @@ public class TestSimpleDateTimeTextProvider {
         };
     }
 
-    @Test(dataProvider = "Text")
+    @Test(dataProvider = "Text", groups={"tck"})
     public void test_getText(DateTimeRule rule, Number value, TextStyle style, Locale locale, String expected) {
         SimpleDateTimeTextProvider tp = new SimpleDateTimeTextProvider();
         assertEquals(tp.getText(rule.field(value.longValue()), style, locale), expected);

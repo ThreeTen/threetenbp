@@ -68,6 +68,7 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_interfaces() {
         assertTrue(Calendrical.class.isAssignableFrom(Year.class));
         assertTrue(Serializable.class.isAssignableFrom(Year.class));

@@ -19,6 +19,7 @@ From the command line the following options will get you started:
   ant examples        # runs a supplied java program to print some examples
   ant javadoc         # creates the javadoc
   ant test            # runs the main test suite (excluding OpenJDK classes)
+  ant tck             # runs the tck acceptance test. NB: you must use the -Dtck.implementation parameter in order to specify the jar under test
   ant coverage        # calculates test coverage (excluding OpenJDK classes)
 Oracle JDK 1.6 (or OpenJDK) is required to build the codebase.
 

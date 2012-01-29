@@ -62,6 +62,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
+	@Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = ZoneOffset.UTC;
         assertTrue(obj instanceof Calendrical);
@@ -69,6 +70,7 @@ public class TestZoneOffset {
         assertTrue(obj instanceof Comparable<?>);
     }
 
+	@Test(groups={"tck"})
     public void test_immutable() {
         Class<ZoneOffset> cls = ZoneOffset.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
@@ -82,6 +84,7 @@ public class TestZoneOffset {
         }
     }
 
+	@Test(groups={"tck"})
     public void test_serialization() throws Exception {
         ZoneOffset test = ZoneOffset.of("+01:30");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -100,12 +103,14 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // Creation
     //-----------------------------------------------------------------------
+	@Test(groups={"tck"})
     public void test_constant_UTC() {
         ZoneOffset test = ZoneOffset.UTC;
         doTestOffset(test, 0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
+	@Test(groups={"tck"})
     public void test_factory_string_UTC() {
         String[] values = new String[] {
             "Z",
@@ -118,6 +123,7 @@ public class TestZoneOffset {
         }
     }
 
+	@Test(groups={"tck"})
     public void test_factory_string_invalid() {
         String[] values = new String[] {
             "","A","B","C","D","E","F","G","H","I","J","K","L","M",
@@ -144,12 +150,13 @@ public class TestZoneOffset {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_string_null() {
         ZoneOffset.of((String) null);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_string_hours() {
         for (int i = -18; i <= 18; i++) {
             String str = (i < 0 ? "-" : "+") + Integer.toString(Math.abs(i) + 100).substring(1);
@@ -158,6 +165,7 @@ public class TestZoneOffset {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_factory_string_hours_minutes_noColon() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -176,6 +184,7 @@ public class TestZoneOffset {
         doTestOffset(test2, 18, 0, 0);
     }
 
+    @Test(groups={"tck"})
     public void test_factory_string_hours_minutes_colon() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -194,6 +203,7 @@ public class TestZoneOffset {
         doTestOffset(test2, 18, 0, 0);
     }
 
+    @Test(groups={"tck"})
     public void test_factory_string_hours_minutes_seconds_noColon() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -216,6 +226,7 @@ public class TestZoneOffset {
         doTestOffset(test2, 18, 0, 0);
     }
 
+    @Test(groups={"tck"})
     public void test_factory_string_hours_minutes_seconds_colon() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -239,6 +250,7 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_int_hours() {
         for (int i = -18; i <= 18; i++) {
             ZoneOffset test = ZoneOffset.ofHours(i);
@@ -247,6 +259,7 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_int_hours_minutes() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -263,6 +276,7 @@ public class TestZoneOffset {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_int_hours_minutes_seconds() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -281,59 +295,59 @@ public class TestZoneOffset {
         doTestOffset(test2, 18, 0, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusMinutes() {
         ZoneOffset.ofHoursMinutesSeconds(1, -1, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(1, 0, -1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusMinutes() {
         ZoneOffset.ofHoursMinutesSeconds(-1, 1, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(-1, 0, 1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_zeroHoursMinusMinutesPlusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(0, -1, 1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_zeroHoursPlusMinutesMinusSeconds() {
         ZoneOffset.ofHoursMinutesSeconds(0, 1, -1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minutesTooLarge() {
         ZoneOffset.ofHoursMinutesSeconds(0, 60, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_minutesTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, -60, 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_secondsTooLarge() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_int_hours_minutes_seconds_secondsTooSmall() {
         ZoneOffset.ofHoursMinutesSeconds(0, 0, 60);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_of_PeriodProvider() {
-        assertSame(ZoneOffset.of(PeriodFields.ZERO), ZoneOffset.UTC);
         assertEquals(ZoneOffset.of(Period.ofTimeFields(2, 30, 45)), ZoneOffset.ofHoursMinutesSeconds(2, 30, 45));
         
         assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, 30, 45, 99)), ZoneOffset.ofHoursMinutesSeconds(2, 30, 45));
@@ -344,36 +358,46 @@ public class TestZoneOffset {
         assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, 64, 75, 1000000004)), ZoneOffset.ofHoursMinutesSeconds(3, 5, 16));
         assertEquals(ZoneOffset.of(Period.of(1, 2, 3, 2, -64, 75, 1000000004)), ZoneOffset.ofHoursMinutesSeconds(0, 57, 16));
     }
+    
+    @Test(groups={"implementation"})
+    public void test_factory_of_PeriodProviderSame() {
+    	assertSame(ZoneOffset.of(PeriodFields.ZERO), ZoneOffset.UTC);
+    }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_of_PeriodProvider_overflow() {
         ZoneOffset.of(Period.ofHours(23));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_of_PeriodProvider_invalidPeriod() {
         ZoneOffset.of(PeriodField.of(2, MockOtherChronology.OTHER_MONTHS));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_of_PeriodProvider_null() {
         ZoneOffset.of((PeriodProvider) null);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_ofTotalSeconds() {
-        assertSame(ZoneOffset.ofTotalSeconds(0), ZoneOffset.UTC);
         assertEquals(ZoneOffset.ofTotalSeconds(60 * 60 + 1), ZoneOffset.ofHoursMinutesSeconds(1, 0, 1));
         assertEquals(ZoneOffset.ofTotalSeconds(18 * 60 * 60), ZoneOffset.ofHours(18));
         assertEquals(ZoneOffset.ofTotalSeconds(-18 * 60 * 60), ZoneOffset.ofHours(-18));
     }
+    
+    @Test(groups={"implementation"})
+    public void test_factory_ofTotalSecondsSame() {
+    	assertSame(ZoneOffset.ofTotalSeconds(0), ZoneOffset.UTC);
+    }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_ofTotalSeconds_tooLarge() {
         ZoneOffset.ofTotalSeconds(18 * 60 * 60 + 1);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_factory_ofTotalSeconds_tooSmall() {
         ZoneOffset.ofTotalSeconds(-18 * 60 * 60 - 1);
     }
@@ -381,33 +405,34 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // from()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_Calendricals() {
         assertEquals(ZoneOffset.from(ZoneOffset.ofHours(6), YearMonth.of(2007, 7), DAY_OF_MONTH.field(15)), ZoneOffset.ofHours(6));
         assertEquals(ZoneOffset.from(ZonedDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneId.of("Europe/Paris"))), ZoneOffset.ofHours(2));
         assertEquals(ZoneOffset.from(OffsetDateTime.of(2007, 7, 15, 17, 30, 0, 0, ZoneOffset.ofHours(2))), ZoneOffset.ofHours(2));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
         ZoneOffset.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_noDerive() {
         ZoneOffset.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_empty() {
         ZoneOffset.from();
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_nullArray() {
         ZoneOffset.from((Calendrical[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
         ZoneOffset.from((Calendrical) null);
     }
@@ -415,6 +440,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // getTotalSeconds()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getTotalSeconds() {
         ZoneOffset offset = ZoneOffset.ofTotalSeconds(60 * 60 + 1);
         assertEquals(offset.getTotalSeconds(), 60 * 60 + 1);
@@ -423,6 +449,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // getID()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getID() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
         assertEquals(offset.getID(), "+01:00");
@@ -435,11 +462,13 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // getHoursField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getHoursField() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.getHoursField(), 1);
     }
 
+    @Test(groups={"tck"})
     public void test_getHoursField_negative() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3);
         assertEquals(offset.getHoursField(), -1);
@@ -448,11 +477,13 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // getMinutesField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getMinutesField() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.getMinutesField(), 2);
     }
 
+    @Test(groups={"tck"})
     public void test_getMinutesField_negative() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3);
         assertEquals(offset.getMinutesField(), -2);
@@ -461,11 +492,13 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // getSecondsField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getSecondsField() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.getSecondsField(), 3);
     }
 
+    @Test(groups={"tck"})
     public void test_getSecondsField_negative() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(-1, -2, -3);
         assertEquals(offset.getSecondsField(), -3);
@@ -474,48 +507,54 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_plus_PeriodProvider() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
         Period p = Period.ofTimeFields(4, 6, 8);
         assertEquals(offset.plus(p), ZoneOffset.of("+05:08:11"));
     }
 
+    @Test(groups={"tck"})
     public void test_plus_PeriodProvider_overflowSecs() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
         Period p = Period.ofTimeFields(4, 6, 68);
         assertEquals(offset.plus(p), ZoneOffset.of("+05:09:11"));
     }
 
+    @Test(groups={"tck"})
     public void test_plus_PeriodProvider_overflowMins() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
         Period p = Period.ofTimeFields(4, 66, 8);
         assertEquals(offset.plus(p), ZoneOffset.of("+06:08:11"));
     }
 
+    @Test(groups={"tck"})
     public void test_plus_PeriodProvider_negative() {
         ZoneOffset offset = ZoneOffset.of("-02:04:06");
         Period p = Period.ofTimeFields(1, 2, 3);
         assertEquals(offset.plus(p), ZoneOffset.of("-01:02:03"));
     }
 
+    @Test(groups={"tck"})
     public void test_plus_PeriodProvider_negativeToPositive() {
         ZoneOffset offset = ZoneOffset.of("-01:02:03");
         Period p = Period.ofTimeFields(4, 6, 8);
         assertEquals(offset.plus(p), ZoneOffset.of("+03:04:05"));
     }
 
+    @Test(groups={"tck"})
     public void test_plus_PeriodProvider_zero() {
         ZoneOffset offset = ZoneOffset.UTC;
         assertEquals(offset.plus(Period.ZERO), ZoneOffset.UTC);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_plus_PeriodProvider_invalidPeriod() {
         ZoneOffset offset = ZoneOffset.UTC;
         offset.plus(PeriodField.of(2, MockOtherChronology.OTHER_MONTHS));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_PeriodProvider_null() {
         ZoneOffset offset = ZoneOffset.UTC;
         offset.plus((PeriodProvider) null);
@@ -524,16 +563,19 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // toPeriod()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toPeriod() {
         ZoneOffset offset = ZoneOffset.of("+01:02:03");
         assertEquals(offset.toPeriod(), Period.ofTimeFields(1, 2, 3));
     }
 
+    @Test(groups={"tck"})
     public void test_toPeriod_negative() {
         ZoneOffset offset = ZoneOffset.of("-01:02:03");
         assertEquals(offset.toPeriod(), Period.ofTimeFields(-1, -2, -3));
     }
 
+    @Test(groups={"tck"})
     public void test_toPeriod_zero() {
         ZoneOffset offset = ZoneOffset.UTC;
         assertEquals(offset.toPeriod(), Period.ZERO);
@@ -542,6 +584,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // toZoneId()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toZoneId() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.toZoneId(), ZoneId.of(offset));
@@ -550,6 +593,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_compareTo() {
         ZoneOffset offset1 = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
         ZoneOffset offset2 = ZoneOffset.ofHoursMinutesSeconds(2, 3, 4);
@@ -562,6 +606,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals() {
         ZoneOffset offset1 = ZoneOffset.ofHoursMinutesSeconds(1, 2, 3);
         ZoneOffset offset2 = ZoneOffset.ofHoursMinutesSeconds(2, 3, 4);
@@ -581,6 +626,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString() {
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
         assertEquals(offset.toString(), "+01:00");
@@ -593,6 +639,7 @@ public class TestZoneOffset {
     //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_get_CalendricalRule() {
         ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
         assertEquals(test.get(Chronology.rule()), null);
@@ -603,12 +650,13 @@ public class TestZoneOffset {
         assertEquals(test.get(ZoneId.rule()), null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class )
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_get_CalendricalRule_null() {
         ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
         test.get((CalendricalRule<?>) null);
     }
 
+    @Test(groups={"tck"})
     public void test_get_unsupported() {
         ZoneOffset test = ZoneOffset.ofHoursMinutesSeconds(1, 0, 0);
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);

@@ -60,6 +60,7 @@ import org.testng.annotations.Test;
 public class TestCalendricalMatchers {
 
     @SuppressWarnings("rawtypes")
+    @Test(groups={"implementation"})
     public void test_constructor() throws Exception {
         for (Constructor constructor : CalendricalMatchers.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
@@ -69,7 +70,7 @@ public class TestCalendricalMatchers {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test(expectedExceptions = InvocationTargetException.class)
+    @Test(expectedExceptions = InvocationTargetException.class, groups={"tck"})
     public void test_forceCoverage() throws Exception {
         Enum en = (Enum) CalendricalMatchers.lastDayOfYear();
         Class cls = en.getClass();
@@ -81,6 +82,7 @@ public class TestCalendricalMatchers {
     //-----------------------------------------------------------------------
     // leapYear()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_leapYear_serialization() throws IOException, ClassNotFoundException {
         CalendricalMatcher leapYear = CalendricalMatchers.leapYear();
         assertTrue(leapYear instanceof Serializable);
@@ -95,11 +97,17 @@ public class TestCalendricalMatchers {
         assertSame(ois.readObject(), leapYear);
     }
 
+    @Test(groups={"tck"})
     public void factory_leapYear() {
         assertNotNull(CalendricalMatchers.leapYear());
-        assertSame(CalendricalMatchers.leapYear(), CalendricalMatchers.leapYear());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_leapYearSame() {    	
+    	assertSame(CalendricalMatchers.leapYear(), CalendricalMatchers.leapYear());
     }
 
+    @Test(groups={"tck"})
     public void test_leapYear() {
         assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1999, 1, 1)), false);
         assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(2000, 1, 1)), true);
@@ -116,6 +124,7 @@ public class TestCalendricalMatchers {
         assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1900, 1, 1)), false);
     }
 
+    @Test(groups={"tck"})
     public void test_leapYear_noData() {
         assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
@@ -123,6 +132,7 @@ public class TestCalendricalMatchers {
     //-----------------------------------------------------------------------
     // leapDay()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_leapDay_serialization() throws IOException, ClassNotFoundException {
         CalendricalMatcher leapDay = CalendricalMatchers.leapDay();
         assertTrue(leapDay instanceof Serializable);
@@ -137,11 +147,17 @@ public class TestCalendricalMatchers {
         assertSame(ois.readObject(), leapDay);
     }
 
+    @Test(groups={"tck"})
     public void factory_leapDay() {
         assertNotNull(CalendricalMatchers.leapDay());
-        assertSame(CalendricalMatchers.leapDay(), CalendricalMatchers.leapDay());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_leapDaySame() {
+    	assertSame(CalendricalMatchers.leapDay(), CalendricalMatchers.leapDay());
     }
 
+    @Test(groups={"tck"})
     public void test_leapDay_nonLeap() {
         LocalDate date = LocalDate.of(2007, MonthOfYear.JANUARY, 1);
         for (int i = 1; i <= 365; i++) {
@@ -150,6 +166,7 @@ public class TestCalendricalMatchers {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_leapDay_leap() {
         LocalDate date = LocalDate.of(2008, MonthOfYear.JANUARY, 1);
         for (int i = 1; i <= 366; i++) {
@@ -158,6 +175,7 @@ public class TestCalendricalMatchers {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_leapDay_noData() {
         assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
@@ -165,6 +183,7 @@ public class TestCalendricalMatchers {
     //-----------------------------------------------------------------------
     // lastDayOfMonth()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_lastDayOfMonth_serialization() throws IOException, ClassNotFoundException {
         CalendricalMatcher lastDayOfMonth = CalendricalMatchers.lastDayOfMonth();
         assertTrue(lastDayOfMonth instanceof Serializable);
@@ -179,11 +198,17 @@ public class TestCalendricalMatchers {
         assertSame(ois.readObject(), lastDayOfMonth);
     }
 
+    @Test(groups={"tck"})
     public void factory_lastDayOfMonth() {
         assertNotNull(CalendricalMatchers.lastDayOfMonth());
-        assertSame(CalendricalMatchers.lastDayOfMonth(), CalendricalMatchers.lastDayOfMonth());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_lastDayOfMonthSame() {
+    	assertSame(CalendricalMatchers.lastDayOfMonth(), CalendricalMatchers.lastDayOfMonth());    
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfMonth_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             int lastDayOfMonthValue = month.lengthInDays(false);
@@ -194,6 +219,7 @@ public class TestCalendricalMatchers {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             int lastDayOfMonthValue = month.lengthInDays(true);
@@ -204,6 +230,7 @@ public class TestCalendricalMatchers {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfMonth_noData() {
         assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
@@ -211,6 +238,7 @@ public class TestCalendricalMatchers {
     //-----------------------------------------------------------------------
     // lastDayOfYear()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_lastDayOfYear_serialization() throws IOException, ClassNotFoundException {
         CalendricalMatcher lastDayOfYear = CalendricalMatchers.lastDayOfYear();
         assertTrue(lastDayOfYear instanceof Serializable);
@@ -225,11 +253,17 @@ public class TestCalendricalMatchers {
         assertSame(ois.readObject(), lastDayOfYear);
     }
 
+    @Test(groups={"tck"})
     public void factory_lastDayOfYear() {
         assertNotNull(CalendricalMatchers.lastDayOfYear());
-        assertSame(CalendricalMatchers.lastDayOfYear(), CalendricalMatchers.lastDayOfYear());
+    }
+    
+    @Test(groups={"implementation"})
+    public void factory_lastDayOfYearSame() {
+    	assertSame(CalendricalMatchers.lastDayOfYear(), CalendricalMatchers.lastDayOfYear());
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(false); i++) {
@@ -239,6 +273,7 @@ public class TestCalendricalMatchers {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfYear_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(true); i++) {
@@ -248,6 +283,7 @@ public class TestCalendricalMatchers {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_lastDayOfYear_noData() {
         assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(LocalTime.of(12, 30)), false);
     }

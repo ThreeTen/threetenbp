@@ -62,6 +62,7 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Enum.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(QuarterOfYear.class));
@@ -71,12 +72,14 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_rule() {
         assertEquals(QuarterOfYear.rule().getName(), "QuarterOfYear");
         assertEquals(QuarterOfYear.rule().getType(), QuarterOfYear.class);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_int_singleton() {
         for (int i = 1; i <= 4; i++) {
             QuarterOfYear test = QuarterOfYear.of(i);
@@ -85,44 +88,45 @@ public class TestQuarterOfYear {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_valueTooLow() {
         QuarterOfYear.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
         QuarterOfYear.of(5);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_Calendricals() {
         assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6)), QuarterOfYear.Q2);
         assertEquals(QuarterOfYear.from(MONTH_OF_YEAR.field(1)), QuarterOfYear.Q1);
         assertEquals(QuarterOfYear.from(LocalDate.of(2011, 6, 6), JUNE.toField()), QuarterOfYear.Q2);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
         QuarterOfYear.from(QuarterOfYear.Q1, QuarterOfYear.Q2.toField());
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_noDerive() {
         QuarterOfYear.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_empty() {
         QuarterOfYear.from();
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_nullArray() {
         QuarterOfYear.from((Calendrical[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
         QuarterOfYear.from((Calendrical) null);
     }
@@ -130,6 +134,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // get()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_get() {
         assertEquals(QuarterOfYear.Q1.get(QuarterOfYear.rule()), QuarterOfYear.Q1);
         assertEquals(QuarterOfYear.Q4.get(QuarterOfYear.rule()), QuarterOfYear.Q4);
@@ -143,16 +148,17 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getText() {
         assertEquals(QuarterOfYear.Q1.getText(TextStyle.SHORT, Locale.US), "Q1");
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullStyle() {
         QuarterOfYear.Q1.getText(null, Locale.US);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullLocale() {
         QuarterOfYear.Q1.getText(TextStyle.FULL, null);
     }
@@ -160,6 +166,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // next()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_next() {
         assertEquals(QuarterOfYear.Q1.next(), QuarterOfYear.Q2);
         assertEquals(QuarterOfYear.Q2.next(), QuarterOfYear.Q3);
@@ -170,6 +177,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // previous()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_previous() {
         assertEquals(QuarterOfYear.Q1.previous(), QuarterOfYear.Q4);
         assertEquals(QuarterOfYear.Q2.previous(), QuarterOfYear.Q1);
@@ -180,6 +188,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // roll(int)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_roll() {
         assertEquals(QuarterOfYear.Q1.roll(-4), QuarterOfYear.Q1);
         assertEquals(QuarterOfYear.Q1.roll(-3), QuarterOfYear.Q2);
@@ -195,6 +204,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // getFirstMonthOfQuarter()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getFirstMonthOfQuarter() {
         assertEquals(QuarterOfYear.Q1.getFirstMonthOfQuarter(), MonthOfYear.JANUARY);
         assertEquals(QuarterOfYear.Q2.getFirstMonthOfQuarter(), MonthOfYear.APRIL);
@@ -205,6 +215,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // matcher
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_matcher() {
         assertEquals(QuarterOfYear.Q1.matchesCalendrical(QUARTER_OF_YEAR.field(1)), true);
         assertEquals(QuarterOfYear.Q1.matchesCalendrical(QuarterOfYear.Q1), true);
@@ -214,7 +225,7 @@ public class TestQuarterOfYear {
         assertEquals(QuarterOfYear.Q2.matchesCalendrical(LocalDate.of(1970, 1, 15)), false);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_matcher_null() {
         QuarterOfYear.Q1.matchesCalendrical(null);
     }
@@ -222,6 +233,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // toField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toField() {
         assertEquals(QuarterOfYear.Q1.toField(), QUARTER_OF_YEAR.field(1));
         assertEquals(QuarterOfYear.Q3.toField(), QUARTER_OF_YEAR.field(3));
@@ -230,6 +242,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString() {
         assertEquals(QuarterOfYear.Q1.toString(), "Q1");
         assertEquals(QuarterOfYear.Q2.toString(), "Q2");
@@ -240,6 +253,7 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     // generated methods
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_enum() {
         assertEquals(QuarterOfYear.valueOf("Q4"), QuarterOfYear.Q4);
         assertEquals(QuarterOfYear.values()[0], QuarterOfYear.Q1);
