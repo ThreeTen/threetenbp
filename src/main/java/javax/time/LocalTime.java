@@ -860,17 +860,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this time to a {@code LocalTime}, trivially
-     * returning {@code this}.
-     *
-     * @return {@code this}, not null
-     */
-    public LocalTime toLocalTime() {
-        return this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Extracts the time as seconds of day,
      * from {@code 0} to {@code 24 * 60 * 60 - 1}.
      *

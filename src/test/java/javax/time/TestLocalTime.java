@@ -1734,15 +1734,6 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // toLocalTime()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_toLocalTime(int h, int m, int s, int ns) {
-        LocalTime t = LocalTime.of(h, m, s, ns);
-        assertSame(t.toLocalTime(), t);
-    }
-
-    //-----------------------------------------------------------------------
     // toSecondOfDay()
     //-----------------------------------------------------------------------
     public void test_toSecondOfDay() {

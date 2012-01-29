@@ -2429,15 +2429,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // toLocalDate()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_toLocalDate(int year, int month, int day) {
-        LocalDate t = LocalDate.of(year, month, day);
-        assertSame(t.toLocalDate(), t);
-    }
-
-    //-----------------------------------------------------------------------
     // toEpochDay()
     //-----------------------------------------------------------------------
     public void test_toEpochDay() {

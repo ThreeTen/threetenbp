@@ -1308,17 +1308,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to a {@code LocalDate}, trivially
-     * returning {@code this}.
-     *
-     * @return {@code this}, not null
-     */
-    public LocalDate toLocalDate() {
-        return this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Converts this {@code LocalDate} to Epoch Days.
      * <p>
      * The Epoch Day count is a simple incrementing count of days

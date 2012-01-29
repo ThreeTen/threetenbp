@@ -1679,16 +1679,6 @@ public final class LocalDateTime
         return time;
     }
 
-    /**
-     * Converts this date-time to a {@code LocalDateTime},
-     * trivially returning {@code this}.
-     *
-     * @return {@code this}, not null
-     */
-    public LocalDateTime toLocalDateTime() {
-        return this;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this {@code LocalDateTime} to another date-time.
