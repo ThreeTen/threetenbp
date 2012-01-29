@@ -522,7 +522,6 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             DateTimeRule other = (DateTimeRule) obj;
             return getPeriodUnit().equals(other.getPeriodUnit()) &&
                     getPeriodRange().equals(other.getPeriodRange()) &&
-                    getType().equals(other.getType()) &&
                     getName().equals(other.getName());
         }
         return false;
@@ -537,7 +536,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
     public int hashCode() {
         return getClass().hashCode() ^ getPeriodUnit().hashCode() ^
                 (getPeriodRange() == null ? 0 : getPeriodRange().hashCode()) ^
-                getType().hashCode() ^ getName().hashCode();
+                getName().hashCode();
     }
 
     //-----------------------------------------------------------------------

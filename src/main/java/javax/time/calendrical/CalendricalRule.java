@@ -45,7 +45,6 @@ import javax.time.CalendricalException;
  * <p>
  * Each rule uses an underlying type to represent the data.
  * This is captured in the generic type of the rule.
- * The underlying type is reified and made available via {@link #getType()}.
  * It is expected, but not enforced, that the underlying type is {@link Comparable}.
  * <p>
  * This is an abstract class and must be implemented with care to
