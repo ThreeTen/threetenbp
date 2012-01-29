@@ -34,10 +34,10 @@ package javax.time.calendar.zone;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.Instant;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.Period;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.Period;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
 

@@ -31,13 +31,13 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeRule;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

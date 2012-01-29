@@ -31,22 +31,22 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendar.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendar.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import javax.time.calendar.DateTimeRule;
+import javax.time.calendrical.DateTimeRule;
 
 /**
  * Provides common implementations of {@code DateTimeFormatter}.

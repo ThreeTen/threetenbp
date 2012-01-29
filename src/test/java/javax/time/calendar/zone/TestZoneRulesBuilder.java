@@ -31,30 +31,30 @@
  */
 package javax.time.calendar.zone;
 
-import static javax.time.calendar.DayOfWeek.FRIDAY;
-import static javax.time.calendar.DayOfWeek.MONDAY;
-import static javax.time.calendar.DayOfWeek.SUNDAY;
-import static javax.time.calendar.DayOfWeek.THURSDAY;
-import static javax.time.calendar.MonthOfYear.APRIL;
-import static javax.time.calendar.MonthOfYear.AUGUST;
-import static javax.time.calendar.MonthOfYear.FEBRUARY;
-import static javax.time.calendar.MonthOfYear.MARCH;
-import static javax.time.calendar.MonthOfYear.NOVEMBER;
-import static javax.time.calendar.MonthOfYear.OCTOBER;
-import static javax.time.calendar.MonthOfYear.SEPTEMBER;
+import static javax.time.DayOfWeek.FRIDAY;
+import static javax.time.DayOfWeek.MONDAY;
+import static javax.time.DayOfWeek.SUNDAY;
+import static javax.time.DayOfWeek.THURSDAY;
+import static javax.time.MonthOfYear.APRIL;
+import static javax.time.MonthOfYear.AUGUST;
+import static javax.time.MonthOfYear.FEBRUARY;
+import static javax.time.MonthOfYear.MARCH;
+import static javax.time.MonthOfYear.NOVEMBER;
+import static javax.time.MonthOfYear.OCTOBER;
+import static javax.time.MonthOfYear.SEPTEMBER;
 import static javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition.STANDARD;
 import static javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition.UTC;
 import static javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition.WALL;
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.Period;
-import javax.time.calendar.Year;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
+import javax.time.Period;
+import javax.time.Year;
+import javax.time.ZoneOffset;
 import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 import org.testng.annotations.Test;
 

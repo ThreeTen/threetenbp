@@ -31,47 +31,31 @@
  */
 package javax.time;
 
-import static javax.time.calendar.DateAdjusters.dayOfWeekInMonth;
-import static javax.time.calendar.DateAdjusters.firstInMonth;
-import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
-import static javax.time.calendar.DateAdjusters.next;
-import static javax.time.calendar.DateAdjusters.nextOrCurrent;
-import static javax.time.calendar.DayOfWeek.FRIDAY;
-import static javax.time.calendar.DayOfWeek.MONDAY;
-import static javax.time.calendar.DayOfWeek.TUESDAY;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.MonthOfYear.AUGUST;
-import static javax.time.calendar.MonthOfYear.DECEMBER;
-import static javax.time.calendar.MonthOfYear.FEBRUARY;
-import static javax.time.calendar.MonthOfYear.MARCH;
-import static javax.time.calendar.Period.ofDateFields;
-import static javax.time.calendar.Period.ofDays;
-import static javax.time.calendar.Period.ofHours;
-import static javax.time.calendar.Period.ofMinutes;
-import static javax.time.calendar.Period.ofMonths;
-import static javax.time.calendar.Period.ofSeconds;
-import static javax.time.calendar.Period.ofYears;
+import static javax.time.DayOfWeek.FRIDAY;
+import static javax.time.DayOfWeek.MONDAY;
+import static javax.time.DayOfWeek.TUESDAY;
+import static javax.time.MonthOfYear.AUGUST;
+import static javax.time.MonthOfYear.DECEMBER;
+import static javax.time.MonthOfYear.FEBRUARY;
+import static javax.time.MonthOfYear.MARCH;
+import static javax.time.Period.ofDateFields;
+import static javax.time.Period.ofDays;
+import static javax.time.Period.ofHours;
+import static javax.time.Period.ofMinutes;
+import static javax.time.Period.ofMonths;
+import static javax.time.Period.ofSeconds;
+import static javax.time.Period.ofYears;
+import static javax.time.calendrical.DateAdjusters.dayOfWeekInMonth;
+import static javax.time.calendrical.DateAdjusters.firstInMonth;
+import static javax.time.calendrical.DateAdjusters.lastDayOfMonth;
+import static javax.time.calendrical.DateAdjusters.next;
+import static javax.time.calendrical.DateAdjusters.nextOrCurrent;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
-import javax.time.calendar.AmPmOfDay;
-import javax.time.calendar.Clock;
-import javax.time.calendar.DateResolvers;
-import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthDay;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.Period;
-import javax.time.calendar.QuarterOfYear;
-import javax.time.calendar.Year;
-import javax.time.calendar.YearMonth;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.zone.ZoneOffsetTransition;
+import javax.time.calendrical.DateResolvers;
+import javax.time.calendrical.DateTimeFields;
 
 /**
  * Test class.

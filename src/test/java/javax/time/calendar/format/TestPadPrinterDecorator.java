@@ -33,7 +33,7 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.LocalDate;
+import javax.time.LocalDate;
 
 import org.testng.annotations.Test;
 

@@ -33,11 +33,11 @@ package javax.time.calendar.i18n;
 
 import java.io.Serializable;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalEngine;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.LocalDate;
+import javax.time.LocalDate;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.ISOChronology;
 
 /**
  * A mock date.

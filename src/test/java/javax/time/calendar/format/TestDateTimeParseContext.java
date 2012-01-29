@@ -31,19 +31,19 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.YEAR;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
 
 import java.util.List;
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDate;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

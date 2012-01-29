@@ -44,10 +44,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.Period;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.OffsetDateTime;
+import javax.time.Period;
+import javax.time.ZoneOffset;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

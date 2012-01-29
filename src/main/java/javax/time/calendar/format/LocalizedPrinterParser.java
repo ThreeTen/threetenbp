@@ -33,7 +33,7 @@ package javax.time.calendar.format;
 
 import java.util.Locale;
 
-import javax.time.calendar.Chronology;
+import javax.time.calendrical.Chronology;
 
 /**
  * Prints or parses a localized pattern.

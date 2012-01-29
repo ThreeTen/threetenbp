@@ -45,16 +45,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.CalendricalRuleException;
-import javax.time.calendar.Chronology;
-import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.LocalTime;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.CalendricalRuleException;
+import javax.time.calendrical.Chronology;
+import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 

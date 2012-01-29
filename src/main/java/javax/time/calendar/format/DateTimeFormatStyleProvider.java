@@ -34,7 +34,7 @@ package javax.time.calendar.format;
 import java.util.Locale;
 import java.util.spi.LocaleServiceProvider;
 
-import javax.time.calendar.Chronology;
+import javax.time.calendrical.Chronology;
 
 /**
  * The Service Provider Interface (SPI) to be implemented by classes providing

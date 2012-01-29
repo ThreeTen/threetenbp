@@ -34,9 +34,9 @@ package javax.time.i18n;
 import java.util.Calendar;
 import java.util.Locale;
 
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.format.TextStyle;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
 
 /**
  * An era in the Coptic calendar system.

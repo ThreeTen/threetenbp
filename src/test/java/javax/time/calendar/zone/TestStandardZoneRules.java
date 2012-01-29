@@ -45,16 +45,16 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MonthOfYear;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.Period;
-import javax.time.calendar.Year;
-import javax.time.calendar.ZoneId;
-import javax.time.calendar.ZoneOffset;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
+import javax.time.OffsetDateTime;
+import javax.time.Period;
+import javax.time.Year;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
 import javax.time.calendar.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
 import org.testng.annotations.Test;

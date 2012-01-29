@@ -52,7 +52,7 @@ package javax.time;
  * <p>
  * The implementation of {@code InstantProvider} may provide more
  * information than just an instant. For example,
- * {@link javax.time.calendar.ZonedDateTime ZonedDateTime}, implements this
+ * {@link javax.time.ZonedDateTime ZonedDateTime}, implements this
  * interface and also provides full date, time and time-zone information.
  * <p>
  * This interface makes no overall guarantees about the thread-safety or immutability

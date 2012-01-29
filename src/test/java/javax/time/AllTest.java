@@ -33,61 +33,6 @@ package javax.time;
 
 import java.util.Arrays;
 
-import javax.time.calendar.TestAmPmOfDay;
-import javax.time.calendar.TestCalendricalMatchers;
-import javax.time.calendar.TestCalendricalNomalizer;
-import javax.time.calendar.TestCalendricalRule;
-import javax.time.calendar.TestClock;
-import javax.time.calendar.TestClock_TimeSourceClock;
-import javax.time.calendar.TestDateAdjusters;
-import javax.time.calendar.TestDateResolvers;
-import javax.time.calendar.TestDateTimeField;
-import javax.time.calendar.TestDateTimeFields;
-import javax.time.calendar.TestDateTimeRule;
-import javax.time.calendar.TestDateTimeRuleRange;
-import javax.time.calendar.TestDayOfWeek;
-import javax.time.calendar.TestISOAlignedWeekOfMonthRule;
-import javax.time.calendar.TestISOAlignedWeekOfYearRule;
-import javax.time.calendar.TestISOAmPmOfDayRule;
-import javax.time.calendar.TestISOChronology;
-import javax.time.calendar.TestISOClockHourOfAmPmRule;
-import javax.time.calendar.TestISOClockHourOfDayRule;
-import javax.time.calendar.TestISODayOfMonthRule;
-import javax.time.calendar.TestISODayOfWeekRule;
-import javax.time.calendar.TestISODayOfYearRule;
-import javax.time.calendar.TestISOHourOfAmPmRule;
-import javax.time.calendar.TestISOHourOfDayRule;
-import javax.time.calendar.TestISOMinuteOfDayRule;
-import javax.time.calendar.TestISOMonthOfQuarterRule;
-import javax.time.calendar.TestISOMonthOfYearRule;
-import javax.time.calendar.TestISONanoOfDayRule;
-import javax.time.calendar.TestISOQuarterOfYearRule;
-import javax.time.calendar.TestISOWeekBasedYearRule;
-import javax.time.calendar.TestISOWeekOfWeekBasedYearRule;
-import javax.time.calendar.TestISOYearRule;
-import javax.time.calendar.TestISOZeroEpochMonthRule;
-import javax.time.calendar.TestLocalDate;
-import javax.time.calendar.TestLocalDateTime;
-import javax.time.calendar.TestLocalTime;
-import javax.time.calendar.TestMonthDay;
-import javax.time.calendar.TestMonthOfYear;
-import javax.time.calendar.TestOffsetDate;
-import javax.time.calendar.TestOffsetDateTime;
-import javax.time.calendar.TestOffsetDateTime_instants;
-import javax.time.calendar.TestOffsetTime;
-import javax.time.calendar.TestPeriod;
-import javax.time.calendar.TestPeriodField;
-import javax.time.calendar.TestPeriodFields;
-import javax.time.calendar.TestPeriodParser;
-import javax.time.calendar.TestPeriodUnit;
-import javax.time.calendar.TestQuarterOfYear;
-import javax.time.calendar.TestWeekRules;
-import javax.time.calendar.TestYear;
-import javax.time.calendar.TestYearMonth;
-import javax.time.calendar.TestZoneId;
-import javax.time.calendar.TestZoneOffset;
-import javax.time.calendar.TestZoneResolvers;
-import javax.time.calendar.TestZonedDateTime;
 import javax.time.calendar.format.TestCalendricalPrintException;
 import javax.time.calendar.format.TestCaseSensitivePrinterParser;
 import javax.time.calendar.format.TestCharLiteralParser;
@@ -123,6 +68,43 @@ import javax.time.calendar.zone.TestZoneOffsetTransitionRule;
 import javax.time.calendar.zone.TestZoneRules;
 import javax.time.calendar.zone.TestZoneRulesBuilder;
 import javax.time.calendar.zone.TestZoneRulesGroup;
+import javax.time.calendrical.TestCalendricalMatchers;
+import javax.time.calendrical.TestCalendricalNomalizer;
+import javax.time.calendrical.TestCalendricalRule;
+import javax.time.calendrical.TestDateAdjusters;
+import javax.time.calendrical.TestDateResolvers;
+import javax.time.calendrical.TestDateTimeField;
+import javax.time.calendrical.TestDateTimeFields;
+import javax.time.calendrical.TestDateTimeRule;
+import javax.time.calendrical.TestDateTimeRuleRange;
+import javax.time.calendrical.TestISOAlignedWeekOfMonthRule;
+import javax.time.calendrical.TestISOAlignedWeekOfYearRule;
+import javax.time.calendrical.TestISOAmPmOfDayRule;
+import javax.time.calendrical.TestISOChronology;
+import javax.time.calendrical.TestISOClockHourOfAmPmRule;
+import javax.time.calendrical.TestISOClockHourOfDayRule;
+import javax.time.calendrical.TestISODayOfMonthRule;
+import javax.time.calendrical.TestISODayOfWeekRule;
+import javax.time.calendrical.TestISODayOfYearRule;
+import javax.time.calendrical.TestISOHourOfAmPmRule;
+import javax.time.calendrical.TestISOHourOfDayRule;
+import javax.time.calendrical.TestISOMinuteOfDayRule;
+import javax.time.calendrical.TestISOMonthOfQuarterRule;
+import javax.time.calendrical.TestISOMonthOfYearRule;
+import javax.time.calendrical.TestISONanoOfDayRule;
+import javax.time.calendrical.TestISOQuarterOfYearRule;
+import javax.time.calendrical.TestISOWeekBasedYearRule;
+import javax.time.calendrical.TestISOWeekOfWeekBasedYearRule;
+import javax.time.calendrical.TestISOYearRule;
+import javax.time.calendrical.TestISOZeroEpochMonthRule;
+import javax.time.calendrical.TestPeriodField;
+import javax.time.calendrical.TestPeriodFields;
+import javax.time.calendrical.TestPeriodUnit;
+import javax.time.calendrical.TestTAIInstant;
+import javax.time.calendrical.TestUTCInstant;
+import javax.time.calendrical.TestUTCRules;
+import javax.time.calendrical.TestWeekRules;
+import javax.time.calendrical.TestZoneResolvers;
 
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
@@ -148,26 +130,44 @@ public class AllTest {
             TestDuration.class,
             TestInstant.class,
             TestMathUtils.class,
-            TestTAIInstant.class,
             TestTimeSource_Fixed.class,
             TestTimeSource_OffsetSystem.class,
             TestTimeSource_System.class,
+            // time scale
+            TestTAIInstant.class,
             TestUTCInstant.class,
             TestUTCRules.class,
-            // calendar classes
+            // simple calendar classes
             TestAmPmOfDay.class,
+            TestClock.class,
+            TestClock_TimeSourceClock.class,
+            TestDayOfWeek.class,
+            TestLocalDate.class,
+            TestLocalDateTime.class,
+            TestLocalTime.class,
+            TestMonthDay.class,
+            TestMonthOfYear.class,
+            TestOffsetDate.class,
+            TestOffsetDateTime.class,
+            TestOffsetDateTime_instants.class,
+            TestOffsetTime.class,
+            TestPeriod.class,
+            TestQuarterOfYear.class,
+            TestYear.class,
+            TestYearMonth.class,
+            TestZonedDateTime.class,
+            TestZoneId.class,
+            TestZoneOffset.class,
+            // advanced calendar classes
             TestCalendricalMatchers.class,
             TestCalendricalNomalizer.class,
             TestCalendricalRule.class,
-            TestClock.class,
-            TestClock_TimeSourceClock.class,
             TestDateAdjusters.class,
             TestDateResolvers.class,
             TestDateTimeField.class,
             TestDateTimeFields.class,
             TestDateTimeRule.class,
             TestDateTimeRuleRange.class,
-            TestDayOfWeek.class,
             TestISOAlignedWeekOfMonthRule.class,
             TestISOAlignedWeekOfYearRule.class,
             TestISOAmPmOfDayRule.class,
@@ -188,27 +188,11 @@ public class AllTest {
             TestISOWeekOfWeekBasedYearRule.class,
             TestISOYearRule.class,
             TestISOZeroEpochMonthRule.class,
-            TestLocalDate.class,
-            TestLocalDateTime.class,
-            TestLocalTime.class,
-            TestMonthDay.class,
-            TestMonthOfYear.class,
-            TestOffsetDate.class,
-            TestOffsetDateTime.class,
-            TestOffsetDateTime_instants.class,
-            TestOffsetTime.class,
-            TestPeriod.class,
             TestPeriodParser.class,
             TestPeriodField.class,
             TestPeriodFields.class,
             TestPeriodUnit.class,
-            TestQuarterOfYear.class,
             TestWeekRules.class,
-            TestYear.class,
-            TestYearMonth.class,
-            TestZonedDateTime.class,
-            TestZoneId.class,
-            TestZoneOffset.class,
             TestZoneResolvers.class,
             // format
             TestCalendricalPrintException.class,

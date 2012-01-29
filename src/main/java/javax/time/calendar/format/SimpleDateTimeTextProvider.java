@@ -31,10 +31,10 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendar.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendar.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendar.ISODateTimeRule.QUARTER_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
+import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
+import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -50,8 +50,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeRule;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeRule;
 
 /**
  * The Service Provider Implementation to obtain date-time text for a rule.

@@ -33,17 +33,17 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
+import javax.time.DayOfWeek;
 import javax.time.Duration;
 import javax.time.MathUtils;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalEngine;
-import javax.time.calendar.Chronology;
-import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeRule;
-import javax.time.calendar.DateTimeRuleRange;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.ISOPeriodUnit;
-import javax.time.calendar.PeriodUnit;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.Chronology;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeRule;
+import javax.time.calendrical.DateTimeRuleRange;
+import javax.time.calendrical.ISOPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * The Coptic calendar system.

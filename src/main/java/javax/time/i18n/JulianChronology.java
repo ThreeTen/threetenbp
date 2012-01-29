@@ -34,9 +34,9 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.Duration;
-import javax.time.calendar.Chronology;
-import javax.time.calendar.ISOPeriodUnit;
-import javax.time.calendar.PeriodUnit;
+import javax.time.calendrical.Chronology;
+import javax.time.calendrical.ISOPeriodUnit;
+import javax.time.calendrical.PeriodUnit;
 
 /**
  * The Julian calendar system.

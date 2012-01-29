@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.time.InstantProvider;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.LocalDateTime;
+import javax.time.ZoneOffset;
 
 /**
  * Implementation of zone rules for fixed offsets.

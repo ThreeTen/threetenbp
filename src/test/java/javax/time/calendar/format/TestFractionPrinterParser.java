@@ -31,15 +31,15 @@
  */
 package javax.time.calendar.format;
 
-import static javax.time.calendar.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendar.ISODateTimeRule.SECOND_OF_MINUTE;
+import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
+import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.DateTimeField;
-import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.DateTimeRule;
+import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.DateTimeFields;
+import javax.time.calendrical.DateTimeRule;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
