@@ -45,7 +45,7 @@ import org.testng.annotations.Test;
 /**
  * Test ZonePrinterParser.
  */
-@Test
+@Test(groups={"implementation"})
 public class TestZoneIdParser extends AbstractTestPrinterParser {
 
     private static final String AMERICA_DENVER = "America/Denver";
