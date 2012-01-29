@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.Year;
 
 /**
  * Provides common implementations of {@code DateAdjuster}.
@@ -152,7 +151,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                int dom = date.getMonthOfYear().getLastDayOfMonth(Year.isLeap(date.getYear()));
+                int dom = date.getMonthOfYear().getLastDayOfMonth(date.isLeapYear());
                 return date.withDayOfMonth(dom);
             }
         },

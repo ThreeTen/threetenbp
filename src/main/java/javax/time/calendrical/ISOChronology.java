@@ -33,7 +33,6 @@ package javax.time.calendrical;
 
 import java.io.Serializable;
 
-
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
  * <i>de facto</i> world calendar.
