@@ -32,7 +32,6 @@
 package javax.time.calendrical;
 
 import javax.time.LocalTime;
-import javax.time.calendrical.TimeAdjuster;
 
 /**
  * Mock TimeAdjuster that returns null.

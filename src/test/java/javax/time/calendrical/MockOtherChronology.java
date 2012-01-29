@@ -32,8 +32,6 @@
 package javax.time.calendrical;
 
 import javax.time.Duration;
-import javax.time.calendrical.Chronology;
-import javax.time.calendrical.PeriodUnit;
 
 /**
  * Mock chronology.

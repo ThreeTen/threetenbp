@@ -55,11 +55,6 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
 import javax.time.YearMonth;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.IllegalCalendarFieldValueException;
-import javax.time.calendrical.WeekRules;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

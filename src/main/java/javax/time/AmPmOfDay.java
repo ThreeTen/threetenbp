@@ -36,7 +36,6 @@ import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
 import java.util.Calendar;
 import java.util.Locale;
 
-import javax.time.calendar.format.TextStyle;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalMatcher;
@@ -45,6 +44,7 @@ import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.format.TextStyle;
 
 /**
  * A half-day before or after midday, with the values 'AM' and 'PM'.

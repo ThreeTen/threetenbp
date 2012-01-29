@@ -34,9 +34,8 @@ package javax.time.calendrical;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
-import javax.time.calendar.zone.ZoneOffsetInfo;
-import javax.time.calendar.zone.ZoneRules;
-import javax.time.calendrical.ZoneResolver;
+import javax.time.zone.ZoneOffsetInfo;
+import javax.time.zone.ZoneRules;
 
 /**
  * Mock ZoneResolver that returns null.

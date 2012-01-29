@@ -33,12 +33,6 @@ package javax.time;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.MonthOfYear;
-import javax.time.OffsetDateTime;
-import javax.time.Year;
-import javax.time.ZoneOffset;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.MockMultiProvider;
 

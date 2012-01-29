@@ -43,12 +43,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.PeriodField;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.PeriodUnit;
+import javax.time.format.CalendricalParseException;
 
 /**
  * An immutable period consisting of the ISO-8601 year, month, day, hour,

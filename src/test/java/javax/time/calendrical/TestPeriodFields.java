@@ -50,11 +50,6 @@ import java.util.SortedMap;
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.Period;
-import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodField;
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodProvider;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;

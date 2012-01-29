@@ -45,9 +45,6 @@ import javax.time.Duration;
 import javax.time.Instant;
 import javax.time.MockUTCRulesAlwaysLeap;
 import javax.time.MockUTCRulesLeapOn1000;
-import javax.time.calendrical.TAIInstant;
-import javax.time.calendrical.UTCInstant;
-import javax.time.calendrical.UTCRules;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

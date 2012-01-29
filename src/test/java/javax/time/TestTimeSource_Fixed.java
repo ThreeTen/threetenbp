@@ -45,7 +45,6 @@ import java.io.Serializable;
 import javax.time.calendrical.TAIInstant;
 import javax.time.calendrical.UTCInstant;
 
-
 import org.testng.annotations.Test;
 
 /**

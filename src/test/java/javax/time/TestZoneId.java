@@ -52,24 +52,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.time.AmPmOfDay;
-import javax.time.CalendricalException;
-import javax.time.Instant;
-import javax.time.LocalDate;
-import javax.time.LocalDateTime;
-import javax.time.LocalTime;
-import javax.time.OffsetDateTime;
-import javax.time.YearMonth;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
-import javax.time.ZonedDateTime;
-import javax.time.calendar.format.TextStyle;
-import javax.time.calendar.zone.ZoneOffsetInfo;
-import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.MockRuleNoValue;
+import javax.time.format.TextStyle;
+import javax.time.zone.ZoneOffsetInfo;
+import javax.time.zone.ZoneOffsetTransition;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

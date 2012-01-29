@@ -53,9 +53,9 @@ import static javax.time.calendrical.DateAdjusters.nextOrCurrent;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
-import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.DateTimeFields;
+import javax.time.zone.ZoneOffsetTransition;
 
 /**
  * Test class.
@@ -64,6 +64,7 @@ import javax.time.calendrical.DateTimeFields;
  */
 public class TestFluentAPI {
 
+    @SuppressWarnings("unused")
     public static void main(String[] args) {
         Clock clock = Clock.systemDefaultZone();
         

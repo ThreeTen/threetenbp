@@ -43,10 +43,6 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
-import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodField;
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
 

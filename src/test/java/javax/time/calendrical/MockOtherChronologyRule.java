@@ -33,8 +33,6 @@ package javax.time.calendrical;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.DateTimeRule;
-
 /**
  * Mock rule simulated from another chronology.
  *

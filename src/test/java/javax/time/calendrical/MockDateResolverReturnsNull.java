@@ -33,7 +33,6 @@ package javax.time.calendrical;
 
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.calendrical.DateResolver;
 
 
 /**

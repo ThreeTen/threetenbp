@@ -43,12 +43,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.Clock;
-import javax.time.OffsetDateTime;
-import javax.time.TimeSource;
-import javax.time.ZoneId;
-import javax.time.ZoneOffset;
-
 import org.testng.annotations.Test;
 
 /**

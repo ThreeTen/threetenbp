@@ -43,9 +43,7 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.calendar.format.CalendricalParseException;
-import javax.time.calendrical.TAIInstant;
-import javax.time.calendrical.UTCInstant;
+import javax.time.format.CalendricalParseException;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

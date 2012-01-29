@@ -49,13 +49,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.time.Duration;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.DateTimeRuleRange;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
-import javax.time.calendrical.ISOPeriodUnit;
-import javax.time.calendrical.PeriodUnit;
 
 import org.testng.annotations.Test;
 

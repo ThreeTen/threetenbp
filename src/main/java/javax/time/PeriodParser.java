@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.format.CalendricalParseException;
 
 /**
  * A period parser that creates an instance of {@code Period} from a string.

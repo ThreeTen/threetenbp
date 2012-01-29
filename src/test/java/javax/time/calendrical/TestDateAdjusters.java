@@ -57,8 +57,6 @@ import java.util.Collections;
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
-import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateAdjusters;
 
 import org.testng.annotations.Test;
 

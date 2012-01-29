@@ -42,8 +42,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendrical.DateTimeRuleRange;
-
 import org.testng.annotations.Test;
 
 /**

@@ -46,10 +46,6 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import javax.time.CalendricalException;
-import javax.time.Duration;
-import javax.time.LocalDate;
-import javax.time.Period;
 import javax.time.calendrical.ISOPeriodUnit;
 import javax.time.calendrical.MockPeriodProviderReturnsNull;
 import javax.time.calendrical.PeriodField;

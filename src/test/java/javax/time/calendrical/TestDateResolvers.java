@@ -49,9 +49,6 @@ import java.util.Collections;
 import javax.time.LocalDate;
 import javax.time.MonthOfYear;
 import javax.time.Year;
-import javax.time.calendrical.DateResolver;
-import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.InvalidCalendarFieldException;
 
 import org.testng.annotations.Test;
 

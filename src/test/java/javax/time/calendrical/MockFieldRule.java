@@ -34,9 +34,6 @@ package javax.time.calendrical;
 import java.io.Serializable;
 
 import javax.time.Year;
-import javax.time.calendrical.DateTimeRule;
-import javax.time.calendrical.DateTimeRuleRange;
-import javax.time.calendrical.ISOPeriodUnit;
 
 /**
  * Mock rule designed for subclassing.

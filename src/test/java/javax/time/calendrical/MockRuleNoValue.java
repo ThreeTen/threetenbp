@@ -31,7 +31,6 @@
  */
 package javax.time.calendrical;
 
-import javax.time.calendrical.CalendricalRule;
 
 /**
  * Mock DateTimeFieldRule that returns null.

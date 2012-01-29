@@ -31,8 +31,6 @@
  */
 package javax.time.calendrical;
 
-import javax.time.calendrical.PeriodFields;
-import javax.time.calendrical.PeriodProvider;
 
 /**
  * Mock PeriodProvider that returns null.
