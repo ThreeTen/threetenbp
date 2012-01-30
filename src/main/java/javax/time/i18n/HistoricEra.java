@@ -34,11 +34,11 @@ package javax.time.i18n;
 import java.util.Calendar;
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.format.TextStyle;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.ISOChronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.format.TextStyle;
 
 /**
  * An era in the historic calendar system, with the values 'BCE' and 'CE'.
@@ -119,11 +119,12 @@ public enum HistoricEra implements Calendrical {
      * @param ruleToDerive  the rule to derive, not null
      * @return the value for the rule, null if the value cannot be returned
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(CalendricalRule<T> ruleToDerive) {
         if (ruleToDerive.getType() != HistoricEra.class) {
             return null;
         }
-        return ruleToDerive.reify(this);
+        return (T) this;
     }
 
     //-----------------------------------------------------------------------

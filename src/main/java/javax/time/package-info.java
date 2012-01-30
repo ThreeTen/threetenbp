@@ -31,7 +31,6 @@
  */
 
 /**
- * Provides classes to manage the continuous time-scale including a wrapper
- * for the system clock.
+ * The main public API for date and time.
  */
 package javax.time;

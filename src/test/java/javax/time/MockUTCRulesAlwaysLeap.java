@@ -31,6 +31,10 @@
  */
 package javax.time;
 
+import javax.time.calendrical.TAIInstant;
+import javax.time.calendrical.UTCInstant;
+import javax.time.calendrical.UTCRules;
+
 /**
  * Mock rules that always returns a leap second.
  *

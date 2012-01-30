@@ -40,14 +40,14 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
 import javax.time.MockInstantProviderReturnsNull;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.OffsetDate;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.OffsetTime;
-import javax.time.calendar.ZonedDateTime;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.ZonedDateTime;
 
 /**
  * Test java.util.GregorianCalendar additional methods.
@@ -320,7 +320,7 @@ public class TestGregorianCalendar {
             assertEquals(test.getMinuteOfHour(), gcal.get(Calendar.MINUTE));
             assertEquals(test.getSecondOfMinute(), gcal.get(Calendar.SECOND));
             assertEquals(test.getNanoOfSecond(), gcal.get(Calendar.MILLISECOND) * 1000000);
-            assertEquals(test.toLocalTime().toNanoOfDay(), 0);
+            assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -331,7 +331,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
             LocalTime test = gcal.toLocalTime();
-            assertEquals(test.toLocalTime().toNanoOfDay(), (24L * 60L * 60L - 1L) * 1000000000L);
+            assertEquals(test.toNanoOfDay(), (24L * 60L * 60L - 1L) * 1000000000L);
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -342,7 +342,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
             LocalTime test = gcal.toLocalTime();
-            assertEquals(test.toLocalTime().toNanoOfDay(), 0);
+            assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -353,7 +353,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.MILLISECOND, 0);
         for (int i = 0; i < 500; i++) {
             LocalTime test = gcal.toLocalTime();
-            assertEquals(test.toLocalTime().toNanoOfDay(), 0);
+            assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
         }
     }
@@ -366,7 +366,7 @@ public class TestGregorianCalendar {
         gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);
         for (int i = 0; i < 500; i++) {
             LocalTime test = gcal.toLocalTime();
-            assertEquals(test.toLocalTime().toNanoOfDay(), 0);
+            assertEquals(test.toNanoOfDay(), 0);
             gcal.add(Calendar.DATE, 1);
             gcal.set(Calendar.ZONE_OFFSET, 30 * 60 * 1000);
             gcal.set(Calendar.DST_OFFSET, 15 * 60 * 1000);

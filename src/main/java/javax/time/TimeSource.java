@@ -33,11 +33,14 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.calendrical.TAIInstant;
+import javax.time.calendrical.UTCInstant;
+
 /**
  * A source providing access to the current instant.
  * <p>
  * The Time Framework for Java abstracts the concept of the "current time" into two interfaces
- * - {@code TimeSource} and {@link javax.time.calendar.Clock Clock}.
+ * - {@code TimeSource} and {@link javax.time.Clock Clock}.
  * This class, provides access to the current {@code Instant} which is independent of
  * local factors such as time-zone and cannot be queried for human-scale fields.
  * By comparison, {@code Clock} provides access to the current date and time, via

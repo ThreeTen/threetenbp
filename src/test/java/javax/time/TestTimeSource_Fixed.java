@@ -42,8 +42,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.calendrical.TAIInstant;
+import javax.time.calendrical.UTCInstant;
 
 import org.testng.annotations.Test;
 

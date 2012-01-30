@@ -36,11 +36,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.calendar.Clock;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendrical.TAIInstant;
+import javax.time.calendrical.UTCInstant;
+import javax.time.calendrical.UTCRules;
+import javax.time.format.CalendricalParseException;
 
 /**
  * An instantaneous point on the time-line.
