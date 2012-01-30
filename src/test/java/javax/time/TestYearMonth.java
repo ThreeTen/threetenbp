@@ -1073,6 +1073,18 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
+    // toZeroEpochMonth()
+    //-----------------------------------------------------------------------
+    public void test_toZeroEpochMonth() {
+        assertEquals(YearMonth.of(0, 1).toZeroEpochMonth(), 0);
+        assertEquals(YearMonth.of(0, 2).toZeroEpochMonth(), 1);
+        assertEquals(YearMonth.of(0, 12).toZeroEpochMonth(), 11);
+        assertEquals(YearMonth.of(1, 1).toZeroEpochMonth(), 12);
+        assertEquals(YearMonth.of(-1, 12).toZeroEpochMonth(), -1);
+        assertEquals(YearMonth.of(2010, 6).toZeroEpochMonth(), 2010 * 12L + 5);
+    }
+
+    //-----------------------------------------------------------------------
     // toFields()
     //-----------------------------------------------------------------------
     public void test_toFields() {

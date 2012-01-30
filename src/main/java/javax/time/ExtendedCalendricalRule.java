@@ -31,11 +31,14 @@
  */
 package javax.time;
 
+import static javax.time.calendrical.ISODateTimeRule.ZERO_EPOCH_MONTH;
+
 import java.io.Serializable;
 
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 
 /**
@@ -86,6 +89,39 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
      */
     private Object readResolve() {
         return RULE_CACHE[ordinal];
+    }
+
+    //-----------------------------------------------------------------------
+    @SuppressWarnings("unchecked")
+    @Override
+    public <R> R extract(CalendricalRule<R> ruleToExtract, T calendrical) {
+        if (ruleToExtract == this) {
+            return (R) calendrical;
+        }
+        switch (ordinal) {
+            case YEAR_ORDINAL:
+                Year y = (Year) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ISODateTimeRule.YEAR.field(y.getValue()));
+            case YEAR_MONTH_ORDINAL:
+                YearMonth ym = (YearMonth) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ZERO_EPOCH_MONTH.field(ym.toZeroEpochMonth()));
+            case MONTH_DAY_ORDINAL:
+                MonthDay md = (MonthDay) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, null, null, null, null, ISOChronology.INSTANCE, md.toFields());
+            case MONTH_OF_YEAR_ORDINAL:
+                MonthOfYear moy = (MonthOfYear) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ISODateTimeRule.MONTH_OF_YEAR.field(moy.getValue()));
+            case QUARTER_OF_YEAR_ORDINAL:
+                QuarterOfYear qoy = (QuarterOfYear) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ISODateTimeRule.QUARTER_OF_YEAR.field(qoy.getValue()));
+            case DAY_OF_WEEK_ORDINAL:
+                DayOfWeek dow = (DayOfWeek) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ISODateTimeRule.DAY_OF_WEEK.field(dow.getValue()));
+            case AM_PM_OF_DAY_ORDINAL:
+                AmPmOfDay amPm = (AmPmOfDay) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ISODateTimeRule.AMPM_OF_DAY.field(amPm.getValue()));
+        }
+        return null;
     }
 
     //-----------------------------------------------------------------------

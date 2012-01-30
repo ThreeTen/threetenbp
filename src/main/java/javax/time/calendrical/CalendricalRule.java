@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.time.CalendricalException;
+import javax.time.LocalDate;
 
 /**
  * A rule defining how a single well-defined calendrical element operates.
@@ -125,6 +126,21 @@ public abstract class CalendricalRule<T>
      */
     public final Class<T> getType() {
         return type;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Extracts the value of the specified rule from an instance of the class
+     * this rule manages.
+     *
+     * @param ruleToExtract  the rule to extract, not null
+     * @param calendrical  the calendrical to get the field value from, not null
+     * @return the value of the specified rule, null if unable to extract the field
+     */
+    public <R> R extract(CalendricalRule<R> ruleToExtract, T calendrical) {
+        ISOChronology.checkNotNull(ruleToExtract, "CalendricalRule must not be null");
+        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
+        return (R) ((Calendrical) calendrical).get(ruleToExtract);
     }
 
     //-----------------------------------------------------------------------
@@ -253,6 +269,40 @@ public abstract class CalendricalRule<T>
     @Override
     public String toString() {
         return name;
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Rule class.
+     *
+     */
+    static class LocalDateRule extends CalendricalRule<LocalDate> implements Serializable {
+        static final CalendricalRule<LocalDate> INSTANCE = new LocalDateRule();
+        private static final long serialVersionUID = 1L;
+
+        private LocalDateRule() {
+            super(LocalDate.class, "LocalDate");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <R> R extract(CalendricalRule<R> ruleToExtract, LocalDate calendrical) {
+            if (ruleToExtract == this) {
+                return (R) calendrical;
+            }
+            if (ruleToExtract instanceof ISODateTimeRule) {
+                return (R) ((ISODateTimeRule) ruleToExtract).deriveFrom(calendrical, null, null);
+            }
+            return CalendricalEngine.derive(ruleToExtract, INSTANCE, calendrical, null, null, null, ISOChronology.INSTANCE, null);
+        }
+
+        @Override
+        protected LocalDate deriveFrom(CalendricalEngine engine) {
+            return engine.getDate(true);
+        }
     }
 
 }

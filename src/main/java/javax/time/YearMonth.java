@@ -603,6 +603,18 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this {@code YearMonth} to a count of months.
+     * <p>
+     * The Zero Epoch Month count is a simple incrementing count of months
+     * where month 0 is 0000-01-01 using ISO proleptic years.
+     *
+     * @return the count of months
+     */
+    public long toZeroEpochMonth() {
+        return year * 12L + month.ordinal();
+    }
+
+    /**
      * Converts this year-month to an equivalent fields object.
      * <p>
      * The fields will contain {@link ISODateTimeRule#YEAR} and

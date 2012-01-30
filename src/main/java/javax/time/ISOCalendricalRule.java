@@ -40,6 +40,7 @@ import java.io.Serializable;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateTimeField;
+import javax.time.calendrical.ISOChronology;
 
 /**
  * Internal class supplying the rules for the principal date and time objects.
@@ -94,8 +95,42 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
     //-----------------------------------------------------------------------
     @SuppressWarnings("unchecked")
     @Override
-    protected T deriveFrom(CalendricalEngine engine) {
+    public <R> R extract(CalendricalRule<R> ruleToExtract, T calendrical) {
+        if (ruleToExtract == this) {
+            return (R) calendrical;
+        }
         switch (ordinal) {
+            case LOCAL_DATE_ORDINAL:
+                return CalendricalEngine.derive(ruleToExtract, this, (LocalDate) calendrical, null, null, null, ISOChronology.INSTANCE, null);
+            case LOCAL_TIME_ORDINAL:
+                return CalendricalEngine.derive(ruleToExtract, this, null, (LocalTime) calendrical, null, null, ISOChronology.INSTANCE, null);
+            case LOCAL_DATE_TIME_ORDINAL:
+                LocalDateTime ldt = (LocalDateTime) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, ldt.toLocalDate(), ldt.toLocalTime(), null, null, ISOChronology.INSTANCE, null);
+            case OFFSET_DATE_ORDINAL:
+                OffsetDate od = (OffsetDate) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, od.toLocalDate(), null, od.getOffset(), null, ISOChronology.INSTANCE, null);
+            case OFFSET_TIME_ORDINAL:
+                OffsetTime ot = (OffsetTime) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, null, ot.toLocalTime(), ot.getOffset(), null, ISOChronology.INSTANCE, null);
+            case OFFSET_DATE_TIME_ORDINAL:
+                OffsetDateTime odt = (OffsetDateTime) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, odt.toLocalDate(), odt.toLocalTime(), odt.getOffset(), null, ISOChronology.INSTANCE, null);
+            case ZONED_DATE_TIME_ORDINAL:
+                ZonedDateTime zdt = (ZonedDateTime) calendrical;
+                return CalendricalEngine.derive(ruleToExtract, this, zdt.toLocalDate(), zdt.toLocalTime(), zdt.getOffset(), zdt.getZone(), ISOChronology.INSTANCE, null);
+            case ZONE_OFFSET_ORDINAL:
+                return CalendricalEngine.derive(ruleToExtract, this, null, null, (ZoneOffset) calendrical, null, ISOChronology.INSTANCE, null);
+            case ZONE_ID_ORDINAL:
+                return CalendricalEngine.derive(ruleToExtract, this, null, null, null, (ZoneId) calendrical, ISOChronology.INSTANCE, null);
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected T deriveFrom(CalendricalEngine engine) {
+       switch (ordinal) {
             case LOCAL_DATE_ORDINAL: return (T) engine.getDate(true);
             case LOCAL_TIME_ORDINAL: {
                 LocalTime time = engine.getTime(false);
