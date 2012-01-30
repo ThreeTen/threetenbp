@@ -60,6 +60,7 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Enum.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
@@ -69,13 +70,23 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_rule() {
         assertEquals(AmPmOfDay.rule().getName(), "AmPmOfDay");
         assertEquals(AmPmOfDay.rule().getType(), AmPmOfDay.class);
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_int_singleton() {
+    @Test(groups={"tck"})
+    public void test_factory_int_singleton_equals() {
+        for (int i = 0; i <= 1; i++) {
+            AmPmOfDay test = AmPmOfDay.of(i);
+            assertEquals(test.getValue(), i);
+        }
+    }
+    
+    @Test(groups={"implementation"})
+    public void test_factory_int_singleton_same() {
         for (int i = 0; i <= 1; i++) {
             AmPmOfDay test = AmPmOfDay.of(i);
             assertEquals(test.getValue(), i);
@@ -83,12 +94,12 @@ public class TestAmPmOfDay {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_valueTooLow() {
         AmPmOfDay.of(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
         try {
             AmPmOfDay.of(2);
@@ -100,33 +111,34 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_Calendricals() {
         assertEquals(AmPmOfDay.from(LocalTime.of(8, 30)), AmPmOfDay.AM);
         assertEquals(AmPmOfDay.from(LocalTime.of(17, 30)), AmPmOfDay.PM);
         assertEquals(AmPmOfDay.from(AMPM_OF_DAY.field(1)), AmPmOfDay.PM);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
         AmPmOfDay.from(AmPmOfDay.AM, AmPmOfDay.PM.toField());
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_noDerive() {
         AmPmOfDay.from(LocalDate.of(2007, 7, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_empty() {
         AmPmOfDay.from();
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_nullArray() {
         AmPmOfDay.from((Calendrical[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
         AmPmOfDay.from((Calendrical) null);
     }
@@ -134,6 +146,7 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     // get()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_get() {
         assertEquals(AmPmOfDay.AM.get(AmPmOfDay.rule()), AmPmOfDay.AM);
         assertEquals(AmPmOfDay.PM.get(AmPmOfDay.rule()), AmPmOfDay.PM);
@@ -147,16 +160,17 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getText() {
         assertEquals(AmPmOfDay.AM.getText(TextStyle.SHORT, Locale.US), "AM");
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullStyle() {
         AmPmOfDay.AM.getText(null, Locale.US);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullLocale() {
         AmPmOfDay.AM.getText(TextStyle.FULL, null);
     }
@@ -164,6 +178,7 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     // matcher
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_matcher() {
         assertEquals(AmPmOfDay.AM.matchesCalendrical(AMPM_OF_DAY.field(0)), true);
         assertEquals(AmPmOfDay.AM.matchesCalendrical(AmPmOfDay.AM), true);
@@ -173,7 +188,7 @@ public class TestAmPmOfDay {
         assertEquals(AmPmOfDay.AM.matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_matcher_null() {
         AmPmOfDay.AM.matchesCalendrical(null);
     }
@@ -181,6 +196,7 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     // toField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toField() {
         assertEquals(AmPmOfDay.AM.toField(), AMPM_OF_DAY.field(0));
         assertEquals(AmPmOfDay.PM.toField(), AMPM_OF_DAY.field(1));
@@ -189,6 +205,7 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString() {
         assertEquals(AmPmOfDay.AM.toString(), "AM");
         assertEquals(AmPmOfDay.PM.toString(), "PM");
@@ -197,6 +214,7 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     // generated methods
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_enum() {
         assertEquals(AmPmOfDay.valueOf("AM"), AmPmOfDay.AM);
         assertEquals(AmPmOfDay.values()[0], AmPmOfDay.AM);
