@@ -43,9 +43,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.format.TextStyle;
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesGroup;
@@ -114,7 +111,7 @@ import javax.time.zone.ZoneRulesGroup;
  *
  * @author Stephen Colebourne
  */
-public abstract class ZoneId implements Calendrical, Serializable {
+public abstract class ZoneId implements Serializable {
 
     /**
      * The group:region#version ID pattern.
@@ -241,16 +238,6 @@ public abstract class ZoneId implements Calendrical, Serializable {
         post.put("MST", "UTC-07:00");
         post.put("HST", "UTC-10:00");
         OLD_IDS_POST_2005 = Collections.unmodifiableMap(post);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code ZoneId}.
-     *
-     * @return the rule for the time-zone, not null
-     */
-    public static CalendricalRule<ZoneId> rule() {
-        return ISOCalendricalRule.ZONE_ID;
     }
 
     //-----------------------------------------------------------------------
@@ -416,39 +403,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneId} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a time-zone.
-     *
-     * @param calendricals  the calendricals to create a time-zone from, no nulls, not null
-     * @return the time-zone, not null
-     * @throws CalendricalException if unable to merge to a time-zone
-     */
-    public static ZoneId from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Constructor only accessible within the package.
      */
     ZoneId() {
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, this, null, null);
     }
 
     //-----------------------------------------------------------------------

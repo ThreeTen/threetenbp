@@ -97,7 +97,7 @@ public class TestFluentAPI {
         
         DateTimeFields fri13 = DateTimeFields.of(
                 DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
-        if (date.matches(fri13)) {
+        if (fri13.matches(date)) {
             System.out.println("Spooky");
         }
         

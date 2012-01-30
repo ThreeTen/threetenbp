@@ -68,7 +68,7 @@ public final class CalendricalEngine {
     /**
      * The original input.
      */
-    private List<Calendrical> input;
+    private List<Object> input;
     /**
      * The rule of the calendrical supplying the normalized fields.
      */
@@ -132,13 +132,13 @@ public final class CalendricalEngine {
      * @return the normalized merger to query, not null
      * @throws CalendricalException if the calendricals cannot be successfully merged
      */
-    public static CalendricalEngine merge(Calendrical... calendricals) {
+    public static CalendricalEngine merge(Object... calendricals) {
         ISOChronology.checkNotNull(calendricals, "Calendricals must not be null");
         CalendricalEngine target;
         try {
             List<CalendricalEngine> semiNormalized = new ArrayList<CalendricalEngine>(calendricals.length);
-            for (Calendrical calendrical : calendricals) {
-                CalendricalEngine engine = rule().getValue(calendrical);
+            for (Object calendrical : calendricals) {
+                CalendricalEngine engine = rule().getValue((Calendrical) calendrical);  // TODO
                 if (engine != null) {  // ignore anything with no normalized form
                     semiNormalized.add(engine);
                 }
@@ -193,13 +193,13 @@ public final class CalendricalEngine {
             // optimize simple cases
             if (ruleToDerive instanceof ISODateTimeRule) {
                 return (R) ((ISODateTimeRule) ruleToDerive).deriveFrom(date, time, offset);
-            } else if (ruleToDerive == LocalDate.rule()) {
+            } else if (ruleToDerive == ISOCalendricalRule.LOCAL_DATE) {
                 return (R) date;
-            } else if (ruleToDerive == LocalTime.rule()) {
+            } else if (ruleToDerive == ISOCalendricalRule.LOCAL_TIME) {
                 return (R) time;
-            } else if (ruleToDerive == ZoneOffset.rule()) {
+            } else if (ruleToDerive == ISOCalendricalRule.ZONE_OFFSET) {
                 return (R) offset;
-            } else if (ruleToDerive == ZoneId.rule()) {
+            } else if (ruleToDerive == ISOCalendricalRule.ZONE_ID) {
                 return (R) zone;
             } else if (ruleToDerive == Chronology.rule()) {
                 return (R) chronology;
@@ -240,7 +240,7 @@ public final class CalendricalEngine {
      * @param calendricals  the original calendricals prior to merging, not null
      * @param engines  the engine form of the calendricals, not null
      */
-    private CalendricalEngine(Calendrical[] calendricals, List<CalendricalEngine> engines) {
+    private CalendricalEngine(Object[] calendricals, List<CalendricalEngine> engines) {
         this.input = Collections.unmodifiableList(Arrays.asList(calendricals));
         this.rule = null;
         for (CalendricalEngine engine : engines) {
@@ -301,9 +301,9 @@ public final class CalendricalEngine {
      * 
      * @return the unmodifiable original input, not null
      */
-    public List<Calendrical> getInput() {
+    public List<Object> getInput() {
         if (input == null) {
-            List<Calendrical> list = new ArrayList<Calendrical>();
+            List<Object> list = new ArrayList<Object>();
             if (date != null) {
                 list.add(date);
             }

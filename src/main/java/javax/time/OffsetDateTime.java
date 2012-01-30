@@ -33,22 +33,15 @@ package javax.time;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneRules;
 
 /**
@@ -66,7 +59,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements InstantProvider, Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements InstantProvider, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -81,16 +74,6 @@ public final class OffsetDateTime
      * The zone offset.
      */
     private final ZoneOffset offset;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<OffsetDateTime> rule() {
-        return ISOCalendricalRule.OFFSET_DATE_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -424,68 +407,30 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date-time.
-     *
-     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-     * @return the offset date-time, not null
-     * @throws CalendricalException if unable to merge to an offset date-time
-     */
-    public static OffsetDateTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the offset date-time, null if unable to obtain the date-time
-     */
-    static OffsetDateTime deriveFrom(CalendricalEngine engine) {
-        LocalDateTime dateTime = LocalDateTime.deriveFrom(engine);
-        ZoneOffset offset = engine.getOffset(true);
-        if (dateTime == null || offset == null) {
-            return null;
-        }
-        return new OffsetDateTime(dateTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code OffsetDateTime} from a text string such as {@code 2007-12-03T10:15:30+01:00}.
      * <p>
-     * The string must represent a valid date-time and is parsed using
-     * {@link DateTimeFormatters#isoOffsetDateTime()}.
+     * The string must represent a valid date-time.
+     * The format is {@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX}.
      * Year, month, day-of-month, hour, minute and offset are required.
      * Seconds and fractional seconds are optional.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12-03T10:15:30+01:00", not null
      * @return the parsed offset date-time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws RuntimeException if the text cannot be parsed
      */
     public static OffsetDateTime parse(CharSequence text) {
-        return DateTimeFormatters.isoOffsetDateTime().parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDateTime} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a date-time.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed offset date-time, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+        String str = text.toString();
+        int pos = str.indexOf('Z');
+        if (pos <= 0) {
+            pos = str.lastIndexOf('+');
+            if (pos <= 1) {
+                pos = str.lastIndexOf('-');
+                if (pos <= 1) {
+                    throw new CalendricalException("Unable to parse OffsetTime: " + text);
+                }
+            }
+        }
+        return of(LocalDateTime.parse(str.substring(0, pos)), ZoneOffset.of(str.substring(pos + 1, str.length())));
     }
 
     //-----------------------------------------------------------------------
@@ -517,35 +462,6 @@ public final class OffsetDateTime
             return this;
         }
         return new OffsetDateTime(dateTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date-time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
-        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) dateTime;
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) offset;
-            }
-            return null;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1841,19 +1757,6 @@ public final class OffsetDateTime
     @Override
     public String toString() {
         return dateTime.toString() + offset.toString();
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

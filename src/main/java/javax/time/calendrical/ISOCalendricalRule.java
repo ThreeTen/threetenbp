@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.calendrical;
 
 import static javax.time.calendrical.ISODateTimeRule.MILLI_OF_DAY;
 import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_DAY;
@@ -37,10 +37,17 @@ import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_DAY;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.ISOChronology;
+import javax.time.LocalDate;
+import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.MathUtils;
+import javax.time.OffsetDate;
+import javax.time.OffsetDateTime;
+import javax.time.OffsetTime;
+import javax.time.ZoneId;
+import javax.time.ZoneOffset;
+import javax.time.ZonedDateTime;
+import javax.time.zone.ZoneRules;
 
 /**
  * Internal class supplying the rules for the principal date and time objects.
@@ -60,7 +67,7 @@ import javax.time.calendrical.ISOChronology;
  * @param <T> the rule type
  * @author Stephen Colebourne
  */
-final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializable {
+public final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializable {
 
     /**
      * Serialization version.
@@ -132,31 +139,131 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
     protected T deriveFrom(CalendricalEngine engine) {
        switch (ordinal) {
             case LOCAL_DATE_ORDINAL: return (T) engine.getDate(true);
-            case LOCAL_TIME_ORDINAL: {
-                LocalTime time = engine.getTime(false);
-                if (time == null) {
-                    DateTimeField lod = engine.getField(MILLI_OF_DAY, false);
-                    if (lod != null) {
-                        return (T) LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
-                    }
-                    DateTimeField sod = engine.getField(SECOND_OF_DAY, false);
-                    if (sod != null) {
-                        return (T) LocalTime.ofSecondOfDay(sod.getValue());
-                    }
-                    DateTimeField mod = engine.getField(MINUTE_OF_DAY, false);
-                    if (mod != null) {
-                        return (T) LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));
-                    }
-                }
-                return (T) time;
-            }
-            case LOCAL_DATE_TIME_ORDINAL: return (T) LocalDateTime.deriveFrom(engine);
-            case OFFSET_DATE_ORDINAL: return (T) OffsetDate.deriveFrom(engine);
-            case OFFSET_TIME_ORDINAL: return (T) OffsetTime.deriveFrom(engine);
-            case OFFSET_DATE_TIME_ORDINAL: return (T) OffsetDateTime.deriveFrom(engine);
-            case ZONED_DATE_TIME_ORDINAL: return (T) ZonedDateTime.deriveFrom(engine);
+            case LOCAL_TIME_ORDINAL: return (T) deriveLocalTime(engine);
+            case LOCAL_DATE_TIME_ORDINAL: return (T) deriveLocalDateTime(engine);
+            case OFFSET_DATE_ORDINAL: return (T) deriveOffsetDate(engine);
+            case OFFSET_TIME_ORDINAL: return (T) deriveOffsetTime(engine);
+            case OFFSET_DATE_TIME_ORDINAL: return (T) deriveOffsetDateTime(engine);
+            case ZONED_DATE_TIME_ORDINAL: return (T) deriveZonedDateTime(engine);
             case ZONE_OFFSET_ORDINAL: return (T) engine.getOffset(true);
             case ZONE_ID_ORDINAL: return (T) engine.getZone(true);
+        }
+        return null;
+    }
+
+    /**
+     * Obtains an instance of {@code LocalTime} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    private LocalTime deriveLocalTime(CalendricalEngine engine) {
+        LocalTime time = engine.getTime(false);
+        if (time == null) {
+            DateTimeField lod = engine.getField(MILLI_OF_DAY, false);
+            if (lod != null) {
+                return LocalTime.ofNanoOfDay(MathUtils.safeMultiply(lod.getValue(), 1000000));
+            }
+            DateTimeField sod = engine.getField(SECOND_OF_DAY, false);
+            if (sod != null) {
+                return LocalTime.ofSecondOfDay(sod.getValue());
+            }
+            DateTimeField mod = engine.getField(MINUTE_OF_DAY, false);
+            if (mod != null) {
+                return LocalTime.ofSecondOfDay(MathUtils.safeMultiply(mod.getValue(), 60));
+            }
+        }
+        return time;
+    }
+
+    /**
+     * Obtains an instance of {@code LocalDateTime} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    private LocalDateTime deriveLocalDateTime(CalendricalEngine engine) {
+        LocalDate date = engine.getDate(true);
+        LocalTime time = deriveLocalTime(engine);
+        if (date == null || time == null) {
+            return null;
+        }
+        return LocalDateTime.of(date, time);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDate} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    private OffsetDate deriveOffsetDate(CalendricalEngine engine) {
+        LocalDate date = engine.getDate(true);
+        ZoneOffset offset = engine.getOffset(true);
+        if (date == null || offset == null) {
+            return null;
+        }
+        return OffsetDate.of(date, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetTime} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    private OffsetTime deriveOffsetTime(CalendricalEngine engine) {
+        LocalTime time = deriveLocalTime(engine);
+        ZoneOffset offset = engine.getOffset(true);
+        if (time == null || offset == null) {
+            return null;
+        }
+        return OffsetTime.of(time, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code OffsetDateTime} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    private OffsetDateTime deriveOffsetDateTime(CalendricalEngine engine) {
+        LocalDateTime dateTime = deriveLocalDateTime(engine);
+        ZoneOffset offset = engine.getOffset(true);
+        if (dateTime == null || offset == null) {
+            return null;
+        }
+        return OffsetDateTime.of(dateTime, offset);
+    }
+
+    /**
+     * Obtains an instance of {@code ZonedDateTime} from the engine.
+     *
+     * @param engine  the calendrical engine, not null
+     * @return the derived object, null if unable to obtain
+     */
+    private ZonedDateTime deriveZonedDateTime(CalendricalEngine engine) {
+        ZoneOffset offset = engine.getOffset(false);
+        if (offset != null) {
+            OffsetDateTime odt = deriveOffsetDateTime(engine);
+            if (odt != null) {
+                ZoneId zone = engine.getZone(false);
+                if (zone == null) {
+                    zone = ZoneId.of(offset);  // smart use of offset as zone
+                } else {
+                    ZoneRules rules = zone.getRules();  // latest rules version
+                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
+                        odt = odt.withOffsetSameInstant(rules.getOffset(odt));  // smart use of date-time as instant
+                    }
+                }
+                return ZonedDateTime.of(odt, zone);
+            }
+        } else {
+            LocalDateTime ldt = deriveLocalDateTime(engine);
+            ZoneId zone = engine.getZone(true);
+            if (ldt != null && zone != null) {
+                return ZonedDateTime.of(ldt, zone, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
+            }
         }
         return null;
     }
@@ -190,39 +297,39 @@ final class ISOCalendricalRule<T> extends CalendricalRule<T> implements Serializ
     /**
      * The rule for {@code LocalDate}.
      */
-    static final CalendricalRule<LocalDate> LOCAL_DATE = new ISOCalendricalRule<LocalDate>(LocalDate.class, LOCAL_DATE_ORDINAL);
+    public static final CalendricalRule<LocalDate> LOCAL_DATE = new ISOCalendricalRule<LocalDate>(LocalDate.class, LOCAL_DATE_ORDINAL);
     /**
      * The rule for {@code LocalTime}.
      */
-    static final CalendricalRule<LocalTime> LOCAL_TIME = new ISOCalendricalRule<LocalTime>(LocalTime.class, LOCAL_TIME_ORDINAL);
+    public static final CalendricalRule<LocalTime> LOCAL_TIME = new ISOCalendricalRule<LocalTime>(LocalTime.class, LOCAL_TIME_ORDINAL);
     /**
      * The rule for {@code LocalDateTime}.
      */
-    static final CalendricalRule<LocalDateTime> LOCAL_DATE_TIME = new ISOCalendricalRule<LocalDateTime>(LocalDateTime.class, LOCAL_DATE_TIME_ORDINAL);
+    public static final CalendricalRule<LocalDateTime> LOCAL_DATE_TIME = new ISOCalendricalRule<LocalDateTime>(LocalDateTime.class, LOCAL_DATE_TIME_ORDINAL);
     /**
      * The rule for {@code OffsetDate}.
      */
-    static final CalendricalRule<OffsetDate> OFFSET_DATE = new ISOCalendricalRule<OffsetDate>(OffsetDate.class, OFFSET_DATE_ORDINAL);
+    public static final CalendricalRule<OffsetDate> OFFSET_DATE = new ISOCalendricalRule<OffsetDate>(OffsetDate.class, OFFSET_DATE_ORDINAL);
     /**
      * The rule for {@code OffsetTime}.
      */
-    static final CalendricalRule<OffsetTime> OFFSET_TIME = new ISOCalendricalRule<OffsetTime>(OffsetTime.class, OFFSET_TIME_ORDINAL);
+    public static final CalendricalRule<OffsetTime> OFFSET_TIME = new ISOCalendricalRule<OffsetTime>(OffsetTime.class, OFFSET_TIME_ORDINAL);
     /**
      * The rule for {@code OffsetDateTime}.
      */
-    static final CalendricalRule<OffsetDateTime> OFFSET_DATE_TIME = new ISOCalendricalRule<OffsetDateTime>(OffsetDateTime.class, OFFSET_DATE_TIME_ORDINAL);
+    public static final CalendricalRule<OffsetDateTime> OFFSET_DATE_TIME = new ISOCalendricalRule<OffsetDateTime>(OffsetDateTime.class, OFFSET_DATE_TIME_ORDINAL);
     /**
      * The rule for {@code ZonedDateTime}.
      */
-    static final CalendricalRule<ZonedDateTime> ZONED_DATE_TIME = new ISOCalendricalRule<ZonedDateTime>(ZonedDateTime.class, ZONED_DATE_TIME_ORDINAL);
+    public static final CalendricalRule<ZonedDateTime> ZONED_DATE_TIME = new ISOCalendricalRule<ZonedDateTime>(ZonedDateTime.class, ZONED_DATE_TIME_ORDINAL);
     /**
      * The rule for {@code ZoneOffset}.
      */
-    static final CalendricalRule<ZoneOffset> ZONE_OFFSET = new ISOCalendricalRule<ZoneOffset>(ZoneOffset.class, ZONE_OFFSET_ORDINAL);
+    public static final CalendricalRule<ZoneOffset> ZONE_OFFSET = new ISOCalendricalRule<ZoneOffset>(ZoneOffset.class, ZONE_OFFSET_ORDINAL);
     /**
      * The rule for {@code ZoneId}.
      */
-    static final CalendricalRule<ZoneId> ZONE_ID = new ISOCalendricalRule<ZoneId>(ZoneId.class, ZONE_ID_ORDINAL);
+    public static final CalendricalRule<ZoneId> ZONE_ID = new ISOCalendricalRule<ZoneId>(ZoneId.class, ZONE_ID_ORDINAL);
 
     /**
      * Cache of rules for deserialization.

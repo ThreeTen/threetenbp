@@ -54,7 +54,7 @@ public final class DateTimePrintContext {
     /**
      * The calendrical being output.
      */
-    private Calendrical calendrical;
+    private Object calendrical;
     /**
      * The locale, not null.
      */
@@ -77,7 +77,7 @@ public final class DateTimePrintContext {
      * @param locale  the locale to use, not null
      * @param symbols  the symbols to use during parsing, not null
      */
-    DateTimePrintContext(Calendrical calendrical, Locale locale, DateTimeFormatSymbols symbols) {
+    DateTimePrintContext(Object calendrical, Locale locale, DateTimeFormatSymbols symbols) {
         super();
         setCalendrical(calendrical);
         setLocale(locale);
@@ -90,7 +90,7 @@ public final class DateTimePrintContext {
      *
      * @return the calendrical, not null
      */
-    public Calendrical getCalendrical() {
+    public Object getCalendrical() {
         return calendrical;
     }
 
@@ -99,7 +99,7 @@ public final class DateTimePrintContext {
      *
      * @param calendrical  the calendrical, not null
      */
-    public void setCalendrical(Calendrical calendrical) {
+    public void setCalendrical(Object calendrical) {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         this.calendrical = calendrical;
     }
@@ -180,9 +180,9 @@ public final class DateTimePrintContext {
      */
     public <T> T getValue(CalendricalRule<T> rule) {
         if (optional > 0) {
-            return rule.getValue(calendrical);
+            return rule.getValue((Calendrical) calendrical);  // TODO: casts
         } else {
-            return rule.getValueChecked(calendrical);
+            return rule.getValueChecked((Calendrical) calendrical);
         }
     }
 

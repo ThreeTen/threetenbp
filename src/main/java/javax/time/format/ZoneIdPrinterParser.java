@@ -42,6 +42,7 @@ import java.util.Set;
 
 import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ISOCalendricalRule;
 import javax.time.zone.ZoneRulesGroup;
 
 /**
@@ -78,7 +79,7 @@ final class ZoneIdPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        ZoneId zone = context.getValue(ZoneId.rule());
+        ZoneId zone = context.getValue(ISOCalendricalRule.ZONE_ID);
         if (zone == null) {
             return false;
         }

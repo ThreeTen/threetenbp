@@ -32,7 +32,6 @@
 package javax.time;
 
 import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -40,8 +39,6 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.format.TextStyle;
 
@@ -66,14 +63,6 @@ public class TestAmPmOfDay {
         assertTrue(Enum.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(AmPmOfDay.class));
-        assertTrue(Calendrical.class.isAssignableFrom(AmPmOfDay.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(AmPmOfDay.class));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(AmPmOfDay.rule().getName(), "AmPmOfDay");
-        assertEquals(AmPmOfDay.rule().getType(), AmPmOfDay.class);
     }
 
     //-----------------------------------------------------------------------
@@ -102,51 +91,6 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendricals() {
-        assertEquals(AmPmOfDay.from(LocalTime.of(8, 30)), AmPmOfDay.AM);
-        assertEquals(AmPmOfDay.from(LocalTime.of(17, 30)), AmPmOfDay.PM);
-        assertEquals(AmPmOfDay.from(AMPM_OF_DAY.field(1)), AmPmOfDay.PM);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_clash() {
-        AmPmOfDay.from(AmPmOfDay.AM, AmPmOfDay.PM.toField());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_noDerive() {
-        AmPmOfDay.from(LocalDate.of(2007, 7, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_empty() {
-        AmPmOfDay.from();
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_nullArray() {
-        AmPmOfDay.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_null() {
-        AmPmOfDay.from((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(AmPmOfDay.AM.get(AmPmOfDay.rule()), AmPmOfDay.AM);
-        assertEquals(AmPmOfDay.PM.get(AmPmOfDay.rule()), AmPmOfDay.PM);
-        
-        assertEquals(AmPmOfDay.AM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(0));
-        assertEquals(AmPmOfDay.PM.get(AMPM_OF_DAY), AMPM_OF_DAY.field(1));
-        
-        assertEquals(AmPmOfDay.AM.get(DAY_OF_WEEK), null);
-    }
-
-    //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
     public void test_getText() {
@@ -161,31 +105,6 @@ public class TestAmPmOfDay {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getText_nullLocale() {
         AmPmOfDay.AM.getText(TextStyle.FULL, null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matcher
-    //-----------------------------------------------------------------------
-    public void test_matcher() {
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(AMPM_OF_DAY.field(0)), true);
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(AmPmOfDay.AM), true);
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(AmPmOfDay.PM), false);
-        
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(LocalTime.of(11, 30)), true);
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(LocalTime.of(12, 30)), false);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_matcher_null() {
-        AmPmOfDay.AM.matchesCalendrical(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // toField()
-    //-----------------------------------------------------------------------
-    public void test_toField() {
-        assertEquals(AmPmOfDay.AM.toField(), AMPM_OF_DAY.field(0));
-        assertEquals(AmPmOfDay.PM.toField(), AMPM_OF_DAY.field(1));
     }
 
     //-----------------------------------------------------------------------

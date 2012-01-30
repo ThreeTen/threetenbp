@@ -452,7 +452,7 @@ public final class HistoricDate
      * @throws IllegalCalendarFieldValueException if the year range is exceeded
      */
     public HistoricDate plusDays(int days) {
-        return of(toLocalDate().plusDays(days));  // TODO: better
+        return null; //of(toLocalDate().plusDays(days));  // TODO: better
     }
 
     //-----------------------------------------------------------------------

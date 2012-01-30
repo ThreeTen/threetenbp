@@ -33,20 +33,13 @@ package javax.time;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -66,7 +59,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, Comparable<OffsetDate>, Serializable {
+        implements Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -81,16 +74,6 @@ public final class OffsetDate
      * The zone offset.
      */
     private final ZoneOffset offset;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetDate}.
-     *
-     * @return the rule for the date, not null
-     */
-    public static CalendricalRule<OffsetDate> rule() {
-        return ISOCalendricalRule.OFFSET_DATE;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -213,67 +196,29 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDate} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date.
-     *
-     * @param calendricals  the calendricals to create a date from, no nulls, not null
-     * @return the offset date, not null
-     * @throws CalendricalException if unable to merge to an offset date
-     */
-    public static OffsetDate from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDate} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the offset date, null if unable to obtain the date
-     */
-    static OffsetDate deriveFrom(CalendricalEngine engine) {
-        LocalDate date = engine.getDate(true);
-        ZoneOffset offset = engine.getOffset(true);
-        if (date == null || offset == null) {
-            return null;
-        }
-        return new OffsetDate(date, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code OffsetDate} from a text string such as {@code 2007-12-03+01:00}.
      * <p>
-     * The string must represent a valid date and is parsed using
-     * {@link DateTimeFormatters#isoOffsetDate()}.
+     * The string must represent a valid date.
+     * The format is {@code yyyy-MM-ddXXXXX}.
      * Year, month, day-of-month and offset are required.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12-03+01:00", not null
      * @return the parsed offset date, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws RuntimeException if the text cannot be parsed
      */
     public static OffsetDate parse(CharSequence text) {
-        return DateTimeFormatters.isoOffsetDate().parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDate} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a date.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed offset date, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static OffsetDate parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+        String str = text.toString();
+        int pos = str.indexOf('Z');
+        if (pos <= 0) {
+            pos = str.indexOf('+');
+            if (pos <= 1) {
+                pos = str.indexOf('-');
+                if (pos <= 1) {
+                    throw new CalendricalException("Unable to parse OffsetTime: " + text);
+                }
+            }
+        }
+        return of(LocalDate.parse(str.substring(0, pos)), ZoneOffset.of(str.substring(pos + 1, str.length())));
     }
 
     //-----------------------------------------------------------------------
@@ -305,25 +250,6 @@ public final class OffsetDate
             return this;
         }
         return new OffsetDate(date, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), date, null, offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1211,19 +1137,6 @@ public final class OffsetDate
     @Override
     public String toString() {
         return date.toString() + offset.toString();
-    }
-
-    /**
-     * Outputs this date as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

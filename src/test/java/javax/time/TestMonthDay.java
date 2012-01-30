@@ -31,15 +31,11 @@
  */
 package javax.time;
 
-import static javax.time.MonthOfYear.JANUARY;
-import static javax.time.MonthOfYear.JULY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
 import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,21 +48,12 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.MockDateResolverReturnsNull;
-import javax.time.calendrical.MockRuleNoValue;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -91,11 +78,9 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         Object obj = TEST_07_15;
-        assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateAdjuster);
-        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -237,37 +222,6 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendricals() {
-        assertEquals(MonthDay.from(JULY, DAY_OF_MONTH.field(15)), TEST_07_15);
-        assertEquals(MonthDay.from(LocalDate.of(2007, 7, 15)), TEST_07_15);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_clash() {
-        MonthDay.from(LocalDate.of(2007, 7, 15), JANUARY);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_noDerive() {
-        MonthDay.from(LocalTime.of(12, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_empty() {
-        MonthDay.from();
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_nullArray() {
-        MonthDay.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_null() {
-        MonthDay.from((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
     @DataProvider(name="goodParseData")
@@ -318,31 +272,23 @@ public class TestMonthDay {
         };
     }
 
-    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalException.class)
     public void factory_parse_fail(String text, int pos) {
-        try {
-            MonthDay.parse(text);
-            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-        }
-        catch (CalendricalParseException ex) {
-            assertEquals(ex.getParsedString(), text);
-            assertEquals(ex.getErrorIndex(), pos);
-            throw ex;
-        }
+        MonthDay.parse(text);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_parse_illegalValue_Day() {
         MonthDay.parse("--06-32");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_parse_invalidValue_Day() {
         MonthDay.parse("--06-31");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_parse_illegalValue_Month() {
         MonthDay.parse("--13-25");
     }
@@ -350,47 +296,6 @@ public class TestMonthDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         MonthDay.parse(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    public void factory_parse_formatter() {
-        MonthDay t = MonthDay.parse("12 03", DateTimeFormatters.pattern("MM dd"));
-        assertEquals(t, MonthDay.of(12, 3));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_formatter_nullText() {
-        MonthDay.parse((String) null, DateTimeFormatters.basicIsoDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_formatter_nullFormatter() {
-        MonthDay.parse("12 03", null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get(CalendricalRule)
-    //-----------------------------------------------------------------------
-    public void test_get_CalendricalRule() {
-        MonthDay test = MonthDay.of(6, 12);
-        assertSame(test.get(MonthDay.rule()), test);
-        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(MONTH_OF_YEAR), MONTH_OF_YEAR.field(6));
-        assertEquals(test.get(MONTH_OF_QUARTER), MONTH_OF_QUARTER.field(3));
-        assertEquals(test.get(DAY_OF_MONTH), DAY_OF_MONTH.field(12));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_get_CalendricalRule_null() {
-        MonthDay test = MonthDay.of(6, 12);
-        test.get((CalendricalRule<?>) null);
-    }
-
-    public void test_get_unsupported() {
-        MonthDay test = MonthDay.of(6, 12);
-        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------
@@ -610,22 +515,6 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate()
-    //-----------------------------------------------------------------------
-    public void test_matchesDate() {
-        assertEquals(MonthDay.of(1, 1).matchesCalendrical(LocalDate.of(2007, 1, 1)), true);
-        assertEquals(MonthDay.of(1, 1).matchesCalendrical(LocalDate.of(2008, 1, 1)), true);
-        
-        assertEquals(MonthDay.of(2, 1).matchesCalendrical(LocalDate.of(2007, 1, 1)), false);
-        assertEquals(MonthDay.of(1, 2).matchesCalendrical(LocalDate.of(2008, 1, 1)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesDate_null() {
-        TEST_07_15.matchesCalendrical(null);
-    }
-
-    //-----------------------------------------------------------------------
     // isValidYear(int)
     //-----------------------------------------------------------------------
     public void test_isValidYear_june() {
@@ -666,13 +555,6 @@ public class TestMonthDay {
             assertEquals(ex.getRule(), DAY_OF_MONTH);
             throw ex;
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // toFields()
-    //-----------------------------------------------------------------------
-    public void test_toFields() {
-        assertEquals(MonthDay.of(6, 30).toFields(), DateTimeFields.of(MONTH_OF_YEAR, 6, DAY_OF_MONTH, 30));
     }
 
     //-----------------------------------------------------------------------
@@ -811,19 +693,6 @@ public class TestMonthDay {
         MonthDay test = MonthDay.of(m, d);
         String str = test.toString();
         assertEquals(str, expected);
-    }
-
-    //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    public void test_toString_formatter() {
-        String t = MonthDay.of(12, 3).toString(DateTimeFormatters.pattern("MM dd"));
-        assertEquals(t, "12 03");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        MonthDay.of(12, 3).toString(null);
     }
 
 }

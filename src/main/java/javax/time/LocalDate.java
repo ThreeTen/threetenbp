@@ -37,21 +37,16 @@ import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A date without a time-zone in the ISO-8601 calendar system,
@@ -80,7 +75,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -97,6 +92,10 @@ public final class LocalDate
      * Serialization version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * The pattern for parsing.
+     */
+    private static final Pattern PATTERN = Pattern.compile("([+-]?[0-9]+)-([0-9][0-9])-([0-9][0-9])");
     /**
      * The number of days in a 400 year cycle.
      */
@@ -124,16 +123,6 @@ public final class LocalDate
      * The day-of-month.
      */
     private final int day;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code LocalDate}.
-     *
-     * @return the rule for the date, not null
-     */
-    public static CalendricalRule<LocalDate> rule() {
-        return ISOCalendricalRule.LOCAL_DATE;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -310,50 +299,24 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDate} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date.
-     *
-     * @param calendricals  the calendricals to create a date from, no nulls, not null
-     * @return the local date, not null
-     * @throws CalendricalException if unable to merge to a local date
-     */
-    public static LocalDate from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code LocalDate} from a text string such as {@code 2007-12-03}.
      * <p>
-     * The string must represent a valid date and is parsed using
-     * {@link DateTimeFormatters#isoLocalDate()}.
-     * Year, month and day-of-month are required.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
+     * The string must represent a valid date.
+     * The format is {@code yyyy-MM-dd}.
      *
      * @param text  the text to parse such as "2007-12-03", not null
      * @return the parsed local date, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws RuntimeException if the text cannot be parsed
      */
     public static LocalDate parse(CharSequence text) {
-        return DateTimeFormatters.isoLocalDate().parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDate} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a date.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed local date, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+        Matcher matcher = PATTERN.matcher(text);
+        if (matcher.matches() == false) {
+            throw new CalendricalException("Unable to parse LocalDate: " + text);
+        }
+        int y = Integer.parseInt(matcher.group(1));
+        int moy = Integer.parseInt(matcher.group(2));
+        int dom = Integer.parseInt(matcher.group(3));
+        return of(y, moy, dom);
     }
 
     //-----------------------------------------------------------------------
@@ -388,21 +351,6 @@ public final class LocalDate
         this.year = year;
         this.month = monthOfYear;
         this.day = dayOfMonth;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), this, null, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1441,19 +1389,6 @@ public final class LocalDate
             .append(dayValue < 10 ? "-0" : "-")
             .append(dayValue)
             .toString();
-    }
-
-    /**
-     * Outputs this date as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

@@ -167,7 +167,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
             }
             case WEEK_OF_WEEK_BASED_YEAR_ORDINAL: {
                 // TODO: derive from WeekBasedYear
-                LocalDate date = calendrical.get(LocalDate.rule());
+                LocalDate date = calendrical.get(ISOCalendricalRule.LOCAL_DATE);
                 if (date != null) {
                     date = date.withDayOfYear(1);
                     if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||

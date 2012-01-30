@@ -29,17 +29,20 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.calendrical;
 
+import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
 import static javax.time.calendrical.ISODateTimeRule.ZERO_EPOCH_MONTH;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
+import javax.time.AmPmOfDay;
+import javax.time.DayOfWeek;
+import javax.time.MonthDay;
+import javax.time.MonthOfYear;
+import javax.time.QuarterOfYear;
+import javax.time.Year;
+import javax.time.YearMonth;
 
 /**
  * Internal class supplying the rules for the additional date and time objects.
@@ -107,7 +110,8 @@ final class ExtendedCalendricalRule<T> extends CalendricalRule<T> implements Ser
                 return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ZERO_EPOCH_MONTH.field(ym.toZeroEpochMonth()));
             case MONTH_DAY_ORDINAL:
                 MonthDay md = (MonthDay) calendrical;
-                return CalendricalEngine.derive(ruleToExtract, this, null, null, null, null, ISOChronology.INSTANCE, md.toFields());
+                DateTimeFields fields = DateTimeFields.of(ISODateTimeRule.MONTH_OF_YEAR, md.getMonthOfYear().getValue(), DAY_OF_MONTH, md.getDayOfMonth());
+                return CalendricalEngine.derive(ruleToExtract, this, null, null, null, null, ISOChronology.INSTANCE, fields);
             case MONTH_OF_YEAR_ORDINAL:
                 MonthOfYear moy = (MonthOfYear) calendrical;
                 return CalendricalEngine.derive(ruleToExtract, this, ISOChronology.INSTANCE, ISODateTimeRule.MONTH_OF_YEAR.field(moy.getValue()));

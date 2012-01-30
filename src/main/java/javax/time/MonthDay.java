@@ -33,24 +33,16 @@ package javax.time;
 
 import static javax.time.MonthOfYear.FEBRUARY;
 import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.DateTimeFields;
-import javax.time.calendrical.ISOChronology;
-import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatterBuilder;
 
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
@@ -77,21 +69,16 @@ import javax.time.format.DateTimeFormatterBuilder;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, DateAdjuster, Comparable<MonthDay>, Serializable {
+        implements DateAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
      */
     private static final long serialVersionUID = -254395108L;
     /**
-     * Parser.
+     * The pattern for parsing.
      */
-    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-        .appendLiteral("--")
-        .appendValue(MONTH_OF_YEAR, 2)
-        .appendLiteral('-')
-        .appendValue(DAY_OF_MONTH, 2)
-        .toFormatter();
+    private static final Pattern PATTERN = Pattern.compile("--([0-9][0-9])-([0-9][0-9])");
 
     /**
      * The month-of-year, not null.
@@ -101,16 +88,6 @@ public final class MonthDay
      * The day-of-month.
      */
     private final int day;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code MonthDay}.
-     *
-     * @return the rule for the month-day, not null
-     */
-    public static CalendricalRule<MonthDay> rule() {
-        return ExtendedCalendricalRule.MONTH_DAY;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -192,21 +169,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code MonthDay} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a month-day.
-     *
-     * @param calendricals  the calendricals to create a month-day from, no nulls, not null
-     * @return the month-day, not null
-     * @throws CalendricalException if unable to merge to a month-day
-     */
-    public static MonthDay from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
      * <p>
      * The string must represent a valid month-day.
@@ -214,26 +176,16 @@ public final class MonthDay
      *
      * @param text  the text to parse such as "--12-03", not null
      * @return the parsed month-day, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws RuntimeException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text) {
-        return PARSER.parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code MonthDay} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a month-day.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed month-day, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+        Matcher matcher = PATTERN.matcher(text);
+        if (matcher.matches() == false) {
+            throw new CalendricalException("Unable to parse MonthDay: " + text);
+        }
+        int moy = Integer.parseInt(matcher.group(1));
+        int dom = Integer.parseInt(matcher.group(2));
+        return of(moy, dom);
     }
 
     //-----------------------------------------------------------------------
@@ -261,25 +213,6 @@ public final class MonthDay
             return this;
         }
         return new MonthDay(newMonth, newDay);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this month-day then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, null, null, ISOChronology.INSTANCE, toFields());
     }
 
     //-----------------------------------------------------------------------
@@ -456,19 +389,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this month-day to an equivalent fields object.
-     * <p>
-     * The fields will contain {@link ISODateTimeRule#MONTH_OF_YEAR} and
-     * {@link ISODateTimeRule#DAY_OF_MONTH}.
-     *
-     * @return the equivalent fields, not null
-     */
-    public DateTimeFields toFields() {
-        return DateTimeFields.of(MONTH_OF_YEAR, month.getValue(), DAY_OF_MONTH, day);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this month-day to another month-day.
      *
      * @param other  the other month-day to compare to, not null
@@ -549,19 +469,6 @@ public final class MonthDay
             .append(monthValue < 10 ? "0" : "").append(monthValue)
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
             .toString();
-    }
-
-    /**
-     * Outputs this month-day as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted month-day string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

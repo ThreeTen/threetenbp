@@ -31,23 +31,8 @@
  */
 package javax.time;
 
-import static javax.time.calendrical.ISODateTimeRule.AMPM_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_MONTH;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_AMPM;
-import static javax.time.calendrical.ISODateTimeRule.HOUR_OF_DAY;
-import static javax.time.calendrical.ISODateTimeRule.MINUTE_OF_HOUR;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_QUARTER;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.NANO_OF_SECOND;
-import static javax.time.calendrical.ISODateTimeRule.QUARTER_OF_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.SECOND_OF_MINUTE;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
-import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -61,14 +46,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateAdjusters;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
@@ -76,11 +56,8 @@ import javax.time.calendrical.MockDateAdjusterReturnsNull;
 import javax.time.calendrical.MockDateResolverReturnsNull;
 import javax.time.calendrical.MockOtherChronology;
 import javax.time.calendrical.MockPeriodProviderReturnsNull;
-import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodProvider;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -131,10 +108,8 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         Object obj = TEST_2007_07_15;
-        assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -503,40 +478,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // from()
-    //-----------------------------------------------------------------------
-    public void test_factory_Calendricals() {
-        assertEquals(LocalDate.from(YearMonth.of(2007, 7), DAY_OF_MONTH.field(15)), LocalDate.of(2007, 7, 15));
-        assertEquals(LocalDate.from(MonthDay.of(7, 15), YEAR.field(2007)), LocalDate.of(2007, 7, 15));
-        assertEquals(LocalDate.from(LocalDate.of(2007, 7, 15)), LocalDate.of(2007, 7, 15));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_clash() {
-        LocalDate.from(YearMonth.of(2007, 7), MonthDay.of(9, 15));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_noDerive() {
-        LocalDate.from(LocalTime.of(12, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_empty() {
-        LocalDate.from();
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_nullArray() {
-        LocalDate.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_null() {
-        LocalDate.from((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleToString")
@@ -565,17 +506,17 @@ public class TestLocalDate extends AbstractTest {
         };
     }
 
-    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class})
+    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalException.class})
     public void factory_parse_invalidText(String unparsable) {
         LocalDate.parse(unparsable);
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_parse_illegalValue() {
         LocalDate.parse("2008-06-32");
     }
 
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_parse_invalidValue() {
         LocalDate.parse("2008-06-31");
     }
@@ -583,69 +524,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         LocalDate.parse((String) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    public void factory_parse_formatter() {
-        LocalDate t = LocalDate.parse("20101203", DateTimeFormatters.basicIsoDate());
-        assertEquals(t, LocalDate.of(2010, 12, 3));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_formatter_nullText() {
-        LocalDate.parse((String) null, DateTimeFormatters.basicIsoDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_formatter_nullFormatter() {
-        LocalDate.parse("20101203", null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get(CalendricalRule)
-    //-----------------------------------------------------------------------
-    public void test_get_CalendricalRule() {
-        LocalDate test = LocalDate.of(2008, 6, 30);
-        assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
-        assertEquals(test.get(YEAR).getValue(), 2008);
-        assertEquals(test.get(QUARTER_OF_YEAR).getValue(), 2);
-        assertEquals(test.get(MONTH_OF_YEAR).getValue(), 6);
-        assertEquals(test.get(MONTH_OF_QUARTER).getValue(), 3);
-        assertEquals(test.get(DAY_OF_MONTH).getValue(), 30);
-        assertEquals(test.get(DAY_OF_WEEK).getValue(), 1);
-        assertEquals(test.get(DAY_OF_YEAR).getValue(), 182);
-        assertEquals(test.get(WEEK_OF_WEEK_BASED_YEAR).getValue(), 27);
-        assertEquals(test.get(WEEK_BASED_YEAR).getValue(), 2008);
-        
-        assertEquals(test.get(HOUR_OF_DAY), null);
-        assertEquals(test.get(MINUTE_OF_HOUR), null);
-        assertEquals(test.get(SECOND_OF_MINUTE), null);
-        assertEquals(test.get(NANO_OF_SECOND), null);
-        assertEquals(test.get(HOUR_OF_AMPM), null);
-        assertEquals(test.get(AMPM_OF_DAY), null);
-        
-        assertEquals(test.get(LocalDate.rule()), test);
-        assertEquals(test.get(LocalTime.rule()), null);
-        assertEquals(test.get(LocalDateTime.rule()), null);
-        assertEquals(test.get(OffsetDate.rule()), null);
-        assertEquals(test.get(OffsetTime.rule()), null);
-        assertEquals(test.get(OffsetDateTime.rule()), null);
-        assertEquals(test.get(ZonedDateTime.rule()), null);
-        assertEquals(test.get(ZoneOffset.rule()), null);
-        assertEquals(test.get(ZoneId.rule()), null);
-        assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
-        assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_get_CalendricalRule_null() {
-        TEST_2007_07_15.get((CalendricalRule<?>) null);
-    }
-
-    public void test_get_unsupported() {
-        assertEquals(TEST_2007_07_15.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------
@@ -2216,27 +2094,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // matches()
-    //-----------------------------------------------------------------------
-    public void test_matches() {
-        assertTrue(TEST_2007_07_15.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return true;
-            }
-        }));
-        assertFalse(TEST_2007_07_15.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return false;
-            }
-        }));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matches_null() {
-        TEST_2007_07_15.matches(null);
-    }
-
-    //-----------------------------------------------------------------------
     // atTime()
     //-----------------------------------------------------------------------
     public void test_atTime_OffsetTime() {
@@ -2651,43 +2508,6 @@ public class TestLocalDate extends AbstractTest {
         LocalDate t = LocalDate.of(y, m, d);
         String str = t.toString();
         assertEquals(str, expected);
-    }
-
-    //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    public void test_toString_formatter() {
-        String t = LocalDate.of(2010, 12, 3).toString(DateTimeFormatters.basicIsoDate());
-        assertEquals(t, "20101203");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        LocalDate.of(2010, 12, 3).toString(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical() - parameter is larger calendrical
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical_true_date() {
-        LocalDate test = TEST_2007_07_15;
-        OffsetDate cal = TEST_2007_07_15.atOffset(ZoneOffset.UTC);
-        assertEquals(test.matchesCalendrical(cal), true);
-    }
-
-    public void test_matchesCalendrical_false_date() {
-        LocalDate test = TEST_2007_07_15;
-        OffsetDate cal = TEST_2007_07_15.plusYears(1).atOffset(ZoneOffset.UTC);
-        assertEquals(test.matchesCalendrical(cal), false);
-    }
-
-    public void test_matchesCalendrical_itself_true() {
-        assertEquals(TEST_2007_07_15.matchesCalendrical(TEST_2007_07_15), true);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        TEST_2007_07_15.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

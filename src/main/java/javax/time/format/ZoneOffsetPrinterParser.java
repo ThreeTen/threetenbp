@@ -32,6 +32,7 @@
 package javax.time.format;
 
 import javax.time.ZoneOffset;
+import javax.time.calendrical.ISOCalendricalRule;
 
 /**
  * Prints or parses a zone offset.
@@ -83,7 +84,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public boolean print(DateTimePrintContext context, StringBuilder buf) {
-        ZoneOffset offset = context.getValue(ZoneOffset.rule());
+        ZoneOffset offset = context.getValue(ISOCalendricalRule.ZONE_OFFSET);
         if (offset == null) {
             return false;
         }

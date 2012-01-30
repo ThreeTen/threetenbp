@@ -31,11 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.DayOfWeek.MONDAY;
-import static javax.time.DayOfWeek.TUESDAY;
-import static javax.time.DayOfWeek.WEDNESDAY;
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-import static javax.time.calendrical.ISODateTimeRule.MONTH_OF_YEAR;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
@@ -43,8 +38,6 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.format.TextStyle;
 
@@ -70,15 +63,6 @@ public class TestDayOfWeek {
         assertTrue(Enum.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
-        assertTrue(Calendrical.class.isAssignableFrom(DayOfWeek.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(DayOfWeek.class));
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_rule() {
-        assertEquals(DayOfWeek.rule().getName(), "DayOfWeek");
-        assertEquals(DayOfWeek.rule().getType(), DayOfWeek.class);
     }
 
     //-----------------------------------------------------------------------
@@ -99,53 +83,6 @@ public class TestDayOfWeek {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_valueTooHigh() {
         DayOfWeek.of(8);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_factory_Calendricals() {
-        assertEquals(DayOfWeek.from(LocalDate.of(2011, 6, 6)), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.from(DAY_OF_WEEK.field(4)), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.from(LocalDate.of(2011, 6, 6), MONDAY.toField()), DayOfWeek.MONDAY);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_clash() {
-        DayOfWeek.from(TUESDAY, WEDNESDAY.toField());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_noDerive() {
-        DayOfWeek.from(LocalTime.of(12, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
-    public void test_factory_Calendricals_invalid_empty() {
-        DayOfWeek.from();
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_nullArray() {
-        DayOfWeek.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_factory_Calendricals_null() {
-        DayOfWeek.from((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_get() {
-        assertEquals(DayOfWeek.MONDAY.get(DayOfWeek.rule()), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.FRIDAY.get(DayOfWeek.rule()), DayOfWeek.FRIDAY);
-        
-        assertEquals(DayOfWeek.MONDAY.get(DAY_OF_WEEK), DAY_OF_WEEK.field(1));
-        assertEquals(DayOfWeek.THURSDAY.get(DAY_OF_WEEK), DAY_OF_WEEK.field(4));
-        
-        assertEquals(DayOfWeek.MONDAY.get(MONTH_OF_YEAR), null);
     }
 
     //-----------------------------------------------------------------------
@@ -233,33 +170,6 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.THURSDAY.roll(5), DayOfWeek.TUESDAY);
         assertEquals(DayOfWeek.THURSDAY.roll(6), DayOfWeek.WEDNESDAY);
         assertEquals(DayOfWeek.THURSDAY.roll(7), DayOfWeek.THURSDAY);
-    }
-
-    //-----------------------------------------------------------------------
-    // matcher
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matcher() {
-        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(DAY_OF_WEEK.field(1)), true);
-        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(MONDAY), true);
-        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(TUESDAY), false);
-        
-        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalDate.of(1970, 1, 5)), true);
-        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalDate.of(1970, 1, 1)), false);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_matcher_null() {
-        DayOfWeek.MONDAY.matchesCalendrical(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // toField()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_toField() {
-        assertEquals(DayOfWeek.MONDAY.toField(), DAY_OF_WEEK.field(1));
-        assertEquals(DayOfWeek.THURSDAY.toField(), DAY_OF_WEEK.field(4));
     }
 
     //-----------------------------------------------------------------------

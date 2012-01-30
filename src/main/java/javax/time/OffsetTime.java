@@ -35,16 +35,9 @@ import static javax.time.MathUtils.NANOS_PER_SECOND;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -63,7 +56,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements Calendrical, Comparable<OffsetTime>, Serializable {
+        implements Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -78,16 +71,6 @@ public final class OffsetTime
      * The zone offset from UTC, not null.
      */
     private final ZoneOffset offset;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code OffsetTime}.
-     *
-     * @return the rule for the time, not null
-     */
-    public static CalendricalRule<OffsetTime> rule() {
-        return ISOCalendricalRule.OFFSET_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -227,67 +210,30 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a time.
-     *
-     * @param calendricals  the calendricals to create a time from, no nulls, not null
-     * @return the offset time, not null
-     * @throws CalendricalException if unable to merge to an offset time
-     */
-    public static OffsetTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the offset time, null if unable to obtain the time
-     */
-    static OffsetTime deriveFrom(CalendricalEngine engine) {
-        LocalTime time = engine.derive(LocalTime.rule());
-        ZoneOffset offset = engine.getOffset(true);
-        if (time == null || offset == null) {
-            return null;
-        }
-        return new OffsetTime(time, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code OffsetTime} from a text string such as {@code 10:15:30+01:00}.
      * <p>
-     * The string must represent a valid time and is parsed using
-     * {@link DateTimeFormatters#isoOffsetTime()}.
+     * The string must represent a valid time.
+     * The format is {@code HH:mm:ssfnnnnnnnnnXXXXX}.
      * Hour, minute and offset are required.
      * Seconds and fractional seconds are optional.
      *
      * @param text  the text to parse such as "10:15:30+01:00", not null
      * @return the parsed local time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws RunetimeException if the text cannot be parsed
      */
     public static OffsetTime parse(CharSequence text) {
-        return DateTimeFormatters.isoOffsetTime().parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetTime} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a time.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed offset time, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static OffsetTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+        String str = text.toString();
+        int pos = str.indexOf('Z');
+        if (pos <= 0) {
+            pos = str.indexOf('+');
+            if (pos <= 0) {
+                pos = str.indexOf('-');
+                if (pos <= 0) {
+                    throw new CalendricalException("Unable to parse OffsetTime: " + text);
+                }
+            }
+        }
+        return of(LocalTime.parse(str.substring(0, pos)), ZoneOffset.of(str.substring(pos + 1, str.length())));
     }
 
     //-----------------------------------------------------------------------
@@ -306,25 +252,6 @@ public final class OffsetTime
         }
         this.time = time;
         this.offset = offset;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, time, offset, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -866,19 +793,6 @@ public final class OffsetTime
     @Override
     public String toString() {
         return time.toString() + offset.toString();
-    }
-
-    /**
-     * Outputs this time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

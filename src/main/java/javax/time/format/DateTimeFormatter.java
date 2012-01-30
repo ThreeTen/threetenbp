@@ -185,7 +185,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public String print(Calendrical calendrical) {
+    public String print(Object calendrical) {
         StringBuilder buf = new StringBuilder(32);
         printTo(calendrical, buf);
         return buf.toString();
@@ -210,7 +210,7 @@ public final class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalException if an error occurs during printing
      */
-    public void printTo(Calendrical calendrical, Appendable appendable) {
+    public void printTo(Object calendrical, Appendable appendable) {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimeFormatter.checkNotNull(appendable, "Appendable must not be null");
         try {

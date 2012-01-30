@@ -41,6 +41,7 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
+import javax.time.calendrical.ISOCalendricalRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 
@@ -204,7 +205,7 @@ public final class ChronologyDate
      */
     public static ChronologyDate of(Chronology chrono, Calendrical calendrical) {
         // accept Chronology rather than StandardChronology to aid interoperability
-        LocalDate date = LocalDate.rule().getValueChecked(calendrical);
+        LocalDate date = ISOCalendricalRule.LOCAL_DATE.getValueChecked(calendrical);
         return of(chrono, date);
     }
 

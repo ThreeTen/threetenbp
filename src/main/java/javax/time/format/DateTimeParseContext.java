@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
@@ -265,7 +264,7 @@ public final class DateTimeParseContext {
      * @return the value mapped to the specified rule, null if rule not in the map
      */
     public DateTimeField getParsed(DateTimeRule rule) {
-        for (Calendrical cal : currentCalendrical().calendricals) {
+        for (Object cal : currentCalendrical().calendricals) {
             if (cal instanceof DateTimeField) {
                 DateTimeField field = (DateTimeField) cal;
                 if (field.getRule().equals(rule)) {
@@ -289,7 +288,7 @@ public final class DateTimeParseContext {
      */
     @SuppressWarnings("unchecked")
     public <T> T getParsed(Class<T> clazz) {
-        for (Calendrical cal : currentCalendrical().calendricals) {
+        for (Object cal : currentCalendrical().calendricals) {
             if (clazz.isInstance(cal)) {
                 return (T) cal;
             }
@@ -307,7 +306,7 @@ public final class DateTimeParseContext {
      *
      * @return the list of previously parsed calendricals, not null, no nulls
      */
-    public List<Calendrical> getParsed() {
+    public List<Object> getParsed() {
         return currentCalendrical().calendricals;
     }
 
@@ -318,7 +317,7 @@ public final class DateTimeParseContext {
      *
      * @param calendrical  the parsed calendrical, not null
      */
-    public <T> void setParsed(Calendrical calendrical) {
+    public <T> void setParsed(Object calendrical) {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         currentCalendrical().calendricals.add(calendrical);
     }
@@ -350,8 +349,8 @@ public final class DateTimeParseContext {
      * @return a new independent engine with the parsed calendricals, not null
      */
     public CalendricalEngine toCalendricalEngine() {
-        List<Calendrical> cals = getParsed();
-        return CalendricalEngine.merge(cals.toArray(new Calendrical[cals.size()]));
+        List<Object> cals = getParsed();
+        return CalendricalEngine.merge(cals.toArray(new Object[cals.size()]));
     }
 
     //-----------------------------------------------------------------------
@@ -370,7 +369,7 @@ public final class DateTimeParseContext {
      * Temporary store of parsed data.
      */
     static class Parsed {
-        final List<Calendrical> calendricals = new ArrayList<Calendrical>();
+        final List<Object> calendricals = new ArrayList<Object>();
         
         @Override
         protected Parsed clone() {

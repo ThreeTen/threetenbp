@@ -35,10 +35,6 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.PeriodProvider;
 
 /**
@@ -60,7 +56,7 @@ import javax.time.calendrical.PeriodProvider;
  * To prevent any problems with that range being extended, yet still provide
  * validation, the range of offsets is restricted to -18:00 to 18:00 inclusive.
  * <p>
- * This class is designed primarily for use with the {@link ISOChronology}.
+ * This class is designed primarily for use with the ISO calendar system.
  * The fields of hours, minutes and seconds make assumptions that are valid for the
  * standard ISO definitions of those fields. This class may be used with other
  * calendar systems providing the definition of the time fields matches those
@@ -75,7 +71,7 @@ import javax.time.calendrical.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class ZoneOffset
-        implements Calendrical, Comparable<ZoneOffset>, Serializable {
+        implements Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time-zone offset by offset in seconds. */
     private static final ConcurrentMap<Integer, ZoneOffset> SECONDS_CACHE = new ConcurrentHashMap<Integer, ZoneOffset>(16, 0.75f, 4);
@@ -115,16 +111,6 @@ public final class ZoneOffset
      * The string form of the time-zone offset.
      */
     private final transient String id;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the zone-offset.
-     *
-     * @return the rule for the zone-offset, not null
-     */
-    public static CalendricalRule<ZoneOffset> rule() {
-        return ISOCalendricalRule.ZONE_OFFSET;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -300,21 +286,6 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZoneOffset} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a zone-offset.
-     *
-     * @param calendricals  the calendricals to create a zone-offset from, no nulls, not null
-     * @return the zone-offset, not null
-     * @throws CalendricalException if unable to merge to a zone-offset
-     */
-    public static ZoneOffset from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Validates the offset fields.
      *
      * @param hours  the time-zone offset in hours, from -18 to +18
@@ -430,21 +401,6 @@ public final class ZoneOffset
      */
     private Object readResolve() {
         return ZoneOffset.ofTotalSeconds(totalSeconds);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this offset then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, null, this, null, null, null);
     }
 
     //-----------------------------------------------------------------------

@@ -31,39 +31,27 @@
  */
 package javax.time;
 
-import static javax.time.DayOfWeek.TUESDAY;
-import static javax.time.DayOfWeek.WEDNESDAY;
-import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static javax.time.calendrical.ISOPeriodUnit.DECADES;
 import static javax.time.calendrical.ISOPeriodUnit.MONTHS;
 import static javax.time.calendrical.ISOPeriodUnit.YEARS;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
-import javax.time.calendrical.MockCenturyFieldRule;
 import javax.time.calendrical.MockDateResolverReturnsNull;
-import javax.time.calendrical.MockDecadeOfCenturyFieldRule;
 import javax.time.calendrical.MockOtherChronology;
 import javax.time.calendrical.MockPeriodProviderReturnsNull;
-import javax.time.calendrical.MockYearOfCenturyFieldRule;
 import javax.time.calendrical.PeriodField;
 import javax.time.calendrical.PeriodFields;
 import javax.time.calendrical.PeriodProvider;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatters;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -85,17 +73,9 @@ public class TestYear {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(Year.class));
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(Year.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(Year.class));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(Year.rule().getName(), "Year");
-        assertEquals(Year.rule().getType(), Year.class);
     }
 
     //-----------------------------------------------------------------------
@@ -146,57 +126,6 @@ public class TestYear {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_tooHigh() {
         Year.of(Year.MAX_YEAR + 1);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_factory_Calendricals() {
-        assertEquals(Year.from(LocalDate.of(2007, 7, 15)), Year.of(2007));
-        assertEquals(Year.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7)), Year.of(2007));
-        assertEquals(Year.from(YEAR.field(2007)), Year.of(2007));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_clash() {
-        Year.from(TUESDAY, WEDNESDAY.toField());
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_noDerive() {
-        Year.from(LocalTime.of(12, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_factory_Calendricals_invalid_empty() {
-        Year.from();
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_nullArray() {
-        Year.from((Calendrical[]) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_Calendricals_null() {
-        Year.from((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        Year test = Year.of(1999);
-        assertSame(test.get(Year.rule()), test);
-        assertEquals(test.get(YEAR), YEAR.field(1999));
-        assertEquals(test.get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
-    }
-
-    public void test_get_unsupportedField() {
-        assertEquals(Year.of(1999).get(ISODateTimeRule.WEEK_BASED_YEAR), null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_null() {
-        Year.of(1999).get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------
@@ -532,30 +461,6 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical_notLeapYear() {
-        LocalDate work = LocalDate.of(2007, 3, 2);
-        for (int i = -4; i <= 2104; i++) {
-            for (int j = -4; j <= 2104; j++) {
-                Year test = Year.of(j);
-                assertEquals(test.matchesCalendrical(work), work.getYear() == j);
-            }
-            work = work.plusYears(1);
-        }
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(Year.of(2009).matchesCalendrical(LocalTime.of(12, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_nullLocalDate() {
-        Year test = Year.of(1);
-        test.matchesCalendrical((LocalDate) null);
-    }
-
-    //-----------------------------------------------------------------------
     // lengthInDays()
     //-----------------------------------------------------------------------
     public void test_lengthInDays() {
@@ -786,13 +691,6 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // toField()
-    //-----------------------------------------------------------------------
-    public void test_toField() {
-        assertEquals(Year.of(2010).toField(), YEAR.field(2010));
-    }
-
-    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo() {
@@ -895,39 +793,14 @@ public class TestYear {
         };
     }
 
-    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalException.class)
     public void factory_parse_fail(String text, int pos) {
-        try {
-            Year.parse(text);
-            fail(String.format("Parse should have failed for %s at position %d", text, pos));
-        } catch (CalendricalParseException ex) {
-            assertEquals(ex.getParsedString(), text);
-            assertEquals(ex.getErrorIndex(), pos);
-            throw ex;
-        }
+        Year.parse(text);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_parse_nullText() {
         Year.parse(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // parse(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    public void factory_parse_formatter() {
-        Year t = Year.parse("2010 12", DateTimeFormatters.pattern("yyyy MM"));
-        assertEquals(t, Year.of(2010));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_formatter_nullText() {
-        Year.parse((String) null, DateTimeFormatters.basicIsoDate());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_parse_formatter_nullFormatter() {
-        Year.parse("2010", null);
     }
 
     //-----------------------------------------------------------------------
@@ -954,24 +827,6 @@ public class TestYear {
     public void factory_parse_success(String text, Year expected) {
         Year year = Year.parse(text);
         assertEquals(year, expected);
-    }
-
-    //-----------------------------------------------------------------------
-    // toString(DateTimeFormatter)
-    //-----------------------------------------------------------------------
-    public void test_toString_formatter() {
-        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyy"));
-        assertEquals(t, "2010");
-    }
-
-    public void test_toString_formatter_non_standard() {
-        String t = Year.of(2010).toString(DateTimeFormatters.pattern("yyyyyy"));
-        assertEquals(t, "002010");
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_toString_formatter_null() {
-        Year.of(2010).toString(null);
     }
     
 }

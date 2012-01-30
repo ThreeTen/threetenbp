@@ -41,22 +41,15 @@ import static javax.time.MathUtils.SECONDS_PER_DAY;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 
 /**
  * A date-time without a time-zone in the ISO-8601 calendar system,
@@ -76,7 +69,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, Comparable<LocalDateTime>, Serializable {
+        implements Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -104,16 +97,6 @@ public final class LocalDateTime
      * The time part.
      */
     private final LocalTime time;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code LocalDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<LocalDateTime> rule() {
-        return ISOCalendricalRule.LOCAL_DATE_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -391,68 +374,24 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code LocalDateTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date-time.
-     *
-     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-     * @return the local date-time, not null
-     * @throws CalendricalException if unable to merge to a local date-time
-     */
-    public static LocalDateTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDateTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the local date-time, null if unable to obtain the date-time
-     */
-    static LocalDateTime deriveFrom(CalendricalEngine engine) {
-        LocalDate date = engine.getDate(true);
-        LocalTime time = engine.derive(LocalTime.rule());
-        if (date == null || time == null) {
-            return null;
-        }
-        return new LocalDateTime(date, time);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code LocalDateTime} from a text string such as {@code 2007-12-03T10:15:30}.
      * <p>
-     * The string must represent a valid date-time and is parsed using
-     * {@link DateTimeFormatters#isoLocalDateTime()}.
+     * The string must represent a valid date-time.
+     * The format is {@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnn}.
      * Year, month, day-of-month, hour and minute are required.
      * Seconds and fractional seconds are optional.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12-03T10:15:30", not null
      * @return the parsed local date-time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws RuntimeException if the text cannot be parsed
      */
     public static LocalDateTime parse(CharSequence text) {
-        return DateTimeFormatters.isoLocalDateTime().parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code LocalDateTime} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a date-time.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed local date-time, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+        String str = text.toString();
+        int pos = str.indexOf('T');
+        if (pos < 0) {
+            throw new CalendricalException("Unable to parse LocalDateTime: " + text);
+        }
+        return of(LocalDate.parse(str.substring(0, pos)), LocalTime.parse(str.substring(pos + 1, str.length())));
     }
 
     //-----------------------------------------------------------------------
@@ -480,25 +419,6 @@ public final class LocalDateTime
             return this;
         }
         return new LocalDateTime(newDate, newTime);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date-time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), date, time, null, null, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1741,19 +1661,6 @@ public final class LocalDateTime
     @Override
     public String toString() {
         return date.toString() + 'T' + time.toString();
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

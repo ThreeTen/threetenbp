@@ -445,6 +445,9 @@ public final class DateTimeFields
 //    }  // TODO
 
     //-----------------------------------------------------------------------
+    public boolean matches(Object calendrical) {
+        return true;  // TODO
+    }
     /**
      * Checks if the fields in this object match those in the specified calendrical.
      * <p>

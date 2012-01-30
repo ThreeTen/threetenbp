@@ -36,12 +36,8 @@ import static javax.time.MathUtils.SECONDS_PER_MINUTE;
 
 import java.io.Serializable;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolvers;
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.InvalidCalendarFieldException;
 import javax.time.calendrical.PeriodFields;
@@ -49,9 +45,6 @@ import javax.time.calendrical.PeriodProvider;
 import javax.time.calendrical.TimeAdjuster;
 import javax.time.calendrical.ZoneResolver;
 import javax.time.calendrical.ZoneResolvers;
-import javax.time.format.CalendricalParseException;
-import javax.time.format.DateTimeFormatter;
-import javax.time.format.DateTimeFormatters;
 import javax.time.zone.ZoneOffsetInfo;
 import javax.time.zone.ZoneRules;
 
@@ -81,7 +74,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements InstantProvider, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -96,16 +89,6 @@ public final class ZonedDateTime
      * The time-zone.
      */
     private final ZoneId zone;
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for {@code ZonedDateTime}.
-     *
-     * @return the rule for the date-time, not null
-     */
-    public static CalendricalRule<ZonedDateTime> rule() {
-        return ISOCalendricalRule.ZONED_DATE_TIME;
-    }
 
     //-----------------------------------------------------------------------
     /**
@@ -459,86 +442,25 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code ZonedDateTime} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a date-time.
-     *
-     * @param calendricals  the calendricals to create a date-time from, no nulls, not null
-     * @return the zoned date-time, not null
-     * @throws CalendricalException if unable to merge to a zoned date-time
-     */
-    public static ZonedDateTime from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    /**
-     * Obtains an instance of {@code ZonedDateTime} from the engine.
-     * <p>
-     * This internal method is used by the associated rule.
-     *
-     * @param engine  the engine to derive from, not null
-     * @return the zoned date-time, null if unable to obtain the date-time
-     */
-    static ZonedDateTime deriveFrom(CalendricalEngine engine) {
-        ZoneOffset offset = engine.getOffset(false);
-        if (offset != null) {
-            OffsetDateTime odt = OffsetDateTime.deriveFrom(engine);
-            if (odt != null) {
-                ZoneId zone = engine.getZone(false);
-                if (zone == null) {
-                    zone = ZoneId.of(offset);  // smart use of offset as zone
-                } else {
-                    ZoneRules rules = zone.getRules();  // latest rules version
-                    if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
-                        odt = odt.withOffsetSameInstant(rules.getOffset(odt));  // smart use of date-time as instant
-                    }
-                }
-                return new ZonedDateTime(odt, zone);
-            }
-        } else {
-            LocalDateTime ldt = LocalDateTime.deriveFrom(engine);
-            ZoneId zone = engine.getZone(true);
-            if (ldt != null && zone != null) {
-                return resolve(ldt, zone, null, ZoneResolvers.postGapPreOverlap());  // smart use of resolver
-            }
-        }
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code ZonedDateTime} from a text string such as
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
      * <p>
-     * The string must represent a valid date-time and is parsed using
-     * {@link DateTimeFormatters#isoZonedDateTime()}.
+     * The string must represent a valid date-time.
+     * The format is {@code yyyy-MM-dd'T'HH:mm:ssfnnnnnnnnnXXXXX'['I']'}.
      * Year, month, day-of-month, hour, minute, offset and zone are required.
      * Seconds and fractional seconds are optional.
-     * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
      * @param text  the text to parse such as "2007-12-03T10:15:30+01:00[Europe/Paris]", not null
      * @return the parsed zoned date-time, not null
-     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws RuntimeException if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text) {
-        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
-    }
-
-    /**
-     * Obtains an instance of {@code ZonedDateTime} from a text string using a specific formatter.
-     * <p>
-     * The text is parsed using the formatter, returning a date-time.
-     *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
-     * @return the parsed zoned date-time, not null
-     * @throws UnsupportedOperationException if the formatter cannot parse
-     * @throws CalendricalParseException if the text cannot be parsed
-     */
-    public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.parse(text, rule());
+        String str = text.toString();
+        int pos = str.indexOf('[');
+        if (pos <= 0 || str.charAt(str.length() - 1) != ']') {
+            throw new CalendricalException("Unable to parse OffsetTime: " + text);
+        }
+        return of(OffsetDateTime.parse(str.substring(0, pos)), ZoneId.of(str.substring(pos + 1, str.length() - 1)));
     }
 
     //-----------------------------------------------------------------------
@@ -576,37 +498,6 @@ public final class ZonedDateTime
     private ZonedDateTime(OffsetDateTime dateTime, ZoneId zone) {
         this.dateTime = dateTime;
         this.zone = zone;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this date-time then
-     * {@code null} will be returned.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        // optimize, especially for LocalDateTime, OffsetDate and OffsetTime
-        if (ruleToDerive instanceof ISOCalendricalRule<?>) {
-            switch (((ISOCalendricalRule<?>) ruleToDerive).ordinal) {
-                case ISOCalendricalRule.LOCAL_DATE_ORDINAL: return (T) toLocalDate();
-                case ISOCalendricalRule.LOCAL_TIME_ORDINAL: return (T) toLocalTime();
-                case ISOCalendricalRule.LOCAL_DATE_TIME_ORDINAL: return (T) toLocalDateTime();
-                case ISOCalendricalRule.OFFSET_DATE_ORDINAL: return (T) toOffsetDate();
-                case ISOCalendricalRule.OFFSET_TIME_ORDINAL: return (T) toOffsetTime();
-                case ISOCalendricalRule.OFFSET_DATE_TIME_ORDINAL: return (T) dateTime;
-                case ISOCalendricalRule.ZONED_DATE_TIME_ORDINAL: return (T) this;
-                case ISOCalendricalRule.ZONE_OFFSET_ORDINAL: return (T) getOffset();
-                case ISOCalendricalRule.ZONE_ID_ORDINAL: return (T) getZone();
-            }
-            return null;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), toLocalDate(), toLocalTime(), getOffset(), zone, ISOChronology.INSTANCE, null);
     }
 
     //-----------------------------------------------------------------------
@@ -2176,19 +2067,6 @@ public final class ZonedDateTime
     @Override
     public String toString() {
         return dateTime.toString() + '[' + zone.toString() + ']';
-    }
-
-    /**
-     * Outputs this date-time as a {@code String} using the formatter.
-     *
-     * @param formatter  the formatter to use, not null
-     * @return the formatted date-time string, not null
-     * @throws UnsupportedOperationException if the formatter cannot print
-     * @throws CalendricalException if an error occurs during printing
-     */
-    public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
-        return formatter.print(this);
     }
 
 }

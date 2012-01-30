@@ -35,10 +35,6 @@ import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
 
 import java.util.Locale;
 
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.ISODateTimeRule;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.calendrical.WeekRules;
@@ -71,7 +67,7 @@ import javax.time.format.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek implements Calendrical {
+public enum DayOfWeek {
 
     /**
      * The singleton instance for the day-of-week of Monday.
@@ -115,19 +111,6 @@ public enum DayOfWeek implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for {@code DayOfWeek}.
-     * <p>
-     * This rule is a calendrical rule based on {@code DayOfWeek}.
-     * The equivalent date-time rule is {@link ISODateTimeRule#DAY_OF_WEEK}.
-     *
-     * @return the rule for the day-of-week, not null
-     */
-    public static CalendricalRule<DayOfWeek> rule() {
-        return ExtendedCalendricalRule.DAY_OF_WEEK;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains an instance of {@code DayOfWeek} from an {@code int} value.
      * <p>
      * {@code DayOfWeek} is an enum representing the 7 days of the week.
@@ -145,39 +128,6 @@ public enum DayOfWeek implements Calendrical {
             throw new IllegalCalendarFieldValueException(DAY_OF_WEEK, dayOfWeek);
         }
         return ENUMS[dayOfWeek - 1];
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code DayOfWeek} from a set of calendricals.
-     * <p>
-     * A calendrical represents some form of date and time information.
-     * This method combines the input calendricals into a day-of-week.
-     *
-     * @param calendricals  the calendricals to create a day-of-week from, no nulls, not null
-     * @return the day-of-week, not null
-     * @throws CalendricalException if unable to merge to a day-of-week
-     */
-    public static DayOfWeek from(Calendrical... calendricals) {
-        return CalendricalEngine.merge(calendricals).deriveChecked(rule());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This will only return a value for the {@link ISODateTimeRule#DAY_OF_WEEK}
-     * rule, or something derivable from it.
-     *
-     * @param ruleToDerive  the rule to derive, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T get(CalendricalRule<T> ruleToDerive) {
-        if (ruleToDerive == rule()) {
-            return (T) this;
-        }
-        return CalendricalEngine.derive(ruleToDerive, rule(), null, toField());
     }
 
     /**
@@ -246,18 +196,6 @@ public enum DayOfWeek implements Calendrical {
      */
     public DayOfWeek roll(int days) {
         return values()[(ordinal() + (days % 7 + 7)) % 7];
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this day-of-week to an equivalent field.
-     * <p>
-     * The field is based on {@link ISODateTimeRule#DAY_OF_WEEK}.
-     *
-     * @return the equivalent day-of-week field, not null
-     */
-    public DateTimeField toField() {
-        return DAY_OF_WEEK.field(getValue());
     }
 
 }
