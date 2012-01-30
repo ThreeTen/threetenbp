@@ -34,15 +34,15 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.DayOfWeek;
+import javax.time.LocalDate;
 import javax.time.MathUtils;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalEngine;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.Chronology;
-import javax.time.calendar.DayOfWeek;
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalDate;
+import javax.time.calendrical.Calendrical;
+import javax.time.calendrical.CalendricalEngine;
+import javax.time.calendrical.CalendricalRule;
+import javax.time.calendrical.Chronology;
+import javax.time.calendrical.IllegalCalendarFieldValueException;
+import javax.time.calendrical.InvalidCalendarFieldException;
 
 /**
  * A date based on standard chronology rules.
@@ -193,8 +193,8 @@ public final class ChronologyDate
      * This will return a date in the specified chronology.
      * The chronology must implement {@link StandardChronology}.
      * The underlying {@link LocalDate} is extracted from the calendrical, thus this
-     * method can be used with objects such as {@link javax.time.calendar.OffsetDate}
-     * or {@link javax.time.calendar.ZonedDateTime}.
+     * method can be used with objects such as {@link javax.time.OffsetDate}
+     * or {@link javax.time.ZonedDateTime}.
      *
      * @param chrono  the {@code StandardChronology}, not null
      * @param calendrical  the calendrical to extract from, not null

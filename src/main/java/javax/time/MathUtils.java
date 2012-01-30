@@ -42,6 +42,47 @@ package javax.time;
 public final class MathUtils {
 
     /**
+     * Hours per minute.
+     */
+    public static final int HOURS_PER_DAY = 24;
+    /**
+     * Minutes per hour.
+     */
+    public static final int MINUTES_PER_HOUR = 60;
+    /**
+     * Minutes per day.
+     */
+    public static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Seconds per minute.
+     */
+    public static final int SECONDS_PER_MINUTE = 60;
+    /**
+     * Seconds per hour.
+     */
+    public static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Seconds per day.
+     */
+    public static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Nanos per second.
+     */
+    public static final long NANOS_PER_SECOND = 1000000000L;
+    /**
+     * Nanos per minute.
+     */
+    public static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
+    /**
+     * Nanos per hour.
+     */
+    public static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
+    /**
+     * Nanos per day.
+     */
+    public static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
+
+    /**
      * Private constructor since this is a utility class.
      */
     private MathUtils() {
