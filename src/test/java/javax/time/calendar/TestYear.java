@@ -176,9 +176,14 @@ public class TestYear {
     @Test(groups={"tck"})
     public void test_get() {
         Year test = Year.of(1999);
-        assertSame(test.get(Year.rule()), test);
         assertEquals(test.get(YEAR), YEAR.field(1999));
         assertEquals(test.get(MockDecadeOfCenturyFieldRule.INSTANCE).getValue(), 9);
+    }
+    
+    @Test(groups={"implementation"})
+    public void test_get_same() {
+        Year test = Year.of(1999);
+        assertSame(test.get(Year.rule()), test);
     }
 
     @Test(groups={"tck"})
