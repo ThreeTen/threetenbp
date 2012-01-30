@@ -2687,19 +2687,18 @@ public class TestLocalDate extends AbstractTest {
     //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates", groups={"tck"})
+    @Test(dataProvider="sampleDates")
     public void test_adjustDate(int y, int m, int d) {
         LocalDate a = LocalDate.of(y, m, d);
         assertSame(a.adjustDate(TEST_2007_07_15), a);
         assertSame(TEST_2007_07_15.adjustDate(a), TEST_2007_07_15);
     }
 
-    @Test(groups={"tck"})
     public void test_adjustDate_same() {
         assertSame(LocalDate.of(2007, 7, 15).adjustDate(TEST_2007_07_15), TEST_2007_07_15);
     }
 
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_null() {
         TEST_2007_07_15.adjustDate(null);
     }
