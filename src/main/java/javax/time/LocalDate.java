@@ -40,7 +40,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
@@ -81,7 +80,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements Calendrical, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * Constant for the minimum date on the proleptic ISO calendar system, -999999999-01-01.
@@ -1127,34 +1126,6 @@ public final class LocalDate
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks whether this {@code LocalDate} matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the date.
-     * A simple matcher might simply compare one of the fields, such as the year field.
-     * A more complex matcher might check if the date is the last day of the month.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this date matches the matcher, false otherwise
-     */
-    public boolean matches(CalendricalMatcher matcher) {
-        return matcher.matchesCalendrical(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the date extracted from the calendrical matches this date.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link #matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
     /**
      * Adjusts a date to have the value of this date.
      * <p>

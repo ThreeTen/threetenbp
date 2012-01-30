@@ -37,7 +37,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.CalendricalRuleException;
 import javax.time.calendrical.DateAdjuster;
@@ -83,7 +82,7 @@ import javax.time.format.SignStyle;
  * @author Stephen Colebourne
  */
 public final class Year
-        implements Calendrical, Comparable<Year>, Serializable, DateAdjuster, CalendricalMatcher {
+        implements Calendrical, Comparable<Year>, Serializable, DateAdjuster {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system, -999,999,999.
@@ -415,20 +414,6 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the year extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link LocalDate#matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        DateTimeField calValue = calendrical.get(YEAR);
-        return calValue != null && calValue.getValue() == getValue();
-    }
-
     /**
      * Adjusts a date to have the value of this year, returning a new date.
      * <p>

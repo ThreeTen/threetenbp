@@ -39,7 +39,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
@@ -78,7 +77,7 @@ import javax.time.format.DateTimeFormatterBuilder;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<MonthDay>, Serializable {
+        implements Calendrical, DateAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -375,19 +374,6 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the month-day extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link LocalDate#matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
     /**
      * Adjusts a date to have the value of this month-day, returning a new date.
      * <p>
