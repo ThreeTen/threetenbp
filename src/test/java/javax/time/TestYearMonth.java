@@ -95,12 +95,13 @@ public class TestYearMonth {
 
     private YearMonth TEST_2008_06;
 
-    @BeforeMethod
+    @BeforeMethod(groups={"tck","implementation"})
     public void setUp() {
         TEST_2008_06 = YearMonth.of(2008, 6);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_2008_06;
         assertTrue(obj instanceof Calendrical);
@@ -110,6 +111,7 @@ public class TestYearMonth {
         assertTrue(obj instanceof CalendricalMatcher);
     }
 
+    @Test(groups={"tck"})
     public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -121,6 +123,7 @@ public class TestYearMonth {
         assertEquals(ois.readObject(), TEST_2008_06);
     }
 
+    @Test(groups={"tck"})
     public void test_immutable() {
         Class<YearMonth> cls = YearMonth.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
@@ -141,6 +144,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // now()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void now() {
         YearMonth expected = YearMonth.now(Clock.systemDefaultZone());
         YearMonth test = YearMonth.now();
@@ -157,6 +161,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // now(Clock)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void now_Clock() {
         Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
         Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
@@ -165,18 +170,19 @@ public class TestYearMonth {
         assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void now_Clock_nullClock() {
         YearMonth.now(null);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_intsMonth() {
         YearMonth test = YearMonth.of(2008, MonthOfYear.FEBRUARY);
         check(test, 2008, 2);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_intsMonth_yearTooLow() {
         try {
             YearMonth.of(Year.MIN_YEAR - 1, MonthOfYear.JANUARY);
@@ -186,7 +192,7 @@ public class TestYearMonth {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_intsMonth_dayTooHigh() {
         try {
             YearMonth.of(Year.MAX_YEAR + 1, MonthOfYear.JANUARY);
@@ -196,18 +202,19 @@ public class TestYearMonth {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_intsMonth_nullMonth() {
         YearMonth.of(2008, null);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_ints() {
         YearMonth test = YearMonth.of(2008, 2);
         check(test, 2008, 2);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_ints_yearTooLow() {
         try {
             YearMonth.of(Year.MIN_YEAR - 1, 2);
@@ -217,7 +224,7 @@ public class TestYearMonth {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_ints_dayTooHigh() {
         try {
             YearMonth.of(Year.MAX_YEAR + 1, 2);
@@ -227,7 +234,7 @@ public class TestYearMonth {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_ints_monthTooLow() {
         try {
             YearMonth.of(2008, 0);
@@ -237,7 +244,7 @@ public class TestYearMonth {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_ints_monthTooHigh() {
         try {
             YearMonth.of(2008, 13);
@@ -248,33 +255,34 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_Calendricals() {
         assertEquals(YearMonth.from(LocalDate.of(2007, 7, 15)), YearMonth.of(2007, 7));
         assertEquals(YearMonth.from(MockCenturyFieldRule.INSTANCE.field(20), MockYearOfCenturyFieldRule.INSTANCE.field(7), JULY), YearMonth.of(2007, 7));
         assertEquals(YearMonth.from(Year.of(2007), JULY), YearMonth.of(2007, 7));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
         YearMonth.from(Year.of(2007), JULY, FEBRUARY);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_noDerive() {
         YearMonth.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_empty() {
         YearMonth.from();
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_nullArray() {
         YearMonth.from((Calendrical[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
         YearMonth.from((Calendrical) null);
     }
@@ -312,7 +320,7 @@ public class TestYearMonth {
         };
     }
 
-    @Test(dataProvider="goodParseData")
+    @Test(dataProvider="goodParseData", groups={"tck"})
     public void factory_parse_success(String text, YearMonth expected) {
         YearMonth yearMonth = YearMonth.parse(text);
         assertEquals(yearMonth, expected);
@@ -347,7 +355,7 @@ public class TestYearMonth {
         };
     }
 
-    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class, groups={"tck"})
     public void factory_parse_fail(String text, int pos) {
         try {
             YearMonth.parse(text);
@@ -360,12 +368,12 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalParseException.class)
+    @Test(expectedExceptions=CalendricalParseException.class, groups={"tck"})
     public void factory_parse_illegalValue_Month() {
         YearMonth.parse("2008-13");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_nullText() {
         YearMonth.parse(null);
     }
@@ -373,17 +381,18 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // parse(DateTimeFormatter)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void factory_parse_formatter() {
         YearMonth t = YearMonth.parse("2010 12", DateTimeFormatters.pattern("yyyy MM"));
         assertEquals(t, YearMonth.of(2010, 12));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullText() {
         YearMonth.parse((String) null, DateTimeFormatters.basicIsoDate());
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void factory_parse_formatter_nullFormatter() {
         YearMonth.parse("2010 12", null);
     }
@@ -391,21 +400,29 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
+    
+    @Test(groups={"tck"})
     public void test_get_CalendricalRule() {
         YearMonth test = YearMonth.of(2008, 6);
-        assertSame(test.get(YearMonth.rule()), test);
         assertEquals(test.get(Chronology.rule()), ISOChronology.INSTANCE);
         assertEquals(test.get(YEAR).getValue(), 2008);
         assertEquals(test.get(MONTH_OF_YEAR).getValue(), 6);
         assertEquals(test.get(MONTH_OF_QUARTER).getValue(), 3);
     }
+    
+    @Test(groups={"implementation"})
+    public void test_get_CalendricalRule_same() {
+    	YearMonth test = YearMonth.of(2008, 6);
+    	assertSame(test.get(YearMonth.rule()), test);
+    }
 
-    @Test(expectedExceptions=NullPointerException.class )
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_get_CalendricalRule_null() {
         YearMonth test = YearMonth.of(2008, 6);
         test.get((CalendricalRule<?>) null);
     }
 
+    @Test(groups={"tck"})
     public void test_get_unsupported() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
@@ -427,17 +444,25 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // with(Year)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_with_Year() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.with(Year.of(2000)), YearMonth.of(2000, 6));
     }
 
-    public void test_with_Year_noChange() {
+    @Test(groups={"implementation"})
+    public void test_with_Year_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(Year.of(2008)), test);
     }
+    
+    @Test(groups={"tck"})
+    public void test_with_Year_noChange_equal() {
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.with(Year.of(2008)), test);
+    }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_Year_null() {
         YearMonth test = YearMonth.of(2008, 6);
         test.with((Year) null);
@@ -446,17 +471,25 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // with(MonthOfYear)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_with_MonthOfYear() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.with(MonthOfYear.JANUARY), YearMonth.of(2008, 1));
     }
 
-    public void test_with_MonthOfYear_noChange() {
+    @Test(groups={"implementation"})
+    public void test_with_MonthOfYear_noChange_same() {
         YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(MonthOfYear.JUNE), test);
     }
+    
+    @Test(groups={"tck"})
+    public void test_with_MonthOfYear_noChange_equal() {
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.with(MonthOfYear.JUNE), test);
+    }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_with_MonthOfYear_null() {
         YearMonth test = YearMonth.of(2008, 6);
         test.with((MonthOfYear) null);
@@ -465,6 +498,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // withYear()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_withYear() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.withYear(1999), YearMonth.of(1999, 6));
