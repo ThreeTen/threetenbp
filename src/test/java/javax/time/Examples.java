@@ -107,7 +107,7 @@ public class Examples {
         LocalDate tempDate = clock.today();
         DateTimeFields fri13matcher = DateTimeFields.of(
                 DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
-        boolean fri13 = tempDate.matches(fri13matcher);
+        boolean fri13 = fri13matcher.matches(tempDate);
         System.out.println("Is Friday the Thirteenth: " + fri13);
         
         LocalDateTime dt = LocalDateTime.of(2008, 3, 30, 1, 30);

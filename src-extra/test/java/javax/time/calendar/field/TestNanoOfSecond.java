@@ -46,10 +46,8 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
@@ -82,7 +80,6 @@ public class TestNanoOfSecond {
         assertTrue(Serializable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Comparable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(NanoOfSecond.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(NanoOfSecond.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -193,30 +190,6 @@ public class TestNanoOfSecond {
     public void test_adjustTime_nullLocalTime() {
         NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
         test.adjustTime((LocalTime) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical() {
-        LocalTime work = LocalTime.of(5, 10, 20, 0);
-        for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            for (int j = 0; j <= MAX_LENGTH; j += SKIP) {
-                NanoOfSecond test = NanoOfSecond.nanoOfSecond(j);
-                assertEquals(test.matchesCalendrical(work), i == j);
-            }
-            work = work.plusNanos(SKIP);
-        }
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(NanoOfSecond.nanoOfSecond(12).matchesCalendrical(LocalDate.of(2008, 6, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
-        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

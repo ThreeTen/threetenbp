@@ -45,7 +45,6 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.format.TextStyle;
 
@@ -73,7 +72,6 @@ public class TestMonthOfYear {
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Calendrical.class.isAssignableFrom(MonthOfYear.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(MonthOfYear.class));
     }
 
     //-----------------------------------------------------------------------
@@ -462,23 +460,6 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
         assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
         assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
-    }
-
-    //-----------------------------------------------------------------------
-    // matcher
-    //-----------------------------------------------------------------------
-    public void test_matcher() {
-        assertEquals(MonthOfYear.FEBRUARY.matchesCalendrical(MONTH_OF_YEAR.field(2)), true);
-        assertEquals(MonthOfYear.FEBRUARY.matchesCalendrical(MonthOfYear.FEBRUARY), true);
-        assertEquals(MonthOfYear.FEBRUARY.matchesCalendrical(MonthOfYear.MARCH), false);
-        
-        assertEquals(MonthOfYear.FEBRUARY.matchesCalendrical(LocalDate.of(1970, 2, 1)), true);
-        assertEquals(MonthOfYear.FEBRUARY.matchesCalendrical(LocalDate.of(1970, 5, 1)), false);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_matcher_null() {
-        MonthOfYear.FEBRUARY.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

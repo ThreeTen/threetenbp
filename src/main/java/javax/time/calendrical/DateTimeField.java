@@ -56,7 +56,7 @@ import javax.time.format.TextStyle;
  * @author Stephen Colebourne
  */
 public final class DateTimeField
-        implements Calendrical, CalendricalMatcher, Comparable<DateTimeField>, Serializable {
+        implements Calendrical, Comparable<DateTimeField>, Serializable {
 
     /**
      * Serialization version.
@@ -264,12 +264,16 @@ public final class DateTimeField
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this field matches the equivalent field in the specified calendrical.
+     * Matches this field against the specified calendrical.
+     * <p>
+     * This checks whether the value of this field is the same as the value of
+     * the same field extracted from the calendrical.
+     * If the field cannot be extracted, false is returned.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical fields match, false otherwise
      */
-    public boolean matchesCalendrical(Calendrical calendrical) {
+    public boolean matches(Calendrical calendrical) {
         return this.equals(calendrical.get(rule));
     }
 

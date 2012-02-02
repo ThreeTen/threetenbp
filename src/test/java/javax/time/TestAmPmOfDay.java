@@ -41,7 +41,6 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.format.TextStyle;
 
@@ -67,7 +66,6 @@ public class TestAmPmOfDay {
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Calendrical.class.isAssignableFrom(AmPmOfDay.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(AmPmOfDay.class));
     }
 
     //-----------------------------------------------------------------------
@@ -161,23 +159,6 @@ public class TestAmPmOfDay {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_getText_nullLocale() {
         AmPmOfDay.AM.getText(TextStyle.FULL, null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matcher
-    //-----------------------------------------------------------------------
-    public void test_matcher() {
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(AMPM_OF_DAY.field(0)), true);
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(AmPmOfDay.AM), true);
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(AmPmOfDay.PM), false);
-        
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(LocalTime.of(11, 30)), true);
-        assertEquals(AmPmOfDay.AM.matchesCalendrical(LocalTime.of(12, 30)), false);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_matcher_null() {
-        AmPmOfDay.AM.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

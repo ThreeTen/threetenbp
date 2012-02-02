@@ -37,7 +37,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -64,7 +63,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements Calendrical, CalendricalMatcher, Comparable<OffsetTime>, Serializable {
+        implements Calendrical, Comparable<OffsetTime>, Serializable {
 
     /**
      * Serialization version.
@@ -711,35 +710,6 @@ public final class OffsetTime
     public OffsetTime minusNanos(long nanos) {
         LocalTime newTime = time.minusNanos(nanos);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks whether this {@code OffsetTime} matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the time.
-     * A simple matcher might simply compare one of the fields, such as the hour field.
-     * A more complex matcher might check if the time is the last second of the day.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this time matches the matcher, false otherwise
-     */
-    public boolean matches(CalendricalMatcher matcher) {
-        return matcher.matchesCalendrical(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the time extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link #matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
     }
 
     //-----------------------------------------------------------------------

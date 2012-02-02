@@ -38,7 +38,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolvers;
@@ -82,7 +81,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, Calendrical, CalendricalMatcher, Comparable<ZonedDateTime>, Serializable {
+        implements InstantProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -1978,35 +1977,6 @@ public final class ZonedDateTime
         }
         Instant instant = toInstant().minusSeconds(hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds).minusNanos(nanos);
         return ofInstant(instant, zone);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks whether this {@code ZonedDateTime} matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the date-time.
-     * A simple matcher might simply compare one of the fields, such as the year field.
-     * A more complex matcher might check if the date is the last day of the month.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this date-time matches the matcher, false otherwise
-     */
-    public boolean matches(CalendricalMatcher matcher) {
-        return matcher.matchesCalendrical(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the date-time extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link #matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
     }
 
     //-----------------------------------------------------------------------

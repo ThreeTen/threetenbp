@@ -43,10 +43,8 @@ import javax.time.MathUtils;
 import javax.time.Year;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -67,7 +65,7 @@ import javax.time.calendrical.InvalidCalendarFieldException;
  * @author Stephen Colebourne
  */
 public final class DayOfYear
-        implements Calendrical, Comparable<DayOfYear>, DateAdjuster, CalendricalMatcher, Serializable {
+        implements Calendrical, Comparable<DayOfYear>, DateAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -229,17 +227,6 @@ public final class DayOfYear
 //    }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the day-of-year extracted from the calendrical matches this.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        DateTimeField calValue = calendrical.get(rule());
-        return calValue != null && calValue.getValue() == getValue();
-    }
-
     /**
      * Adjusts a date to have the value of this day-of-year, returning a new date.
      * <p>

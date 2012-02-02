@@ -71,7 +71,7 @@ public class TestFluentAPI {
         LocalTime tod = clock.time();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(ofHours(6)).plus(ofMinutes(2));
-        if (tod.matches(AmPmOfDay.AM)) {
+        if (AmPmOfDay.from(tod).equals(AmPmOfDay.AM)) {
             tod = tod.withHourOfDay(9);
         }
         
@@ -97,7 +97,7 @@ public class TestFluentAPI {
         
         DateTimeFields fri13 = DateTimeFields.of(
                 DAY_OF_WEEK, FRIDAY.getValue(), DAY_OF_MONTH, 13);
-        if (date.matches(fri13)) {
+        if (fri13.matches(date)) {
             System.out.println("Spooky");
         }
         

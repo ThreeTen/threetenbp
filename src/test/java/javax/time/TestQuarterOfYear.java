@@ -43,7 +43,6 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.format.TextStyle;
 
@@ -70,7 +69,6 @@ public class TestQuarterOfYear {
         assertTrue(Serializable.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Calendrical.class.isAssignableFrom(QuarterOfYear.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(QuarterOfYear.class));
     }
 
     //-----------------------------------------------------------------------
@@ -212,24 +210,6 @@ public class TestQuarterOfYear {
         assertEquals(QuarterOfYear.Q2.getFirstMonthOfQuarter(), MonthOfYear.APRIL);
         assertEquals(QuarterOfYear.Q3.getFirstMonthOfQuarter(), MonthOfYear.JULY);
         assertEquals(QuarterOfYear.Q4.getFirstMonthOfQuarter(), MonthOfYear.OCTOBER);
-    }
-
-    //-----------------------------------------------------------------------
-    // matcher
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matcher() {
-        assertEquals(QuarterOfYear.Q1.matchesCalendrical(QUARTER_OF_YEAR.field(1)), true);
-        assertEquals(QuarterOfYear.Q1.matchesCalendrical(QuarterOfYear.Q1), true);
-        assertEquals(QuarterOfYear.Q1.matchesCalendrical(QuarterOfYear.Q2), false);
-        
-        assertEquals(QuarterOfYear.Q2.matchesCalendrical(LocalDate.of(1970, 4, 15)), true);
-        assertEquals(QuarterOfYear.Q2.matchesCalendrical(LocalDate.of(1970, 1, 15)), false);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
-    public void test_matcher_null() {
-        QuarterOfYear.Q1.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

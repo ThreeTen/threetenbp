@@ -40,9 +40,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.TimeAdjuster;
@@ -62,7 +60,7 @@ import javax.time.calendrical.TimeAdjuster;
  * @author Stephen Colebourne
  */
 public final class NanoOfSecond
-        implements Calendrical, Comparable<NanoOfSecond>, TimeAdjuster, CalendricalMatcher, Serializable {
+        implements Calendrical, Comparable<NanoOfSecond>, TimeAdjuster, Serializable {
 
     /**
      * A singleton instance for zero nanoseconds.
@@ -172,17 +170,6 @@ public final class NanoOfSecond
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the nano-of-second extracted from the calendrical matches this.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        DateTimeField calValue = calendrical.get(rule());
-        return calValue != null && calValue.getValue() == getValue();
-    }
-
     /**
      * Adjusts a time to have the nano-of-second represented by this object,
      * returning a new time.

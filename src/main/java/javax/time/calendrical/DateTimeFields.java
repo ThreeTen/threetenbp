@@ -70,8 +70,7 @@ import javax.time.CalendricalException;
  * @author Stephen Colebourne
  */
 public final class DateTimeFields
-        implements Calendrical,
-            CalendricalMatcher, Iterable<DateTimeField>, Serializable {
+        implements Calendrical, Iterable<DateTimeField>, Serializable {
 
     /**
      * A singleton empty {@code DateTimeFields}, placing no restrictions on the date-time.
@@ -446,14 +445,16 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the fields in this object match those in the specified calendrical.
+     * Matches this field against the specified calendrical.
      * <p>
-     * This implementation checks that all calendrical fields in this object match.
+     * This checks whether the value of each field is the same as the value of
+     * the same field extracted from the calendrical.
+     * If any field cannot be extracted, false is returned.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical fields match, false otherwise
      */
-    public boolean matchesCalendrical(Calendrical calendrical) {
+    public boolean matches(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         for (DateTimeField field : fields) {
             DateTimeField calField = field.getRule().getValue(calendrical);

@@ -47,11 +47,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.LocalTime;
 import javax.time.MonthOfYear;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateAdjuster;
 
 import org.testng.annotations.Test;
@@ -133,80 +130,6 @@ public class TestWeekendRules {
         LocalDate saturday = LocalDate.of(2011, MonthOfYear.DECEMBER, 31);
         monday = WeekendRules.nextNonWeekendDay().adjustDate(saturday);
         assertEquals(LocalDate.of(2012, MonthOfYear.JANUARY, 2), monday);
-    }
-
-    //-----------------------------------------------------------------------
-    // weekendDay()
-    //-----------------------------------------------------------------------
-    public void test_weekendDay_serialization() throws IOException, ClassNotFoundException {
-        CalendricalMatcher weekendDay = WeekendRules.weekendDay();
-        assertTrue(weekendDay instanceof Serializable);
-        
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(weekendDay);
-        oos.close();
-        
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertSame(ois.readObject(), weekendDay);
-    }
-
-    public void factory_weekendDay() {
-        assertNotNull(WeekendRules.weekendDay());
-        assertSame(WeekendRules.weekendDay(), WeekendRules.weekendDay());
-    }
-
-    public void test_weekendDay() {
-        for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(false); i++) {
-                LocalDate date = LocalDate.of(2007, month, i);
-                DayOfWeek dayOfWeek = date.getDayOfWeek();
-                assertEquals(WeekendRules.weekendDay().matchesCalendrical(date),
-                        dayOfWeek == DayOfWeek.SATURDAY || 
-                        dayOfWeek == DayOfWeek.SUNDAY);
-            }
-        }
-    }
-
-    public void test_weekendDay_noData() {
-        assertEquals(WeekendRules.weekendDay().matchesCalendrical(LocalTime.of(12, 30)), false);
-    }
-
-    //-----------------------------------------------------------------------
-    // nonWeekendDay()
-    //-----------------------------------------------------------------------
-    public void test_nonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        CalendricalMatcher nonWeekendDay = WeekendRules.nonWeekendDay();
-        assertTrue(nonWeekendDay instanceof Serializable);
-        
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(nonWeekendDay);
-        oos.close();
-        
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        assertSame(ois.readObject(), nonWeekendDay);
-    }
-
-    public void factory_nonWeekendDay() {
-        assertNotNull(WeekendRules.nonWeekendDay());
-        assertSame(WeekendRules.nonWeekendDay(), WeekendRules.nonWeekendDay());
-    }
-
-    public void test_nonWeekendDay() {
-        for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(false); i++) {
-                LocalDate date = LocalDate.of(2007, month, i);
-                DayOfWeek dayOfWeek = date.getDayOfWeek();
-                assertEquals(WeekendRules.nonWeekendDay().matchesCalendrical(date),
-                        dayOfWeek != DayOfWeek.SATURDAY && 
-                        dayOfWeek != DayOfWeek.SUNDAY);
-            }
-        }
-    }
-
-    public void test_nonWeekendDay_noData() {
-        assertEquals(WeekendRules.nonWeekendDay().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
 }
