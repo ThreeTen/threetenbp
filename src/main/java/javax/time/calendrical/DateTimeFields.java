@@ -457,8 +457,7 @@ public final class DateTimeFields
     public boolean matches(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         for (DateTimeField field : fields) {
-            DateTimeField calField = field.getRule().getValue(calendrical);
-            if (calField != null && calField.equals(field) == false) {
+            if (field.matches(calendrical) == false) {
                 return false;
             }
         }

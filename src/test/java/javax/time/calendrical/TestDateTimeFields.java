@@ -864,14 +864,14 @@ public class TestDateTimeFields {
     }
 
     @Test(groups={"tck"})
-    public void test_matches_timeIgnored() {
+    public void test_matches_incompleteMatchNoTime() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
             .with(MONTH_OF_YEAR, 6)
             .with(DAY_OF_MONTH, 30)
             .with(HOUR_OF_DAY, 12);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.matches(date), true);
+        assertEquals(test.matches(date), false);
     }
 
     @Test(groups={"tck"})
@@ -924,13 +924,13 @@ public class TestDateTimeFields {
     }
 
     @Test(groups={"tck"})
-    public void test_matches_dateIgnored() {
+    public void test_matches_incompleteMatchNoDate() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30)
             .with(YEAR, 2008);
         LocalTime time = LocalTime.of(11, 30);
-        assertEquals(test.matches(time), true);
+        assertEquals(test.matches(time), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
