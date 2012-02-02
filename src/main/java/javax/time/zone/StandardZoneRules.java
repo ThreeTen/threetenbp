@@ -42,7 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
-import javax.time.InstantProvider;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
 import javax.time.Year;
@@ -270,8 +269,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    public ZoneOffset getOffset(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public ZoneOffset getOffset(Instant instant) {
         long epochSec = instant.getEpochSecond();
         
         // check if using last rules
@@ -406,8 +404,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public ZoneOffset getStandardOffset(Instant instant) {
         long epochSec = instant.getEpochSecond();
         int index  = Arrays.binarySearch(standardTransitions, epochSec);
         if (index < 0) {
@@ -421,12 +418,11 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * Gets the next transition after the specified transition.
      *
-     * @param instantProvider  the instant to get the next transition after, not null
+     * @param instant  the instant to get the next transition after, not null
      * @return the next transition after the specified instant, null if this is after the last transition
      */
     @Override
-    public ZoneOffsetTransition nextTransition(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public ZoneOffsetTransition nextTransition(Instant instant) {
         long epochSec = instant.getEpochSecond();
         
         // check if using last rules
@@ -463,12 +459,11 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * Gets the previous transition after the specified transition.
      *
-     * @param instantProvider  the instant to get the previous transition after, not null
+     * @param instant  the instant to get the previous transition after, not null
      * @return the previous transition after the specified instant, null if this is before the first transition
      */
     @Override
-    public ZoneOffsetTransition previousTransition(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public ZoneOffsetTransition previousTransition(Instant instant) {
         long epochSec = instant.getEpochSecond();
         if (instant.getNanoOfSecond() > 0 && epochSec < Long.MAX_VALUE) {
             epochSec += 1;  // allow rest of method to only use seconds

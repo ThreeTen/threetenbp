@@ -38,7 +38,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.time.InstantProvider;
+import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.ZoneOffset;
 
@@ -108,7 +108,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    public ZoneOffset getOffset(InstantProvider instant) {
+    public ZoneOffset getOffset(Instant instant) {
         return offset;
     }
 
@@ -120,7 +120,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
 
     /** {@inheritDoc} */
     @Override
-    public ZoneOffset getStandardOffset(InstantProvider instant) {
+    public ZoneOffset getStandardOffset(Instant instant) {
         return offset;
     }
 
@@ -133,13 +133,13 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    public ZoneOffsetTransition nextTransition(InstantProvider instantProvider) {
+    public ZoneOffsetTransition nextTransition(Instant Provider) {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ZoneOffsetTransition previousTransition(InstantProvider instantProvider) {
+    public ZoneOffsetTransition previousTransition(Instant instantProvider) {
         return null;
     }
 

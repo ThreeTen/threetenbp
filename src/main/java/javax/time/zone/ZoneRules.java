@@ -34,7 +34,6 @@ package javax.time.zone;
 import java.util.List;
 
 import javax.time.Instant;
-import javax.time.InstantProvider;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
@@ -129,7 +128,7 @@ public abstract class ZoneRules {
      *   ignored for fixed offset rules, otherwise not null
      * @return the offset, not null
      */
-    public abstract ZoneOffset getOffset(InstantProvider instant);
+    public abstract ZoneOffset getOffset(Instant instant);
 
     /**
      * Gets the offset information for the specified instant in this zone.
@@ -186,10 +185,10 @@ public abstract class ZoneRules {
      * The standard offset is the offset before any daylight savings time is applied.
      * This is typically the offset applicable during winter.
      *
-     * @param instantProvider  the instant to find the offset information for, not null
+     * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, not null
      */
-    public abstract ZoneOffset getStandardOffset(InstantProvider instantProvider);
+    public abstract ZoneOffset getStandardOffset(Instant instant);
 
     /**
      * Gets the amount of daylight savings in use for the specified instant in this zone.
@@ -200,11 +199,10 @@ public abstract class ZoneRules {
      * It is expressed in hours, minutes and seconds.
      * Typically the amount is zero during winter and one hour during summer.
      *
-     * @param instantProvider  the instant to find the offset information for, not null
+     * @param instant  the instant to find the offset information for, not null
      * @return the difference between the standard and actual offset, not null
      */
-    public Period getDaylightSavings(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public Period getDaylightSavings(Instant instant) {
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
         return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
@@ -221,7 +219,7 @@ public abstract class ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, not null
      */
-    public boolean isDaylightSavings(InstantProvider instant) {
+    public boolean isDaylightSavings(Instant instant) {
         return (getStandardOffset(instant).equals(getOffset(instant)) == false);
     }
 
@@ -235,12 +233,12 @@ public abstract class ZoneRules {
      * the method is defined to throw UnsupportedOperationException. The supplied
      * rules implementations do supply this information and don't throw the exception
      *
-     * @param instantProvider  the instant to get the next transition after, not null
+     * @param instant  the instant to get the next transition after, not null
      * @return the next transition after the specified instant, null if this is after the last transition
      * @throws UnsupportedOperationException if the implementation cannot return this information -
      *  the default 'TZDB' can return this information
      */
-    public abstract ZoneOffsetTransition nextTransition(InstantProvider instantProvider);
+    public abstract ZoneOffsetTransition nextTransition(Instant instant);
 
     /**
      * Gets the previous transition after the specified transition.
@@ -251,12 +249,12 @@ public abstract class ZoneRules {
      * the method is defined to throw UnsupportedOperationException. The supplied
      * rules implementations do supply this information and don't throw the exception
      *
-     * @param instantProvider  the instant to get the previous transition after, not null
+     * @param instant  the instant to get the previous transition after, not null
      * @return the previous transition after the specified instant, null if this is before the first transition
      * @throws UnsupportedOperationException if the implementation cannot return this information -
      *  the default 'TZDB' can return this information
      */
-    public abstract ZoneOffsetTransition previousTransition(InstantProvider instantProvider);
+    public abstract ZoneOffsetTransition previousTransition(Instant instant);
 
     /**
      * Gets the complete list of fully defined transitions.

@@ -430,7 +430,7 @@ public final class ZonedDateTime
         if (instantProvider instanceof OffsetDateTime) {  // optimize by trying to reuse the OffsetDateTime
             OffsetDateTime odt = (OffsetDateTime) instantProvider;
             if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
-                odt = odt.withOffsetSameInstant(rules.getOffset(odt));
+                odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));
             }
             return new ZonedDateTime(odt, zone);
         } else {
@@ -491,7 +491,7 @@ public final class ZonedDateTime
                 } else {
                     ZoneRules rules = zone.getRules();  // latest rules version
                     if (rules.isValidDateTime(odt) == false) {  // avoids toInstant()
-                        odt = odt.withOffsetSameInstant(rules.getOffset(odt));  // smart use of date-time as instant
+                        odt = odt.withOffsetSameInstant(rules.getOffset(odt.toInstant()));  // smart use of date-time as instant
                     }
                 }
                 return new ZonedDateTime(odt, zone);
