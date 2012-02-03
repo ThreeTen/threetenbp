@@ -971,7 +971,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
         /** The zone id. */
         private final String id;
         /** The zone rules. */
-        private final transient ZoneRules rules;
+        private final transient ZoneRules rules;  // known to be fixed
 
         /**
          * Constructor.
@@ -1053,10 +1053,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneId withLatestVersionValidFor(OffsetDateTime dateTime) {
-            Instant.checkNotNull(dateTime, "OffsetDateTime must not be null");
-            if (getRules().getOffset(dateTime.toInstant()).equals(dateTime.getOffset()) == false) {
-                throw new CalendricalException("Fixed time-zone " + getID() + " is invalid for date-time " + dateTime);
-            }
+            getRulesValidFor(dateTime);  // validation
             return this;
         }
 
@@ -1080,14 +1077,13 @@ public abstract class ZoneId implements Calendrical, Serializable {
             if (dateTime == null) {
                 return false;
             }
-            return rules.getOffset(dateTime.toInstant()).equals(dateTime.getOffset());
+            return rules.getOffset(null).equals(dateTime.getOffset());
         }
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
             Instant.checkNotNull(dateTime, "OffsetDateTime must not be null");
-            // fixed rules always in transient field
-            if (rules.getOffset(dateTime.toInstant()).equals(dateTime.getOffset()) == false) {
+            if (isValidFor(dateTime) == false) {
                 throw new CalendricalException("Fixed time-zone " + getID() + " is invalid for date-time " + dateTime);
             }
             return rules;
