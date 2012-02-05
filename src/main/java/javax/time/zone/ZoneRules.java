@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,6 +47,10 @@ import javax.time.ZonedDateTime;
  * The rules defining how the zone offset varies for a single time-zone.
  * <p>
  * The rules model all the historic and future transitions for a time-zone.
+ * {@link ZoneOffsetTransition} is used for known transitions, typically historic.
+ * {@link ZoneOffsetTransitionRule} is used for future transitions that are based
+ * on the result of an algorithm.
+ * <p>
  * The rules are loaded via {@link ZoneId} and {@link ZoneRulesGroup} and
  * are specific to a group, region and version. The same rules may be shared
  * between multiple versions, regions or even groups.
@@ -54,6 +58,12 @@ import javax.time.ZonedDateTime;
  * Serializing an instance of {@code ZoneRules} will store the entire set
  * of rules. It does not store the group, region or version as they are not
  * part of the state of this object.
+ * <p>
+ * A rule implementation may or may not store full information about historic
+ * and future transitions, and the information stored is only as accurate as
+ * that supplied to the implementation by the rules provider.
+ * Applications should treat the data provided as representing the best information
+ * available to the implementation of this rule.
  * <p>
  * This abstract class must be implemented with care to ensure other classes in
  * the framework operate correctly.
@@ -176,6 +186,20 @@ public abstract class ZoneRules {
      */
     public abstract ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime);
 
+    /**
+     * Checks if the offset date-time is valid for these rules.
+     * <p>
+     * To be valid, the local date-time must not be in a gap and the offset
+     * must match the valid offsets.
+     *
+     * @param dateTime  the date-time to check, not null
+     * @return true if the offset date-time is valid for these rules
+     */
+    public boolean isValidDateTime(OffsetDateTime dateTime) {
+        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
+        return info.isValidOffset(dateTime.getOffset());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the standard offset for the specified instant in this zone.
@@ -228,15 +252,11 @@ public abstract class ZoneRules {
      * Gets the next transition after the specified transition.
      * <p>
      * This returns details of the next transition after the specified instant.
-     * <p>
-     * Some providers of rules may not be able to return this information, thus
-     * the method is defined to throw UnsupportedOperationException. The supplied
-     * rules implementations do supply this information and don't throw the exception
+     * For example, if the instant represents a point where "Summer" daylight savings time
+     * applies, then the method will return the transition to the next "Winter" time.
      *
      * @param instant  the instant to get the next transition after, not null
      * @return the next transition after the specified instant, null if this is after the last transition
-     * @throws UnsupportedOperationException if the implementation cannot return this information -
-     *  the default 'TZDB' can return this information
      */
     public abstract ZoneOffsetTransition nextTransition(Instant instant);
 
@@ -244,15 +264,11 @@ public abstract class ZoneRules {
      * Gets the previous transition after the specified transition.
      * <p>
      * This returns details of the previous transition after the specified instant.
-     * <p>
-     * Some providers of rules may not be able to return this information, thus
-     * the method is defined to throw UnsupportedOperationException. The supplied
-     * rules implementations do supply this information and don't throw the exception
+     * For example, if the instant represents a point where "summer" daylight savings time
+     * applies, then the method will return the transition from the previous "winter" time.
      *
      * @param instant  the instant to get the previous transition after, not null
      * @return the previous transition after the specified instant, null if this is before the first transition
-     * @throws UnsupportedOperationException if the implementation cannot return this information -
-     *  the default 'TZDB' can return this information
      */
     public abstract ZoneOffsetTransition previousTransition(Instant instant);
 
@@ -263,14 +279,8 @@ public abstract class ZoneRules {
      * and {@link #getTransitionRules()}. This method returns those transitions that have
      * been fully defined. These are typically historical, but may be in the future.
      * The list will be empty for fixed offset rules.
-     * <p>
-     * Some providers of rules cannot return this information, thus this method is defined
-     * to throw UnsupportedOperationException. The supplied 'TZDB' implementation can supply
-     * this information thus does not throw the exception.
      *
-     * @return independent, modifiable copy of the list of fully defined transitions, not null
-     * @throws UnsupportedOperationException if the implementation cannot return this information -
-     *  the default 'TZDB' can return this information
+     * @return an immutable list of fully defined transitions, not null
      */
     public abstract List<ZoneOffsetTransition> getTransitions();
 
@@ -280,7 +290,6 @@ public abstract class ZoneRules {
      * The complete set of transitions for this rules instance is defined by this method
      * and {@link #getTransitions()}. This method returns instances of {@link ZoneOffsetTransitionRule}
      * that define an algorithm for when transitions will occur.
-     * The list will be empty for fixed offset rules.
      * <p>
      * For any given {@code ZoneRules}, this list contains the transition rules for years
      * beyond those years that have been fully defined. These rules typically refer to future
@@ -290,31 +299,10 @@ public abstract class ZoneRules {
      * be of size two and hold information about entering and exiting daylight savings.
      * If the zone does not have daylight savings, or information about future changes
      * is uncertain, then the list will be empty.
-     * <p>
-     * Some providers of rules cannot return this information, thus this method is defined
-     * to throw UnsupportedOperationException. The supplied 'TZDB' implementation can supply
-     * this information thus does not throw the exception.
      *
-     * @return independent, modifiable copy of the list of transition rules, not null
-     * @throws UnsupportedOperationException if the implementation cannot return this information -
-     *  the default 'TZDB' can return this information
+     * @return an immutable list of transition rules, not null
      */
     public abstract List<ZoneOffsetTransitionRule> getTransitionRules();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the offset date-time is valid for these rules.
-     * <p>
-     * To be valid, the local date-time must not be in a gap and the offset
-     * must match the valid offsets.
-     *
-     * @param dateTime  the date-time to check, not null
-     * @return true if the offset date-time is valid for these rules
-     */
-    public boolean isValidDateTime(OffsetDateTime dateTime) {
-        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
-        return info.isValidOffset(dateTime.getOffset());
-    }
 
     //-----------------------------------------------------------------------
     /**

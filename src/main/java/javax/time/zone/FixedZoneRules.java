@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,7 +35,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.time.Instant;
@@ -106,64 +106,48 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
-    @Override
-    public ZoneOffset getOffset(Instant instant) {
-        return offset;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-        return new ZoneOffsetInfo(dateTime, offset, null);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public ZoneOffset getStandardOffset(Instant instant) {
-        return offset;
-    }
-
-    /** {@inheritDoc} */
     @Override
     public boolean isFixedOffset() {
         return true;
     }
 
+    @Override
+    public ZoneOffset getOffset(Instant instant) {
+        return offset;
+    }
+
+    @Override
+    public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
+        return new ZoneOffsetInfo(dateTime, offset, null);
+    }
+
+    @Override
+    public ZoneOffset getStandardOffset(Instant instant) {
+        return offset;
+    }
+
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public ZoneOffsetTransition nextTransition(Instant Provider) {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ZoneOffsetTransition previousTransition(Instant instantProvider) {
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ZoneOffsetTransition> getTransitions() {
-        return new ArrayList<ZoneOffsetTransition>();
+        return Collections.emptyList();
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ZoneOffsetTransitionRule> getTransitionRules() {
-        return new ArrayList<ZoneOffsetTransitionRule>();
+        return Collections.emptyList();
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if this object equals another, comparing the offset.
-     * <p>
-     * The entire state of the object is compared.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if equal
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -175,11 +159,6 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
         return false;
     }
 
-    /**
-     * Returns a suitable hash code.
-     *
-     * @return the hash code
-     */
     @Override
     public int hashCode() {
         return offset.hashCode() + 1;

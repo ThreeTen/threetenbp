@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -267,7 +268,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public ZoneOffset getOffset(Instant instant) {
         long epochSec = instant.getEpochSecond();
@@ -297,7 +297,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public ZoneOffsetInfo getOffsetInfo(LocalDateTime dt) {
         // check if using last rules
@@ -402,7 +401,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     @Override
     public ZoneOffset getStandardOffset(Instant instant) {
         long epochSec = instant.getEpochSecond();
@@ -415,12 +413,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the next transition after the specified transition.
-     *
-     * @param instant  the instant to get the next transition after, not null
-     * @return the next transition after the specified instant, null if this is after the last transition
-     */
     @Override
     public ZoneOffsetTransition nextTransition(Instant instant) {
         long epochSec = instant.getEpochSecond();
@@ -456,12 +448,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         return new ZoneOffsetTransition(trans, wallOffsets[index + 1]);
     }
 
-    /**
-     * Gets the previous transition after the specified transition.
-     *
-     * @param instant  the instant to get the previous transition after, not null
-     * @return the previous transition after the specified instant, null if this is before the first transition
-     */
     @Override
     public ZoneOffsetTransition previousTransition(Instant instant) {
         long epochSec = instant.getEpochSecond();
@@ -498,15 +484,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         return new ZoneOffsetTransition(trans, wallOffsets[index]);
     }
 
-    /**
-     * Gets the complete list of transitions.
-     * <p>
-     * This list normally contains a complete historical set of transitions
-     * that have occurred. Some transitions may be in the future, although
-     * generally the transition rules handle future years.
-     *
-     * @return independent, modifiable copy of the list of transitions, not null
-     */
     @Override
     public List<ZoneOffsetTransition> getTransitions() {
         List<ZoneOffsetTransition> list = new ArrayList<ZoneOffsetTransition>();
@@ -515,33 +492,15 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             OffsetDateTime trans = OffsetDateTime.ofInstant(instant, wallOffsets[i]);
             list.add(new ZoneOffsetTransition(trans, wallOffsets[i + 1]));
         }
-        return list;
+        return Collections.unmodifiableList(list);
     }
 
-    /**
-     * Gets the list of transition rules for years beyond those defined in the transition list.
-     * <p>
-     * The list represents all the transitions that are expected in each year
-     * beyond those in the transition list. Normally, there are two transitions
-     * per year - into and out of daylight savings time. If daylight savings
-     * time does not occur then the list will be empty.
-     *
-     * @return independent, modifiable copy of the list of transition rules, not null
-     */
     @Override
     public List<ZoneOffsetTransitionRule> getTransitionRules() {
-        return new ArrayList<ZoneOffsetTransitionRule>(Arrays.asList(lastRules));
+        return Collections.unmodifiableList(Arrays.asList(lastRules));
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if this object equals another, comparing the complete set of rules.
-     * <p>
-     * The entire state of the object is compared.
-     *
-     * @param obj  the object to check, null returns false
-     * @return true if equal
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -558,11 +517,6 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         return false;
     }
 
-    /**
-     * Returns a suitable hash code.
-     *
-     * @return the hash code
-     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(standardTransitions) ^

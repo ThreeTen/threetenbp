@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -960,6 +960,19 @@ public class TestStandardZoneRules {
         
         ZoneOffsetTransition last = trans.get(trans.size() - 1);
         assertEquals(test.nextTransition(last.getInstant()), null);
+    }
+
+    //-------------------------------------------------------------------------
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_getTransitions_immutable() {
+        ZoneRules test = europeParis();
+        test.getTransitions().clear();
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_getTransitionRules_immutable() {
+        ZoneRules test = europeParis();
+        test.getTransitionRules().clear();
     }
 
     //-----------------------------------------------------------------------
