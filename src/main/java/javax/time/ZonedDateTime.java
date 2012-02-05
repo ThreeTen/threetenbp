@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -137,7 +137,7 @@ public final class ZonedDateTime
      * @return the current date-time, not null
      */
     public static ZonedDateTime now(Clock clock) {
-        Instant.checkNotNull(clock, "Clock must not be null");
+        MathUtils.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone());
     }
@@ -371,8 +371,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the offset is invalid for the time-zone at the date-time
      */
     public static ZonedDateTime of(OffsetDateTime dateTime, ZoneId zone) {
-        Instant.checkNotNull(dateTime, "OffsetDateTime must not be null");
-        Instant.checkNotNull(zone, "ZoneId must not be null");
+        MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
         ZoneRules rules = zone.getRules();  // latest rules version
         ZoneOffsetInfo info = rules.getOffsetInfo(dateTime.toLocalDateTime());
@@ -424,8 +424,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstant(InstantProvider instantProvider, ZoneId zone) {
-        Instant.checkNotNull(instantProvider, "InstantProvider must not be null");
-        Instant.checkNotNull(zone, "ZoneId must not be null");
+        MathUtils.checkNotNull(instantProvider, "InstantProvider must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
         ZoneRules rules = zone.getRules();  // latest rules version
         if (instantProvider instanceof OffsetDateTime) {  // optimize by trying to reuse the OffsetDateTime
             OffsetDateTime odt = (OffsetDateTime) instantProvider;
@@ -453,7 +453,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime ofEpochSecond(long epochSecond, ZoneId zone) {
-        Instant.checkNotNull(zone, "ZoneId must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
         return ZonedDateTime.ofInstant(Instant.ofEpochSecond(epochSecond, 0), zone);
     }
 
@@ -537,7 +537,7 @@ public final class ZonedDateTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -553,9 +553,9 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     private static ZonedDateTime resolve(LocalDateTime desiredLocalDateTime, ZoneId zone, ZonedDateTime oldDateTime, ZoneResolver resolver) {
-        Instant.checkNotNull(desiredLocalDateTime, "LocalDateTime must not be null");
-        Instant.checkNotNull(zone, "ZoneId must not be null");
-        Instant.checkNotNull(resolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(desiredLocalDateTime, "LocalDateTime must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
         ZoneRules rules = zone.getRules();
         OffsetDateTime offsetDT = resolver.resolve(desiredLocalDateTime, rules.getOffsetInfo(desiredLocalDateTime), rules, zone,
                 oldDateTime != null ? oldDateTime.toOffsetDateTime() : null);
@@ -738,8 +738,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
      */
     public ZonedDateTime withZoneSameLocal(ZoneId zone, ZoneResolver resolver) {
-        Instant.checkNotNull(zone, "ZoneId must not be null");
-        Instant.checkNotNull(resolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
+        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
         return zone == this.zone ? this :
             resolve(dateTime.toLocalDateTime(), zone, this, resolver);
     }
@@ -977,8 +977,8 @@ public final class ZonedDateTime
      * @return a {@code ZonedDateTime} based on this time with the requested date-time, not null
      */
     public ZonedDateTime withDateTime(LocalDateTime dateTime, ZoneResolver resolver) {
-        Instant.checkNotNull(dateTime, "LocalDateTime must not be null");
-        Instant.checkNotNull(resolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(dateTime, "LocalDateTime must not be null");
+        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
         return this.toLocalDateTime().equals(dateTime) ?
                 this : ZonedDateTime.resolve(dateTime, zone, this, resolver);
     }
@@ -1024,8 +1024,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime with(DateAdjuster adjuster, ZoneResolver resolver) {
-        Instant.checkNotNull(adjuster, "DateAdjuster must not be null");
-        Instant.checkNotNull(resolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(adjuster, "DateAdjuster must not be null");
+        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
         LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
         return (newDT == dateTime.toLocalDateTime() ? this : resolve(newDT, zone, this, resolver));
     }
@@ -1071,8 +1071,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime with(TimeAdjuster adjuster, ZoneResolver resolver) {
-        Instant.checkNotNull(adjuster, "TimeAdjuster must not be null");
-        Instant.checkNotNull(resolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(adjuster, "TimeAdjuster must not be null");
+        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
         LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
         return (newDT == dateTime.toLocalDateTime() ? this : resolve(newDT, zone, this, resolver));
     }
@@ -1389,8 +1389,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public ZonedDateTime plus(PeriodProvider periodProvider, ZoneResolver resolver) {
-        Instant.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        Instant.checkNotNull(resolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
         LocalDateTime newDT = dateTime.toLocalDateTime().plus(periodProvider);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, resolver));
@@ -1711,8 +1711,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public ZonedDateTime minus(PeriodProvider periodProvider, ZoneResolver resolver) {
-        Instant.checkNotNull(periodProvider, "PeriodProvider must not be null");
-        Instant.checkNotNull(resolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        MathUtils.checkNotNull(resolver, "ZoneResolver must not be null");
         LocalDateTime newDT = dateTime.toLocalDateTime().minus(periodProvider);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, zone, this, resolver));
@@ -2187,7 +2187,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

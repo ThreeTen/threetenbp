@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -121,7 +121,7 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
-        Instant.checkNotNull(zone, "ZoneId must not be null");
+        MathUtils.checkNotNull(zone, "ZoneId must not be null");
         return new TimeSourceClock(TimeSource.system(), zone);
     }
 
@@ -137,7 +137,7 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock clockDefaultZone(TimeSource timeSource) {
-        Instant.checkNotNull(timeSource, "TimeSource must not be null");
+        MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
         ZoneId zone = ZoneId.of(TimeZone.getDefault().getID());
         return new TimeSourceClock(timeSource, zone);
     }
@@ -151,8 +151,8 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, not null
      */
     public static Clock clock(TimeSource timeSource, ZoneId timeZone) {
-        Instant.checkNotNull(timeSource, "TimeSource must not be null");
-        Instant.checkNotNull(timeZone, "ZoneId must not be null");
+        MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
+        MathUtils.checkNotNull(timeZone, "ZoneId must not be null");
         return new TimeSourceClock(timeSource, timeZone);
     }
 
@@ -583,7 +583,7 @@ public abstract class Clock {
         /** {@inheritDoc} */
         @Override
         public Clock withSource(TimeSource timeSource) {
-            Instant.checkNotNull(timeSource, "TimeSource must not be null");
+            MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
             if (timeSource.equals(this.timeSource)) {
                 return this;
             }
@@ -599,7 +599,7 @@ public abstract class Clock {
         /** {@inheritDoc} */
         @Override
         public Clock withZone(ZoneId zone) {
-            Instant.checkNotNull(zone, "ZoneId must not be null");
+            MathUtils.checkNotNull(zone, "ZoneId must not be null");
             if (zone.equals(this.zone)) {
                 return this;
             }

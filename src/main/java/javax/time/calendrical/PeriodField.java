@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -87,7 +87,7 @@ public final class PeriodField
      * @return the {@code PeriodField} instance, not null
      */
     public static PeriodField of(long amount, PeriodUnit unit) {
-        PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         return new PeriodField(amount, unit);
     }
 
@@ -184,7 +184,7 @@ public final class PeriodField
      * @return a {@code PeriodField} based on this period with the specified unit, not null
      */
     public PeriodField withUnit(PeriodUnit unit) {
-        PeriodFields.checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         if (unit.equals(this.unit)) {
             return this;
         }
@@ -203,7 +203,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField plus(PeriodField periodToAdd) {
-        PeriodFields.checkNotNull(periodToAdd, "PeriodField must not be null");
+        MathUtils.checkNotNull(periodToAdd, "PeriodField must not be null");
         if (periodToAdd.getUnit().equals(unit) == false) {
             throw new IllegalArgumentException("Cannot add '" + periodToAdd + "' to '" + this + "' as the units differ");
         }
@@ -235,7 +235,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField minus(PeriodField periodToSubtract) {
-        PeriodFields.checkNotNull(periodToSubtract, "PeriodField must not be null");
+        MathUtils.checkNotNull(periodToSubtract, "PeriodField must not be null");
         if (periodToSubtract.getUnit().equals(unit) == false) {
             throw new IllegalArgumentException("Cannot subtract '" + periodToSubtract + "' from '" + this + "' as the units differ");
         }
@@ -367,7 +367,7 @@ public final class PeriodField
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField toEquivalent(PeriodUnit... requiredUnits) {
-        PeriodFields.checkNotNull(requiredUnits, "PeriodUnit array must not be null");
+        MathUtils.checkNotNull(requiredUnits, "PeriodUnit array must not be null");
         for (PeriodUnit requiredUnit : requiredUnits) {
             PeriodField converted = requiredUnit.convertEquivalent(this);
             if (converted != null) {

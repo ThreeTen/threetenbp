@@ -417,7 +417,7 @@ public final class HijrahDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
-        I18NUtil.checkNotNull(era, "HijrahEra must not be null");
+        MathUtils.checkNotNull(era, "HijrahEra must not be null");
         HijrahChronology.yearOfEraRule().checkValidValue(yearOfEra);
         HijrahChronology.monthOfYearRule().checkValidValue(monthOfYear);
         HijrahChronology.dayOfMonthRule().checkValidValue(dayOfMonth);

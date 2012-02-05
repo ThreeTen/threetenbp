@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,6 +32,7 @@
 package javax.time.zone;
 
 import javax.time.LocalDateTime;
+import javax.time.MathUtils;
 import javax.time.ZoneOffset;
 
 /**
@@ -85,7 +86,7 @@ public final class ZoneOffsetInfo {
             LocalDateTime dateTime,
             ZoneOffset offset,
             ZoneOffsetTransition transition) {
-        ZoneRules.checkNotNull(dateTime, "LocalDateTime must not be null");
+        MathUtils.checkNotNull(dateTime, "LocalDateTime must not be null");
         if ((offset == null && transition == null) || (offset != null && transition != null)) {
             throw new IllegalArgumentException("One, but not both, of offset or transition must be specified");
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,6 +33,7 @@ package javax.time.calendrical;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDateTime;
+import javax.time.MathUtils;
 import javax.time.OffsetDateTime;
 import javax.time.ZoneId;
 import javax.time.zone.ZoneOffsetInfo;
@@ -172,8 +173,8 @@ public final class ZoneResolvers {
      * @return the combination resolver, not null
      */
     public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
-        ISOChronology.checkNotNull(gapResolver, "ZoneResolver must not be null");
-        ISOChronology.checkNotNull(overlapResolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(gapResolver, "ZoneResolver must not be null");
+        MathUtils.checkNotNull(overlapResolver, "ZoneResolver must not be null");
         if (gapResolver == overlapResolver) {
             return gapResolver;
         }

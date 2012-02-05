@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -130,7 +130,7 @@ public abstract class TimeSource {
      * @return a {@code TimeSource} that always returns the same instant, not null
      */
     public static TimeSource fixed(InstantProvider fixedInstantProvider) {
-        Instant.checkNotNull(fixedInstantProvider, "InstantProvider must not be null");
+        MathUtils.checkNotNull(fixedInstantProvider, "InstantProvider must not be null");
         Instant instant = Instant.of(fixedInstantProvider);
         return new FixedTimeSource(instant);
     }
@@ -152,7 +152,7 @@ public abstract class TimeSource {
      * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
      */
     public static TimeSource offsetSystem(Duration offset) {
-        Instant.checkNotNull(offset, "Duration must not be null");
+        MathUtils.checkNotNull(offset, "Duration must not be null");
         if (offset.equals(Duration.ZERO)) {
             return SystemTimeSource.INSTANCE;
         }

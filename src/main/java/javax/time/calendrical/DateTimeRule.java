@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,6 +36,7 @@ import java.math.RoundingMode;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 import javax.time.format.TextStyle;
 
 /**
@@ -124,8 +125,8 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
             DateTimeRuleRange ruleRange,
             DateTimeRule parentRule) {
         super(DateTimeField.class, name);
-        ISOChronology.checkNotNull(periodUnit, "Period unit must not be null");
-        ISOChronology.checkNotNull(ruleRange, "DateTimeRuleRange must not be null");
+        MathUtils.checkNotNull(periodUnit, "Period unit must not be null");
+        MathUtils.checkNotNull(ruleRange, "DateTimeRuleRange must not be null");
         this.periodUnit = periodUnit;
         this.periodRange = periodRange;
         this.range = ruleRange;
@@ -207,7 +208,7 @@ public abstract class DateTimeRule extends CalendricalRule<DateTimeField>
      * @return the valid range of values given the calendrical context, not null
      */
     public DateTimeRuleRange getValueRange(Calendrical calendrical) {
-        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
+        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
         return getValueRange();
     }
 

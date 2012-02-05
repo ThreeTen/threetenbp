@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.time.MathUtils;
+
 
 /**
  *
@@ -60,7 +62,7 @@ public final class DateTimeRuleGroup {
      *  if this rule does not relate to another rule
      */
     public static DateTimeRuleGroup of(DateTimeRule baseRule) {
-        ISOChronology.checkNotNull(baseRule, "DateTimeRule must not be null");
+        MathUtils.checkNotNull(baseRule, "DateTimeRule must not be null");
         DateTimeRuleGroup group = GROUPS.get(baseRule);
         if (group == null) {
             group = new DateTimeRuleGroup(baseRule);
@@ -77,7 +79,7 @@ public final class DateTimeRuleGroup {
      *  if this rule does not relate to another rule
      */
     private DateTimeRuleGroup(DateTimeRule baseRule) {
-        ISOChronology.checkNotNull(baseRule, "DateTimeRule must not be null");
+        MathUtils.checkNotNull(baseRule, "DateTimeRule must not be null");
         this.baseRule = baseRule;
     }
 

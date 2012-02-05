@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -152,7 +152,7 @@ public final class YearMonth
      */
     public static YearMonth of(int year, MonthOfYear monthOfYear) {
         YEAR.checkValidValue(year);
-        Instant.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return new YearMonth(year, monthOfYear);
     }
 
@@ -211,7 +211,7 @@ public final class YearMonth
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static YearMonth parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -302,7 +302,7 @@ public final class YearMonth
      * @return a {@code YearMonth} based on this year-month with the requested year, not null
      */
     public YearMonth with(Year year) {
-        Instant.checkNotNull(year, "Year must not be null");
+        MathUtils.checkNotNull(year, "Year must not be null");
         return withYear(year.getValue());
     }
 
@@ -315,7 +315,7 @@ public final class YearMonth
      * @return a {@code YearMonth} based on this year-month with the requested month, not null
      */
     public YearMonth with(MonthOfYear monthOfYear) {
-        Instant.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return with(year, monthOfYear);
     }
 
@@ -502,13 +502,13 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        Instant.checkNotNull(date, "LocalDate must not be null");
-        Instant.checkNotNull(resolver, "DateResolver must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(resolver, "DateResolver must not be null");
         if (date.getYear() == year && date.getMonthOfYear() == month) {
             return date;
         }
         LocalDate resolved = resolver.resolveDate(year, month, date.getDayOfMonth());
-        Instant.checkNotNull(resolved, "The implementation of DateResolver must not return null");
+        MathUtils.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }
 
@@ -581,9 +581,9 @@ public final class YearMonth
      * @see #isValidDay(int)
      */
     public LocalDate atDay(int dayOfMonth, DateResolver dateResolver) {
-        Instant.checkNotNull(dateResolver, "DateResolver must not be null");
+        MathUtils.checkNotNull(dateResolver, "DateResolver must not be null");
         LocalDate date = dateResolver.resolveDate(year, month, dayOfMonth);
-        Instant.checkNotNull(date, "DateResolver implementation must not return null");
+        MathUtils.checkNotNull(date, "DateResolver implementation must not return null");
         return date;
     }
 
@@ -703,7 +703,7 @@ public final class YearMonth
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

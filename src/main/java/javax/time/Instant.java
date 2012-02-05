@@ -133,20 +133,6 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Validates that the input value is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error to throw
-     * @throws NullPointerException if the object is null
-     */
-    static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains the current instant from the system time-source in the default time-zone.
      * <p>
      * This will query the {@link TimeSource#system() system time-source} to obtain the current instant.
@@ -172,7 +158,7 @@ public final class Instant
      * @return the current instant, not null
      */
     public static Instant now(TimeSource timeSource) {
-        checkNotNull(timeSource, "TimeSource must not be null");
+        MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
         return of(timeSource.instant());
     }
 
@@ -228,7 +214,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochSecond(BigDecimal epochSecond) {
-        checkNotNull(epochSecond, "Seconds must not be null");
+        MathUtils.checkNotNull(epochSecond, "Seconds must not be null");
         return ofEpochNano(epochSecond.movePointRight(9).toBigIntegerExact());
     }
 
@@ -277,7 +263,7 @@ public final class Instant
      * @throws ArithmeticException if the calculation exceeds the supported range
      */
     public static Instant ofEpochNano(BigInteger epochNano) {
-        checkNotNull(epochNano, "Nanos must not be null");
+        MathUtils.checkNotNull(epochNano, "Nanos must not be null");
         BigInteger[] divRem = epochNano.divideAndRemainder(BILLION);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Exceeds capacity of Duration: " + epochNano);
@@ -296,9 +282,9 @@ public final class Instant
      * @return an instant, not null
      */
     public static Instant of(InstantProvider instantProvider) {
-        checkNotNull(instantProvider, "InstantProvider must not be null");
+        MathUtils.checkNotNull(instantProvider, "InstantProvider must not be null");
         Instant provided = instantProvider.toInstant();
-        checkNotNull(provided, "The implementation of InstantProvider must not return null");
+        MathUtils.checkNotNull(provided, "The implementation of InstantProvider must not return null");
         return provided;
     }
 
@@ -320,7 +306,7 @@ public final class Instant
     //TODO:The decimal point may be either a dot or a comma.
     // TODO: optimize and handle big instants
     public static Instant parse(final CharSequence text) {
-        Instant.checkNotNull(text, "Text to parse must not be null");
+        MathUtils.checkNotNull(text, "Text to parse must not be null");
         int length = text.length();
         if (length < 2) {
             throw new CalendricalParseException("Instant could not be parsed: " + text, text, 0);

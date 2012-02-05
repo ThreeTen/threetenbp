@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -161,7 +161,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
     public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
-        Instant.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
@@ -232,7 +232,7 @@ public final class MonthDay
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -325,7 +325,7 @@ public final class MonthDay
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
-        Instant.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         int maxDays = monthOfYear.maxLengthInDays();
         if (day > maxDays) {
             return with(monthOfYear, maxDays);
@@ -409,13 +409,13 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        Instant.checkNotNull(date, "LocalDate must not be null");
-        Instant.checkNotNull(resolver, "DateResolver must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(resolver, "DateResolver must not be null");
         if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
             return date;
         }
         LocalDate resolved = resolver.resolveDate(date.getYear(), month, day);
-        Instant.checkNotNull(resolved, "The implementation of DateResolver must not return null");
+        MathUtils.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }
 
@@ -560,7 +560,7 @@ public final class MonthDay
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

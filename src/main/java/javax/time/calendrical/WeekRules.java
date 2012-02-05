@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -171,7 +171,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the week rules, not null
      */
     public static WeekRules of(Locale locale) {
-        ISOChronology.checkNotNull(locale, "Locale must not be null");
+        MathUtils.checkNotNull(locale, "Locale must not be null");
         WeekRules rules = CACHE.get(locale);
         if (rules == null) {
             // obtain these from GregorianCalendar
@@ -195,7 +195,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @throws IllegalArgumentException if the minimal days value is invalid
      */
     private WeekRules(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
-        ISOChronology.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
+        MathUtils.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
         if (minimalDaysInFirstWeek < 1 || minimalDaysInFirstWeek > 7) {
             throw new IllegalArgumentException("Minimal number of days is invalid");
         }
@@ -348,7 +348,7 @@ public final class WeekRules implements Comparable<WeekRules>, Serializable {
      * @return the value for the day-of-week based on the first day-of-week, from 1 to 7
      */
     public int convertDayOfWeek(DayOfWeek dayOfWeek) {
-        ISOChronology.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
+        MathUtils.checkNotNull(firstDayOfWeek, "DayOfWeek must not be null");
         return dayOfWeek.roll(-firstDayOfWeek.ordinal()).getValue();
     }
 

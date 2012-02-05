@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -86,6 +86,20 @@ public final class MathUtils {
      * Private constructor since this is a utility class.
      */
     private MathUtils() {
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Validates that the specified object is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error message to use if null
+     * @throws NullPointerException if the object is null
+     */
+    public static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
     }
 
     //-----------------------------------------------------------------------

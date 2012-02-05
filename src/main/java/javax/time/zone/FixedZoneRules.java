@@ -40,6 +40,7 @@ import java.util.List;
 
 import javax.time.Instant;
 import javax.time.LocalDateTime;
+import javax.time.MathUtils;
 import javax.time.ZoneOffset;
 
 /**
@@ -69,7 +70,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
      * @param offset  the zone offset, not null
      */
     FixedZoneRules(ZoneOffset offset) {
-        ZoneRules.checkNotNull(offset, "ZoneOffset must not be null");
+        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         this.offset = offset;
     }
 

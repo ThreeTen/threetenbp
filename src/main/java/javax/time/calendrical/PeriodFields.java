@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -101,7 +101,7 @@ public final class PeriodFields
      * @return the {@code PeriodFields} instance, not null
      */
     public static PeriodFields of(long amount, PeriodUnit unit) {
-        checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         internalMap.put(unit, PeriodField.of(amount, unit));
         return create(internalMap);
@@ -114,7 +114,7 @@ public final class PeriodFields
      * @return the {@code PeriodFields} instance, not null
      */
     public static PeriodFields of(PeriodField period) {
-        checkNotNull(period, "PeriodField must not be null");
+        MathUtils.checkNotNull(period, "PeriodField must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         internalMap.put(period.getUnit(), period);
         return create(internalMap);
@@ -130,10 +130,10 @@ public final class PeriodFields
      * @throws IllegalArgumentException if the same period unit occurs twice
      */
     public static PeriodFields of(PeriodField... periods) {
-        checkNotNull(periods, "PeriodField array must not be null");
+        MathUtils.checkNotNull(periods, "PeriodField array must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         for (PeriodField period : periods) {
-            checkNotNull(period, "PeriodField array must not contain null");
+            MathUtils.checkNotNull(period, "PeriodField array must not contain null");
             if (internalMap.put(period.getUnit(), period) != null) {
                 throw new IllegalArgumentException("PeriodField array contains the same unit twice");
             }
@@ -149,10 +149,10 @@ public final class PeriodFields
      * @throws IllegalArgumentException if the same period unit occurs twice
      */
     public static PeriodFields of(Iterable<PeriodField> periods) {
-        checkNotNull(periods, "Iterable must not be null");
+        MathUtils.checkNotNull(periods, "Iterable must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         for (PeriodField period : periods) {
-            checkNotNull(period, "Iterable must not contain null");
+            MathUtils.checkNotNull(period, "Iterable must not contain null");
             if (internalMap.put(period.getUnit(), period) != null) {
                 throw new IllegalArgumentException("Iterable contains the same unit twice");
             }
@@ -171,9 +171,9 @@ public final class PeriodFields
      * @throws NullPointerException if the period provider is null or returns null
      */
     public static PeriodFields of(PeriodProvider periodProvider) {
-        checkNotNull(periodProvider, "PeriodProvider must not be null");
+        MathUtils.checkNotNull(periodProvider, "PeriodProvider must not be null");
         PeriodFields result = periodProvider.toPeriodFields();
-        checkNotNull(result, "PeriodProvider implementation must not return null");
+        MathUtils.checkNotNull(result, "PeriodProvider implementation must not return null");
         return result;
     }
 
@@ -190,7 +190,7 @@ public final class PeriodFields
      * @throws NullPointerException if any period provider is null or returns null
      */
     public static PeriodFields ofTotal(PeriodProvider... periodProviders) {
-        checkNotNull(periodProviders, "PeriodProvider[] must not be null");
+        MathUtils.checkNotNull(periodProviders, "PeriodProvider[] must not be null");
         if (periodProviders.length == 1) {
             return of(periodProviders[0]);
         }
@@ -218,7 +218,7 @@ public final class PeriodFields
      * @return the {@code PeriodFields} instance, not null
      */
     public static PeriodFields of(Duration duration) {
-        checkNotNull(duration, "Duration must not be null");
+        MathUtils.checkNotNull(duration, "Duration must not be null");
         TreeMap<PeriodUnit, PeriodField> internalMap = createMap();
         internalMap.put(SECONDS, PeriodField.of(duration.getSeconds(), SECONDS));
         internalMap.put(NANOS, PeriodField.of(duration.getNanoOfSecond(), NANOS));
@@ -247,19 +247,6 @@ public final class PeriodFields
             return ZERO;
         }
         return new PeriodFields(periodMap);
-    }
-
-    /**
-     * Validates that the input value is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error to throw
-     * @throws NullPointerException if the object is null
-     */
-    static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -384,7 +371,7 @@ public final class PeriodFields
      * @return the field with the specified unit, null if not found
      */
     public PeriodField getField(PeriodUnit unit) {
-        checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         return unitFieldMap.get(unit);
     }
 
@@ -507,7 +494,7 @@ public final class PeriodFields
      * @return a {@code PeriodFields} based on this fields with the specified unit removed, not null
      */
     public PeriodFields without(PeriodUnit unit) {
-        checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         if (unitFieldMap.containsKey(unit) == false) {
             return this;
         }
@@ -561,7 +548,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(long amountToAdd, PeriodUnit unit) {
-        checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         if (amountToAdd == 0 && contains(unit)) {
             return this;
         }
@@ -617,7 +604,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(long amountToSubtract, PeriodUnit unit) {
-        checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         if (amountToSubtract == 0 && contains(unit)) {
             return this;
         }
@@ -693,7 +680,7 @@ public final class PeriodFields
      * @return a {@code PeriodFields} based on this period with the specified units retained, not null
      */
     public PeriodFields retain(PeriodUnit... units) {
-        checkNotNull(units, "PeriodUnit array must not be null");
+        MathUtils.checkNotNull(units, "PeriodUnit array must not be null");
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
         List<PeriodUnit> unitList = Arrays.asList(units);
         if (unitList.contains(null)) {
@@ -721,13 +708,13 @@ public final class PeriodFields
      * @return a {@code PeriodFields} based on this period with the specified units retained, not null
      */
     public PeriodFields retainConvertible(PeriodUnit... units) {
-        checkNotNull(units, "PeriodUnit array must not be null");
+        MathUtils.checkNotNull(units, "PeriodUnit array must not be null");
         TreeMap<PeriodUnit, PeriodField> copy = clonedMap();
     outer:
         for (Iterator<PeriodUnit> it = copy.keySet().iterator(); it.hasNext(); ) {
             PeriodUnit loopUnit = it.next();
             for (PeriodUnit unit : units) {
-                checkNotNull(unit, "PeriodUnit array must not contain null");
+                MathUtils.checkNotNull(unit, "PeriodUnit array must not contain null");
                 if (loopUnit.toEquivalent(unit) >= 0) {
                     continue outer;
                 }
@@ -759,7 +746,7 @@ public final class PeriodFields
      * @throws CalendricalException if any field cannot be converted to the unit of the period
      */
     public PeriodFields remainder(PeriodField period) {
-        checkNotNull(period, "PeriodField must not be null");
+        MathUtils.checkNotNull(period, "PeriodField must not be null");
         TreeMap<PeriodUnit, PeriodField> copy = createMap();
         for (PeriodField loopField : unitFieldMap.values()) {
             PeriodField converted = period.toEquivalent(loopField.getUnit());
@@ -814,7 +801,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields normalizedTo(PeriodUnit... units) {
-        checkNotNull(units, "PeriodUnit array must not be null");
+        MathUtils.checkNotNull(units, "PeriodUnit array must not be null");
         PeriodFields result = this;
         TreeSet<PeriodUnit> targetUnits = new TreeSet<PeriodUnit>(Collections.reverseOrder());
         targetUnits.addAll(Arrays.asList(units));
@@ -891,7 +878,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField toTotal(PeriodUnit unit) {
-        checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         PeriodField result = null;
         for (PeriodField period : unitFieldMap.values()) {
             period = period.toEquivalent(unit);
@@ -925,7 +912,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields toEquivalent(PeriodUnit... units) {
-        checkNotNull(units, "PeriodUnit array must not be null");
+        MathUtils.checkNotNull(units, "PeriodUnit array must not be null");
         TreeMap<PeriodUnit, PeriodField> map = createMap();
         for (PeriodField period : unitFieldMap.values()) {
             period = period.toEquivalent(units);
