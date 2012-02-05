@@ -327,12 +327,6 @@ public class ZoneRulesBuilder {
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
         }
-        if (windowList.size() == 1) {
-            TZWindow window = windowList.get(0);
-            if (window.isSingleWindowStandardOffset()) {
-                return ZoneRules.ofFixed(window.standardOffset);
-            }
-        }
         
         List<OffsetDateTime> standardOffsetList = new ArrayList<OffsetDateTime>(4);
         List<ZoneOffsetTransition> transitionList = new ArrayList<ZoneOffsetTransition>(256);

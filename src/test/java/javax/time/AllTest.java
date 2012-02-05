@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -101,7 +101,6 @@ import javax.time.zone.TestTZDBZoneRulesCompiler;
 import javax.time.zone.TestZoneOffsetInfo;
 import javax.time.zone.TestZoneOffsetTransition;
 import javax.time.zone.TestZoneOffsetTransitionRule;
-import javax.time.zone.TestZoneRules;
 import javax.time.zone.TestZoneRulesBuilder;
 import javax.time.zone.TestZoneRulesGroup;
 
@@ -228,7 +227,6 @@ public class AllTest {
             TestZoneOffsetInfo.class,
             TestZoneOffsetTransition.class,
             TestZoneOffsetTransitionRule.class,
-            TestZoneRules.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
         });

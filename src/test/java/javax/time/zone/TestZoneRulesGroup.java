@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,6 +44,7 @@ import javax.time.DayOfWeek;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.TestZoneId;
+import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 
 import org.testng.annotations.Test;
@@ -166,7 +167,7 @@ public class TestZoneRulesGroup {
                     return new HashSet<String>(Arrays.asList("World%@~.-_"));
                 }
                 public ZoneRules getZoneRules(String regionID) {
-                    return ZoneRules.ofFixed(ZoneOffset.of("+01:45"));
+                    return ZoneId.of(ZoneOffset.of("+01:45")).getRules();
                 }
             };
             return new HashSet<ZoneRulesVersion>(Arrays.asList(version));
@@ -556,7 +557,7 @@ public class TestZoneRulesGroup {
                     return Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("RulesChange")));
                 }
                 public ZoneRules getZoneRules(String regionID) {
-                    return ZoneRules.ofFixed(ZoneOffset.of("+01:45"));
+                    return ZoneId.of(ZoneOffset.of("+01:45")).getRules();
                 }
             };
             ZoneRulesVersion v2 = new ZoneRulesVersion() {
@@ -571,9 +572,9 @@ public class TestZoneRulesGroup {
                 }
                 public ZoneRules getZoneRules(String regionID) {
                     if (regionID.equals("NewPlace")) {
-                        return ZoneRules.ofFixed(ZoneOffset.of("+01:00"));
+                        return ZoneId.of(ZoneOffset.of("+01:00")).getRules();
                     } else {
-                        return ZoneRules.ofFixed(ZoneOffset.of("+02:45"));
+                        return ZoneId.of(ZoneOffset.of("+02:45")).getRules();
                     }
                 }
             };

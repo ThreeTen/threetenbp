@@ -32,16 +32,11 @@
 package javax.time.zone;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
 import javax.time.LocalDateTime;
@@ -49,16 +44,14 @@ import javax.time.LocalTime;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
+import javax.time.ZoneId;
 import javax.time.ZoneOffset;
 import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Test FixedZoneRules instance if called normally, or the public API if the TCK group is called.
- *
- * @author Stephen Colebourne
+ * Test ZoneRules for fixed offset time-zones.
  */
 @Test
 public class TestFixedZoneRules {
@@ -68,61 +61,14 @@ public class TestFixedZoneRules {
     private static final LocalDateTime LDT = LocalDateTime.of(2010, 12, 3, 11, 30);
     private static final OffsetDateTime ODT = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE);
     private static final Instant INSTANT = ODT.toInstant();
-
+    
     private ZoneRules make(ZoneOffset offset) {
-        return factory.make(offset);
-    }
-
-    interface FixedZoneRulesTestFactory {
-    	ZoneRules make(ZoneOffset offset);
-    }
-    
-    private static FixedZoneRulesTestFactory factory;
-    
-    @BeforeClass(groups={"tck"})
-    public static void setupTCK() {
-    	factory = new FixedZoneRulesTestFactory() {
-			@Override
-			public ZoneRules make(ZoneOffset offset) {
-				return ZoneRules.ofFixed(offset);
-			}
-		};
-    }
-    
-    @BeforeClass(groups={"implementation"})
-    public static void setupUnit() {
-    	factory = new FixedZoneRulesTestFactory() {
-			@Override
-			public ZoneRules make(ZoneOffset offset) {
-				return new FixedZoneRules(offset);
-			}
-		};
+        return ZoneId.of(offset).getRules();
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
-    public void test_interfaces() {
-        assertTrue(Serializable.class.isAssignableFrom(FixedZoneRules.class));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_immutable() {
-        Class<FixedZoneRules> cls = FixedZoneRules.class;
-        assertFalse(Modifier.isPublic(cls.getModifiers()));
-        assertFalse(Modifier.isProtected(cls.getModifiers()));
-        assertFalse(Modifier.isPrivate(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers()) == false) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()) ||
-                        (Modifier.isVolatile(field.getModifiers()) && Modifier.isTransient(field.getModifiers())), "" + field);
-            }
-        }
-    }
-
     @Test(groups={"implementation","tck"})
     public void test_serialization() throws Exception {
         ZoneRules test = make(OFFSET_PONE);

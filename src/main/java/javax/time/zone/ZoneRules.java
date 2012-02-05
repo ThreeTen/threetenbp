@@ -65,52 +65,25 @@ import javax.time.ZonedDateTime;
  * Applications should treat the data provided as representing the best information
  * available to the implementation of this rule.
  * <p>
- * This abstract class must be implemented with care to ensure other classes in
+ * This interface must be implemented with care to ensure other classes in
  * the framework operate correctly.
  * All implementations that can be instantiated must be final, immutable and thread-safe.
- * It is only intended that the abstract methods are overridden.
  * Subclasses should be Serializable wherever possible.
  *
  * @author Stephen Colebourne
  */
-public abstract class ZoneRules {
+public interface ZoneRules {
 
-    /**
-     * Obtains a rules instance for a specific offset.
-     * <p>
-     * The returned rules object will have no transitions and will use the
-     * specified offset for all points on the time-line.
-     *
-     * @param offset  the offset to get the fixed rules for, not null
-     * @return the rules, not null
-     */
-    public static ZoneRules ofFixed(ZoneOffset offset) {
-        return new FixedZoneRules(offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Constructor for subclasses.
-     */
-    protected ZoneRules() {
-        super();
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Checks of the zone rules are fixed, such that the offset never varies.
      * <p>
      * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
      * {@link OffsetTime} are used in preference to fixed offset time-zones
      * in {@link ZonedDateTime}.
-     * <p>
-     * The default implementation returns false.
      *
      * @return true if the time-zone is fixed and the offset never changes
      */
-    public boolean isFixedOffset() {
-        return false;
-    }
+    boolean isFixedOffset();
 
     //-----------------------------------------------------------------------
     /**
@@ -124,7 +97,7 @@ public abstract class ZoneRules {
      *   ignored for fixed offset rules, otherwise not null
      * @return the offset, not null
      */
-    public abstract ZoneOffset getOffset(Instant instant);
+    ZoneOffset getOffset(Instant instant);
 
     /**
      * Gets the offset information for the specified instant in this zone.
@@ -145,11 +118,12 @@ public abstract class ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the offset information, not null
      */
-    public ZoneOffsetInfo getOffsetInfo(Instant instant) {
-        ZoneOffset offset = getOffset(instant);
-        OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);
-        return getOffsetInfo(odt.toLocalDateTime());
-    }
+    ZoneOffsetInfo getOffsetInfo(Instant instant);
+//    default {
+//        ZoneOffset offset = getOffset(instant);
+//        OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);
+//        return getOffsetInfo(odt.toLocalDateTime());
+//    }
 
     /**
      * Gets the offset information for a local date-time in this zone.
@@ -170,8 +144,9 @@ public abstract class ZoneRules {
      * @param dateTime  the date-time to find the offset information for, not null
      * @return the offset information, not null
      */
-    public abstract ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime);
+    ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime);
 
+    //-----------------------------------------------------------------------
     /**
      * Checks if the offset date-time is valid for these rules.
      * <p>
@@ -181,10 +156,11 @@ public abstract class ZoneRules {
      * @param dateTime  the date-time to check, not null
      * @return true if the offset date-time is valid for these rules
      */
-    public boolean isValidDateTime(OffsetDateTime dateTime) {
-        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
-        return info.isValidOffset(dateTime.getOffset());
-    }
+    boolean isValidDateTime(OffsetDateTime dateTime);
+//    default {
+//        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
+//        return info.isValidOffset(dateTime.getOffset());
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -198,7 +174,7 @@ public abstract class ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, not null
      */
-    public abstract ZoneOffset getStandardOffset(Instant instant);
+    ZoneOffset getStandardOffset(Instant instant);
 
     /**
      * Gets the amount of daylight savings in use for the specified instant in this zone.
@@ -212,11 +188,12 @@ public abstract class ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the difference between the standard and actual offset, not null
      */
-    public Period getDaylightSavings(Instant instant) {
-        ZoneOffset standardOffset = getStandardOffset(instant);
-        ZoneOffset actualOffset = getOffset(instant);
-        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
-    }
+    public Period getDaylightSavings(Instant instant);
+//    default {
+//        ZoneOffset standardOffset = getStandardOffset(instant);
+//        ZoneOffset actualOffset = getOffset(instant);
+//        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+//    }
 
     /**
      * Gets the standard offset for the specified instant in this zone.
@@ -229,9 +206,10 @@ public abstract class ZoneRules {
      * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, not null
      */
-    public boolean isDaylightSavings(Instant instant) {
-        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
-    }
+    public boolean isDaylightSavings(Instant instant);
+//    default {
+//        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -244,7 +222,7 @@ public abstract class ZoneRules {
      * @param instant  the instant to get the next transition after, not null
      * @return the next transition after the specified instant, null if this is after the last transition
      */
-    public abstract ZoneOffsetTransition nextTransition(Instant instant);
+    ZoneOffsetTransition nextTransition(Instant instant);
 
     /**
      * Gets the previous transition after the specified transition.
@@ -256,7 +234,7 @@ public abstract class ZoneRules {
      * @param instant  the instant to get the previous transition after, not null
      * @return the previous transition after the specified instant, null if this is before the first transition
      */
-    public abstract ZoneOffsetTransition previousTransition(Instant instant);
+    ZoneOffsetTransition previousTransition(Instant instant);
 
     /**
      * Gets the complete list of fully defined transitions.
@@ -264,11 +242,13 @@ public abstract class ZoneRules {
      * The complete set of transitions for this rules instance is defined by this method
      * and {@link #getTransitionRules()}. This method returns those transitions that have
      * been fully defined. These are typically historical, but may be in the future.
-     * The list will be empty for fixed offset rules.
+     * <p>
+     * The list will be empty for fixed offset rules and for any time-zone where there has
+     * only ever been a single offset. The list will also be empty if the transition rules are unknown.
      *
      * @return an immutable list of fully defined transitions, not null
      */
-    public abstract List<ZoneOffsetTransition> getTransitions();
+    List<ZoneOffsetTransition> getTransitions();
 
     /**
      * Gets the list of transition rules for years beyond those defined in the transition list.
@@ -285,17 +265,20 @@ public abstract class ZoneRules {
      * be of size two and hold information about entering and exiting daylight savings.
      * If the zone does not have daylight savings, or information about future changes
      * is uncertain, then the list will be empty.
+     * <p>
+     * The list will be empty for fixed offset rules and for any time-zone where there is no
+     * daylight savings time. The list will also be empty if the transition rules are unknown.
      *
      * @return an immutable list of transition rules, not null
      */
-    public abstract List<ZoneOffsetTransitionRule> getTransitionRules();
+    List<ZoneOffsetTransitionRule> getTransitionRules();
 
     //-----------------------------------------------------------------------
     /**
      * Checks if this set of rules equals another.
      * <p>
      * Two rule sets are equal if they will always result in the same output
-     * for any given input instant or date-time.
+     * for any given input instant or local date-time.
      * Rules from two different groups may return false even if they are in fact the same.
      * <p>
      * This definition should result in implementations comparing their entire state.
@@ -304,14 +287,14 @@ public abstract class ZoneRules {
      * @return true if this rules is the same as that specified
      */
     @Override
-    public abstract boolean equals(Object otherRules);
+    boolean equals(Object otherRules);
 
     /**
-     * Returns a suitable hash code.
+     * Returns a suitable hash code given the definition of {@code #equals}.
      *
      * @return the hash code
      */
     @Override
-    public abstract int hashCode();
+    int hashCode();
 
 }

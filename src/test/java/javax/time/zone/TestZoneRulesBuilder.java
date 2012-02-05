@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -663,7 +663,6 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_07_01).getOffset(), OFFSET_1);
-        assertEquals(test, ZoneRules.ofFixed(OFFSET_1));
     }
 
     @Test(groups={"tck"})

@@ -45,18 +45,21 @@ import java.util.concurrent.ConcurrentMap;
 import javax.time.Instant;
 import javax.time.LocalDateTime;
 import javax.time.OffsetDateTime;
+import javax.time.Period;
 import javax.time.Year;
 import javax.time.ZoneOffset;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
  * <p>
+ * This class is used by the TZDB time-zone rules.
+ * <p>
  * This class is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-final class StandardZoneRules extends ZoneRules implements Serializable {
+final class StandardZoneRules implements ZoneRules, Serializable {
 
     /**
      * Serialization version.
@@ -269,6 +272,12 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isFixedOffset() {
+        return false;
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     public ZoneOffset getOffset(Instant instant) {
         long epochSec = instant.getEpochSecond();
         
@@ -297,6 +306,13 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    @Override
+    public ZoneOffsetInfo getOffsetInfo(Instant instant) {
+        ZoneOffset offset = getOffset(instant);
+        OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);
+        return getOffsetInfo(odt.toLocalDateTime());
+    }
+
     @Override
     public ZoneOffsetInfo getOffsetInfo(LocalDateTime dt) {
         // check if using last rules
@@ -402,6 +418,13 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     //-----------------------------------------------------------------------
     @Override
+    public boolean isValidDateTime(OffsetDateTime dateTime) {
+        ZoneOffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
+        return info.isValidOffset(dateTime.getOffset());
+    }
+
+    //-----------------------------------------------------------------------
+    @Override
     public ZoneOffset getStandardOffset(Instant instant) {
         long epochSec = instant.getEpochSecond();
         int index  = Arrays.binarySearch(standardTransitions, epochSec);
@@ -410,6 +433,18 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             index = -index - 2;
         }
         return standardOffsets[index + 1];
+    }
+
+    @Override
+    public Period getDaylightSavings(Instant instant) {
+        ZoneOffset standardOffset = getStandardOffset(instant);
+        ZoneOffset actualOffset = getOffset(instant);
+        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+    }
+
+    @Override
+    public boolean isDaylightSavings(Instant instant) {
+        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
     }
 
     //-----------------------------------------------------------------------
@@ -484,11 +519,12 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         return new ZoneOffsetTransition(trans, wallOffsets[index]);
     }
 
+    //-------------------------------------------------------------------------
     @Override
     public List<ZoneOffsetTransition> getTransitions() {
         List<ZoneOffsetTransition> list = new ArrayList<ZoneOffsetTransition>();
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
-            Instant instant = Instant.ofEpochSecond(savingsInstantTransitions[i]);
+            Instant instant = Instant.ofEpochSecond(savingsInstantTransitions[i]);  // TODO inline
             OffsetDateTime trans = OffsetDateTime.ofInstant(instant, wallOffsets[i]);
             list.add(new ZoneOffsetTransition(trans, wallOffsets[i + 1]));
         }

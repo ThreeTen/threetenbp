@@ -38,6 +38,7 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -47,6 +48,9 @@ import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.format.TextStyle;
+import javax.time.zone.ZoneOffsetInfo;
+import javax.time.zone.ZoneOffsetTransition;
+import javax.time.zone.ZoneOffsetTransitionRule;
 import javax.time.zone.ZoneRules;
 import javax.time.zone.ZoneRulesGroup;
 
@@ -519,7 +523,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      *
      * @return true if the time-zone is fixed and the offset never changes
      */
-    public abstract boolean isFixed();
+    public abstract boolean isFixedOffset();
 
     //-----------------------------------------------------------------------
     /**
@@ -867,7 +871,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
         }
 
         @Override
-        public boolean isFixed() {
+        public boolean isFixedOffset() {
             return false;
         }
 
@@ -965,13 +969,13 @@ public abstract class ZoneId implements Calendrical, Serializable {
     /**
      * Fixed time-zone.
      */
-    static final class Fixed extends ZoneId {
+    static final class Fixed extends ZoneId implements ZoneRules {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** The zone id. */
         private final String id;
         /** The zone rules. */
-        private final transient ZoneRules rules;  // known to be fixed
+        private final transient ZoneOffset offset;
 
         /**
          * Constructor.
@@ -979,8 +983,8 @@ public abstract class ZoneId implements Calendrical, Serializable {
          * @param offset  the offset, not null
          */
         Fixed(ZoneOffset offset) {
-            this.rules = ZoneRules.ofFixed(offset);
-            this.id = rules.toString();
+            this.id = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
+            this.offset = offset;
         }
 
         /**
@@ -1015,11 +1019,6 @@ public abstract class ZoneId implements Calendrical, Serializable {
         @Override
         public String getVersionID() {
             return "";
-        }
-
-        @Override
-        public boolean isFixed() {
-            return true;
         }
 
         @Override
@@ -1059,7 +1058,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneRulesGroup getGroup() {
-            throw new CalendricalException("Fixed time-zone is not provided by a group");
+            throw new CalendricalException("Fixed ZoneId is not provided by a group");
         }
 
         @Override
@@ -1069,7 +1068,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneRules getRules() {
-            return rules;
+            return this;
         }
 
         @Override
@@ -1077,16 +1076,98 @@ public abstract class ZoneId implements Calendrical, Serializable {
             if (dateTime == null) {
                 return false;
             }
-            return rules.getOffset(null).equals(dateTime.getOffset());
+            return offset.equals(dateTime.getOffset());
         }
 
         @Override
         public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
             MathUtils.checkNotNull(dateTime, "OffsetDateTime must not be null");
             if (isValidFor(dateTime) == false) {
-                throw new CalendricalException("Fixed time-zone " + getID() + " is invalid for date-time " + dateTime);
+                throw new CalendricalException("Fixed ZoneId " + getID() + " is invalid for date-time " + dateTime);
             }
-            return rules;
+            return this;
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public boolean isFixedOffset() {
+            return true;
+        }
+
+        @Override
+        public ZoneOffset getOffset(Instant instant) {
+            return offset;
+        }
+
+        @Override
+        public ZoneOffsetInfo getOffsetInfo(Instant instant) {
+            ZoneOffset offset = getOffset(instant);
+            OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);
+            return getOffsetInfo(odt.toLocalDateTime());
+        }
+
+        @Override
+        public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
+            return ZoneOffsetInfo.of(dateTime, offset, null);
+        }
+
+        @Override
+        public boolean isValidDateTime(OffsetDateTime dateTime) {
+            return dateTime.getOffset().equals(offset);
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public ZoneOffset getStandardOffset(Instant instant) {
+            return offset;
+        }
+
+        @Override
+        public Period getDaylightSavings(Instant instant) {
+            return Period.ZERO;
+        }
+
+        @Override
+        public boolean isDaylightSavings(Instant instant) {
+            return false;
+        }
+
+        //-------------------------------------------------------------------------
+        @Override
+        public ZoneOffsetTransition nextTransition(Instant instant) {
+            return null;
+        }
+
+        @Override
+        public ZoneOffsetTransition previousTransition(Instant instant) {
+            return null;
+        }
+
+        @Override
+        public List<ZoneOffsetTransition> getTransitions() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<ZoneOffsetTransitionRule> getTransitionRules() {
+            return Collections.emptyList();
+        }
+
+        //-----------------------------------------------------------------------
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+               return true;
+            }
+            if (obj instanceof Fixed) {
+                return offset.equals(((Fixed) obj).offset);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return offset.hashCode() + 1;
         }
     }
 
