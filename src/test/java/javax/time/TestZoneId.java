@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -311,6 +311,12 @@ public class TestZoneId {
         assertSame(test, ZoneId.UTC);
     }
 
+    @Test(dataProvider="String_UTC")
+    public void test_of_string_GMT(String id) {
+        ZoneId test = ZoneId.of("GMT" + id);
+        assertSame(test, ZoneId.UTC);
+    }
+
     //-----------------------------------------------------------------------
     @DataProvider(name="String_Fixed")
     Object[][] data_of_string_Fixed() {
@@ -329,8 +335,27 @@ public class TestZoneId {
     }
 
     @Test(dataProvider="String_Fixed")
-    public void test_of_string_Fixed(String input, String id) {
+    public void test_of_string_FixedUTC(String input, String id) {
         ZoneId test = ZoneId.of("UTC" + input);
+        assertEquals(test.getID(), id);
+        assertEquals(test.getGroupID(), "");
+        assertEquals(test.getRegionID(), id);
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.getText(TextStyle.FULL, Locale.UK), id);
+        assertEquals(test.isFixed(), true);
+        assertEquals(test.getRules().isFixedOffset(), true);
+        ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));
+        assertEquals(test.getRules().getOffset(Instant.ofEpochSecond(0L)), offset);
+        ZoneOffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.ofMidnight(2008, 6, 30));
+        assertEquals(info.isTransition(), false);
+        assertEquals(info.getTransition(), null);
+        assertEquals(info.getOffset(), offset);
+        assertEquals(info.getEstimatedOffset(), offset);
+    }
+
+    @Test(dataProvider="String_Fixed")
+    public void test_of_string_FixedGMT(String input, String id) {
+        ZoneId test = ZoneId.of("GMT" + input);
         assertEquals(test.getID(), id);
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), id);
@@ -353,12 +378,12 @@ public class TestZoneId {
         return new Object[][] {
                 {"A"}, {"B"}, {"C"}, {"D"}, {"E"}, {"F"}, {"G"}, {"H"}, {"I"}, {"J"}, {"K"}, {"L"}, {"M"},
                 {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"},
-                {"+0"}, {"+0:00"}, {"+00:0"}, {"+0:0"},
+                {"+0:00"}, {"+00:0"}, {"+0:0"},
                 {"+000"}, {"+00000"},
                 {"+0:00:00"}, {"+00:0:00"}, {"+00:00:0"}, {"+0:0:0"}, {"+0:0:00"}, {"+00:0:0"}, {"+0:00:0"},
                 {"+01_00"}, {"+01;00"}, {"+01@00"}, {"+01:AA"},
                 {"+19"}, {"+19:00"}, {"+18:01"}, {"+18:00:01"}, {"+1801"}, {"+180001"},
-                {"-0"}, {"-0:00"}, {"-00:0"}, {"-0:0"},
+                {"-0:00"}, {"-00:0"}, {"-0:0"},
                 {"-000"}, {"-00000"},
                 {"-0:00:00"}, {"-00:0:00"}, {"-00:00:0"}, {"-0:0:0"}, {"-0:0:00"}, {"-00:0:0"}, {"-0:00:0"},
                 {"-19"}, {"-19:00"}, {"-18:01"}, {"-18:00:01"}, {"-1801"}, {"-180001"},
@@ -370,6 +395,16 @@ public class TestZoneId {
     @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
     public void test_of_string_UTC_invalid(String id) {
         ZoneId.of("UTC" + id);
+    }
+
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
+    public void test_of_string_UTCp0_invalid(String id) {
+        ZoneId.of("UTC+0");
+    }
+
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
+    public void test_of_string_GMT_invalid(String id) {
+        ZoneId.of("GMT" + id);
     }
 
     //-----------------------------------------------------------------------
