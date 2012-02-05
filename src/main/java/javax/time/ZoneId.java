@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -110,7 +110,7 @@ import javax.time.zone.ZoneRulesGroup;
  * The application might also take appropriate corrective action.
  * For example, an application might choose to download missing rules from a central server.
  * <p>
- * TimeZone is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -265,9 +265,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * within an application.
      *
      * @param timeZoneIdentifier  the time-zone id, not null
-     * @param aliasMap  a map of time-zone IDs (typically abbreviations) to real time-zone IDs, not null
-     * @return the time-zone, not null
-     * @throws CalendricalException if the time-zone cannot be found
+     * @param aliasMap  a map of alias zone IDs (typically abbreviations) to real zone IDs, not null
+     * @return the zone ID, not null
+     * @throws CalendricalException if the zone ID cannot be found
      */
     public static ZoneId of(String timeZoneIdentifier, Map<String, String> aliasMap) {
         Instant.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
@@ -317,8 +317,8 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * {@link ZoneOffset} and {@link OffsetDateTime} in preference.
      *
      * @param zoneID  the time-zone identifier, not null
-     * @return the time-zone, not null
-     * @throws CalendricalException if the time-zone cannot be found
+     * @return the zone ID, not null
+     * @throws CalendricalException if the zone ID cannot be found
      */
     public static ZoneId of(String zoneID) {
         return ofID(zoneID, true);
@@ -339,8 +339,8 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * to be created without loading the rules from the remote server.
      *
      * @param zoneID  the time-zone identifier, not null
-     * @return the time-zone, not null
-     * @throws CalendricalException if the time-zone cannot be found
+     * @return the zone ID, not null
+     * @throws CalendricalException if the zone ID cannot be found
      */
     public static ZoneId ofUnchecked(String zoneID) {
         return ofID(zoneID, false);
@@ -350,9 +350,9 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * Obtains an instance of {@code ZoneId} from an identifier.
      *
      * @param zoneID  the time-zone identifier, not null
-     * @param checkAvailable  whether to check if the time-zone ID is available
-     * @return the time-zone, not null
-     * @throws CalendricalException if the time-zone cannot be found
+     * @param checkAvailable  whether to check if the zone ID is available
+     * @return the zone ID, not null
+     * @throws CalendricalException if the zone ID cannot be found
      */
     private static ZoneId ofID(String zoneID, boolean checkAvailable) {
         Instant.checkNotNull(zoneID, "Time zone ID must not be null");
@@ -404,7 +404,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
      * Fixed time-zones are {@link #isValid() always valid}.
      *
      * @param offset  the zone offset to create a fixed zone for, not null
-     * @return the time-zone for the offset, not null
+     * @return the zone ID for the offset, not null
      */
     public static ZoneId of(ZoneOffset offset) {
         Instant.checkNotNull(offset, "ZoneOffset must not be null");
