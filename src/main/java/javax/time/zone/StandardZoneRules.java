@@ -524,8 +524,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     public List<ZoneOffsetTransition> getTransitions() {
         List<ZoneOffsetTransition> list = new ArrayList<ZoneOffsetTransition>();
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
-            Instant instant = Instant.ofEpochSecond(savingsInstantTransitions[i]);  // TODO inline
-            OffsetDateTime trans = OffsetDateTime.ofInstant(instant, wallOffsets[i]);
+            OffsetDateTime trans = OffsetDateTime.ofEpochSecond(savingsInstantTransitions[i], wallOffsets[i]);
             list.add(new ZoneOffsetTransition(trans, wallOffsets[i + 1]));
         }
         return Collections.unmodifiableList(list);
