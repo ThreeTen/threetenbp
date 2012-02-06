@@ -1030,7 +1030,6 @@ public class TestZoneRulesBuilder {
     private static void assertGap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         ZoneOffsetInfo offsetInfo = test.getOffsetInfo(dt);
-        assertEquals(offsetInfo.getLocalDateTime(), dt);
         assertEquals(offsetInfo.isTransition(), true);
         assertEquals(offsetInfo.getTransition().isGap(), true);
         assertEquals(offsetInfo.getTransition().getOffsetBefore(), before);
@@ -1040,7 +1039,6 @@ public class TestZoneRulesBuilder {
     private static void assertOverlap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         ZoneOffsetInfo offsetInfo = test.getOffsetInfo(dt);
-        assertEquals(offsetInfo.getLocalDateTime(), dt);
         assertEquals(offsetInfo.isTransition(), true);
         assertEquals(offsetInfo.getTransition().isOverlap(), true);
         assertEquals(offsetInfo.getTransition().getOffsetBefore(), before);

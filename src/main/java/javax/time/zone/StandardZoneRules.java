@@ -326,7 +326,7 @@ final class StandardZoneRules implements ZoneRules, Serializable {
         int index  = Arrays.binarySearch(savingsLocalTransitions, dt);
         if (index == -1) {
             // before first transition
-            return new ZoneOffsetInfo(dt, wallOffsets[0], null);
+            return new ZoneOffsetInfo(wallOffsets[0], null);
         }
         if (index < 0) {
             // switch negative insert position to start of matched range
@@ -344,14 +344,14 @@ final class StandardZoneRules implements ZoneRules, Serializable {
             ZoneOffset offsetAfter = wallOffsets[index / 2 + 1];
             if (offsetAfter.getTotalSeconds() > offsetBefore.getTotalSeconds()) {
                 // gap
-                return new ZoneOffsetInfo(dt, null, new ZoneOffsetTransition(OffsetDateTime.of(dtBefore, offsetBefore), offsetAfter));
+                return new ZoneOffsetInfo(null, new ZoneOffsetTransition(OffsetDateTime.of(dtBefore, offsetBefore), offsetAfter));
             } else {
                 // overlap
-                return new ZoneOffsetInfo(dt, null, new ZoneOffsetTransition(OffsetDateTime.of(dtAfter, offsetBefore), offsetAfter));
+                return new ZoneOffsetInfo(null, new ZoneOffsetTransition(OffsetDateTime.of(dtAfter, offsetBefore), offsetAfter));
             }
         } else {
             // normal (neither gap or overlap)
-            return new ZoneOffsetInfo(dt, wallOffsets[index / 2 + 1], null);
+            return new ZoneOffsetInfo(wallOffsets[index / 2 + 1], null);
         }
     }
 
@@ -366,21 +366,21 @@ final class StandardZoneRules implements ZoneRules, Serializable {
     private ZoneOffsetInfo findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
         if (trans.isGap()) {
             if (dt.isBefore(trans.getLocal())) {
-                return new ZoneOffsetInfo(dt, trans.getOffsetBefore(), null);
+                return new ZoneOffsetInfo(trans.getOffsetBefore(), null);
             }
             if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
-                return new ZoneOffsetInfo(dt, null, trans);
+                return new ZoneOffsetInfo(null, trans);
             } else {
-                return new ZoneOffsetInfo(dt, trans.getOffsetAfter(), null);
+                return new ZoneOffsetInfo(trans.getOffsetAfter(), null);
             }
         } else {
             if (dt.isBefore(trans.getLocal()) == false) {
-                return new ZoneOffsetInfo(dt, trans.getOffsetAfter(), null);
+                return new ZoneOffsetInfo(trans.getOffsetAfter(), null);
             }
             if (dt.isBefore(trans.getDateTimeAfter().toLocalDateTime())) {
-                return new ZoneOffsetInfo(dt, trans.getOffsetBefore(), null);
+                return new ZoneOffsetInfo(trans.getOffsetBefore(), null);
             } else {
-                return new ZoneOffsetInfo(dt, null, trans);
+                return new ZoneOffsetInfo(null, trans);
             }
         }
     }
