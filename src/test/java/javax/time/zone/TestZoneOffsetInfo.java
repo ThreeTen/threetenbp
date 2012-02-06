@@ -53,21 +53,17 @@ public class TestZoneOffsetInfo {
     private static final ZoneOffset OFFSET_0300 = ZoneOffset.ofHours(3);
     private static final ZoneOffset OFFSET_0400 = ZoneOffset.ofHours(4);
 
-    private static ZoneOffsetInfo make(ZoneOffset offset, ZoneOffsetTransition transition) {
-        return new ZoneOffsetInfo(offset, transition);
-    }
-
     //-----------------------------------------------------------------------
     // factory
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
-    public void test_factory_nullZO_ZOT() {
-        ZoneOffsetInfo.of(null, null);
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_factory_nullZO() {
+        ZoneOffsetInfo.ofOffset(null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
-    public void test_factory_ZO_ZOT() {
-        ZoneOffsetInfo.of(OFFSET_0200, ZoneOffsetTransition.of(OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_0200), OFFSET_0100));
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void test_factory_nullZOT() {
+        ZoneOffsetInfo.ofTransition(null);
     }
 
     //-----------------------------------------------------------------------
@@ -75,7 +71,7 @@ public class TestZoneOffsetInfo {
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_normal() throws Exception {
-        ZoneOffsetInfo test = make(OFFSET_0200, null);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         assertEquals(test.isTransition(), false);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getTransition(), null);
@@ -93,7 +89,7 @@ public class TestZoneOffsetInfo {
         ZoneOffsetTransition zot = ZoneOffsetTransition.of(odt, OFFSET_0300);  // gap from 01:00 to 02:00
         assertEquals(zot.isGap(), true);
         
-        ZoneOffsetInfo test = make(null, zot);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.isTransition(), true);
         assertEquals(test.getOffset(), null);
         assertEquals(test.getTransition(), zot);
@@ -111,7 +107,7 @@ public class TestZoneOffsetInfo {
         ZoneOffsetTransition zot = ZoneOffsetTransition.of(odt, OFFSET_0200);  // overlap from 02:00 to 01:00
         assertEquals(zot.isOverlap(), true);
         
-        ZoneOffsetInfo test = make(null, zot);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.isTransition(), true);
         assertEquals(test.getOffset(), null);
         assertEquals(test.getTransition(), zot);
@@ -131,11 +127,11 @@ public class TestZoneOffsetInfo {
         OffsetDateTime odtA = OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200);
         ZoneOffsetTransition zota1 = ZoneOffsetTransition.of(odtA, OFFSET_0300);
         ZoneOffsetTransition zota2 = ZoneOffsetTransition.of(odtA, OFFSET_0300);
-        ZoneOffsetInfo a1 = make(null, zota1);
-        ZoneOffsetInfo a2 = make(null, zota2);
+        ZoneOffsetInfo a1 = ZoneOffsetInfo.ofTransition(zota1);
+        ZoneOffsetInfo a2 = ZoneOffsetInfo.ofTransition(zota2);
         OffsetDateTime odtB = OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300);
         ZoneOffsetTransition zotb = ZoneOffsetTransition.of(odtB, OFFSET_0200);
-        ZoneOffsetInfo b = make(null, zotb);
+        ZoneOffsetInfo b = ZoneOffsetInfo.ofTransition(zotb);
         
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
@@ -150,9 +146,9 @@ public class TestZoneOffsetInfo {
 
     @Test(groups={"tck"})
     public void test_equals_ZO() {
-        ZoneOffsetInfo a1 = make(OFFSET_0100, null);
-        ZoneOffsetInfo a2 = make(OFFSET_0100, null);
-        ZoneOffsetInfo b = make(OFFSET_0200, null);
+        ZoneOffsetInfo a1 = ZoneOffsetInfo.ofOffset(OFFSET_0100);
+        ZoneOffsetInfo a2 = ZoneOffsetInfo.ofOffset(OFFSET_0100);
+        ZoneOffsetInfo b = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         
         assertEquals(a1.equals(a1), true);
         assertEquals(a1.equals(a2), true);
@@ -168,8 +164,8 @@ public class TestZoneOffsetInfo {
     @Test(groups={"tck"})
     public void test_equals_ZO_to_ZOT() {
         ZoneOffsetTransition zota = ZoneOffsetTransition.of(OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200), OFFSET_0300);
-        ZoneOffsetInfo a = make(null, zota);
-        ZoneOffsetInfo b = make(OFFSET_0200, null);
+        ZoneOffsetInfo a = ZoneOffsetInfo.ofTransition(zota);
+        ZoneOffsetInfo b = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), false);
@@ -179,7 +175,7 @@ public class TestZoneOffsetInfo {
 
     @Test(groups={"tck"})
     public void test_equals_other() {
-        ZoneOffsetInfo test = make(OFFSET_0100, null);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofOffset(OFFSET_0100);
         assertEquals(test.equals(""), false);
         assertEquals(test.equals(null), false);
     }
@@ -190,14 +186,14 @@ public class TestZoneOffsetInfo {
     @Test(groups={"tck"})
     public void test_hashCode_ZOT() {
         ZoneOffsetTransition zot = ZoneOffsetTransition.of(OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200), OFFSET_0300);
-        ZoneOffsetInfo test = make(null, zot);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         
         assertEquals(test.hashCode(), test.hashCode());
     }
 
     @Test(groups={"tck"})
     public void test_hashCode_ZO() {
-        ZoneOffsetInfo test = make(OFFSET_0200, null);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         
         assertEquals(test.hashCode(), test.hashCode());
     }
@@ -207,27 +203,27 @@ public class TestZoneOffsetInfo {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_toString_normal() {
-        ZoneOffsetInfo test = make(OFFSET_0200, null);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         assertEquals(test.toString(), "OffsetInfo[+02:00]");
     }
 
     @Test(groups={"implementation"})
     public void test_toString_gap() {
         ZoneOffsetTransition zot = ZoneOffsetTransition.of(OffsetDateTime.of(2010, 3, 31, 1, 0, OFFSET_0200), OFFSET_0300);
-        ZoneOffsetInfo test = make(null, zot);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.toString(), "OffsetInfo[Transition[Gap at 2010-03-31T01:00+02:00 to +03:00]]");
     }
 
     @Test(groups={"implementation"})
     public void test_toString_overlap() {
         ZoneOffsetTransition zot = ZoneOffsetTransition.of(OffsetDateTime.of(2010, 10, 31, 1, 0, OFFSET_0300), OFFSET_0200);
-        ZoneOffsetInfo test = make(null, zot);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofTransition(zot);
         assertEquals(test.toString(), "OffsetInfo[Transition[Overlap at 2010-10-31T01:00+03:00 to +02:00]]");
     }
 
     @Test(groups={"tck"})
     public void test_toString_normal_tck() {
-        ZoneOffsetInfo test = make(OFFSET_0200, null);
+        ZoneOffsetInfo test = ZoneOffsetInfo.ofOffset(OFFSET_0200);
         assertNotNull(test.toString());
     }
 

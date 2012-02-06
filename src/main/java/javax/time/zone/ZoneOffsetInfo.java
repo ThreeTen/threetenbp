@@ -31,6 +31,7 @@
  */
 package javax.time.zone;
 
+import javax.time.MathUtils;
 import javax.time.ZoneOffset;
 
 /**
@@ -65,21 +66,29 @@ public final class ZoneOffsetInfo {
     private final ZoneOffsetTransition transition;
 
     /**
-     * Creates an instance representing a simple single offset or a transition.
+     * Creates an instance representing a simple single offset.
      * <p>
      * Applications should normally obtain an instance from {@link ZoneRules}.
      * This method is intended for use by implementors of {@code ZoneRules}.
-     * <p>
-     * One, and only one, of the {@code offset} or {@code transition} parameters must be specified.
      *
-     * @param offset  the offset applicable at the date-time
-     * @param transition  the details of the transition including the offset before and after
+     * @param offset  the offset applicable at the implied local date-time, not null
      */
-    public static ZoneOffsetInfo of(ZoneOffset offset, ZoneOffsetTransition transition) {
-        if ((offset == null && transition == null) || (offset != null && transition != null)) {
-            throw new IllegalArgumentException("One, but not both, of offset or transition must be specified");
-        }
-        return new ZoneOffsetInfo(offset, transition);
+    public static ZoneOffsetInfo ofOffset(ZoneOffset offset) {
+        MathUtils.checkNotNull(offset, "ZoneOffsetTransition must not be null");
+        return new ZoneOffsetInfo(offset, null);
+    }
+
+    /**
+     * Creates an instance representing a transition.
+     * <p>
+     * Applications should normally obtain an instance from {@link ZoneRules}.
+     * This method is intended for use by implementors of {@code ZoneRules}.
+     *
+     * @param transition  the details of the transition including the offset before and after, not null
+     */
+    public static ZoneOffsetInfo ofTransition(ZoneOffsetTransition transition) {
+        MathUtils.checkNotNull(transition, "ZoneOffsetTransition must not be null");
+        return new ZoneOffsetInfo(null, transition);
     }
 
     /**

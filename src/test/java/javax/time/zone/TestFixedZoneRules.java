@@ -94,7 +94,7 @@ public class TestFixedZoneRules {
     	ZoneRules test = make(OFFSET_PONE);
         assertEquals(test.getDaylightSavings(INSTANT), Period.ZERO);
         assertEquals(test.getOffset(INSTANT), OFFSET_PONE);
-        assertEquals(test.getOffsetInfo(LDT), ZoneOffsetInfo.of(OFFSET_PONE, null));
+        assertEquals(test.getOffsetInfo(LDT), ZoneOffsetInfo.ofOffset(OFFSET_PONE));
         assertEquals(test.getStandardOffset(INSTANT), OFFSET_PONE);
         assertEquals(test.getTransitions().size(), 0);
         assertEquals(test.getTransitionRules().size(), 0);
@@ -107,7 +107,7 @@ public class TestFixedZoneRules {
         ZoneRules test = make(OFFSET_PONE);
         assertEquals(test.getDaylightSavings(null), Period.ZERO);
         assertEquals(test.getOffset(null), OFFSET_PONE);
-        assertEquals(test.getOffsetInfo(null), ZoneOffsetInfo.of(OFFSET_PONE, null));
+        assertEquals(test.getOffsetInfo(null), ZoneOffsetInfo.ofOffset(OFFSET_PONE));
         assertEquals(test.getStandardOffset(null), OFFSET_PONE);
         assertEquals(test.nextTransition(null), null);
         assertEquals(test.previousTransition(null), null);

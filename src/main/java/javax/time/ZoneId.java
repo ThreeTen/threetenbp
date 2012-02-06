@@ -984,7 +984,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
          */
         Fixed(ZoneOffset offset) {
             this.id = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
-            this.offsetInfo = ZoneOffsetInfo.of(offset, null);
+            this.offsetInfo = ZoneOffsetInfo.ofOffset(offset);
         }
 
         /**
