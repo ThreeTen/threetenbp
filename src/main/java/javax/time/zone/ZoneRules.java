@@ -100,32 +100,6 @@ public interface ZoneRules {
     ZoneOffset getOffset(Instant instant);
 
     /**
-     * Gets the offset information for the specified instant in this zone.
-     * <p>
-     * This provides access to full details as to the offset or offsets applicable
-     * for the local date-time. The mapping from an instant to an offset
-     * is not straightforward. There are two cases:
-     * <ul>
-     * <li>Normal. Where there is a single offset for the local date-time.</li>
-     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
-     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-     * </ul>
-     * The third case, a gap in the local time-line, cannot be returned by this
-     * method as an instant will always represent a valid point and cannot be in a gap.
-     * The returned object provides information about the offset or overlap and it
-     * is vital to check {@link ZoneOffsetInfo#isTransition()} to handle the overlap.
-     *
-     * @param instant  the instant to find the offset information for, not null
-     * @return the offset information, not null
-     */
-    ZoneOffsetInfo getOffsetInfo(Instant instant);
-//    default {
-//        ZoneOffset offset = getOffset(instant);
-//        OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);
-//        return getOffsetInfo(odt.toLocalDateTime());
-//    }
-
-    /**
      * Gets the offset information for a local date-time in this zone.
      * <p>
      * This provides access to full details as to the offset or offsets applicable

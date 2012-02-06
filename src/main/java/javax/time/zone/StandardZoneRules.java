@@ -307,13 +307,6 @@ final class StandardZoneRules implements ZoneRules, Serializable {
 
     //-----------------------------------------------------------------------
     @Override
-    public ZoneOffsetInfo getOffsetInfo(Instant instant) {
-        ZoneOffset offset = getOffset(instant);
-        OffsetDateTime odt = OffsetDateTime.ofInstant(instant, offset);
-        return getOffsetInfo(odt.toLocalDateTime());
-    }
-
-    @Override
     public ZoneOffsetInfo getOffsetInfo(LocalDateTime dt) {
         // check if using last rules
         if (lastRules.length > 0 &&

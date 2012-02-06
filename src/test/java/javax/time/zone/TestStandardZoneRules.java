@@ -154,7 +154,6 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, -1, -15);
         assertEquals(test.getOffset(instant), offset);
-        checkOffset(test.getOffsetInfo(instant), offset);
         checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Period.ZERO);
@@ -530,7 +529,6 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.ofHoursMinutesSeconds(0, 9, 21);
         assertEquals(test.getOffset(instant), offset);
-        checkOffset(test.getOffsetInfo(instant), offset);
         checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Period.ZERO);
@@ -731,7 +729,6 @@ public class TestStandardZoneRules {
         Instant instant = old.toInstant();
         ZoneOffset offset = ZoneOffset.of("-04:56:02");
         assertEquals(test.getOffset(instant), offset);
-        checkOffset(test.getOffsetInfo(instant), offset);
         checkOffset(test.getOffsetInfo(old.toLocalDateTime()), offset);
         assertEquals(test.getStandardOffset(instant), offset);
         assertEquals(test.getDaylightSavings(instant), Period.ZERO);
