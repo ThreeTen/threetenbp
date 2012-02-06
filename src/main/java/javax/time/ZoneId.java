@@ -974,8 +974,8 @@ public abstract class ZoneId implements Calendrical, Serializable {
         private static final long serialVersionUID = 1L;
         /** The zone id. */
         private final String id;
-        /** The zone rules. */
-        private final transient ZoneOffset offset;
+        /** The offset. */
+        private final transient ZoneOffsetInfo offsetInfo;
 
         /**
          * Constructor.
@@ -984,7 +984,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
          */
         Fixed(ZoneOffset offset) {
             this.id = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
-            this.offset = offset;
+            this.offsetInfo = ZoneOffsetInfo.of(offset, null);
         }
 
         /**
@@ -1076,7 +1076,7 @@ public abstract class ZoneId implements Calendrical, Serializable {
             if (dateTime == null) {
                 return false;
             }
-            return offset.equals(dateTime.getOffset());
+            return offsetInfo.getOffset().equals(dateTime.getOffset());
         }
 
         @Override
@@ -1096,23 +1096,23 @@ public abstract class ZoneId implements Calendrical, Serializable {
 
         @Override
         public ZoneOffset getOffset(Instant instant) {
-            return offset;
+            return offsetInfo.getOffset();
         }
 
         @Override
         public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-            return ZoneOffsetInfo.of(offset, null);
+            return offsetInfo;
         }
 
         @Override
         public boolean isValidDateTime(OffsetDateTime dateTime) {
-            return dateTime.getOffset().equals(offset);
+            return dateTime.getOffset().equals(offsetInfo.getOffset());
         }
 
         //-------------------------------------------------------------------------
         @Override
         public ZoneOffset getStandardOffset(Instant instant) {
-            return offset;
+            return offsetInfo.getOffset();
         }
 
         @Override
@@ -1153,14 +1153,14 @@ public abstract class ZoneId implements Calendrical, Serializable {
                return true;
             }
             if (obj instanceof Fixed) {
-                return offset.equals(((Fixed) obj).offset);
+                return offsetInfo.getOffset().equals(((Fixed) obj).offsetInfo.getOffset());
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return offset.hashCode() + 1;
+            return offsetInfo.getOffset().hashCode() + 1;
         }
     }
 
