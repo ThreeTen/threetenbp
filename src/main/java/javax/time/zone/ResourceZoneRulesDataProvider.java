@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -174,17 +174,14 @@ final class ResourceZoneRulesDataProvider implements ZoneRulesDataProvider {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
     public String getGroupID() {
         return groupID;
     }
 
-    /** {@inheritDoc} */
     public Set<ZoneRulesVersion> getVersions() {
         return versions;
     }
 
-    /** {@inheritDoc} */
     public Set<String> getRegionIDs() {
         return regions;
     }
