@@ -95,7 +95,7 @@ public class TestYearMonth {
 
     private YearMonth TEST_2008_06;
 
-    @BeforeMethod(groups={"tck","implementation"})
+    @BeforeMethod(groups={"tck", "implementation"})
     public void setUp() {
         TEST_2008_06 = YearMonth.of(2008, 6);
     }
@@ -1010,43 +1010,62 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_adjustDate() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2007, 1, 1);
         assertEquals(test.adjustDate(date), LocalDate.of(2008, 6, 1));
     }
 
+    @Test(groups={"implementation"})
     public void test_adjustDate_same() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
         assertSame(test.adjustDate(date), date);
     }
+    
+    @Test(groups={"tck"})
+    public void test_adjustDate_equal() {
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        assertEquals(test.adjustDate(date), date);
+    }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_null() {
         TEST_2008_06.adjustDate((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_adjustDate_DateResolver() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2007, 1, 1);
         assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2008, 6, 1));
     }
 
+    @Test(groups={"implementation"})
     public void test_adjustDate_DateResolver_same() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
         assertSame(test.adjustDate(date, DateResolvers.nextValid()), date);
     }
+    
+    @Test(groups={"tck"})
+    public void test_adjustDate_DateResolver_equal() {
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2008, 6, 30);
+        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), date);
+    }
 
+    @Test(groups={"tck"})
     public void test_adjustDate_DateResolver_resolve() {
         YearMonth test = YearMonth.of(2008, 2);
         LocalDate date = LocalDate.of(2007, 1, 31);
         assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2008, 3, 1));
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
     public void test_adjustDate_DateResolver_invalid() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2007, 1, 31);
@@ -1058,19 +1077,19 @@ public class TestYearMonth {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_DateResolver_nullDate() {
         TEST_2008_06.adjustDate((LocalDate) null, DateResolvers.nextValid());
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_DateResolver_nullResolver() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);  // same year-month, should still NPE
         test.adjustDate(date, (DateResolver) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_adjustDate_DateResolver_badResolver() {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2007, 6, 30);
@@ -1080,6 +1099,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // matchesDate()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_matchesDate() {
         assertEquals(YearMonth.of(2008, 6).matchesCalendrical(LocalDate.of(2008, 6, 1)), true);
         assertEquals(YearMonth.of(2007, 6).matchesCalendrical(LocalDate.of(2007, 6, 1)), true);
@@ -1089,7 +1109,7 @@ public class TestYearMonth {
         assertEquals(YearMonth.of(2008, 5).matchesCalendrical(LocalDate.of(2008, 6, 1)), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_matchesDate_null() {
         TEST_2008_06.matchesCalendrical(null);
     }
@@ -1097,16 +1117,19 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // lengthInDays()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_lengthInDays_june() {
         YearMonth test = YearMonth.of(2007, 6);
         assertEquals(test.lengthInDays(), 30);
     }
 
+    @Test(groups={"tck"})
     public void test_lengthInDays_febNonLeap() {
         YearMonth test = YearMonth.of(2007, 2);
         assertEquals(test.lengthInDays(), 28);
     }
 
+    @Test(groups={"tck"})
     public void test_lengthInDays_febLeap() {
         YearMonth test = YearMonth.of(2008, 2);
         assertEquals(test.lengthInDays(), 29);
@@ -1115,6 +1138,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // isValidDay(int)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_isValidDay_int_june() {
         YearMonth test = YearMonth.of(2007, 6);
         assertEquals(test.isValidDay(1), true);
@@ -1126,6 +1150,7 @@ public class TestYearMonth {
         assertEquals(test.isValidDay(32), false);
     }
 
+    @Test(groups={"tck"})
     public void test_isValidDay_int_febNonLeap() {
         YearMonth test = YearMonth.of(2007, 2);
         assertEquals(test.isValidDay(1), true);
@@ -1137,6 +1162,7 @@ public class TestYearMonth {
         assertEquals(test.isValidDay(32), false);
     }
 
+    @Test(groups={"tck"})
     public void test_isValidDay_int_febLeap() {
         YearMonth test = YearMonth.of(2008, 2);
         assertEquals(test.isValidDay(1), true);
@@ -1151,12 +1177,13 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // atDay(int)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_atDay_int() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.atDay(30), LocalDate.of(2008, 6, 30));
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
     public void test_atDay_int_invalidDay() {
         YearMonth test = YearMonth.of(2008, 6);
         try {
@@ -1170,12 +1197,13 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // atDay(int,DateResolver)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_atDay_intDateResolver() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.atDay(30, DateResolvers.strict()), LocalDate.of(2008, 6, 30));
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class, groups={"tck"})
     public void test_atDay_intDateResolver_invalidDay() {
         YearMonth test = YearMonth.of(2008, 6);
         try {
@@ -1186,6 +1214,7 @@ public class TestYearMonth {
         }
     }
 
+    @Test(groups={"tck"})
     public void test_atDay_intDateResolver_resolved() {
         YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.atDay(31, DateResolvers.previousValid()), LocalDate.of(2008, 6, 30));
@@ -1194,6 +1223,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // toFields()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toFields() {
         assertEquals(YearMonth.of(2010, 6).toFields(), DateTimeFields.of(YEAR, 2010, MONTH_OF_YEAR, 6));
     }
@@ -1201,6 +1231,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_comparisons() {
         doTest_comparisons_YearMonth(
             YearMonth.of(-1, 1),
@@ -1240,17 +1271,17 @@ public class TestYearMonth {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_compareTo_ObjectNull() {
         TEST_2008_06.compareTo(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_isBefore_ObjectNull() {
         TEST_2008_06.isBefore(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_isAfter_ObjectNull() {
         TEST_2008_06.isAfter(null);
     }
@@ -1258,6 +1289,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals() {
         YearMonth a = YearMonth.of(2008, 6);
         YearMonth b = YearMonth.of(2008, 6);
@@ -1285,14 +1317,17 @@ public class TestYearMonth {
         assertEquals(d.equals(d), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_itself_true() {
         assertEquals(TEST_2008_06.equals(TEST_2008_06), true);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_string_false() {
         assertEquals(TEST_2008_06.equals("2007-07-15"), false);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_null_false() {
         assertEquals(TEST_2008_06.equals(null), false);
     }
@@ -1300,7 +1335,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
+    @Test(dataProvider="sampleDates", groups={"tck"})
     public void test_hashCode(int y, int m) {
         YearMonth a = YearMonth.of(y, m);
         assertEquals(a.hashCode(), a.hashCode());
@@ -1308,6 +1343,7 @@ public class TestYearMonth {
         assertEquals(a.hashCode(), b.hashCode());
     }
 
+    @Test(groups={"tck"})
     public void test_hashCode_unique() {
         Set<Integer> uniques = new HashSet<Integer>(201 * 12);
         for (int i = 1900; i <= 2100; i++) {
@@ -1331,7 +1367,7 @@ public class TestYearMonth {
         };
     }
 
-    @Test(dataProvider="sampleToString")
+    @Test(dataProvider="sampleToString", groups={"tck"})
     public void test_toString(int y, int m, String expected) {
         YearMonth test = YearMonth.of(y, m);
         String str = test.toString();
@@ -1341,12 +1377,13 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     // toString(DateTimeFormatter)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString_formatter() {
         String t = YearMonth.of(2010, 12).toString(DateTimeFormatters.pattern("yyyy MM"));
         assertEquals(t, "2010 12");
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toString_formatter_null() {
         YearMonth.of(2010, 12).toString(null);
     }
