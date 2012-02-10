@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
@@ -67,8 +66,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements InstantProvider, Calendrical,
-                    CalendricalMatcher, Comparable<OffsetDateTime>, Serializable {
+        implements InstantProvider, Calendrical, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.
@@ -124,7 +122,7 @@ public final class OffsetDateTime
      * @return the current date-time, not null
      */
     public static OffsetDateTime now(Clock clock) {
-        Instant.checkNotNull(clock, "Clock must not be null");
+        MathUtils.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -400,7 +398,7 @@ public final class OffsetDateTime
      */
     public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
-        Instant.checkNotNull(offset, "ZoneOffset must not be null");
+        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
         return new OffsetDateTime(ldt, offset);
@@ -418,7 +416,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static OffsetDateTime ofEpochSecond(long epochSecond, ZoneOffset offset) {
-        Instant.checkNotNull(offset, "ZoneOffset must not be null");
+        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = epochSecond + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, 0);
         return new OffsetDateTime(ldt, offset);
@@ -486,7 +484,7 @@ public final class OffsetDateTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -1564,35 +1562,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this {@code OffsetDateTime} matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the date-time.
-     * A simple matcher might simply compare one of the fields, such as the year field.
-     * A more complex matcher might check if the date is the last day of the month.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this date-time matches the matcher, false otherwise
-     */
-    public boolean matches(CalendricalMatcher matcher) {
-        return matcher.matchesCalendrical(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the date-time extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link #matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a zoned date-time formed from the instant represented by this
      * date-time and the specified time-zone.
      * <p>
@@ -1883,7 +1852,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -663,7 +663,6 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_07_01).getOffset(), OFFSET_1);
-        assertEquals(test, ZoneRules.ofFixed(OFFSET_1));
     }
 
     @Test(groups={"tck"})
@@ -1031,7 +1030,6 @@ public class TestZoneRulesBuilder {
     private static void assertGap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         ZoneOffsetInfo offsetInfo = test.getOffsetInfo(dt);
-        assertEquals(offsetInfo.getLocalDateTime(), dt);
         assertEquals(offsetInfo.isTransition(), true);
         assertEquals(offsetInfo.getTransition().isGap(), true);
         assertEquals(offsetInfo.getTransition().getOffsetBefore(), before);
@@ -1041,7 +1039,6 @@ public class TestZoneRulesBuilder {
     private static void assertOverlap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         ZoneOffsetInfo offsetInfo = test.getOffsetInfo(dt);
-        assertEquals(offsetInfo.getLocalDateTime(), dt);
         assertEquals(offsetInfo.isTransition(), true);
         assertEquals(offsetInfo.getTransition().isOverlap(), true);
         assertEquals(offsetInfo.getTransition().getOffsetBefore(), before);

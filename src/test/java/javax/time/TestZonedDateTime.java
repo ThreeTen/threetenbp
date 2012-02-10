@@ -49,7 +49,6 @@ import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
@@ -58,7 +57,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
@@ -2013,52 +2011,6 @@ public class TestZonedDateTime {
     public void test_minusDuration_intintintlong_zero() {
         ZonedDateTime t = TEST_DATE_TIME.minusDuration(0, 0, 0, 0);
         assertSame(t, TEST_DATE_TIME);
-    }
-
-    //-----------------------------------------------------------------------
-    // matches()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matches() {
-        assertTrue(TEST_DATE_TIME.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return true;
-            }
-        }));
-        assertFalse(TEST_DATE_TIME.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return false;
-            }
-        }));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matches_null() {
-        TEST_DATE_TIME.matches(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matchesCalendrical_true() {
-        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
-        ZonedDateTime cal = ZonedDateTime.of(test.toLocalDateTime(), ZONE_0100);
-        assertEquals(test.matchesCalendrical(cal), true);
-    }
-
-    @Test(groups={"tck"})
-    public void test_matchesCalendrical_false() {
-        ZonedDateTime test = ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
-        ZonedDateTime cal = test.plusHours(1);
-        assertEquals(test.matchesCalendrical(cal), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matchesCalendrical_null() {
-        LocalDateTime ldt = LocalDateTime.of(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.of(ldt, ZONE_0100);
-        base.matchesCalendrical((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

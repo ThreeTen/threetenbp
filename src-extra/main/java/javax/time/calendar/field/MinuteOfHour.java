@@ -40,9 +40,7 @@ import javax.time.CalendricalException;
 import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
-import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -63,7 +61,7 @@ import javax.time.calendrical.TimeAdjuster;
  * @author Stephen Colebourne
  */
 public final class MinuteOfHour
-        implements Calendrical, Comparable<MinuteOfHour>, TimeAdjuster, CalendricalMatcher, Serializable {
+        implements Calendrical, Comparable<MinuteOfHour>, TimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -177,17 +175,6 @@ public final class MinuteOfHour
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the minute-of-hour extracted from the calendrical matches this.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        DateTimeField calValue = calendrical.get(rule());
-        return calValue != null && calValue.getValue() == getValue();
-    }
-
     /**
      * Adjusts a time to have the minute-of-hour represented by this object,
      * returning a new time.

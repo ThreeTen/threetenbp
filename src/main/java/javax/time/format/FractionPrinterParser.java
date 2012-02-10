@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,6 +34,7 @@ package javax.time.format;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import javax.time.MathUtils;
 import javax.time.calendrical.DateTimeField;
 import javax.time.calendrical.DateTimeRule;
 
@@ -67,7 +68,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param maxWidth  the maximum width to output, from 0 to 9
      */
     FractionPrinterParser(DateTimeRule rule, int minWidth, int maxWidth) {
-        DateTimeFormatterBuilder.checkNotNull(rule, "DateTimeRule must not be null");
+        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
         if (rule.getValueRange().isFixed() == false) {
             throw new IllegalArgumentException("The rule must have a fixed set of values");
         }

@@ -45,7 +45,6 @@ import static org.testng.Assert.fail;
 import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
@@ -88,7 +87,6 @@ public class TestYear {
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(Year.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(Year.class));
     }
 
     //-----------------------------------------------------------------------
@@ -583,32 +581,6 @@ public class TestYear {
         LocalDate date = LocalDate.of(2007, 1, 31);
         Year test = Year.of(2);
         test.adjustDate(date, new MockDateResolverReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matchesCalendrical_notLeapYear() {
-        LocalDate work = LocalDate.of(2007, 3, 2);
-        for (int i = -4; i <= 2104; i++) {
-            for (int j = -4; j <= 2104; j++) {
-                Year test = Year.of(j);
-                assertEquals(test.matchesCalendrical(work), work.getYear() == j);
-            }
-            work = work.plusYears(1);
-        }
-    }
-
-    @Test(groups={"tck"})
-    public void test_matchesCalendrical_noData() {
-        assertEquals(Year.of(2009).matchesCalendrical(LocalTime.of(12, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matchesCalendrical_nullLocalDate() {
-        Year test = Year.of(1);
-        test.matchesCalendrical((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

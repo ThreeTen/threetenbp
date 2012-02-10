@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,6 +43,7 @@ import javax.time.DayOfWeek;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
+import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
@@ -86,19 +87,6 @@ public class ZoneRulesBuilder {
      */
     private Map<Object, Object> deduplicateMap;
 
-    /**
-     * Validates that the input value is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error to throw
-     * @throws NullPointerException if the object is null
-     */
-    private static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance of the builder that can be used to create zone rules.
@@ -136,9 +124,9 @@ public class ZoneRulesBuilder {
             ZoneOffset standardOffset,
             LocalDateTime until,
             TimeDefinition untilDefinition) {
-        checkNotNull(standardOffset, "Standard offset must not be null");
-        checkNotNull(until, "Until date-time must not be null");
-        checkNotNull(untilDefinition, "Time definition must not be null");
+        MathUtils.checkNotNull(standardOffset, "Standard offset must not be null");
+        MathUtils.checkNotNull(until, "Until date-time must not be null");
+        MathUtils.checkNotNull(untilDefinition, "Time definition must not be null");
         TZWindow window = new TZWindow(standardOffset, until, untilDefinition);
         if (windowList.size() > 0) {
             TZWindow previous = windowList.get(windowList.size() - 1);
@@ -184,7 +172,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if the window already has rules
      */
     public ZoneRulesBuilder setFixedSavingsToWindow(Period fixedSavingAmount) {
-        checkNotNull(fixedSavingAmount, "Fixed savings amount must not be null");
+        MathUtils.checkNotNull(fixedSavingAmount, "Fixed savings amount must not be null");
         if (windowList.isEmpty()) {
             throw new IllegalStateException("Must add a window before setting the fixed savings");
         }
@@ -212,7 +200,7 @@ public class ZoneRulesBuilder {
             LocalDateTime dateTime,
             TimeDefinition timeDefinition,
             Period savingAmount) {
-        checkNotNull(dateTime, "Rule end date-time must not be null");
+        MathUtils.checkNotNull(dateTime, "Rule end date-time must not be null");
         return addRuleToWindow(
                 dateTime.getYear(), dateTime.getYear(),
                 dateTime.getMonthOfYear(), dateTime.getDayOfMonth(),
@@ -285,10 +273,10 @@ public class ZoneRulesBuilder {
             TimeDefinition timeDefinition,
             Period savingAmount) {
         
-        checkNotNull(month, "Rule end month must not be null");
-        checkNotNull(time, "Rule end time must not be null");
-        checkNotNull(timeDefinition, "Time definition must not be null");
-        checkNotNull(savingAmount, "Savings amount must not be null");
+        MathUtils.checkNotNull(month, "Rule end month must not be null");
+        MathUtils.checkNotNull(time, "Rule end time must not be null");
+        MathUtils.checkNotNull(timeDefinition, "Time definition must not be null");
+        MathUtils.checkNotNull(savingAmount, "Savings amount must not be null");
         YEAR.checkValidValue(startYear);
         YEAR.checkValidValue(endYear);
         if (dayOfMonthIndicator < -28 || dayOfMonthIndicator > 31 || dayOfMonthIndicator == 0) {
@@ -334,16 +322,10 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     ZoneRules toRules(String id, Map<Object, Object> deduplicateMap) {
-        checkNotNull(id, "Time zone id must not be null");
+        MathUtils.checkNotNull(id, "Time zone id must not be null");
         this.deduplicateMap = deduplicateMap;
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
-        }
-        if (windowList.size() == 1) {
-            TZWindow window = windowList.get(0);
-            if (window.isSingleWindowStandardOffset()) {
-                return ZoneRules.ofFixed(window.standardOffset);
-            }
         }
         
         List<OffsetDateTime> standardOffsetList = new ArrayList<OffsetDateTime>(4);

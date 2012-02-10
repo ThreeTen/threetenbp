@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,8 +51,6 @@ import javax.time.ZoneOffset;
  */
 final class Ser implements Externalizable {
 
-    /** Type for FixedZoneRules. */
-    static final byte FZR = 0;
     /** Type for StandardZoneRules. */
     static final byte SZR = 1;
     /** Type for ZoneOffsetTransition. */
@@ -93,19 +91,12 @@ final class Ser implements Externalizable {
     }
 
     static void write(Object object, DataOutput out) throws IOException {
-        if (object instanceof StandardZoneRules) {
-            writeInternal(SZR, object, out);
-        } else {
-            writeInternal(FZR, object, out);
-        }
+        writeInternal(SZR, object, out);
     }
 
     private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
-            case FZR:
-                ((FixedZoneRules) object).writeExternal(out);
-                break;
             case SZR:
                 ((StandardZoneRules) object).writeExternal(out);
                 break;
@@ -138,8 +129,6 @@ final class Ser implements Externalizable {
 
     private static Object readInternal(byte type, DataInput in) throws IOException, ClassNotFoundException {
         switch (type) {
-            case FZR:
-                return FixedZoneRules.readExternal(in);
             case SZR:
                 return StandardZoneRules.readExternal(in);
             case ZOT:

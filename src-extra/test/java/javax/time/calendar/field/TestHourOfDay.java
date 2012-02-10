@@ -45,10 +45,8 @@ import java.lang.reflect.Modifier;
 
 import javax.time.AmPmOfDay;
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
@@ -80,7 +78,6 @@ public class TestHourOfDay {
         assertTrue(Serializable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(HourOfDay.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(HourOfDay.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -195,30 +192,6 @@ public class TestHourOfDay {
     public void test_adjustTime_nullLocalTime() {
         HourOfDay test = HourOfDay.hourOfDay(1);
         test.adjustTime((LocalTime) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical() {
-        LocalTime work = LocalTime.of(0, 20);
-        for (int i = 0; i <= MAX_LENGTH; i++) {
-            for (int j = 0; j <= MAX_LENGTH; j++) {
-                HourOfDay test = HourOfDay.hourOfDay(j);
-                assertEquals(test.matchesCalendrical(work), i == j, i + " " + j);
-            }
-            work = work.plusHours(1);
-        }
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(HourOfDay.hourOfDay(12).matchesCalendrical(LocalDate.of(2008, 6, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        HourOfDay test = HourOfDay.hourOfDay(1);
-        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

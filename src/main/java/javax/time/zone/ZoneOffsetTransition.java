@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,6 +38,7 @@ import java.io.Serializable;
 
 import javax.time.Instant;
 import javax.time.LocalDateTime;
+import javax.time.MathUtils;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
 import javax.time.ZoneOffset;
@@ -87,8 +88,8 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * @param offsetAfter  the offset at and after the transition, not null
      */
     public static ZoneOffsetTransition of(OffsetDateTime transition, ZoneOffset offsetAfter) {
-        ZoneRules.checkNotNull(transition, "OffsetDateTime must not be null");
-        ZoneRules.checkNotNull(transition, "ZoneOffset must not be null");
+        MathUtils.checkNotNull(transition, "OffsetDateTime must not be null");
+        MathUtils.checkNotNull(transition, "ZoneOffset must not be null");
         if (transition.getOffset().equals(offsetAfter)) {
             throw new IllegalArgumentException("Offsets must not be equal");
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
@@ -96,20 +97,6 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Validates that the input value is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error to throw
-     * @throws NullPointerException if the object is null
-     */
-    static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the locale to be used during formatting.
      *
      * @return the locale of this formatter, not null
@@ -127,7 +114,7 @@ public final class DateTimeFormatter {
      * @return a {@code DateTimeFormatter} based on this one with the requested locale, not null
      */
     public DateTimeFormatter withLocale(Locale locale) {
-        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
+        MathUtils.checkNotNull(locale, "Locale must not be null");
         if (locale.equals(this.locale)) {
             return this;
         }
@@ -153,7 +140,7 @@ public final class DateTimeFormatter {
      * @return a {@code DateTimeFormatter} based on this one with the requested symbols, not null
      */
     public DateTimeFormatter withSymbols(DateTimeFormatSymbols symbols) {
-        DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
+        MathUtils.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
         if (symbols.equals(this.symbols)) {
             return this;
         }
@@ -211,8 +198,8 @@ public final class DateTimeFormatter {
      * @throws CalendricalException if an error occurs during printing
      */
     public void printTo(Calendrical calendrical, Appendable appendable) {
-        DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
-        DateTimeFormatter.checkNotNull(appendable, "Appendable must not be null");
+        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
+        MathUtils.checkNotNull(appendable, "Appendable must not be null");
         try {
             DateTimePrintContext context = new DateTimePrintContext(calendrical, locale, symbols);
             if (appendable instanceof StringBuilder) {
@@ -263,8 +250,8 @@ public final class DateTimeFormatter {
      * @throws CalendricalParseException if the parse fails
      */
     public <T> T parse(CharSequence text, CalendricalRule<T> rule) {
-        DateTimeFormatter.checkNotNull(text, "Text must not be null");
-        DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
+        MathUtils.checkNotNull(text, "Text must not be null");
+        MathUtils.checkNotNull(rule, "CalendricalRule must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         try {
             CalendricalEngine engine = parseToEngine(str);
@@ -310,8 +297,8 @@ public final class DateTimeFormatter {
      * @throws CalendricalParseException if the parse fails
      */
     public Calendrical parseBest(CharSequence text, CalendricalRule<?>... rules) {
-        DateTimeFormatter.checkNotNull(text, "Text must not be null");
-        DateTimeFormatter.checkNotNull(rules, "CalendricalRule array must not be null");
+        MathUtils.checkNotNull(text, "Text must not be null");
+        MathUtils.checkNotNull(rules, "CalendricalRule array must not be null");
         if (rules.length < 2) {
             throw new IllegalArgumentException("At least two rules must be specified");
         }
@@ -362,7 +349,7 @@ public final class DateTimeFormatter {
      * @throws CalendricalParseException if the parse fails
      */
     public CalendricalEngine parseToEngine(CharSequence text) {
-        DateTimeFormatter.checkNotNull(text, "Text must not be null");
+        MathUtils.checkNotNull(text, "Text must not be null");
         String str = text.toString();  // parsing whole String, so this makes sense
         ParsePosition pos = new ParsePosition(0);
         DateTimeParseContext result = parseToContext(str, pos);
@@ -409,8 +396,8 @@ public final class DateTimeFormatter {
      * @throws IndexOutOfBoundsException if the position is invalid
      */
     public DateTimeParseContext parseToContext(CharSequence text, ParsePosition position) {
-        DateTimeFormatter.checkNotNull(text, "Text must not be null");
-        DateTimeFormatter.checkNotNull(position, "ParsePosition must not be null");
+        MathUtils.checkNotNull(text, "Text must not be null");
+        MathUtils.checkNotNull(position, "ParsePosition must not be null");
         DateTimeParseContext context = new DateTimeParseContext(locale, symbols);
         int pos = position.getIndex();
         pos = printerParser.parse(context, text, pos);
@@ -469,7 +456,7 @@ public final class DateTimeFormatter {
      * @return this formatter as a classic format instance, not null
      */
     public Format toFormat(CalendricalRule<?> parseRule) {
-        DateTimeFormatter.checkNotNull(parseRule, "CalendricalRule must not be null");
+        MathUtils.checkNotNull(parseRule, "CalendricalRule must not be null");
         return new ClassicFormat(this, parseRule);
     }
 
@@ -503,9 +490,9 @@ public final class DateTimeFormatter {
         /** {@inheritDoc} */
         @Override
         public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-            DateTimeFormatter.checkNotNull(obj, "Object to be printed must not be null");
-            DateTimeFormatter.checkNotNull(toAppendTo, "StringBuffer must not be null");
-            DateTimeFormatter.checkNotNull(pos, "FieldPosition must not be null");
+            MathUtils.checkNotNull(obj, "Object to be printed must not be null");
+            MathUtils.checkNotNull(toAppendTo, "StringBuffer must not be null");
+            MathUtils.checkNotNull(pos, "FieldPosition must not be null");
             if (obj instanceof Calendrical == false) {
                 throw new IllegalArgumentException("Format target must implement Calendrical");
             }

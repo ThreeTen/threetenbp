@@ -44,10 +44,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
@@ -79,7 +77,6 @@ public class TestMinuteOfHour {
         assertTrue(Serializable.class.isAssignableFrom(MinuteOfHour.class));
         assertTrue(Comparable.class.isAssignableFrom(MinuteOfHour.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(MinuteOfHour.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(MinuteOfHour.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -170,30 +167,6 @@ public class TestMinuteOfHour {
     public void test_adjustTime_nullLocalTime() {
         MinuteOfHour test = MinuteOfHour.minuteOfHour(1);
         test.adjustTime((LocalTime) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical() {
-        LocalTime work = LocalTime.of(5, 0, 10, 20);
-        for (int i = 0; i <= MAX_LENGTH; i++) {
-            for (int j = 0; j <= MAX_LENGTH; j++) {
-                MinuteOfHour test = MinuteOfHour.minuteOfHour(j);
-                assertEquals(test.matchesCalendrical(work), i == j);
-            }
-            work = work.plusMinutes(1);
-        }
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(MinuteOfHour.minuteOfHour(12).matchesCalendrical(LocalDate.of(2008, 6, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        MinuteOfHour test = MinuteOfHour.minuteOfHour(1);
-        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

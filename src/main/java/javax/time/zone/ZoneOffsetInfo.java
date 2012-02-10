@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 package javax.time.zone;
 
-import javax.time.LocalDateTime;
+import javax.time.MathUtils;
 import javax.time.ZoneOffset;
 
 /**
@@ -57,10 +57,6 @@ import javax.time.ZoneOffset;
 public final class ZoneOffsetInfo {
 
     /**
-     * The date-time that this info applies to.
-     */
-    private final LocalDateTime dateTime;
-    /**
      * The offset for the local time-line.
      */
     private final ZoneOffset offset;
@@ -70,26 +66,29 @@ public final class ZoneOffsetInfo {
     private final ZoneOffsetTransition transition;
 
     /**
-     * Creates an instance representing a simple single offset or a transition.
+     * Creates an instance representing a simple single offset.
      * <p>
      * Applications should normally obtain an instance from {@link ZoneRules}.
-     * This constructor is intended for use by implementors of {@code ZoneRules}.
-     * <p>
-     * One, and only one, of the {@code offset} or {@code transition} parameters must be specified.
+     * This method is intended for use by implementors of {@code ZoneRules}.
      *
-     * @param dateTime  the local date-time that this info applies to, not null
-     * @param offset  the offset applicable at the date-time
-     * @param transition  the details of the transition including the offset before and after
+     * @param offset  the offset applicable at the implied local date-time, not null
      */
-    public static ZoneOffsetInfo of(
-            LocalDateTime dateTime,
-            ZoneOffset offset,
-            ZoneOffsetTransition transition) {
-        ZoneRules.checkNotNull(dateTime, "LocalDateTime must not be null");
-        if ((offset == null && transition == null) || (offset != null && transition != null)) {
-            throw new IllegalArgumentException("One, but not both, of offset or transition must be specified");
-        }
-        return new ZoneOffsetInfo(dateTime, offset, transition);
+    public static ZoneOffsetInfo ofOffset(ZoneOffset offset) {
+        MathUtils.checkNotNull(offset, "ZoneOffsetTransition must not be null");
+        return new ZoneOffsetInfo(offset, null);
+    }
+
+    /**
+     * Creates an instance representing a transition.
+     * <p>
+     * Applications should normally obtain an instance from {@link ZoneRules}.
+     * This method is intended for use by implementors of {@code ZoneRules}.
+     *
+     * @param transition  the details of the transition including the offset before and after, not null
+     */
+    public static ZoneOffsetInfo ofTransition(ZoneOffsetTransition transition) {
+        MathUtils.checkNotNull(transition, "ZoneOffsetTransition must not be null");
+        return new ZoneOffsetInfo(null, transition);
     }
 
     /**
@@ -98,25 +97,12 @@ public final class ZoneOffsetInfo {
      * @param dateTime  the local date-time that this info applies to, not null
      * @param offset  the offset applicable at the date-time, not null
      */
-    ZoneOffsetInfo(
-            LocalDateTime dateTime,
-            ZoneOffset offset,
-            ZoneOffsetTransition transition) {
-        this.dateTime = dateTime;
+    ZoneOffsetInfo(ZoneOffset offset, ZoneOffsetTransition transition) {
         this.offset = offset;
         this.transition = transition;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the local date-time that this info is applicable to.
-     *
-     * @return the date-time that this is the information for, not null
-     */
-    public LocalDateTime getLocalDateTime() {
-        return dateTime;
-    }
-
     /**
      * Is a transition occurring on the local time-line.
      * <p>
@@ -199,8 +185,7 @@ public final class ZoneOffsetInfo {
         }
         if (otherInfo instanceof ZoneOffsetInfo) {
             ZoneOffsetInfo info = (ZoneOffsetInfo) otherInfo;
-            return dateTime.equals(info.dateTime) &&
-                    (transition != null ? transition.equals(info.transition) : offset.equals(info.offset));
+            return (transition != null ? transition.equals(info.transition) : offset.equals(info.offset));
         }
         return false;
     }
@@ -212,7 +197,7 @@ public final class ZoneOffsetInfo {
      */
     @Override
     public int hashCode() {
-        return dateTime.hashCode() ^ (transition != null ? transition.hashCode() : offset.hashCode());
+        return (transition != null ? transition.hashCode() : offset.hashCode());
     }
 
     /**
@@ -222,10 +207,8 @@ public final class ZoneOffsetInfo {
      */
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder(32);
         buf.append("OffsetInfo[")
-            .append(dateTime)
-            .append(' ')
             .append(isTransition() ? transition : offset)
             .append(']');
         return buf.toString();

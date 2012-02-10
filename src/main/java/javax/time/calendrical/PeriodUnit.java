@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -101,8 +101,8 @@ public abstract class PeriodUnit
      * @throws IllegalArgumentException if the duration is zero or negative
      */
     protected PeriodUnit(String name, Duration estimatedDuration) {
-        ISOChronology.checkNotNull(name, "Name must not be null");
-        ISOChronology.checkNotNull(estimatedDuration, "Estimated duration must not be null");
+        MathUtils.checkNotNull(name, "Name must not be null");
+        MathUtils.checkNotNull(estimatedDuration, "Estimated duration must not be null");
         if (estimatedDuration.isNegative() || estimatedDuration.isZero()) {
             throw new IllegalArgumentException("Alternate period must not be negative or zero");
         }
@@ -130,8 +130,8 @@ public abstract class PeriodUnit
      * @throws ArithmeticException if the equivalent period calculation overflows
      */
     protected PeriodUnit(String name, long baseEquivalentAmount, PeriodUnit baseUnit) {
-        ISOChronology.checkNotNull(name, "Name must not be null");
-        ISOChronology.checkNotNull(baseUnit, "Base unit must not be null");
+        MathUtils.checkNotNull(name, "Name must not be null");
+        MathUtils.checkNotNull(baseUnit, "Base unit must not be null");
         if (baseUnit != baseUnit.getBaseUnit()) {
             throw new IllegalArgumentException("Unit must be base");
         }
@@ -254,7 +254,7 @@ public abstract class PeriodUnit
      * @throws ArithmeticException if the calculation overflows
      */
     public long toEquivalent(PeriodUnit unit) {
-        ISOChronology.checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         final long thisEquiv = getBaseEquivalentAmount();
         final long otherEquiv = unit.getBaseEquivalentAmount();
         if (getBaseUnit().equals(unit.getBaseUnit()) && thisEquiv % otherEquiv == 0) {
@@ -276,7 +276,7 @@ public abstract class PeriodUnit
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField convertEquivalent(PeriodField field) {
-        ISOChronology.checkNotNull(field, "PeriodField must not be null");
+        MathUtils.checkNotNull(field, "PeriodField must not be null");
         if (field.getUnit() == this) {
             return field;
         }
@@ -301,7 +301,7 @@ public abstract class PeriodUnit
      * @throws ArithmeticException if the calculation overflows
      */
     public PeriodField convertEquivalent(long amount, PeriodUnit unit) {
-        ISOChronology.checkNotNull(unit, "PeriodUnit must not be null");
+        MathUtils.checkNotNull(unit, "PeriodUnit must not be null");
         if (getBaseUnit().equals(unit.getBaseUnit())) {
             final long thisEquiv = getBaseEquivalentAmount();
             final long otherEquiv = unit.getBaseEquivalentAmount();

@@ -47,10 +47,10 @@ import static javax.time.calendrical.ISODateTimeRule.WEEK_BASED_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.WEEK_OF_WEEK_BASED_YEAR;
 import static javax.time.calendrical.ISODateTimeRule.YEAR;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,7 +62,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
@@ -136,7 +135,6 @@ public class TestLocalDate extends AbstractTest {
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     @Test(groups={"implementation"})
@@ -2369,28 +2367,6 @@ public class TestLocalDate extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // matches()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matches() {
-        assertTrue(TEST_2007_07_15.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return true;
-            }
-        }));
-        assertFalse(TEST_2007_07_15.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return false;
-            }
-        }));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matches_null() {
-        TEST_2007_07_15.matches(null);
-    }
-
-    //-----------------------------------------------------------------------
     // atTime()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -2850,33 +2826,6 @@ public class TestLocalDate extends AbstractTest {
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toString_formatter_null() {
         LocalDate.of(2010, 12, 3).toString(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical() - parameter is larger calendrical
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matchesCalendrical_true_date() {
-        LocalDate test = TEST_2007_07_15;
-        OffsetDate cal = TEST_2007_07_15.atOffset(ZoneOffset.UTC);
-        assertEquals(test.matchesCalendrical(cal), true);
-    }
-
-    @Test(groups={"tck"})
-    public void test_matchesCalendrical_false_date() {
-        LocalDate test = TEST_2007_07_15;
-        OffsetDate cal = TEST_2007_07_15.plusYears(1).atOffset(ZoneOffset.UTC);
-        assertEquals(test.matchesCalendrical(cal), false);
-    }
-
-    @Test(groups={"tck", "implementation"})
-    public void test_matchesCalendrical_itself_true() {
-        assertEquals(TEST_2007_07_15.matchesCalendrical(TEST_2007_07_15), true);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        TEST_2007_07_15.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

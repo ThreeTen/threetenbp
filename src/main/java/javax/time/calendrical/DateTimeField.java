@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -56,7 +56,7 @@ import javax.time.format.TextStyle;
  * @author Stephen Colebourne
  */
 public final class DateTimeField
-        implements Calendrical, CalendricalMatcher, Comparable<DateTimeField>, Serializable {
+        implements Calendrical, Comparable<DateTimeField>, Serializable {
 
     /**
      * Serialization version.
@@ -82,7 +82,7 @@ public final class DateTimeField
      * @return the date-time field, not null
      */
     public static DateTimeField of(DateTimeRule rule, long value) {
-        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
+        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
         return new DateTimeField(rule, value);
     }
 
@@ -156,7 +156,7 @@ public final class DateTimeField
      * @return a {@code DateTimeField} based on this field with the specified rule, not null
      */
     public DateTimeField withRule(DateTimeRule rule) {
-        ISOChronology.checkNotNull(rule, "DateTimeRule must not be null");
+        MathUtils.checkNotNull(rule, "DateTimeRule must not be null");
         if (rule.equals(this.rule)) {
             return this;
         }
@@ -256,20 +256,24 @@ public final class DateTimeField
      * @return the textual representation of the field, not null
      */
     public String getText(TextStyle textStyle, Locale locale) {
-        ISOChronology.checkNotNull(textStyle, "TextStyle must not be null");
-        ISOChronology.checkNotNull(locale, "Locale must not be null");
+        MathUtils.checkNotNull(textStyle, "TextStyle must not be null");
+        MathUtils.checkNotNull(locale, "Locale must not be null");
         String text = DateTimeFormatters.getTextProvider().getText(this, textStyle, locale);
         return text == null ? Long.toString(value) : text;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this field matches the equivalent field in the specified calendrical.
+     * Matches this field against the specified calendrical.
+     * <p>
+     * This checks whether the value of this field is the same as the value of
+     * the same field extracted from the calendrical.
+     * If the field cannot be extracted, false is returned.
      *
      * @param calendrical  the calendrical to match, not null
      * @return true if the calendrical fields match, false otherwise
      */
-    public boolean matchesCalendrical(Calendrical calendrical) {
+    public boolean matches(Calendrical calendrical) {
         return this.equals(calendrical.get(rule));
     }
 
@@ -316,7 +320,7 @@ public final class DateTimeField
      * @return the derived value for the rule, null if the value cannot be derived
      */
     DateTimeField derive(DateTimeRule ruleToDerive) {
-        ISOChronology.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
+        MathUtils.checkNotNull(ruleToDerive, "DateTimeRule must not be null");
         // check if this is the desired output already
         if (this.rule.equals(ruleToDerive)) {
             return this;

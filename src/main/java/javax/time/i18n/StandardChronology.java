@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,6 +34,7 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.LocalDate;
+import javax.time.MathUtils;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
@@ -144,7 +145,7 @@ public abstract class StandardChronology extends Chronology {
      * @return the calendar system proleptic-year
      */
     public int getProlepticYear(Era era, int yearOfEra) {
-        ChronologyDate.checkNotNull(era, "Era must not be null");
+        MathUtils.checkNotNull(era, "Era must not be null");
         return (era.getValue() == 1 ? yearOfEra : 1 - yearOfEra);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,7 +43,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
@@ -77,7 +76,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, CalendricalMatcher, Comparable<LocalDateTime>, Serializable {
+        implements Calendrical, Comparable<LocalDateTime>, Serializable {
 
     /**
      * Constant for the local date-time of midnight at the start of the minimum date.
@@ -143,7 +142,7 @@ public final class LocalDateTime
      * @return the current date-time, not null
      */
     public static LocalDateTime now(Clock clock) {
-        Instant.checkNotNull(clock, "Clock must not be null");
+        MathUtils.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDateTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -223,7 +222,7 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime ofMidnight(LocalDate date) {
-        Instant.checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -385,8 +384,8 @@ public final class LocalDateTime
      * @return the local date-time, not null
      */
     public static LocalDateTime of(LocalDate date, LocalTime time) {
-        Instant.checkNotNull(date, "LocalDate must not be null");
-        Instant.checkNotNull(time, "LocalTime must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(time, "LocalTime must not be null");
         return new LocalDateTime(date, time);
     }
 
@@ -452,7 +451,7 @@ public final class LocalDateTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -1575,35 +1574,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this {@code LocalDateTime} matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the date-time.
-     * A simple matcher might simply compare one of the fields, such as the year field.
-     * A more complex matcher might check if the date is the last day of the month.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this date-time matches the matcher, false otherwise
-     */
-    public boolean matches(CalendricalMatcher matcher) {
-        return matcher.matchesCalendrical(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the date-time extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link #matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns an offset date-time formed from this date-time and the specified offset.
      * <p>
      * This merges the two objects - {@code this} and the specified offset -
@@ -1782,7 +1752,7 @@ public final class LocalDateTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 
 /**
  * A rule defining how a single well-defined calendrical element operates.
@@ -138,7 +139,7 @@ public abstract class CalendricalRule<T>
      * @return the value of the field, null if unable to extract the field
      */
     public final T getValue(Calendrical calendrical) {
-        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
+        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
         return calendrical.get(this);
     }
 

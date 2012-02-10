@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,7 +39,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
@@ -78,7 +77,7 @@ import javax.time.format.DateTimeFormatterBuilder;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<MonthDay>, Serializable {
+        implements Calendrical, DateAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -162,7 +161,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
     public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
-        Instant.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
@@ -233,7 +232,7 @@ public final class MonthDay
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -326,7 +325,7 @@ public final class MonthDay
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
-        Instant.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        MathUtils.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         int maxDays = monthOfYear.maxLengthInDays();
         if (day > maxDays) {
             return with(monthOfYear, maxDays);
@@ -376,19 +375,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the month-day extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link LocalDate#matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
-    /**
      * Adjusts a date to have the value of this month-day, returning a new date.
      * <p>
      * This method implements the {@link DateAdjuster} interface.
@@ -423,13 +409,13 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        Instant.checkNotNull(date, "LocalDate must not be null");
-        Instant.checkNotNull(resolver, "DateResolver must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(resolver, "DateResolver must not be null");
         if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
             return date;
         }
         LocalDate resolved = resolver.resolveDate(date.getYear(), month, day);
-        Instant.checkNotNull(resolved, "The implementation of DateResolver must not return null");
+        MathUtils.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }
 
@@ -574,7 +560,7 @@ public final class MonthDay
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

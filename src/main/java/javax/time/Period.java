@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -183,7 +183,7 @@ public final class Period
      * @throws ArithmeticException if any provided amount, exceeds the supported range
      */
     public static Period of(PeriodProvider periodProvider) {
-        Instant.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        MathUtils.checkNotNull(periodProvider, "PeriodProvider must not be null");
         if (periodProvider instanceof Period) {
             return (Period) periodProvider;
         }
@@ -410,7 +410,7 @@ public final class Period
      * @throws ArithmeticException if the result exceeds the supported period range
      */
     public static Period of(Duration duration) {
-        Instant.checkNotNull(duration, "Duration must not be null");
+        MathUtils.checkNotNull(duration, "Duration must not be null");
         if (duration.isZero()) {
             return ZERO;
         }
@@ -551,7 +551,7 @@ public final class Period
      * @throws CalendricalParseException if the text cannot be parsed to a Period
      */
     public static Period parse(final CharSequence text) {
-        Instant.checkNotNull(text, "Text to parse must not be null");
+        MathUtils.checkNotNull(text, "Text to parse must not be null");
         return new PeriodParser(text).parse();
     }
 

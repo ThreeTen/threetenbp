@@ -47,10 +47,8 @@ import java.util.Iterator;
 
 import javax.time.CalendricalException;
 import javax.time.LocalDate;
-import javax.time.LocalTime;
 import javax.time.Year;
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
@@ -79,7 +77,6 @@ public class TestWeekBasedYear {
         assertTrue(Calendrical.class.isAssignableFrom(WeekBasedYear.class));
         assertTrue(Serializable.class.isAssignableFrom(WeekBasedYear.class));
         assertTrue(Comparable.class.isAssignableFrom(WeekBasedYear.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(WeekBasedYear.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -224,50 +221,6 @@ public class TestWeekBasedYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullCalendrical() {
         WeekBasedYear.weekBasedYear((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    @DataProvider(name="matchesCalendrical")
-    Iterator<Object[]> matchesCalendrical() {
-        return new Iterator<Object[]>() {
-            private LocalDate date = LocalDate.of(2008, 1, 1);
-
-            public boolean hasNext() {
-                return date.getYear() != 2009;
-            }
-
-            public Object[] next() {
-                LocalDate ret = date;
-                date = date.plusDays(1);
-                return new Object[] {ret};
-            }
-
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-
-        };
-    }
-
-    @Test(dataProvider="matchesCalendrical")
-    public void test_matchesCalendrical(LocalDate d) {
-        WeekBasedYear test = WeekBasedYear.weekBasedYear(d);
-        assertTrue(test.matchesCalendrical(d));
-
-        test = WeekBasedYear.weekBasedYear(test.getValue() - 1);
-        assertFalse(test.matchesCalendrical(d));
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(WeekBasedYear.weekBasedYear(12).matchesCalendrical(LocalTime.of(12, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        WeekBasedYear test = WeekBasedYear.weekBasedYear(1);
-        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

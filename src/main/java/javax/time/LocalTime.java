@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -52,7 +52,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
@@ -79,7 +78,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements Calendrical, CalendricalMatcher, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements Calendrical, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -170,7 +169,7 @@ public final class LocalTime
      * @return the current time, not null
      */
     public static LocalTime now(Clock clock) {
-        Instant.checkNotNull(clock, "Clock must not be null");
+        MathUtils.checkNotNull(clock, "Clock must not be null");
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
@@ -351,7 +350,7 @@ public final class LocalTime
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -801,34 +800,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this {@code LocalTime} matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the time.
-     * A simple matcher might simply compare one of the fields, such as the hour field.
-     * A more complex matcher might check if the time is the last second of the day.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this time matches the matcher, false otherwise
-     */
-    public boolean matches(CalendricalMatcher matcher) {
-        return matcher.matchesCalendrical(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the time extracted from the calendrical matches this.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link #matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
-    /**
      * Adjusts a time to have the value of this time.
      * <p>
      * This method implements the {@code TimeAdjuster} interface.
@@ -838,7 +809,7 @@ public final class LocalTime
      * @return the adjusted time, not null
      */
     public LocalTime adjustTime(LocalTime time) {
-        Instant.checkNotNull(time, "LocalTime must not be null");
+        MathUtils.checkNotNull(time, "LocalTime must not be null");
         return this.equals(time) ? time : this;
     }
 
@@ -1020,7 +991,7 @@ public final class LocalTime
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

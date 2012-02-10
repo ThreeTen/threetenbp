@@ -44,10 +44,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
-import javax.time.LocalDate;
 import javax.time.LocalTime;
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateTimeFields;
 import javax.time.calendrical.DateTimeRule;
 import javax.time.calendrical.ISODateTimeRule;
@@ -79,7 +77,6 @@ public class TestSecondOfMinute {
         assertTrue(Serializable.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(Comparable.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(SecondOfMinute.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(SecondOfMinute.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -170,30 +167,6 @@ public class TestSecondOfMinute {
     public void test_adjustTime_nullLocalTime() {
         SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
         test.adjustTime((LocalTime) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical() {
-        LocalTime work = LocalTime.of(5, 10, 0, 20);
-        for (int i = 0; i <= MAX_LENGTH; i++) {
-            for (int j = 0; j <= MAX_LENGTH; j++) {
-                SecondOfMinute test = SecondOfMinute.secondOfMinute(j);
-                assertEquals(test.matchesCalendrical(work), i == j);
-            }
-            work = work.plusSeconds(1);
-        }
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(SecondOfMinute.secondOfMinute(12).matchesCalendrical(LocalDate.of(2008, 6, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
-        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,6 +34,7 @@ package javax.time.format;
 import java.util.Locale;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalRule;
 
@@ -100,7 +101,7 @@ public final class DateTimePrintContext {
      * @param calendrical  the calendrical, not null
      */
     public void setCalendrical(Calendrical calendrical) {
-        DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
+        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
         this.calendrical = calendrical;
     }
 
@@ -126,7 +127,7 @@ public final class DateTimePrintContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
+        MathUtils.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
     }
 
@@ -150,7 +151,7 @@ public final class DateTimePrintContext {
      * @param symbols  the formatting symbols, not null
      */
     public void setSymbols(DateTimeFormatSymbols symbols) {
-        DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
+        MathUtils.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
         this.symbols = symbols;
     }
 

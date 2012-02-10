@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.LocalDate;
+import javax.time.MathUtils;
 import javax.time.MonthOfYear;
 import javax.time.Year;
 import javax.time.calendrical.Calendrical;
@@ -91,7 +92,7 @@ public final class HistoricChronology extends Chronology implements Serializable
      * @return a {@code HistoricChronology}, not null
      */
     public static HistoricChronology cutoverAt(final LocalDate cutover) {
-        checkNotNull(cutover, "Cutover date must not be null");
+        MathUtils.checkNotNull(cutover, "Cutover date must not be null");
         return new HistoricChronology(cutover);
     }
 
@@ -113,20 +114,7 @@ public final class HistoricChronology extends Chronology implements Serializable
         this.cutover = cutover;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Validates that the input value is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error to throw
-     * @throws NullPointerException if the object is null
-     */
-    static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
-    }
-
+    //-------------------------------------------------------------------------
     /**
      * Calculates the day-of-year from a date.
      *

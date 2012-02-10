@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -192,7 +192,7 @@ public final class TAIInstant
      * @throws CalendricalException if the text cannot be parsed
      */
     public static TAIInstant parse(CharSequence text) {
-        ISOChronology.checkNotNull(text, "Text to parse must not be null");
+        MathUtils.checkNotNull(text, "Text to parse must not be null");
         Matcher matcher = PARSER.matcher(text);
         if (matcher.matches()) {
             try {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -123,7 +123,7 @@ public final class ISODateTimeRule extends DateTimeRule implements Serializable 
     //-----------------------------------------------------------------------
     @Override
     public DateTimeRuleRange getValueRange(Calendrical calendrical) {
-        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
+        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
         switch (ordinal) {
             case DAY_OF_MONTH_ORDINAL: {
                 DateTimeField moyVal = calendrical.get(MONTH_OF_YEAR);

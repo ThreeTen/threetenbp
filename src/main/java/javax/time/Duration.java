@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -179,7 +179,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the input seconds exceeds the capacity of a {@code Duration}
      */
     public static Duration ofSeconds(BigDecimal seconds) {
-        Instant.checkNotNull(seconds, "Seconds must not be null");
+        MathUtils.checkNotNull(seconds, "Seconds must not be null");
         return ofNanos(seconds.movePointRight(9).toBigIntegerExact());
     }
 
@@ -233,7 +233,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws ArithmeticException if the input nanoseconds exceeds the capacity of {@code Duration}
      */
     public static Duration ofNanos(BigInteger nanos) {
-        Instant.checkNotNull(nanos, "Nanos must not be null");
+        MathUtils.checkNotNull(nanos, "Nanos must not be null");
         BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
         if (divRem[0].bitLength() > 63) {
             throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
@@ -304,7 +304,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *  which can only occur for units MINUTES, HOURS and DAYS
      */
     public static Duration of(long amount, TimeUnit unit) {
-        Instant.checkNotNull(unit, "TimeUnit must not be null");
+        MathUtils.checkNotNull(unit, "TimeUnit must not be null");
         long nanos = unit.toNanos(amount);
         if (unit == TimeUnit.NANOSECONDS || (nanos != Long.MAX_VALUE && nanos != Long.MIN_VALUE)) {
             return ofNanos(nanos);
@@ -373,7 +373,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @throws CalendricalParseException if the text cannot be parsed to a {@code Duration}
      */
     public static Duration parse(final CharSequence text) {
-        Instant.checkNotNull(text, "Text to parse must not be null");
+        MathUtils.checkNotNull(text, "Text to parse must not be null");
         int len = text.length();
         if (len < 4 ||
                 (text.charAt(0) != 'P' && text.charAt(0) != 'p') ||
@@ -593,7 +593,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * and {@code Long.MIN_VALUE}, positive or negative
      */
     public long get(TimeUnit unit) {
-        Instant.checkNotNull(unit, "TimeUnit must not be null");
+        MathUtils.checkNotNull(unit, "TimeUnit must not be null");
         BigInteger nanos = toNanos();
         switch (unit) {
             case NANOSECONDS:

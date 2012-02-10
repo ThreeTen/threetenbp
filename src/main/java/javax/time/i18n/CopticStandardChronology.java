@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -84,20 +84,6 @@ public final class CopticStandardChronology extends StandardChronology implement
 
     //-----------------------------------------------------------------------
     /**
-     * Validates that the input value is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error to throw
-     * @throws NullPointerException if the object is null
-     */
-    static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the name of the chronology, 'Coptic'.
      *
      * @return the name of the chronology, not null
@@ -109,7 +95,7 @@ public final class CopticStandardChronology extends StandardChronology implement
 
     @Override
     public ChronologyDate createDate(LocalDate date) {
-        ChronologyDate.checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
         long epochDay = date.toEpochDay();
         int prolepticYear = (int) (((epochDay * 4) + 1463) / 1461);
         int startYearEpochDay = (prolepticYear - 1) * 365 + (prolepticYear / 4);

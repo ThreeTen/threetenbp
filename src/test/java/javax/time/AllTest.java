@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,7 +33,6 @@ package javax.time;
 
 import java.util.Arrays;
 
-import javax.time.calendrical.TestCalendricalMatchers;
 import javax.time.calendrical.TestCalendricalNomalizer;
 import javax.time.calendrical.TestCalendricalRule;
 import javax.time.calendrical.TestDateAdjusters;
@@ -102,7 +101,6 @@ import javax.time.zone.TestTZDBZoneRulesCompiler;
 import javax.time.zone.TestZoneOffsetInfo;
 import javax.time.zone.TestZoneOffsetTransition;
 import javax.time.zone.TestZoneOffsetTransitionRule;
-import javax.time.zone.TestZoneRules;
 import javax.time.zone.TestZoneRulesBuilder;
 import javax.time.zone.TestZoneRulesGroup;
 
@@ -159,7 +157,6 @@ public class AllTest {
             TestZoneId.class,
             TestZoneOffset.class,
             // advanced calendar classes
-            TestCalendricalMatchers.class,
             TestCalendricalNomalizer.class,
             TestCalendricalRule.class,
             TestDateAdjusters.class,
@@ -230,7 +227,6 @@ public class AllTest {
             TestZoneOffsetInfo.class,
             TestZoneOffsetTransition.class,
             TestZoneOffsetTransitionRule.class,
-            TestZoneRules.class,
             TestZoneRulesBuilder.class,
             TestZoneRulesGroup.class,
         });

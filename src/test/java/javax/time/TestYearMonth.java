@@ -58,7 +58,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
@@ -108,7 +107,6 @@ public class TestYearMonth {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateAdjuster);
-        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     @Test(groups={"tck"})
@@ -1094,24 +1092,6 @@ public class TestYearMonth {
         YearMonth test = YearMonth.of(2008, 6);
         LocalDate date = LocalDate.of(2007, 6, 30);
         test.adjustDate(date, new MockDateResolverReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesDate()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matchesDate() {
-        assertEquals(YearMonth.of(2008, 6).matchesCalendrical(LocalDate.of(2008, 6, 1)), true);
-        assertEquals(YearMonth.of(2007, 6).matchesCalendrical(LocalDate.of(2007, 6, 1)), true);
-        assertEquals(YearMonth.of(2008, 5).matchesCalendrical(LocalDate.of(2008, 5, 1)), true);
-        
-        assertEquals(YearMonth.of(2007, 6).matchesCalendrical(LocalDate.of(2008, 6, 1)), false);
-        assertEquals(YearMonth.of(2008, 5).matchesCalendrical(LocalDate.of(2008, 6, 1)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matchesDate_null() {
-        TEST_2008_06.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

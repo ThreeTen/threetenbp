@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -133,7 +133,7 @@ public final class CalendricalEngine {
      * @throws CalendricalException if the calendricals cannot be successfully merged
      */
     public static CalendricalEngine merge(Calendrical... calendricals) {
-        ISOChronology.checkNotNull(calendricals, "Calendricals must not be null");
+        MathUtils.checkNotNull(calendricals, "Calendricals must not be null");
         CalendricalEngine target;
         try {
             List<CalendricalEngine> semiNormalized = new ArrayList<CalendricalEngine>(calendricals.length);
@@ -188,7 +188,7 @@ public final class CalendricalEngine {
     @SuppressWarnings("unchecked")
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData,
             LocalDate date, LocalTime time, ZoneOffset offset, ZoneId zone, Chronology chronology, DateTimeFields fields) {
-        ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
+        MathUtils.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
         if (fields == null) {
             // optimize simple cases
             if (ruleToDerive instanceof ISODateTimeRule) {
@@ -226,8 +226,8 @@ public final class CalendricalEngine {
      * @return the derived value for the rule, null if unable to derive
      */
     public static <R> R derive(CalendricalRule<R> ruleToDerive, CalendricalRule<?> ruleOfData, Chronology chronology, DateTimeField field) {
-        ISOChronology.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
-        ISOChronology.checkNotNull(field, "DateTimeField must not be null");
+        MathUtils.checkNotNull(ruleToDerive, "CalendricalRule must not be null");
+        MathUtils.checkNotNull(field, "DateTimeField must not be null");
         CalendricalEngine engine = new CalendricalEngine(ruleOfData, null, null, null, null, chronology, Collections.singleton(field));
         engine.normalize();
         return engine.derive(ruleToDerive);

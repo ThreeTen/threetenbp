@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.DateResolver;
@@ -67,7 +66,7 @@ import javax.time.format.DateTimeFormatters;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, CalendricalMatcher, Comparable<OffsetDate>, Serializable {
+        implements Calendrical, Comparable<OffsetDate>, Serializable {
 
     /**
      * Serialization version.
@@ -123,7 +122,7 @@ public final class OffsetDate
      * @return the current date, not null
      */
     public static OffsetDate now(Clock clock) {
-        Instant.checkNotNull(clock, "Clock must not be null");
+        MathUtils.checkNotNull(clock, "Clock must not be null");
         final Instant now = clock.instant();  // called once
         return ofInstant(now, clock.getZone().getRules().getOffset(now));
     }
@@ -205,7 +204,7 @@ public final class OffsetDate
      */
     public static OffsetDate ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.of(instantProvider);
-        Instant.checkNotNull(offset, "ZoneOffset must not be null");
+        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         long yearZeroDay = MathUtils.floorDiv(epochSec, MathUtils.SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;
         LocalDate date = LocalDate.ofYearZeroDay(yearZeroDay);
@@ -273,7 +272,7 @@ public final class OffsetDate
      * @throws CalendricalParseException if the text cannot be parsed
      */
     public static OffsetDate parse(CharSequence text, DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.parse(text, rule());
     }
 
@@ -351,7 +350,7 @@ public final class OffsetDate
      * @return an {@code OffsetDate} based on this date with the requested offset, not null
      */
     public OffsetDate withOffset(ZoneOffset offset) {
-        Instant.checkNotNull(offset, "ZoneOffset must not be null");
+        MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         return with(date, offset);
     }
 
@@ -933,35 +932,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this {@code OffsetDate} matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the date.
-     * A simple matcher might simply compare one of the fields, such as the year field.
-     * A more complex matcher might check if the date is the last day of the month.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this date matches the matcher, false otherwise
-     */
-    public boolean matches(CalendricalMatcher matcher) {
-        return matcher.matchesCalendrical(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the date extracted from the calendrical matches this date.
-     * <p>
-     * This method implements the {@code CalendricalMatcher} interface.
-     * It is intended that applications use {@link #matches} rather than this method.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns an offset date-time formed from this date at the specified time.
      * <p>
      * This merges the two objects - {@code this} and the specified time -
@@ -1252,7 +1222,7 @@ public final class OffsetDate
      * @throws CalendricalException if an error occurs during printing
      */
     public String toString(DateTimeFormatter formatter) {
-        Instant.checkNotNull(formatter, "DateTimeFormatter must not be null");
+        MathUtils.checkNotNull(formatter, "DateTimeFormatter must not be null");
         return formatter.print(this);
     }
 

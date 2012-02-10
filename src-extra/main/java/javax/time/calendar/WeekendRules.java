@@ -31,14 +31,9 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendrical.ISODateTimeRule.DAY_OF_WEEK;
-
 import javax.time.DayOfWeek;
 import javax.time.LocalDate;
-import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.DateAdjuster;
-import javax.time.calendrical.DateTimeField;
 
 /**
  * A helper class for rules around weekends.
@@ -85,58 +80,6 @@ public final class WeekendRules {
                     default:
                         return date.plusDays(1);
                 }
-            }
-        },
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the weekend day matcher, which returns true if the date
-     * is Saturday or Sunday.
-     * <p>
-     * Some territories have weekends that do not consist of Saturday and Sunday.
-     * No implementation is supplied to support this, however a matcher
-     * can be easily written to do so.
-     *
-     * @return the weekend day matcher, not null
-     */
-    public static CalendricalMatcher weekendDay() {
-        return Matcher.WEEKEND_DAY;
-    }
-
-    /**
-     * Returns the non weekend day matcher, which returns true if the date
-     * is between Monday and Friday inclusive.
-     * <p>
-     * Some territories have weekends that do not consist of Saturday and Sunday.
-     * No implementation is supplied to support this, however a matcher
-     * can be easily written to do so.
-     *
-     * @return the non weekend day matcher, not null
-     */
-    public static CalendricalMatcher nonWeekendDay() {
-        return Matcher.NON_WEEKEND_DAY;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Enum implementing the matchers.
-     */
-    private static enum Matcher implements CalendricalMatcher {
-        /** Non weekend matcher. */
-        WEEKEND_DAY {
-            /** {@inheritDoc} */
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField dow = calendrical.get(DAY_OF_WEEK);
-                return dow != null && (dow.getValue() == 6 || dow.getValue() == 7);
-            }
-        },
-        /** Non weekend matcher. */
-        NON_WEEKEND_DAY {
-            /** {@inheritDoc} */
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                DateTimeField dow = calendrical.get(DAY_OF_WEEK);
-                return dow != null && dow.getValue() >= 1 && dow.getValue() <= 5;
             }
         },
     }

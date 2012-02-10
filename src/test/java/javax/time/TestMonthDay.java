@@ -53,7 +53,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
@@ -96,7 +95,6 @@ public class TestMonthDay {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateAdjuster);
-        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     @Test(groups={"tck"})
@@ -676,23 +674,6 @@ public class TestMonthDay {
         MonthDay test = MonthDay.of(2, 29);
         LocalDate date = LocalDate.of(2007, 6, 30);
         test.adjustDate(date, new MockDateResolverReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesDate()
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_matchesDate() {
-        assertEquals(MonthDay.of(1, 1).matchesCalendrical(LocalDate.of(2007, 1, 1)), true);
-        assertEquals(MonthDay.of(1, 1).matchesCalendrical(LocalDate.of(2008, 1, 1)), true);
-        
-        assertEquals(MonthDay.of(2, 1).matchesCalendrical(LocalDate.of(2007, 1, 1)), false);
-        assertEquals(MonthDay.of(1, 2).matchesCalendrical(LocalDate.of(2008, 1, 1)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matchesDate_null() {
-        TEST_07_15.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

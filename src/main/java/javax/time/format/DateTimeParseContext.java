@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.time.MathUtils;
 import javax.time.calendrical.Calendrical;
 import javax.time.calendrical.CalendricalEngine;
 import javax.time.calendrical.DateTimeField;
@@ -117,7 +118,7 @@ public final class DateTimeParseContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
+        MathUtils.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
     }
 
@@ -141,7 +142,7 @@ public final class DateTimeParseContext {
      * @param symbols  the formatting symbols, not null
      */
     public void setSymbols(DateTimeFormatSymbols symbols) {
-        DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
+        MathUtils.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
         this.symbols = symbols;
     }
 
@@ -319,7 +320,7 @@ public final class DateTimeParseContext {
      * @param calendrical  the parsed calendrical, not null
      */
     public <T> void setParsed(Calendrical calendrical) {
-        DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
+        MathUtils.checkNotNull(calendrical, "Calendrical must not be null");
         currentCalendrical().calendricals.add(calendrical);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.time.MathUtils;
 
 /**
  * Localized symbols used in date and time formatting.
@@ -108,7 +110,7 @@ public final class DateTimeFormatSymbols {
      * @return the info, not null
      */
     public static DateTimeFormatSymbols of(Locale locale) {
-        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
+        MathUtils.checkNotNull(locale, "Locale must not be null");
         DateTimeFormatSymbols info = CACHE.get(locale);
         if (info == null) {
             info = create(locale);
@@ -120,7 +122,7 @@ public final class DateTimeFormatSymbols {
 
     private static DateTimeFormatSymbols create(Locale locale) {
         DecimalFormatSymbols oldSymbols = DecimalFormatSymbols.getInstance(locale);
-        DateTimeFormatter.checkNotNull(oldSymbols, "Symbols to convert must not be null");
+        MathUtils.checkNotNull(oldSymbols, "Symbols to convert must not be null");
         char zeroDigit = oldSymbols.getZeroDigit();
         char positiveSign = '+';
         char negativeSign = oldSymbols.getMinusSign();

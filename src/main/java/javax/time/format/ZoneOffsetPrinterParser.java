@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,7 @@
  */
 package javax.time.format;
 
+import javax.time.MathUtils;
 import javax.time.ZoneOffset;
 
 /**
@@ -65,8 +66,8 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param pattern  the pattern
      */
     ZoneOffsetPrinterParser(String noOffsetText, String pattern) {
-        DateTimeFormatterBuilder.checkNotNull(noOffsetText, "No offset text must not be null");
-        DateTimeFormatterBuilder.checkNotNull(pattern, "Pattern must not be null");
+        MathUtils.checkNotNull(noOffsetText, "No offset text must not be null");
+        MathUtils.checkNotNull(pattern, "Pattern must not be null");
         this.noOffsetText = noOffsetText;
         this.type = checkPattern(pattern);
     }

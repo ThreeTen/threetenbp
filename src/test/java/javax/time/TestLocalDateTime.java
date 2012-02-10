@@ -62,7 +62,6 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
 import javax.time.calendrical.Calendrical;
-import javax.time.calendrical.CalendricalMatcher;
 import javax.time.calendrical.CalendricalRule;
 import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
@@ -135,7 +134,6 @@ public class TestLocalDateTime extends AbstractTest {
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
-        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -3439,27 +3437,6 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     //-----------------------------------------------------------------------
-    // matches()
-    //-----------------------------------------------------------------------
-    public void test_matches() {
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return true;
-            }
-        }));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(new CalendricalMatcher() {
-            public boolean matchesCalendrical(Calendrical calendrical) {
-                return false;
-            }
-        }));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matches_null() {
-        TEST_2007_07_15_12_30_40_987654321.matches(null);
-    }
-
-    //-----------------------------------------------------------------------
     // atOffset()
     //-----------------------------------------------------------------------
     public void test_atOffset() {
@@ -3811,30 +3788,6 @@ public class TestLocalDateTime extends AbstractTest {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toString_formatter_null() {
         LocalDateTime.of(2010, 12, 3, 11, 30, 45).toString(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical() - parameter is larger calendrical
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical_true_date() {
-        LocalDateTime test = TEST_2007_07_15_12_30_40_987654321;
-        OffsetDateTime cal = TEST_2007_07_15_12_30_40_987654321.atOffset(ZoneOffset.UTC);
-        assertEquals(test.matchesCalendrical(cal), true);
-    }
-
-    public void test_matchesCalendrical_false_date() {
-        LocalDateTime test = TEST_2007_07_15_12_30_40_987654321;
-        OffsetDateTime cal = TEST_2007_07_15_12_30_40_987654321.plusYears(1).atOffset(ZoneOffset.UTC);
-        assertEquals(test.matchesCalendrical(cal), false);
-    }
-
-    public void test_matchesCalendrical_itself_true() {
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.matchesCalendrical(TEST_2007_07_15_12_30_40_987654321), true);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        TEST_2007_07_15_12_30_40_987654321.matchesCalendrical(null);
     }
 
 }

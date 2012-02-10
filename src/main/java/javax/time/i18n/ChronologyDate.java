@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -99,20 +99,6 @@ public final class ChronologyDate
 
     //-----------------------------------------------------------------------
     /**
-     * Validates that the input value is not null.
-     *
-     * @param object  the object to check
-     * @param errorMessage  the error to throw
-     * @throws NullPointerException if the object is null
-     */
-    static void checkNotNull(Object object, String errorMessage) {
-        if (object == null) {
-            throw new NullPointerException(errorMessage);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Obtains a date for a chronology from the era, year-of-era, month-of-year and day-of-month.
      * <p>
      * This year used here is the {@link #getYearOfEra() year-of-era}.
@@ -130,7 +116,7 @@ public final class ChronologyDate
      */
     public static ChronologyDate of(Chronology chrono, Era era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         // accept Chronology rather than StandardChronology to aid interoperability
-        checkNotNull(chrono, "Chronology must not be null");
+        MathUtils.checkNotNull(chrono, "Chronology must not be null");
         if (chrono instanceof StandardChronology == false) {
             throw new ClassCastException("Chronology must implement StandardChronology");
         }
@@ -157,7 +143,7 @@ public final class ChronologyDate
      */
     public static ChronologyDate of(Chronology chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
         // accept Chronology rather than StandardChronology to aid interoperability
-        checkNotNull(chrono, "Chronology must not be null");
+        MathUtils.checkNotNull(chrono, "Chronology must not be null");
         if (chrono instanceof StandardChronology == false) {
             throw new ClassCastException("Chronology must implement StandardChronology");
         }
@@ -178,8 +164,8 @@ public final class ChronologyDate
      */
     public static ChronologyDate of(Chronology chrono, LocalDate date) {
         // accept Chronology rather than StandardChronology to aid interoperability
-        checkNotNull(chrono, "Chronology must not be null");
-        checkNotNull(date, "LocalDate must not be null");
+        MathUtils.checkNotNull(chrono, "Chronology must not be null");
+        MathUtils.checkNotNull(date, "LocalDate must not be null");
         if (chrono instanceof StandardChronology == false) {
             throw new ClassCastException("Chronology must implement StandardChronology");
         }

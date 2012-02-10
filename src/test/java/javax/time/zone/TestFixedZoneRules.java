@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,30 +32,26 @@
 package javax.time.zone;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
 import javax.time.LocalDateTime;
+import javax.time.LocalTime;
+import javax.time.MonthOfYear;
 import javax.time.OffsetDateTime;
 import javax.time.Period;
+import javax.time.ZoneId;
 import javax.time.ZoneOffset;
+import javax.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Test FixedZoneRules instance if called normally, or the public API if the TCK group is called.
- *
- * @author Stephen Colebourne
+ * Test ZoneRules for fixed offset time-zones.
  */
 @Test
 public class TestFixedZoneRules {
@@ -66,59 +62,16 @@ public class TestFixedZoneRules {
     private static final OffsetDateTime ODT = OffsetDateTime.of(2010, 12, 3, 11, 30, OFFSET_PONE);
     private static final Instant INSTANT = ODT.toInstant();
     
-    interface FixedZoneRulesTestFactory {
-    	ZoneRules make(ZoneOffset offset);
-    }
-    
-    private static FixedZoneRulesTestFactory factory;
-    
-    @BeforeClass(groups={"tck"})
-    public static void setupTCK() {
-    	factory = new FixedZoneRulesTestFactory() {
-			@Override
-			public ZoneRules make(ZoneOffset offset) {
-				return ZoneRules.ofFixed(offset);
-			}
-		};
-    }
-    
-    @BeforeClass(groups={"implementation"})
-    public static void setupUnit() {
-    	factory = new FixedZoneRulesTestFactory() {
-			@Override
-			public ZoneRules make(ZoneOffset offset) {
-				return new FixedZoneRules(offset);
-			}
-		};
+    private ZoneRules make(ZoneOffset offset) {
+        return ZoneId.of(offset).getRules();
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
-    @Test(groups={"implementation"})
-    public void test_interfaces() {
-        assertTrue(Serializable.class.isAssignableFrom(FixedZoneRules.class));
-    }
-
-    @Test(groups={"implementation"})
-    public void test_immutable() {
-        Class<FixedZoneRules> cls = FixedZoneRules.class;
-        assertFalse(Modifier.isPublic(cls.getModifiers()));
-        assertFalse(Modifier.isProtected(cls.getModifiers()));
-        assertFalse(Modifier.isPrivate(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers()) == false) {
-                assertTrue(Modifier.isPrivate(field.getModifiers()));
-                assertTrue(Modifier.isFinal(field.getModifiers()) ||
-                        (Modifier.isVolatile(field.getModifiers()) && Modifier.isTransient(field.getModifiers())), "" + field);
-            }
-        }
-    }
-
     @Test(groups={"implementation","tck"})
     public void test_serialization() throws Exception {
-        ZoneRules test = factory.make(OFFSET_PONE);
+        ZoneRules test = make(OFFSET_PONE);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -127,9 +80,10 @@ public class TestFixedZoneRules {
         
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream in = new ObjectInputStream(bais);
-        FixedZoneRules result = (FixedZoneRules) in.readObject();
+        ZoneRules result = (ZoneRules) in.readObject();
         
         assertEquals(result, test);
+        assertEquals(result.getClass(), test.getClass());
     }
 
     //-----------------------------------------------------------------------
@@ -137,11 +91,10 @@ public class TestFixedZoneRules {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation","tck"})
     public void test_data() {
-    	ZoneRules test = factory.make(OFFSET_PONE);
+    	ZoneRules test = make(OFFSET_PONE);
         assertEquals(test.getDaylightSavings(INSTANT), Period.ZERO);
         assertEquals(test.getOffset(INSTANT), OFFSET_PONE);
-        assertEquals(test.getOffsetInfo(LDT), new ZoneOffsetInfo(LDT, OFFSET_PONE, null));
-        assertEquals(test.getOffsetInfo(INSTANT), new ZoneOffsetInfo(LDT, OFFSET_PONE, null));
+        assertEquals(test.getOffsetInfo(LDT), ZoneOffsetInfo.ofOffset(OFFSET_PONE));
         assertEquals(test.getStandardOffset(INSTANT), OFFSET_PONE);
         assertEquals(test.getTransitions().size(), 0);
         assertEquals(test.getTransitionRules().size(), 0);
@@ -149,16 +102,39 @@ public class TestFixedZoneRules {
         assertEquals(test.previousTransition(INSTANT), null);
     }
 
+    @Test(groups="implementation")
+    public void test_data_nullInput() {
+        ZoneRules test = make(OFFSET_PONE);
+        assertEquals(test.getDaylightSavings(null), Period.ZERO);
+        assertEquals(test.getOffset(null), OFFSET_PONE);
+        assertEquals(test.getOffsetInfo(null), ZoneOffsetInfo.ofOffset(OFFSET_PONE));
+        assertEquals(test.getStandardOffset(null), OFFSET_PONE);
+        assertEquals(test.nextTransition(null), null);
+        assertEquals(test.previousTransition(null), null);
+    }
+
     @Test(groups={"implementation","tck"})
     public void test_isValidDateTime_same_offset() {
-    	ZoneRules test = factory.make(OFFSET_PONE);
+    	ZoneRules test = make(OFFSET_PONE);
         assertEquals(test.isValidDateTime(ODT), true);
     }
 
     @Test(groups={"implementation","tck"})
     public void test_isValidDateTime_diff_offset() {
-    	ZoneRules test = factory.make(OFFSET_PTWO);
+    	ZoneRules test = make(OFFSET_PTWO);
         assertEquals(test.isValidDateTime(ODT), false);
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"implementation","tck"})
+    public void test_getTransitions_immutable() {
+        ZoneRules test = make(OFFSET_PTWO);
+        test.getTransitions().add(ZoneOffsetTransition.of(ODT, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"implementation","tck"})
+    public void test_getTransitionRules_immutable() {
+        ZoneRules test = make(OFFSET_PTWO);
+        test.getTransitionRules().add(ZoneOffsetTransitionRule.of(MonthOfYear.JULY, 2, null, LocalTime.of(12, 30), false, TimeDefinition.STANDARD, OFFSET_PONE, OFFSET_PTWO, OFFSET_PONE));
     }
 
     //-----------------------------------------------------------------------
@@ -166,8 +142,8 @@ public class TestFixedZoneRules {
     //-----------------------------------------------------------------------
     @Test(groups={"implementation","tck"})
     public void test_equals() {
-    	ZoneRules a = factory.make(OFFSET_PONE);
-    	ZoneRules b = factory.make(OFFSET_PTWO);
+    	ZoneRules a = make(OFFSET_PONE);
+    	ZoneRules b = make(OFFSET_PTWO);
         
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), false);

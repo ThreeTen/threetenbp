@@ -88,7 +88,6 @@ public class TestDateTimeFields {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Calendrical.class.isAssignableFrom(DateTimeFields.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(DateTimeFields.class));
         assertTrue(Iterable.class.isAssignableFrom(DateTimeFields.class));
         assertTrue(Serializable.class.isAssignableFrom(DateTimeFields.class));
     }
@@ -819,133 +818,133 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
-    // matchesCalendrical()
+    // matches()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_ymd_date() {
+    public void test_matches_ymd_date() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
             .with(MONTH_OF_YEAR, 6)
             .with(DAY_OF_MONTH, 30);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.matchesCalendrical(date), true);
+        assertEquals(test.matches(date), true);
         // check original immutable
         assertFields(test, YEAR, 2008, MONTH_OF_YEAR, 6, DAY_OF_MONTH, 30);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_dowMatches() {
+    public void test_matches_dowMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
             .with(MONTH_OF_YEAR, 6)
             .with(DAY_OF_MONTH, 30)
             .with(DAY_OF_WEEK, 1);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.matchesCalendrical(date), true);
+        assertEquals(test.matches(date), true);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_dowNotMatches() {
+    public void test_matches_dowNotMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
             .with(MONTH_OF_YEAR, 6)
             .with(DAY_OF_MONTH, 30)
             .with(DAY_OF_WEEK, 2);  // 2008-06-30 is Monday not Tuesday
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.matchesCalendrical(date), false);
+        assertEquals(test.matches(date), false);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_ym_date_partialMatch() {
+    public void test_matches_ym_date_partialMatch() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
             .with(MONTH_OF_YEAR, 6);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.matchesCalendrical(date), true);
+        assertEquals(test.matches(date), true);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_timeIgnored() {
+    public void test_matches_incompleteMatchNoTime() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
             .with(MONTH_OF_YEAR, 6)
             .with(DAY_OF_MONTH, 30)
             .with(HOUR_OF_DAY, 12);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.matchesCalendrical(date), true);
+        assertEquals(test.matches(date), false);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_invalidDay() {
+    public void test_matches_invalidDay() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(YEAR, 2008)
             .with(MONTH_OF_YEAR, 6)
             .with(DAY_OF_MONTH, 31);
         LocalDate date = LocalDate.of(2008, 6, 30);
-        assertEquals(test.matchesCalendrical(date), false);
+        assertEquals(test.matches(date), false);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_hm_time() {
+    public void test_matches_hm_time() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30);
         LocalTime time = LocalTime.of(11, 30);
-        assertEquals(test.matchesCalendrical(time), true);
+        assertEquals(test.matches(time), true);
         // check original immutable
         assertFields(test, HOUR_OF_DAY, 11, MINUTE_OF_HOUR, 30);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_amPmMatches() {
+    public void test_matches_amPmMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30)
             .with(AMPM_OF_DAY, 0);
         LocalTime time = LocalTime.of(11, 30);
-        assertEquals(test.matchesCalendrical(time), true);
+        assertEquals(test.matches(time), true);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_amPmNotMatches() {
+    public void test_matches_amPmNotMatches() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30)
             .with(AMPM_OF_DAY, 1);  // time is 11:30, but this says PM
         LocalTime time = LocalTime.of(11, 30);
-        assertEquals(test.matchesCalendrical(time), false);
+        assertEquals(test.matches(time), false);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_h_time_partialMatch() {
+    public void test_matches_h_time_partialMatch() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11);
         LocalTime time = LocalTime.of(11, 30);
-        assertEquals(test.matchesCalendrical(time), true);
+        assertEquals(test.matches(time), true);
     }
 
     @Test(groups={"tck"})
-    public void test_matchesCalendrical_dateIgnored() {
+    public void test_matches_incompleteMatchNoDate() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30)
             .with(YEAR, 2008);
         LocalTime time = LocalTime.of(11, 30);
-        assertEquals(test.matchesCalendrical(time), true);
+        assertEquals(test.matches(time), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matchesCalendrical_null() {
+    public void test_matches_null() {
         DateTimeFields test = DateTimeFields.EMPTY
             .with(HOUR_OF_DAY, 11)
             .with(MINUTE_OF_HOUR, 30);
-        test.matchesCalendrical(null);
+        test.matches(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void test_matchesCalendrical_null_emptyFields() {
+    public void test_matches_null_emptyFields() {
         DateTimeFields test = DateTimeFields.EMPTY;
-        test.matchesCalendrical((LocalTime) null);
+        test.matches((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------
