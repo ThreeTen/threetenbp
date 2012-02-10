@@ -137,7 +137,7 @@ public class TestLocalDate extends AbstractTest {
         assertTrue(obj instanceof Comparable<?>);
     }
 
-    @Test(groups={"implementation"})
+    @Test(groups={"tck"})
     public void test_serialization() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
