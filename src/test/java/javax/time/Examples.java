@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -73,22 +73,16 @@ public class Examples {
         ZonedDateTime zdtParis = Clock.system(ZoneId.of("Europe/Paris")).zonedDateTime();
         System.out.println("Current date-time in Paris: " + zdtParis);
         
-        LocalDateTime ldt = clock.dateTime();
+        LocalDateTime ldt = LocalDateTime.now(clock);
         System.out.println("Current local date-time: " + ldt);
         
-        Year year = clock.year();
+        Year year = Year.now(clock);
         System.out.println("Year: " + year.getValue());
         
         LocalDate today = clock.today();
         System.out.println("Today: " + today);
         
-        LocalDate tomorrow = clock.tomorrow();
-        System.out.println("Tomorrow: " + tomorrow);
-        
-        LocalDate yesterday = clock.yesterday();
-        System.out.println("Yesterday: " + yesterday);
-        
-        LocalTime time = clock.time();
+        LocalTime time = LocalTime.now(clock);
         System.out.println("Current time of day: " + time);
         
         LocalDate later = clock.today().plusMonths(2).plusDays(3);

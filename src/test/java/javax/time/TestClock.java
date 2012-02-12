@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,11 +32,6 @@
 package javax.time;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
 
@@ -49,139 +44,61 @@ import org.testng.annotations.Test;
 @Test
 public class TestClock {
 
-    static class MockSimpleClock extends Clock {
-    }
-
-    static class MockClock extends Clock {
-        final TimeSource timeSource;
-        final ZoneId timeZone;
-        MockClock(TimeSource ts, ZoneId tz) {
-            timeSource = ts;
-            timeZone = tz;
+    static class MockInstantClock extends Clock {
+        final Instant instant;
+        final ZoneId zone;
+        MockInstantClock(Instant instant, ZoneId zone) {
+            this.instant = instant;
+            this.zone = zone;
         }
         @Override
-        public TimeSource getSource() {
-            return timeSource;
-        }
-        @Override
-        public Clock withSource(TimeSource timeSource) {
-            return new MockClock(timeSource, timeZone);
+        public Instant instant() {
+            return instant;
         }
         @Override
         public ZoneId getZone() {
-            return timeZone;
+            return zone;
         }
         @Override
         public Clock withZone(ZoneId timeZone) {
-            return new MockClock(timeSource, timeZone);
+            return new MockInstantClock(instant, timeZone);
         }
-    }
-
-    static class MockClockNoOverrides extends Clock {
     }
 
     private static final ZoneOffset OFFSET = ZoneOffset.ofHours(2);
     private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET);
-    private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
     private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
-    private static final Clock MOCK = new MockClock(TIME_SOURCE, ZONE);
-    private static final Clock MOCK_NO_OVERRIDES = new MockClockNoOverrides();
+    private static final Clock MOCK_INSTANT = new MockInstantClock(DATE_TIME.toInstant(), ZONE);
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void test_simpleClock() throws Exception {
-        Clock test = new MockSimpleClock();
-        Method[] methods = Clock.class.getDeclaredMethods();
-        for (Method method : methods) {
-            if (Modifier.isPublic(method.getModifiers()) &&
-                    Modifier.isStatic(method.getModifiers()) == false &&
-                    method.getParameterTypes().length == 0) {
-                try {
-                    method.invoke(test);
-                    fail("Excepted UnsupportedOperationException");
-                } catch (InvocationTargetException ex) {
-                    if (ex.getCause().getClass() != UnsupportedOperationException.class) {
-                        fail("Excepted UnsupportedOperationException, received " + ex.getCause().getClass());
-                    }
-                }
-            }
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_mockClockNoOverrides_getSource() {
-        MOCK_NO_OVERRIDES.getSource();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_mockClockNoOverrides_withSource() {
-        MOCK_NO_OVERRIDES.withSource(TIME_SOURCE);
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_mockClockNoOverrides_getZone() {
-        MOCK_NO_OVERRIDES.getZone();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class, groups={"tck"})
-    public void test_mockClockNoOverrides_withZone() {
-        MOCK_NO_OVERRIDES.withZone(ZONE);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void test_mockClock_get() {
-        assertEquals(MOCK.getSource(), TIME_SOURCE);
-        assertEquals(MOCK.getZone(), ZONE);
+    public void test_mockInstantClock_get() {
+        assertEquals(MOCK_INSTANT.instant(), DATE_TIME.toInstant());
+        assertEquals(MOCK_INSTANT.millis(), DATE_TIME.toInstant().toEpochMilli());
+        assertEquals(MOCK_INSTANT.getZone(), ZONE);
     }
 
     @Test(groups={"tck"})
-    public void test_mockClock_withSource() {
-        Clock changed = MOCK.withSource(TimeSource.system());
-        assertEquals(changed.getSource(), TimeSource.system());
-        assertEquals(changed.getZone(), ZONE);
-    }
-    
-    @Test(groups={"tck"})
-    public void test_mockClock_withZone() {
+    public void test_mockInstantClock_withZone() {
         ZoneId london = ZoneId.of("Europe/London");
-        Clock changed = MOCK.withZone(london);
-        assertEquals(changed.getSource(), TIME_SOURCE);
+        Clock changed = MOCK_INSTANT.withZone(london);
+        assertEquals(MOCK_INSTANT.instant(), DATE_TIME.toInstant());
+        assertEquals(MOCK_INSTANT.millis(), DATE_TIME.toInstant().toEpochMilli());
         assertEquals(changed.getZone(), london);
     }
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
     public void test_mockClock_dateAndTime() {
-        assertEquals(MOCK.today(), LocalDate.of(2008, 6, 30));
-        assertEquals(MOCK.yesterday(), LocalDate.of(2008, 6, 29));
-        assertEquals(MOCK.tomorrow(), LocalDate.of(2008, 7, 1));
+        assertEquals(MOCK_INSTANT.today(), LocalDate.of(2008, 6, 30));
         
-        assertEquals(MOCK.year(), Year.of(2008));
-        assertEquals(MOCK.yearMonth(), YearMonth.of(2008, 6));
+        assertEquals(MOCK_INSTANT.localTime(), LocalTime.of(11, 30, 10, 500));
         
-        assertEquals(MOCK.time(), LocalTime.of(11, 30, 10, 500));
-        assertEquals(MOCK.timeToSecond(), LocalTime.of(11, 30, 10));
-        assertEquals(MOCK.timeToMinute(), LocalTime.of(11, 30));
+        assertEquals(MOCK_INSTANT.localDateTime(), LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500));
         
-        assertEquals(MOCK.dateTime(), LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500));
-        assertEquals(MOCK.dateTimeToSecond(), LocalDateTime.of(2008, 6, 30, 11, 30, 10));
-        assertEquals(MOCK.dateTimeToMinute(), LocalDateTime.of(2008, 6, 30, 11, 30));
+        assertEquals(MOCK_INSTANT.offsetDateTime(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET));
         
-        assertEquals(MOCK.offsetDate(), OffsetDate.of(2008, 6, 30, OFFSET));
-        
-        assertEquals(MOCK.offsetTime(), OffsetTime.of(11, 30, 10, 500, OFFSET));
-        assertEquals(MOCK.offsetTimeToSecond(), OffsetTime.of(11, 30, 10, OFFSET));
-        assertEquals(MOCK.offsetTimeToMinute(), OffsetTime.of(11, 30, OFFSET));
-        
-        assertEquals(MOCK.offsetDateTime(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET));
-        assertEquals(MOCK.offsetDateTimeToSecond(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, OFFSET));
-        assertEquals(MOCK.offsetDateTimeToMinute(), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET));
-        
-        assertEquals(MOCK.zonedDateTime(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500), ZONE));
-        assertEquals(MOCK.zonedDateTimeToSecond(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10), ZONE));
-        assertEquals(MOCK.zonedDateTimeToMinute(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE));
+        assertEquals(MOCK_INSTANT.zonedDateTime(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500), ZONE));
     }
 
 }

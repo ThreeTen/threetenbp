@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -117,7 +117,7 @@ public class TestYear {
     //-----------------------------------------------------------------------
     public void now_Clock() {
         Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
-        Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+        Clock clock = Clock.fixed(instant, ZoneId.UTC);
         Year test = Year.now(clock);
         assertEquals(test.getValue(), 2010);
     }

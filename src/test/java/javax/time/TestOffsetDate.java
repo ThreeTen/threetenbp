@@ -1,5 +1,5 @@
 /*
-9 * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+9 * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -175,7 +175,7 @@ public class TestOffsetDate {
     public void now_Clock_allSecsInDay_utc() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
@@ -188,7 +188,7 @@ public class TestOffsetDate {
     public void now_Clock_allSecsInDay_beforeEpoch() {
         for (int i =-1; i >= -(2 * 24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1969);
             assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
@@ -202,7 +202,7 @@ public class TestOffsetDate {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
             OffsetDate test = OffsetDate.now(clock);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);

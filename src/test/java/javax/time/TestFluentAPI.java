@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -68,7 +68,7 @@ public class TestFluentAPI {
     public static void main(String[] args) {
         Clock clock = Clock.systemDefaultZone();
         
-        LocalTime tod = clock.time();
+        LocalTime tod = clock.localTime();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(ofHours(6)).plus(ofMinutes(2));
         if (AmPmOfDay.from(tod).equals(AmPmOfDay.AM)) {

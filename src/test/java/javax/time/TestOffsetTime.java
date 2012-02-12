@@ -157,7 +157,7 @@ public class TestOffsetTime {
     public void now_Clock_allSecsInDay() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
@@ -171,7 +171,7 @@ public class TestOffsetTime {
     public void now_Clock_beforeEpoch() {
         for (int i =-1; i >= -(24 * 60 * 60); i--) {
             Instant instant = Instant.ofEpochSecond(i, 8);
-            Clock clock = Clock.clock(TimeSource.fixed(instant), ZoneId.UTC);
+            Clock clock = Clock.fixed(instant, ZoneId.UTC);
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
             assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
@@ -186,7 +186,7 @@ public class TestOffsetTime {
         OffsetDateTime base = OffsetDateTime.of(1970, 1, 1, 12, 0, ZoneOffset.UTC);
         for (int i = -9; i < 15; i++) {
             ZoneOffset offset = ZoneOffset.ofHours(i);
-            Clock clock = Clock.clock(TimeSource.fixed(base.toInstant()), ZoneId.of(offset));
+            Clock clock = Clock.fixed(base.toInstant(), ZoneId.of(offset));
             OffsetTime test = OffsetTime.now(clock);
             assertEquals(test.getHourOfDay(), (12 + i) % 24);
             assertEquals(test.getMinuteOfHour(), 0);

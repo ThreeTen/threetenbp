@@ -138,7 +138,9 @@ public class AllTest {
             // simple calendar classes
             TestAmPmOfDay.class,
             TestClock.class,
-            TestClock_TimeSourceClock.class,
+            TestClock_Fixed.class,
+            TestClock_Offset.class,
+            TestClock_System.class,
             TestDayOfWeek.class,
             TestLocalDate.class,
             TestLocalDateTime.class,
