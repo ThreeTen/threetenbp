@@ -64,6 +64,7 @@ public class TestPeriodField {
     private static final PeriodUnit SECONDS = ISOPeriodUnit.SECONDS;
 
     //-----------------------------------------------------------------------
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Comparable.class.isAssignableFrom(PeriodField.class));
         assertTrue(Serializable.class.isAssignableFrom(PeriodField.class));
@@ -72,6 +73,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_of() {
         assertEquals(1,  PeriodField.of(1, DAYS).getAmount());
         assertEquals(2,  PeriodField.of(2, DAYS).getAmount());
@@ -81,7 +83,7 @@ public class TestPeriodField {
         assertEquals(Long.MIN_VALUE,  PeriodField.of(Long.MIN_VALUE, DAYS).getAmount());
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_of_null() {
         PeriodField.of(1, null);
     }
@@ -89,6 +91,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // serialization
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_serialization() throws Exception {
         PeriodField orginal = PeriodField.of(3, DAYS);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -104,6 +107,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // isZero()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_isZero() {
         assertEquals(PeriodField.of(0, DAYS).isZero(), true);
         assertEquals(PeriodField.of(1, DAYS).isZero(), false);
@@ -113,6 +117,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // getAmount()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getAmount() {
         assertEquals(PeriodField.of(0, DAYS).getAmount(), 0L);
         assertEquals(PeriodField.of(1, DAYS).getAmount(), 1L);
@@ -124,6 +129,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // getAmountInt()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getAmountInt() {
         assertEquals(PeriodField.of(0, DAYS).getAmountInt(), 0);
         assertEquals(PeriodField.of(1, DAYS).getAmountInt(), 1);
@@ -132,12 +138,12 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(Integer.MIN_VALUE, DAYS).getAmountInt(), Integer.MIN_VALUE);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_getAmountInt_tooBig() {
         PeriodField.of(Integer.MAX_VALUE + 1L, DAYS).getAmountInt();
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_getAmountInt_tooSmall() {
         PeriodField.of(Integer.MIN_VALUE - 1L, DAYS).getAmountInt();
     }
@@ -145,6 +151,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // getUnit()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getUnit() {
         assertEquals(PeriodField.of(0, DAYS).getUnit(), DAYS);
         assertEquals(PeriodField.of(1, DAYS).getUnit(), DAYS);
@@ -154,32 +161,48 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // withAmount()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_withAmount() {
         assertEquals(PeriodField.of(0, DAYS).withAmount(23), PeriodField.of(23, DAYS));
         assertEquals(PeriodField.of(1, DAYS).withAmount(23), PeriodField.of(23, DAYS));
         assertEquals(PeriodField.of(-1, DAYS).withAmount(23), PeriodField.of(23, DAYS));
     }
 
+    @Test(groups={"implementation"})
     public void test_withAmount_same() {
         PeriodField base = PeriodField.of(1, DAYS);
         assertSame(base.withAmount(1), base);
+    }
+    
+    @Test(groups={"tck"})
+    public void test_withAmount_equal() {
+        PeriodField base = PeriodField.of(1, DAYS);
+        assertEquals(base.withAmount(1), base);
     }
 
     //-----------------------------------------------------------------------
     // withUnit()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_withUnit() {
         assertEquals(PeriodField.of(0, DAYS).withUnit(MONTHS), PeriodField.of(0, MONTHS));
         assertEquals(PeriodField.of(1, DAYS).withUnit(MONTHS), PeriodField.of(1, MONTHS));
         assertEquals(PeriodField.of(-1, DAYS).withUnit(MONTHS), PeriodField.of(-1, MONTHS));
     }
 
+    @Test(groups={"implementation"})
     public void test_withUnit_same() {
         PeriodField base = PeriodField.of(1, DAYS);
         assertSame(base.withUnit(DAYS), base);
     }
+    
+    @Test(groups={"tck"})
+    public void test_withUnit_equal() {
+        PeriodField base = PeriodField.of(1, DAYS);
+        assertEquals(base.withUnit(DAYS), base);
+    }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_withUnit_null() {
         PeriodField.of(1, DAYS).withUnit(null);
     }
@@ -187,6 +210,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // plus(PeriodField)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_plus_PeriodField() {
         PeriodField test5 = PeriodField.of(5, DAYS);
         assertEquals(test5.plus(PeriodField.of(0, DAYS)), PeriodField.of(5, DAYS));
@@ -196,22 +220,22 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(Long.MIN_VALUE + 1, DAYS).plus(PeriodField.of(-1, DAYS)), PeriodField.of(Long.MIN_VALUE, DAYS));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_plus_PeriodField_wrongRule() {
         PeriodField.of(1, DAYS).plus(PeriodField.of(-2, MONTHS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_PeriodField_overflowTooBig() {
         PeriodField.of(Long.MAX_VALUE - 1, DAYS).plus(PeriodField.of(2, DAYS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_PeriodField_overflowTooSmall() {
         PeriodField.of(Long.MIN_VALUE + 1, DAYS).plus(PeriodField.of(-2, DAYS));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_plus_PeriodField_null() {
         PeriodField.of(1, DAYS).plus(null);
     }
@@ -219,6 +243,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // plus(long)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_plus() {
         PeriodField test5 = PeriodField.of(5, DAYS);
         assertEquals(test5.plus(0), PeriodField.of(5, DAYS));
@@ -228,12 +253,12 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(Long.MIN_VALUE + 1, DAYS).plus(-1), PeriodField.of(Long.MIN_VALUE, DAYS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_overflowTooBig() {
         PeriodField.of(Long.MAX_VALUE - 1, DAYS).plus(2);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_plus_overflowTooSmall() {
         PeriodField.of(Long.MIN_VALUE + 1, DAYS).plus(-2);
     }
@@ -241,6 +266,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // minus(PeriodField)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_minus_PeriodField() {
         PeriodField test5 = PeriodField.of(5, DAYS);
         assertEquals(test5.minus(PeriodField.of(0, DAYS)), PeriodField.of(5, DAYS));
@@ -250,22 +276,22 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(Long.MAX_VALUE - 1, DAYS).minus(PeriodField.of(-1, DAYS)), PeriodField.of(Long.MAX_VALUE, DAYS));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=IllegalArgumentException.class, groups={"tck"})
     public void test_minus_PeriodField_wrongRule() {
         PeriodField.of(1, DAYS).minus(PeriodField.of(-2, MONTHS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_PeriodField_overflowTooBig() {
         PeriodField.of(Long.MIN_VALUE + 1, DAYS).minus(PeriodField.of(2, DAYS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_PeriodField_overflowTooSmall() {
         PeriodField.of(Long.MAX_VALUE - 1, DAYS).minus(PeriodField.of(-2, DAYS));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_minus_PeriodField_null() {
         PeriodField.of(1, DAYS).minus(null);
     }
@@ -273,6 +299,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // minus(long)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_minus() {
         PeriodField test5 = PeriodField.of(5, DAYS);
         assertEquals(test5.minus(0), PeriodField.of(5, DAYS));
@@ -282,12 +309,12 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(Long.MAX_VALUE - 1, DAYS).minus(-1), PeriodField.of(Long.MAX_VALUE, DAYS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_overflowTooBig() {
         PeriodField.of(Long.MIN_VALUE + 1, DAYS).minus(2);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_minus_overflowTooSmall() {
         PeriodField.of(Long.MAX_VALUE - 1, DAYS).minus(-2);
     }
@@ -295,6 +322,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // multipliedBy(long)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_multipliedBy() {
         PeriodField test5 = PeriodField.of(5, DAYS);
         assertEquals(test5.multipliedBy(0), PeriodField.of(0, DAYS));
@@ -304,17 +332,24 @@ public class TestPeriodField {
         assertEquals(test5.multipliedBy(-3), PeriodField.of(-15, DAYS));
     }
 
+    @Test(groups={"implementation"})
     public void test_multipliedBy_same() {
         PeriodField base = PeriodField.of(12, DAYS);
         assertSame(base.multipliedBy(1), base);
     }
+    
+    @Test(groups={"tck"})
+    public void test_multipliedBy_equal() {
+        PeriodField base = PeriodField.of(12, DAYS);
+        assertEquals(base.multipliedBy(1), base);
+    }
 
-    @Test(expectedExceptions = {ArithmeticException.class})
+    @Test(expectedExceptions = {ArithmeticException.class}, groups={"tck"})
     public void test_multipliedBy_overflowTooBig() {
         PeriodField.of(Long.MAX_VALUE / 2 + 1, DAYS).multipliedBy(2);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_multipliedBy_overflowTooSmall() {
         PeriodField.of(Long.MIN_VALUE / 2 - 1, DAYS).multipliedBy(2);
     }
@@ -322,6 +357,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // dividedBy(long)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_dividedBy() {
         PeriodField test12 = PeriodField.of(12, DAYS);
         assertEquals(test12.dividedBy(1), PeriodField.of(12, DAYS));
@@ -333,17 +369,25 @@ public class TestPeriodField {
         assertEquals(test12.dividedBy(-3), PeriodField.of(-4, DAYS));
     }
 
+    @Test(groups={"implementation"})
     public void test_dividedBy_same() {
         PeriodField base = PeriodField.of(12, DAYS);
         assertSame(base.dividedBy(1), base);
     }
+    
+    @Test(groups={"tck"})
+    public void test_dividedBy_equal() {
+        PeriodField base = PeriodField.of(12, DAYS);
+        assertEquals(base.dividedBy(1), base);
+    }
 
+    @Test(groups={"tck"})
     public void test_dividedBy_negate() {
         PeriodField test12 = PeriodField.of(12, DAYS);
         assertEquals(PeriodField.of(-4, DAYS), test12.dividedBy(-3));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_dividedBy_divideByZero() {
         PeriodField.of(1, DAYS).dividedBy(0);
     }
@@ -351,6 +395,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // remainder(long)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_remainder() {
         PeriodField test12 = PeriodField.of(13, DAYS);
         assertEquals(test12.remainder(1), PeriodField.of(0, DAYS));
@@ -362,17 +407,25 @@ public class TestPeriodField {
         assertEquals(test12.remainder(-3), PeriodField.of(1, DAYS));
     }
 
+    @Test(groups={"tck"})
     public void test_remainder_negate() {
         PeriodField test12 = PeriodField.of(-14, DAYS);
         assertEquals(test12.remainder(-5), PeriodField.of(-4, DAYS));
     }
 
+    @Test(groups={"implementation"})
     public void test_remainder_same() {
         PeriodField base = PeriodField.of(12, DAYS);
         assertSame(base.remainder(15), base);
     }
+    
+    @Test(groups={"tck"})
+    public void test_remainder_equal() {
+        PeriodField base = PeriodField.of(12, DAYS);
+        assertEquals(base.remainder(15), base);
+    }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_remainder_divideByZero() {
         PeriodField.of(1, DAYS).remainder(0);
     }
@@ -380,6 +433,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // negated()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_negated() {
         assertEquals(PeriodField.of(0, DAYS).negated(), PeriodField.of(0, DAYS));
         assertEquals(PeriodField.of(12, DAYS).negated(), PeriodField.of(-12, DAYS));
@@ -387,7 +441,7 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(Long.MAX_VALUE, DAYS).negated(), PeriodField.of(-Long.MAX_VALUE, DAYS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_negated_overflow() {
         PeriodField.of(Long.MIN_VALUE, DAYS).negated();
     }
@@ -395,6 +449,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // abs()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_abs() {
         assertEquals(PeriodField.of(0, DAYS).abs(), PeriodField.of(0, DAYS));
         assertEquals(PeriodField.of(12, DAYS).abs(), PeriodField.of(12, DAYS));
@@ -402,12 +457,19 @@ public class TestPeriodField {
         assertEquals(PeriodField.of(Long.MAX_VALUE, DAYS).abs(), PeriodField.of(Long.MAX_VALUE, DAYS));
     }
 
+    @Test(groups={"implementation"})
     public void test_abs_same() {
         PeriodField base = PeriodField.of(12, DAYS);
         assertSame(base.abs(), base);
     }
+    
+    @Test(groups={"tck"})
+    public void test_abs_equal() {
+        PeriodField base = PeriodField.of(12, DAYS);
+        assertEquals(base.abs(), base);
+    }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_abs_overflow() {
         PeriodField.of(Long.MIN_VALUE, DAYS).abs();
     }
@@ -415,17 +477,18 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // toEquivalent(PeriodUnit)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toEquivalent_unit() {
         PeriodField test = PeriodField.of(5, YEARS).toEquivalent(QUARTERS);
         assertEquals(test, PeriodField.of(5 * 4, QUARTERS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_toEquivalent_unit_tooBig() {
         PeriodField.of(Long.MAX_VALUE / 12 + 12, YEARS).toEquivalent(MONTHS);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_toEquivalent_unit_noConversionAllowed() {
         try {
             PeriodField.of(4, QUARTERS).toEquivalent(YEARS);
@@ -435,7 +498,7 @@ public class TestPeriodField {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_toEquivalent_unit_noConversion() {
         try {
             PeriodField.of(5, YEARS).toEquivalent(DAYS);
@@ -445,7 +508,7 @@ public class TestPeriodField {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toEquivalent_null() {
         PeriodField.of(5, YEARS).toEquivalent((PeriodUnit) null);
     }
@@ -453,47 +516,54 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // toEquivalent(PeriodUnit...)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toEquivalent_units_yearsToYears() {
         PeriodField test = PeriodField.of(5, YEARS).toEquivalent(new PeriodUnit[] {YEARS});
         assertEquals(test, PeriodField.of(5, YEARS));
     }
 
+    @Test(groups={"tck"})
     public void test_toEquivalent_units_yearsToMonths() {
         PeriodField test = PeriodField.of(5, YEARS).toEquivalent(new PeriodUnit[] {MONTHS});
         assertEquals(test, PeriodField.of(5 * 12, MONTHS));
     }
 
+    @Test(groups={"tck"})
     public void test_toEquivalent_units_yearsToYearsMonthsOrDays() {
         PeriodField test = PeriodField.of(5, YEARS).toEquivalent(YEARS, MONTHS, DAYS);
         assertEquals(test, PeriodField.of(5, YEARS));
     }
 
+    @Test(groups={"tck"})
     public void test_toEquivalent_units_yearsToMonthsOrDays() {
         PeriodField test = PeriodField.of(5, YEARS).toEquivalent(MONTHS, DAYS);
         assertEquals(test, PeriodField.of(5 * 12, MONTHS));
     }
 
+    @Test(groups={"tck"})
     public void test_toEquivalent_units_yearsToDaysOrMonths() {
         PeriodField test = PeriodField.of(5, YEARS).toEquivalent(DAYS, MONTHS);
         assertEquals(test, PeriodField.of(5 * 12, MONTHS));
     }
 
+    @Test(groups={"tck"})
     public void test_toEquivalent_units_hoursToMinutesOrSeconds() {
         PeriodField test = PeriodField.of(5, HOURS).toEquivalent(MINUTES, SECONDS);
         assertEquals(test, PeriodField.of(5 * 60, MINUTES));
     }
 
+    @Test(groups={"tck"})
     public void test_toEquivalent_units_hoursToSecondsOrMinutes() {
         PeriodField test = PeriodField.of(5, HOURS).toEquivalent(SECONDS, MINUTES);
         assertEquals(test, PeriodField.of(5 * 60 * 60, SECONDS));
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_toEquivalent_units_tooBig() {
         PeriodField.of(Long.MAX_VALUE / 12 + 12, YEARS).toEquivalent(new PeriodUnit[] {MONTHS});
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_toEquivalent_units_noUnits() {
         try {
             PeriodField.of(5, YEARS).toEquivalent(new PeriodUnit[0]);
@@ -503,7 +573,7 @@ public class TestPeriodField {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_toEquivalent_units_noConversionOneUnit() {
         try {
             PeriodField.of(5, YEARS).toEquivalent(new PeriodUnit[] {DAYS});
@@ -513,7 +583,7 @@ public class TestPeriodField {
         }
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_toEquivalent_units_noConversionTwoUnits() {
         try {
             PeriodField.of(5, YEARS).toEquivalent(DAYS, HOURS);
@@ -523,12 +593,12 @@ public class TestPeriodField {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toEquivalent_units_null() {
         PeriodField.of(5, YEARS).toEquivalent((PeriodUnit[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_toEquivalent_units_arrayContainsNull() {
         PeriodField.of(5, YEARS).toEquivalent(null, YEARS);
     }
@@ -536,13 +606,14 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // toDurationEstimate()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toDurationEstimate() {
         Duration test = PeriodField.of(5, DAYS).toDurationEstimate();
         Duration fiveDays = ISOPeriodUnit.DAYS.getDurationEstimate().multipliedBy(5);
         assertEquals(test, fiveDays);
     }
 
-    @Test(expectedExceptions=ArithmeticException.class)
+    @Test(expectedExceptions=ArithmeticException.class, groups={"tck"})
     public void test_toDurationEstimate_tooBig() {
         PeriodField.of(Long.MAX_VALUE, MINUTES).toDurationEstimate();
     }
@@ -550,19 +621,21 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // toDuration()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toDuration_hours() {
         Duration test = PeriodField.of(5, HOURS).toDuration();
         Duration fiveHours = Duration.ofHours(5);
         assertEquals(test, fiveHours);
     }
 
+    @Test(groups={"tck"})
     public void test_toDuration_millis() {
         Duration test = PeriodField.of(5, ISOPeriodUnit.MILLIS).toDuration();
         Duration fiveMillis = Duration.ofMillis(5);
         assertEquals(test, fiveMillis);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_toDuration_cannotConvert() {
         try {
             PeriodField.of(5, MONTHS).toDuration();
@@ -575,6 +648,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // toPeriodFields()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toPeriodFields() {
         PeriodFields test = PeriodField.of(5, DAYS).toPeriodFields();
         assertEquals(test, PeriodFields.of(5, DAYS));
@@ -583,6 +657,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_compareTo() {
         PeriodField a = PeriodField.of(5, DAYS);
         PeriodField b = PeriodField.of(6, DAYS);
@@ -591,6 +666,7 @@ public class TestPeriodField {
         assertEquals(b.compareTo(a) > 0, true);
     }
 
+    @Test(groups={"tck"})
     public void test_compareTo_differentUnits() {
         PeriodField a = PeriodField.of(6 * 60, MINUTES);  // longer than 5 hours
         PeriodField b = PeriodField.of(5, HOURS);
@@ -599,7 +675,7 @@ public class TestPeriodField {
         assertEquals(b.compareTo(a) > 0, true);
     }
 
-    @Test(expectedExceptions = {NullPointerException.class})
+    @Test(expectedExceptions = {NullPointerException.class}, groups={"tck"})
     public void test_compareTo_null() {
         PeriodField test5 = PeriodField.of(5, DAYS);
         test5.compareTo(null);
@@ -608,6 +684,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_equals() {
         PeriodField a = PeriodField.of(5, DAYS);
         PeriodField b = PeriodField.of(6, DAYS);
@@ -616,11 +693,13 @@ public class TestPeriodField {
         assertEquals(b.equals(a), false);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_null() {
         PeriodField test = PeriodField.of(5, DAYS);
         assertEquals(test.equals(null), false);
     }
 
+    @Test(groups={"tck"})
     public void test_equals_otherClass() {
         PeriodField test = PeriodField.of(5, DAYS);
         assertEquals(test.equals(""), false);
@@ -629,6 +708,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_hashCode() {
         PeriodField a = PeriodField.of(5, DAYS);
         PeriodField b = PeriodField.of(6, DAYS);
@@ -641,6 +721,7 @@ public class TestPeriodField {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toString() {
         PeriodField test5 = PeriodField.of(5, DAYS);
         assertEquals(test5.toString(), "5 Days");
