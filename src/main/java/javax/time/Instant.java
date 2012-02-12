@@ -133,33 +133,34 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains the current instant from the system time-source in the default time-zone.
+     * Obtains the current instant from the system clock.
      * <p>
-     * This will query the {@link TimeSource#system() system time-source} to obtain the current instant.
+     * This will query the {@link Clock#systemUTC() system UTC clock} to
+     * obtain the current instant.
      * <p>
-     * Using this method will prevent the ability to use an alternate time-source for testing
-     * because the time-source is hard-coded.
+     * Using this method will prevent the ability to use an alternate time-source for
+     * testing because the clock is effectively hard-coded.
      *
      * @return the current instant using the system clock, not null
      */
     public static Instant now() {
-        return now(TimeSource.system());
+        return Clock.systemUTC().instant();
     }
 
     /**
      * Obtains the current instant from the specified clock.
      * <p>
-     * This will query the specified time-source to obtain the current time.
+     * This will query the specified clock to obtain the current time.
      * <p>
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
-     * @param timeSource  the time-source to use, not null
+     * @param clock  the clock to use, not null
      * @return the current instant, not null
      */
-    public static Instant now(TimeSource timeSource) {
-        MathUtils.checkNotNull(timeSource, "TimeSource must not be null");
-        return of(timeSource.instant());
+    public static Instant now(Clock clock) {
+        MathUtils.checkNotNull(clock, "Clock must not be null");
+        return clock.instant();
     }
 
     //-----------------------------------------------------------------------
