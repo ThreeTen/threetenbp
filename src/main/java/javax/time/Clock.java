@@ -80,8 +80,8 @@ import java.util.TimeZone;
  * should be used to "smooth" the leap second, such as UTC-SLS.
  * <p>
  * Subclass implementations should implement {@code Serializable} wherever possible.
- * They should also implement {@code equals()}, {@code hashCode()} and
- * {@code toString()} based on their state.
+ * They should also be immutable and thread-safe, implementing {@code equals()},
+ * {@code hashCode()} and {@code toString()} based on their state.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
