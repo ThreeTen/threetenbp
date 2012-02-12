@@ -46,25 +46,45 @@ import org.testng.annotations.Test;
 @Test
 public class TestCalendricalPrintException {
 
+	@Test(groups={"tck"})
     public void test_constructor_String() throws Exception {
         CalendricalPrintException ex = new CalendricalPrintException("TEST");
         assertEquals(ex.getMessage(), "TEST");
     }
 
-    public void test_constructor_StringThrowable_notIOException() throws Exception {
+	@Test(groups={"implementation"})
+    public void test_constructor_StringThrowable_notIOException_same() throws Exception {
         IllegalArgumentException iaex = new IllegalArgumentException("INNER");
         CalendricalPrintException ex = new CalendricalPrintException("TEST", iaex);
         assertEquals(ex.getMessage(), "TEST");
         assertSame(ex.getCause(), iaex);
         ex.rethrowIOException();  // no effect
     }
+    
+	@Test(groups={"tck"})
+    public void test_constructor_StringThrowable_notIOException_equal() throws Exception {
+        IllegalArgumentException iaex = new IllegalArgumentException("INNER");
+        CalendricalPrintException ex = new CalendricalPrintException("TEST", iaex);
+        assertEquals(ex.getMessage(), "TEST");
+        assertEquals(ex.getCause(), iaex);
+        ex.rethrowIOException();  // no effect
+    }
 
-    @Test(expectedExceptions=IOException.class)
-    public void test_constructor_StringThrowable_IOException() throws Exception {
+    @Test(expectedExceptions=IOException.class, groups={"implementation"})
+    public void test_constructor_StringThrowable_IOException_same() throws Exception {
         IOException ioex = new IOException("INNER");
         CalendricalPrintException ex = new CalendricalPrintException("TEST", ioex);
         assertEquals(ex.getMessage(), "TEST");
         assertSame(ex.getCause(), ioex);
+        ex.rethrowIOException();  // rethrows
+    }
+    
+    @Test(expectedExceptions=IOException.class, groups={"tck"})
+    public void test_constructor_StringThrowable_IOException() throws Exception {
+        IOException ioex = new IOException("INNER");
+        CalendricalPrintException ex = new CalendricalPrintException("TEST", ioex);
+        assertEquals(ex.getMessage(), "TEST");
+        assertEquals(ex.getCause(), ioex);
         ex.rethrowIOException();  // rethrows
     }
 
