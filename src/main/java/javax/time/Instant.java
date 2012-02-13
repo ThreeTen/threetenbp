@@ -36,63 +36,91 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import javax.time.calendrical.TAIInstant;
-import javax.time.calendrical.UTCInstant;
-import javax.time.calendrical.UTCRules;
 import javax.time.format.CalendricalParseException;
 
 /**
  * An instantaneous point on the time-line.
  * <p>
- * The Time Framework for Java models time as a series of instantaneous events,
- * known as instants, along a single time-line.
- * This class represents one of those instants.
+ * This class models a single instantaneous point on the time-line.
+ * This might be used to record event time-stamps in the application.
  * <p>
- * An instant is in reality an instantaneous event on an infinite time-line.
- * However, for practicality this API uses a precision of nanoseconds.
- * In addition, this API limits the measurable time-line to the number of seconds
- * that can be held in a {@code long}.
- * This is greater than the current estimated age of the universe.
+ * For practicality, the instant is stored with some constraints.
+ * The measurable time-line is restricted to the number of seconds that can be held
+ * in a {@code long}. This is greater than the current estimated age of the universe.
+ * The instant is stored to nanosecond resolution.
  * <p>
- * In order to represent the data a 96 bit number is required. To achieve this the
- * data is stored as seconds, measured using a {@code long}, and nanoseconds,
- * measured using an {@code int}. The nanosecond part will always be between
- * 0 and 999,999,999 representing the nanosecond part of the second.
- * <p>
- * The seconds are measured from the standard Java epoch of {@code 1970-01-01T00:00:00Z}.
- * Instants on the time-line after the epoch are positive, earlier are negative.
+ * The range of an instant requires the storage of a number larger than a {@code long}.
+ * The standard storage scheme uses epoch-seconds measured from the standard Java epoch
+ * of {@code 1970-01-01T00:00:00Z} where instants after the epoch have positive values,
+ * and earlier instants have negative values. The standard storage stores the fraction
+ * of a second as nanosecond-of-second which will always be between 0 and 999,999,999.
  * 
  * <h4>Time-scale</h4>
  * <p>
- * {@code Instant} uses the <a href="http://www.cl.cam.ac.uk/~mgk25/time/utc-sls/">UTC-SLS</a>
- * time-scale which always has 86400 subdivisions (seconds) in a day.
- * Essentially, UTC-SLS is a consistent mechanism of converting an accurate UTC time
- * (measured in SI seconds with leap seconds) to a day formed of exactly 86400 subdivisions.
- * For the benefit of most users, each subdivision is referred to as a "second", however
- * in reality not all of these are equal to an SI second.
+ * The length of the solar day is the standard way that humans measure time.
+ * This has traditionally been subdivided into 24 hours of 60 minutes of 60 seconds,
+ * forming a 86400 second day.
  * <p>
- * The main benefit of UTC-SLS is that it provides a clear definition of how to relate the
- * 86400 subdivision day that application writers want to the accurate time-scales with leap seconds.
- * A second benefit is that in an accurate implementation, the UTC-SLS time never experiences
- * any gaps or overlaps, with the value always increasing.
+ * Modern timekeeping is based on atomic clocks which precisely define an SI second
+ * relative to the transitions of a Caesium atom. The length of an SI second was defined
+ * to be very close to the 86400th fraction of a day.
  * <p>
- * UTC-SLS is defined as spreading any leap second evenly over the last 1000 seconds of the day.
- * This corresponds to times after 23:43:21 on a day with an added leap second, or
- * times after 23:43:19 on a day with a removed leap second.
- * The conversion is implemented in the {@link UTCRules} subclass.
+ * Unfortunately, as the Earth rotates the length of the day varies.
+ * In addition, over time the average length of the day is getting longer as the Earth slows.
+ * As a result, the length of a solar day in 2012 is slightly longer than 86400 SI seconds.
+ * The actual length of any given day and the amount by which the Earth is slowing
+ * are not predictable and can only be determined by measurement.
+ * The UT1 time-scale captures the accurate length of day, but is only available some
+ * time after the day has completed.
  * <p>
- * The UTC-SLS conversion only matters to users of this class with high precision requirements.
- * To keep full track of an instant using an accurate time-scale use the {@link UTCInstant} or
- * {@link TAIInstant} class.
- * For most applications, the behavior where each day has exactly 86400 subdivisions is the desired one.
- * The UTC-SLS time-scale is also used for all human-scale date-time classes,
- * such as {@code LocalTime}, {@code OffsetDateTime} and {@code ZonedDateTime}.
+ * The UTC time-scale is a standard approach to bundle up all the additional fractions
+ * of a second from UT1 into whole seconds, known as <i>leap-seconds</i>.
+ * A leap-second may be added or removed depending on the Earth's rotational changes.
+ * As such, UTC permits a day to have 86399 SI seconds or 86401 SI seconds where
+ * necessary in order to keep the day aligned with the Sun.
  * <p>
- * This definition of UTC-SLS is based on the definition of UTC in {@code UTCInstant}.
- * That includes a discussion on instants before 1972, including the epoch of {@code 1970-01-01}.
+ * The modern UTC time-scale was introduced in 1972, introducing the concept of whole leap-seconds.
+ * Between 1958 and 1972, the definition of UTC was complex, with minor sub-second leaps and
+ * alterations to the length of the notional second. As of 2012, discussions are underway
+ * to change the definition of UTC again, with the potential to remove leap seconds or
+ * introduce other changes.
  * <p>
- * As a result of these definitions, operations to add or subtract durations will ignore leap seconds.
- * Use {@code UTCInstant} or {@code TAIInstant} if accurate duration calculations are required.
+ * Given the complexity of accurate timekeeping described above, this Java API defines
+ * its own time-scale with a simplification. The Java time-scale is defined as follows:
+ * <ul>
+ * <li>midday will always be exactly as defined by the agreed international civil time</li>
+ * <li>other times during the day will be broadly in line with the agreed international civil time</li>
+ * <li>the day will be divided into exactly 86400 subdivisions, referred to as "seconds"</li>
+ * <li>the Java "second" may differ from an SI second</li>
+ * </ul>
+ * Agreed international civil time is the base time-scale agreed by international convention,
+ * which in 2012 is UTC (with leap-seconds).
+ * <p>
+ * In 2012, the definition of the Java time-scale is the same as UTC for all days except
+ * those where a leap-second occurs. On days where a leap-second does occur, the time-scale
+ * effectively eliminates the leap-second, maintaining the fiction of 86400 seconds in the day.
+ * <p>
+ * The main benefit of always dividing the day into 86400 subdivisions is that it matches the
+ * expectations of most users of the API. The alternative is to force every user to understand
+ * what a leap second is and to force them to have special logic to handle them.
+ * Most applications do not have access to a clock that is accurate enough to record leap-seconds.
+ * Most applications also do not have a problem with a second being a very small amount longer or
+ * shorter than a real SI second during a leap-second.
+ * <p>
+ * If an application does have access to an accurate clock that reports leap-seconds, then the
+ * recommended technique to implement the Java time-scale is to use the UTC-SLS convention.
+ * <a href="http://www.cl.cam.ac.uk/~mgk25/time/utc-sls/">UTC-SLS</a> effectively smoothes the
+ * leap-second over the last 1000 seconds of the day, making each of the last 1000 "seconds"
+ * 1/1000th longer or shorter than a real SI second.
+ * <p>
+ * One final problem is the definition of the agreed international civil time before the
+ * introduction of modern UTC in 1972. This includes the Java epoch of {@code 1970-01-01}.
+ * It is intended that instants before 1972 be interpreted based on the solar day divided
+ * into 86400 subdivisions.
+ * <p>
+ * The Java time-scale is used for all date-time classes supplied by JSR-310.
+ * This includes {@code Instant}, {@code LocalDate}, {@code LocalTime}, {@code OffsetDateTime},
+ * {@code ZonedDateTime} and {@code Duration}.
  * 
  * <h4>Implementation notes</h4>
  * <p>
