@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendrical;
+package javax.time.extra;
 
 import java.io.Serializable;
 
@@ -38,13 +38,12 @@ import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.MathUtils;
 
-
 /**
  * An instantaneous point on the time-line measured in the UTC time-scale
  * with leap seconds.
  * <p>
- * Most of the Time Framework for Java works on the assumption that the time-line is
- * simple, there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
+ * Most of the Java time classes work on the assumption that the time-line is simple,
+ * there are no leap-seconds and there are always 24 * 60 * 60 seconds in a day.
  * However, the Earth's rotation is not straightforward, and a solar day does not match
  * this definition.
  * <p>
@@ -442,13 +441,10 @@ public final class UTCInstant
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this instant to another based on the time-line, then the name
-     * of the rules.
+     * Compares this instant to another based on the time-line, ignoring the rules.
      * <p>
-     * The comparison is based on the positions on the time-line and the rules.
-     * This definition means that two instants representing the same instant on
-     * the time-line will differ if the rules differ. To compare the time-line
-     * instant, convert both instants to a {@code TAIInstant}.
+     * The comparison is based on the positions on the time-line.
+     * Ignoring the rules makes this comparison inconsistent with equals.
      *
      * @param otherInstant  the other instant to compare to, not null
      * @return the comparator value, negative if less, positive if greater

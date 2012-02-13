@@ -64,9 +64,6 @@ import javax.time.calendrical.TestISOZeroEpochMonthRule;
 import javax.time.calendrical.TestPeriodField;
 import javax.time.calendrical.TestPeriodFields;
 import javax.time.calendrical.TestPeriodUnit;
-import javax.time.calendrical.TestTAIInstant;
-import javax.time.calendrical.TestUTCInstant;
-import javax.time.calendrical.TestUTCRules;
 import javax.time.calendrical.TestWeekRules;
 import javax.time.calendrical.TestZoneResolvers;
 import javax.time.format.TestCalendricalPrintException;
@@ -128,13 +125,6 @@ public class AllTest {
             TestDuration.class,
             TestInstant.class,
             TestMathUtils.class,
-            TestTimeSource_Fixed.class,
-            TestTimeSource_OffsetSystem.class,
-            TestTimeSource_System.class,
-            // time scale
-            TestTAIInstant.class,
-            TestUTCInstant.class,
-            TestUTCRules.class,
             // simple calendar classes
             TestAmPmOfDay.class,
             TestClock.class,

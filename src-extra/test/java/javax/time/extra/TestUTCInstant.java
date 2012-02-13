@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2010-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendrical;
+package javax.time.extra;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -43,8 +43,6 @@ import java.io.Serializable;
 
 import javax.time.Duration;
 import javax.time.Instant;
-import javax.time.MockUTCRulesAlwaysLeap;
-import javax.time.MockUTCRulesLeapOn1000;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
