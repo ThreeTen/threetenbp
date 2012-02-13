@@ -41,27 +41,23 @@ import javax.time.format.CalendricalParseException;
 /**
  * A duration between two instants on the time-line.
  * <p>
- * The Time Framework for Java models time as a series of instantaneous events,
- * known as {@link Instant instants}, along a single time-line.
- * This class represents the duration between two of those instants.
+ * This class models a duration of time and is not tied to any instant.
  * The model is of a directed duration, meaning that the duration may be negative.
  * <p>
  * A physical duration could be of infinite length.
- * However, for practicality the API and this class limits the length to the
- * number of seconds that can be held in a {@code long}.
+ * For practicality, the duration is stored with constraints similar to {@link Instant}.
+ * The duration uses nanosecond resolution with a maximum value of the seconds that can
+ * be held in a {@code long}. This is greater than the current estimated age of the universe.
  * <p>
- * In order to represent the data a 96 bit number is required. To achieve this the
- * data is stored as seconds, measured using a {@code long}, and nanoseconds,
- * measured using an {@code int}. The nanosecond part will always be between
- * 0 and 999,999,999 representing the nanosecond part of the second.
- * For example, the negative duration of {@code PT-0.1S} is represented as
- * -1 second and 900,000,000 nanoseconds.
+ * The range of a duration requires the storage of a number larger than a {@code long}.
+ * The standard storage scheme uses a count of seconds with a fraction of a second stored
+ * as nanosecond-of-second which will always be between 0 and 999,999,999.
  * <p>
- * In this API, the unit of "seconds" only has a precise meaning when applied to an instant.
- * This is because it is the instant that defines the time scale used, not the duration.
- * For example, the time-scale used by {@code Instant} uses a variable length second to
- * avoid exposing leap seconds. By comparison, the TAI time scale follows the international
- * scientific definition of a second exactly. For most applications, this subtlety will be irrelevant.
+ * The duration is measured in "seconds", but these are not necessarily identical to
+ * the scientific "SI second" definition based on atomic clocks.
+ * This difference only impacts durations measured near a leap-second and should not affect
+ * most applications.
+ * See {@link Instant} for a discussion as to the meaning of the second and time-scales.
  * <p>
  * This class is immutable and thread-safe.
  *
