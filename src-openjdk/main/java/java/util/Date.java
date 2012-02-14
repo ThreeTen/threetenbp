@@ -37,7 +37,6 @@ import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 
 import javax.time.Instant;
-import javax.time.InstantProvider;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
@@ -145,8 +144,7 @@ import sun.util.calendar.ZoneInfo;
  * @since   JDK1.0
  */
 public class Date
-    implements java.io.Serializable, Cloneable, Comparable<Date>, InstantProvider
-{
+    implements java.io.Serializable, Cloneable, Comparable<Date> {
     private static final BaseCalendar gcal =
                                 CalendarSystem.getGregorianCalendar();
     private static BaseCalendar jcal;
@@ -198,10 +196,8 @@ public class Date
      * Constructs a <code>Date</code> object and initializes it to
      * represent the same point on the time-line as the specified instant.
      * <p>
-     * An {@link InstantProvider} is a simple interface that is implemented by
-     * numerous date-time classes.  It provides a mechanism to convert those
-     * objects to an instance of <code>Instant</code> which is then used to
-     * initialize the time of this <code>Date</code>.
+     * An {@link Instant} is an immutable representation of a single instant on the
+     * time-line. This constructor creates a {@code Date} from the instant.
      * <p>
      * <code>Instant</code> uses a precision of nanoseconds, whereas
      * <code>Date</code> uses a precision of milliseconds.  The conversion will
@@ -212,14 +208,13 @@ public class Date
      * future and further in the past than <code>Date</code>.  In this scenario,
      * this constructor will throw an exception.
      *
-     * @param   instantProvider   the provider of an instant to convert, not null.
+     * @param   instant   the instant to convert, not null.
      * @exception NullPointerException if <code>instantProvider</code> is null.
      * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
      * @since ?
      */
-    public Date(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public Date(Instant instant) {
         try {
             fastTime = instant.toEpochMilli();
         } catch (ArithmeticException ex) {
@@ -1388,10 +1383,8 @@ public class Date
      * Sets the instant represented by this <code>Date</code> to be the same as
      * the provided <code>Instant</code>.
      * <p>
-     * An {@link InstantProvider} is a simple interface that is implemented by
-     * numerous date-time classes.  It provides a mechanism to convert those
-     * objects to an instance of <code>Instant</code> which is then used to
-     * set the time of this <code>Date</code>.
+     * An {@link Instant} is an immutable representation of a single instant on the
+     * time-line.
      * <p>
      * <code>Instant</code> uses a precision of nanoseconds, whereas
      * <code>Date</code> uses a precision of milliseconds.  The conversion will
@@ -1402,7 +1395,7 @@ public class Date
      * future and further in the past than <code>Date</code>.  In this scenario,
      * this method will throw an exception.
      *
-     * @param instantProvider  the provider of an instant to convert, not null.
+     * @param instant  the instant to set, not null.
      * @exception NullPointerException if <code>instantProvider</code> is null.
      * @exception IllegalArgumentException if the instant is too large to
      *  represent as a <code>Date</code>.
@@ -1410,8 +1403,7 @@ public class Date
      * @see #setTime(long)
      * @since ?
      */
-    public final void setInstant(InstantProvider instantProvider) {
-        Instant instant = Instant.of(instantProvider);
+    public final void setInstant(Instant instant) {
         long millis;
         try {
             millis = instant.toEpochMilli();

@@ -130,7 +130,7 @@ import javax.time.format.CalendricalParseException;
  * @author Stephen Colebourne
  */
 public final class Instant
-        implements InstantProvider, Comparable<Instant>, Serializable {
+        implements Comparable<Instant>, Serializable {
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -298,23 +298,6 @@ public final class Instant
             throw new ArithmeticException("Exceeds capacity of Duration: " + epochNano);
         }
         return ofEpochSecond(divRem[0].longValue(), divRem[1].intValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code Instant} from a provider of instants.
-     * <p>
-     * In addition to calling {@link InstantProvider#toInstant()} this method
-     * also checks the validity of the result of the provider.
-     *
-     * @param instantProvider  a provider of instant information, not null
-     * @return an instant, not null
-     */
-    public static Instant of(InstantProvider instantProvider) {
-        MathUtils.checkNotNull(instantProvider, "InstantProvider must not be null");
-        Instant provided = instantProvider.toInstant();
-        MathUtils.checkNotNull(provided, "The implementation of InstantProvider must not return null");
-        return provided;
     }
 
     //-----------------------------------------------------------------------

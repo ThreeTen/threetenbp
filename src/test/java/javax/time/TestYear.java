@@ -116,7 +116,7 @@ public class TestYear {
     // now(Clock)
     //-----------------------------------------------------------------------
     public void now_Clock() {
-        Instant instant = Instant.of(OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC));
+        Instant instant = OffsetDateTime.of(2010, 12, 31, 0, 0, ZoneOffset.UTC).toInstant();
         Clock clock = Clock.fixed(instant, ZoneId.UTC);
         Year test = Year.now(clock);
         assertEquals(test.getValue(), 2010);

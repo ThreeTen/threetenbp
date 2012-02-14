@@ -73,7 +73,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements InstantProvider, Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements Calendrical, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * Serialization version.

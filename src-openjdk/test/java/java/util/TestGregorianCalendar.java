@@ -43,7 +43,6 @@ import javax.time.Instant;
 import javax.time.LocalDate;
 import javax.time.LocalDateTime;
 import javax.time.LocalTime;
-import javax.time.MockInstantProviderReturnsNull;
 import javax.time.OffsetDate;
 import javax.time.OffsetDateTime;
 import javax.time.OffsetTime;
@@ -108,16 +107,6 @@ public class TestGregorianCalendar {
         GregorianCalendar test = new GregorianCalendar();
         try {
             test.setInstant((Instant) null);
-            fail();
-        } catch (NullPointerException ex) {
-            // expected
-        }
-    }
-
-    public void test_setInstant_badProvider() {
-        GregorianCalendar test = new GregorianCalendar();
-        try {
-            test.setInstant(new MockInstantProviderReturnsNull());
             fail();
         } catch (NullPointerException ex) {
             // expected

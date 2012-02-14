@@ -110,7 +110,6 @@ public class TestOffsetDateTime {
     @Test(groups={"implementation"})
     public void test_interfaces() {
         Object obj = TEST_2008_6_30_11_30_59_000000500;
-        assertTrue(obj instanceof InstantProvider);
         assertTrue(obj instanceof Calendrical);
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);

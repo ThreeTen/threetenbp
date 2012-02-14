@@ -356,40 +356,6 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
-    // of(InstantProvider)
-    //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_from_provider() {
-        InstantProvider provider = new InstantProvider() {
-            public Instant toInstant() {
-                return Instant.ofEpochSecond(1, 2);
-            }
-        };
-        Instant test = Instant.of(provider);
-        assertEquals(test.getEpochSecond(), 1);
-        assertEquals(test.getNanoOfSecond(), 2);
-    }
-
-    @Test(groups={"implementation"})
-    public void factory_from_provider_same() {
-        InstantProvider provider = Instant.ofEpochSecond(1, 2);
-        Instant test = Instant.of(provider);
-        assertSame(test, provider);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_from_provider_null() {
-        InstantProvider provider = null;
-        Instant.of(provider);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_from_badProvider() {
-        InstantProvider provider = new MockInstantProviderReturnsNull();
-        Instant.of(provider);
-    }
-
-    //-----------------------------------------------------------------------
     // parse(String)
     //-----------------------------------------------------------------------
     @DataProvider(name="Parse")

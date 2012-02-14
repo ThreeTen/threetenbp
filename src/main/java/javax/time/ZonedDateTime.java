@@ -81,7 +81,7 @@ import javax.time.zone.ZoneRules;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * Serialization version.
