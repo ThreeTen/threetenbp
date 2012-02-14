@@ -177,33 +177,18 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDate} from an {@code InstantProvider}
-     * using the UTC offset.
-     * <p>
-     * This conversion drops the time component of the instant effectively
-     * converting at midnight at the start of the UTC day.
-     *
-     * @param instantProvider  the instant to convert, not null
-     * @return the offset date in UTC, not null
-     * @throws CalendricalException if the instant exceeds the supported date range
-     */
-    public static OffsetDate ofInstantUTC(InstantProvider instantProvider) {
-        return ofInstant(instantProvider, ZoneOffset.UTC);
-    }
-
-    /**
-     * Obtains an instance of {@code OffsetDate} from an {@code InstantProvider}.
+     * Obtains an instance of {@code OffsetDate} from an {@code Instant}.
      * <p>
      * This conversion drops the time component of the instant effectively
      * converting at midnight at the start of the day.
      *
-     * @param instantProvider  the instant to convert, not null
-     * @param offset  the zone offset, not null
+     * @param instant  the instant to create the date from, not null
+     * @param offset  the zone offset to use, not null
      * @return the offset date, not null
      * @throws CalendricalException if the instant exceeds the supported date range
      */
-    public static OffsetDate ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
-        Instant instant = Instant.of(instantProvider);
+    public static OffsetDate ofInstant(Instant instant, ZoneOffset offset) {
+        MathUtils.checkNotNull(instant, "Instant must not be null");
         MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         long epochSec = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         long yearZeroDay = MathUtils.floorDiv(epochSec, MathUtils.SECONDS_PER_DAY) + LocalDate.DAYS_0000_TO_1970;

@@ -62,7 +62,6 @@ import javax.time.calendrical.Chronology;
 import javax.time.calendrical.DateAdjuster;
 import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.MockDateAdjusterReturnsNull;
-import javax.time.calendrical.MockMultiProvider;
 import javax.time.calendrical.MockRuleNoValue;
 import javax.time.calendrical.MockTimeAdjusterReturnsNull;
 import javax.time.calendrical.PeriodProvider;
@@ -457,36 +456,36 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factoryUTC_ofInstant_InstantProvider_nullInstant() {
-        ZonedDateTime.ofInstantUTC((Instant) null);
-    }
-
     @Test(groups={"tck"})
-    public void factoryUTC_ofInstant_InstantProvider() {
+    public void factoryUTC_ofInstant() {
         Instant instant = Instant.ofEpochSecond(86400 + 5 * 3600 + 10 * 60 + 20);
         ZonedDateTime test = ZonedDateTime.ofInstantUTC(instant);
         check(test, 1970, 1, 2, 5, 10, 20, 0, ZoneOffset.UTC, ZoneId.UTC);
     }
 
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
+    public void factoryUTC_ofInstant_nullInstant() {
+        ZonedDateTime.ofInstantUTC((Instant) null);
+    }
+
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
-    public void factory_ofInstant_InstantProvider() {
+    public void factory_ofInstant_Instant() {
         OffsetDateTime odt = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        InstantProvider provider = odt.toInstant();
-        ZonedDateTime test = ZonedDateTime.ofInstant(provider, ZONE_PARIS);
+        Instant instant = odt.toInstant();
+        ZonedDateTime test = ZonedDateTime.ofInstant(instant, ZONE_PARIS);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_nullProvider() {
-        ZonedDateTime.ofInstant((InstantProvider) null, ZONE_0100);
+    public void factory_ofInstant_Instant_nullInstant() {
+        ZonedDateTime.ofInstant((Instant) null, ZONE_0100);
     }
 
     @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
-    public void factory_ofInstant_InstantProvider_nullZone() {
-        InstantProvider provider = Instant.ofEpochSecond(0L);
-        ZonedDateTime.ofInstant(provider, null);
+    public void factory_ofInstant_Instant_nullZone() {
+        Instant instant = Instant.ofEpochSecond(0L);
+        ZonedDateTime.ofInstant(instant, null);
     }
 
     //-----------------------------------------------------------------------
@@ -537,14 +536,6 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck"})
-    public void factory_ofInstant_multiProvider_checkAmbiguous() {
-        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
-        ZonedDateTime test = ZonedDateTime.ofInstant(mmp, ZONE_PARIS);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
-    }
-
-    //-----------------------------------------------------------------------
     // ofEpochSecond()
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -552,7 +543,8 @@ public class TestZonedDateTime {
         for (int i = 0; i < 100000; i++) {
             ZonedDateTime test = ZonedDateTime.ofEpochSecond(i, ZONE_0200);
             OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).plusSeconds(i);
-            assertEquals(test, ZonedDateTime.ofInstant(odt, ZONE_0200));
+            assertEquals(test.toOffsetDateTime(), odt);
+            assertEquals(test.getZone(), ZONE_0200);
         }
     }
 
@@ -561,7 +553,8 @@ public class TestZonedDateTime {
         for (int i = 0; i < 100000; i++) {
             ZonedDateTime test = ZonedDateTime.ofEpochSecond(-i, ZONE_0200);
             OffsetDateTime odt = OffsetDateTime.of(1970, 1, 1, 0, 0, ZoneOffset.UTC).withOffsetSameInstant(OFFSET_0200).minusSeconds(i);
-            assertEquals(test, ZonedDateTime.ofInstant(odt, ZONE_0200));
+            assertEquals(test.toOffsetDateTime(), odt);
+            assertEquals(test.getZone(), ZONE_0200);
         }
     }
 

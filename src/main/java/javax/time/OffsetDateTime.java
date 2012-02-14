@@ -384,27 +384,33 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}
+     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant}
      * using the UTC offset.
+     * <p>
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * Calling {@link #toInstant()} will return an instant equal to the one used here.
      *
-     * @param instantProvider  the instant to convert, not null
+     * @param instant  the instant to create a date-time from, not null
      * @return the offset date-time in UTC, not null
      * @throws CalendricalException if the instant exceeds the supported date range
      */
-    public static OffsetDateTime ofInstantUTC(InstantProvider instantProvider) {
-        return ofInstant(instantProvider, ZoneOffset.UTC);
+    public static OffsetDateTime ofInstantUTC(Instant instant) {
+        return ofInstant(instant, ZoneOffset.UTC);
     }
 
     /**
-     * Obtains an instance of {@code OffsetDateTime} from an {@code InstantProvider}.
+     * Obtains an instance of {@code OffsetDateTime} from an {@code Instant}.
+     * <p>
+     * The resulting date-time represents exactly the same instant on the time-line.
+     * Calling {@link #toInstant()} will return an instant equal to the one used here.
      *
-     * @param instantProvider  the instant to convert, not null
-     * @param offset  the zone offset, not null
+     * @param instant  the instant to create the date-time from, not null
+     * @param offset  the zone offset to use, not null
      * @return the offset date-time, not null
      * @throws CalendricalException if the instant exceeds the supported date range
      */
-    public static OffsetDateTime ofInstant(InstantProvider instantProvider, ZoneOffset offset) {
-        Instant instant = Instant.of(instantProvider);
+    public static OffsetDateTime ofInstant(Instant instant, ZoneOffset offset) {
+        MathUtils.checkNotNull(instant, "Instant must not be null");
         MathUtils.checkNotNull(offset, "ZoneOffset must not be null");
         long localSeconds = instant.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
         LocalDateTime ldt = LocalDateTime.create(localSeconds, instant.getNanoOfSecond());
