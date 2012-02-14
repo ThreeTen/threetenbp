@@ -60,6 +60,13 @@ import javax.time.zone.ZoneRules;
  * as well as the offset from UTC. For example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
  * <p>
+ * {@code OffsetDateTime} and {@link Instant} both store an instant on the time-line
+ * to nanosecond precision. The main difference is that this class also stores the
+ * offset from UTC. {@code Instant} should be used when you only need to compare the
+ * object to other instants. {@code OffsetDateTime} should be used when you want to actively
+ * query and manipulate the date and time fields, although you should also consider using
+ * {@link ZonedDateTime}.
+ * <p>
  * OffsetDateTime is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
