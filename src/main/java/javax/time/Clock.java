@@ -195,7 +195,8 @@ public abstract class Clock {
      * This clock wraps another clock, returning instants that are offset by the specified duration.
      * The main use case for this is to simulate running in the future or in the past.
      * <p>
-     * The returned implementation is immutable, thread-safe and {@code Serializable}.
+     * The returned implementation is immutable, thread-safe and {@code Serializable}
+     * providing that the base clock is.
      *
      * @param offset  the duration by which this time-source is offset from the system millisecond clock
      * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
@@ -255,7 +256,7 @@ public abstract class Clock {
      *
      * @return the current millisecond instant from this clock, measured from
      *  the Java epoch of 1970-01-01T00:00 UTC, not null
-     * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
+     * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public long millis() {
         return instant().toEpochMilli();
@@ -270,7 +271,7 @@ public abstract class Clock {
      * The default implementation calls {@link #millis}.
      *
      * @return the current instant from this clock, not null
-     * @throws RuntimeException if the instant cannot be obtained, not thrown by most implementations
+     * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
     public abstract Instant instant();
 
@@ -285,7 +286,7 @@ public abstract class Clock {
      * This returns today's date based on the current instant and time-zone.
      *
      * @return the current date, not null
-     * @throws RuntimeException if the date cannot be obtained, not thrown by most implementations
+     * @throws CalendricalException if the date cannot be obtained, not thrown by most implementations
      */
     public LocalDate today() {
         return LocalDate.now(this);
@@ -334,7 +335,7 @@ public abstract class Clock {
      * As such, the local time is derived by default from {@code offsetTime()}.
      *
      * @return the current time, not null
-     * @throws CalendricalException if the time cannot be created
+     * @throws CalendricalException if the time cannot be obtained, not thrown by most implementations
      */
     public LocalTime localTime() {
         return LocalTime.now(this);
@@ -378,7 +379,7 @@ public abstract class Clock {
      * As such, the local date-time is derived by default from {@code offsetDateTime()}.
      *
      * @return the current date-time, not null
-     * @throws CalendricalException if the date-time cannot be created
+     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
      */
     public LocalDateTime localDateTime() {
         return LocalDateTime.now(this);
@@ -479,7 +480,7 @@ public abstract class Clock {
      * The offset date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current offset date-time, not null
-     * @throws CalendricalException if the date-time cannot be created
+     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
      */
     public OffsetDateTime offsetDateTime() {
         return OffsetDateTime.now(this);
@@ -522,7 +523,7 @@ public abstract class Clock {
      * The zoned date-time is derived by default from {@code instant()} and {@code getZone()}.
      *
      * @return the current zoned date-time, not null
-     * @throws CalendricalException if the date-time cannot be created
+     * @throws CalendricalException if the date-time cannot be obtained, not thrown by most implementations
      */
     public ZonedDateTime zonedDateTime() {
         return ZonedDateTime.now(this);
