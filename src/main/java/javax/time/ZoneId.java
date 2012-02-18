@@ -1116,6 +1116,11 @@ public abstract class ZoneId implements Calendrical, Serializable {
         }
 
         @Override
+        public ZoneOffset getOffset(long epochSec) {
+            return offsetInfo.getOffset();
+        }
+
+        @Override
         public ZoneOffsetInfo getOffsetInfo(LocalDateTime dateTime) {
             return offsetInfo;
         }

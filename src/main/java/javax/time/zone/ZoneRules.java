@@ -90,14 +90,29 @@ public interface ZoneRules {
      * Gets the offset applicable at the specified instant in this zone.
      * <p>
      * For any given instant there can only ever be one valid offset, which
-     * is returned by this method. To access more detailed information about
-     * the offset at and around the instant use {@link #getOffsetInfo(Instant)}.
+     * is returned by this method.
      *
      * @param instant  the instant to find the offset for,
      *   ignored for fixed offset rules, otherwise not null
      * @return the offset, not null
      */
     ZoneOffset getOffset(Instant instant);
+
+    /**
+     * Gets the offset applicable at the specified instant in this zone.
+     * <p>
+     * For any given instant there can only ever be one valid offset, which
+     * is returned by this method.
+     * <p>
+     * This method is based on the epoch-seconds from 1970-01-01T00:00:00Z
+     * and is intended for performance sensitive use cases that need to avoid
+     * object creation. Most applications should use {@link #getOffset(Instant)}.
+     *
+     * @param epochSeconds  the instant in seconds from 1970-01-01T00:00:00Z
+     *   to find the offset for, ignored for fixed offset rules
+     * @return the offset, not null
+     */
+    ZoneOffset getOffset(long epochSeconds);
 
     /**
      * Gets the offset information for a local date-time in this zone.

@@ -176,6 +176,22 @@ public class TestStandardZoneRules {
         assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 12, 1, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
     }
 
+    public void test_London_getOffset_long() {
+        StandardZoneRules test = europeLondon();
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 1, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_ZERO);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 2, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_ZERO);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 3, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_ZERO);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 4, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_PONE);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 5, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_PONE);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 6, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_PONE);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 7, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_PONE);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 8, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_PONE);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 9, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_PONE);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 10, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_PONE);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 11, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_ZERO);
+        assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 12, 1, ZoneOffset.UTC).toEpochSecond()), OFFSET_ZERO);
+    }
+
     public void test_London_getOffset_toDST() {
         StandardZoneRules test = europeLondon();
         assertEquals(test.getOffset(OffsetDateTime.ofMidnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), OFFSET_ZERO);
