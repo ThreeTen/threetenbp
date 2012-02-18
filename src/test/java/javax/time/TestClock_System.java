@@ -101,8 +101,8 @@ public class TestClock_System {
 
     //-------------------------------------------------------------------------
     public void test_systemUTC() {
-        Clock system = Clock.system(PARIS);
-        assertEquals(system.getZone(), PARIS);
+        Clock system = Clock.systemUTC();
+        assertEquals(system.getZone(), ZoneId.UTC);
     }
 
     public void test_system_zoneId() {
@@ -113,6 +113,11 @@ public class TestClock_System {
     public void test_systemDefaultZone() {
         Clock system = Clock.systemDefaultZone();
         assertEquals(system.getZone(), ZoneId.systemDefault());
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_system_zoneId_nullZoneId() {
+        Clock.system(null);
     }
 
     //-------------------------------------------------------------------------

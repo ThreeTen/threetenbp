@@ -77,6 +77,16 @@ public class TestClock_Offset {
         assertEquals(test, Clock.systemUTC());
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_offset_nullClock() {
+        Clock.offset(null, Duration.ZERO);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_offset_nullDuration() {
+        Clock.offset(Clock.systemUTC(), null);
+    }
+
     //-----------------------------------------------------------------------
     public void test_offset_utc() {
         Clock offset = Clock.offset(Clock.systemUTC(), OFFSET);
