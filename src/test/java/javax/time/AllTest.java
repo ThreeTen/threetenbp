@@ -131,6 +131,7 @@ public class AllTest {
             TestClock_Fixed.class,
             TestClock_Offset.class,
             TestClock_System.class,
+            TestClock_Tick.class,
             TestDayOfWeek.class,
             TestLocalDate.class,
             TestLocalDateTime.class,

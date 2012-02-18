@@ -45,15 +45,15 @@ import org.testng.annotations.Test;
 public class TestClock {
 
     static class MockInstantClock extends Clock {
-        final Instant instant;
+        final long millis;
         final ZoneId zone;
-        MockInstantClock(Instant instant, ZoneId zone) {
-            this.instant = instant;
+        MockInstantClock(long millis, ZoneId zone) {
+            this.millis = millis;
             this.zone = zone;
         }
         @Override
-        public Instant instant() {
-            return instant;
+        public long millis() {
+            return millis;
         }
         @Override
         public ZoneId getZone() {
@@ -61,14 +61,14 @@ public class TestClock {
         }
         @Override
         public Clock withZone(ZoneId timeZone) {
-            return new MockInstantClock(instant, timeZone);
+            return new MockInstantClock(millis, timeZone);
         }
     }
 
     private static final ZoneOffset OFFSET = ZoneOffset.ofHours(2);
-    private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET);
+    private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500000000, OFFSET);
     private static final ZoneId ZONE = ZoneId.of("Europe/Paris");
-    private static final Clock MOCK_INSTANT = new MockInstantClock(DATE_TIME.toInstant(), ZONE);
+    private static final Clock MOCK_INSTANT = new MockInstantClock(DATE_TIME.toInstant().toEpochMilli(), ZONE);
 
     //-----------------------------------------------------------------------
     @Test(groups={"tck"})
@@ -92,13 +92,13 @@ public class TestClock {
     public void test_mockClock_dateAndTime() {
         assertEquals(MOCK_INSTANT.today(), LocalDate.of(2008, 6, 30));
         
-        assertEquals(MOCK_INSTANT.localTime(), LocalTime.of(11, 30, 10, 500));
+        assertEquals(MOCK_INSTANT.localTime(), LocalTime.of(11, 30, 10, 500000000));
         
-        assertEquals(MOCK_INSTANT.localDateTime(), LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500));
+        assertEquals(MOCK_INSTANT.localDateTime(), LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500000000));
         
-        assertEquals(MOCK_INSTANT.offsetDateTime(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET));
+        assertEquals(MOCK_INSTANT.offsetDateTime(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500000000, OFFSET));
         
-        assertEquals(MOCK_INSTANT.zonedDateTime(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500), ZONE));
+        assertEquals(MOCK_INSTANT.zonedDateTime(), ZonedDateTime.of(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500000000), ZONE));
     }
 
 }

@@ -149,6 +149,71 @@ public abstract class Clock {
         return new SystemClock(ZoneId.systemDefault());
     }
 
+    //-------------------------------------------------------------------------
+    /**
+     * Gets a clock that obtains the current date and time ticking in whole seconds.
+     * <p>
+     * This clock will always have the nano-of-second field set to zero.
+     * This ensures that the visible time ticks in whole seconds.
+     * The underlying clock is the best available system clock, typically equivalent
+     * to {@link #system(ZoneId)}.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
+     *
+     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @return a clock that ticks in whole seconds using the specified zone, not null
+     */
+    public static Clock tickSeconds(ZoneId zone) {
+        return new TickClock(system(zone), 1000);
+    }
+
+    /**
+     * Gets a clock that obtains the current date and time ticking in whole minutes.
+     * <p>
+     * This clock will always have the nano-of-second and second-of-minute fields set to zero.
+     * This ensures that the visible time ticks in whole minutes.
+     * The underlying clock is the best available system clock, typically equivalent
+     * to {@link #system(ZoneId)}.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
+     *
+     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @return a clock that ticks in whole minutes using the specified zone, not null
+     */
+    public static Clock tickMinutes(ZoneId zone) {
+        return new TickClock(system(zone), 60 * 1000);
+    }
+
+    /**
+     * Gets a clock that obtains the current date and time to the nearest occurrence of the specified duration.
+     * <p>
+     * This clock will only tick as per the specified duration. Thus, if the duration
+     * is half a second, the clock will return instants truncated to the half second.
+     * <p>
+     * Implementations may use a caching strategy for performance reasons. As such,
+     * it is possible that the start of the minute observed via this clock will be
+     * later than that observed directly via the underlying clock.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}
+     * providing that the base clock is.
+     *
+     * @param baseClock  the base clock to base the ticking clock on, not null
+     * @param tickDuration  the duration of each visible tick, not negative, not null
+     * @return a clock that ticks in whole units of the duration, not null
+     * @throws IllegalArgumentException if the duration is negative
+     */
+    public static Clock tick(Clock baseClock, Duration tickDuration) {
+        MathUtils.checkNotNull(baseClock, "Clock must not be null");
+        MathUtils.checkNotNull(tickDuration, "Duration must not be null");
+        if (tickDuration.isNegative()) {
+            throw new IllegalArgumentException("Duration must not be negative");
+        }
+        if (tickDuration.isZero()) {
+            return baseClock;
+        }
+        return new TickClock(baseClock, tickDuration.toMillisLong());  // TODO only millis?
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets a clock that always returns the same instant in the UTC time-zone.
@@ -198,7 +263,8 @@ public abstract class Clock {
      * The returned implementation is immutable, thread-safe and {@code Serializable}
      * providing that the base clock is.
      *
-     * @param offset  the duration by which this time-source is offset from the system millisecond clock
+     * @param baseClock  the base clock to add an offset to, not null
+     * @param offset  the duration to add as an offset, not null
      * @return a {@code TimeSource} that is offset from the system millisecond clock, not null
      */
     public static Clock offset(Clock baseClock, Duration offset) {
@@ -251,16 +317,12 @@ public abstract class Clock {
      * an instant on the time-line rather than a raw millisecond value.
      * This method is provided to allow the use of the clock in high performance use cases
      * where the creation of an object would be unacceptable.
-     * <p>
-     * The default implementation calls {@link #instant}.
      *
      * @return the current millisecond instant from this clock, measured from
      *  the Java epoch of 1970-01-01T00:00 UTC, not null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
-    public long millis() {
-        return instant().toEpochMilli();
-    }
+    public abstract long millis();
 
     //-----------------------------------------------------------------------
     /**
@@ -273,7 +335,9 @@ public abstract class Clock {
      * @return the current instant from this clock, not null
      * @throws CalendricalException if the instant cannot be obtained, not thrown by most implementations
      */
-    public abstract Instant instant();
+    public Instant instant() {
+        return Instant.ofEpochMilli(millis());
+    }
 
     //-----------------------------------------------------------------------
     // methods below here offer opportunity for performance gains
@@ -583,10 +647,6 @@ public abstract class Clock {
             return System.currentTimeMillis();
         }
         @Override
-        public Instant instant() {
-            return Instant.ofEpochMilli(millis());
-        }
-        @Override
         public boolean equals(Object obj) {
             if (obj instanceof SystemClock) {
                 return zone.equals(((SystemClock) obj).zone);
@@ -627,6 +687,10 @@ public abstract class Clock {
                 return this;
             }
             return new FixedClock(instant, zone);
+        }
+        @Override
+        public long millis() {
+            return instant.toEpochMilli();
         }
         @Override
         public Instant instant() {
@@ -679,10 +743,6 @@ public abstract class Clock {
             return MathUtils.safeAdd(baseClock.millis(), offset.toMillisLong());
         }
         @Override
-        public Instant instant() {
-            return baseClock.instant().plus(offset);
-        }
-        @Override
         public boolean equals(Object obj) {
             if (obj instanceof OffsetClock) {
                 OffsetClock other = (OffsetClock) obj;
@@ -697,6 +757,64 @@ public abstract class Clock {
         @Override
         public String toString() {
             return "OffsetClock[" + baseClock + "," + offset + "]";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of a clock that adds an offset to an underlying clock.
+     */
+    static final class TickClock extends Clock implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final Clock baseClock;
+        private final long tickMillis;
+//        private transient AtomicReference<Instant> cachedInstant = new AtomicReference<Instant>(Instant.EPOCH);
+
+        TickClock(Clock baseClock, long tickMillis) {
+            this.baseClock = baseClock;
+            this.tickMillis = tickMillis;
+        }
+        @Override
+        public ZoneId getZone() {
+            return baseClock.getZone();
+        }
+        @Override
+        public Clock withZone(ZoneId zone) {
+            if (zone.equals(baseClock.getZone())) {  // intentional NPE
+                return this;
+            }
+            return new TickClock(baseClock.withZone(zone), tickMillis);
+        }
+        @Override
+        public long millis() {
+            long millis = baseClock.millis();
+            return millis - MathUtils.floorMod(millis, tickMillis);
+        }
+//        @Override
+//        public Instant instant() {
+//            Instant instant = super.instant();
+//            Instant cached = cachedInstant.get();
+//            if (cached.equals(instant)) {
+//                return cached;
+//            }
+//            cachedInstant.compareAndSet(cached, instant);
+//            return instant;
+//        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof TickClock) {
+                TickClock other = (TickClock) obj;
+                return baseClock.equals(other.baseClock) && tickMillis == other.tickMillis;
+            }
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return baseClock.hashCode() ^ ((int) (tickMillis ^ (tickMillis >>> 32)));
+        }
+        @Override
+        public String toString() {
+            return "OffsetClock[" + baseClock + "," + tickMillis + "]";
         }
     }
 
