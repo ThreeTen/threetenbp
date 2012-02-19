@@ -164,9 +164,9 @@ public final class LocalDate
     public static LocalDate now(Clock clock) {
         MathUtils.checkNotNull(clock, "Clock must not be null");
         // inline OffsetDate factory to avoid creating object and InstantProvider checks
-        final Instant now = clock.instant();  // called once
+        final long now = clock.millis();  // called once
         ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
+        long epochSec = now + offset.getTotalSeconds();  // overflow caught later
         long yearZeroDay = MathUtils.floorDiv(epochSec, MathUtils.SECONDS_PER_DAY) + DAYS_0000_TO_1970;
         return LocalDate.ofYearZeroDay(yearZeroDay);
     }
