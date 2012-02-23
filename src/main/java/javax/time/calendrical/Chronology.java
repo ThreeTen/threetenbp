@@ -116,9 +116,8 @@ public abstract class Chronology implements Calendrical {
     //-------------------------------------------------------------------------
     /**
      * Rule class.
-     *
      */
-    static class Rule extends CalendricalRule<Chronology> implements Serializable {
+    static final class Rule extends CalendricalRule<Chronology> implements Serializable {
         /** The singleton rule. */
         static final Rule CHRONOLOGY = new Rule();
         /** Serialization version. */
