@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2011-2012, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,7 +34,6 @@ package javax.time.chronology;
 import java.util.Calendar;
 import java.util.Locale;
 
-import javax.time.calendrical.ISOChronology;
 import javax.time.calendrical.IllegalCalendarFieldValueException;
 import javax.time.format.TextStyle;
 import javax.time.i18n.CopticChronology;
@@ -73,9 +72,6 @@ public enum CopticEra implements Era {
      * {@code HistoricEra} is an enum representing the historic eras of BCE/CE.
      * This factory allows the enum to be obtained from the {@code int} value.
      * The {@code int} value follows {@link Calendar}, assigning 0 to BCE and 1 to CE.
-     * <p>
-     * An exception is thrown if the value is invalid. The exception uses the
-     * {@link ISOChronology} BCE/CE rule to indicate the failed rule.
      *
      * @param era  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
      * @return the HistoricEra singleton, not null
