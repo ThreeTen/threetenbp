@@ -62,11 +62,12 @@ public class TestMonthOfYear {
 
     private static final int MAX_LENGTH = 12;
 
-    @BeforeMethod
+    @BeforeMethod (groups={"tck", "implementation"})
     public void setUp() {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"implementation"})
     public void test_interfaces() {
         assertTrue(Enum.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
@@ -75,12 +76,14 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_rule() {
         assertEquals(MonthOfYear.rule().getName(), "MonthOfYear");
         assertEquals(MonthOfYear.rule().getType(), MonthOfYear.class);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck", "implementation"})
     public void test_factory_int_singleton() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             MonthOfYear test = MonthOfYear.of(i);
@@ -89,44 +92,45 @@ public class TestMonthOfYear {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_tooLow() {
         MonthOfYear.of(0);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class, groups={"tck"})
     public void test_factory_int_tooHigh() {
         MonthOfYear.of(13);
     }
 
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_factory_Calendricals() {
         assertEquals(MonthOfYear.from(LocalDate.of(2011, 6, 6)), JUNE);
         assertEquals(MonthOfYear.from(MONTH_OF_YEAR.field(1)), JANUARY);
         assertEquals(MonthOfYear.from(LocalDate.of(2011, 6, 6), JUNE.toField()), JUNE);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_clash() {
         MonthOfYear.from(JANUARY, FEBRUARY.toField());
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_noDerive() {
         MonthOfYear.from(LocalTime.of(12, 30));
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
+    @Test(expectedExceptions=CalendricalException.class, groups={"tck"})
     public void test_factory_Calendricals_invalid_empty() {
         MonthOfYear.from();
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_nullArray() {
         MonthOfYear.from((Calendrical[]) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
+    @Test(expectedExceptions=NullPointerException.class, groups={"tck"})
     public void test_factory_Calendricals_null() {
         MonthOfYear.from((Calendrical) null);
     }
@@ -134,6 +138,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // get()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_get() {
         assertEquals(MonthOfYear.JANUARY.get(MonthOfYear.rule()), MonthOfYear.JANUARY);
         assertEquals(MonthOfYear.OCTOBER.get(MonthOfYear.rule()), MonthOfYear.OCTOBER);
@@ -149,16 +154,17 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // getText()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getText() {
         assertEquals(MonthOfYear.JANUARY.getText(TextStyle.SHORT, Locale.US), "Jan");
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullStyle() {
         MonthOfYear.JANUARY.getText(null, Locale.US);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class, groups={"tck"})
     public void test_getText_nullLocale() {
         MonthOfYear.JANUARY.getText(TextStyle.FULL, null);
     }
@@ -166,6 +172,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // next()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_next() {
         assertEquals(MonthOfYear.JANUARY.next(), MonthOfYear.FEBRUARY);
         assertEquals(MonthOfYear.FEBRUARY.next(), MonthOfYear.MARCH);
@@ -184,6 +191,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // previous()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_previous() {
         assertEquals(MonthOfYear.JANUARY.previous(), MonthOfYear.DECEMBER);
         assertEquals(MonthOfYear.FEBRUARY.previous(), MonthOfYear.JANUARY);
@@ -202,6 +210,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // roll(int)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_roll_january() {
         assertEquals(MonthOfYear.JANUARY.roll(-12), MonthOfYear.JANUARY);
         assertEquals(MonthOfYear.JANUARY.roll(-11), MonthOfYear.FEBRUARY);
@@ -230,6 +239,7 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.JANUARY.roll(12), MonthOfYear.JANUARY);
     }
 
+    @Test(groups={"tck"})
     public void test_roll_july() {
         assertEquals(MonthOfYear.JULY.roll(-12), MonthOfYear.JULY);
         assertEquals(MonthOfYear.JULY.roll(-11), MonthOfYear.AUGUST);
@@ -257,10 +267,20 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.JULY.roll(11), MonthOfYear.JUNE);
         assertEquals(MonthOfYear.JULY.roll(12), MonthOfYear.JULY);
     }
+    
+    @Test(groups={"tck"})
+    public void test_roll_largerThanTwelveMonths(){
+    	 assertEquals(MonthOfYear.JULY.roll(-13), MonthOfYear.JUNE);
+    	 assertEquals(MonthOfYear.JULY.roll(13), MonthOfYear.AUGUST);
+    	 int multipleOfMaxLenghthCloserToIntMaxValue = (Integer.MAX_VALUE/MAX_LENGTH)*MAX_LENGTH;
+		 assertEquals(MonthOfYear.JULY.roll(multipleOfMaxLenghthCloserToIntMaxValue), MonthOfYear.JULY);
+    	 assertEquals(MonthOfYear.JULY.roll(-(multipleOfMaxLenghthCloserToIntMaxValue)), MonthOfYear.JULY);
+    }
 
     //-----------------------------------------------------------------------
     // lengthInDays(boolean)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_lengthInDays_boolean_notLeapYear() {
         assertEquals(MonthOfYear.JANUARY.lengthInDays(false), 31);
         assertEquals(MonthOfYear.FEBRUARY.lengthInDays(false), 28);
@@ -276,6 +296,7 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.DECEMBER.lengthInDays(false), 31);
     }
 
+    @Test(groups={"tck"})
     public void test_lengthInDays_boolean_leapYear() {
         assertEquals(MonthOfYear.JANUARY.lengthInDays(true), 31);
         assertEquals(MonthOfYear.FEBRUARY.lengthInDays(true), 29);
@@ -294,6 +315,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // minLengthInDays()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_minLengthInDays() {
         assertEquals(MonthOfYear.JANUARY.minLengthInDays(), 31);
         assertEquals(MonthOfYear.FEBRUARY.minLengthInDays(), 28);
@@ -312,6 +334,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // maxLengthInDays()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_maxLengthInDays() {
         assertEquals(MonthOfYear.JANUARY.maxLengthInDays(), 31);
         assertEquals(MonthOfYear.FEBRUARY.maxLengthInDays(), 29);
@@ -330,6 +353,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // getLastDayOfMonth(boolean)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getLastDayOfMonth_notLeapYear() {
         assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(false), 31);
         assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(false), 28);
@@ -345,6 +369,7 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(false), 31);
     }
 
+    @Test(groups={"tck"})
     public void test_getLastDayOfMonth_leapYear() {
         assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(true), 31);
         assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(true), 29);
@@ -363,6 +388,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // getMonthStartDayOfYear(boolean)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getMonthStartDayOfYear_notLeapYear() {
         assertEquals(MonthOfYear.JANUARY.getMonthStartDayOfYear(false), 1);
         assertEquals(MonthOfYear.FEBRUARY.getMonthStartDayOfYear(false), 1 + 31);
@@ -378,6 +404,7 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.DECEMBER.getMonthStartDayOfYear(false), 1 + 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30);
     }
 
+    @Test(groups={"tck"})
     public void test_getMonthStartDayOfYear_leapYear() {
         assertEquals(MonthOfYear.JANUARY.getMonthStartDayOfYear(true), 1);
         assertEquals(MonthOfYear.FEBRUARY.getMonthStartDayOfYear(true), 1 + 31);
@@ -396,6 +423,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // getMonthEndDayOfYear(boolean)
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getMonthEndDayOfYear_notLeapYear() {
         assertEquals(MonthOfYear.JANUARY.getMonthEndDayOfYear(false), 31);
         assertEquals(MonthOfYear.FEBRUARY.getMonthEndDayOfYear(false), 31 + 28);
@@ -411,6 +439,7 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.DECEMBER.getMonthEndDayOfYear(false), 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + 31);
     }
 
+    @Test(groups={"tck"})
     public void test_getMonthEndDayOfYear_leapYear() {
         assertEquals(MonthOfYear.JANUARY.getMonthEndDayOfYear(true), 31);
         assertEquals(MonthOfYear.FEBRUARY.getMonthEndDayOfYear(true), 31 + 29);
@@ -429,6 +458,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // getQuarterOfYear()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getQuarterOfYear() {
         assertEquals(MonthOfYear.JANUARY.getQuarterOfYear(), QuarterOfYear.Q1);
         assertEquals(MonthOfYear.FEBRUARY.getQuarterOfYear(), QuarterOfYear.Q1);
@@ -447,6 +477,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // getMonthOfQuarter()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_getMonthOfQuarter() {
         assertEquals(MonthOfYear.JANUARY.getMonthOfQuarter(), 1);
         assertEquals(MonthOfYear.FEBRUARY.getMonthOfQuarter(), 2);
@@ -465,6 +496,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // toField()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck"})
     public void test_toField() {
         assertEquals(MonthOfYear.JANUARY.toField(), MONTH_OF_YEAR.field(1));
         assertEquals(MonthOfYear.APRIL.toField(), MONTH_OF_YEAR.field(4));
@@ -473,6 +505,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
+    @Test(groups={"tck", "implementation"})
     public void test_toString() {
         assertEquals(MonthOfYear.JANUARY.toString(), "JANUARY");
         assertEquals(MonthOfYear.FEBRUARY.toString(), "FEBRUARY");
@@ -491,6 +524,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // generated methods
     //-----------------------------------------------------------------------
+    @Test(groups={"tck", "implementation"})
     public void test_enum() {
         assertEquals(MonthOfYear.valueOf("JANUARY"), MonthOfYear.JANUARY);
         assertEquals(MonthOfYear.values()[0], MonthOfYear.JANUARY);
