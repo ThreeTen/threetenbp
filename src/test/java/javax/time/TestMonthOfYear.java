@@ -62,10 +62,6 @@ public class TestMonthOfYear {
 
     private static final int MAX_LENGTH = 12;
 
-    @BeforeMethod (groups={"tck", "implementation"})
-    public void setUp() {
-    }
-
     //-----------------------------------------------------------------------
     @Test(groups={"implementation"})
     public void test_interfaces() {
@@ -83,11 +79,18 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    @Test(groups={"tck", "implementation"})
+    @Test(groups={"tck"})
     public void test_factory_int_singleton() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             MonthOfYear test = MonthOfYear.of(i);
             assertEquals(test.getValue(), i);
+        }
+    }
+    
+    @Test(groups={"implementation"})
+    public void test_factory_int_singleton_same() {
+        for (int i = 1; i <= MAX_LENGTH; i++) {
+            MonthOfYear test = MonthOfYear.of(i);
             assertSame(MonthOfYear.of(i), test);
         }
     }
@@ -505,7 +508,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @Test(groups={"tck", "implementation"})
+    @Test(groups={"tck"})
     public void test_toString() {
         assertEquals(MonthOfYear.JANUARY.toString(), "JANUARY");
         assertEquals(MonthOfYear.FEBRUARY.toString(), "FEBRUARY");
@@ -524,7 +527,7 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     // generated methods
     //-----------------------------------------------------------------------
-    @Test(groups={"tck", "implementation"})
+    @Test(groups={"tck"})
     public void test_enum() {
         assertEquals(MonthOfYear.valueOf("JANUARY"), MonthOfYear.JANUARY);
         assertEquals(MonthOfYear.values()[0], MonthOfYear.JANUARY);

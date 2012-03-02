@@ -2448,7 +2448,7 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     @Test(groups={"implementation"})
-    public void test_plusMinutes_noChange_oneDay() {
+    public void test_plusMinutes_noChange_oneDay_same() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMinutes(24 * 60);
         assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
@@ -2567,7 +2567,7 @@ public class TestLocalDateTime extends AbstractTest {
     }
     
     @Test(groups={"implementation"})
-    public void test_plusSeconds_noChange_oneDay() {
+    public void test_plusSeconds_noChange_oneDay_same() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusSeconds(24 * 60 * 60);
         assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
@@ -2690,7 +2690,7 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     @Test(groups={"implementation"})
-    public void test_plusNanos_noChange_oneDay() {
+    public void test_plusNanos_noChange_oneDay_same() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusNanos(24 * 60 * 60 * 1000000000L);
         assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
@@ -3443,7 +3443,7 @@ public class TestLocalDateTime extends AbstractTest {
     }
 
     @Test(groups={"implementation"})
-    public void test_minusMinutes_noChange_oneDay() {
+    public void test_minusMinutes_noChange_oneDay_same() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minusMinutes(24 * 60);
         assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
